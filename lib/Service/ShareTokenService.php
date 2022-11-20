@@ -31,13 +31,13 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use OCA\Circles\Tools\Traits\TStringTools;
 use OCA\Circles\Db\ShareTokenRequest;
 use OCA\Circles\Exceptions\ShareTokenAlreadyExistException;
 use OCA\Circles\Exceptions\ShareTokenNotFoundException;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\ShareToken;
 use OCA\Circles\Model\ShareWrapper;
+use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\IURLGenerator;
 use OCP\Share\IShare;
 
@@ -138,6 +138,29 @@ class ShareTokenService {
 		$shareToken->setLink($link);
 	}
 
+
+	/**
+	 * update password on files previously shared to circleId
+	 *
+	 * @param string $circleId
+	 * @param string $hashedPassword
+	 */
+	public function updateSharePassword(string $circleId, string $hashedPassword): void {
+		if ($hashedPassword === '') {
+			return;
+		}
+
+		$this->shareTokenRequest->updateSharePassword($circleId, $hashedPassword);
+	}
+
+	/**
+	 * remove password on files previously shared to circleId
+	 *
+	 * @param string $circleId
+	 */
+	public function removeSharePassword(string $circleId): void {
+		$this->shareTokenRequest->updateSharePassword($circleId, '');
+	}
 
 	/**
 	 * @param string $singleId

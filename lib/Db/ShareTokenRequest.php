@@ -92,6 +92,20 @@ class ShareTokenRequest extends ShareTokenRequestBuilder {
 
 
 	/**
+	 * @param string $circleId
+	 * @param string $hashedPassword
+	 */
+	public function updateSharePassword(string $circleId, string $hashedPassword) {
+		$qb = $this->getTokenUpdateSql();
+		$qb->limitToCircleId($circleId);
+
+		$qb->set('password', $qb->createNamedParameter($hashedPassword));
+
+		$qb->executeStatement();
+	}
+
+
+	/**
 	 * @param string $singleId
 	 * @param string $circleId
 	 */

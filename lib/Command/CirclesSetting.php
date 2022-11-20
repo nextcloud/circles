@@ -49,10 +49,13 @@ use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CircleService;
+use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
+use OCP\Security\IHasher;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -60,22 +63,23 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class CirclesSetting extends Base {
-	/** @var FederatedUserService */
-	private $federatedUserService;
+	private IHasher $hasher;
+	private FederatedUserService $federatedUserService;
+	private CircleService $circleService;
+	private ConfigService $configService;
 
-	/** @var CircleService */
-	private $circleService;
-
-
-	/**
-	 * @param FederatedUserService $federatedUserService
-	 * @param CircleService $circlesService
-	 */
-	public function __construct(FederatedUserService $federatedUserService, CircleService $circlesService) {
+	public function __construct(
+		IHasher $hasher,
+		FederatedUserService $federatedUserService,
+		CircleService $circlesService,
+		ConfigService $configService
+	) {
 		parent::__construct();
 
+		$this->hasher = $hasher;
 		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circlesService;
+		$this->configService = $configService;
 	}
 
 
@@ -90,6 +94,10 @@ class CirclesSetting extends Base {
 			 ->addArgument('setting', InputArgument::OPTIONAL, 'setting to edit', '')
 			 ->addArgument('value', InputArgument::OPTIONAL, 'value', '')
 			 ->addOption('unset', '', InputOption::VALUE_NONE, 'unset the setting')
+			 ->addOption(
+			 	'test-password', '', InputOption::VALUE_REQUIRED,
+			 	'test and compare password with hash (in case of static password)'
+			 )
 			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
 			 ->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
 			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
@@ -138,6 +146,11 @@ class CirclesSetting extends Base {
 				$initiatorHelper->mustBeAdmin();
 				$output->writeln(json_encode($circle->getSettings(), JSON_PRETTY_PRINT));
 
+				$testPassword = $input->getOption('test-password');
+				if ($testPassword !== null) {
+					$this->testPassword($output, $circle, $testPassword);
+				}
+
 				return 0;
 			}
 
@@ -165,5 +178,34 @@ class CirclesSetting extends Base {
 		}
 
 		return 0;
+	}
+
+
+	private function testPassword(OutputInterface $output, Circle $circle, string $testPassword): void {
+		$output->writeln('');
+
+
+		$output->write('Password enforced for this Circle: ');
+		if (!$this->configService->enforcePasswordOnSharedFile($circle)) {
+			$output->writeln('<error>no</error>');
+
+			return;
+		}
+		$output->writeln('<info>yes</info>');
+
+		$output->write('Single password is configured for this Circle: ');
+		if (!$this->configService->isSinglePasswordAvailable($circle)) {
+			$output->writeln('<error>no</error>');
+
+			return;
+		}
+		$output->writeln('<info>yes</info>');
+
+		$output->write('Comparing password with hashed version in database: ');
+		if ($this->hasher->verify($testPassword, $circle->getSettings()['password_single'])) {
+			$output->writeln('<info>ok</info>');
+		} else {
+			$output->writeln('<error>fail</error>');
+		}
 	}
 }
