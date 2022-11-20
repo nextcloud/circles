@@ -85,6 +85,7 @@ use OCP\Share\Exceptions\IllegalIDChangeException;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IShare;
 use OCP\Share\IShareProvider;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class ShareByCircleProvider
@@ -100,49 +101,17 @@ class ShareByCircleProvider implements IShareProvider {
 	public const IDENTIFIER = 'ocCircleShare';
 
 
-	/** @var IUserManager */
-	private $userManager;
+	private IUserManager $userManager;
+	private IRootFolder $rootFolder;
+	private IL10N $l10n;
+	private LoggerInterface $logger;
+	private IURLGenerator $urlGenerator;
+	private ShareWrapperService $shareWrapperService;
+	private FederatedUserService $federatedUserService;
+	private FederatedEventService $federatedEventService;
+	private CircleService $circleService;
+	private EventService $eventService;
 
-	/** @var IRootFolder */
-	private $rootFolder;
-
-	/** @var IL10N */
-	private $l10n;
-
-	/** @var ILogger */
-	private $logger;
-
-	/** @var IURLGenerator */
-	private $urlGenerator;
-
-
-	/** @var ShareWrapperService */
-	private $shareWrapperService;
-
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var FederatedEventService */
-	private $federatedEventService;
-
-	/** @var CircleService */
-	private $circleService;
-
-	/** @var EventService */
-	private $eventService;
-
-
-	/**
-	 * ShareByCircleProvider constructor.
-	 *
-	 * @param IDBConnection $connection
-	 * @param ISecureRandom $secureRandom
-	 * @param IUserManager $userManager
-	 * @param IRootFolder $rootFolder
-	 * @param IL10N $l10n
-	 * @param ILogger $logger
-	 * @param IURLGenerator $urlGenerator
-	 */
 	public function __construct(
 		IDBConnection $connection,
 		ISecureRandom $secureRandom,
@@ -155,7 +124,7 @@ class ShareByCircleProvider implements IShareProvider {
 		$this->userManager = $userManager;
 		$this->rootFolder = $rootFolder;
 		$this->l10n = $l10n;
-		$this->logger = $logger;
+		$this->logger = OC::$server->get(LoggerInterface::class);
 		$this->urlGenerator = $urlGenerator;
 
 		$this->federatedUserService = OC::$server->get(FederatedUserService::class);
@@ -601,7 +570,12 @@ class ShareByCircleProvider implements IShareProvider {
 			throw new ShareNotFound();
 		}
 
-		return $wrappedShare->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
+		$share = $wrappedShare->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
+		if ($share->getPassword() !== '') {
+			$this->logger->notice('share is protected by a password, hash: ' . $share->getPassword());
+		}
+
+		return $share;
 	}
 
 

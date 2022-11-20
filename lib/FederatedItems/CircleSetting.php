@@ -34,27 +34,31 @@ namespace OCA\Circles\FederatedItems;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemAsyncProcess;
+use OCA\Circles\IFederatedItemHighSeverity;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
+use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\ShareTokenService;
 use OCA\Circles\Tools\Traits\TDeserialize;
 
 class CircleSetting implements
 	IFederatedItem,
+	IFederatedItemHighSeverity,
 	IFederatedItemAsyncProcess {
 	use TDeserialize;
 
+	private CircleRequest $circleRequest;
+	private ShareTokenService $shareTokenService;
+	private ConfigService $configService;
 
-	/** @var CircleRequest */
-	private $circleRequest;
-
-
-	/**
-	 * CircleConfig constructor.
-	 *
-	 * @param CircleRequest $circleRequest
-	 */
-	public function __construct(CircleRequest $circleRequest) {
+	public function __construct(
+		CircleRequest $circleRequest,
+		ShareTokenService $shareTokenService,
+		ConfigService $configService
+	) {
 		$this->circleRequest = $circleRequest;
+		$this->shareTokenService = $shareTokenService;
+		$this->configService = $configService;
 	}
 
 
@@ -77,6 +81,18 @@ class CircleSetting implements
 			$settings[$setting] = $value;
 		} elseif (array_key_exists($setting, $settings)) {
 			unset($settings[$setting]);
+		}
+
+		// in case changed settings is about a static password change,
+		// refresh password on all previous shares
+		if ($setting === 'password_single' && $value !== null) {
+			$event->getData()->sBool('refresh_share_password', true);
+		}
+
+		// in case changed settings is about removing the enforce_password flag
+		// remove password on previous shares (global configuration will be checked in manage())
+		if ($setting === 'enforce_password') {
+			$event->getData()->sBool('remove_share_password', true);
 		}
 
 		$event->getData()->sArray('settings', $settings);
@@ -106,6 +122,23 @@ class CircleSetting implements
 		// TODO: sync if it is to broadcast to Trusted RemoteInstance
 
 		$this->circleRequest->updateSettings($circle);
+
+		// refresh share password (in case of static password changes)
+		// only is password are enforced for this Circle
+		if ($event->getData()->gBool('refresh_share_password')
+			&& $this->configService->enforcePasswordOnSharedFile($circle)) {
+			$this->shareTokenService->updateSharePassword(
+				$circle->getSingleId(),
+				$settings['password_single'] ?? ''
+			);
+		}
+
+		// remove share password on request
+		// only if password are not enforced for this Circle
+		if ($event->getData()->gBool('remove_share_password')
+			&& !$this->configService->enforcePasswordOnSharedFile($circle)) {
+			$this->shareTokenService->removeSharePassword($circle->getSingleId());
+		}
 	}
 
 

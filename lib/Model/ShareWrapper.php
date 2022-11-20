@@ -31,19 +31,18 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
-use OCA\Circles\Tools\Db\IQueryRow;
-use OCA\Circles\Tools\Exceptions\InvalidItemException;
-use OCA\Circles\Tools\IDeserializable;
-use OCA\Circles\Tools\Traits\TDeserialize;
-use OCA\Circles\Tools\Traits\TArrayTools;
 use DateTime;
-use DateTimeInterface;
 use JsonSerializable;
 use OC;
 use OC\Files\Cache\Cache;
 use OC\Share20\Share;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\ShareByCircleProvider;
+use OCA\Circles\Tools\Db\IQueryRow;
+use OCA\Circles\Tools\Exceptions\InvalidItemException;
+use OCA\Circles\Tools\IDeserializable;
+use OCA\Circles\Tools\Traits\TArrayTools;
+use OCA\Circles\Tools\Traits\TDeserialize;
 use OCP\Files\IRootFolder;
 use OCP\IURLGenerator;
 use OCP\IUserManager;
@@ -70,7 +69,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 	private string $token = '';
 	private int $status = 0;
 	private string $providerId = '';
-	private DateTimeInterface $shareTime;
+	private DateTime $shareTime;
 	private string $sharedWith = '';
 	private string $sharedBy = '';
 	private string $shareOwner = '';
@@ -188,13 +187,13 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		return $this->providerId;
 	}
 
-	public function setShareTime(DateTimeInterface $shareTime): self {
+	public function setShareTime(DateTime $shareTime): self {
 		$this->shareTime = $shareTime;
 
 		return $this;
 	}
 
-	public function getShareTime(): DateTimeInterface {
+	public function getShareTime(): DateTime {
 		return $this->shareTime;
 	}
 
@@ -355,8 +354,12 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		$share->setTarget($this->getFileTarget());
 		$share->setProviderId($this->getProviderId());
 		$share->setStatus($this->getStatus());
-		if ($this->hasShareToken() && $this->getShareToken()->getPassword() !== '') {
-			$share->setPassword($this->getShareToken()->getPassword());
+
+		if ($this->hasShareToken()) {
+			$password = $this->getShareToken()->getPassword();
+			if ($password !== '') {
+				$share->setPassword($password);
+			}
 		}
 
 		$share->setShareTime($this->getShareTime())
@@ -439,6 +442,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 
 	/**
 	 * @param array $data
+	 *
 	 * @throws InvalidItemException
 	 */
 	public function import(array $data): IDeserializable {
