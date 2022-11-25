@@ -183,7 +183,7 @@ class RemoteDownstreamService {
 
 			$gs->manage($event);
 		} catch (Exception $e) {
-			$this->e($e, ['event' => $event]);
+			$this->e($e, ['event' => $event->getWrapperToken()]);
 		}
 	}
 

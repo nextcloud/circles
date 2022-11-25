@@ -492,9 +492,11 @@ class RemoteStreamService extends NCSignature {
 			$this->verifyString($auth, base64_decode($signed), $remote->getPublicKey(), $algo);
 			$remote->setIdentityAuthed(true);
 		} catch (SignatureException $e) {
-			$this->e(
-				$e,
-				['auth' => $auth, 'signed' => $signed, 'signatory' => $remote, 'msg' => 'auth not confirmed']
+			$this->e($e, [
+				'auth' => $auth,
+				'signed' => $signed,
+				'msg' => 'auth not confirmed'
+			]
 			);
 			throw new SignatureException('auth not confirmed');
 		}

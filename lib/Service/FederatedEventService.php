@@ -427,7 +427,7 @@ class FederatedEventService extends NCSignature {
 		try {
 			$this->doRequest($request);
 		} catch (RequestNetworkException $e) {
-			$this->e($e, ['wrapper' => $wrapper]);
+			$this->e($e);
 		}
 	}
 
