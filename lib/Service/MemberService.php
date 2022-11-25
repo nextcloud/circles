@@ -360,7 +360,7 @@ class MemberService {
 			$this->memberRequest->insertOrUpdate($member);
 			$this->membershipService->onUpdate($member->getSingleId());
 		} catch (FederatedUserException $e) {
-			$this->e($e, ['member' => $member]);
+			$this->e($e);
 
 			return false;
 		}

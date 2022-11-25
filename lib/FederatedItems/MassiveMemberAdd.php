@@ -76,7 +76,7 @@ class MassiveMemberAdd extends SingleMemberAdd implements
 			try {
 				$filtered[] = $this->generateMember($event, $circle, $member);
 			} catch (Exception $e) {
-				$this->e($e, ['event' => $event, 'circle' => $circle, 'member' => $member]);
+				$this->e($e, ['event' => $event->getWrapperToken()]);
 			}
 		}
 
