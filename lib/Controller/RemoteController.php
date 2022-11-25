@@ -200,7 +200,7 @@ class RemoteController extends Controller {
 
 			return new DataResponse($event->getOutcome());
 		} catch (Exception $e) {
-			$this->e($e, ['event' => $event]);
+			$this->e($e, ['event' => $event->getWrapperToken()]);
 
 			return $this->exceptionResponse($e);
 		}
