@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
-use Exception;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\CoreQueryBuilder;
@@ -58,6 +57,7 @@ use OCA\Circles\Service\InterfaceService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\Service\RemoteService;
 use OCA\Circles\Tools\Traits\TNCLogger;
+use OCP\App\IAppManager;
 use OCP\IURLGenerator;
 
 /**
@@ -69,42 +69,26 @@ class ModelManager {
 	use TNCLogger;
 
 
-	/** @var IURLGenerator */
-	private $urlGenerator;
+	private IURLGenerator $urlGenerator;
+	private IAppManager $appManager;
+	private CoreQueryBuilder $coreRequestBuilder;
+	private CircleRequest $circleRequest;
+	private MemberRequest $memberRequest;
+	private MembershipRequest $membershipRequest;
+	private InterfaceService $interfaceService;
+	private MembershipService $membershipService;
+	private RemoteService $remoteService;
+	private ConfigService $configService;
 
-	/** @var CoreQueryBuilder */
-	private $coreRequestBuilder;
-
-	/** @var CircleRequest */
-	private $circleRequest;
-
-	/** @var MemberRequest */
-	private $memberRequest;
-
-	/** @var MembershipRequest */
-	private $membershipRequest;
-
-	/** @var InterfaceService */
-	private $interfaceService;
-
-	/** @var MembershipService */
-	private $membershipService;
-
-	/** @var RemoteService */
-	private $remoteService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
-	/** @var bool */
-	private $fullDetails = false;
-
+	private bool $fullDetails = false;
+	private bool $pathLinkGenerated = false;
+	private string $pathLinkGeneration = '';
 
 	/**
 	 * ModelManager constructor.
 	 *
 	 * @param IURLGenerator $urlGenerator
+	 * @param IAppManager $appManager
 	 * @param CoreQueryBuilder $coreRequestBuilder
 	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
@@ -116,6 +100,7 @@ class ModelManager {
 	 */
 	public function __construct(
 		IURLGenerator $urlGenerator,
+		IAppManager $appManager,
 		CoreQueryBuilder $coreRequestBuilder,
 		CircleRequest $circleRequest,
 		MemberRequest $memberRequest,
@@ -126,6 +111,7 @@ class ModelManager {
 		ConfigService $configService
 	) {
 		$this->urlGenerator = $urlGenerator;
+		$this->appManager = $appManager;
 		$this->coreRequestBuilder = $coreRequestBuilder;
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
@@ -554,16 +540,24 @@ class ModelManager {
 	 * @return string
 	 */
 	public function generateLinkToCircle(string $singleId): string {
-		$path = $this->configService->getAppValue(ConfigService::ROUTE_TO_CIRCLE);
-
-		try {
-			if ($path !== '') {
-				return $this->urlGenerator->linkToRoute($path, ['singleId' => $singleId]);
+		if (!$this->pathLinkGenerated) {
+			$this->pathLinkGenerated = true;
+			$path = $this->configService->getAppValue(ConfigService::ROUTE_TO_CIRCLE);
+			$pos = strpos($path, '.');
+			if (!$pos) {
+				return '';
 			}
-		} catch (Exception $e) {
+
+			if (!$this->appManager->isInstalled(substr($path, 0, $pos))) {
+				$this->pathLinkGeneration = $path;
+			}
 		}
 
-		return '';
+		if ($this->pathLinkGeneration === '') {
+			return '';
+		}
+
+		return $this->urlGenerator->linkToRoute($this->pathLinkGeneration, ['singleId' => $singleId]);
 	}
 
 
