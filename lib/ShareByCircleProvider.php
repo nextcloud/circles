@@ -344,15 +344,6 @@ class ShareByCircleProvider implements IShareProvider {
 		}
 	}
 
-	/**
-	 * @param IShare $share
-	 * @param string $recipient
-	 *
-	 * @return IShare
-	 */
-	public function restore(IShare $share, string $recipient): IShare {
-		return $share;
-	}
 
 	/**
 	 * @param IShare $share
@@ -378,6 +369,30 @@ class ShareByCircleProvider implements IShareProvider {
 
 		if ($child->getFileTarget() !== $share->getTarget()) {
 			$child->setFileTarget($share->getTarget());
+			$this->shareWrapperService->update($child);
+		}
+
+		$wrappedShare = $this->shareWrapperService->getShareById((int)$share->getId(), $federatedUser);
+
+		return $wrappedShare->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
+	}
+
+
+	/**
+	 * @param IShare $share
+	 * @param string $recipient
+	 *
+	 * @return IShare
+	 */
+	public function restore(IShare $share, string $recipient): IShare {
+		$orig = $this->shareWrapperService->getShareById((int)$share->getId());
+
+		$federatedUser = $this->federatedUserService->getLocalFederatedUser($recipient);
+		$child = $this->shareWrapperService->getChild($share, $federatedUser);
+		$this->debug('Shares::restore()', ['federatedUser' => $federatedUser, 'child' => $child]);
+
+		if ($child->getPermissions() !== $orig->getPermissions()) {
+			$child->setPermissions($orig->getPermissions());
 			$this->shareWrapperService->update($child);
 		}
 
@@ -606,6 +621,22 @@ class ShareByCircleProvider implements IShareProvider {
 		}
 
 		return $wrappedShare->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
+	}
+
+
+	public function formatShare(IShare $share): array {
+		$this->federatedUserService->initCurrentUser();
+		$circleProbe = new CircleProbe();
+		$dataProbe = new DataProbe();
+
+		$result = ['share_with' => $share->getSharedWith()];
+		try {
+			$circle = $this->circleService->probeCircle($share->getSharedWith(), $circleProbe, $dataProbe);
+			$result['share_with_displayname'] = $circle->getDisplayName();
+		} catch (Exception $e) {
+		}
+
+		return $result;
 	}
 
 
