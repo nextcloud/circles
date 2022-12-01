@@ -103,6 +103,7 @@ OC.L10N.register(
     "Admin" : "Admin",
     "Owner" : "Ejer",
     "%s shared »%s« with you." : "%s delte »%s« med dig.",
+    "%s on %s" : "%s på %s",
     "Password to access »%s«" : "Kodeord for adgang til »%s«",
     "%1$s via %2$s" : "%1$s via %2$s",
     "Click the button below to open it." : "Klik på knappen nedenunder for at åbne.",
