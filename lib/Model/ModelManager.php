@@ -58,6 +58,7 @@ use OCA\Circles\Service\InterfaceService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\Service\RemoteService;
 use OCA\Circles\Tools\Traits\TNCLogger;
+use OCP\App\IAppManager;
 use OCP\IURLGenerator;
 
 /**
@@ -556,8 +557,10 @@ class ModelManager {
 	public function generateLinkToCircle(string $singleId): string {
 		$path = $this->configService->getAppValue(ConfigService::ROUTE_TO_CIRCLE);
 
+		[$appName] = explode('.', $path, 3);
+		$frontendAppAvailable = $appName === 'contacts' ? \OCP\Server::get(IAppManager::class)->isEnabledForUser('contacts') : true;
 		try {
-			if ($path !== '') {
+			if ($frontendAppAvailable && $path !== '') {
 				return $this->urlGenerator->linkToRoute($path, ['singleId' => $singleId]);
 			}
 		} catch (Exception $e) {
