@@ -1,9 +1,9 @@
 { "translations": {
     "Circles" : "Kreise",
     "Circles' files" : "Dateien der Kreise",
-    "Select circles to filter by" : "Kreise wählen um hiernach zu filtern",
+    "Select circles to filter by" : "Kreise wählen, um hiernach zu filtern",
     "No circles found" : "Keine Kreise gefunden",
-    "Please select circles to filter by" : "Bitte Kreise wählen um hiernach zu filtern",
+    "Please select circles to filter by" : "Bitte Kreise wählen, um hiernach zu filtern",
     "No files found for the selected circles" : "Keine Dateien für die ausgewählten Kreise gefunden",
     "You created the circle {circle}" : "Du hast den Kreis {circle} erstellt",
     "{author} created the circle {circle}" : "{author} hat den Kreis {circle} erstellt",
