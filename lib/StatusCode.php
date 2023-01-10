@@ -53,7 +53,8 @@ class StatusCode {
 	];
 
 	public static $CIRCLE_LEAVE = [
-		120 => 'You are not a member'
+		120 => 'You are not a member',
+		121 => 'You are not a direct member'
 	];
 
 	public static $MEMBER_ADD = [
