@@ -151,6 +151,10 @@ class CircleLeave implements
 			}
 		}
 
+		if ($member->getUserType() !== Member::TYPE_USER) {
+			throw new MemberNotFoundException(StatusCode::$CIRCLE_LEAVE[121], 121);
+		}
+
 		$event->setMember($member);
 		$this->memberRequest->delete($member);
 
