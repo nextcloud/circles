@@ -10,7 +10,7 @@ OC.L10N.register(
     "Root" : "รูท",
     "Federated" : "Federated",
     "Admin" : "ผู้ดูแล",
-    "Owner" : "Owner",
+    "Owner" : "เจ้าของ",
     "Open »%s«" : "เปิด »%s«",
     "Accept" : "ยอมรับ",
     "%s" : "%s",
