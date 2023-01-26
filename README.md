@@ -16,18 +16,15 @@ Those groups of people (or circles) can then be used by any other app for sharin
 
 ***
 
-# API (PHP & Javascript) (Deprecated since NC22)
+# APIv1 (PHP & Javascript) (Deprecated since NC22)
 
 [Please visit our wiki to read more about the API.](https://github.com/nextcloud/circles/wiki)
 
 # Installation
-
-(to be written)
+The *Circles* app is installed and enabled by default since Nextcloud 22.
 
 # Documentation
-
-(to be written)
-
+You can use the `\Psr\Container\ContainerInterface`, see [dependency injection](https://docs.nextcloud.com/server/stable/developer_manual/basics/dependency_injection.html), to get the `\OCA\Circles\CireclesManager` class, see our [API documentation](https://nextcloud.github.io/circles/) for its interface.
 
 # Credits
 
