@@ -123,7 +123,7 @@ OC.L10N.register(
     "Initialisation Nextcloud" : "Nextcloud hazırlanıyor",
     "Initialisation Circles App" : "Nextcloud çevreler uygulaması hazırlanıyor",
     "Fresh installation status" : "Yeni kurulum durumu",
-    "Building Local Database" : "Yerel veritabanı oluşturuluyor",
+    "Building Local Database" : "Yerel veri tabanı oluşturuluyor",
     "Testing Basic Circle Creation" : "Temel çevre oluşturma sınanıyor",
     "Adding local users and moderators" : "Yerel kullanıcılar ve sorumlular ekleniyor",
     "Circle not found" : "Çevre bulunamadı",
