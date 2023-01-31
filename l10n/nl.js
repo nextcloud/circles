@@ -83,7 +83,7 @@ OC.L10N.register(
     "Invite" : "Uitnodigen",
     "Join Request" : "Deelnameverzoek",
     "Friends" : "Vrienden",
-    "Password Protected" : "Wachtwoordbeveiligd",
+    "Password Protected" : "Beveiligd met wachtwoord",
     "No Owner" : "Geen eigenaar",
     "Hidden" : "Verborgen",
     "Backend" : "Backend",
