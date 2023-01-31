@@ -705,6 +705,9 @@
     <UndefinedClass occurrences="1">
       <code>HintException</code>
     </UndefinedClass>
+    <RedundantCondition occurrences="1">
+      <code>isset($this->logger)</code>
+    </RedundantCondition>
   </file>
   <file src="lib/Tools/Traits/TNCRequest.php">
     <InvalidArgument occurrences="1">
