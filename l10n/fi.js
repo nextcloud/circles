@@ -77,6 +77,7 @@ OC.L10N.register(
     "Hidden" : "Piilotettu",
     "Local" : "Paikallinen",
     "Root" : "Juurihakemisto",
+    "Circle Invite" : "Piirikutsu",
     "Federated" : "Federoitu",
     "Mount point" : "Liitospiste",
     "Nextcloud Account" : "Nextcloud-tili",
