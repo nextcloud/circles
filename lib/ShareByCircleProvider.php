@@ -604,6 +604,13 @@ class ShareByCircleProvider implements IShareProvider {
 			$circle = $this->circleService->probeCircle($share->getSharedWith(), $circleProbe, $dataProbe);
 			$result['share_with_displayname'] = $circle->getDisplayName();
 		} catch (Exception $e) {
+			$this->logger->warning(
+				'Circle not found while probeCircle',
+				[
+					'sharedWith' => $share->getSharedWith(),
+					'exception' => $e
+				]
+			);
 		}
 
 		return $result;
