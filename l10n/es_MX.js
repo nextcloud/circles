@@ -76,6 +76,7 @@ OC.L10N.register(
     "Personal" : "Personal",
     "System" : "Sistema",
     "Visible" : "Visible",
+    "Open" : "Abrir",
     "Hidden" : "Oculto",
     "Local" : "Local",
     "Root" : "Raíz",
