@@ -44,7 +44,7 @@ OC.L10N.register(
     "{external} has been added to {circle} by {author}" : "{external} додано до {circle} {author}",
     "You accepted {member}'s request to join {circle}" : "Ви прийняли запит {member} приєднатися до {circle}",
     "Your request to join {circle} has been accepted by {author}" : "Ваш запит на приєднання до {circle} прийнято {author}",
-    "{member}'s request to join {circle} has been accepted by {author}" : "Запит {member} приєднатися до {circle} був прийнятий {author}",
+    "{member}'s request to join {circle} has been accepted by {author}" : "Запит {member} приєднатися до {circle} було прийнято {author}",
     "You left {circle}" : "Ви залишили {circle}",
     "{member} left {circle}" : "{member} залишив {circle}",
     "You declined the invitation to join {circle}" : "Ви відхилили запрошення приєднатися до {circle}",
