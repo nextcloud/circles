@@ -165,6 +165,7 @@ OC.L10N.register(
     "%s shared a file with you." : "%s heeft een bestand met u gedeeld",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s heeft enige informatie met je gedeeld.\nJe moet al een aparte e-mail hebben ontvangen met een link om er te komen.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s heeft enige informatie met je gedeeld.\nJe moet al een aparte e-mail hebben ontvangen met een link om er te komen.",
+    "Password to access content shared with you by %1$s" : "Wachtwoord om toegang te krijgen tot inhoud gedeeld met u door %1$s",
     "Password to access content" : "Wachtwoord voor toegang tot info",
     "This item is already shared with this circle" : "Dit object is al gedeeld met deze kring",
     "Bring cloud-users closer together." : "Breng cloudgebruikers dichter bij elkaar.",
