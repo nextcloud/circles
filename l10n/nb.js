@@ -77,6 +77,7 @@ OC.L10N.register(
     "System" : "System",
     "Visible" : "Synlig",
     "Open" : "Åpne",
+    "Invite" : "Invitere",
     "Hidden" : "Skjult",
     "Local" : "Lokal",
     "Root" : "Rot",
