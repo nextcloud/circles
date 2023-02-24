@@ -114,6 +114,7 @@ OC.L10N.register(
     "You have been blocked from this circle" : "Sinut on estetty tästä piiristä",
     "The account is already a member of this circle" : "Tämä tili on jo jäsen tässä piirissä",
     "The account has already been invited into this circle" : "Tämä tili on jo kutsuttu tähän piiriin",
+    "%s (Circle owned by %s)" : "%s (Piirin omistaa %s)",
     "You are now a member of the Circle \"%2$s\"" : "Olet nyt piirin \"%2$s\" jäsen",
     "You have been invited by %1$s into the Circle \"%2$s\"" : "%1$s kutsui sinut piiriin \"%2$s\"",
     "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s lähetti liittymispyynnön piiriin \"%2$s\"",
