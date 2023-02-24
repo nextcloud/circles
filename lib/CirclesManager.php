@@ -248,9 +248,15 @@ class CirclesManager {
 
 	/**
 	 * @return IFederatedUser
+	 * @throws FederatedUserNotFoundException
 	 */
 	public function getCurrentFederatedUser(): IFederatedUser {
-		return $this->federatedUserService->getCurrentUser();
+		$current = $this->federatedUserService->getCurrentUser();
+		if (is_null($current)) {
+			throw new FederatedUserNotFoundException();
+		}
+
+		return $current;
 	}
 
 
