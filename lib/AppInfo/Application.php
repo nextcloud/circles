@@ -186,8 +186,6 @@ class Application extends App implements IBootstrap {
 
 		$context->registerSearchProvider(UnifiedSearchProvider::class);
 		$context->registerWellKnownHandler(WebfingerHandler::class);
-
-		$this->loadExampleEvents($context);
 	}
 
 
