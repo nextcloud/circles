@@ -136,7 +136,7 @@ class CirclesTest extends Base {
 			 	'are-you-aware-this-will-delete-all-my-data', '', InputOption::VALUE_REQUIRED,
 			 	'Well, are you ?', ''
 			 )
-			 ->addOption('skip-init', '', InputOption::VALUE_NONE, 'Bypass Initialisation')
+			 ->addOption('skip-init', '', InputOption::VALUE_NONE, 'Bypass Initialization')
 			 ->addOption('skip-setup', '', InputOption::VALUE_NONE, 'Bypass Circles Setup')
 			 ->addOption('only-setup', '', InputOption::VALUE_NONE, 'Stop after Circles Setup, pre-Sync');
 	}
@@ -368,11 +368,11 @@ class CirclesTest extends Base {
 
 		if (!$this->input->getOption('skip-setup')) {
 			if (!$this->input->getOption('skip-init')) {
-				$this->t('Initialisation Nextcloud');
+				$this->t('Nextcloud Initialization');
 				$this->initEnvironment();
 			}
 
-			$this->t('Initialisation Circles App');
+			$this->t('Circles App Initialisation');
 			$this->reloadCirclesApp();
 			$this->configureCirclesApp();
 			$this->confirmVersion();
