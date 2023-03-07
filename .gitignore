@@ -7,3 +7,4 @@ build/
 vendor/
 .php-cs-fixer.cache
 .php_cs.cache
+.vscode/settings.json
