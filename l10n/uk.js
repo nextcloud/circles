@@ -150,7 +150,7 @@ OC.L10N.register(
     "Refuse" : "Відмовитися",
     "Leave the circle" : "Вийти з кола",
     "%s" : "%s ",
-    "Personal Circle" : "Особисте Коло",
+    "Personal Circle" : "Моє коло",
     "%s owned by %s" : "%s належить %s",
     "You need a specify a type of circle" : "Потрібно вказати тип кола",
     "A circle with that name exists" : "Коло з такою назвою існує",
