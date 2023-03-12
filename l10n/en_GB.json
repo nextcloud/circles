@@ -118,6 +118,8 @@
     "%s shared multiple files with \"%s\"." : "%s shared multiple files with \"%s\".",
     "%s shared multiple files with you." : "%s shared multiple files with you.",
     "Boot up" : "Boot up",
+    "Nextcloud Initialization" : "Nextcloud Initialisation",
+    "Circles App Initialisation" : "Circles App Initialisation",
     "Fresh installation status" : "Fresh installation status",
     "Building Local Database" : "Building Local Database",
     "Testing Basic Circle Creation" : "Testing Basic Circle Creation",
