@@ -118,6 +118,8 @@
     "%s shared multiple files with \"%s\"." : "%s 與 \"%s\" 共享了多個檔案。",
     "%s shared multiple files with you." : "%s 對您共享了多個文件。",
     "Boot up" : "啟動",
+    "Nextcloud Initialization" : "初始 Nextcloud",
+    "Circles App Initialisation" : "初始 Circles 應用程式",
     "Fresh installation status" : "全新安裝狀態",
     "Building Local Database" : "建立近端數據庫",
     "Testing Basic Circle Creation" : "測試基本圈子創建",
