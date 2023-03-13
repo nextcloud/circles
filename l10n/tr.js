@@ -120,6 +120,8 @@ OC.L10N.register(
     "%s shared multiple files with \"%s\"." : "%s, \"%s\" ile birkaç dosya paylaştı.",
     "%s shared multiple files with you." : "%s sizinle birkaç dosya paylaştı.",
     "Boot up" : "Başlatma",
+    "Nextcloud Initialization" : "Nextcloud başlatılıyor",
+    "Circles App Initialisation" : "Çevreler uygulaması başlatılıyor",
     "Fresh installation status" : "Yeni kurulum durumu",
     "Building Local Database" : "Yerel veri tabanı oluşturuluyor",
     "Testing Basic Circle Creation" : "Temel çevre oluşturma sınanıyor",
