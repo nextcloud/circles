@@ -120,6 +120,8 @@ OC.L10N.register(
     "%s shared multiple files with \"%s\"." : "%s сподели множество файла с „%s“.",
     "%s shared multiple files with you." : "%sсподелени множество файлове с вас",
     "Boot up" : "Стартиране",
+    "Nextcloud Initialization" : "Инициализация на Nextcloud",
+    "Circles App Initialisation" : "Инициализация на приложението Circles /кръгове/",
     "Fresh installation status" : "Състояние на нова инсталация",
     "Building Local Database" : "Изграждане на Локална База Данни",
     "Testing Basic Circle Creation" : "Тестване на създаването на основен кръг",
