@@ -437,7 +437,7 @@ class ShareByCircleProvider implements IShareProvider {
 		$nodeId = (!is_null($node)) ? $node->getId() : 0;
 
 		try {
-			$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId, false);
+			$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId);
 		} catch (Exception $e) {
 			$this->e($e, ['userId' => $userId, 'shareType' => $shareType, 'nodeId' => $nodeId]);
 
