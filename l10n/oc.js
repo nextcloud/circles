@@ -5,6 +5,7 @@ OC.L10N.register(
     "Personal" : "Personal",
     "Visible" : "Visible",
     "Open" : "Dobrir",
+    "Password Protected" : "Protegit per senhal",
     "Hidden" : "Amagat",
     "Local" : "Local",
     "Federated" : "Federated",
