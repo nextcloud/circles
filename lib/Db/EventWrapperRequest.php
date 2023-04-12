@@ -98,7 +98,19 @@ class EventWrapperRequest extends EventWrapperRequestBuilder {
 	 */
 	public function getFailedEvents(array $retryRange): array {
 		$qb = $this->getEventWrapperSelectSql();
-		$qb->limitInt('status', EventWrapper::STATUS_FAILED);
+
+		$expr = $qb->expr();
+		$qb->andWhere(
+			$expr->orX(
+				$qb->exprLimitInt('status', EventWrapper::STATUS_FAILED),
+				$expr->andX(
+					$qb->exprLimitInt('status', EventWrapper::STATUS_INIT),
+					$qb->exprGt('creation', time() - 86400),  // only freshly created; less than 3 hours
+					$qb->exprLt('creation', time() - 900)     // but not too fresh, at least 15 minutes
+				)
+			)
+		);
+
 		$qb->gt('retry', $retryRange[0], true);
 		$qb->lt('retry', $retryRange[1]);
 
