@@ -102,7 +102,8 @@ class EventWrapperService extends NCSignature {
 
 		foreach ($wrappers as $wrapper) {
 			$status = $wrapper->getStatus();
-			if ($refresh && $status === EventWrapper::STATUS_FAILED) {
+			if ($refresh && ($status === EventWrapper::STATUS_FAILED ||
+							 $status === EventWrapper::STATUS_INIT)) {
 				$wrapper->setStatus(EventWrapper::STATUS_INIT);
 				$this->eventWrapperRequest->update($wrapper);
 				$status = $this->manageWrapper($wrapper);
