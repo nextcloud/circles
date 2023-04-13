@@ -544,7 +544,7 @@ class CirclesCheck extends Base {
 				$pastedSignatory->json(trim($helper->ask($input, $output, $question)));
 
 				// small hack to refresh the cached config
-//				OC::$server->get(AppConfig::class)->clearCachedConfig();
+				OC::$server->get(AppConfig::class)->clearCachedConfig();
 				$this->interfaceService->setCurrentInterface(InterfaceService::IFACE_TEST);
 				$appSignatory = $this->remoteStreamService->getAppSignatory(false);
 
