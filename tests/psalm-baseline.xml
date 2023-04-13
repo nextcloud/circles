@@ -55,7 +55,7 @@
     </UndefinedClass>
   </file>
   <file src="lib/Command/CirclesCheck.php">
-    <UndefinedClass occurrences="1">
+    <UndefinedClass occurrences="2">
       <code>AppConfig</code>
     </UndefinedClass>
   </file>
