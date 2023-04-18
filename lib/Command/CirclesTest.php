@@ -372,7 +372,7 @@ class CirclesTest extends Base {
 				$this->initEnvironment();
 			}
 
-			$this->t('Circles App Initialisation');
+			$this->t('Circles App Initialization');
 			$this->reloadCirclesApp();
 			$this->configureCirclesApp();
 			$this->confirmVersion();
