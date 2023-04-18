@@ -2,10 +2,11 @@
 \.idea/
 .buildpath
 .project
-build/
 .settings/
-vendor/
 .php-cs-fixer.cache
 .php_cs.cache
 .phpdoc/
+.vscode/settings.json
+build/
 phpDocumentor.phar
+vendor/

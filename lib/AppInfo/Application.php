@@ -42,17 +42,11 @@ use OCA\Circles\Events\DestroyingCircleEvent;
 use OCA\Circles\Events\Files\CreatingFileShareEvent;
 use OCA\Circles\Events\Files\FileShareCreatedEvent;
 use OCA\Circles\Events\Files\PreparingFileShareEvent;
-use OCA\Circles\Events\MembershipsCreatedEvent;
-use OCA\Circles\Events\MembershipsRemovedEvent;
 use OCA\Circles\Events\PreparingCircleMemberEvent;
 use OCA\Circles\Events\RemovingCircleMemberEvent;
 use OCA\Circles\Events\RequestingCircleMemberEvent;
 use OCA\Circles\Handlers\WebfingerHandler;
 use OCA\Circles\Listeners\DeprecatedListener;
-use OCA\Circles\Listeners\Examples\ExampleAddingCircleMember;
-use OCA\Circles\Listeners\Examples\ExampleMembershipsCreated;
-use OCA\Circles\Listeners\Examples\ExampleMembershipsRemoved;
-use OCA\Circles\Listeners\Examples\ExampleRequestingCircleMember;
 use OCA\Circles\Listeners\Files\AddingMemberSendMail as ListenerFilesAddingMemberSendMail;
 use OCA\Circles\Listeners\Files\CreatingShareSendMail as ListenerFilesCreatingShareSendMail;
 use OCA\Circles\Listeners\Files\DestroyingCircle as ListenerFilesDestroyingCircle;
@@ -70,9 +64,9 @@ use OCA\Circles\Listeners\UserCreated;
 use OCA\Circles\Listeners\UserDeleted;
 use OCA\Circles\MountManager\CircleMountProvider;
 use OCA\Circles\Notification\Notifier;
+use OCA\Circles\Search\UnifiedSearchProvider;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\DavService;
-use OCA\Circles\Search\UnifiedSearchProvider;
 use OCP\App\ManagerEvent;
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
@@ -186,8 +180,6 @@ class Application extends App implements IBootstrap {
 
 		$context->registerSearchProvider(UnifiedSearchProvider::class);
 		$context->registerWellKnownHandler(WebfingerHandler::class);
-
-		$this->loadExampleEvents($context);
 	}
 
 
@@ -243,19 +235,6 @@ class Application extends App implements IBootstrap {
 		$event->addListener('\OCA\DAV\CardDAV\CardDavBackend::createCard', [$davService, 'onCreateCard']);
 		$event->addListener('\OCA\DAV\CardDAV\CardDavBackend::updateCard', [$davService, 'onUpdateCard']);
 		$event->addListener('\OCA\DAV\CardDAV\CardDavBackend::deleteCard', [$davService, 'onDeleteCard']);
-	}
-
-
-	/**
-	 * @param IRegistrationContext $context
-	 */
-	private function loadExampleEvents(IRegistrationContext $context): void {
-		$context->registerEventListener(AddingCircleMemberEvent::class, ExampleAddingCircleMember::class);
-		$context->registerEventListener(
-			RequestingCircleMemberEvent::class, ExampleRequestingCircleMember::class
-		);
-		$context->registerEventListener(MembershipsCreatedEvent::class, ExampleMembershipsCreated::class);
-		$context->registerEventListener(MembershipsRemovedEvent::class, ExampleMembershipsRemoved::class);
 	}
 
 
