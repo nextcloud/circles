@@ -121,7 +121,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s us ha compartit diversos fitxers.",
     "Boot up" : "Engegar",
     "Nextcloud Initialization" : "Inicialització de Nextcloud",
-    "Circles App Initialisation" : "Inicialització de l'aplicació Cercles",
     "Fresh installation status" : "Estat d'instal·lació nou",
     "Building Local Database" : "Construint bases de dades local",
     "Testing Basic Circle Creation" : "Prova de creació de cercles bàsics",
