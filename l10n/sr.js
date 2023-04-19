@@ -121,7 +121,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s је поделио више фајлова са Вама.",
     "Boot up" : "Подизање система",
     "Nextcloud Initialization" : "Nextcloud иницијализација",
-    "Circles App Initialisation" : "Иницијализација апликације Кругови",
     "Fresh installation status" : "Статус свеже инсталације",
     "Building Local Database" : "Изградња локалне базе података",
     "Testing Basic Circle Creation" : "Тестирање креирања основног круга",

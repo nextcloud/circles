@@ -121,7 +121,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s vám nasdílel(a) vícero souborů.",
     "Boot up" : "Nastartovat",
     "Nextcloud Initialization" : "Inicializace Nextcloud",
-    "Circles App Initialisation" : "Inicializace aplikace Okruhy",
     "Fresh installation status" : "Stav čisté instalace",
     "Building Local Database" : "Vytváří se místní databáze",
     "Testing Basic Circle Creation" : "Zkouší se vytvoření základního okruhu",
