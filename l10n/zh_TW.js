@@ -121,6 +121,7 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s 與您分享了多個檔案。",
     "Boot up" : "啟動",
     "Nextcloud Initialization" : "Nextcloud 初始化",
+    "Circles App Initialization" : "初始化小圈圈應用程式",
     "Fresh installation status" : "全新安裝狀態",
     "Building Local Database" : "正在建構本地資料庫",
     "Testing Basic Circle Creation" : "正在測試基本小圈圈建立",
