@@ -121,6 +121,7 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s предоставил(а) вам доступ к нескольким файлам.",
     "Boot up" : "Загрузка",
     "Nextcloud Initialization" : "Инициализация Nextcloud",
+    "Circles App Initialization" : "Инициализация приложения \"Круги\"",
     "Fresh installation status" : "Статус новой установки",
     "Building Local Database" : "Создание локальной базы данных",
     "Testing Basic Circle Creation" : "Тестирование базового созданного Круга",
