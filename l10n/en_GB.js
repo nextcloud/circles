@@ -121,6 +121,7 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s shared multiple files with you.",
     "Boot up" : "Boot up",
     "Nextcloud Initialization" : "Nextcloud Initialisation",
+    "Circles App Initialization" : "Circles App Initialisation",
     "Fresh installation status" : "Fresh installation status",
     "Building Local Database" : "Building Local Database",
     "Testing Basic Circle Creation" : "Testing Basic Circle Creation",
