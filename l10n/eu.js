@@ -121,6 +121,7 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s(e)k fitxategi batzuk partekatu ditu zurekin.",
     "Boot up" : "Abiarazi",
     "Nextcloud Initialization" : "Nextcloud hastapena",
+    "Circles App Initialization" : "Zirkuluak aplikazioaren hastapena",
     "Fresh installation status" : "Instalazio berriaren egoera",
     "Building Local Database" : "Datu-base lokala eraikitzen",
     "Testing Basic Circle Creation" : "Oinarrizko zirkulu sorrera probatzen",
