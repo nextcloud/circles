@@ -119,6 +119,7 @@
     "%s shared multiple files with you." : "%s compartiu varios ficheiros con vostede.",
     "Boot up" : "Arrancar",
     "Nextcloud Initialization" : "Inicialización de Nextcloud",
+    "Circles App Initialization" : "Inicialización da aplicación Círculos",
     "Fresh installation status" : "Estado da nova instalación",
     "Building Local Database" : "Creando Base de Datos Local",
     "Testing Basic Circle Creation" : "Proba de Creación de Círculos Básica",
