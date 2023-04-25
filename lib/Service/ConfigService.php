@@ -761,6 +761,12 @@ class ConfigService {
 		$path = $this->urlGenerator->linkToRoute($route, $args);
 
 		if (OC::$CLI) {
+			// when running from the occ command, /index.php is not removed by itself
+			if (str_starts_with($path, '/index.php/')
+				&& $this->config->getSystemValueString('htaccess.RewriteBase', '') !== '') {
+				$path = $this->config->getSystemValueString('htaccess.RewriteBase', '/') . substr($path, 11);
+			}
+
 			$knownPath = parse_url($this->config->getSystemValue('overwrite.cli.url'), PHP_URL_PATH);
 		} else {
 			$knownPath = OC::$WEBROOT;
