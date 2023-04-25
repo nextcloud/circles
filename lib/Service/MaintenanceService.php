@@ -173,7 +173,7 @@ class MaintenanceService {
 	 *
 	 * @throws MaintenanceException
 	 */
-	public function runMaintenance(int $level): void {
+	public function runMaintenance(int $level, bool $forceRefresh = false): void {
 		$this->federatedUserService->bypassCurrentUserCondition(true);
 
 		$this->lockMaintenanceRun();
@@ -181,19 +181,19 @@ class MaintenanceService {
 
 		switch ($level) {
 			case 1:
-				$this->runMaintenance1();
+				$this->runMaintenance1($forceRefresh);
 				break;
 			case 2:
-				$this->runMaintenance2();
+				$this->runMaintenance2($forceRefresh);
 				break;
 			case 3:
-				$this->runMaintenance3();
+				$this->runMaintenance3($forceRefresh);
 				break;
 			case 4:
-				$this->runMaintenance4();
+				$this->runMaintenance4($forceRefresh);
 				break;
 			case 5:
-				$this->runMaintenance5();
+				$this->runMaintenance5($forceRefresh);
 				break;
 		}
 
@@ -217,7 +217,7 @@ class MaintenanceService {
 	/**
 	 * every minute
 	 */
-	private function runMaintenance1(): void {
+	private function runMaintenance1(bool $forceRefresh = false): void {
 		try {
 			$this->output('Remove circles with no owner');
 			$this->removeCirclesWithNoOwner();
@@ -229,7 +229,7 @@ class MaintenanceService {
 	/**
 	 * every 10 minutes
 	 */
-	private function runMaintenance2(): void {
+	private function runMaintenance2(bool $forceRefresh = false): void {
 		try {
 			$this->output('Remove members with no circles');
 			$this->removeMembersWithNoCircles();
@@ -247,7 +247,7 @@ class MaintenanceService {
 	/**
 	 * every hour
 	 */
-	private function runMaintenance3(): void {
+	private function runMaintenance3(bool $forceRefresh = false): void {
 		try {
 			$this->output('Retry failed FederatedEvents (hourly)');
 			$this->eventWrapperService->retry(EventWrapperService::RETRY_HOURLY);
@@ -259,7 +259,7 @@ class MaintenanceService {
 	/**
 	 * every day
 	 */
-	private function runMaintenance4(): void {
+	private function runMaintenance4(bool $forceRefresh = false): void {
 		try {
 			$this->output('Retry failed FederatedEvents (daily)');
 			$this->eventWrapperService->retry(EventWrapperService::RETRY_DAILY);
@@ -285,18 +285,18 @@ class MaintenanceService {
 	/**
 	 * every week
 	 */
-	private function runMaintenance5(): void {
+	private function runMaintenance5(bool $forceRefresh = false): void {
 		try {
 			$this->output('Update memberships');
 			$this->updateAllMemberships();
 		} catch (Exception $e) {
 		}
 
-//		try {
-//			$this->output('refresh displayNames older than 7d');
-//			$this->refreshDisplayName();
-//		} catch (Exception $e) {
-//		}
+		try {
+			$this->output('refresh members\' display name');
+			$this->refreshDisplayName($forceRefresh);
+		} catch (Exception $e) {
+		}
 
 		try {
 			// Can be removed in NC27.
@@ -403,7 +403,7 @@ class MaintenanceService {
 	 * @throws RequestBuilderException
 	 * @throws InitiatorNotFoundException
 	 */
-	private function refreshDisplayName(): void {
+	private function refreshDisplayName(bool $forceRefresh = false): void {
 		$circleFilter = new Circle();
 		$circleFilter->setConfig(Circle::CFG_SINGLE);
 
@@ -416,8 +416,8 @@ class MaintenanceService {
 
 		foreach ($circles as $circle) {
 			$owner = $circle->getOwner();
-			if ($owner->getDisplayUpdate() > (time() - 604800)) {
-				continue;
+			if (!$forceRefresh && $owner->getDisplayUpdate() > (time() - 691200)) {
+				continue; // ignore update done in the last 8 days.
 			}
 
 			if ($owner->getUserType() === Member::TYPE_USER) {

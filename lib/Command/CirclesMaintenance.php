@@ -91,7 +91,8 @@ class CirclesMaintenance extends Base {
 			 ->addOption(
 			 	'uninstall', '', InputOption::VALUE_NONE,
 			 	'Uninstall the apps and everything related to the app from the database'
-			 );
+			 )
+			->addOption('force-refresh', '', InputOption::VALUE_NONE, 'enforce some refresh');
 	}
 
 
@@ -154,9 +155,10 @@ class CirclesMaintenance extends Base {
 
 		$this->outputService->setOccOutput($output);
 		$this->maintenanceService->setOccOutput($output);
+
 		for ($i = 1; $i <= $level; $i++) {
 			try {
-				$this->maintenanceService->runMaintenance($i);
+				$this->maintenanceService->runMaintenance($i, $input->getOption('force-refresh'));
 			} catch (MaintenanceException $e) {
 			}
 		}
