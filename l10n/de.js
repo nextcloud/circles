@@ -121,6 +121,7 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s hat mehrere Dateien mit dir geteilt.",
     "Boot up" : "Hochfahren",
     "Nextcloud Initialization" : "Nextcloud-Initialisierung",
+    "Circles App Initialization" : "Kreise-App-Initialisierung",
     "Fresh installation status" : "Aktueller Initialisierungsstatus",
     "Building Local Database" : "Lokale Datenbank wird erstellt",
     "Testing Basic Circle Creation" : "Testen der grundlegenden Kreiserstellung",
