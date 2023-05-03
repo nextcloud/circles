@@ -409,7 +409,11 @@ class CirclesRemote extends Base {
 
 		$app = $this->remoteStreamService->getAppSignatory();
 		$signedRequest = $this->remoteStreamService->signOutgoingRequest($request, $app);
-		$this->doRequest($signedRequest->getOutgoingRequest());
+		$outgoingRequest = $signedRequest->getOutgoingRequest();
+		$outgoingRequest->setLocalAddressAllowed(true);
+		$outgoingRequest->setFollowLocation(true);
+
+		$this->doRequest($outgoingRequest);
 
 		return $signedRequest;
 	}
@@ -446,11 +450,12 @@ class CirclesRemote extends Base {
 	 * @param string $instance
 	 */
 	private function syncGSInstance(string $instance): void {
+		$this->output->write('Adding <comment>' . $instance . '</comment>: ');
 		if ($this->configService->isLocalInstance($instance)) {
+			$this->output->writeln('<comment>instance is local</comment>');
 			return;
 		}
 
-		$this->output->write('Adding <comment>' . $instance . '</comment>: ');
 		try {
 			$this->remoteStreamService->addRemoteInstance(
 				$instance,
