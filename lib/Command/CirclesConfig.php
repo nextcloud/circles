@@ -135,15 +135,15 @@ class CirclesConfig extends Base {
 		$circleId = (string)$input->getArgument('circle_id');
 
 		try {
+			$this->federatedUserService->commandLineInitiator(
+				$input->getOption('initiator'),
+				Member::parseTypeString($input->getOption('initiator-type')),
+				$circleId,
+				false
+			);
+
 			if ($input->getOption('super-session')) {
 				$this->federatedUserService->bypassCurrentUserCondition(true);
-			} else {
-				$this->federatedUserService->commandLineInitiator(
-					$input->getOption('initiator'),
-					Member::parseTypeString($input->getOption('initiator-type')),
-					$circleId,
-					false
-				);
 			}
 
 			$circle = $this->circleService->getCircle($circleId);
