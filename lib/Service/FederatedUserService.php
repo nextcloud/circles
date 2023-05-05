@@ -646,7 +646,7 @@ class FederatedUserService {
 		$probe = new CircleProbe();
 		$probe->includeSystemCircles()
 			  ->includePersonalCircles();
-		
+
 		$localCircle = $this->circleRequest->getCircle($circleId, null, $probe);
 		if ($this->configService->isLocalInstance($localCircle->getInstance())) {
 			$this->setCurrentUser($localCircle->getOwner());
@@ -1241,7 +1241,8 @@ class FederatedUserService {
 		$member->setId($this->token(ManagedModel::ID_LENGTH))
 			   ->setCircleId($circle->getSingleId())
 			   ->setLevel(Member::LEVEL_OWNER)
-			   ->setStatus(Member::STATUS_MEMBER);
+			   ->setStatus(Member::STATUS_MEMBER)
+			   ->setDisplayName($group->getDisplayName());
 		$circle->setOwner($member)
 			   ->setInitiator($member);
 
@@ -1250,7 +1251,7 @@ class FederatedUserService {
 		} catch (CircleNotFoundException $e) {
 		}
 
-		$circle->setDisplayName($groupId);
+		$circle->setDisplayName($group->getDisplayName());
 
 		$event = new FederatedEvent(CircleCreate::class);
 		$event->setCircle($circle);
