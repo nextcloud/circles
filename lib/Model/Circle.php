@@ -913,7 +913,7 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 
 		$creation = $this->get($prefix . 'creation', $data);
 		$dateTime = DateTime::createFromFormat('Y-m-d H:i:s', $creation);
-		$timestamp = $dateTime ? $dateTime->getTimestamp() : (int) strtotime('Y-m-d H:i:s', $creation);
+		$timestamp = $dateTime ? $dateTime->getTimestamp() : (int) strtotime($creation);
 		$this->setCreation($timestamp);
 
 		$this->setPopulation($this->getInt('population', $this->getSettings()));
