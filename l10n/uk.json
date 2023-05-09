@@ -118,6 +118,8 @@
     "%s shared multiple files with \"%s\"." : "%s поділився кількома файлами з \"%s\".",
     "%s shared multiple files with you." : "%s поділився з вами кількома файлами.",
     "Boot up" : "Завантаження",
+    "Nextcloud Initialization" : "Ініціалізація Nextcloud",
+    "Circles App Initialization" : "Ініціалізація застосунка \"Кола\"",
     "Fresh installation status" : "Статус свіжої інсталяції",
     "Building Local Database" : "Створення локальної бази даних",
     "Testing Basic Circle Creation" : "Тестування створення базового кола",
