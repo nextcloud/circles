@@ -91,9 +91,10 @@ class CirclesMaintenance extends Base {
 				 'clean-shares', '', InputOption::VALUE_NONE, 'remove Circles\' shares'
 			 )
 			 ->addOption(
-				 'uninstall', '', InputOption::VALUE_NONE,
-				 'Uninstall the apps and everything related to the app from the database'
-			 );
+			 	'uninstall', '', InputOption::VALUE_NONE,
+			 	'Uninstall the apps and everything related to the app from the database'
+			 )
+			->addOption('force-refresh', '', InputOption::VALUE_NONE, 'enforce some refresh');
 	}
 
 
@@ -156,9 +157,10 @@ class CirclesMaintenance extends Base {
 
 		$this->outputService->setOccOutput($output);
 		$this->maintenanceService->setOccOutput($output);
+
 		for ($i = 1; $i <= $level; $i++) {
 			try {
-				$this->maintenanceService->runMaintenance($i);
+				$this->maintenanceService->runMaintenance($i, $input->getOption('force-refresh'));
 			} catch (MaintenanceException $e) {
 			}
 		}
