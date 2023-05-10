@@ -36,7 +36,6 @@ use OCA\Circles\Exceptions\FederatedItemBadRequestException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedItem;
-use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
@@ -50,8 +49,7 @@ use OCA\Circles\Tools\Traits\TDeserialize;
  * @package OCA\Circles\FederatedItems
  */
 class CircleConfig implements
-	IFederatedItem,
-	IFederatedItemAsyncProcess {
+	IFederatedItem {
 	use TDeserialize;
 
 
