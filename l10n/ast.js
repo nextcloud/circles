@@ -6,6 +6,7 @@ OC.L10N.register(
     "%1$s via %2$s" : "%1$s per %2$s",
     "Circle not found " : "Nun s'atopó'l círculu",
     "The circle is not federated" : "El círculu nun ta federáu",
+    "Accept" : "Aceptar",
     "%s" : "%s",
     "now" : "agora",
     "No entries found in this folder" : "Nun s'atopó nenguna entrada nesta carpeta",
