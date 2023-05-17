@@ -8,7 +8,7 @@
 Those groups of people (or "circles") can then be used by any other app for sharing purpose.
 		]]>
 	</description>
-	<version>27.0.0-dev</version>
+	<version>28.0.0-dev</version>
 	<licence>agpl</licence>
 	<author>Maxence Lange</author>
 	<types>
@@ -27,7 +27,7 @@ Those groups of people (or "circles") can then be used by any other app for shar
 	<repository>https://github.com/nextcloud/circles.git</repository>
 	<screenshot>https://raw.githubusercontent.com/nextcloud/circles/master/screenshots/0.12.0.png</screenshot>
 	<dependencies>
-		<nextcloud min-version="27" max-version="27"/>
+		<nextcloud min-version="28" max-version="28"/>
 	</dependencies>
 	<default_enable/>
 	<background-jobs>
