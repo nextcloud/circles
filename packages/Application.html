@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+            <title>Nextcloud Circles API</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="../">
+    <link rel="icon" href="images/favicon.ico"/>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/base.css">
+            <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="css/template.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/css/all.min.css" integrity="sha256-ybRkN9dBjhcS2qrW1z+hfCxq+1aBdwyQM5wlQoQVt/0=" crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/themes/prism-okaidia.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-numbers/prism-line-numbers.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.css">
+                <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.4.6"></script>
+        <script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@2"></script>
+        <script src="js/search.js"></script>
+        <script defer src="js/searchIndex.js"></script>
+    </head>
+<body id="top">
+    <header class="phpdocumentor-header phpdocumentor-section">
+    <h1 class="phpdocumentor-title"><a href="" class="phpdocumentor-title__link">Nextcloud Circles API</a></h1>
+    <input class="phpdocumentor-header__menu-button" type="checkbox" id="menu-button" name="menu-button" />
+    <label class="phpdocumentor-header__menu-icon" for="menu-button">
+        <i class="fas fa-bars"></i>
+    </label>
+    <section data-search-form class="phpdocumentor-search">
+    <label>
+        <span class="visually-hidden">Search for</span>
+        <svg class="phpdocumentor-search__icon" width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="7.5" cy="7.5" r="6.5" stroke="currentColor" stroke-width="2"/>
+            <line x1="12.4892" y1="12.2727" x2="19.1559" y2="18.9393" stroke="currentColor" stroke-width="3"/>
+        </svg>
+        <input type="search" class="phpdocumentor-field phpdocumentor-search__field" placeholder="Loading .." disabled />
+    </label>
+</section>
+
+    <nav class="phpdocumentor-topnav">
+    <ul class="phpdocumentor-topnav__menu">
+        </ul>
+</nav>
+</header>
+
+    <main class="phpdocumentor">
+        <div class="phpdocumentor-section">
+            <input class="phpdocumentor-sidebar__menu-button" type="checkbox" id="sidebar-button" name="sidebar-button" />
+<label class="phpdocumentor-sidebar__menu-icon" for="sidebar-button">
+    Menu
+</label>
+<aside class="phpdocumentor-column -four phpdocumentor-sidebar">
+                    <section class="phpdocumentor-sidebar__category">
+            <h2 class="phpdocumentor-sidebar__category-header">Namespaces</h2>
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="namespaces/oca.html" class="">OCA</a>
+</h4>
+    <ul class="phpdocumentor-list">
+                    <li>
+                <a href="namespaces/oca-circles.html" class="">Circles</a>
+                
+            </li>
+            </ul>
+
+                        </section>
+                <section class="phpdocumentor-sidebar__category">
+            <h2 class="phpdocumentor-sidebar__category-header">Packages</h2>
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/Application.html" class="-active">Application</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/OCA.html" class="">OCA</a>
+</h4>
+    <ul class="phpdocumentor-list">
+                    <li>
+                <a href="packages/OCA-Circles.html" class="">Circles</a>
+                
+            </li>
+            </ul>
+
+                        </section>
+            
+    <section class="phpdocumentor-sidebar__category">
+        <h2 class="phpdocumentor-sidebar__category-header">Reports</h2>
+                <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/deprecated.html">Deprecated</a></h3>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/errors.html">Errors</a></h3>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/markers.html">Markers</a></h3>
+    </section>
+
+    <section class="phpdocumentor-sidebar__category">
+        <h2 class="phpdocumentor-sidebar__category-header">Indices</h2>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="indices/files.html">Files</a></h3>
+    </section>
+</aside>
+
+            <div class="phpdocumentor-column -eight phpdocumentor-content">
+                    <ul class="phpdocumentor-breadcrumbs">
+    </ul>
+
+    <article class="phpdocumentor-element -package">
+        <h2 class="phpdocumentor-content__title">Application</h2>
+
+        
+
+<h3 id="interfaces_class_traits">
+    Interfaces, Classes, Traits and Enums
+    <a href="#interfaces_class_traits" class="headerlink"><i class="fas fa-link"></i></a>
+</h3>
+
+<dl class="phpdocumentor-table-of-contents">
+            <dt class="phpdocumentor-table-of-contents__entry -interface"><a href="classes/OCA-Circles-IBroadcaster.html"><abbr title="\OCA\Circles\IBroadcaster">IBroadcaster</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -interface"><a href="classes/OCA-Circles-Tools-IDeserializable.html"><abbr title="\OCA\Circles\Tools\IDeserializable">IDeserializable</abbr></a></dt>
+        <dd></dd>
+    
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Api-v1-Circles.html"><abbr title="\OCA\Circles\Api\v1\Circles">Circles</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-ApiVersionIncompatibleException.html"><abbr title="\OCA\Circles\Exceptions\ApiVersionIncompatibleException">ApiVersionIncompatibleException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-BroadcasterIsNotCompatibleException.html"><abbr title="\OCA\Circles\Exceptions\BroadcasterIsNotCompatibleException">BroadcasterIsNotCompatibleException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-CircleAlreadyExistsException.html"><abbr title="\OCA\Circles\Exceptions\CircleAlreadyExistsException">CircleAlreadyExistsException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-CircleNameFirstCharException.html"><abbr title="\OCA\Circles\Exceptions\CircleNameFirstCharException">CircleNameFirstCharException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-CircleNameTooShortException.html"><abbr title="\OCA\Circles\Exceptions\CircleNameTooShortException">CircleNameTooShortException</abbr></a></dt>
+        <dd>Class FederatedItemBadRequestException</dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-CircleNotFoundException.html"><abbr title="\OCA\Circles\Exceptions\CircleNotFoundException">CircleNotFoundException</abbr></a></dt>
+        <dd>Class FederatedItemNotFoundException</dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-CircleTypeDisabledException.html"><abbr title="\OCA\Circles\Exceptions\CircleTypeDisabledException">CircleTypeDisabledException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-CircleTypeIsEmptyException.html"><abbr title="\OCA\Circles\Exceptions\CircleTypeIsEmptyException">CircleTypeIsEmptyException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-CircleTypeNotValidException.html"><abbr title="\OCA\Circles\Exceptions\CircleTypeNotValidException">CircleTypeNotValidException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-CommandMissingArgumentException.html"><abbr title="\OCA\Circles\Exceptions\CommandMissingArgumentException">CommandMissingArgumentException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-ConfigNoCircleAvailableException.html"><abbr title="\OCA\Circles\Exceptions\ConfigNoCircleAvailableException">ConfigNoCircleAvailableException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-ContactAddressBookNotFoundException.html"><abbr title="\OCA\Circles\Exceptions\ContactAddressBookNotFoundException">ContactAddressBookNotFoundException</abbr></a></dt>
+        <dd>Class FederatedItemNotFoundException</dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-ContactFormatException.html"><abbr title="\OCA\Circles\Exceptions\ContactFormatException">ContactFormatException</abbr></a></dt>
+        <dd>Class FederatedItemBadRequestException</dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-ContactNotFoundException.html"><abbr title="\OCA\Circles\Exceptions\ContactNotFoundException">ContactNotFoundException</abbr></a></dt>
+        <dd>Class FederatedItemNotFoundException</dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-EmailAccountInvalidFormatException.html"><abbr title="\OCA\Circles\Exceptions\EmailAccountInvalidFormatException">EmailAccountInvalidFormatException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-EventWrapperNotFoundException.html"><abbr title="\OCA\Circles\Exceptions\EventWrapperNotFoundException">EventWrapperNotFoundException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-FakeException.html"><abbr title="\OCA\Circles\Exceptions\FakeException">FakeException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-FederatedCircleLinkFormatException.html"><abbr title="\OCA\Circles\Exceptions\FederatedCircleLinkFormatException">FederatedCircleLinkFormatException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-FederatedCircleNotAllowedException.html"><abbr title="\OCA\Circles\Exceptions\FederatedCircleNotAllowedException">FederatedCircleNotAllowedException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-FederatedCircleStatusUpdateException.html"><abbr title="\OCA\Circles\Exceptions\FederatedCircleStatusUpdateException">FederatedCircleStatusUpdateException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-FederatedLinkCircleNotFoundException.html"><abbr title="\OCA\Circles\Exceptions\FederatedLinkCircleNotFoundException">FederatedLinkCircleNotFoundException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-FederatedLinkCreationException.html"><abbr title="\OCA\Circles\Exceptions\FederatedLinkCreationException">FederatedLinkCreationException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-FederatedLinkDoesNotExistException.html"><abbr title="\OCA\Circles\Exceptions\FederatedLinkDoesNotExistException">FederatedLinkDoesNotExistException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-FederatedLinkUpdateException.html"><abbr title="\OCA\Circles\Exceptions\FederatedLinkUpdateException">FederatedLinkUpdateException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-FederatedRemoteCircleDoesNotExistException.html"><abbr title="\OCA\Circles\Exceptions\FederatedRemoteCircleDoesNotExistException">FederatedRemoteCircleDoesNotExistException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-FederatedRemoteDoesNotAllowException.html"><abbr title="\OCA\Circles\Exceptions\FederatedRemoteDoesNotAllowException">FederatedRemoteDoesNotAllowException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-FederatedRemoteIsDownException.html"><abbr title="\OCA\Circles\Exceptions\FederatedRemoteIsDownException">FederatedRemoteIsDownException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-FederatedShareAlreadyLockedException.html"><abbr title="\OCA\Circles\Exceptions\FederatedShareAlreadyLockedException">FederatedShareAlreadyLockedException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-FederatedShareBelongingException.html"><abbr title="\OCA\Circles\Exceptions\FederatedShareBelongingException">FederatedShareBelongingException</abbr></a></dt>
+        <dd>Class FederatedItemException</dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-FederatedShareNotFoundException.html"><abbr title="\OCA\Circles\Exceptions\FederatedShareNotFoundException">FederatedShareNotFoundException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-FederatedUserException.html"><abbr title="\OCA\Circles\Exceptions\FederatedUserException">FederatedUserException</abbr></a></dt>
+        <dd>Class FederatedItemServerException</dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-FederatedUserNotFoundException.html"><abbr title="\OCA\Circles\Exceptions\FederatedUserNotFoundException">FederatedUserNotFoundException</abbr></a></dt>
+        <dd>Class FederatedItemNotFoundException</dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-GlobalScaleDSyncException.html"><abbr title="\OCA\Circles\Exceptions\GlobalScaleDSyncException">GlobalScaleDSyncException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-GlobalScaleEventException.html"><abbr title="\OCA\Circles\Exceptions\GlobalScaleEventException">GlobalScaleEventException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-GroupCannotBeOwnerException.html"><abbr title="\OCA\Circles\Exceptions\GroupCannotBeOwnerException">GroupCannotBeOwnerException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-GroupDoesNotExistException.html"><abbr title="\OCA\Circles\Exceptions\GroupDoesNotExistException">GroupDoesNotExistException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-GroupNotFoundException.html"><abbr title="\OCA\Circles\Exceptions\GroupNotFoundException">GroupNotFoundException</abbr></a></dt>
+        <dd>Class FederatedItemNotFoundException</dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-GSKeyException.html"><abbr title="\OCA\Circles\Exceptions\GSKeyException">GSKeyException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-GSStatusException.html"><abbr title="\OCA\Circles\Exceptions\GSStatusException">GSStatusException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-InitiatorNotConfirmedException.html"><abbr title="\OCA\Circles\Exceptions\InitiatorNotConfirmedException">InitiatorNotConfirmedException</abbr></a></dt>
+        <dd>Class FederatedItemForbiddenException</dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-InitiatorNotFoundException.html"><abbr title="\OCA\Circles\Exceptions\InitiatorNotFoundException">InitiatorNotFoundException</abbr></a></dt>
+        <dd>Class FederatedItemUnauthorizedException</dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-InsufficientPermissionException.html"><abbr title="\OCA\Circles\Exceptions\InsufficientPermissionException">InsufficientPermissionException</abbr></a></dt>
+        <dd>Class FederatedItemForbiddenException</dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-JsonException.html"><abbr title="\OCA\Circles\Exceptions\JsonException">JsonException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-JsonNotRequestedException.html"><abbr title="\OCA\Circles\Exceptions\JsonNotRequestedException">JsonNotRequestedException</abbr></a></dt>
+        <dd>Class FederatedItemNotFoundException</dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-LinkedGroupNotAllowedException.html"><abbr title="\OCA\Circles\Exceptions\LinkedGroupNotAllowedException">LinkedGroupNotAllowedException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-MemberCantJoinCircleException.html"><abbr title="\OCA\Circles\Exceptions\MemberCantJoinCircleException">MemberCantJoinCircleException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-MemberIsBlockedException.html"><abbr title="\OCA\Circles\Exceptions\MemberIsBlockedException">MemberIsBlockedException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-MemberIsNotAdminException.html"><abbr title="\OCA\Circles\Exceptions\MemberIsNotAdminException">MemberIsNotAdminException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-MemberIsNotModeratorException.html"><abbr title="\OCA\Circles\Exceptions\MemberIsNotModeratorException">MemberIsNotModeratorException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-MemberIsNotOwnerException.html"><abbr title="\OCA\Circles\Exceptions\MemberIsNotOwnerException">MemberIsNotOwnerException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-MemberIsOwnerException.html"><abbr title="\OCA\Circles\Exceptions\MemberIsOwnerException">MemberIsOwnerException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-MembershipNotFoundException.html"><abbr title="\OCA\Circles\Exceptions\MembershipNotFoundException">MembershipNotFoundException</abbr></a></dt>
+        <dd>Class FederatedItemNotFoundException</dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-MembersLimitException.html"><abbr title="\OCA\Circles\Exceptions\MembersLimitException">MembersLimitException</abbr></a></dt>
+        <dd>Class FederatedItemBadRequestException</dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-MemberTypeCantEditLevelException.html"><abbr title="\OCA\Circles\Exceptions\MemberTypeCantEditLevelException">MemberTypeCantEditLevelException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-MissingKeyInArrayException.html"><abbr title="\OCA\Circles\Exceptions\MissingKeyInArrayException">MissingKeyInArrayException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-ModelException.html"><abbr title="\OCA\Circles\Exceptions\ModelException">ModelException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-ModeratorIsNotHighEnoughException.html"><abbr title="\OCA\Circles\Exceptions\ModeratorIsNotHighEnoughException">ModeratorIsNotHighEnoughException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-MountNotFoundException.html"><abbr title="\OCA\Circles\Exceptions\MountNotFoundException">MountNotFoundException</abbr></a></dt>
+        <dd>Class FederatedItemNotFoundException</dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-MountPointConstructionException.html"><abbr title="\OCA\Circles\Exceptions\MountPointConstructionException">MountPointConstructionException</abbr></a></dt>
+        <dd>Class FederatedItemServerException</dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-NotContactAddressException.html"><abbr title="\OCA\Circles\Exceptions\NotContactAddressException">NotContactAddressException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-NotLocalMemberException.html"><abbr title="\OCA\Circles\Exceptions\NotLocalMemberException">NotLocalMemberException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-OwnerNotFoundException.html"><abbr title="\OCA\Circles\Exceptions\OwnerNotFoundException">OwnerNotFoundException</abbr></a></dt>
+        <dd>Class FederatedItemServerException</dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-PayloadDeliveryException.html"><abbr title="\OCA\Circles\Exceptions\PayloadDeliveryException">PayloadDeliveryException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-RemoteAlreadyExistsException.html"><abbr title="\OCA\Circles\Exceptions\RemoteAlreadyExistsException">RemoteAlreadyExistsException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-RemoteCircleException.html"><abbr title="\OCA\Circles\Exceptions\RemoteCircleException">RemoteCircleException</abbr></a></dt>
+        <dd>Class FederatedItemBadRequestException</dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-RemoteResourceNotFoundException.html"><abbr title="\OCA\Circles\Exceptions\RemoteResourceNotFoundException">RemoteResourceNotFoundException</abbr></a></dt>
+        <dd>Class FederatedItemRemoteException</dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-RemoteUidException.html"><abbr title="\OCA\Circles\Exceptions\RemoteUidException">RemoteUidException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-ShareTokenNotFoundException.html"><abbr title="\OCA\Circles\Exceptions\ShareTokenNotFoundException">ShareTokenNotFoundException</abbr></a></dt>
+        <dd>Class FederatedItemNotFoundException</dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-ShareWrapperNotFoundException.html"><abbr title="\OCA\Circles\Exceptions\ShareWrapperNotFoundException">ShareWrapperNotFoundException</abbr></a></dt>
+        <dd>Class FederatedItemNotFoundException</dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-SharingFrameAlreadyDeliveredException.html"><abbr title="\OCA\Circles\Exceptions\SharingFrameAlreadyDeliveredException">SharingFrameAlreadyDeliveredException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-SharingFrameAlreadyExistException.html"><abbr title="\OCA\Circles\Exceptions\SharingFrameAlreadyExistException">SharingFrameAlreadyExistException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-SharingFrameDoesNotExistException.html"><abbr title="\OCA\Circles\Exceptions\SharingFrameDoesNotExistException">SharingFrameDoesNotExistException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-SharingFrameSourceCannotBeAppCirclesException.html"><abbr title="\OCA\Circles\Exceptions\SharingFrameSourceCannotBeAppCirclesException">SharingFrameSourceCannotBeAppCirclesException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-SuperSessionException.html"><abbr title="\OCA\Circles\Exceptions\SuperSessionException">SuperSessionException</abbr></a></dt>
+        <dd>Class FederatedItemUnauthorizedException</dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-TokenDoesNotExistException.html"><abbr title="\OCA\Circles\Exceptions\TokenDoesNotExistException">TokenDoesNotExistException</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-UnknownInterfaceException.html"><abbr title="\OCA\Circles\Exceptions\UnknownInterfaceException">UnknownInterfaceException</abbr></a></dt>
+        <dd>Class FederatedItemServerException</dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-UnknownRemoteException.html"><abbr title="\OCA\Circles\Exceptions\UnknownRemoteException">UnknownRemoteException</abbr></a></dt>
+        <dd>Class FederatedItemRemoteException</dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Exceptions-UserTypeNotFoundException.html"><abbr title="\OCA\Circles\Exceptions\UserTypeNotFoundException">UserTypeNotFoundException</abbr></a></dt>
+        <dd>Class FederatedItemBadRequestException</dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Model-BaseCircle.html"><abbr title="\OCA\Circles\Model\BaseCircle">BaseCircle</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Model-BaseMember.html"><abbr title="\OCA\Circles\Model\BaseMember">BaseMember</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Model-DeprecatedCircle.html"><abbr title="\OCA\Circles\Model\DeprecatedCircle">DeprecatedCircle</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Model-DeprecatedMember.html"><abbr title="\OCA\Circles\Model\DeprecatedMember">DeprecatedMember</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Model-FederatedLink.html"><abbr title="\OCA\Circles\Model\FederatedLink">FederatedLink</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Model-SearchResult.html"><abbr title="\OCA\Circles\Model\SearchResult">SearchResult</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Model-ShareToken.html"><abbr title="\OCA\Circles\Model\ShareToken">ShareToken</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Service-CircleService.html"><abbr title="\OCA\Circles\Service\CircleService">CircleService</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Service-MiscService.html"><abbr title="\OCA\Circles\Service\MiscService">MiscService</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Service-PermissionService.html"><abbr title="\OCA\Circles\Service\PermissionService">PermissionService</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Service-SearchService.html"><abbr title="\OCA\Circles\Service\SearchService">SearchService</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Service-SendMailService.html"><abbr title="\OCA\Circles\Service\SendMailService">SendMailService</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Service-TimezoneService.html"><abbr title="\OCA\Circles\Service\TimezoneService">TimezoneService</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Tools-ActivityPub-NCSignature.html"><abbr title="\OCA\Circles\Tools\ActivityPub\NCSignature">NCSignature</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Tools-Db-ExtendedQueryBuilder.html"><abbr title="\OCA\Circles\Tools\Db\ExtendedQueryBuilder">ExtendedQueryBuilder</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Tools-Model-NCRequest.html"><abbr title="\OCA\Circles\Tools\Model\NCRequest">NCRequest</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Tools-Model-NCRequestResult.html"><abbr title="\OCA\Circles\Tools\Model\NCRequestResult">NCRequestResult</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Tools-Model-NCSignatory.html"><abbr title="\OCA\Circles\Tools\Model\NCSignatory">NCSignatory</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Tools-Model-NCSignedRequest.html"><abbr title="\OCA\Circles\Tools\Model\NCSignedRequest">NCSignedRequest</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Tools-Model-NCWebfinger.html"><abbr title="\OCA\Circles\Tools\Model\NCWebfinger">NCWebfinger</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Tools-Model-NCWellKnownLink.html"><abbr title="\OCA\Circles\Tools\Model\NCWellKnownLink">NCWellKnownLink</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Tools-Model-Request.html"><abbr title="\OCA\Circles\Tools\Model\Request">Request</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Tools-Model-SimpleDataStore.html"><abbr title="\OCA\Circles\Tools\Model\SimpleDataStore">SimpleDataStore</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/OCA-Circles-Tools-Model-TreeNode.html"><abbr title="\OCA\Circles\Tools\Model\TreeNode">TreeNode</abbr></a></dt>
+        <dd></dd>
+    
+            <dt class="phpdocumentor-table-of-contents__entry -trait"><a href="classes/OCA-Circles-Tools-Traits-TArrayTools.html"><abbr title="\OCA\Circles\Tools\Traits\TArrayTools">TArrayTools</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -trait"><a href="classes/OCA-Circles-Tools-Traits-TAsync.html"><abbr title="\OCA\Circles\Tools\Traits\TAsync">TAsync</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -trait"><a href="classes/OCA-Circles-Tools-Traits-TConsoleTree.html"><abbr title="\OCA\Circles\Tools\Traits\TConsoleTree">TConsoleTree</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -trait"><a href="classes/OCA-Circles-Tools-Traits-TDeserialize.html"><abbr title="\OCA\Circles\Tools\Traits\TDeserialize">TDeserialize</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -trait"><a href="classes/OCA-Circles-Tools-Traits-TNCLocalSignatory.html"><abbr title="\OCA\Circles\Tools\Traits\TNCLocalSignatory">TNCLocalSignatory</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -trait"><a href="classes/OCA-Circles-Tools-Traits-TNCLogger.html"><abbr title="\OCA\Circles\Tools\Traits\TNCLogger">TNCLogger</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -trait"><a href="classes/OCA-Circles-Tools-Traits-TNCRequest.html"><abbr title="\OCA\Circles\Tools\Traits\TNCRequest">TNCRequest</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -trait"><a href="classes/OCA-Circles-Tools-Traits-TNCSetup.html"><abbr title="\OCA\Circles\Tools\Traits\TNCSetup">TNCSetup</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -trait"><a href="classes/OCA-Circles-Tools-Traits-TNCSignatory.html"><abbr title="\OCA\Circles\Tools\Traits\TNCSignatory">TNCSignatory</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -trait"><a href="classes/OCA-Circles-Tools-Traits-TNCWellKnown.html"><abbr title="\OCA\Circles\Tools\Traits\TNCWellKnown">TNCWellKnown</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -trait"><a href="classes/OCA-Circles-Tools-Traits-TStringTools.html"><abbr title="\OCA\Circles\Tools\Traits\TStringTools">TStringTools</abbr></a></dt>
+        <dd></dd>
+    
+    </dl>
+
+
+
+        
+
+        
+    </article>
+                <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
+    <section class="phpdocumentor-search-results__dialog">
+        <header class="phpdocumentor-search-results__header">
+            <h2 class="phpdocumentor-search-results__title">Search results</h2>
+            <button class="phpdocumentor-search-results__close"><i class="fas fa-times"></i></button>
+        </header>
+        <section class="phpdocumentor-search-results__body">
+            <ul class="phpdocumentor-search-results__entries"></ul>
+        </section>
+    </section>
+</section>
+            </div>
+        </div>
+        <a href="packages/Application.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
+
+    </main>
+
+    <script>
+        cssVars({});
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/prism.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.min.js"></script>
+</body>
+</html>
