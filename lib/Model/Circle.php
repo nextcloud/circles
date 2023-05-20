@@ -439,7 +439,7 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	}
 
 	/**
-	 * @param array $members
+	 * @param Member[] $members
 	 *
 	 * @return self
 	 */
@@ -450,7 +450,7 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	}
 
 	/**
-	 * @return array
+	 * @return Member[]
 	 */
 	public function getMembers(): array {
 		if (!$this->hasMembers()) {
@@ -475,7 +475,7 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	}
 
 	/**
-	 * @param array $members
+	 * @param Member[] $members
 	 *
 	 * @return Circle
 	 */
