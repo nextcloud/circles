@@ -8,6 +8,7 @@ OC.L10N.register(
     "Open" : "افتح",
     "Hidden" : "مخفي",
     "Local" : "المحلي",
+    "Root" : "الجذر",
     "Federated" : "المتحدة",
     "Contact" : "التواصل",
     "Circle" : "حلقة",
