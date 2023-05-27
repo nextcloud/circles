@@ -93,8 +93,6 @@ OC.L10N.register(
     "Size" : "Madhësi",
     "Modified" : "Modifikuar ",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Ju nuk mund të përdorni Aplikacionin e Qarqeve derisa administratori juaj të ketë lejuar të paktën një lloj qarku",
-    "This user is already a member of the circle" : "Ky  përdorues është tashmë anëtar i rrethit",
-    "This user does not exist" : "Ky përdorues nuk ekziston",
     "Could not find share" : "Nuk mund të gjej shpërndarje"
 },
 "nplurals=2; plural=(n != 1);");

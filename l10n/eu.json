@@ -178,15 +178,9 @@
     "Name" : "Izena",
     "Size" : "Tamaina",
     "Modified" : "Aldatua",
-    "Nextcloud User" : "Nextcloud erabiltzailea",
     "Initialisation Nextcloud" : "Hasieratze Nextcloud",
     "Initialisation Circles App" : "Hasieratze zirkulu aplikazioa",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Ezin duzu Zirkuluak aplikazioa erabili administratzaileak gutxienez zirkulu mota bat baimendu arte",
-    "This user is already a member of the circle" : "Erabiltzaile hau zirkuluko kidea da dagoeneko",
-    "The user is already a member of this circle" : "Erabiltzailea zirkulu honetako kide da dagoeneko",
-    "The user has already been invited into this circle" : "Erabiltzailea zirkulu honetara gonbidatua izan da dagoeneko",
-    "This user does not exist" : "Erabiltzaile hau ez da existitzen",
-    "Could not find share" : "Ezin da partekatzea topatu",
-    "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or \"circles\") can then be used by any other app for sharing purpose." : "Zirkuluak zure erabiltzaileek erabiltzaile/lankide/lagun taldeak sortzen ahalbidetzen die.\nErabiltzaile talde (edo \"zirkulu\") hauek beste aplikazio batzuetan erabili daitezke partekatzeko xedearekin. "
+    "Could not find share" : "Ezin da partekatzea topatu"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

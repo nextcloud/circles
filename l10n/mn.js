@@ -32,8 +32,6 @@ OC.L10N.register(
     "Name" : "Нэр",
     "Size" : "Хэмжээ",
     "Modified" : "Өөрчлөгдсөн",
-    "This user is already a member of the circle" : "Энэ хэрэглэгч аль хэдийн тойргийн гишүүн болсон ",
-    "This user does not exist" : "ийм хэрэглэгч байхгүй байна",
     "Could not find share" : "Хуваалцсаныг холохгүй байна"
 },
 "nplurals=2; plural=(n != 1);");

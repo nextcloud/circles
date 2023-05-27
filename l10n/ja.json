@@ -170,15 +170,9 @@
     "Name" : "名前",
     "Size" : "サイズ",
     "Modified" : "更新日時",
-    "Nextcloud User" : "Nextcloudユーザー",
     "Initialisation Nextcloud" : "初期設定 Nextcloud",
     "Initialisation Circles App" : "初期化サークルアプリ",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "管理者が少なくとも1種類のサークルを許可するまで、サークルアプリケーションを使用することはできません",
-    "This user is already a member of the circle" : "このユーザーはすでにサークルのメンバーです",
-    "The user is already a member of this circle" : "ユーザーはすでにこのサークルのメンバーです",
-    "The user has already been invited into this circle" : "ユーザーはすでにこのサークルに招待されています",
-    "This user does not exist" : "このユーザーは存在しません",
-    "Could not find share" : "シェアを見つけることができませんでした",
-    "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or \"circles\") can then be used by any other app for sharing purpose." : "Circlesではユーザーや同僚、友人のグループを自由に作ることができます。\nこのユーザーグループ (サークル) は、何かを共有する目的で、様々なアプリから使用されます。"
+    "Could not find share" : "シェアを見つけることができませんでした"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

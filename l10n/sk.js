@@ -178,15 +178,9 @@ OC.L10N.register(
     "Name" : "Názov",
     "Size" : "Veľkosť",
     "Modified" : "Upravené",
-    "Nextcloud User" : "Užívateľ Nextcloud",
     "Initialisation Nextcloud" : "Inicializácia Nextcloudu",
     "Initialisation Circles App" : "Inicializácia Aplikácie Kruhy",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Nemôžete použiť aplikáciu Kruhy, pokiaľ administrátor nepovolí aspoň jeden typ kruhov",
-    "This user is already a member of the circle" : "Tento používateľ už je členom kruhu",
-    "The user is already a member of this circle" : "Používateľ už je členom tohto kruhu",
-    "The user has already been invited into this circle" : "Používateľ už bol pozvaný do tohto kruhu",
-    "This user does not exist" : "Vybraný používateľ neexistuje",
-    "Could not find share" : "Nebolo možné nájsť sprístupnenie",
-    "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or \"circles\") can then be used by any other app for sharing purpose." : "Kruhy umožňujú vašim užívateľom vytvárať ich vlastné skupiny užívateľov/kolegov/priateľov.\nTieto skupiny užívateľov (alebo \"kruhov\") môžu buť potom používané akoukoľvek inou aplikáciou pre potreby zdieľania."
+    "Could not find share" : "Nebolo možné nájsť sprístupnenie"
 },
 "nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);");

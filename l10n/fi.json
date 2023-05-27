@@ -144,12 +144,7 @@
     "Name" : "Nimi",
     "Size" : "Koko",
     "Modified" : "Muokattu",
-    "Nextcloud User" : "Nextcloud-käyttäjä",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Et voi käyttää Piirit-sovellusta ennen kuin ylläpitäjä on sallinut vähintään yhden tyypin piirin",
-    "This user is already a member of the circle" : "Tämä käyttäjä on jo jäsenenä tässä piirissä",
-    "The user is already a member of this circle" : "Käyttäjä on jo jäsenenä tässä piirissä",
-    "The user has already been invited into this circle" : "Käyttäjä on jo kutsuttu tähän piiriin",
-    "This user does not exist" : "Tätä käyttäjää ei ole olemassa",
     "Could not find share" : "Jakoa ei löytynyt"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
