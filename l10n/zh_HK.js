@@ -180,15 +180,9 @@ OC.L10N.register(
     "Name" : "名稱",
     "Size" : "大小",
     "Modified" : "修改日期",
-    "Nextcloud User" : "Nextcloud 用戶",
     "Initialisation Nextcloud" : "初始化 Nextcloud",
     "Initialisation Circles App" : "初始化圈子應用程式",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "您的管理員至少允許一種類型的圈子，否則您不能使用“圈子”應用程序",
-    "This user is already a member of the circle" : "此用戶已經是圈子的成員",
-    "The user is already a member of this circle" : "此用戶已經是此圈子的成員",
-    "The user has already been invited into this circle" : "用戶已被邀請進入此圈子",
-    "This user does not exist" : "此用戶不存在",
-    "Could not find share" : "找不到分享",
-    "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or \"circles\") can then be used by any other app for sharing purpose." : "圈子允許您的用戶創建自己的用戶/同事/朋友群組。\n然後，其他應用程式都可以將這些用戶群組（或“圈子”）用於共享目的。"
+    "Could not find share" : "找不到分享"
 },
 "nplurals=1; plural=0;");

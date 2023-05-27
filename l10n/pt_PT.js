@@ -62,9 +62,6 @@ OC.L10N.register(
     "Name" : "Nome",
     "Size" : "Tamanho",
     "Modified" : "Modificado",
-    "The user is already a member of this circle" : "O utilizador já é membro deste círculo",
-    "The user has already been invited into this circle" : "O utilizador já foi convidado para este círculo",
-    "This user does not exist" : "Este utilizador não existe",
     "Could not find share" : "Não foi possível encontrar a partilha"
 },
 "nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");

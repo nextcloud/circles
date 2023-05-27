@@ -175,15 +175,9 @@
     "Name" : "Naam",
     "Size" : "Omvang",
     "Modified" : "Gewijzigd",
-    "Nextcloud User" : "Nextcloud gebruiker",
     "Initialisation Nextcloud" : "Initialisatie Nextcloud",
     "Initialisation Circles App" : "Initialisatie Circles App",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "De beheerder dient minimaal een kring te maken voordat je de kring-app kan gebruiken.",
-    "This user is already a member of the circle" : "Deze gebruiker is al lid van de kring",
-    "The user is already a member of this circle" : "De gebruiker is al lid van deze kring",
-    "The user has already been invited into this circle" : "De gebruiker is al uitgenodigd voor deze kring",
-    "This user does not exist" : "Deze gebruiker bestaat niet",
-    "Could not find share" : "De gedeelde folder kan niet worden gevonden",
-    "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or \"circles\") can then be used by any other app for sharing purpose." : "Met kringen kunnen gebruikers hun eigen groepen gebruikers / collega's / vrienden maken.\nDie groepen gebruikers (of \"kringen\") kunnen vervolgens door elke andere app worden gebruikt om te delen."
+    "Could not find share" : "De gedeelde folder kan niet worden gevonden"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

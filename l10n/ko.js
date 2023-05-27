@@ -164,13 +164,7 @@ OC.L10N.register(
     "Name" : "이름",
     "Size" : "크기",
     "Modified" : "수정한 날짜",
-    "Nextcloud User" : "Nextcloud 사용자",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "시스템 관리자가 서클 형식을 허용하지 않는 한 서클 앱을 사용할 수 없습니다",
-    "This user is already a member of the circle" : "이 사용자가 이미 서클 회원임",
-    "The user is already a member of this circle" : "이 사용자가 이미 서클 회원임",
-    "The user has already been invited into this circle" : "이 사용자를 이미 서클에 초대함",
-    "This user does not exist" : "이 사용자가 존재하지 않음",
-    "Could not find share" : "공유를 찾을 수 없음",
-    "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or \"circles\") can then be used by any other app for sharing purpose." : "서클을 통해 누구나 동료/친구 등 다양한 그룹을 생성할 수 있습니다.\n이 집단(서클)은 다른 앱에서도 공유의 단위로 사용할 수 있습니다."
+    "Could not find share" : "공유를 찾을 수 없음"
 },
 "nplurals=1; plural=0;");

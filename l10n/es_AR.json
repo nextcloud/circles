@@ -38,8 +38,6 @@
     "Size" : "Tamaño",
     "Modified" : "Modificado",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Usted no puede usar la Aplicación de Círculos hasta que su adminsitrador haya permitido al menos un tipo de círculo",
-    "This user is already a member of the circle" : "El usuario ya es un miembro del círculo",
-    "This user does not exist" : "Este usuario no existe",
     "Could not find share" : "No fue posible encontrar el elemento compartido"
 },"pluralForm" :"nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }

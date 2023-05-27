@@ -177,15 +177,9 @@
     "Name" : "Ime",
     "Size" : "Velikost",
     "Modified" : "Spremenjeno",
-    "Nextcloud User" : "Uporabnik Nextcloud",
     "Initialisation Nextcloud" : "Začenjanje okolja Nextcloud",
     "Initialisation Circles App" : "Začenjanje programa Krogi",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Programa Krogi ni mogoče uporabljati, dokler skrbnik ne omogoči vsaj ene vrste kroga.",
-    "This user is already a member of the circle" : "Uporabnik je že član kroga.",
-    "The user is already a member of this circle" : "Uporabnik je že član kroga.",
-    "The user has already been invited into this circle" : "Uporabnik je že bil povabljen v krog.",
-    "This user does not exist" : "Uporabnik s tem imenom ne obstaja",
-    "Could not find share" : "Mesta souporabe ni mogoče najti",
-    "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or \"circles\") can then be used by any other app for sharing purpose." : "Program Krogi omogoča uporabnikom ustvariti lastne skupine uporabnikov, sodelavcev, prijateljev ...\nTe skupine uporabnikov (oziroma »krogov«) je nato mogoče uporabiti kot skupine za souporabo in izmenjavo datotek in podatkov v različnih programih."
+    "Could not find share" : "Mesta souporabe ni mogoče najti"
 },"pluralForm" :"nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);"
 }
