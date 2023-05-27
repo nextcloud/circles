@@ -178,15 +178,9 @@
     "Name" : "Имя",
     "Size" : "Размер",
     "Modified" : "Изменён",
-    "Nextcloud User" : "Пользователь Nextcloud",
     "Initialisation Nextcloud" : "Инициализация Nextcloud",
     "Initialisation Circles App" : "Инициализация приложения Круги",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "В не можете использовать это приложение до тех пор, пока администратор не разрешит использовать как минимум один тип кругов.",
-    "This user is already a member of the circle" : "Этот пользователь уже участник круга",
-    "The user is already a member of this circle" : "Этот пользователь — уже участник круга",
-    "The user has already been invited into this circle" : "Пользователь уже приглашён в этот круг",
-    "This user does not exist" : "Этот пользователь не существует",
-    "Could not find share" : "Невозможно найти общий ресурс",
-    "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or \"circles\") can then be used by any other app for sharing purpose." : "Круги позволяют вашим пользователям создавать свои собственные группы пользователей/коллег/друзей.\nЭти группы пользователей (или \"круги\") могут затем использоваться любым другим приложением для обмена информацией."
+    "Could not find share" : "Невозможно найти общий ресурс"
 },"pluralForm" :"nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);"
 }

@@ -136,10 +136,6 @@ OC.L10N.register(
     "Size" : "Kích cỡ",
     "Modified" : "Thay đổi",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Bạn không thể sử dụng Ứng dụng Vòng kết nối cho đến khi quản trị viên của bạn cho phép ít nhất một loại của vòng kết nối",
-    "This user is already a member of the circle" : "Người dùng này đã là thành viên của vòng kết nối",
-    "The user is already a member of this circle" : "Người dùng này đã là thành viên của vòng kết nối này",
-    "The user has already been invited into this circle" : "Người dùng này đã được mời vào vòng kết nối này",
-    "This user does not exist" : "Người dùng này không tòn tại",
     "Could not find share" : "Không thể tìm thấy chia sẻ"
 },
 "nplurals=1; plural=0;");

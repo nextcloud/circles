@@ -122,10 +122,6 @@ OC.L10N.register(
     "Size" : "Tamaño",
     "Modified" : "Modificado",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "No puedes usar la Aplicación de Círculos hasta que tu adminsitrador haya permitido al menos un tipo de círculo",
-    "This user is already a member of the circle" : "El usuario ya es un miembro del círculo",
-    "The user is already a member of this circle" : "El usuario ya es un miembro de este círculo",
-    "The user has already been invited into this circle" : "El usuario ya ha sido invitado a este círculo",
-    "This user does not exist" : "Este usuario no existe",
     "Could not find share" : "No se encontró el elemento compartido"
 },
 "nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");

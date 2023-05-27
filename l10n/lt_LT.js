@@ -138,10 +138,6 @@ OC.L10N.register(
     "Size" : "Dydis",
     "Modified" : "Pakeistas",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Jūs negalite naudoti „Bendrinimo ratų“ programos, kol administratorius neleido bent vieno bendrinimo ratų tipo.",
-    "This user is already a member of the circle" : "Šis naudotojas jau yra šio rato narys",
-    "The user is already a member of this circle" : "Naudotojas jau yra šio rato narys",
-    "The user has already been invited into this circle" : "Naudotojas jau buvo pakviestas į šį ratą",
-    "This user does not exist" : "Šio naudotojo nėra",
     "Could not find share" : "Nepavyko rasti viešinio"
 },
 "nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);");

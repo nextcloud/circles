@@ -128,10 +128,6 @@ OC.L10N.register(
     "Size" : "Mărime",
     "Modified" : "Modificat",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Nu poți folosi aplicația Cercuri până când administratorul tău permite cel puțin un tip de cercuri",
-    "This user is already a member of the circle" : "Acest utilizator este deja membru în cerc",
-    "The user is already a member of this circle" : "Utilizatorul este deja membru în acest cerc",
-    "The user has already been invited into this circle" : "Utilizatorul a fost invitat deja în acest cerc",
-    "This user does not exist" : "Acest utilizator nu există",
     "Could not find share" : "Nu am putut găsi distribuția"
 },
 "nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));");

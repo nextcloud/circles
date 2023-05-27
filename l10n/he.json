@@ -117,12 +117,7 @@
     "Name" : "שם",
     "Size" : "גודל",
     "Modified" : "מועד שינוי",
-    "Nextcloud User" : "משתמש Nextcloud",
     "Initialisation Circles App" : "יישומון המעגלים נטען",
-    "This user is already a member of the circle" : "משתמש זה כבר חבר במעגל",
-    "The user is already a member of this circle" : "המשתמש הוא כבר חבר במעגל הזה",
-    "The user has already been invited into this circle" : "המשתמש הזה כבר הוזמן למעגל הזה",
-    "This user does not exist" : "המשתמש הזה לא קיים",
     "Could not find share" : "לא ניתן למצוא את השיתוף"
 },"pluralForm" :"nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % 1 == 0) ? 1: (n % 10 == 0 && n % 1 == 0 && n > 10) ? 2 : 3;"
 }

@@ -178,15 +178,9 @@
     "Name" : "Namn",
     "Size" : "Storlek",
     "Modified" : "Ändrad",
-    "Nextcloud User" : "Nextcloud-användare",
     "Initialisation Nextcloud" : "Initialisering Nextcloud",
     "Initialisation Circles App" : "Initialisering Cirkel-appen",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Du kan inte använda Cirkelappen förrän din administratör har tillåtit minst en typ av cirklar",
-    "This user is already a member of the circle" : "Användaren är redan medlem i cirkeln",
-    "The user is already a member of this circle" : "Användaren är redan medlem i cirkeln",
-    "The user has already been invited into this circle" : "Användaren har redan bjudits in till cirkeln",
-    "This user does not exist" : "Användaren finns inte",
-    "Could not find share" : "Kunde inte hitta delning",
-    "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or \"circles\") can then be used by any other app for sharing purpose." : "Cirklar låter dina användare skapa sina egna grupper med användare/kollegor/vänner.\nGrupperna som användarna skapar (så kallade \"cirklar\") kan sedan användas av alla andra appar för delning."
+    "Could not find share" : "Kunde inte hitta delning"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

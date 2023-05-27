@@ -165,15 +165,9 @@ OC.L10N.register(
     "Name" : "Naziv",
     "Size" : "Veličina",
     "Modified" : "Promijenjeno",
-    "Nextcloud User" : "Nextcloud korisnik",
     "Initialisation Nextcloud" : "Inicijalizacija Nextclouda",
     "Initialisation Circles App" : "Inicijalizacija aplikacije Circles",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Aplikaciju Krugovi ne možete upotrebljavati dok administrator ne dopusti barem jednu vrstu krugova",
-    "This user is already a member of the circle" : "Ovaj korisnik već je član kruga",
-    "The user is already a member of this circle" : "Korisnik je već član ovog kruga",
-    "The user has already been invited into this circle" : "Korisnik je već pozvan u ovaj krug",
-    "This user does not exist" : "Ovaj korisnik ne postoji",
-    "Could not find share" : "Nije moguće pronaći dijeljenje",
-    "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or \"circles\") can then be used by any other app for sharing purpose." : "Krugovi omogućuju korisnicima da stvaraju vlastite grupe korisnika/kolega/prijatelja.\nTe grupe korisnika („krugove“) tada može upotrebljavati za dijeljenje bilo koja druga aplikacija."
+    "Could not find share" : "Nije moguće pronaći dijeljenje"
 },
 "nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;");
