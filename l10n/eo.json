@@ -123,10 +123,6 @@
     "Size" : "Grando",
     "Modified" : "Modifita",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Vi ne povas uzi la aplikaĵon „Rondoj“, ĝis via administranto permesas almenaŭ unu tipon de rondoj.",
-    "This user is already a member of the circle" : "Tiu ĉi uzanto jam estas membro el tiu rondo",
-    "The user is already a member of this circle" : "La uzanto jam estas membro de tiu ĉi rondo",
-    "The user has already been invited into this circle" : "La uzanto jam estis invitita al tiu ĉi rondo",
-    "This user does not exist" : "Tiu ĉi uzanto ne ekzistas",
     "Could not find share" : "Ne eblis trovi kunhavon"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

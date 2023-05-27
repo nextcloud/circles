@@ -119,6 +119,7 @@
     "%s shared multiple files with you." : "%s a partagé plusieurs fichiers avec vous.",
     "Boot up" : "Démarrage",
     "Nextcloud Initialization" : "Initialisation de Nexctcloud",
+    "Circles App Initialization" : "Initialisation de l'application Cercles",
     "Fresh installation status" : "Statut de l'installation",
     "Building Local Database" : "Construction de la base de données locale",
     "Testing Basic Circle Creation" : "Test de création d'un cercle basique",
@@ -177,15 +178,9 @@
     "Name" : "Nom",
     "Size" : "Taille",
     "Modified" : "Modifié",
-    "Nextcloud User" : "Utilisateur Nextcloud",
     "Initialisation Nextcloud" : "Initialisation de Nextcloud",
     "Initialisation Circles App" : "Initialisation de l'application Cercles",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Vous ne pouvez pas utiliser l'application Cercles à moins que votre administrateur ait autorisé au moins un type de cercles",
-    "This user is already a member of the circle" : "Cet utilisateur est déjà membre du cercle",
-    "The user is already a member of this circle" : "L'utilisateur est déjà membre de ce cercle",
-    "The user has already been invited into this circle" : "L'utilisateur a déjà été invité dans ce cercle",
-    "This user does not exist" : "Cet utilisateur n'existe pas",
-    "Could not find share" : "Impossible de trouver le partage",
-    "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or \"circles\") can then be used by any other app for sharing purpose." : "L'applications Cercles permet aux utilisateurs de créer leurs propres groupes d'utilisateurs/collègues/amis.\nCes groupes d'utilisateurs (ou \"cercles\") peuvent alors être utilisés par toutes les autres applications pour partager des éléments."
+    "Could not find share" : "Impossible de trouver le partage"
 },"pluralForm" :"nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }

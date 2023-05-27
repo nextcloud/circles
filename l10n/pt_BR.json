@@ -119,6 +119,7 @@
     "%s shared multiple files with you." : "%s compartilhou vários arquivos com você. ",
     "Boot up" : "Inicializar",
     "Nextcloud Initialization" : "Nextcloud Initialization",
+    "Circles App Initialization" : "Inicialização do aplicativo Círculos",
     "Fresh installation status" : "Novo status de instalação",
     "Building Local Database" : "Construindo banco de dados local",
     "Testing Basic Circle Creation" : "Teste básico de criação de círculo",
@@ -177,15 +178,9 @@
     "Name" : "Nome",
     "Size" : "Tamanho",
     "Modified" : "Modificado",
-    "Nextcloud User" : "Usuário Nextcloud",
     "Initialisation Nextcloud" : "Inicialização do Nextcloud",
     "Initialisation Circles App" : "Inicialização do aplicativo Círculos",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Você não pode usar a aplicação Círculos até que o administrador tenha permitido ao menos um tipo de círculo",
-    "This user is already a member of the circle" : "Este usuário já é membro do círculo",
-    "The user is already a member of this circle" : "O usuário já é membro deste círculo",
-    "The user has already been invited into this circle" : "O usuário já foi convidado para este círculo",
-    "This user does not exist" : "O usuário não existe",
-    "Could not find share" : "Não foi possível encontrar o compartilhamento",
-    "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or \"circles\") can then be used by any other app for sharing purpose." : "O aplicativo Círculos permite que seus usuários criem seus próprios grupos de usuários/colegas/amigos.\nEsses grupos de usuários (ou \"círculos\") podem então ser usados por qualquer outro aplicativo para fins de compartilhamento."
+    "Could not find share" : "Não foi possível encontrar o compartilhamento"
 },"pluralForm" :"nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }

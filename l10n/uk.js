@@ -180,15 +180,9 @@ OC.L10N.register(
     "Name" : "Ім'я",
     "Size" : "Розмір",
     "Modified" : "Змінено",
-    "Nextcloud User" : "Користувач Nextcloud",
     "Initialisation Nextcloud" : "Ініціалізація Nextcloud",
     "Initialisation Circles App" : "Ініціалізація застосунку Circle",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Ви не можете використовувати програму Circles, доки ваш адміністратор не дозволить принаймні один тип кіл",
-    "This user is already a member of the circle" : "Цей користувач уже є учасником кола",
-    "The user is already a member of this circle" : "Користувач уже є учасником цього кола",
-    "The user has already been invited into this circle" : "Користувача вже запрошено до цього кола",
-    "This user does not exist" : "Цей користувач не існує",
-    "Could not find share" : "Не вдалося знайти спільний доступ",
-    "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or \"circles\") can then be used by any other app for sharing purpose." : "Кола дозволяють вашим користувачам створювати власні групи користувачів/колег/друзів. \nЦі групи користувачів (або «кола») потім можуть використовуватися будь-якою іншою програмою для спільного використання."
+    "Could not find share" : "Не вдалося знайти спільний доступ"
 },
 "nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);");
