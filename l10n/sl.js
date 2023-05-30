@@ -121,6 +121,7 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s vam omogoči souporabo več datotek.",
     "Boot up" : "Zaganjanje",
     "Nextcloud Initialization" : "Zaganjanje oblaka Nextcloud",
+    "Circles App Initialization" : "Zaganjanje programa Krogi",
     "Fresh installation status" : "Stanje sveže namestitve",
     "Building Local Database" : "Poteka izgradnja krajevne podatkovne zbirke",
     "Testing Basic Circle Creation" : "Preizkušanje ustvarjanja osnovnega kroga",
