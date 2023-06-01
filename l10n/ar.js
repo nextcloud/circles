@@ -20,6 +20,7 @@ OC.L10N.register(
     "Click the button below to open it." : "أنقر على الزر أدناه لفتحه.",
     "Open »%s«" : "فتح »%s«",
     "Accept" : "قبول",
+    "%s" : "%s",
     "Personal Circle" : "حلقة شخصية",
     "now" : "الآن",
     "No files in here" : "لا توجد ملفات هنا",
