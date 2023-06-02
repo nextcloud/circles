@@ -41,252 +41,257 @@
 	};
 	FileList.prototype = _.extend({}, OCA.Files.FileList.prototype,
 		/** @lends OCA.Circles.FileList.prototype */ {
-		id: 'circlesfilter',
-		appName: t('circles', 'Circles\' files'),
+			id: 'circlesfilter',
+			appName: t('circles', 'Circles\' files'),
 
-		/**
-		 * Array of system tag ids to filter by
-		 *
-		 * @type Array.<string>
-		 */
-		_circlesIds: [],
-		_lastUsedTags: [],
+			/**
+			 * Array of system tag ids to filter by
+			 *
+			 * @type Array.<string>
+			 */
+			_circlesIds: [],
+			_lastUsedTags: [],
 
-		_clientSideSort: true,
-		_allowSelection: false,
+			_clientSideSort: true,
+			_allowSelection: false,
 
-		_filterField: null,
+			_filterField: null,
 
-		/**
-		 * @private
-		 */
-		initialize: function($el, options) {
-			OCA.Files.FileList.prototype.initialize.apply(this, arguments);
-			if (this.initialized) {
-				return;
-			}
+			/**
+			 * @private
+			 */
+			initialize: function($el, options) {
+				OCA.Files.FileList.prototype.initialize.apply(this, arguments);
+				if (this.initialized) {
+					return;
+				}
 
-			if (options && options.circlesIds) {
-				this._circlesIds = options.circlesIds;
-			}
+				if (options && options.circlesIds) {
+					this._circlesIds = options.circlesIds;
+				}
 
-			OC.Plugins.attach('OCA.Circles.FileList', this);
+				OC.Plugins.attach('OCA.Circles.FileList', this);
 
-			var $controls = this.$el.find('.files-controls').empty();
+				var $controls = this.$el.find('.files-controls').empty();
 
-			this._initFilterField($controls);
-		},
+				this._initFilterField($controls);
+			},
 
-		destroy: function() {
-			this.$filterField.remove();
+			destroy: function() {
+				this.$filterField.remove();
 
-			OCA.Files.FileList.prototype.destroy.apply(this, arguments);
-		},
+				OCA.Files.FileList.prototype.destroy.apply(this, arguments);
+			},
 
-		_initFilterField: function($container) {
-			var self = this;
-			this.$filterField = $('<input type="hidden" name="circles"/>');
-			$container.append(this.$filterField);
-			this.$filterField.select2({
-				placeholder: t('circles', 'Select circles to filter by'),
-				allowClear: false,
-				multiple: true,
-				toggleSelect: true,
-				separator: ',',
-				query: _.bind(this._queryCirclesAutocomplete, this),
+			_initFilterField: function($container) {
+				var self = this;
+				this.$filterField = $('<input type="hidden" name="circles"/>');
+				$container.append(this.$filterField);
+				this.$filterField.select2({
+					placeholder: t('circles', 'Select circles to filter by'),
+					allowClear: false,
+					multiple: true,
+					toggleSelect: true,
+					separator: ',',
+					query: _.bind(this._queryCirclesAutocomplete, this),
 
-				id: function(circle) {
-					return circle.unique_id;
-				},
+					id: function(circle) {
+						return circle.id;
+					},
 
-				initSelection: function(element, callback) {
-					var val = $(element).val().trim();
-					if (val) {
-						var circleIds = val.split(','),
-							circles = [];
+					initSelection: function(element, callback) {
+						var val = $(element).val().trim();
+						if (val) {
+							var circleIds = val.split(','),
+								circles = [];
 
-						OCA.Circles.api.listCircles("all", '', 1, function(result) {
-							_.each(circleIds, function(circleId) {
-								var circle = _.find(result.data,function(circleData) {
-									return circleData.unique_id == circleId;
+							this.search('', function(result) {
+								_.each(circleIds, function(circleId) {
+									var circle = _.find(result.data, function(circleData) {
+										return circleData.id == circleId;
+									});
+									if (!_.isUndefined(circle)) {
+										circles.push(circle);
+									}
 								});
-								if (!_.isUndefined(circle)) {
-									circles.push(circle);
-								}
+
+								callback(circles);
 							});
 
-							callback(circles);
-						});
-
-					} else {
-						callback([]);
-					}
-				},
-
-				formatResult: function (circle) {
-					return circle.name;
-				},
-
-				formatSelection: function (circle) {
-					return circle.name;
-					//return OC.SystemTags.getDescriptiveTag(tag)[0].outerHTML;
-				},
-
-				sortResults: function(results) {
-					results.sort(function(a, b) {
-						var aLastUsed = self._lastUsedTags.indexOf(a.id);
-						var bLastUsed = self._lastUsedTags.indexOf(b.id);
-
-						if (aLastUsed !== bLastUsed) {
-							if (bLastUsed === -1) {
-								return -1;
-							}
-							if (aLastUsed === -1) {
-								return 1;
-							}
-							return aLastUsed < bLastUsed ? -1 : 1;
+						} else {
+							callback([]);
 						}
+					},
 
-						// Both not found
-						return OC.Util.naturalSortCompare(a.name, b.name);
-					});
-					return results;
-				},
+					formatResult: function(circle) {
+						return circle.name;
+					},
 
-				escapeMarkup: function(m) {
-					// prevent double markup escape
-					return m;
-				},
-				formatNoMatches: function() {
-					return t('circles', 'No circles found');
-				}
-			});
-			this.$filterField.on('change', _.bind(this._onTagsChanged, this));
-			return this.$filterField;
-		},
+					formatSelection: function(circle) {
+						return circle.name;
+					},
 
-		/**
-		 * Autocomplete function for dropdown results
-		 *
-		 * @param {Object} query select2 query object
-		 */
-		_queryCirclesAutocomplete: function(query) {
+					sortResults: function(results) {
+						return results;
+					},
 
-			OCA.Circles.api.listCircles("all", query.term, 1, function(result) {
-				query.callback({
-					results: result.data
+					escapeMarkup: function(m) {
+						// prevent double markup escape
+						return m;
+					},
+					formatNoMatches: function() {
+						return t('circles', 'No circles found');
+					}
 				});
-			});
-			/*
-			 OC.SystemTags.collection.fetch({
-			 success: function() {
-			 var results = OC.SystemTags.collection.filterByName(query.term);
+				this.$filterField.on('change', _.bind(this._onTagsChanged, this));
+				return this.$filterField;
+			},
 
-			 query.callback({
-			 results: _.invoke(results, 'toJSON')
-			 });
-			 }
-			 });
+			/**
+			 * Autocomplete function for dropdown results
+			 *
+			 * @param {Object} query select2 query object
 			 */
-		},
+			_queryCirclesAutocomplete: function(query) {
+				this.search(query.term, function(result) {
+					query.callback({
+						results: result.data
+					});
+				});
+			},
 
-		/**
-		 * Event handler for when the URL changed
-		 */
-		_onUrlChanged: function(e) {
-			if (e.dir) {
-				var circles = _.filter(e.dir.split('/'), function(val) { return val.trim() !== ''; });
-				this.$filterField.select2('val', circles || []);
-				this._circlesIds = circles;
-				this.reload();
-			}
-		},
+			/**
+			 * Event handler for when the URL changed
+			 */
+			_onUrlChanged: function(e) {
+				if (e.dir) {
+					var circles = _.filter(e.dir.split('/'), function(val) {
+						return val.trim() !== '';
+					});
+					this.$filterField.select2('val', circles || []);
+					this._circlesIds = circles;
+					this.reload();
+				}
+			},
 
-		_onTagsChanged: function(ev) {
-			var val = $(ev.target).val().trim();
-			if (val !== '') {
-				this._circlesIds = val.split(',');
-			} else {
-				this._circlesIds = [];
-			}
-
-			this.$el.trigger(jQuery.Event('changeDirectory', {
-				dir: this._circlesIds.join('/')
-			}));
-			this.reload();
-		},
-
-		updateEmptyContent: function() {
-			var dir = this.getCurrentDirectory();
-			if (dir === '/') {
-				// root has special permissions
-				if (!this._circlesIds.length) {
-					// no tags selected
-					this.$el.find('.emptyfilelist.emptycontent').html('<div class="icon-systemtags"></div>' +
-						'<h2>' + t('circles', 'Please select circles to filter by') + '</h2>');
+			_onTagsChanged: function(ev) {
+				var val = $(ev.target).val().trim();
+				if (val !== '') {
+					this._circlesIds = val.split(',');
 				} else {
-					// tags selected but no results
-					this.$el.find('.emptyfilelist.emptycontent').html('<div class="icon-systemtags"></div>' +
-						'<h2>' + t('circles', 'No files found for the selected circles') + '</h2>');
+					this._circlesIds = [];
 				}
-				this.$el.find('.emptyfilelist.emptycontent').toggleClass('hidden', !this.isEmpty);
-				this.$el.find('.files-filestable thead th').toggleClass('hidden', this.isEmpty);
-			}
-			else {
-				OCA.Files.FileList.prototype.updateEmptyContent.apply(this, arguments);
-			}
-		},
 
-		getDirectoryPermissions: function() {
-			return OC.PERMISSION_READ | OC.PERMISSION_DELETE;
-		},
+				this.$el.trigger(jQuery.Event('changeDirectory', {
+					dir: this._circlesIds.join('/')
+				}));
+				this.reload();
+			},
 
-		updateStorageStatistics: function() {
-			// no op because it doesn't have
-			// storage info like free space / used space
-		},
-
-		reload: function() {
-			if (!this._circlesIds.length) {
-				// don't reload
-				this.updateEmptyContent();
-				this.setFiles([]);
-				return $.Deferred().resolve();
-			}
-
-			this._selectedFiles = {};
-			this._selectionSummary.clear();
-			if (this._currentFileModel) {
-				this._currentFileModel.off();
-			}
-			this._currentFileModel = null;
-			this.$el.find('.select-all').prop('checked', false);
-			this.showMask();
-			this._reloadCall = this.filesClient.getFilteredFiles(
-				{
-					circlesIds: this._circlesIds
-				},
-				{
-					properties: this._getWebdavProperties()
+			updateEmptyContent: function() {
+				var dir = this.getCurrentDirectory();
+				if (dir === '/') {
+					// root has special permissions
+					if (!this._circlesIds.length) {
+						// no tags selected
+						this.$el.find('.emptyfilelist.emptycontent').html(
+							'<div class="icon-systemtags"></div>' +
+							'<h2>' + t('circles', 'Please select circles to filter by') + '</h2>');
+					} else {
+						// tags selected but no results
+						this.$el.find('.emptyfilelist.emptycontent').html(
+							'<div class="icon-systemtags"></div>' +
+							'<h2>' + t('circles', 'No files found for the selected circles') + '</h2>');
+					}
+					this.$el.find('.emptyfilelist.emptycontent').toggleClass('hidden', !this.isEmpty);
+					this.$el.find('.files-filestable thead th').toggleClass('hidden', this.isEmpty);
+				} else {
+					OCA.Files.FileList.prototype.updateEmptyContent.apply(this, arguments);
 				}
-			);
-			if (this._detailsView) {
-				// close sidebar
-				this._updateDetailsView(null);
-			}
-			var callBack = this.reloadCallback.bind(this);
-			return this._reloadCall.then(callBack, callBack);
-		},
+			},
 
-		reloadCallback: function(status, result) {
-			if (result) {
-				// prepend empty dir info because original handler
-				result.unshift({});
-			}
+			getDirectoryPermissions: function() {
+				return OC.PERMISSION_READ | OC.PERMISSION_DELETE;
+			},
 
-			return OCA.Files.FileList.prototype.reloadCallback.call(this, status, result);
-		}
-	});
+			updateStorageStatistics: function() {
+				// no op because it doesn't have
+				// storage info like free space / used space
+			},
+
+			reload: function() {
+				if (!this._circlesIds.length) {
+					// don't reload
+					this.updateEmptyContent();
+					this.setFiles([]);
+					return $.Deferred().resolve();
+				}
+
+				this._selectedFiles = {};
+				this._selectionSummary.clear();
+				if (this._currentFileModel) {
+					this._currentFileModel.off();
+				}
+				this._currentFileModel = null;
+				this.$el.find('.select-all').prop('checked', false);
+				this.showMask();
+				this._reloadCall = this.filesClient.getFilteredFiles(
+					{
+						circlesIds: this._circlesIds
+					},
+					{
+						properties: this._getWebdavProperties()
+					}
+				);
+				if (this._detailsView) {
+					// close sidebar
+					this._updateDetailsView(null);
+				}
+				var callBack = this.reloadCallback.bind(this);
+				return this._reloadCall.then(callBack, callBack);
+			},
+
+			reloadCallback: function(status, result) {
+				if (result) {
+					// prepend empty dir info because original handler
+					result.unshift({});
+				}
+
+				return OCA.Files.FileList.prototype.reloadCallback.call(this, status, result);
+			},
+
+			search: function(term, callback) {
+				this.request({
+					method: 'GET',
+					url: OC.generateUrl('/apps/circles/listing'),
+					data: {
+						term: term
+					}
+				}, callback);
+			},
+
+			request: function(options, callback) {
+				var result = {status: -1};
+				var self = this;
+				$.ajax(options)
+					.done(function(res) {
+						self.onCallback(callback, res);
+					})
+					.fail(function() {
+						self.onCallback(callback, result);
+					});
+			},
+
+			onCallback: function(callback, result) {
+				if (callback && (typeof callback === 'function')) {
+					if (typeof result === 'object') {
+						callback(result);
+					} else {
+						callback({status: -1});
+					}
+				}
+			}
+		});
 
 	OCA.Circles.FileList = FileList;
 })();
