@@ -112,6 +112,8 @@ return [
 		['name' => 'Remote#members', 'url' => '/members/{circleId}/', 'verb' => 'GET'],
 		['name' => 'Remote#member', 'url' => '/member/{type}/{userId}/', 'verb' => 'GET'],
 		['name' => 'Remote#inherited', 'url' => '/inherited/{circleId}/', 'verb' => 'GET'],
-		['name' => 'Remote#memberships', 'url' => '/memberships/{circleId}/', 'verb' => 'GET']
+		['name' => 'Remote#memberships', 'url' => '/memberships/{circleId}/', 'verb' => 'GET'],
+
+		['name' => 'Deprecated#listing', 'url' => '/listing', 'verb' => 'GET'],
 	]
 ];
