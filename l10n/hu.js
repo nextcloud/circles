@@ -121,7 +121,7 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s több fájlt osztott meg Önnel.",
     "Boot up" : "Rendszerindítás",
     "Nextcloud Initialization" : "A Nextcloud előkészítése",
-    "Circles App Initialization" : "Körök Alkalmazás Inicializálása",
+    "Circles App Initialization" : "Körök alkalmazás előkészítése",
     "Fresh installation status" : "Friss előkészítési állapot",
     "Building Local Database" : "Helyi adatbázis építése",
     "Testing Basic Circle Creation" : "Alapvető körlétrehozás tesztelése",
