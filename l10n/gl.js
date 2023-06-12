@@ -94,7 +94,7 @@ OC.L10N.register(
     "Mount point" : "Punto de montaxe",
     "Nextcloud Account" : "Conta Nextcloud",
     "Nextcloud Group" : "Grupo Nextcloud",
-    "Email Address" : "Enderezo de Correo Electrónico",
+    "Email Address" : "Enderezo de correo-e",
     "Contact" : "Contacto",
     "Circle" : "Círculo",
     "Nextcloud App" : "Aplicación Nextcloud",
