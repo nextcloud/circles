@@ -41,8 +41,10 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Membership;
 use OCA\Circles\Model\Probes\CircleProbe;
+use OCA\Circles\Model\ShareWrapper;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Service\ShareWrapperService;
 
 class Circles {
 	public const API_VERSION = [0, 10, 0];
@@ -225,7 +227,7 @@ class Circles {
 	/**
 	 * @param array $circleUniqueIds
 	 *
-	 * @return string[] array of object ids or empty array if none found
+	 * @return int[] array of object ids or empty array if none found
 	 *
 	 * @deprecated - used by apps/dav/lib/Connector/Sabre/FilesReportPlugin.php
 	 *
@@ -234,7 +236,33 @@ class Circles {
 	 * @since 0.14.0
 	 *
 	 */
-	public static function getFilesForCircles($circleUniqueIds) {
-		throw new \BadMethodCallException('Method is deprecated and not longer works');
+	public static function getFilesForCircles(array $circleUniqueIds): array {
+		try {
+			$circleService = \OC::$server->get(CircleService::class);
+			$federatedUserService = \OC::$server->get(FederatedUserService::class);
+			$shareWrapperService = \OC::$server->get(ShareWrapperService::class);
+
+			$federatedUserService->initCurrentUser();
+		} catch (\Exception $e) {
+			return [];
+		}
+
+		$result = [];
+		foreach ($circleUniqueIds as $uniqueId) {
+			try {
+				$circleService->getCircle($uniqueId); // checking current user have access to said circle
+				$files = array_map(
+					function (ShareWrapper $wrapper): int {
+						return $wrapper->getFileSource();
+					}, $shareWrapperService->getSharesToCircle($uniqueId)
+				);
+			} catch (\Exception $e) {
+				$files = [];
+			}
+
+			$result = array_merge($files, $result);
+		}
+
+		return array_values(array_unique($result));
 	}
 }
