@@ -28,7 +28,7 @@ on:
 permissions:
   contents: read
 
-concurrency: 
+concurrency:
   group: phpunit-mysql-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
@@ -83,7 +83,7 @@ jobs:
         with:
           php-version: ${{ matrix.php-versions }}
           tools: phpunit
-          extensions: mbstring, iconv, fileinfo, intl, mysql, pdo_mysql
+          extensions: bz2, ctype, curl, dom, fileinfo, gd, iconv, intl, json, libxml, mbstring, openssl, pcntl, posix, session, simplexml, xmlreader, xmlwriter, zip, zlib, mysql, pdo_mysql
           coverage: none
 
       - name: Check composer file existence

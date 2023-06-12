@@ -28,7 +28,7 @@ on:
 permissions:
   contents: read
 
-concurrency: 
+concurrency:
   group: phpunit-oci-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
@@ -74,7 +74,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
-          extensions: mbstring, fileinfo, intl, sqlite, pdo_sqlite, oci8
+          extensions: bz2, ctype, curl, dom, fileinfo, gd, iconv, intl, json, libxml, mbstring, openssl, pcntl, posix, session, simplexml, xmlreader, xmlwriter, zip, zlib, sqlite, pdo_sqlite, oci8
           tools: phpunit
           coverage: none
 
