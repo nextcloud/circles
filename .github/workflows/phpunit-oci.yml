@@ -48,9 +48,13 @@ jobs:
 
     services:
       oracle:
-        image: deepdiver/docker-oracle-xe-11g # 'wnameless/oracle-xe-11g-r2'
+        image: ghcr.io/gvenzl/oracle-xe:11
         ports:
           - 1521:1521/tcp
+        env:
+          ORACLE_RANDOM_PASSWORD: true
+          APP_USER: autotest
+          APP_USER_PASSWORD: owncloud
 
     steps:
       - name: Set app env
