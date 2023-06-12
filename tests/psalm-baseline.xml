@@ -16,6 +16,11 @@
       <code>Circles::generateAbsoluteLink($circle-&gt;getUniqueId())</code>
     </UndefinedMethod>
   </file>
+  <file src="lib/AppInfo/Application.php">
+    <UndefinedClass occurrences="1">
+      <code>OCA\Files\App</code>
+    </UndefinedClass>
+  </file>
   <file src="lib/Circles/FileSharingBroadcaster.php">
     <InvalidScalarArgument occurrences="2">
       <code>$share-&gt;getId()</code>
