@@ -73,6 +73,7 @@ OC.L10N.register(
     "You are the new owner of {circle}" : "Eres el nuevo dueño de {circle}",
     "{member} is the new owner of {circle}" : "{member} es el nuevo dueño de {circle}",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Cualquier evento importante en un <strong>Círculo</strong> que estés moderando",
+    "Shared to Circles" : "Compartido a Círculos",
     "Personal" : "Personal",
     "System" : "Sistema",
     "Visible" : "Visible",

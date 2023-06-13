@@ -75,6 +75,7 @@ OC.L10N.register(
     "On events happening in a <strong>Circle</strong> of which you are a member" : "Kide zaren <strong>zirkuluetako</strong> gertaeretan",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Moderatzen ari zaren <strong>zirkulu</strong> bateko edozein gertaera garrantzitsu",
     "On global events happening in any <strong>Circle</strong>" : "<strong>Zirkulu</strong> batean gertatzen diren gertaera orokorretan",
+    "Shared to Circles" : "Zirkuluetara partekatua",
     "Single" : "Bakana",
     "Personal" : "Pertsonala",
     "System" : "Sistema",

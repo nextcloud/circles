@@ -73,6 +73,7 @@
     "On events happening in a <strong>Circle</strong> of which you are a member" : "При событии в <strong>круге</strong>, которому вы принадлежите ",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Любое важное событие в модерируемом вами <strong>круге </strong> ",
     "On global events happening in any <strong>Circle</strong>" : "При глобальном событии в <strong>круге</strong>, которому вы принадлежите ",
+    "Shared to Circles" : "Предоставленный кругам общий доступ",
     "Single" : "Единственный",
     "Personal" : "Личный",
     "System" : "Система",
