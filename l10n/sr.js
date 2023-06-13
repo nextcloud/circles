@@ -75,6 +75,7 @@ OC.L10N.register(
     "On events happening in a <strong>Circle</strong> of which you are a member" : "На догађаје који се дешавају у <strong>Кругу</strong> чији сте члан",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Било који битан догађај у <strong>Кругу</strong> који модеришете",
     "On global events happening in any <strong>Circle</strong>" : "На јавне догађаје који се дешавају и било ком <strong>кругу</strong>",
+    "Shared to Circles" : "Дељено на Кругове",
     "Single" : "Сам",
     "Personal" : "Лични",
     "System" : "Систем",

@@ -75,6 +75,7 @@ OC.L10N.register(
     "On events happening in a <strong>Circle</strong> of which you are a member" : "Quan es produeixin esdeveniments en un <strong>cercle</strong> del qual sigueu membre",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Quan es produeixi qualsevol esdeveniment important en un <strong>cercle</strong> que modereu",
     "On global events happening in any <strong>Circle</strong>" : "Quan es produeixin esdeveniments globals en qualsevol <strong>cercle</strong>",
+    "Shared to Circles" : "Compartit als Cercles",
     "Single" : "Individual",
     "Personal" : "Personal",
     "System" : "Sistema",

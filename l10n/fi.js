@@ -66,6 +66,7 @@ OC.L10N.register(
     "{member} sent a request to join {circle}" : "{member} lähetti pyynnön liittyä piiriin {circle}",
     "You are the new owner of {circle}" : "Olet piirin {circle} uusi omistaja",
     "{member} is the new owner of {circle}" : "{member} on piirin {circle} uusi omistaja",
+    "Shared to Circles" : "Jaettu piireille",
     "Personal" : "Henkilökohtainen",
     "System" : "Järjestelmä",
     "Visible" : "Näkyvissä",

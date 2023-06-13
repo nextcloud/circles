@@ -73,6 +73,7 @@ OC.L10N.register(
     "You are the new owner of {circle}" : "თქვენ ხართ {circle} წრის ახალი მფლობელი",
     "{member} is the new owner of {circle}" : "{member} ახლა {circle} წრის ახალი მფლობელია",
     "Any important event in a <strong>Circle</strong> you are moderating" : "მნიშვნელოვანი მოვლენა <strong>წრეში</strong> რომლის მოდერატორიც ხართ",
+    "Shared to Circles" : "წრეებთან გაზიარებული",
     "Personal" : "პირადი",
     "System" : "სისტემა",
     "Visible" : "ჩანს",

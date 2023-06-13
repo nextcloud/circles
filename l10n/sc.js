@@ -75,6 +75,7 @@ OC.L10N.register(
     "On events happening in a <strong>Circle</strong> of which you are a member" : "Pro is eventos de unu <strong>Giru</strong> de su chi ses cumponente",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Cale si siat eventu importante in un <strong>Giru</strong> chi ses moderende",
     "On global events happening in any <strong>Circle</strong>" : "Pro is eventos globales de cale si siat <strong>Giru</strong>",
+    "Shared to Circles" : "Cumpartzidu cun is giros\\",
     "Single" : "Ùnicu",
     "Personal" : "Personale",
     "System" : "Sistema",

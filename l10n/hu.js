@@ -75,6 +75,7 @@ OC.L10N.register(
     "On events happening in a <strong>Circle</strong> of which you are a member" : "Olyan eseményekről, amelyek olyan <strong>körben</strong> zajlanak, amelynek tagja",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Bármely fontos eseményről, amely olyan <strong>körben</strong> történt, melyeket moderál",
     "On global events happening in any <strong>Circle</strong>" : "Bármely <strong>körben</strong> zajló globális eseményekről",
+    "Shared to Circles" : "Körökkel megosztva",
     "Single" : "Egyéni",
     "Personal" : "Személyes",
     "System" : "Rendszer",

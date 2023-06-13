@@ -75,6 +75,7 @@ OC.L10N.register(
     "On events happening in a <strong>Circle</strong> of which you are a member" : "あなたがメンバーである<strong>サークル</strong> で発生するイベントに応じて",
     "Any important event in a <strong>Circle</strong> you are moderating" : "あなたがモデレートしている <strong>Circle</strong> の重要なイベント",
     "On global events happening in any <strong>Circle</strong>" : "いずれかの<strong>Circle</strong>で発生するグローバルなイベントに対応して",
+    "Shared to Circles" : "サークルと共有",
     "Single" : "シングル",
     "Personal" : "パーソナル",
     "System" : "システム",
