@@ -73,6 +73,7 @@ OC.L10N.register(
     "You are the new owner of {circle}" : "Ești noul proprietar al {circle}",
     "{member} is the new owner of {circle}" : "{member} este noul proprietar al {circle}",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Orice eveniment important într-un <strong>Cerc</strong> pe care îl moderezi",
+    "Shared to Circles" : "Distribuit în Cercuri",
     "Personal" : "Personal",
     "System" : "Sistem",
     "Visible" : "Vizibil",

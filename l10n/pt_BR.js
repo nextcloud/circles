@@ -75,6 +75,7 @@ OC.L10N.register(
     "On events happening in a <strong>Circle</strong> of which you are a member" : "Em eventos acontecendo em um <strong>Círculo</strong> do qual você é membro",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Qualquer evento importante em um <strong>Círculo</strong> que você está moderando",
     "On global events happening in any <strong>Circle</strong>" : "Em eventos globais acontecendo em qualquer <strong>Círculo</strong>",
+    "Shared to Circles" : "Compartilhar com Círculos",
     "Single" : "Único",
     "Personal" : "Pessoal",
     "System" : "Sistema",

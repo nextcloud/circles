@@ -75,6 +75,7 @@ OC.L10N.register(
     "On events happening in a <strong>Circle</strong> of which you are a member" : "当出现发生在一个您是其中一员的<strong>圈子</strong>的事件时",
     "Any important event in a <strong>Circle</strong> you are moderating" : "您正在<strong>圈子</strong>中主持的任何重要事件",
     "On global events happening in any <strong>Circle</strong>" : "当出现发生在任意<strong>圈子</strong>中的全局事件时",
+    "Shared to Circles" : "共享圈子的文件",
     "Single" : "单个",
     "Personal" : "个人",
     "System" : "系统",

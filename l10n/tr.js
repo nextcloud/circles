@@ -75,6 +75,7 @@ OC.L10N.register(
     "On events happening in a <strong>Circle</strong> of which you are a member" : "Üyesi olduğunuz bir <strong>Çevredeki</strong> olaylarda",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Sorumlusu olduğunuz bir <strong>Çevredeki</strong> önemli olaylarda",
     "On global events happening in any <strong>Circle</strong>" : "Herhangi bir <strong>Çevredeki</strong> genel olaylarda",
+    "Shared to Circles" : "Çevrelerle paylaşıldı",
     "Single" : "Tek",
     "Personal" : "Kişisel",
     "System" : "Sistem",

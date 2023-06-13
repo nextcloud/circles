@@ -21,6 +21,7 @@ OC.L10N.register(
     "{member} joined {circle}" : "{member} juntou-se a {circle}",
     "You left {circle}" : "Saiu de {circle}",
     "{member} left {circle}" : "{member} saiu de {circle}",
+    "Shared to Circles" : "Partilhado com Círculos",
     "Personal" : "Pessoal",
     "System" : "Sistema",
     "Visible" : "Visível",
