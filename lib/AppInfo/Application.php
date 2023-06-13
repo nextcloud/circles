@@ -73,6 +73,7 @@ use OCA\Circles\Notification\Notifier;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\DavService;
 use OCA\Circles\Search\UnifiedSearchProvider;
+use OCA\Files\App as FilesApp;
 use OCP\App\ManagerEvent;
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
@@ -87,6 +88,7 @@ use OCP\IServerContainer;
 use OCP\IUser;
 use OCP\User\Events\UserCreatedEvent;
 use OCP\User\Events\UserDeletedEvent;
+use OCP\Util;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Throwable;
 
@@ -199,10 +201,6 @@ class Application extends App implements IBootstrap {
 	public function boot(IBootContext $context): void {
 		$serverContainer = $context->getServerContainer();
 
-//		/** @var IManager $shareManager */
-//		$shareManager = $serverContainer->get(IManager::class);
-//		$shareManager->registerShareProvider(ShareByCircleProvider::class);
-
 		$this->configService = $context->getAppContainer()
 									   ->get(ConfigService::class);
 
@@ -263,18 +261,16 @@ class Application extends App implements IBootstrap {
 	 * @param IServerContainer $container
 	 */
 	public function registerFilesPlugin(IServerContainer $container) {
-//		$eventDispatcher = $container->getEventDispatcher();
-//		$eventDispatcher->addListener(
-//			'OCA\Files::loadAdditionalScripts',
-//			function() {
-//				Circles::addJavascriptAPI();
-//
-//				Util::addScript('circles', 'files/circles.files.app');
-//				Util::addScript('circles', 'files/circles.files.list');
-//
-//				Util::addStyle('circles', 'files/circles.filelist');
-//			}
-//		);
+		$eventDispatcher = $container->getEventDispatcher();
+		$eventDispatcher->addListener(
+			'OCA\Files::loadAdditionalScripts',
+			function () {
+				Util::addScript('circles', 'files/circles.files.app');
+				Util::addScript('circles', 'files/circles.files.list');
+
+				Util::addStyle('circles', 'files/circles.filelist');
+			}
+		);
 	}
 
 
@@ -282,19 +278,19 @@ class Application extends App implements IBootstrap {
 	 *
 	 */
 	public function registerFilesNavigation() {
-//		$appManager = FilesApp::getNavigationManager();
-//		$appManager->add(
-//			function() {
-//				$l = OC::$server->getL10N('circles');
-//
-//				return [
-//					'id' => 'circlesfilter',
-//					'appname' => 'circles',
-//					'script' => 'files/list.php',
-//					'order' => 25,
-//					'name' => $l->t('Shared to Circles'),
-//				];
-//			}
-//		);
+		$appManager = FilesApp::getNavigationManager();
+		$appManager->add(
+			function () {
+				$l = OC::$server->getL10N('circles');
+
+				return [
+					'id' => 'circlesfilter',
+					'appname' => 'circles',
+					'script' => 'files/list.php',
+					'order' => 25,
+					'name' => $l->t('Shared to Circles'),
+				];
+			}
+		);
 	}
 }

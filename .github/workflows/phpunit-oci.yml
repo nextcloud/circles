@@ -23,7 +23,11 @@ jobs:
 
     services:
       oracle:
-        image: deepdiver/docker-oracle-xe-11g # 'wnameless/oracle-xe-11g-r2'
+        image: ghcr.io/gvenzl/oracle-xe:11
+        env:
+          ORACLE_RANDOM_PASSWORD: true
+          APP_USER: autotest
+          APP_USER_PASSWORD: owncloud
         ports:
           - 1521:1521/tcp
 
@@ -49,7 +53,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
-          extensions: mbstring, fileinfo, intl, sqlite, pdo_sqlite, oci8
+          extensions: bz2, ctype, curl, dom, fileinfo, gd, iconv, intl, json, libxml, mbstring, openssl, pcntl, posix, session, simplexml, xmlreader, xmlwriter, zip, zlib, oci8
           tools: phpunit
           coverage: none
 
