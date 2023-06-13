@@ -73,6 +73,7 @@ OC.L10N.register(
     "You are the new owner of {circle}" : "Vi nun estas la nova posedanto de {circle}",
     "{member} is the new owner of {circle}" : "{member} nun estas la nova posedanto de {circle}",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Pri grava evento en <strong>rondo</strong> kiun vi kontrolas",
+    "Shared to Circles" : "Kunhavigita kun rondoj",
     "Personal" : "Persona",
     "System" : "Sistemo",
     "Visible" : "Videbla",

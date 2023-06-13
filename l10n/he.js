@@ -50,6 +50,7 @@ OC.L10N.register(
     "{member} sent a request to join {circle}" : "נשלחה בקשה על ידי {member} להצטרף אל {circle}",
     "You are the new owner of {circle}" : "קיבלת בעלות על {circle}",
     "{member} is the new owner of {circle}" : "הבעלות על {circle} הועברה לידי {member}",
+    "Shared to Circles" : "שותף למעגלים",
     "Single" : "בודד",
     "Personal" : "אישי",
     "System" : "מערכת",

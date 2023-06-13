@@ -75,6 +75,7 @@ OC.L10N.register(
     "On events happening in a <strong>Circle</strong> of which you are a member" : "Įvykiai, vykstantys  <strong>Rate</strong>, kurio narys Jūs esate",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Svarbūs įvykiai <strong>Rate</strong>, kuriame Jūs esate moderatorius",
     "On global events happening in any <strong>Circle</strong>" : "Visuotiniai įvykiai vykstantys  bet kuriame <strong>Rate</strong>",
+    "Shared to Circles" : "Bendrinama su  bendrystės ratu",
     "Personal" : "Asmeniniai",
     "System" : "Sistema",
     "Visible" : "Matoma",

@@ -75,6 +75,7 @@ OC.L10N.register(
     "On events happening in a <strong>Circle</strong> of which you are a member" : "Trên những sự kiên đang diễn ra trong một <strong> Vòng kết nối </strong> mà bạn là thành viên của nhóm",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Một sự kiện quan trọng trong một <strong> Vòng kết nối </strong> mà bạn đang điều hành",
     "On global events happening in any <strong>Circle</strong>" : "Trên những sự kiện chung đang diễn ra của tổ chức trong bất cứ <strong> Vòng kết nối </strong>",
+    "Shared to Circles" : "Đã được chia sẻ đến những Vòng kết nối",
     "Personal" : "Cá nhân",
     "System" : "Hệ thống",
     "Open" : "Mở",

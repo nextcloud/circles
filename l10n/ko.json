@@ -72,6 +72,7 @@
     "{member} is the new owner of {circle}" : "{member} 님이 {circle}의 새 소유자가 됨",
     "On events happening in a <strong>Circle</strong> of which you are a member" : "소속된 <strong>서클</strong>에서 일어나는 이벤트",
     "Any important event in a <strong>Circle</strong> you are moderating" : "관리하는 <strong>서클</strong>의 중요한 이벤트",
+    "Shared to Circles" : "서클에 공유됨",
     "Personal" : "개인",
     "System" : "시스템",
     "Visible" : "보임",

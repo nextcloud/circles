@@ -75,6 +75,7 @@ OC.L10N.register(
     "On events happening in a <strong>Circle</strong> of which you are a member" : "Vid händelser i en <strong>Cirkel</strong> där du är medlem",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Någon viktig händelse i en <strong>Cirkel</strong> du modererar",
     "On global events happening in any <strong>Circle</strong>" : "Vid globala händelser som händer i någon <strong>Cirkel</strong>",
+    "Shared to Circles" : "Delad med Cirklar",
     "Single" : "Singel",
     "Personal" : "Personlig",
     "System" : "System",
