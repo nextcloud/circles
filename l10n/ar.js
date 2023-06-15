@@ -10,6 +10,7 @@ OC.L10N.register(
     "Local" : "المحلي",
     "Root" : "الجذر",
     "Federated" : "المتحدة",
+    "Email Address" : "عنوان البريد الالكتروني",
     "Contact" : "التواصل",
     "Circle" : "حلقة",
     "Member" : "عضو",
