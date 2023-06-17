@@ -4,6 +4,7 @@ OC.L10N.register(
     "Personal" : "Isiklik",
     "System" : "Süsteem",
     "Visible" : "Nähtav",
+    "Open" : "Ava",
     "Hidden" : "Peidetud",
     "Local" : "Kohalik",
     "Root" : "Juur",
