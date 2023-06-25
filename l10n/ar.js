@@ -1,7 +1,7 @@
 OC.L10N.register(
     "circles",
     {
-    "Circles" : "جماعة",
+    "Circles" : "حلقة",
     "Personal" : "شخصي",
     "System" : "النظام",
     "Visible" : "مرئيّ",
@@ -28,6 +28,7 @@ OC.L10N.register(
     "No entries found in this folder" : "لا يوجد مدخلات في هذا المجلد ",
     "Name" : "الاسم",
     "Size" : "الحجم",
-    "Modified" : "آخر تعديل"
+    "Modified" : "آخر تعديل",
+    "Could not find share" : "تعذّر العثور على المُشاركة"
 },
 "nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;");
