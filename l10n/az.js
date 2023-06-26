@@ -9,6 +9,7 @@ OC.L10N.register(
     "Federated" : "Federated",
     "Admin" : "İnzibatçı",
     "Owner" : "Owner",
+    "Accept" : "Qəbul et",
     "No files in here" : "Burda fayl yoxdur",
     "No entries found in this folder" : "Bu qovluqda heç bir verilən tapılmadı",
     "Name" : "Ad",
