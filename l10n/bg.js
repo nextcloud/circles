@@ -75,6 +75,7 @@ OC.L10N.register(
     "On events happening in a <strong>Circle</strong> of which you are a member" : "На събития, случващи се в <strong>Circle</strong>, в който вие сте член",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Всяко важно събитие в <strong>Circle</strong>, което вие модерирате",
     "On global events happening in any <strong>Circle</strong>" : "На глобални събития, които се случват във всеки <strong>Circle</strong>",
+    "Shared to Circles" : "Споделено с Кръгове",
     "Single" : "Единичен",
     "Personal" : "Лични",
     "System" : "Система",
