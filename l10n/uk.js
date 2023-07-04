@@ -103,7 +103,7 @@ OC.L10N.register(
     "Moderator" : "Модератор",
     "Admin" : "Адміністратор",
     "Owner" : "Власник",
-    "%s shared »%s« with you." : "%s надано доступ до \"%s\".",
+    "%s shared »%s« with you." : "%s надав(-ла) доступ до \"%s\".",
     "%s shared »%s« with \"%s\"." : "%s надано доступ до \"%s\" із \"%s\".",
     "%s on %s" : "%s на %s",
     "%1$s shared »%2$s« with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$sподілився з вами \"%2$s\". \nНа вашу ел.скриньку було надіслано лист із посиланням для доступу до ресурсу.\n",
