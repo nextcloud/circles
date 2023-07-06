@@ -142,6 +142,8 @@ class CirclesQueryHelper {
 			[CoreQueryBuilder::HELPER],
 			[
 				'getData' => $fullDetails,
+				'filterPersonalCircles' => true,
+				'includePersonalCircles' => true,
 				'minimumLevel' => Member::LEVEL_MEMBER
 			]
 		);
