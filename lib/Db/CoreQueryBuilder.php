@@ -1388,7 +1388,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 				$orXLevelCheck->add(
 					$this->expr()->gte(
 						$alias . '.level',
-						$this->createNamedParameter($minimumLevel)
+						$this->createNamedParameter($minimumLevel, self::PARAM_INT)
 					)
 				);
 			},
