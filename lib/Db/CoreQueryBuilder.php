@@ -41,6 +41,7 @@ use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
+use OCA\Circles\Model\Probes\DataProbe;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Tools\Db\ExtendedQueryBuilder;
 use OCA\Circles\Tools\Traits\TArrayTools;
@@ -405,18 +406,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			}
 			$orX->add($andX);
 		}
-		if ($circle->getDescription() !== '') {
-			$orDescription = $expr->orX();
-			foreach (explode(' ', $circle->getDescription()) as $word) {
-				$orDescription->add(
-					$expr->iLike(
-						$this->getDefaultSelectAlias() . '.' . 'description',
-						$this->createNamedParameter('%' . $word . '%')
-					)
-				);
-			}
-			$orX->add($orDescription);
-		}
+
 		if ($orX->count() > 0) {
 			$this->andWhere($orX);
 		}
