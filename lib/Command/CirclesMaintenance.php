@@ -91,8 +91,8 @@ class CirclesMaintenance extends Base {
 				 'clean-shares', '', InputOption::VALUE_NONE, 'remove Circles\' shares'
 			 )
 			 ->addOption(
-			 	'uninstall', '', InputOption::VALUE_NONE,
-			 	'Uninstall the apps and everything related to the app from the database'
+				'uninstall', '', InputOption::VALUE_NONE,
+				'Uninstall the apps and everything related to the app from the database'
 			 )
 			->addOption('force-refresh', '', InputOption::VALUE_NONE, 'enforce some refresh');
 	}
