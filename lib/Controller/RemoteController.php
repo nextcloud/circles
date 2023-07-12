@@ -245,6 +245,8 @@ class RemoteController extends Controller {
 
 			return new DataResponse($this->serialize($test));
 		} catch (Exception $e) {
+			$this->e($e);
+
 			return $this->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
 		}
 	}
