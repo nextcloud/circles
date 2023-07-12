@@ -721,14 +721,22 @@ class FederatedUserService {
 	 * @throws RequestBuilderException
 	 */
 	public function getFederatedUser(string $federatedId, int $type = Member::TYPE_SINGLE): FederatedUser {
-		// if type=user, we check that handle@domain is not an actual local user
-		if ($type === Member::TYPE_USER) {
-			try {
-				return $this->getLocalFederatedUser($federatedId);
-			} catch (Exception $e) {
+		// first testing federatedId string as a whole;
+		try {
+			switch ($type) {
+				case Member::TYPE_USER:
+					return $this->getLocalFederatedUser($federatedId);
+				case Member::TYPE_GROUP:
+					return $this->getFederatedUser_Group($federatedId);
+				case Member::TYPE_MAIL:
+					return $this->getFederatedUser_Mail($federatedId);
+				case Member::TYPE_CONTACT:
+					return $this->getFederatedUser_Contact($federatedId);
 			}
+		} catch (Exception $e) {
 		}
 
+		// then if nothing found, extract remote instance from string
 		[$singleId, $instance] = $this->extractIdAndInstance($federatedId);
 
 		switch ($type) {
@@ -739,10 +747,6 @@ class FederatedUserService {
 				return $this->getFederatedUser_User($singleId, $instance);
 			case Member::TYPE_GROUP:
 				return $this->getFederatedUser_Group($singleId, $instance);
-			case Member::TYPE_MAIL:
-				return $this->getFederatedUser_Mail($federatedId);
-			case Member::TYPE_CONTACT:
-				return $this->getFederatedUser_Contact($federatedId);
 		}
 
 		throw new UserTypeNotFoundException();
@@ -879,14 +883,14 @@ class FederatedUserService {
 	 * @throws UnknownRemoteException
 	 * @throws RequestBuilderException
 	 */
-	public function getFederatedUser_Group(string $groupName, string $instance): FederatedUser {
+	public function getFederatedUser_Group(string $groupName, string $instance = ''): FederatedUser {
 		if ($this->configService->isLocalInstance($instance)) {
 			$circle = $this->getGroupCircle($groupName);
 			$federatedGroup = new FederatedUser();
 
 			return $federatedGroup->importFromCircle($circle);
 		} else {
-			// TODO: implement remote groups
+			throw new FederatedUserNotFoundException('remote group not supported yet. Use singleId');
 		}
 	}
 
@@ -948,11 +952,13 @@ class FederatedUserService {
 	 */
 	public function extractIdAndInstance(string $federatedId): array {
 		$federatedId = trim($federatedId, '@');
-		if (strrpos($federatedId, '@') === false) {
+		$pos = strrpos($federatedId, '@');
+		if ($pos === false) {
 			$userId = $federatedId;
 			$instance = $this->interfaceService->getLocalInstance();
 		} else {
-			[$userId, $instance] = explode('@', $federatedId);
+			$userId = substr($federatedId, 0, $pos);
+			$instance = substr($federatedId, $pos + 1);
 		}
 
 		return [$userId, $instance];
