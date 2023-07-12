@@ -39,9 +39,12 @@ use OCP\Migration\SimpleMigrationStep;
 use Psr\Log\LoggerInterface;
 
 class Version0028Date20230705222601 extends SimpleMigrationStep {
+	private LoggerInterface $logger;
+
 	public function __construct(
-		private LoggerInterface $logger
+		LoggerInterface $logger
 	) {
+		$this->logger = $logger;
 	}
 
 	public function changeSchema(IOutput $output, Closure $schemaClosure, array $options): ?ISchemaWrapper {
