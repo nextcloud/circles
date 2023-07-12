@@ -405,18 +405,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			}
 			$orX->add($andX);
 		}
-		if ($circle->getDescription() !== '') {
-			$orDescription = $expr->orX();
-			foreach (explode(' ', $circle->getDescription()) as $word) {
-				$orDescription->add(
-					$expr->iLike(
-						$this->getDefaultSelectAlias() . '.' . 'description',
-						$this->createNamedParameter('%' . $word . '%')
-					)
-				);
-			}
-			$orX->add($orDescription);
-		}
+
 		if ($orX->count() > 0) {
 			$this->andWhere($orX);
 		}
