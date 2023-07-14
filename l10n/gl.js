@@ -101,7 +101,7 @@ OC.L10N.register(
     "Nextcloud App" : "Aplicación Nextcloud",
     "Member" : "Membro",
     "Moderator" : "Moderador",
-    "Admin" : "Administrador",
+    "Admin" : "Administración",
     "Owner" : "Propietario",
     "%s shared »%s« with you." : "%s compartiu «%s» con Vde.",
     "%s shared »%s« with \"%s\"." : "%s compartiu «%s» con «%s».",
@@ -183,7 +183,7 @@ OC.L10N.register(
     "Modified" : "Modificado",
     "Initialisation Nextcloud" : "Inicialización de Nextcloud",
     "Initialisation Circles App" : "Inicialización da aplicación Círculos",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Vde. non pode usar a aplicación Círculos ata que o administrador teña permitido polo menos un tipo de círculo",
-    "Could not find share" : "Non foi posíbel atopar o recurso compartido"
+    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Vde. non pode usar a aplicación Círculos ata que a administración da instancia. teña permitido polo menos un tipo de círculo",
+    "Could not find share" : "Non foi posíbel atopar a compartición"
 },
 "nplurals=2; plural=(n != 1);");
