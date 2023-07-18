@@ -92,6 +92,93 @@ class SendMailService {
 	 * @param string $author
 	 * @param Circle $circle
 	 * @param Member $member
+	 * @param array $mails
+	 */
+	public function generateInvitationMail(
+		string $author,
+		Circle $circle,
+		Member $member,
+		array $mails,
+	): void {
+
+
+		if ($member->getUserType() === Member::TYPE_MAIL) {
+			$mails = [$member->getUserId()];
+		}
+
+		if (empty($mails)) {
+			return;
+		}
+
+		$circleName = $circle->getDisplayName();
+
+		$template = $this->generateMailInvitation(
+			$author,
+			$circleName
+		);
+
+		foreach ($mails as $mail) {
+			try {
+				$this->sendMailInvitation($template, $author, $mail, $circleName);
+			} catch (Exception $e) {
+			}
+		}
+	}
+
+	/**
+	 * @param string $author
+	 * @param string $circleName
+	 *
+	 * @return IEMailTemplate
+	 */
+	private function generateMailInvitation(
+		string $author,
+		string $circleName
+	): IEMailTemplate {
+		$emailTemplate = $this->mailer->createEMailTemplate('circles.ExistingShareNotification', []);
+		$emailTemplate->addHeader();
+
+		$text = $this->l10n->t('%s invited you to the circle %s.', [$author, $circleName]);
+		$emailTemplate->addBodyText(htmlspecialchars($text), $text);
+
+		return $emailTemplate;
+	}
+
+
+	/**
+	 * @param IEMailTemplate $emailTemplate
+	 * @param string $author
+	 * @param string $recipient
+	 * @param string $circleName
+	 *
+	 * @throws Exception
+	 */
+	private function sendMailInvitation(
+		IEMailTemplate $emailTemplate,
+		string $author,
+		string $recipient,
+		string $circleName
+	) {
+		$instanceName = $this->defaults->getName();
+		$senderName = $this->l10n->t('%s on %s', [$author, $instanceName]);
+		$subject = $this->l10n->t('%s invited you to the circle %s.', [$author, $circleName]);
+
+		$message = $this->mailer->createMessage();
+
+		$message->setFrom([Util::getDefaultEmailAddress($instanceName) => $senderName]);
+		$message->setSubject($subject);
+		$message->setPlainBody($emailTemplate->renderText());
+		$message->setHtmlBody($emailTemplate->renderHtml());
+		$message->setTo([$recipient]);
+
+		$this->mailer->send($message);
+	}
+
+
+	/**
+	 * @param string $author
+	 * @param Circle $circle
+	 * @param Member $member
 	 * @param ShareWrapper[] $shares
 	 * @param array $mails
 	 * @param string $password
