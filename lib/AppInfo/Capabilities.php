@@ -83,7 +83,7 @@ class Capabilities implements ICapability {
 	/**
 	 * @param bool $complete
 	 *
-	 * @return array
+	 * @return array<string, array<string, mixed>>
 	 */
 	public function getCapabilities(bool $complete = false): array {
 		return [
