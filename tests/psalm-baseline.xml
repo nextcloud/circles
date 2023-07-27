@@ -113,6 +113,16 @@
       <code>($e-&gt;getCode() &gt; 0) ? $e-&gt;getCode() : $httpErrorCode</code>
     </InvalidScalarArgument>
   </file>
+  <file src="lib/Cron/Maintenance.php">
+    <MissingDependency occurrences="1">
+      <code>ITimeFactory</code>
+    </MissingDependency>
+  </file>
+  <file src="lib/Cron/MaintenanceHeavy.php">
+    <MissingDependency occurrences="1">
+      <code>ITimeFactory</code>
+    </MissingDependency>
+  </file>
   <file src="lib/Db/CoreRequestBuilder.php">
     <UndefinedClass occurrences="1">
       <code>Connection</code>
@@ -531,6 +541,11 @@
       <code>$context</code>
       <code>new GenericEvent(null, $arguments)</code>
     </InvalidArgument>
+    <MissingDependency occurrences="3">
+      <code>ITimeFactory</code>
+      <code>ITimeFactory</code>
+      <code>$this->time</code>
+    </MissingDependency>
   </file>
   <file src="lib/Service/FederatedShareService.php">
     <InvalidMethodCall occurrences="1">
