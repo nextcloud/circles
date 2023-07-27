@@ -80,7 +80,7 @@ jobs:
         with:
           php-version: ${{ matrix.php-versions }}
           tools: phpunit
-          extensions: mbstring, iconv, fileinfo, intl, pgsql, pdo_pgsql
+          extensions: ctype, curl, dom, fileinfo, gd, intl, json, mbstring, openssl, posix, xml, zip, pgsql, pdo_pgsql
           coverage: none
 
       - name: Check composer file existence
