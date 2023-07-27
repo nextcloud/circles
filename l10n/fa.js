@@ -17,6 +17,7 @@ OC.L10N.register(
     "You changed the level of the linked group {group} in {circle} to %1$s" : "شما سطح گروه مرتبط را تغییر داده اید {group} در {circle}  به   %1$s",
     "Personal" : "شخصی",
     "System" : "سیستم",
+    "Visible" : "قابل رویت",
     "Open" : "باز کردن",
     "Hidden" : "مخفی",
     "Local" : "محلی",
