@@ -548,7 +548,7 @@ class ModelManager {
 				return '';
 			}
 
-			if (!$this->appManager->isInstalled(substr($path, 0, $pos))) {
+			if ($this->appManager->isInstalled(substr($path, 0, $pos))) {
 				$this->pathLinkGeneration = $path;
 			}
 		}
