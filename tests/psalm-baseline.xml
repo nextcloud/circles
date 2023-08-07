@@ -732,7 +732,7 @@
       <code>$s[$e]</code>
     </InvalidArrayOffset>
   </file>
-  <file src="lib/Tools/Traits/TStringTools.php">
+  <file src="lib/Listeners/AccountUpdated.php">
     <RedundantCondition occurrences="1">
       <code>$event instanceof UserUpdatedEvent</code>
     </RedundantCondition>
