@@ -51,6 +51,8 @@ use OCA\Circles\Service\FederatedUserService;
 use OCP\IUser;
 
 /**
+ * @deprecated
+ *
  * Class DeprecatedListener
  *
  * some events are still using the old dispatcher.

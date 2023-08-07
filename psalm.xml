@@ -26,6 +26,8 @@
 			<errorLevel type="suppress">
 				<referencedClass name="OC" />
 				<referencedClass name="Doctrine\DBAL\Schema\SchemaException" />
+				<referencedClass name="OCA\Files\App" />
+				<referencedClass name="OCP\Accounts\UserUpdatedEvent" />
 			</errorLevel>
 		</UndefinedClass>
 		<UndefinedDocblockClass>
