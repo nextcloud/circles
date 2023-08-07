@@ -43,9 +43,9 @@ use OCA\Circles\Model\DavCard;
 use OCA\Circles\Model\DeprecatedMember;
 use OCA\DAV\CardDAV\CardDavBackend;
 use OCP\App\ManagerEvent;
+use OCP\EventDispatcher\GenericEvent;
 use OCP\Federation\ICloudIdManager;
 use OCP\IUserManager;
-use Symfony\Component\EventDispatcher\GenericEvent;
 
 /**
  * Class DavService

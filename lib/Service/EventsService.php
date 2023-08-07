@@ -36,13 +36,13 @@ use OCA\Circles\Model\DeprecatedMember;
 use OCP\Activity\IEvent;
 use OCP\Activity\IManager as IActivityManager;
 use OCP\AppFramework\Utility\ITimeFactory;
+use OCP\EventDispatcher\GenericEvent;
+use OCP\EventDispatcher\IEventDispatcher;
 use OCP\IURLGenerator;
 use OCP\IUser;
 use OCP\IUserManager;
 use OCP\Notification\IManager as INotificationManager;
 use OCP\Notification\INotification;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\EventDispatcher\GenericEvent;
 
 /**
  * @deprecated
@@ -70,7 +70,7 @@ class EventsService {
 	/** @var IURLGenerator */
 	private $urlGenerator;
 
-	/** @var EventDispatcher */
+	/** @var IEventDispatcher */
 	private $eventDispatcher;
 
 	/** @var DeprecatedCirclesRequest */
@@ -95,7 +95,7 @@ class EventsService {
 	 * @param INotificationManager $notificationManager
 	 * @param IUserManager $userManager
 	 * @param IURLGenerator $urlGenerator
-	 * @param EventDispatcher $eventDispatcher
+	 * @param IEventDispatcher $eventDispatcher
 	 * @param DeprecatedCirclesRequest $circlesRequest
 	 * @param DeprecatedMembersRequest $membersRequest
 	 * @param ConfigService $configService
@@ -104,7 +104,7 @@ class EventsService {
 	public function __construct(
 		$userId, ITimeFactory $time, IActivityManager $activityManager,
 		INotificationManager $notificationManager, IUserManager $userManager, IURLGenerator $urlGenerator,
-		EventDispatcher $eventDispatcher, DeprecatedCirclesRequest $circlesRequest, DeprecatedMembersRequest $membersRequest,
+		IEventDispatcher $eventDispatcher, DeprecatedCirclesRequest $circlesRequest, DeprecatedMembersRequest $membersRequest,
 		ConfigService $configService, MiscService $miscService
 	) {
 		$this->userId = $userId;

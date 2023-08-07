@@ -73,6 +73,8 @@ use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
+use OCP\EventDispatcher\GenericEvent;
+use OCP\EventDispatcher\IEventDispatcher;
 use OCP\Files\Config\IMountProviderCollection;
 use OCP\Group\Events\GroupCreatedEvent;
 use OCP\Group\Events\GroupDeletedEvent;
@@ -83,7 +85,6 @@ use OCP\IUser;
 use OCP\User\Events\UserCreatedEvent;
 use OCP\User\Events\UserDeletedEvent;
 use OCP\Util;
-use Symfony\Component\EventDispatcher\GenericEvent;
 use Throwable;
 
 /**
@@ -169,7 +170,7 @@ class Application extends App implements IBootstrap {
 		$context->registerEventListener(DestroyingCircleEvent::class, ListenerFilesDestroyingCircle::class);
 
 		// It seems that AccountManager use deprecated dispatcher, let's use a deprecated listener
-		$dispatcher = OC::$server->getEventDispatcher();
+		$dispatcher = OC::$server->get(IEventDispatcher::class);
 		$dispatcher->addListener(
 			'OC\AccountManager::userUpdated', function (GenericEvent $event) {
 				/** @var IUser $user */
@@ -228,7 +229,7 @@ class Application extends App implements IBootstrap {
 		/** @var DavService $davService */
 		$davService = $container->get(DavService::class);
 
-		$event = OC::$server->getEventDispatcher();
+		$event = OC::$server->get(IEventDispatcher::class);
 		$event->addListener(ManagerEvent::EVENT_APP_ENABLE, [$davService, 'onAppEnabled']);
 		$event->addListener('\OCA\DAV\CardDAV\CardDavBackend::createCard', [$davService, 'onCreateCard']);
 		$event->addListener('\OCA\DAV\CardDAV\CardDavBackend::updateCard', [$davService, 'onUpdateCard']);
@@ -240,7 +241,7 @@ class Application extends App implements IBootstrap {
 	 * @param IServerContainer $container
 	 */
 	public function registerFilesPlugin(IServerContainer $container) {
-		$eventDispatcher = $container->getEventDispatcher();
+		$eventDispatcher = $container->get(IEventDispatcher::class);
 		$eventDispatcher->addListener(
 			'OCA\Files::loadAdditionalScripts',
 			function () {
