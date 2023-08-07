@@ -28,6 +28,7 @@
 				<referencedClass name="Doctrine\DBAL\Schema\SchemaException" />
 				<referencedClass name="OCA\Files\App" />
 				<referencedClass name="OCP\Accounts\UserUpdatedEvent" />
+				<referencedClass name="OCA\Files\Event\LoadAdditionalScriptsEvent" />
 			</errorLevel>
 		</UndefinedClass>
 		<UndefinedDocblockClass>

@@ -37,6 +37,7 @@ use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\MemberLevelException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemHighSeverity;
+use OCA\Circles\IFederatedItemInitiatorMembershipNotRequired;
 use OCA\Circles\IFederatedItemMemberEmpty;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Service\ConfigService;
@@ -53,6 +54,7 @@ use OCA\Circles\Tools\Traits\TDeserialize;
 class MemberDisplayName implements
 	IFederatedItem,
 	IFederatedItemHighSeverity,
+	IFederatedItemInitiatorMembershipNotRequired,
 	IFederatedItemMemberEmpty {
 	use TDeserialize;
 
