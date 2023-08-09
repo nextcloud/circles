@@ -80,6 +80,7 @@ OC.L10N.register(
     "System" : "Hệ thống",
     "Open" : "Mở",
     "Hidden" : "Ẩn",
+    "Local" : "Cục bộ(ngoại tuyến)",
     "Federated" : "Federated",
     "Contact" : "Liên hệ",
     "Circle" : "Vòng kết nối",
