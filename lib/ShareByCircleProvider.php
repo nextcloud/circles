@@ -401,6 +401,11 @@ class ShareByCircleProvider implements IShareProvider {
 			if ($wrappedShare->getFileCache()->isAccessible()) {
 				$result[$wrappedShare->getFileSource()][] =
 					$wrappedShare->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
+			} else {
+				$this->logger->debug('shared document is not available anymore', ['wrappedShare' => $wrappedShare]);
+				if ($wrappedShare->getFileCache()->getPath() === '') {
+					$this->logger->notice('share is not available while path is empty. might comes from an unsupported storage.', ['wrappedShare' => $wrappedShare]);
+				}
 			}
 		}
 
