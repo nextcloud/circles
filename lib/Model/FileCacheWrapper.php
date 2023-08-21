@@ -31,13 +31,13 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
+use JsonSerializable;
+use OCA\Circles\Db\CoreQueryBuilder;
+use OCA\Circles\Exceptions\FileCacheNotFoundException;
 use OCA\Circles\Tools\Db\IQueryRow;
 use OCA\Circles\Tools\Exceptions\InvalidItemException;
 use OCA\Circles\Tools\IDeserializable;
 use OCA\Circles\Tools\Traits\TArrayTools;
-use JsonSerializable;
-use OCA\Circles\Db\CoreQueryBuilder;
-use OCA\Circles\Exceptions\FileCacheNotFoundException;
 
 /**
  * Class FileCacheWrapper
@@ -451,12 +451,19 @@ class FileCacheWrapper extends ManagedModel implements IQueryRow, IDeserializabl
 	 * @return bool
 	 */
 	public function isAccessible(): bool {
-		if ($this->getId() === 0 || $this->getPath() === '') {
+		if ($this->getId() === 0) {
 			return false;
 		}
 
-		return !(explode('/', $this->getPath(), 2)[0] !== 'files'
-				 && explode(':', $this->getStorage(), 2)[0] === 'home');
+		$path = $this->getPath();
+		[$storageType,] = explode('::', $this->getStorage(), 2);
+
+		if ($path === '') {
+			// we only accept empty path on external storage
+			return (in_array($storageType, ['local', 'webdav', 'ftp', 'sftp', 'swift', 'smb', 'amazon']));
+		}
+
+		return !(explode('/', $path, 2)[0] !== 'files' && $storageType === 'home');
 	}
 
 
