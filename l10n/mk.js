@@ -6,6 +6,7 @@ OC.L10N.register(
     "System" : "Систем",
     "Visible" : "Видлив",
     "Open" : "Отвори",
+    "Invite" : "Покани",
     "Hidden" : "Сокриен",
     "Local" : "Локално",
     "Root" : "Корен",
