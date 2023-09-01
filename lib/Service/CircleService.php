@@ -801,7 +801,7 @@ class CircleService {
 	 * @param CircleProbe $circleProbe
 	 * @param DataProbe|null $dataProbe
 	 *
-	 * @return array
+	 * @return Circle[]
 	 * @throws InitiatorNotFoundException
 	 * @throws RequestBuilderException
 	 */

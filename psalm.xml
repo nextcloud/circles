@@ -29,6 +29,7 @@
 				<referencedClass name="OCA\Files\App" />
 				<referencedClass name="OCP\Accounts\UserUpdatedEvent" />
 				<referencedClass name="OCA\Files\Event\LoadAdditionalScriptsEvent" />
+				<referencedClass name="OC\Share20\ShareAttributes" />
 			</errorLevel>
 		</UndefinedClass>
 		<UndefinedDocblockClass>
