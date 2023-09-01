@@ -2,6 +2,10 @@ OC.L10N.register(
     "circles",
     {
     "Circles" : "Кругови",
+    "Select circles to filter by" : "Изберете кругови за да филтрирате",
+    "Please select circles to filter by" : "Изберете кругови за да филтрирате",
+    "No files found for the selected circles" : "Нема пронајдено датотеки за селектиранате кругови",
+    "Shared to Circles" : "Споделено со кругови",
     "Personal" : "Сопствен",
     "System" : "Систем",
     "Visible" : "Видлив",
