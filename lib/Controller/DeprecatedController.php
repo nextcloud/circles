@@ -75,6 +75,7 @@ class DeprecatedController extends Controller {
 			$filterCircle->setName($term)
 						 ->setDisplayName($term);
 			$probe->setFilterCircle($filterCircle);
+			$probe->filterSystemCircles();
 
 			$data = $this->circleService->getCircles($probe);
 
