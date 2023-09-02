@@ -36,6 +36,7 @@ use JsonSerializable;
 use OC;
 use OC\Files\Cache\Cache;
 use OC\Share20\Share;
+use OC\Share20\ShareAttributes;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\ShareByCircleProvider;
 use OCA\Circles\Tools\Db\IQueryRow;
@@ -48,6 +49,7 @@ use OCP\IURLGenerator;
 use OCP\IUserManager;
 use OCP\L10N\IFactory;
 use OCP\Share\Exceptions\IllegalIDChangeException;
+use OCP\Share\IAttributes;
 use OCP\Share\IShare;
 
 /**
@@ -82,6 +84,8 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 	private ?Member $initiator = null;
 	private ?Member $owner = null;
 	private ?ShareToken $shareToken = null;
+	private ?IAttributes $attributes = null;
+	private bool $hideDownload = false;
 
 	public function __construct() {
 		$this->shareTime = new DateTime();
@@ -337,6 +341,27 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		return !is_null($this->shareToken);
 	}
 
+	public function getAttributes(): ?IAttributes {
+		return $this->attributes;
+	}
+
+	public function setAttributes(?IAttributes $attributes): self {
+		$this->attributes = $attributes;
+
+		return $this;
+	}
+
+	public function getHideDownload(): bool {
+		return $this->hideDownload;
+	}
+
+	public function setHideDownload(bool $hideDownload): self {
+		$this->hideDownload = $hideDownload;
+
+		return $this;
+	}
+
+
 	/**
 	 * @throws IllegalIDChangeException
 	 */
@@ -354,7 +379,8 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		$share->setTarget($this->getFileTarget());
 		$share->setProviderId($this->getProviderId());
 		$share->setStatus($this->getStatus());
-
+		$share->setHideDownload($this->getHideDownload());
+		$share->setAttributes($this->getAttributes());
 		if ($this->hasShareToken()) {
 			$password = $this->getShareToken()->getPassword();
 			if ($password !== '') {
@@ -456,6 +482,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		$this->setId($this->get('id', $data))
 			 ->setShareType($this->getInt('shareType', $data))
 			 ->setPermissions($this->getInt('permissions', $data))
+			 ->setHideDownload($this->getBool('hideDownload', $data))
 			 ->setItemType($this->get('itemType', $data))
 			 ->setItemSource($this->getInt('itemSource', $data))
 			 ->setItemTarget($this->get('itemTarget', $data))
@@ -524,6 +551,8 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 			 ->setToken($this->get($prefix . 'token', $data))
 			 ->setShareTime($shareTime);
 
+		$this->importAttributesFromDatabase($this->get('attributes', $data));
+
 //		if (($password = $this->get('personal_password', $data, '')) !== '') {
 //			$share->setPassword($this->get('personal_password', $data, ''));
 //		} else if (($password = $this->get('password', $data, '')) !== '') {
@@ -541,12 +570,39 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		return $this;
 	}
 
+
+	/**
+	 * Load from database format (JSON string) to IAttributes
+	 * based on \OC\Share20\DefaultShareProvider
+	 */
+	private function importAttributesFromDatabase(string $data): void {
+		if ($data === '') {
+			return;
+		}
+
+		$attributes = new ShareAttributes();
+		$compressedAttributes = json_decode($data, true);
+		if (!is_array($compressedAttributes)) {
+			return;
+		}
+
+		foreach ($compressedAttributes as $compressedAttribute) {
+			$attributes->setAttribute(...$compressedAttribute);
+		}
+
+		$this->setHideDownload(!($attributes->getAttribute('permissions', 'download') ?? true));
+		$this->setAttributes($attributes);
+	}
+
+
 	public function jsonSerialize(): array {
 		$arr = [
 			'id' => $this->getId(),
 			'shareType' => $this->getShareType(),
 			'providerId' => $this->getProviderId(),
 			'permissions' => $this->getPermissions(),
+			'attributes' => $this->getAttributes(),
+			'hideDownload' => $this->getHideDownload(),
 			'itemType' => $this->getItemType(),
 			'itemSource' => $this->getItemSource(),
 			'itemTarget' => $this->getItemTarget(),

@@ -31,16 +31,18 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
+use JsonException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\ShareWrapperNotFoundException;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Membership;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\ShareWrapper;
+use OCP\Files\Folder;
 use OCP\Files\NotFoundException;
 use OCP\Share\Exceptions\IllegalIDChangeException;
+use OCP\Share\IAttributes;
 use OCP\Share\IShare;
-use OCP\Files\Folder;
 
 /**
  * Class ShareWrapperRequest
@@ -62,18 +64,18 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 
 		$qb = $this->getShareInsertSql();
 		$qb->setValue('share_type', $qb->createNamedParameter($share->getShareType()))
-		   ->setValue('item_type', $qb->createNamedParameter($share->getNodeType()))
-		   ->setValue('item_source', $qb->createNamedParameter($share->getNodeId()))
-		   ->setValue('file_source', $qb->createNamedParameter($share->getNodeId()))
-		   ->setValue('file_target', $qb->createNamedParameter($share->getTarget()))
-		   ->setValue('share_with', $qb->createNamedParameter($share->getSharedWith()))
-		   ->setValue('uid_owner', $qb->createNamedParameter($share->getShareOwner()))
-		   ->setValue('uid_initiator', $qb->createNamedParameter($share->getSharedBy()))
-		   ->setValue('accepted', $qb->createNamedParameter(IShare::STATUS_ACCEPTED))
-		   ->setValue('password', $qb->createNamedParameter($password))
-		   ->setValue('permissions', $qb->createNamedParameter($share->getPermissions()))
-		   ->setValue('token', $qb->createNamedParameter($share->getToken()))
-		   ->setValue('stime', $qb->createFunction('UNIX_TIMESTAMP()'));
+			->setValue('item_type', $qb->createNamedParameter($share->getNodeType()))
+			->setValue('item_source', $qb->createNamedParameter($share->getNodeId()))
+			->setValue('file_source', $qb->createNamedParameter($share->getNodeId()))
+			->setValue('file_target', $qb->createNamedParameter($share->getTarget()))
+			->setValue('share_with', $qb->createNamedParameter($share->getSharedWith()))
+			->setValue('uid_owner', $qb->createNamedParameter($share->getShareOwner()))
+			->setValue('uid_initiator', $qb->createNamedParameter($share->getSharedBy()))
+			->setValue('accepted', $qb->createNamedParameter(IShare::STATUS_ACCEPTED))
+			->setValue('password', $qb->createNamedParameter($password))
+			->setValue('permissions', $qb->createNamedParameter($share->getPermissions()))
+			->setValue('token', $qb->createNamedParameter($share->getToken()))
+			->setValue('stime', $qb->createFunction('UNIX_TIMESTAMP()'));
 
 		if ($parentId > 0) {
 			$qb->setValue('parent', $qb->createNamedParameter($parentId));
@@ -95,12 +97,15 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 	 */
 	public function update(ShareWrapper $shareWrapper): void {
 		$qb = $this->getShareUpdateSql();
+		$shareAttributes = $this->formatShareAttributes($shareWrapper->getAttributes());
+
 		$qb->set('file_target', $qb->createNamedParameter($shareWrapper->getFileTarget()))
-		   ->set('share_with', $qb->createNamedParameter($shareWrapper->getSharedWith()))
-		   ->set('uid_owner', $qb->createNamedParameter($shareWrapper->getShareOwner()))
-		   ->set('uid_initiator', $qb->createNamedParameter($shareWrapper->getSharedBy()))
-		   ->set('accepted', $qb->createNamedParameter(IShare::STATUS_ACCEPTED))
-		   ->set('permissions', $qb->createNamedParameter($shareWrapper->getPermissions()));
+			->set('share_with', $qb->createNamedParameter($shareWrapper->getSharedWith()))
+			->set('uid_owner', $qb->createNamedParameter($shareWrapper->getShareOwner()))
+			->set('uid_initiator', $qb->createNamedParameter($shareWrapper->getSharedBy()))
+			->set('accepted', $qb->createNamedParameter(IShare::STATUS_ACCEPTED))
+			->set('permissions', $qb->createNamedParameter($shareWrapper->getPermissions()))
+			->set('attributes', $qb->createNamedParameter($shareAttributes));
 
 		$qb->limitToId((int)$shareWrapper->getId());
 
@@ -485,5 +490,31 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		);
 
 		$qb->execute();
+	}
+
+
+	/**
+	 * Format IAttributes to database format (JSON string)
+	 * based on OC\Share20\DefaultShareProvider::formatShareAttributes();
+	 */
+	private function formatShareAttributes(?IAttributes $attributes): ?string {
+		if (empty($attributes?->toArray())) {
+			return null;
+		}
+
+		$compressedAttributes = [];
+		foreach ($attributes->toArray() as $attribute) {
+			$compressedAttributes[] = [
+				$attribute['scope'],
+				$attribute['key'],
+				$attribute['enabled']
+			];
+		}
+
+		try {
+			return json_encode($compressedAttributes, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
+		} catch (JsonException $e) {
+			return null;
+		}
 	}
 }
