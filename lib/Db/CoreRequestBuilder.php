@@ -169,6 +169,7 @@ class CoreRequestBuilder {
 			'file_source',
 			'file_target',
 			'permissions',
+			'attributes',
 			'stime',
 			'accepted',
 			'expiration',
