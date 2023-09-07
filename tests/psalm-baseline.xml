@@ -430,8 +430,9 @@
     </InvalidReturnType>
   </file>
   <file src="lib/Model/ShareWrapper.php">
-    <InvalidArgument occurrences="1">
+    <InvalidArgument occurrences="2">
       <code>Cache::cacheEntryFromData($this-&gt;getFileCache()-&gt;toCache(), OC::$server-&gt;getMimeTypeLoader())</code>
+      <code>$this-&gt;setAttributes($attributes)</code>
     </InvalidArgument>
     <InvalidNullableReturnType occurrences="5">
       <code>Circle</code>
