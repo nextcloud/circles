@@ -428,6 +428,7 @@ class MigrationService {
 
 			try {
 				$this->migratingTo22_Entity($entity);
+				$this->membershipService->manageMemberships($entity->getSingleId());
 			} catch (Exception $e) {
 				$this->outputService->output('! Issue while migrating entity: ' . $e->getMessage());
 			}
