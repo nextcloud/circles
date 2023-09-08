@@ -517,7 +517,7 @@ class FederatedUserService {
 	 * @throws RequestBuilderException
 	 * @throws SingleCircleNotFoundException
 	 */
-	public function getLocalFederatedUser(string $userId, bool $check = true): FederatedUser {
+	public function getLocalFederatedUser(string $userId, bool $check = true, bool $force = false): FederatedUser {
 		$displayName = $userId;
 		if ($check) {
 			$user = $this->userManager->get($userId);
@@ -530,6 +530,7 @@ class FederatedUserService {
 
 		$federatedUser = new FederatedUser();
 		$federatedUser->set($userId, '', Member::TYPE_USER, $displayName);
+		$check = ($force) ? true : $check;
 		$this->fillSingleCircleId($federatedUser, $check);
 
 		return $federatedUser;

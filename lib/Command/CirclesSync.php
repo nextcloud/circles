@@ -99,6 +99,7 @@ class CirclesSync extends Base {
 			 ->addOption('migration', '', InputOption::VALUE_NONE, 'Migrate from Circles 0.21.0')
 			 ->addOption('force', '', InputOption::VALUE_NONE, 'Force migration')
 			 ->addOption('force-run', '', InputOption::VALUE_NONE, 'Force migration run')
+			 ->addOption('saml', '', InputOption::VALUE_NONE, 'migrate saml users')
 			 ->addOption('apps', '', InputOption::VALUE_NONE, 'Sync Apps')
 			 ->addOption('users', '', InputOption::VALUE_NONE, 'Sync Nextcloud Account')
 			 ->addOption('groups', '', InputOption::VALUE_NONE, 'Sync Nextcloud Groups')
@@ -124,6 +125,11 @@ class CirclesSync extends Base {
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$this->outputService->setOccOutput($output);
+
+		if ($input->getOption('saml')) {
+			$this->migrationService->migrationTo22_FromSaml();
+			return 0;
+		}
 
 		if ($input->getOption('migration')) {
 			if ($input->getOption('force-run')) {

@@ -399,6 +399,120 @@ class MigrationService {
 	}
 
 
+	public function migrationTo22_FromSaml(): void {
+		$this->appCircle = $this->federatedUserService->getAppInitiator(
+			Application::APP_ID,
+			Member::APP_CIRCLES
+		);
+
+		$qb = $this->dbConnection->getQueryBuilder();
+		$qb->select('uid')->from('user_saml_users');
+
+		$cursor = $qb->executeQuery();
+		while ($row = $cursor->fetch()) {
+			$entity = null;
+			$this->outputService->output('user: ' . $row['uid'], true);
+			try {
+				$entity = $this->federatedUserService->getLocalFederatedUser($row['uid'], true, true);
+			} catch (Exception $e) {
+				$this->outputService->output('entity is virtual');
+			}
+
+			if ($entity === null) {
+				try {
+					$entity = $this->federatedUserService->getLocalFederatedUser($row['uid'], false, true);
+				} catch (Exception $e) {
+					$this->outputService->output('! Issue while converting user to entity: ' . $e->getMessage());
+				}
+			}
+
+			try {
+				$this->migratingTo22_Entity($entity);
+			} catch (Exception $e) {
+				$this->outputService->output('! Issue while migrating entity: ' . $e->getMessage());
+			}
+		}
+	}
+
+
+	private function migratingTo22_Entity(FederatedUser $entity): void {
+		$oldCircles = $this->getOldCircles($entity->getUserId());
+		$currCircles = $this->getCurrCircles($entity->getSingleId());
+
+		foreach($oldCircles as $circleId) {
+			if (!in_array($circleId, $currCircles)) {
+				$qb = $this->dbConnection->getQueryBuilder();
+				$qb->select('*')->from('circle_members');
+
+				$expr = $qb->expr();
+				$andX = $expr->andX(
+					$expr->eq('user_id', $qb->createNamedParameter($entity->getUserId())),
+					$expr->eq('user_type', $qb->createNamedParameter(Member::TYPE_USER)),
+					$expr->eq('circle_id', $qb->createNamedParameter($circleId)),
+				);
+				$qb->where($andX);
+
+				$cursor = $qb->executeQuery();
+				$row = $cursor->fetch();
+
+				$data = new SimpleDataStore($row);
+				$member = $this->generateMemberFrom21($data, $entity->getSingleId());
+				$this->saveGeneratedMember($member);
+
+				$this->outputService->output('circle: ' . $circleId . ' - member: ' . $member->getId());
+			}
+		}
+	}
+
+
+	private function getOldCircles(string $userId): array {
+		$qb = $this->dbConnection->getQueryBuilder();
+		$qb->select('circle_id', 'member_id')
+			->from('circle_members');
+
+		$expr = $qb->expr();
+		$andX = $expr->andX(
+			$expr->eq('user_id', $qb->createNamedParameter($userId)),
+			$expr->eq('user_type', $qb->createNamedParameter(Member::TYPE_USER))
+		);
+
+		$qb->where($andX);
+
+		$circles = [];
+		$cursor = $qb->executeQuery();
+
+		while ($row = $cursor->fetch()) {
+			$circles[] = $row['circle_id'];
+		}
+
+		return $circles;
+	}
+
+
+	private function getCurrCircles(string $singleId): array {
+		$qb = $this->dbConnection->getQueryBuilder();
+		$qb->select('circle_id')
+			->from('circles_member');
+
+		$expr = $qb->expr();
+		$andX = $expr->andX(
+			$expr->eq('single_id', $qb->createNamedParameter($singleId)),
+			$expr->neq('single_id', 'circle_id')
+		);
+
+		$qb->where($andX);
+
+		$circles = [];
+		$cursor = $qb->executeQuery();
+
+		while ($row = $cursor->fetch()) {
+			$circles[] = $row['circle_id'];
+		}
+
+		return $circles;
+	}
+
+
 	/**
 	 */
 	private function migrationTo22_Members(): void {
@@ -449,7 +563,7 @@ class MigrationService {
 	 * @throws SingleCircleNotFoundException
 	 * @throws InvalidIdException
 	 */
-	private function generateMemberFrom21(SimpleDataStore $data): Member {
+	private function generateMemberFrom21(SimpleDataStore $data, string $singleId = ''): Member {
 		$member = new Member();
 
 		$member->setCircleId($data->g('circle_id'))
@@ -465,12 +579,16 @@ class MigrationService {
 
 		$this->convertMemberUserTypeFrom21($member, $data->gInt('user_type'));
 
-		$singleMember = $this->federatedUserService->getFederatedUser(
-			$member->getUserId(),
-			$member->getUserType()
-		);
+		if ($singleId === '') {
+			$singleMember = $this->federatedUserService->getFederatedUser(
+				$member->getUserId(),
+				$member->getUserType()
+			);
 
-		$member->setSingleId($singleMember->getSingleId());
+			$singleId = $singleMember->getSingleId();
+		}
+
+		$member->setSingleId($singleId);
 
 		return $member;
 	}
