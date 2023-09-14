@@ -90,14 +90,19 @@ trait TNCRequest {
 			} catch (ClientException $e) {
 				$request->setResult(new NCRequestResult(null, $e));
 			} catch (Exception $e) {
-				$this->exception($e, self::$DEBUG, ['request' => $request]);
+				$this->e($e, ['request' => $request]);
 			}
 		}
 
 		$this->debug('doRequest done', ['request' => $request]);
 
-		if ($exceptionOnIssue && (!$request->hasResult() || $request->getResult()->hasException())) {
-			throw new RequestNetworkException();
+		if ($exceptionOnIssue) {
+			if (!$request->hasResult()) {
+				throw new RequestNetworkException('Request failed without result.');
+			}
+			elseif ($request->getResult()->hasException()) {
+				throw new RequestNetworkException('Request failed.', 0, $request->getResult()->getException());
+			}
 		}
 	}
 
