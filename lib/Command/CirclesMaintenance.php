@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -28,12 +27,13 @@ declare(strict_types=1);
  *
  */
 
-
 namespace OCA\Circles\Command;
 
+use Exception;
 use OC\Core\Command\Base;
 use OCA\Circles\Db\CoreRequestBuilder;
 use OCA\Circles\Exceptions\MaintenanceException;
+use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MaintenanceService;
 use OCA\Circles\Service\OutputService;
 use Symfony\Component\Console\Input\InputInterface;
@@ -48,50 +48,32 @@ use Symfony\Component\Console\Question\Question;
  * @package OCA\Circles\Command
  */
 class CirclesMaintenance extends Base {
-	/** @var CoreRequestBuilder */
-	private $coreRequestBuilder;
-
-	/** @var MaintenanceService */
-	private $maintenanceService;
-
-	/** @var OutputService */
-	private $outputService;
-
-	/**
-	 * CirclesMaintenance constructor.
-	 *
-	 * @param CoreRequestBuilder $coreRequestBuilder
-	 * @param MaintenanceService $maintenanceService
-	 * @param OutputService $outputService
-	 */
 	public function __construct(
-		CoreRequestBuilder $coreRequestBuilder,
-		MaintenanceService $maintenanceService,
-		OutputService $outputService
+		private FederatedUserService $federatedUserService,
+		private CoreRequestBuilder $coreRequestBuilder,
+		private MaintenanceService $maintenanceService,
+		private OutputService $outputService
 	) {
 		parent::__construct();
-
-		$this->coreRequestBuilder = $coreRequestBuilder;
-		$this->maintenanceService = $maintenanceService;
-		$this->outputService = $outputService;
 	}
 
 
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:maintenance')
-			 ->setDescription('Clean stuff, keeps the app running')
-			 ->addOption('level', '', InputOption::VALUE_REQUIRED, 'level of maintenance', '3')
-			 ->addOption(
-			 	'reset', '', InputOption::VALUE_NONE, 'reset Circles; remove all data related to the App'
-			 )
-			 ->addOption(
-			 	'clean-shares', '', InputOption::VALUE_NONE, 'remove Circles\' shares'
-			 )
-			 ->addOption(
-			 	'uninstall', '', InputOption::VALUE_NONE,
-			 	'Uninstall the apps and everything related to the app from the database'
-			 )
+			->setDescription('Clean stuff, keeps the app running')
+			->addOption('refresh-display-name', '', InputOption::VALUE_REQUIRED, 'refresh single user display name', '')
+			->addOption('level', '', InputOption::VALUE_REQUIRED, 'level of maintenance', '3')
+			->addOption(
+				'reset', '', InputOption::VALUE_NONE, 'reset Circles; remove all data related to the App'
+			)
+			->addOption(
+				'clean-shares', '', InputOption::VALUE_NONE, 'remove Circles\' shares'
+			)
+			->addOption(
+				'uninstall', '', InputOption::VALUE_NONE,
+				'Uninstall the apps and everything related to the app from the database'
+			)
 			->addOption('force-refresh', '', InputOption::VALUE_NONE, 'enforce some refresh');
 	}
 
@@ -103,6 +85,10 @@ class CirclesMaintenance extends Base {
 	 * @return int
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
+		if (($refreshDisplayName = $input->getOption('refresh-display-name')) !== '') {
+			return $this->refreshSingleDisplayName($refreshDisplayName, $output);
+		}
+
 		$reset = $input->getOption('reset');
 		$uninstall = $input->getOption('uninstall');
 		$level = (int)$input->getOption('level');
@@ -165,6 +151,22 @@ class CirclesMaintenance extends Base {
 
 		$output->writeln('');
 		$output->writeln('<info>done</info>');
+
+		return 0;
+	}
+
+	/**
+	 * @param string $userId
+	 * @param OutputInterface $output
+	 * @return int
+	 * @throws Exception
+	 */
+	public function refreshSingleDisplayName(string $userId, OutputInterface $output): int {
+		$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId);
+		$displayName = $this->maintenanceService->updateDisplayName($federatedUser);
+		if ($displayName !== '') {
+			$output->writeln('Display name of ' . $federatedUser->getSingleId() . ' updated to ' . $displayName);
+		}
 
 		return 0;
 	}
