@@ -34,6 +34,7 @@ namespace OCA\Circles\Command;
 use OC\Core\Command\Base;
 use OCA\Circles\Db\CoreRequestBuilder;
 use OCA\Circles\Exceptions\MaintenanceException;
+use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MaintenanceService;
 use OCA\Circles\Service\OutputService;
 use Symfony\Component\Console\Input\InputInterface;
@@ -53,6 +54,9 @@ class CirclesMaintenance extends Base {
 	/** @var CoreRequestBuilder */
 	private $coreRequestBuilder;
 
+	/** @var FederatedUserService */
+	private $federatedUserService;
+
 	/** @var MaintenanceService */
 	private $maintenanceService;
 
@@ -68,12 +72,14 @@ class CirclesMaintenance extends Base {
 	 */
 	public function __construct(
 		CoreRequestBuilder $coreRequestBuilder,
+		FederatedUserService $federatedUserService,
 		MaintenanceService $maintenanceService,
 		OutputService $outputService
 	) {
 		parent::__construct();
 
 		$this->coreRequestBuilder = $coreRequestBuilder;
+		$this->federatedUserService = $federatedUserService;
 		$this->maintenanceService = $maintenanceService;
 		$this->outputService = $outputService;
 	}
@@ -83,6 +89,7 @@ class CirclesMaintenance extends Base {
 		parent::configure();
 		$this->setName('circles:maintenance')
 			 ->setDescription('Clean stuff, keeps the app running')
+			->addOption('refresh-display-name', '', InputOption::VALUE_REQUIRED, 'refresh single user display name', '')
 			 ->addOption('level', '', InputOption::VALUE_REQUIRED, 'level of maintenance', '3')
 			 ->addOption(
 				 'reset', '', InputOption::VALUE_NONE, 'reset Circles; remove all data related to the App'
@@ -105,6 +112,10 @@ class CirclesMaintenance extends Base {
 	 * @return int
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
+		if (($refreshDisplayName = $input->getOption('refresh-display-name')) !== '') {
+			return $this->refreshSingleDisplayName($refreshDisplayName, $output);
+		}
+
 		$reset = $input->getOption('reset');
 		$uninstall = $input->getOption('uninstall');
 		$level = (int)$input->getOption('level');
@@ -167,6 +178,16 @@ class CirclesMaintenance extends Base {
 
 		$output->writeln('');
 		$output->writeln('<info>done</info>');
+
+		return 0;
+	}
+
+	public function refreshSingleDisplayName(string $userId, OutputInterface $output): int {
+		$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId);
+		$displayName = $this->maintenanceService->updateDisplayName($federatedUser);
+		if ($displayName !== '') {
+			$output->writeln('Display name of ' . $federatedUser->getSingleId() . ' updated to ' . $displayName);
+		}
 
 		return 0;
 	}

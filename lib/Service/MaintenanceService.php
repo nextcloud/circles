@@ -32,12 +32,14 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 use Exception;
+use OC\User\NoUserException;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\ShareWrapperRequest;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\MaintenanceException;
 use OCA\Circles\Exceptions\RequestBuilderException;
+use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
@@ -321,8 +323,8 @@ class MaintenanceService {
 	private function removeCirclesWithNoOwner(): void {
 		$probe = new CircleProbe();
 		$probe->includeSystemCircles()
-			  ->includeSingleCircles()
-			  ->includePersonalCircles();
+			->includeSingleCircles()
+			->includePersonalCircles();
 		$circles = $this->circleService->getCircles($probe);
 		foreach ($circles as $circle) {
 			if (!$circle->hasOwner()) {
@@ -359,8 +361,8 @@ class MaintenanceService {
 	private function removeDeprecatedShares(): void {
 		$probe = new CircleProbe();
 		$probe->includePersonalCircles()
-			  ->includeSingleCircles()
-			  ->includeSystemCircles();
+			->includeSingleCircles()
+			->includeSystemCircles();
 
 		$circles = array_map(
 			function (Circle $circle) {
@@ -391,8 +393,8 @@ class MaintenanceService {
 	private function updateAllMemberships(): void {
 		$probe = new CircleProbe();
 		$probe->includeSystemCircles()
-			  ->includeSingleCircles()
-			  ->includePersonalCircles();
+			->includeSingleCircles()
+			->includePersonalCircles();
 
 		foreach ($this->circleService->getCircles($probe) as $circle) {
 			$this->membershipService->manageMemberships($circle->getSingleId());
@@ -409,8 +411,8 @@ class MaintenanceService {
 
 		$probe = new CircleProbe();
 		$probe->includeSingleCircles()
-			  ->setFilterCircle($circleFilter)
-			  ->mustBeOwner();
+			->setFilterCircle($circleFilter)
+			->mustBeOwner();
 
 		$circles = $this->circleService->getCircles($probe);
 
@@ -420,12 +422,33 @@ class MaintenanceService {
 				continue; // ignore update done in the last 8 days.
 			}
 
-			if ($owner->getUserType() === Member::TYPE_USER) {
-				$user = $this->userManager->get($owner->getUserId());
-				$this->memberRequest->updateDisplayName($owner->getSingleId(), $user->getDisplayName());
-				$this->circleRequest->updateDisplayName($owner->getSingleId(), $user->getDisplayName());
-			}
+			$this->updateDisplayName($owner);
 		}
+	}
+
+
+	/**
+	 * @param IFederatedUser $federatedUser
+	 * @return string
+	 * @throws NoUserException
+	 */
+	public function updateDisplayName(IFederatedUser $federatedUser): string {
+		if ($federatedUser->getUserType() !== Member::TYPE_USER) {
+			return '';
+		}
+
+		$user = $this->userManager->get($federatedUser->getUserId());
+		if ($user === null) {
+			throw new NoUserException();
+		}
+
+		$displayName = $user->getDisplayName();
+		if ($displayName !== '') {
+			$this->memberRequest->updateDisplayName($federatedUser->getSingleId(), $displayName);
+			$this->circleRequest->updateDisplayName($federatedUser->getSingleId(), $displayName);
+		}
+
+		return $displayName;
 	}
 
 
