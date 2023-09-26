@@ -37,6 +37,7 @@ use OCA\Circles\Exceptions\MaintenanceException;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MaintenanceService;
 use OCA\Circles\Service\OutputService;
+use OCP\IDBConnection;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -63,6 +64,9 @@ class CirclesMaintenance extends Base {
 	/** @var OutputService */
 	private $outputService;
 
+	/** @var IDBConnection */
+	private $dbConnection;
+
 	/**
 	 * CirclesMaintenance constructor.
 	 *
@@ -74,7 +78,8 @@ class CirclesMaintenance extends Base {
 		CoreRequestBuilder $coreRequestBuilder,
 		FederatedUserService $federatedUserService,
 		MaintenanceService $maintenanceService,
-		OutputService $outputService
+		OutputService $outputService,
+		IDBConnection $dbConnection
 	) {
 		parent::__construct();
 
@@ -82,6 +87,7 @@ class CirclesMaintenance extends Base {
 		$this->federatedUserService = $federatedUserService;
 		$this->maintenanceService = $maintenanceService;
 		$this->outputService = $outputService;
+		$this->dbConnection = $dbConnection;
 	}
 
 
@@ -90,6 +96,7 @@ class CirclesMaintenance extends Base {
 		$this->setName('circles:maintenance')
 			 ->setDescription('Clean stuff, keeps the app running')
 			->addOption('refresh-display-name', '', InputOption::VALUE_REQUIRED, 'refresh single user display name', '')
+			->addOption('fix-display-name', '', InputOption::VALUE_NONE, 'fix saml user display name')
 			 ->addOption('level', '', InputOption::VALUE_REQUIRED, 'level of maintenance', '3')
 			 ->addOption(
 				 'reset', '', InputOption::VALUE_NONE, 'reset Circles; remove all data related to the App'
@@ -114,6 +121,10 @@ class CirclesMaintenance extends Base {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		if (($refreshDisplayName = $input->getOption('refresh-display-name')) !== '') {
 			return $this->refreshSingleDisplayName($refreshDisplayName, $output);
+		}
+
+		if ($input->getOption('fix-display-name')) {
+			return $this->fixSamlDisplayName($output);
 		}
 
 		$reset = $input->getOption('reset');
@@ -190,5 +201,15 @@ class CirclesMaintenance extends Base {
 		}
 
 		return 0;
+	}
+
+	public function fixSamlDisplayName(OutputInterface $output): int {
+		$qb = $this->dbConnection->getQueryBuilder();
+		$qb->select('uid')->from('user_saml_users');
+
+		$cursor = $qb->executeQuery();
+		while ($row = $cursor->fetch()) {
+			$this->refreshSingleDisplayName($row['uid'], $output);
+		}
 	}
 }
