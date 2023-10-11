@@ -184,6 +184,7 @@ class CircleRequest extends CircleRequestBuilder {
 		$qb->filterCircles(CoreQueryBuilder::CIRCLE, $probe);
 		if (!is_null($initiator)) {
 			$qb->limitToInitiator(CoreQueryBuilder::CIRCLE, $initiator);
+			$qb->orderBy($qb->generateAlias(CoreQueryBuilder::CIRCLE, CoreQueryBuilder::INITIATOR) . '.level', 'desc');
 		}
 		if ($probe->hasFilterMember()) {
 			$qb->limitToDirectMembership(CoreQueryBuilder::CIRCLE, $probe->getFilterMember());
