@@ -124,11 +124,20 @@
 					},
 
 					formatResult: function(circle) {
-						return circle.name;
+						return this.escapeHTML(circle.name);
 					},
 
 					formatSelection: function(circle) {
-						return circle.name;
+						return this.escapeHTML(circle.name);
+					},
+
+					escapeHTML: function (text) {
+						return text.toString()
+							.split('&').join('&amp;')
+							.split('<').join('&lt;')
+							.split('>').join('&gt;')
+							.split('"').join('&quot;')
+							.split('\'').join('&#039;');
 					},
 
 					sortResults: function(results) {
