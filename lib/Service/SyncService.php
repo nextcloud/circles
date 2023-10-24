@@ -31,8 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use OCA\Circles\Tools\Traits\TNCLogger;
-use OCA\Circles\Tools\Traits\TStringTools;
 use Exception;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleRequest;
@@ -61,6 +59,8 @@ use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\ManagedModel;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Tools\Traits\TNCLogger;
+use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\IGroupManager;
 use OCP\IUserManager;
 
@@ -248,7 +248,7 @@ class SyncService {
 	public function syncNextcloudUser(string $userId): FederatedUser {
 		$this->outputService->output('Syncing Nextcloud Account \'' . $userId . '\'', true);
 
-		return $this->federatedUserService->getLocalFederatedUser($userId);
+		return $this->federatedUserService->getLocalFederatedUser($userId, false, true);
 	}
 
 
@@ -293,9 +293,21 @@ class SyncService {
 		$this->outputService->output('Syncing Nextcloud Group \'' . $groupId . '\'', true);
 
 		$circle = $this->federatedUserService->getGroupCircle($groupId);
+		$members = array_map(function (Member $member): string {
+			return $member->getSingleId();
+		}, $this->memberRequest->getMembers($circle->getSingleId()));
+
 		$group = $this->groupManager->get($groupId);
+		if ($group->count() <= count($members)) {
+			return $circle;
+		}
+
 		foreach ($group->getUsers() as $user) {
 			$member = $this->generateGroupMember($circle, $user->getUID());
+			if (in_array($member->getSingleId(), $members)) {
+				continue;
+			}
+
 			$event = new FederatedEvent(SingleMemberAdd::class);
 			$event->setCircle($circle);
 			$event->setMember($member);
@@ -304,11 +316,7 @@ class SyncService {
 				$this->federatedEventService->newEvent($event);
 			} catch (Exception $e) {
 			}
-
-//			$this->memberRequest->insertOrUpdate($member);
 		}
-
-//		$this->membershipService->onUpdate($circle->getSingleId());
 
 		return $circle;
 	}
@@ -452,10 +460,6 @@ class SyncService {
 		$event->setCircle($circle);
 		$event->setMember($member);
 		$this->federatedEventService->newEvent($event);
-
-//		$this->memberRequest->insertOrUpdate($member);
-
-//		$this->membershipService->onUpdate($member->getSingleId());
 	}
 
 
