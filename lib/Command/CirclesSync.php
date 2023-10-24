@@ -138,6 +138,10 @@ class CirclesSync extends Base {
 			return 0;
 		}
 
+		$output->writeln('<comment>This process requires a lot of memory.</comment>');
+		$output->writeln('<comment>If it crash, please restart it and it will continue where it stopped.</comment>');
+		$output->writeln('');
+
 		$sync = $this->filterSync($input);
 		$this->syncService->sync($sync);
 
