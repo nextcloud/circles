@@ -34,6 +34,7 @@ namespace OCA\Circles\Service;
 use Exception;
 use OC;
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\Db\AccountsRequest;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
@@ -107,6 +108,9 @@ class FederatedUserService {
 
 	/** @var IUserManager */
 	private $userManager;
+
+	/** @var AccountsRequest */
+	private $accountRequest;
 
 	/** @var IGroupManager */
 	private $groupManager;
@@ -185,6 +189,7 @@ class FederatedUserService {
 		ICacheFactory $cacheFactory,
 		FederatedEventService $federatedEventService,
 		MembershipService $membershipService,
+		AccountsRequest $accountRequest,
 		CircleRequest $circleRequest,
 		MemberRequest $memberRequest,
 		RemoteService $remoteService,
@@ -198,6 +203,7 @@ class FederatedUserService {
 		$this->groupManager = $groupManager;
 		$this->federatedEventService = $federatedEventService;
 		$this->membershipService = $membershipService;
+		$this->accountRequest = $accountRequest;
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
 		$this->remoteService = $remoteService;
@@ -517,20 +523,24 @@ class FederatedUserService {
 	 * @throws RequestBuilderException
 	 * @throws SingleCircleNotFoundException
 	 */
-	public function getLocalFederatedUser(string $userId, bool $check = true): FederatedUser {
+	public function getLocalFederatedUser(string $userId, bool $check = true, bool $generate = false): FederatedUser {
 		$displayName = $userId;
 		if ($check) {
 			$user = $this->userManager->get($userId);
 			if ($user === null) {
 				throw new FederatedUserNotFoundException('user ' . $userId . ' not found');
 			}
-			$userId = $user->getUID();
-			$displayName = $user->getDisplayName();
+			$displayName = $this->userManager->getDisplayName($userId);
+		} else {
+			$accountData = $this->accountRequest->getAccountData($userId);
+			if (array_key_exists('displayName', $accountData)) {
+				$displayName = $accountData['displayName'];
+			}
 		}
 
 		$federatedUser = new FederatedUser();
 		$federatedUser->set($userId, '', Member::TYPE_USER, $displayName);
-		$this->fillSingleCircleId($federatedUser, $check);
+		$this->fillSingleCircleId($federatedUser, ($check || $generate));
 
 		return $federatedUser;
 	}
