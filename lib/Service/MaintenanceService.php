@@ -32,6 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 use Exception;
+use OCA\Circles\Db\AccountsRequest;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\ShareWrapperRequest;
@@ -56,7 +57,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 class MaintenanceService {
 	use TNCLogger;
 
-
 	public const TIMEOUT = 18000;
 
 	public static $DELAY =
@@ -74,6 +74,9 @@ class MaintenanceService {
 
 	/** @var IGroupManager */
 	private $groupManager;
+
+	/** @var AccountsRequest */
+	private $accountRequest;
 
 	/** @var CircleRequest */
 	private $circleRequest;
@@ -129,6 +132,7 @@ class MaintenanceService {
 		IUserManager $userManager,
 		IGroupManager $groupManager,
 		CircleRequest $circleRequest,
+		AccountsRequest $accountRequest,
 		MemberRequest $memberRequest,
 		ShareWrapperRequest $shareWrapperRequest,
 		SyncService $syncService,
@@ -142,6 +146,7 @@ class MaintenanceService {
 		$this->userManager = $userManager;
 		$this->groupManager = $groupManager;
 		$this->circleRequest = $circleRequest;
+		$this->accountRequest = $accountRequest;
 		$this->memberRequest = $memberRequest;
 		$this->shareWrapperRequest = $shareWrapperRequest;
 		$this->syncService = $syncService;
@@ -421,9 +426,11 @@ class MaintenanceService {
 			}
 
 			if ($owner->getUserType() === Member::TYPE_USER) {
-				$user = $this->userManager->get($owner->getUserId());
-				$this->memberRequest->updateDisplayName($owner->getSingleId(), $user->getDisplayName());
-				$this->circleRequest->updateDisplayName($owner->getSingleId(), $user->getDisplayName());
+				$accountData = $this->accountRequest->getAccountData($owner->getUserId());
+				if (array_key_exists('displayName', $accountData)) {
+					$this->memberRequest->updateDisplayName($owner->getSingleId(), $accountData['displayName']);
+					$this->circleRequest->updateDisplayName($owner->getSingleId(), $accountData['displayName']);
+				}
 			}
 		}
 	}

@@ -34,9 +34,29 @@ class AccountsRequest extends AccountsRequestBuilder {
 	use TStringTools;
 
 
+
+	public function getAccountData(string $userId): array {
+		$qb = $this->getAccountsSelectSql();
+
+		$this->limitToDBField($qb, 'uid', $userId);
+
+		$cursor = $qb->execute();
+		$data = $cursor->fetch();
+		$cursor->closeCursor();
+
+		if ($data === false) {
+			return [];
+		}
+
+		return $this->parseAccountsSelectSql($data);
+	}
+
+
+
 	/**
 	 * @param string $userId
 	 *
+	 * @deprecated
 	 * @return array
 	 * @throws MemberDoesNotExistException
 	 */
@@ -58,6 +78,7 @@ class AccountsRequest extends AccountsRequestBuilder {
 
 
 	/**
+	 * @deprecated
 	 * @return array
 	 */
 	public function getAll(): array {
