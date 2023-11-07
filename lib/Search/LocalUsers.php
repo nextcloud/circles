@@ -26,11 +26,11 @@
 
 namespace OCA\Circles\Search;
 
-use OCA\Circles\Tools\Traits\TArrayTools;
 use OCA\Circles\ISearch;
-use OCA\Circles\Model\DeprecatedMember;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SearchResult;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use OCP\Collaboration\Collaborators\ISearch as ICollaboratorSearch;
 use OCP\Share\IShare;
 
@@ -51,7 +51,10 @@ class LocalUsers implements ISearch {
 	 * @param ICollaboratorSearch $search
 	 * @param ConfigService $configService
 	 */
-	public function __construct(ICollaboratorSearch $search, ConfigService $configService) {
+	public function __construct(
+		ICollaboratorSearch $search,
+		ConfigService $configService
+	) {
 		$this->search = $search;
 		$this->configService = $configService;
 	}
@@ -70,10 +73,12 @@ class LocalUsers implements ISearch {
 
 		$users = $userManager->search($needle);
 		foreach ($users as $user) {
-			$result[] =
-				new SearchResult(
-					$user->getUID(), DeprecatedMember::TYPE_USER, '', ['display' => $user->getDisplayName()]
-				);
+			$result[] = new SearchResult(
+				$user->getUID(),
+				Member::TYPE_USER,
+				'',
+				['display' => $userManager->getDisplayName($user->getUID())]
+			);
 		}
 
 		return $result;
@@ -94,7 +99,7 @@ class LocalUsers implements ISearch {
 			$parsed[] =
 				new SearchResult(
 					$this->get('value.shareWith', $entry),
-					DeprecatedMember::TYPE_USER,
+					Member::TYPE_USER,
 					'',
 					['display' => $this->get('label', $entry)]
 				);
