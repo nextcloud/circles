@@ -139,8 +139,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Engar færslur fundust í þessari möppu",
     "Name" : "Nafn",
     "Size" : "Stærð",
-    "Modified" : "Breytt",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Þú getur ekki notað Hringir-forritið fyrr en kerfisstjóri er búinn að leyfa a.m.k. eina gerð hringja",
-    "Could not find share" : "Gat ekki fundið sameign"
+    "Modified" : "Breytt"
 },
 "nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);");

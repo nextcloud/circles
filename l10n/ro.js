@@ -128,8 +128,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Nici o intrare găsită în acest folder",
     "Name" : "Nume",
     "Size" : "Mărime",
-    "Modified" : "Modificat",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Nu poți folosi aplicația Cercuri până când administratorul tău permite cel puțin un tip de cercuri",
-    "Could not find share" : "Nu am putut găsi distribuția"
+    "Modified" : "Modificat"
 },
 "nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));");

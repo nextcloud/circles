@@ -182,8 +182,6 @@ OC.L10N.register(
     "Size" : "Méret",
     "Modified" : "Módosítva",
     "Initialisation Nextcloud" : "A Nextcloud előkészítése",
-    "Initialisation Circles App" : "A Körök alkalmazás előkészítése",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "A Körök alkalmazás nem használható, amíg a rendszergazda legalább egy körtípust nem engedélyez.",
-    "Could not find share" : "A megosztás nem található"
+    "Initialisation Circles App" : "A Körök alkalmazás előkészítése"
 },
 "nplurals=2; plural=(n != 1);");

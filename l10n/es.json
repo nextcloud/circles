@@ -180,8 +180,6 @@
     "Size" : "Tamaño",
     "Modified" : "Modificado",
     "Initialisation Nextcloud" : "Inicialización de Nextcloud",
-    "Initialisation Circles App" : "Inicialización de la App Circles",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "No puedes usar la app Círculos hasta que el administrador haya permitido al menos un tipo de círculos",
-    "Could not find share" : "No se ha podido encontrar el recurso compartido"
+    "Initialisation Circles App" : "Inicialización de la App Circles"
 },"pluralForm" :"nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }

@@ -182,8 +182,6 @@ OC.L10N.register(
     "Size" : "Boyut",
     "Modified" : "Değiştirilme",
     "Initialisation Nextcloud" : "Nextcloud hazırlanıyor",
-    "Initialisation Circles App" : "Nextcloud çevreler uygulaması hazırlanıyor",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Yöneticiniz en az bir çevre türüne izin verene kadar Çevreler uygulamasını kullanamazsınız",
-    "Could not find share" : "Paylaşım bulunamadı"
+    "Initialisation Circles App" : "Nextcloud çevreler uygulaması hazırlanıyor"
 },
 "nplurals=2; plural=(n > 1);");

@@ -146,8 +146,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Tästä kansiosta ei löytynyt tietueita",
     "Name" : "Nimi",
     "Size" : "Koko",
-    "Modified" : "Muokattu",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Et voi käyttää Piirit-sovellusta ennen kuin ylläpitäjä on sallinut vähintään yhden tyypin piirin",
-    "Could not find share" : "Jakoa ei löytynyt"
+    "Modified" : "Muokattu"
 },
 "nplurals=2; plural=(n != 1);");

@@ -180,8 +180,6 @@
     "Size" : "Velikost",
     "Modified" : "Spremenjeno",
     "Initialisation Nextcloud" : "Začenjanje okolja Nextcloud",
-    "Initialisation Circles App" : "Začenjanje programa Krogi",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Programa Krogi ni mogoče uporabljati, dokler skrbnik ne omogoči vsaj ene vrste kroga.",
-    "Could not find share" : "Mesta souporabe ni mogoče najti"
+    "Initialisation Circles App" : "Začenjanje programa Krogi"
 },"pluralForm" :"nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);"
 }

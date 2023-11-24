@@ -36,7 +36,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Нема ништо во оваа папка",
     "Name" : "Име",
     "Size" : "Големина",
-    "Modified" : "Изменето",
-    "Could not find share" : "Неможе да се пронајде споделувањето"
+    "Modified" : "Изменето"
 },
 "nplurals=2; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : 1;");

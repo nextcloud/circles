@@ -180,8 +180,6 @@
     "Size" : "Розмір",
     "Modified" : "Змінено",
     "Initialisation Nextcloud" : "Ініціалізація Nextcloud",
-    "Initialisation Circles App" : "Ініціалізація застосунку Circle",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Ви не можете використовувати програму Circles, доки ваш адміністратор не дозволить принаймні один тип кіл",
-    "Could not find share" : "Не вдалося знайти спільний доступ"
+    "Initialisation Circles App" : "Ініціалізація застосунку Circle"
 },"pluralForm" :"nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);"
 }

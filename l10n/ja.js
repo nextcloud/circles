@@ -182,8 +182,6 @@ OC.L10N.register(
     "Size" : "サイズ",
     "Modified" : "更新日時",
     "Initialisation Nextcloud" : "初期設定 Nextcloud",
-    "Initialisation Circles App" : "初期化サークルアプリ",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "管理者が少なくとも1種類のサークルを許可するまで、サークルアプリケーションを使用することはできません",
-    "Could not find share" : "シェアを見つけることができませんでした"
+    "Initialisation Circles App" : "初期化サークルアプリ"
 },
 "nplurals=1; plural=0;");
