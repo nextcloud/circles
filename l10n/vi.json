@@ -180,8 +180,6 @@
     "Size" : "Kích cỡ",
     "Modified" : "Thay đổi",
     "Initialisation Nextcloud" : "Khởi tạo Nextcloud",
-    "Initialisation Circles App" : "Khởi tạo Ứng dụng vòng kết nối",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Bạn không thể sử dụng Ứng dụng Vòng kết nối cho đến khi quản trị viên của bạn cho phép ít nhất một loại của vòng kết nối",
-    "Could not find share" : "Không thể tìm thấy chia sẻ"
+    "Initialisation Circles App" : "Khởi tạo Ứng dụng vòng kết nối"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

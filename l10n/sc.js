@@ -168,8 +168,6 @@ OC.L10N.register(
     "Size" : "Mannària",
     "Modified" : "Modificadu",
     "Initialisation Nextcloud" : "Apariciamentu de Nextcloud",
-    "Initialisation Circles App" : "Apariciamentu de s'aplicatzione Giros",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Non podes impreare s'aplicatzione de is giros finas a cando s'amministratzione at a permìtere a su mancu una genia de giru",
-    "Could not find share" : "No at fatu a agatare sa cumpartzidura"
+    "Initialisation Circles App" : "Apariciamentu de s'aplicatzione Giros"
 },
 "nplurals=2; plural=(n != 1);");

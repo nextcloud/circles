@@ -182,8 +182,6 @@ OC.L10N.register(
     "Size" : "Tamaina",
     "Modified" : "Aldatua",
     "Initialisation Nextcloud" : "Hasieratze Nextcloud",
-    "Initialisation Circles App" : "Hasieratze zirkulu aplikazioa",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Ezin duzu Zirkuluak aplikazioa erabili administratzaileak gutxienez zirkulu mota bat baimendu arte",
-    "Could not find share" : "Ezin da partekatzea topatu"
+    "Initialisation Circles App" : "Hasieratze zirkulu aplikazioa"
 },
 "nplurals=2; plural=(n != 1);");

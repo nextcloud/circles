@@ -163,8 +163,6 @@
     "No entries found in this folder" : "이 폴더에서 항목을 찾을 수 없음",
     "Name" : "이름",
     "Size" : "크기",
-    "Modified" : "수정한 날짜",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "시스템 관리자가 서클 형식을 허용하지 않는 한 서클 앱을 사용할 수 없습니다",
-    "Could not find share" : "공유를 찾을 수 없음"
+    "Modified" : "수정한 날짜"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

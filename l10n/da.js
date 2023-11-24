@@ -182,8 +182,6 @@ OC.L10N.register(
     "Size" : "Størrelse",
     "Modified" : "Ændret",
     "Initialisation Nextcloud" : "Initialisering Nextcloud",
-    "Initialisation Circles App" : "Initialisering Cirkler App",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Du kan ikke bruge Cirkel-applikationen, før din administrator har tilladt mindst én type cirkler",
-    "Could not find share" : "Kunne ikke finde deling"
+    "Initialisation Circles App" : "Initialisering Cirkler App"
 },
 "nplurals=2; plural=(n != 1);");

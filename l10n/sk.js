@@ -180,8 +180,6 @@ OC.L10N.register(
     "Size" : "Veľkosť",
     "Modified" : "Upravené",
     "Initialisation Nextcloud" : "Inicializácia Nextcloudu",
-    "Initialisation Circles App" : "Inicializácia Aplikácie Kruhy",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Nemôžete použiť aplikáciu Kruhy, pokiaľ administrátor nepovolí aspoň jeden typ kruhov",
-    "Could not find share" : "Nebolo možné nájsť sprístupnenie"
+    "Initialisation Circles App" : "Inicializácia Aplikácie Kruhy"
 },
 "nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);");
