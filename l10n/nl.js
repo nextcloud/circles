@@ -179,8 +179,6 @@ OC.L10N.register(
     "Size" : "Omvang",
     "Modified" : "Gewijzigd",
     "Initialisation Nextcloud" : "Initialisatie Nextcloud",
-    "Initialisation Circles App" : "Initialisatie Circles App",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "De beheerder dient minimaal een kring te maken voordat je de kring-app kan gebruiken.",
-    "Could not find share" : "De gedeelde folder kan niet worden gevonden"
+    "Initialisation Circles App" : "Initialisatie Circles App"
 },
 "nplurals=2; plural=(n != 1);");

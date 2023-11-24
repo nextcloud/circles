@@ -29,7 +29,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Selles kaustas ei leitud kirjeid",
     "Name" : "Nimi",
     "Size" : "Suurus",
-    "Modified" : "Muudetud",
-    "Could not find share" : "Jagamist ei leitud"
+    "Modified" : "Muudetud"
 },
 "nplurals=2; plural=(n != 1);");

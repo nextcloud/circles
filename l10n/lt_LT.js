@@ -137,8 +137,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Šiame aplanke nerasta jokių įrašų",
     "Name" : "Vardas",
     "Size" : "Dydis",
-    "Modified" : "Pakeistas",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Jūs negalite naudoti „Bendrinimo ratų“ programos, kol administratorius neleido bent vieno bendrinimo ratų tipo.",
-    "Could not find share" : "Nepavyko rasti viešinio"
+    "Modified" : "Pakeistas"
 },
 "nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);");

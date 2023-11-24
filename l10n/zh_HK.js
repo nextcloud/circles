@@ -182,8 +182,6 @@ OC.L10N.register(
     "Size" : "大小",
     "Modified" : "修改日期",
     "Initialisation Nextcloud" : "初始化 Nextcloud",
-    "Initialisation Circles App" : "初始化圈子應用程式",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "您的管理員至少允許一種類型的圈子，否則您不能使用“圈子”應用程序",
-    "Could not find share" : "找不到分享"
+    "Initialisation Circles App" : "初始化圈子應用程式"
 },
 "nplurals=1; plural=0;");

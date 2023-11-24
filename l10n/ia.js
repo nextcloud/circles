@@ -15,7 +15,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Nulle entratas trovate in iste dossier",
     "Name" : "Nomine",
     "Size" : "Dimension",
-    "Modified" : "Modificate",
-    "Could not find share" : "Impossibile trovar le compartite"
+    "Modified" : "Modificate"
 },
 "nplurals=2; plural=(n != 1);");
