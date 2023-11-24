@@ -180,8 +180,6 @@ OC.L10N.register(
     "Size" : "Μέγεθος",
     "Modified" : "Τροποποιήθηκε",
     "Initialisation Nextcloud" : "Αρχικοποίηση Nextcloud",
-    "Initialisation Circles App" : "Αρχικοποίηση Circles App",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Δεν μπορείτε να χρησιμοποιήσετε την εφαρμογή Κύκλοι, μέχρι ο διαχειριστής να επιτρέψει τουλάχιστον έναν τύπο κύκλων",
-    "Could not find share" : "Αδυναμία εύρεσης κοινόχρηστου"
+    "Initialisation Circles App" : "Αρχικοποίηση Circles App"
 },
 "nplurals=2; plural=(n != 1);");

@@ -182,8 +182,6 @@ OC.L10N.register(
     "Size" : "اندازه",
     "Modified" : "تغییر یافته",
     "Initialisation Nextcloud" : "Initialisation Nextcloud",
-    "Initialisation Circles App" : "Initialisation Circles App",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "You cannot use the Circles Application until your administrator has allowed at least one type of circles",
-    "Could not find share" : "اشتراک یافت نشد"
+    "Initialisation Circles App" : "Initialisation Circles App"
 },
 "nplurals=2; plural=(n > 1);");

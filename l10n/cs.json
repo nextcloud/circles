@@ -180,8 +180,6 @@
     "Size" : "Velikost",
     "Modified" : "Změněno",
     "Initialisation Nextcloud" : "Inicializace Nextcloud",
-    "Initialisation Circles App" : "Inicializace aplikace Okruhy",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Aplikaci Okruhy nelze použít dokud správce nepovolí vytváření alespoň jednoho typu okruhů",
-    "Could not find share" : "Sdílení se nedaří nalézt"
+    "Initialisation Circles App" : "Inicializace aplikace Okruhy"
 },"pluralForm" :"nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;"
 }

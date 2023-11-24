@@ -124,8 +124,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Neniu elemento en tiu ĉi dosierujo",
     "Name" : "Nomo",
     "Size" : "Grando",
-    "Modified" : "Modifita",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Vi ne povas uzi la aplikaĵon „Rondoj“, ĝis via administranto permesas almenaŭ unu tipon de rondoj.",
-    "Could not find share" : "Ne eblis trovi kunhavon"
+    "Modified" : "Modifita"
 },
 "nplurals=2; plural=(n != 1);");

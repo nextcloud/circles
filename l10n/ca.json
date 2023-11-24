@@ -180,8 +180,6 @@
     "Size" : "Mida",
     "Modified" : "Data de modificació",
     "Initialisation Nextcloud" : "Inicialització del Nextcloud",
-    "Initialisation Circles App" : "Inicialització de l’aplicació Cercles",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "No podeu utilitzar l'aplicació Cercles fins que l'administrador hagi permès com a mínim un tipus de cercle",
-    "Could not find share" : "No s'ha pogut trobar l'element compartit"
+    "Initialisation Circles App" : "Inicialització de l’aplicació Cercles"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

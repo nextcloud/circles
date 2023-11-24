@@ -182,8 +182,6 @@ OC.L10N.register(
     "Size" : "Maint",
     "Modified" : "Addaswyd",
     "Initialisation Nextcloud" : "Cychwyniad Nextcloud",
-    "Initialisation Circles App" : "Cychwyniad Ap Cylchoedd",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Ni allwch ddefnyddio'r Rhaglen Cylchoedd nes bod eich gweinyddwr wedi caniatáu o leiaf un math o gylchoedd",
-    "Could not find share" : "Methu dod o hyd i gyfran"
+    "Initialisation Circles App" : "Cychwyniad Ap Cylchoedd"
 },
 "nplurals=4; plural=(n==1) ? 0 : (n==2) ? 1 : (n != 8 && n != 11) ? 2 : 3;");

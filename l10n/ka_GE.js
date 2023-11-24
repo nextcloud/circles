@@ -121,8 +121,6 @@ OC.L10N.register(
     "No entries found in this folder" : "ამ დირექტორიაში შენატანები ვერ იქნა ნაპოვნი",
     "Name" : "სახელი",
     "Size" : "ზომა",
-    "Modified" : "შეიცვალა",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "წრეების აპლიკაციას ვერ გამოიყენებთ, სანამ ადმინისტრატორი ერთი ტიპის წრის უფლებას მაინც არ დართავს",
-    "Could not find share" : "გაზიარება ვერ იქნა ნაპოვნი"
+    "Modified" : "შეიცვალა"
 },
 "nplurals=2; plural=(n!=1);");
