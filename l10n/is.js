@@ -80,6 +80,7 @@ OC.L10N.register(
     "System" : "Kerfið",
     "Visible" : "Sýnilegt",
     "Open" : "Opna",
+    "Invite" : "Bjóða",
     "Hidden" : "Falinn",
     "Local" : "Staðvært",
     "Root" : "Rót (root)",
