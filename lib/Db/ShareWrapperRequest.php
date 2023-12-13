@@ -38,6 +38,7 @@ use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Membership;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\ShareWrapper;
+use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\Files\Folder;
 use OCP\Files\NotFoundException;
 use OCP\Share\Exceptions\IllegalIDChangeException;
@@ -71,6 +72,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 			->setValue('share_with', $qb->createNamedParameter($share->getSharedWith()))
 			->setValue('uid_owner', $qb->createNamedParameter($share->getShareOwner()))
 			->setValue('uid_initiator', $qb->createNamedParameter($share->getSharedBy()))
+			->setValue('expiration', $qb->createNamedParameter($share->getExpirationDate(), IQueryBuilder::PARAM_DATE))
 			->setValue('accepted', $qb->createNamedParameter(IShare::STATUS_ACCEPTED))
 			->setValue('password', $qb->createNamedParameter($password))
 			->setValue('permissions', $qb->createNamedParameter($share->getPermissions()))
@@ -105,6 +107,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 			->set('uid_initiator', $qb->createNamedParameter($shareWrapper->getSharedBy()))
 			->set('accepted', $qb->createNamedParameter(IShare::STATUS_ACCEPTED))
 			->set('permissions', $qb->createNamedParameter($shareWrapper->getPermissions()))
+			->set('expiration', $qb->createNamedParameter($shareWrapper->getExpirationDate(), IQueryBuilder::PARAM_DATE))
 			->set('attributes', $qb->createNamedParameter($shareAttributes));
 
 		$qb->limitToId((int)$shareWrapper->getId());
