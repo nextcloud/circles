@@ -36,6 +36,7 @@ namespace OCA\Circles\AppInfo;
 
 use Closure;
 use OC;
+use OCA\Circles\EntityManager;
 use OCA\Circles\Events\AddingCircleMemberEvent;
 use OCA\Circles\Events\CircleMemberAddedEvent;
 use OCA\Circles\Events\DestroyingCircleEvent;
@@ -74,6 +75,7 @@ use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
+use OCP\Circles\IEntityManager;
 use OCP\Files\Config\IMountProviderCollection;
 use OCP\Group\Events\GroupCreatedEvent;
 use OCP\Group\Events\GroupDeletedEvent;
@@ -147,6 +149,7 @@ class Application extends App implements IBootstrap {
 	 */
 	public function boot(IBootContext $context): void {
 		$serverContainer = $context->getServerContainer();
+		$serverContainer->registerAlias(IEntityManager::class, EntityManager::class);
 
 		$this->configService = $context->getAppContainer()
 									   ->get(ConfigService::class);
