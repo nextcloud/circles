@@ -6,6 +6,7 @@ OC.L10N.register(
     "Visible" : "Görünən",
     "Hidden" : "Gizli",
     "Local" : "Yerli",
+    "Root" : "Root",
     "Federated" : "Federated",
     "Admin" : "İnzibatçı",
     "Owner" : "Owner",
