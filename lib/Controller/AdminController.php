@@ -31,8 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Controller;
 
-use OCA\Circles\Tools\Traits\TDeserialize;
-use OCA\Circles\Tools\Traits\TNCLogger;
 use Exception;
 use OCA\Circles\Exceptions\ContactAddressBookNotFoundException;
 use OCA\Circles\Exceptions\ContactFormatException;
@@ -52,6 +50,8 @@ use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\Service\SearchService;
+use OCA\Circles\Tools\Traits\TDeserialize;
+use OCA\Circles\Tools\Traits\TNCLogger;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\OCS\OCSException;
 use OCP\AppFramework\OCSController;
@@ -263,6 +263,7 @@ class AdminController extends OCSController {
 	 * @param string $emulated
 	 * @param int $limit
 	 * @param int $offset
+	 *
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
@@ -482,9 +483,6 @@ class AdminController extends OCSController {
 	}
 
 
-
-
-
 	/**
 	 * @param string $emulated
 	 * @param string $circleId
@@ -529,7 +527,7 @@ class AdminController extends OCSController {
 
 
 	/**
-	 * @param string $emulated
+	 * @param string $emulated by default, userId; can be an entity using singleId=<singleId>
 	 *
 	 * @throws FederatedUserException
 	 * @throws FederatedUserNotFoundException
@@ -543,6 +541,18 @@ class AdminController extends OCSController {
 	private function setLocalFederatedUser(string $emulated): void {
 		$user = $this->userSession->getUser();
 		$this->federatedUserService->setCurrentPatron($user->getUID());
+
+		if (strpos($emulated, '=') > 0) {
+			[$type, $id] = explode('=', $emulated, 2);
+			switch (strtolower($type)) {
+				case 'singleid':
+					$federatedUser = $this->federatedUserService->getFederatedUser($id, Member::TYPE_SINGLE);
+					$this->federatedUserService->setCurrentUser($federatedUser);
+					break;
+			}
+
+			return;
+		}
 		$this->federatedUserService->setLocalCurrentUserId($emulated);
 	}
 }
