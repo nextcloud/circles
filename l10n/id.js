@@ -10,6 +10,7 @@ OC.L10N.register(
     "Local" : "Lokal",
     "Root" : "Root",
     "Federated" : "Federated",
+    "Contact" : "Kontak",
     "Admin" : "Admin",
     "Owner" : "Owner",
     "Open »%s«" : "Buka »%s«",
