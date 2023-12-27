@@ -37,10 +37,11 @@ use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Membership;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\ShareWrapper;
+use OCP\DB\QueryBuilder\IQueryBuilder;
+use OCP\Files\Folder;
 use OCP\Files\NotFoundException;
 use OCP\Share\Exceptions\IllegalIDChangeException;
 use OCP\Share\IShare;
-use OCP\Files\Folder;
 
 /**
  * Class ShareWrapperRequest
@@ -64,18 +65,19 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 
 		$qb = $this->getShareInsertSql();
 		$qb->setValue('share_type', $qb->createNamedParameter($share->getShareType()))
-		   ->setValue('item_type', $qb->createNamedParameter($share->getNodeType()))
-		   ->setValue('item_source', $qb->createNamedParameter($share->getNodeId()))
-		   ->setValue('file_source', $qb->createNamedParameter($share->getNodeId()))
-		   ->setValue('file_target', $qb->createNamedParameter($share->getTarget()))
-		   ->setValue('share_with', $qb->createNamedParameter($share->getSharedWith()))
-		   ->setValue('uid_owner', $qb->createNamedParameter($share->getShareOwner()))
-		   ->setValue('uid_initiator', $qb->createNamedParameter($share->getSharedBy()))
-		   ->setValue('accepted', $qb->createNamedParameter(IShare::STATUS_ACCEPTED))
-		   ->setValue('password', $qb->createNamedParameter($password))
-		   ->setValue('permissions', $qb->createNamedParameter($share->getPermissions()))
-		   ->setValue('token', $qb->createNamedParameter($share->getToken()))
-		   ->setValue('stime', $qb->createFunction('UNIX_TIMESTAMP()'));
+			->setValue('item_type', $qb->createNamedParameter($share->getNodeType()))
+			->setValue('item_source', $qb->createNamedParameter($share->getNodeId()))
+			->setValue('file_source', $qb->createNamedParameter($share->getNodeId()))
+			->setValue('file_target', $qb->createNamedParameter($share->getTarget()))
+			->setValue('share_with', $qb->createNamedParameter($share->getSharedWith()))
+			->setValue('uid_owner', $qb->createNamedParameter($share->getShareOwner()))
+			->setValue('uid_initiator', $qb->createNamedParameter($share->getSharedBy()))
+			->setValue('expiration', $qb->createNamedParameter($share->getExpirationDate(), IQueryBuilder::PARAM_DATE))
+			->setValue('accepted', $qb->createNamedParameter(IShare::STATUS_ACCEPTED))
+			->setValue('password', $qb->createNamedParameter($password))
+			->setValue('permissions', $qb->createNamedParameter($share->getPermissions()))
+			->setValue('token', $qb->createNamedParameter($share->getToken()))
+			->setValue('stime', $qb->createFunction('UNIX_TIMESTAMP()'));
 
 		if ($parentId > 0) {
 			$qb->setValue('parent', $qb->createNamedParameter($parentId));
@@ -98,11 +100,12 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 	public function update(ShareWrapper $shareWrapper): void {
 		$qb = $this->getShareUpdateSql();
 		$qb->set('file_target', $qb->createNamedParameter($shareWrapper->getFileTarget()))
-		   ->set('share_with', $qb->createNamedParameter($shareWrapper->getSharedWith()))
-		   ->set('uid_owner', $qb->createNamedParameter($shareWrapper->getShareOwner()))
-		   ->set('uid_initiator', $qb->createNamedParameter($shareWrapper->getSharedBy()))
-		   ->set('accepted', $qb->createNamedParameter(IShare::STATUS_ACCEPTED))
-		   ->set('permissions', $qb->createNamedParameter($shareWrapper->getPermissions()));
+			->set('share_with', $qb->createNamedParameter($shareWrapper->getSharedWith()))
+			->set('uid_owner', $qb->createNamedParameter($shareWrapper->getShareOwner()))
+			->set('uid_initiator', $qb->createNamedParameter($shareWrapper->getSharedBy()))
+			->set('accepted', $qb->createNamedParameter(IShare::STATUS_ACCEPTED))
+			->set('permissions', $qb->createNamedParameter($shareWrapper->getPermissions()))
+			->set('expiration', $qb->createNamedParameter($shareWrapper->getExpirationDate(), IQueryBuilder::PARAM_DATE));
 
 		$qb->limitToId((int)$shareWrapper->getId());
 

@@ -73,6 +73,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 	private DateTimeInterface $shareTime;
 	private string $sharedWith = '';
 	private string $sharedBy = '';
+	private ?DateTime $expirationDate = null;
 	private string $shareOwner = '';
 	private int $shareType = 0;
 	private ?Circle $circle = null;
@@ -210,6 +211,16 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 
 	public function setSharedBy(string $sharedBy): self {
 		$this->sharedBy = $sharedBy;
+
+		return $this;
+	}
+
+	public function getExpirationDate(): ?DateTime {
+		return $this->expirationDate;
+	}
+
+	public function setExpirationDate(?DateTime $date):self {
+		$this->expirationDate = $date;
 
 		return $this;
 	}
@@ -462,6 +473,11 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 			 ->setShareOwner($this->get('shareOwner', $data))
 			 ->setToken($this->get('token', $data))
 			 ->setShareTime($shareTime);
+
+		try {
+			$this->setExpirationDate(new DateTime($this->get('expiration', $data)));
+		} catch (\Exception $e) {
+		}
 
 		$this->setChildId($this->getInt('childId', $data))
 			 ->setChildFileTarget($this->get('childFileTarget', $data))

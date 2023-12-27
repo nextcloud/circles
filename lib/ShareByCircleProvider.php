@@ -259,8 +259,9 @@ class ShareByCircleProvider implements IShareProvider {
 	public function update(IShare $share): IShare {
 		$wrappedShare = $this->shareWrapperService->getShareById((int)$share->getId());
 		$wrappedShare->setPermissions($share->getPermissions())
-					 ->setShareOwner($share->getShareOwner())
-					 ->setSharedBy($share->getSharedBy());
+			->setShareOwner($share->getShareOwner())
+			->setSharedBy($share->getSharedBy())
+			->setExpirationDate($share->getExpirationDate());
 
 		$this->shareWrapperService->update($wrappedShare);
 
