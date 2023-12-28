@@ -37,8 +37,10 @@ use OCA\Circles\Events\CircleGenericEvent;
 use OCA\Circles\Events\RequestingCircleMemberEvent;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Service\NotificationService;
+use OCA\Circles\Service\SendMailService;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
+use OCP\IUserManager;
 
 /**
  * Class RequestingMember
@@ -52,12 +54,23 @@ class RequestingMember implements IEventListener {
 	/** @var NotificationService */
 	private $notificationService;
 
+	/** @var SendMailService */
+	private $sendMailService;
+
+	/** @var IUserManager */
+	protected $userManager;
 
 	/**
 	 * RequestingMember constructor.
 	 */
-	public function __construct(NotificationService $notificationService) {
+	public function __construct(
+		NotificationService $notificationService,
+		SendMailService $sendMailService,
+		IUserManager $userManager
+	) {
 		$this->notificationService = $notificationService;
+		$this->sendMailService = $sendMailService;
+		$this->userManager = $userManager;
 
 		$this->setup('app', Application::APP_ID);
 	}
@@ -74,11 +87,28 @@ class RequestingMember implements IEventListener {
 		}
 
 		$member = $event->getMember();
+		$circle = $event->getCircle();
 
 		if ($event->getType() === CircleGenericEvent::REQUESTED) {
 			$this->notificationService->notificationRequested($member);
 		} else {
 			$this->notificationService->notificationInvited($member);
+
+			if ($member->hasInvitedBy()) {
+				$author = $member->getInvitedBy()->getDisplayName();
+			} else {
+				$author = 'someone';
+			}
+			$userId = $member->getUserId();
+			$user = $this->userManager->get($userId);
+			$mails = [$user->getEMailAddress()];
+
+			$this->sendMailService->generateInvitationMail(
+				$author,
+				$circle,
+				$member,
+				$mails
+			);
 		}
 	}
 }
