@@ -4,6 +4,7 @@ OC.L10N.register(
     "Circles" : "Círculos",
     "Backend" : "Backend",
     "Circle" : "Círculu",
+    "Admin" : "Alministración",
     "%1$s via %2$s" : "%1$s per %2$s",
     "Circle not found" : "Nun s'atopó'l círculu",
     "Circle not found " : "Nun s'atopó'l círculu",
