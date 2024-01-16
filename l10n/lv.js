@@ -5,6 +5,7 @@ OC.L10N.register(
     "System" : "Sistēma",
     "Visible" : "Redzams",
     "Open" : "Atvērt",
+    "Invite" : "Uzaicināt",
     "Hidden" : "Paslēpts",
     "Local" : "Lokāls",
     "Root" : "Root",
