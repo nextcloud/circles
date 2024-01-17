@@ -1564,16 +1564,24 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 	 * @param FederatedUser $federatedUser
 	 * @param bool $reshares
 	 */
-	public function limitToShareOwner(string $alias, FederatedUser $federatedUser, bool $reshares): void {
+	public function limitToShareOwner(
+		string $alias,
+		FederatedUser $federatedUser,
+		bool $reshares,
+		int $nodeId = 0
+	): void {
 		$expr = $this->expr();
 
-		$orX = $expr->orX($this->exprLimit('uid_initiator', $federatedUser->getUserId(), $alias));
-
-		if ($reshares) {
-			$orX->add($this->exprLimit('uid_owner', $federatedUser->getUserId(), $alias));
+		if ($reshares === false) {
+			$this->andWhere($this->exprLimit('uid_initiator', $federatedUser->getUserId(), $alias));
+		} else if ($nodeId === 0) {
+			$this->andWhere(
+				$expr->orX(
+					$this->exprLimit('uid_owner', $federatedUser->getUserId(), $alias),
+					$this->exprLimit('uid_initiator', $federatedUser->getUserId(), $alias)
+				)
+			);
 		}
-
-		$this->andWhere($orX);
 	}
 
 
