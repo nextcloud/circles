@@ -1567,7 +1567,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 
 		if ($reshares === false) {
 			$this->andWhere($this->exprLimit('uid_initiator', $federatedUser->getUserId(), $alias));
-		} else if ($nodeId === 0) {
+		} elseif ($nodeId === 0) {
 			$this->andWhere(
 				$expr->orX(
 					$this->exprLimit('uid_owner', $federatedUser->getUserId(), $alias),
