@@ -106,7 +106,7 @@ class SearchService {
 		$probe = $this->generateSearchProbe($term, $options);
 
 		try {
-			$circles = $this->circleService->probeCircles($probe);
+			$circles = $this->circleService->getCircles($probe);
 		} catch (InitiatorNotFoundException $e) {
 			return [];
 		}
