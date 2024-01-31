@@ -143,7 +143,7 @@ OC.L10N.register(
     "You have been blocked from this circle" : "Sie wurden für diesen Kreis blockiert",
     "The account is already a member of this circle" : "Dieses Konto ist bereits Mitglied dieses Kreises",
     "The account has already been invited into this circle" : "Dieses Konto wurde bereits zu diesem Kreis eingeladen.",
-    "%s (Circle owned by %s)" : "%s (Kreis im Besitz von%s)",
+    "%s (Circle owned by %s)" : "%s (Kreis im Besitz von %s)",
     "You are now a member of the Circle \"%2$s\"" : "Sie sind jetzt ein Mitglied des Kreises \"%2$s\"",
     "You have been invited by %1$s into the Circle \"%2$s\"" : "Sie wurden von %1$s zum Kreis \"%2$s\" eingeladen",
     "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s hat eine Mitgliedschaftsanfrage für den Kreis \"%2$s\" gesendet",
