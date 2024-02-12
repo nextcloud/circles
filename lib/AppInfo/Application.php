@@ -50,7 +50,6 @@ use OCA\Circles\Listeners\AccountUpdated;
 use OCA\Circles\Listeners\Files\AddingMemberSendMail as ListenerFilesAddingMemberSendMail;
 use OCA\Circles\Listeners\Files\CreatingShareSendMail as ListenerFilesCreatingShareSendMail;
 use OCA\Circles\Listeners\Files\DestroyingCircle as ListenerFilesDestroyingCircle;
-use OCA\Circles\Listeners\Files\ListenerFilesLoadScripts;
 use OCA\Circles\Listeners\Files\MemberAddedSendMail as ListenerFilesMemberAddedSendMail;
 use OCA\Circles\Listeners\Files\PreparingMemberSendMail as ListenerFilesPreparingMemberSendMail;
 use OCA\Circles\Listeners\Files\PreparingShareSendMail as ListenerFilesPreparingShareSendMail;
@@ -68,7 +67,6 @@ use OCA\Circles\Notification\Notifier;
 use OCA\Circles\Search\UnifiedSearchProvider;
 use OCA\Circles\Service\ConfigService;
 use OCA\Files\App as FilesApp;
-use OCA\Files\Event\LoadAdditionalScriptsEvent;
 use OCP\Accounts\UserUpdatedEvent;
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
@@ -124,7 +122,6 @@ class Application extends App implements IBootstrap {
 		$context->registerEventListener(UserRemovedEvent::class, GroupMemberRemoved::class);
 
 		// Local Events (for Files/Shares/Notifications management)
-		$context->registerEventListener(LoadAdditionalScriptsEvent::class, ListenerFilesLoadScripts::class);
 		$context->registerEventListener(PreparingCircleMemberEvent::class, ListenerFilesPreparingMemberSendMail::class);
 		$context->registerEventListener(AddingCircleMemberEvent::class, ListenerFilesAddingMemberSendMail::class);
 		$context->registerEventListener(CircleMemberAddedEvent::class, ListenerFilesMemberAddedSendMail::class);
