@@ -28,6 +28,7 @@ OC.L10N.register(
     "You need a specify a type of circle" : "Tienes d'especificar un tipu de círculu",
     "A circle with that name exists" : "Yá esiste un círculu con esi nome",
     "now" : "agora",
+    "No files in here" : "Nun hai ficheros",
     "No entries found in this folder" : "Nun s'atopó nenguna entrada nesta carpeta",
     "Name" : "Nome",
     "Size" : "Tamañu"
