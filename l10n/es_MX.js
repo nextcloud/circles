@@ -93,6 +93,7 @@ OC.L10N.register(
     "Password to access »%s«" : "Contraseña para acceder  »%s«",
     "Click the button below to open it." : "Haz click en el botón para abrirlo.",
     "Open »%s«" : "Abrir »%s«",
+    "Password to access files" : "Contraseña para acceder a los archivos",
     "Circle not found" : "Círculo no encontrado",
     "This member does not exist" : "Este miembro no existe",
     "Federated link not found" : "No se encontró la liga",
