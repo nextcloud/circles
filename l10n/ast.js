@@ -16,6 +16,7 @@ OC.L10N.register(
     "Circle" : "Círculu",
     "Admin" : "Alministración",
     "%1$s via %2$s" : "%1$s per %2$s",
+    "Click the button below to open it." : "Calca nel botón p'abrilo.",
     "Circle not found" : "Nun s'atopó'l círculu",
     "Circle not found " : "Nun s'atopó'l círculu",
     "This member does not exist" : "Esti miembru nun esiste",
