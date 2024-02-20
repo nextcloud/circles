@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -6,7 +9,7 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2017
+ * @copyright 2023
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,31 +27,31 @@
  *
  */
 
-
 namespace OCA\Circles\Activity;
 
 use OCA\Circles\Exceptions\FakeException;
-use OCA\Circles\Model\DeprecatedCircle;
-use OCA\Circles\Model\DeprecatedMember;
+use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Member;
 use OCP\Activity\IEvent;
 
 class ProviderSubjectMember extends ProviderParser {
 	/**
-	 * Parse on Subject 'member_join'.
-	 * If circle is closed, we say that user accepted his invitation.
-	 *
 	 * @param IEvent $event
-	 * @param DeprecatedCircle $circle
-	 * @param DeprecatedMember $member
+	 * @param Circle $circle
+	 * @param Member $member
 	 *
 	 * @throws FakeException
 	 */
-	public function parseSubjectMemberJoin(IEvent $event, DeprecatedCircle $circle, DeprecatedMember $member) {
+	public function parseSubjectMemberJoin(
+		IEvent $event,
+		Circle $circle,
+		Member $member
+	): void {
 		if ($event->getSubject() !== 'member_join') {
 			return;
 		}
 
-		$this->parseSubjectMemberJoinClosedCircle($event, $circle, $member);
+		$this->parseSubjectMemberJoinOnInvite($event, $circle, $member);
 		$this->parseCircleMemberEvent(
 			$event, $circle, $member, $this->l10n->t('You joined {circle}'),
 			$this->l10n->t('{member} joined {circle}')
@@ -57,16 +60,19 @@ class ProviderSubjectMember extends ProviderParser {
 		throw new FakeException();
 	}
 
-
 	/**
 	 * @param IEvent $event
-	 * @param DeprecatedCircle $circle
-	 * @param DeprecatedMember $member
+	 * @param Circle $circle
+	 * @param Member $member
 	 *
 	 * @throws FakeException
 	 */
-	private function parseSubjectMemberJoinClosedCircle(IEvent $event, DeprecatedCircle $circle, DeprecatedMember $member) {
-		if ($circle->getType() !== DeprecatedCircle::CIRCLES_CLOSED) {
+	private function parseSubjectMemberJoinOnInvite(
+		IEvent $event,
+		Circle $circle,
+		Member $member
+	): void {
+		if (!$circle->isConfig(Circle::CFG_INVITE)) {
 			return;
 		}
 
@@ -81,17 +87,18 @@ class ProviderSubjectMember extends ProviderParser {
 
 
 	/**
-	 * Parse on Subject 'member_add'.
-	 * If circle is closed, we say that user's invitation was accepted.
-	 *
 	 * @param IEvent $event
-	 * @param DeprecatedCircle $circle
-	 * @param DeprecatedMember $member
+	 * @param Circle $circle
+	 * @param Member $member
 	 *
 	 * @throws FakeException
 	 */
-	public function parseSubjectMemberAdd(IEvent $event, DeprecatedCircle $circle, DeprecatedMember $member) {
-		if ($event->getSubject() !== 'member_add') {
+	public function parseSubjectMemberAdd(
+		IEvent $event,
+		Circle $circle,
+		Member $member
+	): void {
+		if ($event->getSubject() !== 'member_added') {
 			return;
 		}
 
@@ -107,17 +114,19 @@ class ProviderSubjectMember extends ProviderParser {
 		throw new FakeException();
 	}
 
-
 	/**
 	 * @param IEvent $event
-	 * @param DeprecatedCircle $circle
-	 * @param DeprecatedMember $member
+	 * @param Circle $circle
+	 * @param Member $member
 	 *
 	 * @throws FakeException
 	 */
-	private function parseSubjectMemberAddNotLocalMember(IEvent $event, DeprecatedCircle $circle, DeprecatedMember $member
-	) {
-		if ($member->getType() === DeprecatedMember::TYPE_USER) {
+	private function parseSubjectMemberAddNotLocalMember(
+		IEvent $event,
+		Circle $circle,
+		Member $member
+	): void {
+		if ($member->getUserType() === Member::TYPE_USER) {
 			return;
 		}
 
@@ -133,13 +142,17 @@ class ProviderSubjectMember extends ProviderParser {
 
 	/**
 	 * @param IEvent $event
-	 * @param DeprecatedCircle $circle
-	 * @param DeprecatedMember $member
+	 * @param Circle $circle
+	 * @param Member $member
 	 *
 	 * @throws FakeException
 	 */
-	private function parseSubjectMemberAddClosedCircle(IEvent $event, DeprecatedCircle $circle, DeprecatedMember $member) {
-		if ($circle->getType() !== DeprecatedCircle::CIRCLES_CLOSED) {
+	private function parseSubjectMemberAddClosedCircle(
+		IEvent $event,
+		Circle $circle,
+		Member $member
+	): void {
+		if (!$circle->isConfig(Circle::CFG_REQUEST)) {
 			return;
 		}
 
@@ -155,22 +168,23 @@ class ProviderSubjectMember extends ProviderParser {
 
 
 	/**
-	 * Parse on Subject 'member_left'.
-	 * If circle is closed and member was not a real member, we send him to
-	 * parseSubjectNonMemberLeftClosedCircle();
-	 *
 	 * @param IEvent $event
-	 * @param DeprecatedCircle $circle
-	 * @param DeprecatedMember $member
+	 * @param Circle $circle
+	 * @param Member $member
 	 *
 	 * @throws FakeException
 	 */
-	public function parseSubjectMemberLeft(IEvent $event, DeprecatedCircle $circle, DeprecatedMember $member) {
+	public function parseSubjectMemberLeft(
+		IEvent $event,
+		Circle $circle,
+		Member $member
+	): void {
 		if ($event->getSubject() !== 'member_left') {
 			return;
 		}
 
-		$this->parseSubjectNonMemberLeftClosedCircle($event, $circle, $member);
+		$this->parseSubjectNonMemberLeftInvite($event, $circle, $member);
+		$this->parseSubjectNonMemberLeftRequest($event, $circle, $member);
 		$this->parseCircleMemberEvent(
 			$event, $circle, $member,
 			$this->l10n->t('You left {circle}'),
@@ -182,53 +196,71 @@ class ProviderSubjectMember extends ProviderParser {
 
 
 	/**
-	 * Parse on Subject 'member_left' on a closed circle when user were not yet a member.
-	 * If status is Invited we say that member rejected his invitation.
-	 * If status is Requested we say he dismissed his request.
-	 *
 	 * @param IEvent $event
-	 * @param DeprecatedCircle $circle
-	 * @param DeprecatedMember $member
+	 * @param Circle $circle
+	 * @param Member $member
 	 *
 	 * @throws FakeException
 	 */
-	private function parseSubjectNonMemberLeftClosedCircle(IEvent $event, DeprecatedCircle $circle, DeprecatedMember $member
-	) {
-		if ($circle->getType() !== DeprecatedCircle::CIRCLES_CLOSED
-			|| $member->getLevel() !== DeprecatedMember::LEVEL_NONE) {
+	private function parseSubjectNonMemberLeftInvite(
+		IEvent $event,
+		Circle $circle,
+		Member $member
+	): void {
+		if (!$circle->isConfig(Circle::CFG_INVITE)
+			|| $member->getLevel() > Member::LEVEL_NONE) {
 			return;
 		}
 
-		if ($member->getStatus() === DeprecatedMember::STATUS_INVITED) {
-			$this->parseCircleMemberEvent(
-				$event, $circle, $member,
-				$this->l10n->t("You declined the invitation to join {circle}"),
-				$this->l10n->t("{member} declined an invitation to join {circle}")
-			);
-		} else {
-			$this->parseCircleMemberEvent(
-				$event, $circle, $member,
-				$this->l10n->t("You cancelled your request to join {circle}"),
-				$this->l10n->t("{member} cancelled his request to join {circle}")
-			);
-		}
+		$this->parseCircleMemberEvent(
+			$event, $circle, $member,
+			$this->l10n->t("You declined the invitation to join {circle}"),
+			$this->l10n->t("{member} declined an invitation to join {circle}")
+		);
 
 		throw new FakeException();
 	}
 
 
 	/**
-	 * Parse on Subject 'member_remove'.
-	 * If circle is closed and member was not a real member, we send him to
-	 * parseSubjectNonMemberRemoveClosedCircle();
-	 *
 	 * @param IEvent $event
-	 * @param DeprecatedCircle $circle
-	 * @param DeprecatedMember $member
+	 * @param Circle $circle
+	 * @param Member $member
 	 *
 	 * @throws FakeException
 	 */
-	public function parseSubjectMemberRemove(IEvent $event, DeprecatedCircle $circle, DeprecatedMember $member) {
+	private function parseSubjectNonMemberLeftRequest(
+		IEvent $event,
+		Circle $circle,
+		Member $member
+	): void {
+		if (!$circle->isConfig(Circle::CFG_REQUEST)
+			|| $member->getLevel() > Member::LEVEL_NONE) {
+			return;
+		}
+
+		$this->parseCircleMemberEvent(
+			$event, $circle, $member,
+			$this->l10n->t("You cancelled your request to join {circle}"),
+			$this->l10n->t("{member} cancelled a request to join {circle}")
+		);
+
+		throw new FakeException();
+	}
+
+
+	/**
+	 * @param IEvent $event
+	 * @param Circle $circle
+	 * @param Member $member
+	 *
+	 * @throws FakeException
+	 */
+	public function parseSubjectMemberRemove(
+		IEvent $event,
+		Circle $circle,
+		Member $member
+	): void {
 		if ($event->getSubject() !== 'member_remove') {
 			return;
 		}
@@ -245,18 +277,19 @@ class ProviderSubjectMember extends ProviderParser {
 		throw new FakeException();
 	}
 
-
 	/**
 	 * @param IEvent $event
-	 * @param DeprecatedCircle $circle
-	 * @param DeprecatedMember $member
+	 * @param Circle $circle
+	 * @param Member $member
 	 *
 	 * @throws FakeException
 	 */
 	private function parseSubjectMemberRemoveNotLocalMember(
-		IEvent $event, DeprecatedCircle $circle, DeprecatedMember $member
-	) {
-		if ($member->getType() === DeprecatedMember::TYPE_USER) {
+		IEvent $event,
+		Circle $circle,
+		Member $member
+	): void {
+		if ($member->getUserType() === Member::TYPE_USER) {
 			return;
 		}
 
@@ -271,21 +304,19 @@ class ProviderSubjectMember extends ProviderParser {
 
 
 	/**
-	 * Parse on Subject 'member_remove' on a closed circle when user were not yet a member.
-	 * If status is Invited we say that author cancelled his invitation.
-	 * If status is Requested we say that his invitation was rejected.
-	 *
 	 * @param IEvent $event
-	 * @param DeprecatedCircle $circle
-	 * @param DeprecatedMember $member
+	 * @param Circle $circle
+	 * @param Member $member
 	 *
 	 * @throws FakeException
 	 */
 	private function parseSubjectMemberRemoveNotYetMember(
-		IEvent $event, DeprecatedCircle $circle, DeprecatedMember $member
-	) {
-		if ($circle->getType() !== DeprecatedCircle::CIRCLES_CLOSED
-			|| $member->getLevel() !== DeprecatedMember::LEVEL_NONE) {
+		IEvent $event,
+		Circle $circle,
+		Member $member
+	): void {
+		if (!$circle->isConfig(Circle::CFG_INVITE)
+			|| $member->getLevel() > Member::LEVEL_NONE) {
 			return;
 		}
 
@@ -300,11 +331,18 @@ class ProviderSubjectMember extends ProviderParser {
 		throw new FakeException();
 	}
 
-
+	/**
+	 * @param IEvent $event
+	 * @param Circle $circle
+	 * @param Member $member
+	 * @throws FakeException
+	 */
 	private function parseSubjectMemberRemoveNotYetMemberRequesting(
-		IEvent $event, DeprecatedCircle $circle, DeprecatedMember $member
-	) {
-		if ($member->getStatus() !== DeprecatedMember::STATUS_REQUEST) {
+		IEvent $event,
+		Circle $circle,
+		Member $member
+	): void {
+		if ($member->getStatus() !== Member::STATUS_REQUEST) {
 			return;
 		}
 
@@ -318,15 +356,13 @@ class ProviderSubjectMember extends ProviderParser {
 		throw new FakeException();
 	}
 
-
 	/**
 	 * @param IEvent $event
-	 * @param DeprecatedCircle $circle
-	 * @param DeprecatedMember $member
-	 *
+	 * @param Circle $circle
+	 * @param Member $member
 	 * @throws FakeException
 	 */
-	public function parseMemberInvited(IEvent $event, DeprecatedCircle $circle, DeprecatedMember $member) {
+	public function parseMemberInvited(IEvent $event, Circle $circle, Member $member): void {
 		if ($event->getSubject() !== 'member_invited') {
 			return;
 		}
@@ -344,22 +380,27 @@ class ProviderSubjectMember extends ProviderParser {
 
 	/**
 	 * @param IEvent $event
-	 * @param DeprecatedCircle $circle
-	 * @param DeprecatedMember $member
-	 *
+	 * @param Circle $circle
+	 * @param Member $member
+	 * @param int $level
 	 * @throws FakeException
 	 */
-	public function parseMemberLevel(IEvent $event, DeprecatedCircle $circle, DeprecatedMember $member) {
+	public function parseMemberLevel(
+		IEvent $event,
+		Circle $circle,
+		Member $member,
+		int $level
+	): void {
 		if ($event->getSubject() !== 'member_level') {
 			return;
 		}
 
-		$level = [$this->l10n->t($member->getLevelString())];
+		$levelString = $this->l10n->t(Member::$DEF_LEVEL[$level] ?? '');
 		$this->parseCircleMemberAdvancedEvent(
 			$event, $circle, $member,
-			$this->l10n->t('You changed {member}\'s level in {circle} to %1$s', $level),
-			$this->l10n->t('{author} changed your level in {circle} to %1$s', $level),
-			$this->l10n->t('{author} changed {member}\'s level in {circle} to %1$s', $level)
+			$this->l10n->t('You changed {member}\'s level in {circle} to %1$s', [$levelString]),
+			$this->l10n->t('{author} changed your level in {circle} to %1$s', [$levelString]),
+			$this->l10n->t('{author} changed {member}\'s level in {circle} to %1$s', [$levelString])
 		);
 
 		throw new FakeException();
@@ -368,12 +409,16 @@ class ProviderSubjectMember extends ProviderParser {
 
 	/**
 	 * @param IEvent $event
-	 * @param DeprecatedCircle $circle
-	 * @param DeprecatedMember $member
+	 * @param Circle $circle
+	 * @param Member $member
 	 *
 	 * @throws FakeException
 	 */
-	public function parseMemberRequestInvitation(IEvent $event, DeprecatedCircle $circle, DeprecatedMember $member) {
+	public function parseMemberRequestInvitation(
+		IEvent $event,
+		Circle $circle,
+		Member $member
+	): void {
 		if ($event->getSubject() !== 'member_request_invitation') {
 			return;
 		}
@@ -387,15 +432,18 @@ class ProviderSubjectMember extends ProviderParser {
 		throw new FakeException();
 	}
 
-
 	/**
 	 * @param IEvent $event
-	 * @param DeprecatedCircle $circle
-	 * @param DeprecatedMember $member
+	 * @param Circle $circle
+	 * @param Member $member
 	 *
 	 * @throws FakeException
 	 */
-	public function parseMemberOwner(IEvent $event, DeprecatedCircle $circle, DeprecatedMember $member) {
+	public function parseMemberOwner(
+		IEvent $event,
+		Circle $circle,
+		Member $member
+	): void {
 		if ($event->getSubject() !== 'member_owner') {
 			return;
 		}

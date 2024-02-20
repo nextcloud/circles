@@ -86,10 +86,8 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	use TArrayTools;
 	use TDeserialize;
 
-
 	public const FLAGS_SHORT = 1;
 	public const FLAGS_LONG = 2;
-
 
 	// specific value
 	public const CFG_CIRCLE = 0;        // only for code readability. Circle is locked by default.
