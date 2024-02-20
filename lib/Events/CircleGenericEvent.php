@@ -35,39 +35,22 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCP\EventDispatcher\Event;
 
-/**
- * Class CircleMemberAddedEvent
- *
- * @package OCA\Circles\Events
- */
 class CircleGenericEvent extends Event {
 	public const INVITED = 1;
 	public const JOINED = 2;
-	/** @deprecated */
-	public const MULTIPLE = 3;
+	public const ADDED = 3;
 	public const REMOVED = 4;
 	public const LEFT = 5;
 	public const LEVEL = 6;
 	public const NAME = 7;
 	public const REQUESTED = 8;
 
+	private Circle $circle;
 
-	/** @var FederatedEvent */
-	private $federatedEvent;
-
-	/** @var Circle */
-	private $circle;
-
-
-	/**
-	 * CircleMemberAddedEvent constructor.
-	 *
-	 * @param FederatedEvent $federatedEvent
-	 */
-	public function __construct(FederatedEvent $federatedEvent) {
+	public function __construct(
+		private FederatedEvent $federatedEvent
+	) {
 		parent::__construct();
-
-		$this->federatedEvent = $federatedEvent;
 		$this->circle = $federatedEvent->getCircle();
 	}
 

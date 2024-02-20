@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -7,7 +9,7 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2017
+ * @copyright 2023
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,89 +27,59 @@
  *
  */
 
-
 namespace OCA\Circles\Activity;
 
-use Exception;
 use InvalidArgumentException;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\FakeException;
-use OCA\Circles\Model\DeprecatedCircle;
-use OCA\Circles\Model\FederatedLink;
-use OCA\Circles\Model\DeprecatedMember;
-use OCA\Circles\Service\CirclesService;
-use OCA\Circles\Service\MiscService;
+use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Member;
+use OCA\Circles\Tools\Exceptions\InvalidItemException;
+use OCA\Circles\Tools\Traits\TDeserialize;
 use OCP\Activity\IEvent;
 use OCP\Activity\IManager;
 use OCP\Activity\IProvider;
+use OCP\IURLGenerator;
 
-/**
- * Class Provider
- *
- * @package OCA\Circles\Activity
- */
 class Provider implements IProvider {
-	/** @var ProviderSubjectCircle */
-	private $parserCircle;
-
-	/** @var ProviderSubjectMember */
-	private $parserMember;
-
-	/** @var ProviderSubjectGroup */
-	private $parserGroup;
-
-	/** @var ProviderSubjectLink */
-	private $parserLink;
-
-	/** @var MiscService */
-	protected $miscService;
-
-	/** @var IManager */
-	protected $activityManager;
-
+	use TDeserialize;
 
 	public function __construct(
-		IManager $activityManager, MiscService $miscService, ProviderSubjectCircle $parserCircle,
-		ProviderSubjectMember $parserMember, ProviderSubjectGroup $parserGroup,
-		ProviderSubjectLink $parserLink
+		private IManager $activityManager,
+		private IURLGenerator $urlGenerator,
+		private ProviderSubjectCircle $parserCircle,
+		private ProviderSubjectMember $parserMember,
+		private ProviderSubjectCircleMember $parserCircleMember
 	) {
-		$this->activityManager = $activityManager;
-		$this->miscService = $miscService;
-
-		$this->parserCircle = $parserCircle;
-		$this->parserMember = $parserMember;
-		$this->parserGroup = $parserGroup;
-		$this->parserLink = $parserLink;
 	}
-
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function parse($lang, IEvent $event, IEvent $previousEvent = null) {
+	public function parse($language, IEvent $event, IEvent $previousEvent = null): IEvent {
 		try {
 			$params = $event->getSubjectParameters();
 			$this->initActivityParser($event, $params);
 
-			$circle = DeprecatedCircle::fromJSON($params['circle']);
+			/** @var Circle $circle */
+			$circle = $this->deserializeJson($params['circle'], Circle::class);
 
-			$this->setIcon($event, $circle);
-			$this->parseAsNonMember($event, $circle, $params);
+			$this->setIcon($event);
+			$this->parseAsNonMember($event, $circle);
 			$this->parseAsMember($event, $circle, $params);
 			$this->parseAsModerator($event, $circle, $params);
-		} catch (FakeException $e) {
+		} catch (FakeException|InvalidItemException $e) {
 			/** clean exit */
 		}
 
 		return $event;
 	}
 
-
 	/**
 	 * @param IEvent $event
 	 * @param array $params
 	 */
-	private function initActivityParser(IEvent $event, $params) {
+	private function initActivityParser(IEvent $event, array $params): void {
 		if ($event->getApp() !== Application::APP_ID) {
 			throw new InvalidArgumentException();
 		}
@@ -117,30 +89,28 @@ class Provider implements IProvider {
 		}
 	}
 
-
 	/**
 	 * @param IEvent $event
-	 * @param DeprecatedCircle $circle
 	 */
-	private function setIcon(IEvent $event, DeprecatedCircle $circle) {
-		$event->setIcon(
-			CirclesService::getCircleIcon(
-				$circle->getType(),
-				(method_exists($this->activityManager, 'getRequirePNG')
-				 && $this->activityManager->getRequirePNG())
-			)
+	private function setIcon(IEvent $event): void {
+		$path = $this->urlGenerator->imagePath(
+			Application::APP_ID,
+			'circles.' . $this->activityManager->getRequirePNG() ? 'png' : 'svg'
 		);
+		$event->setIcon($this->urlGenerator->getAbsoluteURL($path));
 	}
 
-
 	/**
 	 * @param IEvent $event
-	 * @param DeprecatedCircle $circle
+	 * @param Circle $circle
 	 * @param array $params
 	 *
 	 * @throws FakeException
 	 */
-	private function parseAsNonMember(IEvent $event, DeprecatedCircle $circle, $params) {
+	private function parseAsNonMember(
+		IEvent $event,
+		Circle $circle
+	): void {
 		if ($event->getType() !== 'circles_as_non_member') {
 			return;
 		}
@@ -150,53 +120,61 @@ class Provider implements IProvider {
 
 	/**
 	 * @param IEvent $event
-	 * @param DeprecatedCircle $circle
+	 * @param Circle $circle
 	 * @param array $params
 	 *
 	 * @throws FakeException
 	 */
-	private function parseAsMember(IEvent $event, DeprecatedCircle $circle, $params) {
+	private function parseAsMember(
+		IEvent $event,
+		Circle $circle,
+		array $params
+	): void {
 		if ($event->getType() !== 'circles_as_member') {
 			return;
 		}
 
-//		$this->parserCircle->parseSubjectCircleCreate($event, $circle);
+		$this->parserCircle->parseSubjectCircleCreate($event, $circle);
 		$this->parserCircle->parseSubjectCircleDelete($event, $circle);
 		$this->parseMemberAsMember($event, $circle, $params);
+		$this->parseCircleMemberAsMember($event, $circle, $params);
 	}
 
-
 	/**
-	 * @param DeprecatedCircle $circle
+	 * @param Circle $circle
 	 * @param IEvent $event
 	 * @param array $params
 	 *
-	 * @throws Exception
+	 * @throws FakeException
+	 * @throws InvalidItemException
 	 */
-	private function parseAsModerator(IEvent $event, DeprecatedCircle $circle, $params) {
+	private function parseAsModerator(IEvent $event, Circle $circle, array $params): void {
 		if ($event->getType() !== 'circles_as_moderator') {
 			return;
 		}
 
 		$this->parseMemberAsModerator($event, $circle, $params);
-		$this->parseGroupAsModerator($event, $circle, $params);
-		$this->parseLinkAsModerator($event, $circle, $params);
 	}
-
 
 	/**
 	 * @param IEvent $event
-	 * @param DeprecatedCircle $circle
+	 * @param Circle $circle
 	 * @param array $params
 	 *
 	 * @throws FakeException
+	 * @throws InvalidItemException
 	 */
-	private function parseMemberAsMember(IEvent $event, DeprecatedCircle $circle, $params) {
+	private function parseMemberAsMember(
+		IEvent $event,
+		Circle $circle,
+		array $params
+	): void {
 		if (!key_exists('member', $params)) {
 			return;
 		}
 
-		$member = DeprecatedMember::fromJSON($params['member']);
+		/** @var Member $member */
+		$member = $this->deserializeJson($params['member'], Member::class);
 
 		$this->parserMember->parseSubjectMemberJoin($event, $circle, $member);
 		$this->parserMember->parseSubjectMemberAdd($event, $circle, $member);
@@ -204,72 +182,55 @@ class Provider implements IProvider {
 		$this->parserMember->parseSubjectMemberRemove($event, $circle, $member);
 	}
 
-
 	/**
 	 * @param IEvent $event
-	 * @param DeprecatedCircle $circle
+	 * @param Circle $circle
 	 * @param array $params
 	 *
 	 * @throws FakeException
+	 * @throws InvalidItemException
 	 */
-	private function parseGroupAsModerator(IEvent $event, DeprecatedCircle $circle, $params) {
-		if (!key_exists('group', $params)) {
-			return;
-		}
-
-		$group = DeprecatedMember::fromJSON($params['group']);
-
-		$this->parserGroup->parseGroupLink($event, $circle, $group);
-		$this->parserGroup->parseGroupUnlink($event, $circle, $group);
-		$this->parserGroup->parseGroupLevel($event, $circle, $group);
-	}
-
-
-	/**
-	 * @param IEvent $event
-	 * @param DeprecatedCircle $circle
-	 * @param array $params
-	 *
-	 * @throws FakeException
-	 */
-	private function parseMemberAsModerator(IEvent $event, DeprecatedCircle $circle, $params) {
+	private function parseCircleMemberAsMember(
+		IEvent $event,
+		Circle $circle,
+		array $params
+	): void {
 		if (!key_exists('member', $params)) {
 			return;
 		}
 
-		$member = DeprecatedMember::fromJSON($params['member']);
+		/** @var Member $member */
+		$member = $this->deserializeJson($params['member'], Member::class);
 
-		$this->parserMember->parseMemberInvited($event, $circle, $member);
-		$this->parserMember->parseMemberLevel($event, $circle, $member);
-		$this->parserMember->parseMemberRequestInvitation($event, $circle, $member);
-		$this->parserMember->parseMemberOwner($event, $circle, $member);
+		$this->parserCircleMember->parseSubjectCircleMemberJoin($event, $circle, $member);
+		$this->parserCircleMember->parseSubjectCircleMemberAdd($event, $circle, $member);
+		$this->parserCircleMember->parseSubjectCircleMemberLeft($event, $circle, $member);
+		$this->parserCircleMember->parseSubjectCircleMemberRemove($event, $circle, $member);
 	}
-
 
 	/**
 	 * @param IEvent $event
-	 * @param DeprecatedCircle $circle
+	 * @param Circle $circle
 	 * @param array $params
 	 *
 	 * @throws FakeException
+	 * @throws InvalidItemException
 	 */
-	private function parseLinkAsModerator(IEvent $event, DeprecatedCircle $circle, $params) {
-		if (!key_exists('link', $params)) {
+	private function parseMemberAsModerator(
+		IEvent $event,
+		Circle $circle,
+		array $params
+	): void {
+		if (!key_exists('member', $params)) {
 			return;
 		}
 
-		$remote = FederatedLink::fromJSON($params['link']);
+		/** @var Member $member */
+		$member = $this->deserializeJson($params['member'], Member::class);
 
-		$this->parserLink->parseLinkRequestSent($event, $circle, $remote);
-		$this->parserLink->parseLinkRequestReceived($event, $circle, $remote);
-		$this->parserLink->parseLinkRequestRejected($event, $circle, $remote);
-		$this->parserLink->parseLinkRequestCanceled($event, $circle, $remote);
-		$this->parserLink->parseLinkRequestAccepted($event, $circle, $remote);
-		$this->parserLink->parseLinkRequestRemoved($event, $circle, $remote);
-		$this->parserLink->parseLinkRequestCanceling($event, $circle, $remote);
-		$this->parserLink->parseLinkRequestAccepting($event, $circle, $remote);
-		$this->parserLink->parseLinkUp($event, $circle, $remote);
-		$this->parserLink->parseLinkDown($event, $circle, $remote);
-		$this->parserLink->parseLinkRemove($event, $circle, $remote);
+		$this->parserMember->parseMemberInvited($event, $circle, $member);
+		$this->parserMember->parseMemberLevel($event, $circle, $member, $params['level'] ?? 0);
+		$this->parserMember->parseMemberRequestInvitation($event, $circle, $member);
+		$this->parserMember->parseMemberOwner($event, $circle, $member);
 	}
 }

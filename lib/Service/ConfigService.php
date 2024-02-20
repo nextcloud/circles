@@ -182,7 +182,7 @@ class ConfigService {
 
 		self::SELF_SIGNED_CERT => '0',
 		self::MEMBERS_LIMIT => '-1',
-		self::ACTIVITY_ON_NEW_CIRCLE => '1',
+		self::ACTIVITY_ON_NEW_CIRCLE => '0',
 		self::ALLOWED_TYPES => Member::ALLOWING_ALL_TYPES,
 		self::CIRCLE_TYPES_FORCE => '0',
 		self::CIRCLE_TYPES_BLOCK => '0',
