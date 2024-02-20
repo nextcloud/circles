@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -6,7 +9,7 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2017
+ * @copyright 2023
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,27 +27,26 @@
  *
  */
 
-
 namespace OCA\Circles\Activity;
 
 use OCA\Circles\Exceptions\FakeException;
-use OCA\Circles\Model\DeprecatedCircle;
+use OCA\Circles\Model\Circle;
 use OCP\Activity\IEvent;
 
 class ProviderSubjectCircle extends ProviderParser {
 	/**
 	 * @param IEvent $event
-	 * @param DeprecatedCircle $circle
+	 * @param Circle $circle
 	 *
 	 * @throws FakeException
 	 */
-	public function parseSubjectCircleCreate(IEvent $event, DeprecatedCircle $circle) {
+	public function parseSubjectCircleCreate(IEvent $event, Circle $circle): void {
 		if ($event->getSubject() !== 'circle_create') {
 			return;
 		}
 
 		$this->parseCircleEvent(
-			$event, $circle, null,
+			$event, $circle,
 			$this->l10n->t('You created the circle {circle}'),
 			$this->l10n->t('{author} created the circle {circle}')
 		);
@@ -52,20 +54,19 @@ class ProviderSubjectCircle extends ProviderParser {
 		throw new FakeException();
 	}
 
-
 	/**
 	 * @param IEvent $event
-	 * @param DeprecatedCircle $circle
+	 * @param Circle $circle
 	 *
 	 * @throws FakeException
 	 */
-	public function parseSubjectCircleDelete(IEvent $event, DeprecatedCircle $circle) {
+	public function parseSubjectCircleDelete(IEvent $event, Circle $circle): void {
 		if ($event->getSubject() !== 'circle_delete') {
 			return;
 		}
 
 		$this->parseCircleEvent(
-			$event, $circle, null,
+			$event, $circle,
 			$this->l10n->t('You deleted {circle}'),
 			$this->l10n->t('{author} deleted {circle}')
 		);
