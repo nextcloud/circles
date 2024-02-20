@@ -36,6 +36,7 @@ namespace OCA\Circles\AppInfo;
 
 use Closure;
 use OC;
+use OCA\Circles\Dashboard\TeamDashboardWidget;
 use OCA\Circles\Events\AddingCircleMemberEvent;
 use OCA\Circles\Events\CircleMemberAddedEvent;
 use OCA\Circles\Events\DestroyingCircleEvent;
@@ -137,6 +138,8 @@ class Application extends App implements IBootstrap {
 
 		$context->registerSearchProvider(UnifiedSearchProvider::class);
 		$context->registerWellKnownHandler(WebfingerHandler::class);
+
+		$context->registerDashboardWidget(TeamDashboardWidget::class);
 	}
 
 
