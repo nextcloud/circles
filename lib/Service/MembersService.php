@@ -33,7 +33,6 @@ use OCA\Circles\Tools\Model\Request;
 use OCA\Circles\Tools\Traits\TNCRequest;
 use OCA\Circles\Tools\Traits\TArrayTools;
 use Exception;
-use OC;
 use OC\User\NoUserException;
 use OCA\Circles\Circles\FileSharingBroadcaster;
 use OCA\Circles\Db\AccountsRequest;
@@ -56,6 +55,8 @@ use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCP\IL10N;
 use OCP\IUserManager;
+use OCP\IGroupManager;
+use OCP\IGroup;
 
 /**
  * Class MembersService
@@ -76,6 +77,9 @@ class MembersService {
 
 	/** @var IUserManager */
 	private $userManager;
+
+	/** @var IGroupManager */
+	private $groupManager;
 
 	/** @var ConfigService */
 	private $configService;
@@ -113,6 +117,7 @@ class MembersService {
 	 * @param string $userId
 	 * @param IL10N $l10n
 	 * @param IUserManager $userManager
+	 * @param IGroupManager $groupManager
 	 * @param ConfigService $configService
 	 * @param DeprecatedCirclesRequest $circlesRequest
 	 * @param DeprecatedMembersRequest $membersRequest
@@ -125,7 +130,7 @@ class MembersService {
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$userId, IL10N $l10n, IUserManager $userManager, ConfigService $configService,
+		$userId, IL10N $l10n, IUserManager $userManager, IGroupManager $groupManager, ConfigService $configService,
 		DeprecatedCirclesRequest $circlesRequest, DeprecatedMembersRequest $membersRequest,
 		AccountsRequest $accountsRequest,
 		FileSharesRequest $fileSharesRequest, TokensRequest $tokensRequest, EventsService $eventsService,
@@ -135,6 +140,7 @@ class MembersService {
 		$this->userId = $userId;
 		$this->l10n = $l10n;
 		$this->userManager = $userManager;
+		$this->groupManager = $groupManager;
 		$this->configService = $configService;
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
@@ -421,8 +427,7 @@ class MembersService {
 	 * @throws Exception
 	 */
 	private function addGroupMembers(DeprecatedCircle $circle, $groupId): array {
-		$group = OC::$server->getGroupManager()
-							->get($groupId);
+		$group = $this->groupManager->get($groupId);
 		if ($group === null) {
 			throw new GroupDoesNotExistException($this->l10n->t('This group does not exist'));
 		}
@@ -649,6 +654,15 @@ class MembersService {
 			$cachedName = '';
 			if ($member->getType() === DeprecatedMember::TYPE_USER) {
 				$cachedName = $this->getUserDisplayName($member->getUserId(), $fresh);
+			}
+
+			if ($member->getType() === DeprecatedMember::TYPE_GROUP) {
+				$gid = $member->getUserId();
+				/** @var IGroup $group */
+				$group = $this->groupManager->get($gid);
+				if ($group !== null) {
+					$cachedName = $group->getDisplayName();
+				}
 			}
 
 			if ($member->getType() === DeprecatedMember::TYPE_CONTACT) {
