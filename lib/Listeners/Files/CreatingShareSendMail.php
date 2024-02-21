@@ -52,11 +52,7 @@ use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 
-/**
- * Class CreatingShareSendMail
- *
- * @package OCA\Circles\Listeners\Files
- */
+/** @template-implements IEventListener<CreatingFileShareEvent|Event> */
 class CreatingShareSendMail implements IEventListener {
 	use TStringTools;
 	use TNCLogger;
@@ -74,15 +70,6 @@ class CreatingShareSendMail implements IEventListener {
 	/** @var ContactService */
 	private $contactService;
 
-
-	/**
-	 * CreatingShareSendMail constructor.
-	 *
-	 * @param ShareWrapperService $shareWrapperService
-	 * @param ShareTokenService $shareTokenService
-	 * @param ContactService $contactService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
 		ShareWrapperService $shareWrapperService,
 		ShareTokenService $shareTokenService,
@@ -99,8 +86,6 @@ class CreatingShareSendMail implements IEventListener {
 
 
 	/**
-	 * @param Event $event
-	 *
 	 * @throws FederatedItemException
 	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException

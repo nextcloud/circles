@@ -40,11 +40,7 @@ use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 
-/**
- * Class AddingMemberSendMail
- *
- * @package OCA\Circles\Listeners\Files
- */
+/** @template-implements IEventListener<DestroyingCircleEvent|Event> */
 class DestroyingCircle implements IEventListener {
 	use TStringTools;
 	use TNCLogger;
@@ -67,8 +63,6 @@ class DestroyingCircle implements IEventListener {
 
 
 	/**
-	 * @param Event $event
-	 *
 	 * @throws RequestBuilderException
 	 */
 	public function handle(Event $event): void {

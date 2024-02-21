@@ -43,11 +43,7 @@ use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 
-/**
- * Class ExampleMembershipsRemoved
- *
- * @package OCA\Circles\Listeners\Files
- */
+/** @template-implements IEventListener<MembershipsRemovedEvent|Event> */
 class ExampleMembershipsRemoved implements IEventListener {
 	use TStringTools;
 	use TNCLogger;
@@ -59,13 +55,6 @@ class ExampleMembershipsRemoved implements IEventListener {
 	/** @var ConfigService */
 	private $configService;
 
-
-	/**
-	 * ExampleMembershipsRemoved constructor.
-	 *
-	 * @param CirclesManager $circlesManager
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
 		CirclesManager $circlesManager,
 		ConfigService $configService
@@ -76,10 +65,6 @@ class ExampleMembershipsRemoved implements IEventListener {
 		$this->setup('app', Application::APP_ID);
 	}
 
-
-	/**
-	 * @param Event $event
-	 */
 	public function handle(Event $event): void {
 		if (!$event instanceof MembershipsRemovedEvent) {
 			return;

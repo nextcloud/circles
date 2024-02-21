@@ -37,29 +37,15 @@ use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\Group\Events\UserAddedEvent;
 
-/**
- * Class GroupMemberAdded
- *
- * @package OCA\Circles\Events
- */
+/** @template-implements IEventListener<UserAddedEvent|Event> */
 class GroupMemberAdded implements IEventListener {
 	/** @var SyncService */
 	private $syncService;
 
-
-	/**
-	 * GroupMemberAdded constructor.
-	 *
-	 * @param SyncService $syncService
-	 */
 	public function __construct(SyncService $syncService) {
 		$this->syncService = $syncService;
 	}
 
-
-	/**
-	 * @param Event $event
-	 */
 	public function handle(Event $event): void {
 		if (!($event instanceof UserAddedEvent)) {
 			return;

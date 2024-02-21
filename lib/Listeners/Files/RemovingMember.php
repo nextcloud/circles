@@ -43,11 +43,7 @@ use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use Psr\Log\LoggerInterface;
 
-/**
- * Class RemovingMember
- *
- * @package OCA\Circles\Listeners\Files
- */
+/** @template-implements IEventListener<RemovingCircleMemberEvent|Event> */
 class RemovingMember implements IEventListener {
 	use TStringTools;
 
@@ -56,14 +52,6 @@ class RemovingMember implements IEventListener {
 	private ShareTokenService $shareTokenService;
 	private ShareWrapperService $shareWrapperService;
 
-	/**
-	 * RemovingMember constructor.
-	 *
-	 * @param LoggerInterface $logger
-	 * @param MemberService $memberService
-	 * @param ShareTokenService $shareTokenService
-	 * @param ShareWrapperService $shareWrapperService
-	 */
 	public function __construct(
 		LoggerInterface $logger,
 		MemberService $memberService,
@@ -76,10 +64,6 @@ class RemovingMember implements IEventListener {
 		$this->shareWrapperService = $shareWrapperService;
 	}
 
-
-	/**
-	 * @param Event $event
-	 */
 	public function handle(Event $event): void {
 		if (!$event instanceof RemovingCircleMemberEvent) {
 			return;

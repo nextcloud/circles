@@ -51,11 +51,7 @@ use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\Security\IHasher;
 
-/**
- * Class PreparingShareSendMail
- *
- * @package OCA\Circles\Listeners\Files
- */
+/** @template-implements IEventListener<PreparingFileShareEvent|Event> */
 class PreparingShareSendMail implements IEventListener {
 	use TStringTools;
 	use TNCLogger;
@@ -79,17 +75,6 @@ class PreparingShareSendMail implements IEventListener {
 	/** @var ContactService */
 	private $contactService;
 
-
-	/**
-	 * PreparingShareSendMail constructor.
-	 *
-	 * @param IHasher $hasher
-	 * @param ShareWrapperService $shareWrapperService
-	 * @param ShareTokenService $shareTokenService
-	 * @param SendMailService $sendMailService
-	 * @param ContactService $contactService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
 		IHasher $hasher,
 		ShareWrapperService $shareWrapperService,
@@ -110,8 +95,6 @@ class PreparingShareSendMail implements IEventListener {
 
 
 	/**
-	 * @param Event $event
-	 *
 	 * @throws FederatedItemException
 	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException

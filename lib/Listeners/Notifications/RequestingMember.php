@@ -40,11 +40,7 @@ use OCA\Circles\Tools\Traits\TNCLogger;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 
-/**
- * Class RequestingMember
- *
- * @package OCA\Circles\Listeners\Notifications
- */
+/** @template-implements IEventListener<RequestingCircleMemberEvent|Event> */
 class RequestingMember implements IEventListener {
 	use TNCLogger;
 
@@ -52,22 +48,12 @@ class RequestingMember implements IEventListener {
 	/** @var NotificationService */
 	private $notificationService;
 
-
-	/**
-	 * RequestingMember constructor.
-	 */
 	public function __construct(NotificationService $notificationService) {
 		$this->notificationService = $notificationService;
 
 		$this->setup('app', Application::APP_ID);
 	}
 
-
-	/**
-	 * @param Event $event
-	 *
-	 * @throws RequestBuilderException
-	 */
 	public function handle(Event $event): void {
 		if (!$event instanceof RequestingCircleMemberEvent) {
 			return;

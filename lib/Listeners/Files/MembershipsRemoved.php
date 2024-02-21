@@ -55,11 +55,7 @@ use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 
-/**
- * Class MembershipsRemoved
- *
- * @package OCA\Circles\Listeners\Files
- */
+/** @template-implements IEventListener<MembershipsRemovedEvent|Event> */
 class MembershipsRemoved implements IEventListener {
 	use TStringTools;
 
@@ -72,14 +68,6 @@ class MembershipsRemoved implements IEventListener {
 	/** @var FederatedUserService */
 	private $federatedUserService;
 
-
-	/**
-	 * MembershipsRemoved constructor.
-	 *
-	 * @param CirclesManager $circlesManager
-	 * @param ShareWrapperService $shareWrapperService
-	 * @param FederatedUserService $federatedUserService
-	 */
 	public function __construct(
 		CirclesManager $circlesManager,
 		ShareWrapperService $shareWrapperService,
@@ -92,8 +80,6 @@ class MembershipsRemoved implements IEventListener {
 
 
 	/**
-	 * @param Event $event
-	 *
 	 * @throws CircleNotFoundException
 	 * @throws FederatedItemException
 	 * @throws FederatedUserException

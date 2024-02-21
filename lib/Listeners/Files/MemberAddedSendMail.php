@@ -43,11 +43,7 @@ use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 
-/**
- * Class MemberAdded
- *
- * @package OCA\Circles\Listeners\Files
- */
+/** @template-implements IEventListener<CircleMemberAddedEvent|Event> */
 class MemberAddedSendMail implements IEventListener {
 	use TStringTools;
 	use TNCLogger;
@@ -59,13 +55,6 @@ class MemberAddedSendMail implements IEventListener {
 	/** @var SendMailService */
 	private $sendMailService;
 
-
-	/**
-	 * MemberAdded constructor.
-	 *
-	 * @param ShareWrapperService $shareWrapperService
-	 * @param SendMailService $sendMailService
-	 */
 	public function __construct(
 		ShareWrapperService $shareWrapperService,
 		SendMailService $sendMailService
@@ -76,10 +65,6 @@ class MemberAddedSendMail implements IEventListener {
 		$this->setup('app', Application::APP_ID);
 	}
 
-
-	/**
-	 * @param Event $event
-	 */
 	public function handle(Event $event): void {
 		if (!$event instanceof CircleMemberAddedEvent) {
 			return;

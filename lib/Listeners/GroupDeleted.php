@@ -37,11 +37,7 @@ use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\Group\Events\GroupDeletedEvent;
 
-/**
- * Class GroupDeleted
- *
- * @package OCA\Circles\Events
- */
+/** @template-implements IEventListener<GroupDeletedEvent|Event> */
 class GroupDeleted implements IEventListener {
 	/** @var SyncService */
 	private $syncService;
@@ -56,10 +52,6 @@ class GroupDeleted implements IEventListener {
 		$this->syncService = $syncService;
 	}
 
-
-	/**
-	 * @param Event $event
-	 */
 	public function handle(Event $event): void {
 		if (!($event instanceof GroupDeletedEvent)) {
 			return;

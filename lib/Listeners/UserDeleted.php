@@ -37,11 +37,7 @@ use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\User\Events\UserDeletedEvent;
 
-/**
- * Class UserDeleted
- *
- * @package OCA\Circles\Events
- */
+/** @template-implements IEventListener<UserDeletedEvent|Event> */
 class UserDeleted implements IEventListener {
 	/** @var SyncService */
 	private $syncService;
