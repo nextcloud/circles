@@ -72,16 +72,6 @@
       <code><![CDATA[hasTable]]></code>
     </UndefinedMethod>
   </file>
-  <file src="lib/Db/DeprecatedCirclesRequest.php">
-    <InvalidArgument>
-      <code><![CDATA[$circle->getType()]]></code>
-    </InvalidArgument>
-  </file>
-  <file src="lib/Db/DeprecatedMembersRequest.php">
-    <UndefinedClass>
-      <code><![CDATA[UniqueConstraintViolationException]]></code>
-    </UndefinedClass>
-  </file>
   <file src="lib/Db/FederatedLinksRequest.php">
     <InvalidNullableReturnType>
       <code><![CDATA[FederatedLink]]></code>
@@ -320,36 +310,10 @@
       <code><![CDATA[gObj]]></code>
     </InvalidMethodCall>
   </file>
-  <file src="lib/Service/GSDownstreamService.php">
-    <UndefinedMethod>
-      <code><![CDATA[asyncBroadcast]]></code>
-      <code><![CDATA[checkEvent]]></code>
-      <code><![CDATA[checkEvent]]></code>
-      <code><![CDATA[checkEvent]]></code>
-      <code><![CDATA[getGlobalScaleEvent]]></code>
-      <code><![CDATA[getGlobalScaleEvent]]></code>
-      <code><![CDATA[getGlobalScaleEvent]]></code>
-    </UndefinedMethod>
-  </file>
-  <file src="lib/Service/GSUpstreamService.php">
-    <InvalidArgument>
-      <code><![CDATA[$wrapper]]></code>
-    </InvalidArgument>
-    <InvalidReturnStatement>
-      <code><![CDATA[$this->eventWrapperRequest->getByToken($token)]]></code>
-    </InvalidReturnStatement>
-    <InvalidReturnType>
-      <code><![CDATA[GSWrapper[]]]></code>
+  <file src="lib/Service/FederatedUserService.php">
+    <InvalidReturnType occurrences="1">
+      <code>FederatedUser</code>
     </InvalidReturnType>
-    <TooManyArguments>
-      <code><![CDATA[configureRequest]]></code>
-    </TooManyArguments>
-    <UndefinedMethod>
-      <code><![CDATA[asyncBroadcast]]></code>
-      <code><![CDATA[getGlobalScaleEvent]]></code>
-      <code><![CDATA[getGlobalScaleEvent]]></code>
-      <code><![CDATA[getKey]]></code>
-    </UndefinedMethod>
   </file>
   <file src="lib/Service/GlobalScaleService.php">
     <UndefinedClass>

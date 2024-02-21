@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -26,109 +28,56 @@
 
 namespace OCA\Circles\Model;
 
-class SearchResult implements \JsonSerializable {
-	/** @var string */
-	private $ident;
+use JsonSerializable;
 
-	/** @var int */
-	private $type;
-
-	/** @var string */
-	private $instance = '';
-
-	/** @var array */
-	private $data = [];
-
-
-	/**
-	 * SearchResult constructor.
-	 *
-	 * @param string $ident
-	 * @param int $type
-	 * @param string $instance
-	 * @param array $data
-	 */
-	public function __construct($ident = '', $type = 0, $instance = '', $data = []) {
-		$this->setIdent($ident);
-		$this->setType($type);
-		$this->setInstance($instance);
-		$this->setData($data);
+class SearchResult implements JsonSerializable {
+	public function __construct(
+		private string $ident = '',
+		private int $type = 0,
+		private string $instance = '',
+		private array $data = []
+	) {
 	}
 
-
-	/**
-	 * @param string $ident
-	 */
-	public function setIdent($ident) {
+	public function setIdent(string $ident): self {
 		$this->ident = $ident;
+		return $this;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getIdent() {
+	public function getIdent(): string {
 		return $this->ident;
 	}
 
-
-	/**
-	 * @param string $instance
-	 */
-	public function setInstance($instance) {
+	public function setInstance(string $instance): self  {
 		$this->instance = $instance;
+		return $this;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getInstance() {
+	public function getInstance(): string {
 		return $this->instance;
 	}
 
-
-	/**
-	 * @param int $type
-	 */
-	public function setType($type) {
+	public function setType(int $type): self {
 		$this->type = $type;
+		return $this;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function getType() {
+	public function getType(): int {
 		return $this->type;
 	}
 
-
-	/**
-	 * @param array $data
-	 */
-	public function setData($data) {
+	public function setData(array $data): self {
 		$this->data = $data;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function getData() {
+	public function getData(): array {
 		if (!key_exists('display', $this->data)) {
 			return ['display' => $this->getIdent()];
 		}
-
 		return $this->data;
 	}
 
-
-	/**
-	 * Specify data which should be serialized to JSON
-	 *
-	 * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
-	 * @return mixed data which can be serialized by <b>json_encode</b>,
-	 * which is a value of any type other than a resource.
-	 * @since 5.4.0
-	 */
-	public function jsonSerialize() {
+	public function jsonSerialize(): array {
 		return [
 			'ident' => $this->getIdent(),
 			'instance' => $this->getInstance(),

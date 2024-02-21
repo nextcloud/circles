@@ -56,7 +56,7 @@ class Provider implements IProvider {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function parse($language, IEvent $event, IEvent $previousEvent = null): IEvent {
+	public function parse($language, IEvent $event, ?IEvent $previousEvent = null): IEvent {
 		try {
 			$params = $event->getSubjectParameters();
 			$this->initActivityParser($event, $params);

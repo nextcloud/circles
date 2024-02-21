@@ -139,26 +139,4 @@ class EventWrapperController extends Controller {
 		exit();
 	}
 
-
-	//	/**
-	//	 * Status Event. This is an event to check status of items between instances.
-	//	 *
-	//	 * @PublicPage
-	//	 * @NoCSRFRequired
-	//	 *
-	//	 * @return DataResponse
-	//	 */
-	//	public function status(): DataResponse {
-	//		$data = file_get_contents('php://input');
-	//
-	//		try {
-	//			$event = new GSEvent();
-	//			$event->importFromJson($data);
-	//			$this->gsDownstreamService->statusEvent($event);
-	//
-	//			return $this->success(['success' => $event]);
-	//		} catch (Exception $e) {
-	//			return $this->fail(['data' => $data, 'error' => $e->getMessage()]);
-	//		}
-	//	}
 }
