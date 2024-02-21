@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files psalm-version="5.22.1@e9dad66e11274315dac27e08349c628c7d6a1a43">
+  <file src="lib/Activity/ProviderParser.php">
+    <TypeDoesNotContainType>
+      <code><![CDATA[str_starts_with($sK, '_')]]></code>
+    </TypeDoesNotContainType>
+  </file>
   <file src="lib/Circles/FileSharingBroadcaster.php">
     <InvalidScalarArgument>
       <code><![CDATA[$share->getId()]]></code>
@@ -19,11 +24,6 @@
     <UndefinedInterfaceMethod>
       <code><![CDATA[getLazyRootFolder]]></code>
     </UndefinedInterfaceMethod>
-  </file>
-  <file src="lib/Command/CirclesCheck.php">
-    <UndefinedClass>
-      <code><![CDATA[AppConfig]]></code>
-    </UndefinedClass>
   </file>
   <file src="lib/Command/CirclesRemote.php">
     <UndefinedMethod>
@@ -72,17 +72,6 @@
       <code><![CDATA[hasTable]]></code>
     </UndefinedMethod>
   </file>
-  <file src="lib/Db/FederatedLinksRequest.php">
-    <InvalidNullableReturnType>
-      <code><![CDATA[FederatedLink]]></code>
-    </InvalidNullableReturnType>
-    <NullableReturnStatement>
-      <code><![CDATA[null]]></code>
-    </NullableReturnStatement>
-    <TypeDoesNotContainNull>
-      <code><![CDATA[$link === null]]></code>
-    </TypeDoesNotContainNull>
-  </file>
   <file src="lib/Db/FileSharesRequest.php">
     <InvalidScalarArgument>
       <code><![CDATA[self::SHARE_TYPE]]></code>
@@ -121,17 +110,6 @@
     <UndefinedDocblockClass>
       <code><![CDATA[$this->circleEventService]]></code>
       <code><![CDATA[CircleEventService]]></code>
-    </UndefinedDocblockClass>
-  </file>
-  <file src="lib/Handlers/WebfingerHandler.php">
-    <InvalidPropertyAssignmentValue>
-      <code><![CDATA[$urlGenerator]]></code>
-    </InvalidPropertyAssignmentValue>
-    <ParamNameMismatch>
-      <code><![CDATA[$response]]></code>
-    </ParamNameMismatch>
-    <UndefinedDocblockClass>
-      <code><![CDATA[URLGenerator]]></code>
     </UndefinedDocblockClass>
   </file>
   <file src="lib/Migration/ImportOwncloudCustomGroups.php">
@@ -219,12 +197,6 @@
       <code><![CDATA[Circle|null]]></code>
     </MismatchingDocblockParamType>
   </file>
-  <file src="lib/Model/FileCacheWrapper.php">
-    <InvalidReturnStatement/>
-    <InvalidReturnType>
-      <code><![CDATA[string[]]]></code>
-    </InvalidReturnType>
-  </file>
   <file src="lib/Model/ManagedModel.php">
     <UndefinedMethod>
       <code><![CDATA[setBasedOn]]></code>
@@ -257,6 +229,7 @@
   <file src="lib/Model/ShareWrapper.php">
     <InvalidArgument>
       <code><![CDATA[Cache::cacheEntryFromData($this->getFileCache()->toCache(), OC::$server->getMimeTypeLoader())]]></code>
+      <code><![CDATA[$this->setAttributes($attributes);]]></code>
     </InvalidArgument>
     <InvalidNullableReturnType>
       <code><![CDATA[Circle]]></code>
@@ -293,6 +266,9 @@
     </UndefinedClass>
   </file>
   <file src="lib/MountManager/CircleMountProvider.php">
+    <InvalidConstantAssignmentValue>
+      <code><![CDATA[EXTERNAL_STORAGE = ExternalStorage::class]]></code>
+    </InvalidConstantAssignmentValue>
     <MissingDependency>
       <code><![CDATA[CircleMount]]></code>
     </MissingDependency>
@@ -420,10 +396,12 @@
     <RedundantPropertyInitializationCheck>
       <code><![CDATA[isset($this->logger)]]></code>
     </RedundantPropertyInitializationCheck>
+    <RedundantCondition>
+      <code><![CDATA[isset($this->logger)]]></code>
+    </RedundantCondition>
     <UndefinedClass>
       <code><![CDATA[HintException]]></code>
     </UndefinedClass>
-    <RedundantCondition/>
   </file>
   <file src="lib/Tools/Traits/TNCRequest.php">
     <InvalidArgument>

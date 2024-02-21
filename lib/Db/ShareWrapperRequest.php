@@ -59,10 +59,6 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 	 * @throws NotFoundException
 	 */
 	public function save(IShare $share, int $parentId = 0): int {
-		//		$hasher = \OC::$server->getHasher();
-		//		$password = ($share->getPassword() !== null) ? $hasher->hash($share->getPassword()) : '';
-		$password = '';
-
 		$qb = $this->getShareInsertSql();
 		$qb->setValue('share_type', $qb->createNamedParameter($share->getShareType()))
 			->setValue('item_type', $qb->createNamedParameter($share->getNodeType()))
@@ -74,7 +70,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 			->setValue('uid_initiator', $qb->createNamedParameter($share->getSharedBy()))
 			->setValue('expiration', $qb->createNamedParameter($share->getExpirationDate(), IQueryBuilder::PARAM_DATE))
 			->setValue('accepted', $qb->createNamedParameter(IShare::STATUS_ACCEPTED))
-			->setValue('password', $qb->createNamedParameter($password))
+			->setValue('password', $qb->createNamedParameter(''))
 			->setValue('permissions', $qb->createNamedParameter($share->getPermissions()))
 			->setValue('token', $qb->createNamedParameter($share->getToken()))
 			->setValue('stime', $qb->createFunction('UNIX_TIMESTAMP()'));
@@ -86,7 +82,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		$qb->execute();
 		$id = $qb->getLastInsertId();
 		try {
-			$share->setId($id);
+			$share->setId((string)$id);
 		} catch (IllegalIDChangeException $e) {
 		}
 

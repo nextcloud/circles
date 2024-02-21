@@ -81,7 +81,7 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 	}
 
 
-	public function jsonSerialize() {
+	public function jsonSerialize(): array {
 		$json = [
 			'id' => $this->getId(),
 			'name' => $this->getName(true),

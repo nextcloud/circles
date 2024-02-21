@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -29,7 +28,6 @@ declare(strict_types=1);
  *
  */
 
-
 namespace OCA\Circles\AppInfo;
 
 use OCA\Circles\Model\Circle;
@@ -40,51 +38,15 @@ use OCP\App\IAppManager;
 use OCP\Capabilities\ICapability;
 use OCP\IL10N;
 
-/**
- * Class Capabilities
- *
- * @package OCA\Circles\AppInfo
- */
 class Capabilities implements ICapability {
-	/** @var IL10N */
-	private $l10n;
-
-	/** @var IAppManager */
-	private $appManager;
-
-	/** @var InterfaceService */
-	private $interfaceService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
-	/**
-	 * Capabilities constructor.
-	 *
-	 * @param IL10N $l10n
-	 * @param IAppManager $appManager
-	 * @param InterfaceService $interfaceService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
-		IL10N $l10n,
-		IAppManager $appManager,
-		InterfaceService $interfaceService,
-		ConfigService $configService
+		private IL10N $l10n,
+		private IAppManager $appManager,
+		private InterfaceService $interfaceService,
+		private ConfigService $configService
 	) {
-		$this->l10n = $l10n;
-		$this->appManager = $appManager;
-		$this->interfaceService = $interfaceService;
-		$this->configService = $configService;
 	}
 
-
-	/**
-	 * @param bool $complete
-	 *
-	 * @return array
-	 */
 	public function getCapabilities(bool $complete = false): array {
 		return [
 			Application::APP_ID => [
@@ -96,7 +58,6 @@ class Capabilities implements ICapability {
 			],
 		];
 	}
-
 
 	/**
 	 * @param bool $complete
@@ -118,7 +79,6 @@ class Capabilities implements ICapability {
 		return $status;
 	}
 
-
 	/**
 	 * @return array
 	 */
@@ -129,7 +89,6 @@ class Capabilities implements ICapability {
 		];
 	}
 
-
 	/**
 	 * @return array
 	 */
@@ -139,7 +98,6 @@ class Capabilities implements ICapability {
 			'type' => Member::$TYPE
 		];
 	}
-
 
 	/**
 	 * @return array
@@ -183,7 +141,6 @@ class Capabilities implements ICapability {
 		];
 	}
 
-
 	/**
 	 * @return array
 	 */
@@ -193,7 +150,6 @@ class Capabilities implements ICapability {
 			'systemFlags' => Circle::$DEF_CFG_SYSTEM_FILTER
 		];
 	}
-
 
 	/**
 	 * @return array

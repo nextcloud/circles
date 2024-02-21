@@ -1,8 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
-
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -28,7 +26,6 @@ declare(strict_types=1);
  *
  */
 
-
 namespace OCA\Circles\MountManager;
 
 use Exception;
@@ -53,64 +50,20 @@ use OCP\Files\Storage\IStorageFactory;
 use OCP\Http\Client\IClientService;
 use OCP\IUser;
 
-/**
- * Class CircleMountProvider
- *
- * @package OCA\Circles\MountManager
- */
 class CircleMountProvider implements IMountProvider {
 	use TArrayTools;
 
-
-	//	const LOCAL_STORAGE = ::class;
 	public const EXTERNAL_STORAGE = ExternalStorage::class;
 
-
-	/** @var IClientService */
-	private $clientService;
-
-	/** @var CircleMountManager */
-	private $circleMountManager;
-
-	/** @var ICloudIdManager */
-	private $cloudIdManager;
-
-	/** @var MountRequest */
-	private $mountRequest;
-
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
-	/**
-	 * MountProvider constructor.
-	 *
-	 * @param IClientService $clientService
-	 * @param CircleMountManager $circleMountManager
-	 * @param ICloudIdManager $cloudIdManager
-	 * @param MountRequest $mountRequest
-	 * @param FederatedUserService $federatedUserService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
-		IClientService $clientService,
-		CircleMountManager $circleMountManager,
-		ICloudIdManager $cloudIdManager,
-		MountRequest $mountRequest,
-		FederatedUserService $federatedUserService,
-		ConfigService $configService
+		private IClientService $clientService,
+		private CircleMountManager $circleMountManager,
+		private ICloudIdManager $cloudIdManager,
+		private MountRequest $mountRequest,
+		private FederatedUserService $federatedUserService,
+		private ConfigService $configService
 	) {
-		$this->clientService = $clientService;
-		$this->circleMountManager = $circleMountManager;
-		$this->cloudIdManager = $cloudIdManager;
-		$this->mountRequest = $mountRequest;
-		$this->federatedUserService = $federatedUserService;
-		$this->configService = $configService;
 	}
-
 
 	/**
 	 * @param IUser $user

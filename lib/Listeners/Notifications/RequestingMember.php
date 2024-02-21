@@ -30,7 +30,6 @@ namespace OCA\Circles\Listeners\Notifications;
 
 use OCA\Circles\Events\CircleGenericEvent;
 use OCA\Circles\Events\RequestingCircleMemberEvent;
-use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Service\NotificationService;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;

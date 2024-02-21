@@ -31,6 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
+use InvalidArgumentException;
 use OC\Core\Command\Base;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
@@ -44,7 +45,6 @@ use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\ShareWrapperService;
 use OCA\Circles\Tools\Traits\TArrayTools;
-use Symfony\Component\Console\Exception\MissingInputException;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -313,8 +313,6 @@ class SharesFiles extends Base {
 			);
 		}
 
-		throw new MissingInputException(
-			'Specify a FileId or an option: --with (USER), --by (USER), --to (CIRCLE)'
-		);
+		throw new InvalidArgumentException('Specify a FileId or an option: --with (USER), --by (USER), --to (CIRCLE)');
 	}
 }

@@ -270,7 +270,7 @@ class SharingFrame implements \JsonSerializable {
 	}
 
 
-	public function jsonSerialize() {
+	public function jsonSerialize(): array {
 		return [
 			'unique_id' => $this->getUniqueId(),
 			'circle' => $this->getCircle()

@@ -48,7 +48,7 @@ class SearchResult implements JsonSerializable {
 		return $this->ident;
 	}
 
-	public function setInstance(string $instance): self  {
+	public function setInstance(string $instance): self {
 		$this->instance = $instance;
 		return $this;
 	}
@@ -68,6 +68,7 @@ class SearchResult implements JsonSerializable {
 
 	public function setData(array $data): self {
 		$this->data = $data;
+		return $this;
 	}
 
 	public function getData(): array {

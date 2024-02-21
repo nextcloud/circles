@@ -32,6 +32,9 @@ use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Service\MiscService;
 use OCP\IL10N;
 
+/**
+ * @deprecated
+ */
 class BaseMember implements JsonSerializable {
 	public const LEVEL_NONE = 0;
 	public const LEVEL_MEMBER = 1;
@@ -384,8 +387,8 @@ class BaseMember implements JsonSerializable {
 
 		$member->setLevel($arr['level']);
 
-		$member->setType(MiscService::get($arr, 'user_type'));
-		$member->setType(MiscService::get($arr, 'type', $member->getType()));
+		//		$member->setType(MiscService::get($arr, 'user_type'));
+		//		$member->setType(MiscService::get($arr, 'type', $member->getType()));
 
 		$member->setInstance($arr['instance']);
 		$member->setUserId($arr['user_id']);
@@ -408,7 +411,7 @@ class BaseMember implements JsonSerializable {
 	}
 
 
-	public function jsonSerialize() {
+	public function jsonSerialize(): array {
 		return [
 			'circle_id' => $this->getCircleId(),
 			'member_id' => $this->getMemberId(),

@@ -96,7 +96,7 @@ class Application extends App implements IBootstrap {
 
 	public const APP_SUBJECT = 'http://nextcloud.com/';
 	public const APP_REL = 'https://apps.nextcloud.com/apps/circles';
-	public const APP_API = 1;
+	public const APP_API = "1";
 
 	public const CLIENT_TIMEOUT = 3;
 
