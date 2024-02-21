@@ -36,7 +36,7 @@
 				}
 			);
 
-			this._fileList.appName = t('circles', 'Circles');
+			this._fileList.appName = t('circles', 'Teams');
 			return this._fileList;
 		},
 

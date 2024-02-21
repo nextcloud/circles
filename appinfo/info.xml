@@ -2,10 +2,10 @@
 <info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	  xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
 	<id>circles</id>
-	<name>Circles</name>
+	<name>Teams</name>
 	<summary>Bring cloud-users closer together.</summary>
-	<description><![CDATA[Circles allows people to create their own groups of people/colleagues/friends.
-Those groups of people (or "circles") can then be used by any other app for sharing purpose.
+	<description><![CDATA[Teams allows people to create their own groups of people/colleagues/friends.
+Those groups of people can then be used by any other app for sharing purpose.
 		]]>
 	</description>
 	<version>29.0.0-dev</version>

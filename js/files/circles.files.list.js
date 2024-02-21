@@ -42,7 +42,7 @@
 	FileList.prototype = _.extend({}, OCA.Files.FileList.prototype,
 		/** @lends OCA.Circles.FileList.prototype */ {
 			id: 'circlesfilter',
-			appName: t('circles', 'Circles\' files'),
+			appName: t('circles', 'Teams\' files'),
 
 			/**
 			 * Array of system tag ids to filter by
@@ -88,7 +88,7 @@
 				this.$filterField = $('<input type="hidden" name="circles"/>');
 				$container.append(this.$filterField);
 				this.$filterField.select2({
-					placeholder: t('circles', 'Select circles to filter by'),
+					placeholder: t('circles', 'Select team to filter by'),
 					allowClear: false,
 					multiple: true,
 					toggleSelect: true,
@@ -149,7 +149,7 @@
 						return m;
 					},
 					formatNoMatches: function() {
-						return t('circles', 'No circles found');
+						return t('circles', 'No teams found');
 					}
 				});
 				this.$filterField.on('change', _.bind(this._onTagsChanged, this));
@@ -205,12 +205,12 @@
 						// no tags selected
 						this.$el.find('.emptyfilelist.emptycontent').html(
 							'<div class="icon-systemtags"></div>' +
-							'<h2>' + t('circles', 'Please select circles to filter by') + '</h2>');
+							'<h2>' + t('circles', 'Please select teams to filter by') + '</h2>');
 					} else {
 						// tags selected but no results
 						this.$el.find('.emptyfilelist.emptycontent').html(
 							'<div class="icon-systemtags"></div>' +
-							'<h2>' + t('circles', 'No files found for the selected circles') + '</h2>');
+							'<h2>' + t('circles', 'No files found for the selected teams') + '</h2>');
 					}
 					this.$el.find('.emptyfilelist.emptycontent').toggleClass('hidden', !this.isEmpty);
 					this.$el.find('.files-filestable thead th').toggleClass('hidden', this.isEmpty);

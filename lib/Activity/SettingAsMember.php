@@ -26,7 +26,7 @@ class SettingAsMember implements ISetting {
 	 * @since 11.0.0
 	 */
 	public function getName() {
-		return $this->l10n->t('On events happening in a <strong>Circle</strong> of which you are a member');
+		return $this->l10n->t('On events happening in a <strong>Team</strong> of which you are a member');
 	}
 
 

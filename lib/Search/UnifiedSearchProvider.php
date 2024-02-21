@@ -85,7 +85,7 @@ class UnifiedSearchProvider implements IProvider {
 	 * @return string
 	 */
 	public function getName(): string {
-		return $this->l10n->t('Circles');
+		return $this->l10n->t('Teams');
 	}
 
 
@@ -118,7 +118,7 @@ class UnifiedSearchProvider implements IProvider {
 		}
 
 		return SearchResult::paginated(
-			$this->l10n->t('Circles'),
+			$this->l10n->t('Teams'),
 			$result,
 			($query->getCursor() ?? 0) + $query->getLimit()
 		);

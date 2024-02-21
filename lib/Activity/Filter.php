@@ -54,7 +54,7 @@ class Filter implements IFilter {
 	 * @since 11.0.0
 	 */
 	public function getName() {
-		return $this->l10n->t('Circles');
+		return $this->l10n->t('Teams');
 	}
 
 	/**

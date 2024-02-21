@@ -75,7 +75,7 @@ class PermissionService {
 			$this->confirm(ConfigService::LIMIT_CIRCLE_CREATION);
 		} catch (InsufficientPermissionException $e) {
 			throw new InsufficientPermissionException(
-				$this->l10n->t('You have no permission to create a new circle')
+				$this->l10n->t('You have no permission to create a new team')
 			);
 		}
 	}

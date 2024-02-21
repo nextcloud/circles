@@ -65,7 +65,7 @@ class DeprecatedMember extends BaseMember {
 				return $this->joinClosedCircle();
 		}
 
-		throw new MemberCantJoinCircleException($this->l10n->t('You cannot join this circle'));
+		throw new MemberCantJoinCircleException($this->l10n->t('You cannot join this team'));
 	}
 
 
@@ -169,7 +169,7 @@ class DeprecatedMember extends BaseMember {
 	public function cantBeOwner() {
 		if ($this->getLevel() === self::LEVEL_OWNER) {
 			throw new MemberIsOwnerException(
-				$this->l10n->t('This member is the owner of the circle')
+				$this->l10n->t('This member is the owner of the team')
 			);
 		}
 	}
