@@ -64,11 +64,6 @@ use OCA\Circles\Service\MembershipService;
 use OCA\Circles\StatusCode;
 use OCP\IUserManager;
 
-/**
- * Class CircleJoin
- *
- * @package OCA\Circles\GlobalScale
- */
 class CircleJoin implements
 	IFederatedItem,
 	IFederatedItemInitiatorMembershipNotRequired,
@@ -79,7 +74,6 @@ class CircleJoin implements
 	use TStringTools;
 	use TNCLogger;
 	use TDeserialize;
-
 
 	/** @var IUserManager */
 	private $userManager;

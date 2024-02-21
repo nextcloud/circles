@@ -95,19 +95,6 @@
       <code>hasInvitedBy</code>
     </UndefinedInterfaceMethod>
   </file>
-  <file src="lib/Command/SyncContact.php">
-    <InvalidReturnType occurrences="1">
-      <code>int|void|null</code>
-    </InvalidReturnType>
-    <UndefinedClass occurrences="1">
-      <code>CardDavBackend</code>
-    </UndefinedClass>
-    <UndefinedDocblockClass occurrences="3">
-      <code>$this-&gt;cardDavBackend</code>
-      <code>$this-&gt;cardDavBackend</code>
-      <code>CardDavBackend</code>
-    </UndefinedDocblockClass>
-  </file>
   <file src="lib/Controller/RemoteController.php">
     <InvalidScalarArgument occurrences="1">
       <code>($e-&gt;getCode() &gt; 0) ? $e-&gt;getCode() : $httpErrorCode</code>
@@ -476,25 +463,6 @@
       <code>ExternalStorage</code>
     </UndefinedClass>
   </file>
-  <file src="lib/Service/CirclesService.php">
-    <InvalidScalarArgument occurrences="1">
-      <code>$type</code>
-    </InvalidScalarArgument>
-    <MismatchingDocblockParamType occurrences="1">
-      <code>DeprecatedCircle</code>
-    </MismatchingDocblockParamType>
-    <MismatchingDocblockReturnType occurrences="1">
-      <code>null|DeprecatedMember</code>
-    </MismatchingDocblockReturnType>
-    <UndefinedClass occurrences="3">
-      <code>DeprecatedCircle</code>
-      <code>Member</code>
-      <code>Member</code>
-    </UndefinedClass>
-    <UndefinedMethod occurrences="1">
-      <code>isFederatedCirclesAllowed</code>
-    </UndefinedMethod>
-  </file>
   <file src="lib/Service/ContactService.php">
     <TypeDoesNotContainNull occurrences="1">
       <code>is_null($contactId)</code>
@@ -502,36 +470,6 @@
     <UndefinedClass occurrences="1">
       <code>ContactsManager</code>
     </UndefinedClass>
-  </file>
-  <file src="lib/Service/DavService.php">
-    <InvalidReturnStatement occurrences="1">
-      <code>$existing</code>
-    </InvalidReturnStatement>
-    <InvalidReturnType occurrences="1">
-      <code>DeprecatedCircle[]</code>
-    </InvalidReturnType>
-    <InvalidScalarArgument occurrences="3">
-      <code>$bookId</code>
-      <code>$bookId</code>
-      <code>$bookId</code>
-    </InvalidScalarArgument>
-    <UndefinedClass occurrences="1">
-      <code>CardDavBackend</code>
-    </UndefinedClass>
-    <UndefinedDocblockClass occurrences="6">
-      <code>$this-&gt;cardDavBackend</code>
-      <code>$this-&gt;cardDavBackend</code>
-      <code>$this-&gt;cardDavBackend</code>
-      <code>$this-&gt;cardDavBackend</code>
-      <code>$this-&gt;cardDavBackend</code>
-      <code>CardDavBackend</code>
-    </UndefinedDocblockClass>
-  </file>
-  <file src="lib/Service/EventsService.php">
-    <InvalidArgument occurrences="2">
-      <code>$context</code>
-      <code>new GenericEvent(null, $arguments)</code>
-    </InvalidArgument>
   </file>
   <file src="lib/Service/FederatedShareService.php">
     <InvalidMethodCall occurrences="1">
@@ -583,23 +521,6 @@
     <UndefinedDocblockClass occurrences="1">
       <code>Signer</code>
     </UndefinedDocblockClass>
-  </file>
-  <file src="lib/Service/MembersService.php">
-    <InvalidReturnStatement occurrences="1">
-      <code>$members</code>
-    </InvalidReturnStatement>
-    <InvalidReturnType occurrences="1">
-      <code>DeprecatedMember[]</code>
-    </InvalidReturnType>
-    <InvalidScalarArgument occurrences="1">
-      <code>$circle-&gt;getType()</code>
-    </InvalidScalarArgument>
-    <RedundantCast occurrences="1">
-      <code>(int)$level</code>
-    </RedundantCast>
-    <UndefinedMethod occurrences="1">
-      <code>isInvitationSkipped</code>
-    </UndefinedMethod>
   </file>
   <file src="lib/Service/MembershipService.php">
     <ConflictingReferenceConstraint occurrences="1">

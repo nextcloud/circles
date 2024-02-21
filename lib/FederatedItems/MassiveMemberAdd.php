@@ -43,11 +43,6 @@ use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Model\Member;
 
-/**
- * Class MemberAdd
- *
- * @package OCA\Circles\GlobalScale
- */
 class MassiveMemberAdd extends SingleMemberAdd implements
 	IFederatedItem,
 	IFederatedItemAsyncProcess,
@@ -55,7 +50,6 @@ class MassiveMemberAdd extends SingleMemberAdd implements
 	IFederatedItemMemberEmpty {
 	use TStringTools;
 	use TNCLogger;
-
 
 	/**
 	 * @param FederatedEvent $event

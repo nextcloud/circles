@@ -66,7 +66,6 @@ Those groups of people (or "circles") can then be used by any other app for shar
 		<command>OCA\Circles\Command\MembersDetails</command>
 		<command>OCA\Circles\Command\MembersLevel</command>
 		<command>OCA\Circles\Command\MembersRemove</command>
-		<!--		<command>OCA\Circles\Command\SyncContact</command>-->
 	</commands>
 
 		<activity>

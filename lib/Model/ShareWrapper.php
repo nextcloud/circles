@@ -456,24 +456,6 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 			$urlGenerator->imagePath(Application::APP_ID, 'circles.svg')
 		);
 		$share->setSharedWithAvatar($icon);
-
-
-//		if (array_key_exists('circle_type', $data)
-//			&& method_exists($share, 'setSharedWithDisplayName')) {
-//			$name = $data['circle_name'];
-//			if ($data['circle_alt_name'] !== '') {
-//				$name = $data['circle_alt_name'];
-//			}
-//
-//			$share->setSharedWithAvatar(CirclesService::getCircleIcon($data['circle_type']))
-//				  ->setSharedWithDisplayName(
-//					  sprintf(
-//						  ' % s(%s, %s)', $name,
-//						  $this->l10n->t(DeprecatedCircle::TypeLongString($data['circle_type'])),
-//						  $this->miscService->getDisplayName($data['circle_owner'], true)
-//					  )
-//				  );
-//		}
 	}
 
 

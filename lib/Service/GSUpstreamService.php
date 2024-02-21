@@ -48,7 +48,6 @@ use OCA\Circles\Exceptions\GlobalScaleEventException;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Exceptions\JsonException;
 use OCA\Circles\Exceptions\ModelException;
-use OCA\Circles\GlobalScale\CircleStatus;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\GlobalScale\GSWrapper;
@@ -323,125 +322,7 @@ class GSUpstreamService {
 		} catch (GlobalScaleEventException $e) {
 		}
 	}
-
-
-	/**
-	 *
-	 */
-	private function removeDeprecatedCircles() {
-		$knownCircles = $this->circlesRequest->forceGetCircles();
-		foreach ($knownCircles as $knownItem) {
-			if ($knownItem->getOwner()
-						  ->getInstance() === '') {
-				continue;
-			}
-
-			try {
-				$this->checkCircle($knownItem);
-			} catch (GSStatusException $e) {
-			}
-		}
-	}
-
-
-	/**
-	 * @param DeprecatedCircle $circle
-	 *
-	 * @throws GSStatusException
-	 */
-	private function checkCircle(DeprecatedCircle $circle): void {
-		$status = $this->confirmCircleStatus($circle);
-
-		if (!$status) {
-			$this->circlesRequest->destroyCircle($circle->getUniqueId());
-			$this->membersRequest->removeAllFromCircle($circle->getUniqueId());
-		}
-	}
-
-
-	/**
-	 * @param DeprecatedCircle $circle
-	 *
-	 * @return bool
-	 * @throws GSStatusException
-	 */
-	public function confirmCircleStatus(DeprecatedCircle $circle): bool {
-		$event = new GSEvent(GSEvent::CIRCLE_STATUS, true);
-		$event->setSource($this->configService->getFrontalInstance());
-		$event->setDeprecatedCircle($circle);
-
-		$this->signEvent($event);
-
-		$path = $this->urlGenerator->linkToRoute('circles.EventWrapper.status');
-		$request = new NCRequest($path, Request::TYPE_POST);
-		$this->configService->configureRequest($request);
-		$request->setDataSerialize($event);
-
-		$requestIssue = false;
-		$notFound = false;
-		$foundWithNoOwner = false;
-		foreach ($this->globalScaleService->getInstances() as $instance) {
-			$request->setHost($instance);
-
-			try {
-				$result = $this->retrieveJson($request);
-//				$this->miscService->log('result: ' . json_encode($result));
-				if ($this->getInt('status', $result, 0) !== 1) {
-					throw new RequestContentException('result status is not good');
-				}
-
-				$status = $this->getInt('success.data.status', $result);
-
-				// if error, we assume the circle might still exist.
-				if ($status === CircleStatus::STATUS_ERROR) {
-					return true;
-				}
-
-				if ($status === CircleStatus::STATUS_OK) {
-					return true;
-				}
-
-				// TODO: check the data.supposedOwner entry.
-				if ($status === CircleStatus::STATUS_NOT_OWNER) {
-					$foundWithNoOwner = true;
-				}
-
-				if ($status === CircleStatus::STATUS_NOT_FOUND) {
-					$notFound = true;
-				}
-			} catch (RequestContentException
-			| RequestNetworkException
-			| RequestResultNotJsonException
-			| RequestResultSizeException
-			| RequestServerException $e) {
-				$requestIssue = true;
-				// TODO: log instances that have network issue, after too many tries (7d), remove this circle.
-				continue;
-			}
-		}
-
-		// if no request issue, we can imagine that the instance that owns the circle is down.
-		// We'll wait for more information (cf request exceptions management);
-		if ($requestIssue) {
-			return true;
-		}
-
-		// circle were not found in any other instances, we can easily says that the circle does not exists anymore
-		if ($notFound && !$foundWithNoOwner) {
-			return false;
-		}
-
-		// circle were found everywhere but with no owner on every instance. we need to assign a new owner.
-		// This should be done by checking admin rights. if no admin rights, let's assume that circle should be removed.
-		if (!$notFound && $foundWithNoOwner) {
-			// TODO: assign a new owner and check that when changing owner, we do check that the destination instance is updated FOR SURE!
-			return true;
-		}
-
-		// some instances returned notFound, some returned circle with no owner. let's assume the circle is deprecated.
-		return false;
-	}
-
+	
 	/**
 	 * @throws GSStatusException
 	 */
