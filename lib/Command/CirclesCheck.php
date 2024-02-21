@@ -180,7 +180,7 @@ class CirclesCheck extends Base {
 			throw new Exception('Unknown type: ' . implode(', ', self::$checks));
 		}
 
-//		$this->configService->setAppValue(ConfigService::TEST_NC_BASE, $test);
+		//		$this->configService->setAppValue(ConfigService::TEST_NC_BASE, $test);
 
 		if ($type === '' || $type === 'loopback') {
 			$output->writeln('### Checking <info>loopback</info> address.');

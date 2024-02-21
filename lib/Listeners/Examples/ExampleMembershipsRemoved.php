@@ -31,8 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Listeners\Examples;
 
-use OCA\Circles\Tools\Traits\TNCLogger;
-use OCA\Circles\Tools\Traits\TStringTools;
 use Exception;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\CirclesManager;
@@ -40,6 +38,8 @@ use OCA\Circles\Events\MembershipsRemovedEvent;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Membership;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Tools\Traits\TNCLogger;
+use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 

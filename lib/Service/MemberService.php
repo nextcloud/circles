@@ -120,17 +120,17 @@ class MemberService {
 		$this->remoteStreamService = $remoteStreamService;
 	}
 
-//
-//	/**
-//	 * @param Member $member
-//	 *
-//	 * @throws MemberAlreadyExistsException
-//	 */
-//	public function saveMember(Member $member) {
-//		$member->setId($this->token(Member::ID_LENGTH));
-//		$this->memberRequest->save($member);
-//	}
-//
+	//
+	//	/**
+	//	 * @param Member $member
+	//	 *
+	//	 * @throws MemberAlreadyExistsException
+	//	 */
+	//	public function saveMember(Member $member) {
+	//		$member->setId($this->token(Member::ID_LENGTH));
+	//		$this->memberRequest->save($member);
+	//	}
+	//
 
 
 	/**

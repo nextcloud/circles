@@ -551,11 +551,11 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 
 		$this->importAttributesFromDatabase($this->get('attributes', $data));
 
-//		if (($password = $this->get('personal_password', $data, '')) !== '') {
-//			$share->setPassword($this->get('personal_password', $data, ''));
-//		} else if (($password = $this->get('password', $data, '')) !== '') {
-//			$share->setPassword($this->get('password', $data, ''));
-//		}
+		//		if (($password = $this->get('personal_password', $data, '')) !== '') {
+		//			$share->setPassword($this->get('personal_password', $data, ''));
+		//		} else if (($password = $this->get('password', $data, '')) !== '') {
+		//			$share->setPassword($this->get('password', $data, ''));
+		//		}
 
 		$this->setChildId($this->getInt($prefix . 'child_id', $data))
 			 ->setChildFileTarget($this->get($prefix . 'child_file_target', $data))

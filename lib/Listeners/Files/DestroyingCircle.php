@@ -31,12 +31,12 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Listeners\Files;
 
-use OCA\Circles\Tools\Traits\TNCLogger;
-use OCA\Circles\Tools\Traits\TStringTools;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Events\DestroyingCircleEvent;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Service\ShareWrapperService;
+use OCA\Circles\Tools\Traits\TNCLogger;
+use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 

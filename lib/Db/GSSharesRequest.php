@@ -27,10 +27,10 @@
 
 namespace OCA\Circles\Db;
 
-use OCA\Circles\Tools\Traits\TStringTools;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\GlobalScale\GSShare;
 use OCA\Circles\Model\GlobalScale\GSShareMountpoint;
-use OCA\Circles\Model\DeprecatedMember;
+use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\Share\Exceptions\ShareNotFound;
 

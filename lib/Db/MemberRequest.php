@@ -415,14 +415,14 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->limitToSingleId($federatedUser->getSingleId());
 
 		$qb->leftJoinRemoteInstance(CoreQueryBuilder::MEMBER);
-//		$expr = $qb->expr();
-//		$orX = $expr->orX(
-//			$qb->exprFilter('user_id', $federatedUser->getUserId()),
-//			$qb->exprFilterInt('user_type', $federatedUser->getUserType()),
-//			$qb->exprFilter('instance', $qb->getInstance($federatedUser), '', false)
-//		);
-//
-//		$qb->andWhere($orX);
+		//		$expr = $qb->expr();
+		//		$orX = $expr->orX(
+		//			$qb->exprFilter('user_id', $federatedUser->getUserId()),
+		//			$qb->exprFilterInt('user_type', $federatedUser->getUserType()),
+		//			$qb->exprFilter('instance', $qb->getInstance($federatedUser), '', false)
+		//		);
+		//
+		//		$qb->andWhere($orX);
 
 		return $this->getItemsFromRequest($qb);
 	}

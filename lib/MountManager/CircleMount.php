@@ -31,13 +31,13 @@ declare(strict_types=1);
 
 namespace OCA\Circles\MountManager;
 
-use OCA\Circles\Tools\Traits\TArrayTools;
 use Exception;
 use JsonSerializable;
 use OC\Files\Mount\MountPoint;
 use OC\Files\Mount\MoveableMount;
 use OCA\Circles\Exceptions\MountPointConstructionException;
 use OCA\Circles\Model\Mount;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use OCP\Files\Storage\IStorageFactory;
 
 /**

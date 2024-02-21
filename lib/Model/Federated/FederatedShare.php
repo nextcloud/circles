@@ -31,13 +31,13 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model\Federated;
 
+use JsonSerializable;
+use OCA\Circles\IFederatedModel;
+use OCA\Circles\Model\ManagedModel;
 use OCA\Circles\Tools\Db\IQueryRow;
 use OCA\Circles\Tools\IDeserializable;
 use OCA\Circles\Tools\Model\SimpleDataStore;
 use OCA\Circles\Tools\Traits\TArrayTools;
-use JsonSerializable;
-use OCA\Circles\IFederatedModel;
-use OCA\Circles\Model\ManagedModel;
 
 /**
  * Class FederatedShare

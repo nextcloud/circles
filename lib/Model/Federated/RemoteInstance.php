@@ -31,12 +31,12 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model\Federated;
 
-use OCA\Circles\Tools\Db\IQueryRow;
-use OCA\Circles\Tools\Model\NCSignatory;
-use OCA\Circles\Tools\Traits\TArrayTools;
 use JsonSerializable;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteUidException;
+use OCA\Circles\Tools\Db\IQueryRow;
+use OCA\Circles\Tools\Model\NCSignatory;
+use OCA\Circles\Tools\Traits\TArrayTools;
 
 /**
  * Class AppService

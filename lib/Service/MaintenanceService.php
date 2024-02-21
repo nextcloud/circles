@@ -341,15 +341,15 @@ class MaintenanceService {
 	 *
 	 */
 	private function removeMembersWithNoCircles(): void {
-//		$members = $this->membersRequest->forceGetAllMembers();
-//
-//		foreach ($members as $member) {
-//			try {
-//				$this->circlesRequest->forceGetCircle($member->getCircleId());
-//			} catch (CircleDoesNotExistException $e) {
-//				$this->membersRequest->removeMember($member);
-//			}
-//		}
+		//		$members = $this->membersRequest->forceGetAllMembers();
+		//
+		//		foreach ($members as $member) {
+		//			try {
+		//				$this->circlesRequest->forceGetCircle($member->getCircleId());
+		//			} catch (CircleDoesNotExistException $e) {
+		//				$this->membersRequest->removeMember($member);
+		//			}
+		//		}
 	}
 
 

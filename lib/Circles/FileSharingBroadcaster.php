@@ -218,14 +218,14 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 				$password = '';
 				$sendPasswordByMail = true;
-//				if ($this->configService->enforcePasswordProtection($circle)) {
-//					if ($circle->getSetting('password_single_enabled') === 'true') {
-//						$password = $circle->getPasswordSingle();
-//						$sendPasswordByMail = false;
-//					} else {
-//						$password = $this->miscService->token(15);
-//					}
-//				}
+				//				if ($this->configService->enforcePasswordProtection($circle)) {
+				//					if ($circle->getSetting('password_single_enabled') === 'true') {
+				//						$password = $circle->getPasswordSingle();
+				//						$sendPasswordByMail = false;
+				//					} else {
+				//						$password = $this->miscService->token(15);
+				//					}
+				//				}
 
 				$sharesToken =
 					$this->tokensRequest->generateTokenForMember($member, $share->getId(), $password);
@@ -470,9 +470,9 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 * @throws Exception
 	 */
 	protected function sendPasswordByMail(IShare $share, $circleName, $email, $password) {
-//		if (!$this->configService->sendPasswordByMail() || $password === '') {
-//			return;
-//		}
+		//		if (!$this->configService->sendPasswordByMail() || $password === '') {
+		//			return;
+		//		}
 
 		$message = $this->mailer->createMessage();
 
@@ -591,9 +591,9 @@ class FileSharingBroadcaster implements IBroadcaster {
 		$data = [];
 
 		$password = '';
-//		if ($this->configService->enforcePasswordProtection($circle)) {
-//			$password = $this->miscService->token(15);
-//		}
+		//		if ($this->configService->enforcePasswordProtection($circle)) {
+		//			$password = $this->miscService->token(15);
+		//		}
 
 		foreach ($unknownShares as $share) {
 			try {
@@ -625,9 +625,9 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 * @throws Exception
 	 */
 	protected function sendPasswordExistingShares(DeprecatedMember $author, string $email, string $password) {
-//		if (!$this->configService->sendPasswordByMail() || $password === '') {
-//			return;
-//		}
+		//		if (!$this->configService->sendPasswordByMail() || $password === '') {
+		//			return;
+		//		}
 
 		$message = $this->mailer->createMessage();
 
@@ -742,12 +742,12 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 */
 	protected function fillMailExistingShares(IEMailTemplate $emailTemplate, array $data) {
 		foreach ($data as $item) {
-//			$text = $this->l10n->t('%s shared »%s« with you.', [$item['author'], $item['filename']]);
-//			$emailTemplate->addBodyText(
-//				htmlspecialchars($text) . '<br>' . htmlspecialchars(
-//					$this->l10n->t('Click the button below to open it.')
-//				), $text
-//			);
+			//			$text = $this->l10n->t('%s shared »%s« with you.', [$item['author'], $item['filename']]);
+			//			$emailTemplate->addBodyText(
+			//				htmlspecialchars($text) . '<br>' . htmlspecialchars(
+			//					$this->l10n->t('Click the button below to open it.')
+			//				), $text
+			//			);
 			$emailTemplate->addBodyButton(
 				$this->l10n->t('Open »%s«', [htmlspecialchars($item['filename'])]), $item['link']
 			);
@@ -764,7 +764,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 */
 	protected function sendMailExistingShares(IEMailTemplate $emailTemplate, $author, $recipient) {
 		$subject = $this->l10n->t('%s shared multiple files with you.', [$author]);
-//		$emailTemplate->addHeading($subject, false);
+		//		$emailTemplate->addHeading($subject, false);
 
 		$instanceName = $this->defaults->getName();
 		$senderName = $this->l10n->t('%s on %s', [$author, $instanceName]);

@@ -31,14 +31,14 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
+use OC\Security\IdentityProof\Signer;
+use OCA\Circles\Db\EventWrapperRequest;
+use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Tools\Exceptions\RequestNetworkException;
 use OCA\Circles\Tools\Model\NCRequest;
 use OCA\Circles\Tools\Model\Request;
 use OCA\Circles\Tools\Traits\TNCRequest;
 use OCA\Circles\Tools\Traits\TStringTools;
-use OC\Security\IdentityProof\Signer;
-use OCA\Circles\Db\EventWrapperRequest;
-use OCA\Circles\Exceptions\GSStatusException;
 use OCP\IURLGenerator;
 use OCP\IUserManager;
 use OCP\IUserSession;

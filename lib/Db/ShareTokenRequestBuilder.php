@@ -31,9 +31,9 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
-use OCA\Circles\Tools\Exceptions\RowNotFoundException;
 use OCA\Circles\Exceptions\ShareTokenNotFoundException;
 use OCA\Circles\Model\ShareToken;
+use OCA\Circles\Tools\Exceptions\RowNotFoundException;
 
 /**
  * Class ShareTokenRequestBuilder

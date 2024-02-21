@@ -31,12 +31,12 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
+use JsonSerializable;
+use OCA\Circles\Exceptions\ShareTokenNotFoundException;
 use OCA\Circles\Tools\Db\IQueryRow;
 use OCA\Circles\Tools\Exceptions\InvalidItemException;
 use OCA\Circles\Tools\IDeserializable;
 use OCA\Circles\Tools\Traits\TArrayTools;
-use JsonSerializable;
-use OCA\Circles\Exceptions\ShareTokenNotFoundException;
 use OCP\Share\IShare;
 
 class ShareToken implements IDeserializable, IQueryRow, JsonSerializable {

@@ -31,14 +31,14 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Handlers;
 
-use OCA\Circles\Tools\Exceptions\SignatoryException;
-use OCA\Circles\Tools\Traits\TArrayTools;
 use OC\URLGenerator;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\UnknownInterfaceException;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\InterfaceService;
 use OCA\Circles\Service\RemoteStreamService;
+use OCA\Circles\Tools\Exceptions\SignatoryException;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use OCP\Http\WellKnown\IHandler;
 use OCP\Http\WellKnown\IRequestContext;
 use OCP\Http\WellKnown\IResponse;

@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
-use OCA\Circles\Tools\Traits\TDeserialize;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\FederatedItemBadRequestException;
 use OCA\Circles\Exceptions\FederatedItemException;
@@ -47,6 +46,7 @@ use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\MembershipService;
+use OCA\Circles\Tools\Traits\TDeserialize;
 
 /**
  * Class MemberLevel

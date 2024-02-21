@@ -138,9 +138,9 @@ class Groups extends Base {
 			throw new CommandMissingArgumentException(
 
 			);
-//			$this->l10n->t(
-//				'Missing argument: {cmd} circle_id group', ['cmd' => './occ circles:link']
-//			)
+			//			$this->l10n->t(
+			//				'Missing argument: {cmd} circle_id group', ['cmd' => './occ circles:link']
+			//			)
 		}
 
 		return [$input->getArgument('circle_id'), $input->getArgument('group')];

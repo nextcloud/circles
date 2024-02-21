@@ -31,11 +31,11 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model\Federated;
 
+use JsonSerializable;
 use OCA\Circles\Tools\Db\IQueryRow;
 use OCA\Circles\Tools\Exceptions\InvalidItemException;
 use OCA\Circles\Tools\Model\SimpleDataStore;
 use OCA\Circles\Tools\Traits\TArrayTools;
-use JsonSerializable;
 
 /**
  * Class EventWrapper

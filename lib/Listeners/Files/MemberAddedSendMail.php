@@ -31,15 +31,15 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Listeners\Files;
 
-use OCA\Circles\Tools\Model\SimpleDataStore;
-use OCA\Circles\Tools\Traits\TNCLogger;
-use OCA\Circles\Tools\Traits\TStringTools;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Events\CircleMemberAddedEvent;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\ShareWrapper;
 use OCA\Circles\Service\SendMailService;
 use OCA\Circles\Service\ShareWrapperService;
+use OCA\Circles\Tools\Model\SimpleDataStore;
+use OCA\Circles\Tools\Traits\TNCLogger;
+use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 
@@ -118,9 +118,9 @@ class MemberAddedSendMail implements IEventListener {
 					// TODO: is it safe to use $origin to compare getInstance() ?
 					// TODO: do we need to check the $origin ?
 					// TODO: Solution would be to check the origin based on aliases using RemoteInstanceService
-//				if ($member->getUserType() === Member::TYPE_CONTACT && $member->getInstance() === $origin) {
+					//				if ($member->getUserType() === Member::TYPE_CONTACT && $member->getInstance() === $origin) {
 					$mails = array_merge($mails, $data->gArray('mails'));
-//				}
+					//				}
 				}
 			}
 

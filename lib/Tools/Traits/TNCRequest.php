@@ -31,11 +31,11 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Tools\Traits;
 
-use OCA\Circles\Tools\Model\NCRequest;
 use Exception;
 use GuzzleHttp\Exception\ClientException;
 use OC;
 use OCA\Circles\Tools\Exceptions\RequestNetworkException;
+use OCA\Circles\Tools\Model\NCRequest;
 use OCA\Circles\Tools\Model\NCRequestResult;
 use OCA\Circles\Tools\Model\Request;
 use OCP\Http\Client\IClientService;

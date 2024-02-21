@@ -31,6 +31,16 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
+use Exception;
+use OCA\Circles\Db\DeprecatedCirclesRequest;
+use OCA\Circles\Db\DeprecatedMembersRequest;
+use OCA\Circles\Db\EventWrapperRequest;
+use OCA\Circles\Exceptions\GlobalScaleEventException;
+use OCA\Circles\Exceptions\GSStatusException;
+use OCA\Circles\Exceptions\JsonException;
+use OCA\Circles\Exceptions\ModelException;
+use OCA\Circles\Model\GlobalScale\GSEvent;
+use OCA\Circles\Model\GlobalScale\GSWrapper;
 use OCA\Circles\Tools\Exceptions\RequestContentException;
 use OCA\Circles\Tools\Exceptions\RequestNetworkException;
 use OCA\Circles\Tools\Exceptions\RequestResultNotJsonException;
@@ -40,17 +50,6 @@ use OCA\Circles\Tools\Model\NCRequest;
 use OCA\Circles\Tools\Model\Request;
 use OCA\Circles\Tools\Model\SimpleDataStore;
 use OCA\Circles\Tools\Traits\TNCRequest;
-use Exception;
-use OCA\Circles\Db\DeprecatedCirclesRequest;
-use OCA\Circles\Db\DeprecatedMembersRequest;
-use OCA\Circles\Db\EventWrapperRequest;
-use OCA\Circles\Exceptions\GlobalScaleEventException;
-use OCA\Circles\Exceptions\GSStatusException;
-use OCA\Circles\Exceptions\JsonException;
-use OCA\Circles\Exceptions\ModelException;
-use OCA\Circles\Model\DeprecatedCircle;
-use OCA\Circles\Model\GlobalScale\GSEvent;
-use OCA\Circles\Model\GlobalScale\GSWrapper;
 use OCP\IURLGenerator;
 
 /**
@@ -322,7 +321,7 @@ class GSUpstreamService {
 		} catch (GlobalScaleEventException $e) {
 		}
 	}
-	
+
 	/**
 	 * @throws GSStatusException
 	 */
@@ -333,6 +332,6 @@ class GSUpstreamService {
 	 *
 	 */
 	private function removeDeprecatedEvents() {
-//		$this->deprecatedEvents();
+		//		$this->deprecatedEvents();
 	}
 }

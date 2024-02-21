@@ -223,8 +223,8 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	/** @var int */
 	private $populationInherited = 0;
 
-//	/** @var bool */
-//	private $hidden = false;
+	//	/** @var bool */
+	//	private $hidden = false;
 
 	/** @var int */
 	private $creation = 0;

@@ -34,11 +34,11 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use OCA\Circles\Tools\Traits\TNCLogger;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Tools\Traits\TNCLogger;
 use OCP\IURLGenerator;
 use OCP\Notification\IManager as INotificationManager;
 use OCP\Notification\INotification;
@@ -125,9 +125,9 @@ class NotificationService {
 	 * @throws RequestBuilderException
 	 */
 	public function notificationRequested(Member $member): void {
-//		if ($member->getUserType() !== Member::TYPE_USER || !$member->isLocal()) {
-//			return;
-//		}
+		//		if ($member->getUserType() !== Member::TYPE_USER || !$member->isLocal()) {
+		//			return;
+		//		}
 
 		$this->deleteNotification('member', $member->getId());
 
@@ -182,15 +182,15 @@ class NotificationService {
 	 * @param string $objectId
 	 */
 	public function deleteNotification(string $object, string $objectId) {
-//		if ($objectId === '') {
-//			return;
-//		}
-//
-//		$notification = $this->notificationManager->createNotification();
-//		$notification->setApp('circles')
-//					 ->setObject($object, $objectId);
-//
-//		$this->notificationManager->markProcessed($notification);
+		//		if ($objectId === '') {
+		//			return;
+		//		}
+		//
+		//		$notification = $this->notificationManager->createNotification();
+		//		$notification->setApp('circles')
+		//					 ->setObject($object, $objectId);
+		//
+		//		$this->notificationManager->markProcessed($notification);
 	}
 
 

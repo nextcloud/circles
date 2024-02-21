@@ -31,8 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Listeners\Files;
 
-use OCA\Circles\Tools\Traits\TNCLogger;
-use OCA\Circles\Tools\Traits\TStringTools;
 use Exception;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Events\Files\CreatingFileShareEvent;
@@ -49,6 +47,8 @@ use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\ContactService;
 use OCA\Circles\Service\ShareTokenService;
 use OCA\Circles\Service\ShareWrapperService;
+use OCA\Circles\Tools\Traits\TNCLogger;
+use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 

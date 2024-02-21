@@ -320,7 +320,7 @@ class CircleRequest extends CircleRequestBuilder {
 		);
 
 		$qb->limitInArray('unique_id', $circleIds);
-//		$qb->filterCircles(CoreQueryBuilder::CIRCLE, $filter);
+		//		$qb->filterCircles(CoreQueryBuilder::CIRCLE, $filter);
 		$qb->leftJoinOwner(CoreQueryBuilder::CIRCLE);
 
 		return $this->getItemsFromRequest($qb);
@@ -361,12 +361,12 @@ class CircleRequest extends CircleRequestBuilder {
 		$qb->limitToUniqueId($id);
 		$qb->filterCircles(CoreQueryBuilder::CIRCLE, $probe);
 		$qb->leftJoinOwner(CoreQueryBuilder::CIRCLE);
-//		$qb->setOptions(
-//			[CoreRequestBuilder::CIRCLE, CoreRequestBuilder::INITIATOR], [
-//																		   'mustBeMember' => false,
-//																		   'viewableAsVisitor' => true
-//																	   ]
-//		);
+		//		$qb->setOptions(
+		//			[CoreRequestBuilder::CIRCLE, CoreRequestBuilder::INITIATOR], [
+		//																		   'mustBeMember' => false,
+		//																		   'viewableAsVisitor' => true
+		//																	   ]
+		//		);
 
 		if (!is_null($initiator)) {
 			$qb->limitToInitiator(CoreQueryBuilder::CIRCLE, $initiator);

@@ -676,26 +676,26 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @return iterable
 	 */
 	public function getAllShares(): iterable {
-//		$qb = $this->dbConnection->getQueryBuilder();
-//
-//		$qb->select(' * ')
-//		   ->from('share')
-//		   ->where(
-//			   $qb->expr()
-//				  ->orX(
-//					  $qb->expr()
-//						 ->eq('share_type', $qb->createNamedParameter(IShare::TYPE_CIRCLE))
-//				  )
-//		   );
-//
-//		$cursor = $qb->execute();
-//		while ($data = $cursor->fetch()) {
-//			try {
-//				yield $this->createShareObject($data);
-//			} catch (IllegalIDChangeException $e) {
-//			};
-//		}
-//		$cursor->closeCursor();
+		//		$qb = $this->dbConnection->getQueryBuilder();
+		//
+		//		$qb->select(' * ')
+		//		   ->from('share')
+		//		   ->where(
+		//			   $qb->expr()
+		//				  ->orX(
+		//					  $qb->expr()
+		//						 ->eq('share_type', $qb->createNamedParameter(IShare::TYPE_CIRCLE))
+		//				  )
+		//		   );
+		//
+		//		$cursor = $qb->execute();
+		//		while ($data = $cursor->fetch()) {
+		//			try {
+		//				yield $this->createShareObject($data);
+		//			} catch (IllegalIDChangeException $e) {
+		//			};
+		//		}
+		//		$cursor->closeCursor();
 		return [];
 	}
 }

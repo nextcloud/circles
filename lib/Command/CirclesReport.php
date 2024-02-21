@@ -31,9 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
-use OCA\Circles\Tools\Exceptions\InvalidItemException;
-use OCA\Circles\Tools\Traits\TDeserialize;
-use OCA\Circles\Tools\Traits\TArrayTools;
 use OC\Core\Command\Base;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\UnknownInterfaceException;
@@ -49,6 +46,9 @@ use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\InterfaceService;
 use OCA\Circles\Service\MemberService;
+use OCA\Circles\Tools\Exceptions\InvalidItemException;
+use OCA\Circles\Tools\Traits\TArrayTools;
+use OCA\Circles\Tools\Traits\TDeserialize;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -230,7 +230,7 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 	 * @param string $command
 	 */
 	public function manageCommand(string $command): void {
-//		echo $command . "\n";
+		//		echo $command . "\n";
 	}
 
 
@@ -344,9 +344,9 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 		}
 
 		// what was that for ?
-//		if ($federatedUser->hasLink()) {
-//			$federatedUser->setLink($this->obfuscateMembership($federatedUser->getLink()));
-//		}
+		//		if ($federatedUser->hasLink()) {
+		//			$federatedUser->setLink($this->obfuscateMembership($federatedUser->getLink()));
+		//		}
 
 		if ($federatedUser->hasMemberships()) {
 			$memberships = [];

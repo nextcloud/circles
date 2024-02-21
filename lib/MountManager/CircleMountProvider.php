@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\MountManager;
 
-use OCA\Circles\Tools\Traits\TArrayTools;
 use Exception;
 use OCA\Circles\Db\MountRequest;
 use OCA\Circles\Exceptions\FederatedUserException;
@@ -45,6 +44,7 @@ use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Mount;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use OCA\Files_Sharing\External\Storage as ExternalStorage;
 use OCP\Federation\ICloudIdManager;
 use OCP\Files\Config\IMountProvider;
@@ -62,7 +62,7 @@ class CircleMountProvider implements IMountProvider {
 	use TArrayTools;
 
 
-//	const LOCAL_STORAGE = ::class;
+	//	const LOCAL_STORAGE = ::class;
 	public const EXTERNAL_STORAGE = ExternalStorage::class;
 
 
@@ -130,10 +130,10 @@ class CircleMountProvider implements IMountProvider {
 		$mounts = [];
 		foreach ($items as $item) {
 			try {
-//				if ($share->getMountPoint() !== '-') {
-//					$this->fixDuplicateFile($user->getUID(), $gss.share);
+				//				if ($share->getMountPoint() !== '-') {
+				//					$this->fixDuplicateFile($user->getUID(), $gss.share);
 				$mounts[] = $this->generateCircleMount($item, $loader);
-//				}
+				//				}
 			} catch (Exception $e) {
 			}
 		}
@@ -179,23 +179,23 @@ class CircleMountProvider implements IMountProvider {
 	 * @return bool
 	 */
 	public function renameShare(int $gsShareId, string $target) {
-//		try {
-//			if ($target !== '-') {
-//				$target = $this->stripPath($target);
-//				$this->gsSharesRequest->getShareMountPointByPath($this->userId, $target);
-//
-//				return false;
-//			}
-//		} catch (ShareNotFound $e) {
-//		}
-//
-//		$mountPoint = new GSShareMountpoint($gsShareId, $this->userId, $target);
-//		try {
-//			$this->gsSharesRequest->getShareMountPointById($gsShareId, $this->userId);
-//			$this->gsSharesRequest->updateShareMountPoint($mountPoint);
-//		} catch (ShareNotFound $e) {
-//			$this->gsSharesRequest->generateShareMountPoint($mountPoint);
-//		}
+		//		try {
+		//			if ($target !== '-') {
+		//				$target = $this->stripPath($target);
+		//				$this->gsSharesRequest->getShareMountPointByPath($this->userId, $target);
+		//
+		//				return false;
+		//			}
+		//		} catch (ShareNotFound $e) {
+		//		}
+		//
+		//		$mountPoint = new GSShareMountpoint($gsShareId, $this->userId, $target);
+		//		try {
+		//			$this->gsSharesRequest->getShareMountPointById($gsShareId, $this->userId);
+		//			$this->gsSharesRequest->updateShareMountPoint($mountPoint);
+		//		} catch (ShareNotFound $e) {
+		//			$this->gsSharesRequest->generateShareMountPoint($mountPoint);
+		//		}
 
 		return true;
 	}
@@ -234,8 +234,8 @@ class CircleMountProvider implements IMountProvider {
 	 */
 	protected function stripPath($path) {
 		return $path;
-//		$prefix = '/' . $this->userId . '/files';
-//
-//		return rtrim(substr($path, strlen($prefix)), '/');
+		//		$prefix = '/' . $this->userId . '/files';
+		//
+		//		return rtrim(substr($path, strlen($prefix)), '/');
 	}
 }
