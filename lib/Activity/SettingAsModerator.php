@@ -51,7 +51,7 @@ class SettingAsModerator implements ISetting {
 	 * @since 11.0.0
 	 */
 	public function getName() {
-		return $this->l10n->t('Any important event in a <strong>Team</strong> you are moderating');
+		return $this->l10n->t('Any important event in a <strong>team</strong> you are moderating');
 	}
 
 	/**

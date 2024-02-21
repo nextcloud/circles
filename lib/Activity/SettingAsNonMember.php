@@ -53,7 +53,7 @@ class SettingAsNonMember implements ISetting {
 	 * @since 11.0.0
 	 */
 	public function getName() {
-		return $this->l10n->t('On global events happening in any <strong>Team</strong>');
+		return $this->l10n->t('On global events happening in any <strong>team</strong>');
 	}
 
 

@@ -3,8 +3,8 @@
 
 ### Bring cloud-users closer together
 
-Nextcloud Teams allow people to create their own groups of people/colleagues/friends. 
-Those groups of people can then be used by any other app for sharing purpose
+Nextcloud Teams allow people to create their own groups of people/colleagues/friends.
+Those groups of people can then be used by any other app for sharing purpose.
 
 The app was formerly named circles which is still used as internal identifier a lot.
 
