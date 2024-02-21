@@ -11,12 +11,6 @@ OC.L10N.register(
     "{author} created the circle {circle}" : "{author} criou o círculo {circle}",
     "You deleted {circle}" : "Eliminou {circle}",
     "{author} deleted {circle}" : "{author} eliminou {circle}",
-    "You linked {group} to {circle}" : "Associou {group} a {circle}",
-    "{group} has been linked to {circle} by {author}" : "{group} foi associado de {circle} por {author}",
-    "You unlinked {group} from {circle}" : "Desassociou {group} de {circle}",
-    "{group} has been unlinked from {circle} by {author}" : "{group} foi desassociado do {circle} por [author]",
-    "You changed the level of the linked group {group} in {circle} to %1$s" : "Alterou o nível do grupo associado {group} no {circle} para %1$s",
-    "{author} changed the level of the linked group {group} in {circle} to %1$s" : "{author} alterou o nível do grupo associado {group} no {circle} para %1$s",
     "You joined {circle}" : "Juntou-se a {circle}",
     "{member} joined {circle}" : "{member} juntou-se a {circle}",
     "You left {circle}" : "Saiu de {circle}",
@@ -62,6 +56,12 @@ OC.L10N.register(
     "No entries found in this folder" : "Não foram encontradas entradas nesta pasta",
     "Name" : "Nome",
     "Size" : "Tamanho",
-    "Modified" : "Modificado"
+    "Modified" : "Modificado",
+    "You linked {group} to {circle}" : "Associou {group} a {circle}",
+    "{group} has been linked to {circle} by {author}" : "{group} foi associado de {circle} por {author}",
+    "You unlinked {group} from {circle}" : "Desassociou {group} de {circle}",
+    "{group} has been unlinked from {circle} by {author}" : "{group} foi desassociado do {circle} por [author]",
+    "You changed the level of the linked group {group} in {circle} to %1$s" : "Alterou o nível do grupo associado {group} no {circle} para %1$s",
+    "{author} changed the level of the linked group {group} in {circle} to %1$s" : "{author} alterou o nível do grupo associado {group} no {circle} para %1$s"
 },
 "nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");

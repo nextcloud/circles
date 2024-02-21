@@ -2,7 +2,6 @@ OC.L10N.register(
     "circles",
     {
     "Circles" : "Círculos",
-    "The link between {circle} and {remote} has been shutdown remotely" : "El enlace entre {círculo} y {remoto} se ha cerrado de forma remota",
     "Personal" : "Personal",
     "System" : "Sistema",
     "Visible" : "Visible",
@@ -38,6 +37,7 @@ OC.L10N.register(
     "No entries found in this folder" : "No se encontraron elementos en esta carpeta",
     "Name" : "Nombre",
     "Size" : "Tamaño",
-    "Modified" : "Modificado"
+    "Modified" : "Modificado",
+    "The link between {circle} and {remote} has been shutdown remotely" : "El enlace entre {círculo} y {remoto} se ha cerrado de forma remota"
 },
 "nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");
