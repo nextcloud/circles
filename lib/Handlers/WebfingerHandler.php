@@ -1,8 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
-
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -28,17 +26,15 @@ declare(strict_types=1);
  *
  */
 
-
 namespace OCA\Circles\Handlers;
 
-use OCA\Circles\Tools\Exceptions\SignatoryException;
-use OCA\Circles\Tools\Traits\TArrayTools;
-use OC\URLGenerator;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\UnknownInterfaceException;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\InterfaceService;
 use OCA\Circles\Service\RemoteStreamService;
+use OCA\Circles\Tools\Exceptions\SignatoryException;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use OCP\Http\WellKnown\IHandler;
 use OCP\Http\WellKnown\IRequestContext;
 use OCP\Http\WellKnown\IResponse;
@@ -53,59 +49,28 @@ use OCP\IURLGenerator;
 class WebfingerHandler implements IHandler {
 	use TArrayTools;
 
-
-	/** @var URLGenerator */
-	private $urlGenerator;
-
-	/** @var RemoteStreamService */
-	private $remoteStreamService;
-
-	/** @var InterfaceService */
-	private $interfaceService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
-	/**
-	 * WebfingerHandler constructor.
-	 *
-	 * @param IURLGenerator $urlGenerator
-	 * @param RemoteStreamService $remoteStreamService
-	 * @param InterfaceService $interfaceService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
-		IURLGenerator $urlGenerator, RemoteStreamService $remoteStreamService,
-		InterfaceService $interfaceService, ConfigService $configService
+		private IURLGenerator $urlGenerator,
+		private RemoteStreamService $remoteStreamService,
+		private InterfaceService $interfaceService,
+		private ConfigService $configService
 	) {
-		$this->urlGenerator = $urlGenerator;
-		$this->remoteStreamService = $remoteStreamService;
-		$this->interfaceService = $interfaceService;
-		$this->configService = $configService;
 	}
 
-
-	/**
-	 * @param string $service
-	 * @param IRequestContext $context
-	 * @param IResponse|null $response
-	 *
-	 * @return IResponse|null
-	 */
-	public function handle(string $service, IRequestContext $context, ?IResponse $response): ?IResponse {
+	public function handle(string $service, IRequestContext $context, ?IResponse $previousResponse): ?IResponse {
 		if ($service !== 'webfinger') {
-			return $response;
+			return $previousResponse;
 		}
 
 		$request = $context->getHttpRequest();
 		$subject = $request->getParam('resource', '');
 		if ($subject !== Application::APP_SUBJECT) {
-			return $response;
+			return $previousResponse;
 		}
 
 		$token = $request->getParam('check', '');
 
+		$response = $previousResponse;
 		if (!($response instanceof JrdResponse)) {
 			$response = new JrdResponse($subject);
 		}
@@ -121,7 +86,7 @@ class WebfingerHandler implements IHandler {
 				'version' => $this->configService->getAppValue('installed_version'),
 				'api' => Application::APP_API
 			];
-		} catch (UnknownInterfaceException | SignatoryException $e) {
+		} catch (UnknownInterfaceException|SignatoryException $e) {
 			return $response;
 		}
 

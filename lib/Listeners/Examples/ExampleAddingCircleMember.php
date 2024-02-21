@@ -31,21 +31,18 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Listeners\Examples;
 
-use OCA\Circles\Tools\Traits\TNCLogger;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Events\AddingCircleMemberEvent;
 use OCA\Circles\Events\CircleGenericEvent;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Membership;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Tools\Traits\TNCLogger;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 
-/**
- * Class ExampleAddingCircleMember
- *
- * @package OCA\Circles\Listeners\Files
- */
+/** @template-implements IEventListener<AddingCircleMemberEvent|Event> */
+
 class ExampleAddingCircleMember implements IEventListener {
 	use TNCLogger;
 
@@ -53,22 +50,12 @@ class ExampleAddingCircleMember implements IEventListener {
 	/** @var ConfigService */
 	private $configService;
 
-
-	/**
-	 * ExampleAddingCircleMember constructor.
-	 *
-	 * @param ConfigService $configService
-	 */
 	public function __construct(ConfigService $configService) {
 		$this->configService = $configService;
 
 		$this->setup('app', Application::APP_ID);
 	}
 
-
-	/**
-	 * @param Event $event
-	 */
 	public function handle(Event $event): void {
 		if (!$event instanceof AddingCircleMemberEvent) {
 			return;

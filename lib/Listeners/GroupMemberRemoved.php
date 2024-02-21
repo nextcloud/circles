@@ -37,29 +37,15 @@ use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\Group\Events\UserRemovedEvent;
 
-/**
- * Class GroupMemberRemoved
- *
- * @package OCA\Circles\Events
- */
+/** @template-implements IEventListener<UserRemovedEvent|Event> */
 class GroupMemberRemoved implements IEventListener {
 	/** @var SyncService */
 	private $syncService;
 
-
-	/**
-	 * GroupMemberRemoved constructor.
-	 *
-	 * @param SyncService $syncService
-	 */
 	public function __construct(SyncService $syncService) {
 		$this->syncService = $syncService;
 	}
 
-
-	/**
-	 * @param Event $event
-	 */
 	public function handle(Event $event): void {
 		if (!($event instanceof UserRemovedEvent)) {
 			return;

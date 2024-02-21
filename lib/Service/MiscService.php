@@ -26,13 +26,13 @@
 
 namespace OCA\Circles\Service;
 
-use OCA\Circles\Tools\Traits\TArrayTools;
 use Exception;
 use OC;
 use OC\User\NoUserException;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\MissingKeyInArrayException;
 use OCA\Circles\Model\DeprecatedMember;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\Contacts\ContactsMenu\IContactsStore;

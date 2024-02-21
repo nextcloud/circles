@@ -26,8 +26,8 @@
 
 namespace OCA\Circles\Model;
 
-use OCA\Circles\Tools\Traits\TArrayTools;
 use JsonSerializable;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use OCP\Share\IShare;
 
 /**

@@ -206,11 +206,11 @@ class CirclesMemberships extends Base {
 		$type = Member::parseTypeString($input->getOption('type'));
 		$federatedUser = $this->federatedUserService->getFederatedUser($userId, $type);
 
-//		if ($this->input->getOption('reset')) {
-//			$this->membershipsService->resetMemberships($federatedUser->getSingleId());
-//
-//			return 0;
-//		}
+		//		if ($this->input->getOption('reset')) {
+		//			$this->membershipsService->resetMemberships($federatedUser->getSingleId());
+		//
+		//			return 0;
+		//		}
 
 		$output->writeln('Id: <info>' . $federatedUser->getUserId() . '</info>');
 		$output->writeln('Instance: <info>' . $federatedUser->getInstance() . '</info>');
@@ -359,11 +359,11 @@ class CirclesMemberships extends Base {
 	 * @throws RequestBuilderException
 	 */
 	private function manageAllMemberships() {
-//		if ($this->input->getOption('reset')) {
-//			$this->membershipsService->resetMemberships('', true);
-//
-//			return;
-//		}
+		//		if ($this->input->getOption('reset')) {
+		//			$this->membershipsService->resetMemberships('', true);
+		//
+		//			return;
+		//		}
 
 		$this->federatedUserService->bypassCurrentUserCondition(true);
 

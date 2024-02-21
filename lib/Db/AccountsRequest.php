@@ -27,8 +27,8 @@
 
 namespace OCA\Circles\Db;
 
-use OCA\Circles\Tools\Traits\TStringTools;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
+use OCA\Circles\Tools\Traits\TStringTools;
 
 class AccountsRequest extends AccountsRequestBuilder {
 	use TStringTools;

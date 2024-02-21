@@ -37,11 +37,7 @@ use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\User\Events\UserCreatedEvent;
 
-/**
- * Class UserCreated
- *
- * @package OCA\Circles\Events
- */
+/** @template-implements IEventListener<UserCreatedEvent|Event> */
 class UserCreated implements IEventListener {
 	/** @var SyncService */
 	private $syncService;

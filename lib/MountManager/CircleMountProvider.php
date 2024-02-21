@@ -1,8 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
-
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -28,10 +26,8 @@ declare(strict_types=1);
  *
  */
 
-
 namespace OCA\Circles\MountManager;
 
-use OCA\Circles\Tools\Traits\TArrayTools;
 use Exception;
 use OCA\Circles\Db\MountRequest;
 use OCA\Circles\Exceptions\FederatedUserException;
@@ -45,6 +41,7 @@ use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Mount;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use OCA\Files_Sharing\External\Storage as ExternalStorage;
 use OCP\Federation\ICloudIdManager;
 use OCP\Files\Config\IMountProvider;
@@ -53,64 +50,20 @@ use OCP\Files\Storage\IStorageFactory;
 use OCP\Http\Client\IClientService;
 use OCP\IUser;
 
-/**
- * Class CircleMountProvider
- *
- * @package OCA\Circles\MountManager
- */
 class CircleMountProvider implements IMountProvider {
 	use TArrayTools;
 
-
-//	const LOCAL_STORAGE = ::class;
 	public const EXTERNAL_STORAGE = ExternalStorage::class;
 
-
-	/** @var IClientService */
-	private $clientService;
-
-	/** @var CircleMountManager */
-	private $circleMountManager;
-
-	/** @var ICloudIdManager */
-	private $cloudIdManager;
-
-	/** @var MountRequest */
-	private $mountRequest;
-
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
-	/**
-	 * MountProvider constructor.
-	 *
-	 * @param IClientService $clientService
-	 * @param CircleMountManager $circleMountManager
-	 * @param ICloudIdManager $cloudIdManager
-	 * @param MountRequest $mountRequest
-	 * @param FederatedUserService $federatedUserService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
-		IClientService $clientService,
-		CircleMountManager $circleMountManager,
-		ICloudIdManager $cloudIdManager,
-		MountRequest $mountRequest,
-		FederatedUserService $federatedUserService,
-		ConfigService $configService
+		private IClientService $clientService,
+		private CircleMountManager $circleMountManager,
+		private ICloudIdManager $cloudIdManager,
+		private MountRequest $mountRequest,
+		private FederatedUserService $federatedUserService,
+		private ConfigService $configService
 	) {
-		$this->clientService = $clientService;
-		$this->circleMountManager = $circleMountManager;
-		$this->cloudIdManager = $cloudIdManager;
-		$this->mountRequest = $mountRequest;
-		$this->federatedUserService = $federatedUserService;
-		$this->configService = $configService;
 	}
-
 
 	/**
 	 * @param IUser $user
@@ -130,10 +83,10 @@ class CircleMountProvider implements IMountProvider {
 		$mounts = [];
 		foreach ($items as $item) {
 			try {
-//				if ($share->getMountPoint() !== '-') {
-//					$this->fixDuplicateFile($user->getUID(), $gss.share);
+				//				if ($share->getMountPoint() !== '-') {
+				//					$this->fixDuplicateFile($user->getUID(), $gss.share);
 				$mounts[] = $this->generateCircleMount($item, $loader);
-//				}
+				//				}
 			} catch (Exception $e) {
 			}
 		}
@@ -179,23 +132,23 @@ class CircleMountProvider implements IMountProvider {
 	 * @return bool
 	 */
 	public function renameShare(int $gsShareId, string $target) {
-//		try {
-//			if ($target !== '-') {
-//				$target = $this->stripPath($target);
-//				$this->gsSharesRequest->getShareMountPointByPath($this->userId, $target);
-//
-//				return false;
-//			}
-//		} catch (ShareNotFound $e) {
-//		}
-//
-//		$mountPoint = new GSShareMountpoint($gsShareId, $this->userId, $target);
-//		try {
-//			$this->gsSharesRequest->getShareMountPointById($gsShareId, $this->userId);
-//			$this->gsSharesRequest->updateShareMountPoint($mountPoint);
-//		} catch (ShareNotFound $e) {
-//			$this->gsSharesRequest->generateShareMountPoint($mountPoint);
-//		}
+		//		try {
+		//			if ($target !== '-') {
+		//				$target = $this->stripPath($target);
+		//				$this->gsSharesRequest->getShareMountPointByPath($this->userId, $target);
+		//
+		//				return false;
+		//			}
+		//		} catch (ShareNotFound $e) {
+		//		}
+		//
+		//		$mountPoint = new GSShareMountpoint($gsShareId, $this->userId, $target);
+		//		try {
+		//			$this->gsSharesRequest->getShareMountPointById($gsShareId, $this->userId);
+		//			$this->gsSharesRequest->updateShareMountPoint($mountPoint);
+		//		} catch (ShareNotFound $e) {
+		//			$this->gsSharesRequest->generateShareMountPoint($mountPoint);
+		//		}
 
 		return true;
 	}
@@ -234,8 +187,8 @@ class CircleMountProvider implements IMountProvider {
 	 */
 	protected function stripPath($path) {
 		return $path;
-//		$prefix = '/' . $this->userId . '/files';
-//
-//		return rtrim(substr($path, strlen($prefix)), '/');
+		//		$prefix = '/' . $this->userId . '/files';
+		//
+		//		return rtrim(substr($path, strlen($prefix)), '/');
 	}
 }

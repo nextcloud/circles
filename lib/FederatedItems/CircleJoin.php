@@ -31,9 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
-use OCA\Circles\Tools\Traits\TDeserialize;
-use OCA\Circles\Tools\Traits\TNCLogger;
-use OCA\Circles\Tools\Traits\TStringTools;
 use Exception;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\FederatedItemBadRequestException;
@@ -62,13 +59,11 @@ use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\StatusCode;
+use OCA\Circles\Tools\Traits\TDeserialize;
+use OCA\Circles\Tools\Traits\TNCLogger;
+use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\IUserManager;
 
-/**
- * Class CircleJoin
- *
- * @package OCA\Circles\GlobalScale
- */
 class CircleJoin implements
 	IFederatedItem,
 	IFederatedItemInitiatorMembershipNotRequired,
@@ -79,7 +74,6 @@ class CircleJoin implements
 	use TStringTools;
 	use TNCLogger;
 	use TDeserialize;
-
 
 	/** @var IUserManager */
 	private $userManager;
@@ -165,72 +159,72 @@ class CircleJoin implements
 
 		return;
 
-//
-//
-//		$federatedId = $member->getUserId() . '@' . $member->getInstance();
-//		try {
-//			$federatedUser =
-//				$this->federatedUserService->getFederatedUser($federatedId, $member->getUserType());
-//			throw new MemberNotFoundException(
-//				ucfirst(Member::$DEF_TYPE[$member->getUserType()]) . ' \'%s\' not found',
-//				['member' => $member->getUserId() . '@' . $member->getInstance()]
-//			);
-//		}
+		//
+		//
+		//		$federatedId = $member->getUserId() . '@' . $member->getInstance();
+		//		try {
+		//			$federatedUser =
+		//				$this->federatedUserService->getFederatedUser($federatedId, $member->getUserType());
+		//			throw new MemberNotFoundException(
+		//				ucfirst(Member::$DEF_TYPE[$member->getUserType()]) . ' \'%s\' not found',
+		//				['member' => $member->getUserId() . '@' . $member->getInstance()]
+		//			);
+		//		}
 
-//		$member->importFromIFederatedUser($federatedUser);
-//
-//		try {
-//			$knownMember = $this->memberRequest->searchMember($member);
-//			// TODO: maybe member is requesting access
-//			throw new MemberAlreadyExistsException(
-//				ucfirst(Member::$DEF_TYPE[$member->getUserType()]) . ' %s is already a member',
-//				['member' => $member->getUserId() . '@' . $member->getInstance()]
-//			);
-//		} catch (MemberNotFoundException $e) {
-//		}
+		//		$member->importFromIFederatedUser($federatedUser);
+		//
+		//		try {
+		//			$knownMember = $this->memberRequest->searchMember($member);
+		//			// TODO: maybe member is requesting access
+		//			throw new MemberAlreadyExistsException(
+		//				ucfirst(Member::$DEF_TYPE[$member->getUserType()]) . ' %s is already a member',
+		//				['member' => $member->getUserId() . '@' . $member->getInstance()]
+		//			);
+		//		} catch (MemberNotFoundException $e) {
+		//		}
 
-//		$member->setId($this->uuid(ManagedModel::ID_LENGTH));
-//
-//		// TODO: check Config on Circle to know if we set Level to 1 or just send an invitation
-//		$member->setLevel(Member::LEVEL_MEMBER);
-//		$member->setStatus(Member::STATUS_MEMBER);
-//		$event->setDataOutcome(['member' => $member]);
-//
-//		// TODO: Managing cached name
-//		//		$member->setCachedName($eventMember->getCachedName());
-//		$this->circleService->confirmCircleNotFull($circle);
-//
-//		// TODO: check if it is a member or a mail or a circle and fix the returned message
-//
-//		return;
+		//		$member->setId($this->uuid(ManagedModel::ID_LENGTH));
+		//
+		//		// TODO: check Config on Circle to know if we set Level to 1 or just send an invitation
+		//		$member->setLevel(Member::LEVEL_MEMBER);
+		//		$member->setStatus(Member::STATUS_MEMBER);
+		//		$event->setDataOutcome(['member' => $member]);
+		//
+		//		// TODO: Managing cached name
+		//		//		$member->setCachedName($eventMember->getCachedName());
+		//		$this->circleService->confirmCircleNotFull($circle);
+		//
+		//		// TODO: check if it is a member or a mail or a circle and fix the returned message
+		//
+		//		return;
 
 
-//		$member = $this->membersRequest->getFreshNewMember(
-//			$circle->getUniqueId(), $ident, $eventMember->getType(), $eventMember->getInstance()
-//		);
-//		$member->hasToBeInviteAble()
-//
-//		$this->membersService->addMemberBasedOnItsType($circle, $member);
-//
-//		$password = '';
-//		$sendPasswordByMail = false;
-//		if ($this->configService->enforcePasswordProtection($circle)) {
-//			if ($circle->getSetting('password_single_enabled') === 'true') {
-//				$password = $circle->getPasswordSingle();
-//			} else {
-//				$sendPasswordByMail = true;
-//				$password = $this->miscService->token(15);
-//			}
-//		}
-//
-//		$event->setData(
-//			new SimpleDataStore(
-//				[
-//					'password'       => $password,
-//					'passwordByMail' => $sendPasswordByMail
-//				]
-//			)
-//		);
+		//		$member = $this->membersRequest->getFreshNewMember(
+		//			$circle->getUniqueId(), $ident, $eventMember->getType(), $eventMember->getInstance()
+		//		);
+		//		$member->hasToBeInviteAble()
+		//
+		//		$this->membersService->addMemberBasedOnItsType($circle, $member);
+		//
+		//		$password = '';
+		//		$sendPasswordByMail = false;
+		//		if ($this->configService->enforcePasswordProtection($circle)) {
+		//			if ($circle->getSetting('password_single_enabled') === 'true') {
+		//				$password = $circle->getPasswordSingle();
+		//			} else {
+		//				$sendPasswordByMail = true;
+		//				$password = $this->miscService->token(15);
+		//			}
+		//		}
+		//
+		//		$event->setData(
+		//			new SimpleDataStore(
+		//				[
+		//					'password'       => $password,
+		//					'passwordByMail' => $sendPasswordByMail
+		//				]
+		//			)
+		//		);
 	}
 
 

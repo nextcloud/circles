@@ -42,6 +42,7 @@ use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use Psr\Log\LoggerInterface;
 
+/** @template-implements IEventListener<UserUpdatedEvent|Event> */
 class AccountUpdated implements IEventListener {
 	public function __construct(
 		private CircleRequest $circleRequest,

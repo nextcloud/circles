@@ -31,7 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
-use OCA\Circles\Tools\Traits\TArrayTools;
+use InvalidArgumentException;
 use OC\Core\Command\Base;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
@@ -44,7 +44,7 @@ use OCA\Circles\Model\ShareWrapper;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\ShareWrapperService;
-use Symfony\Component\Console\Exception\MissingInputException;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -133,36 +133,36 @@ class SharesFiles extends Base {
 		);
 
 		return 0;
-//
-//		if ($input->getOption('to')) {
-//			$this->sharedToCircle(
-//				$input->getOption('to'),
-//				$input->getOption('with'),
-//				$input->getOption('by'),
-//				$input->getOption('all'),
-//				$json
-//			);
-//
-//			return 0;
-//		}
-//
-//		if ($input->getOption('with')) {
-//			$this->sharedWith($input->getOption('with'), $json);
-//
-//			return 0;
-//		}
-//
-//		if ($input->getOption('by')) {
-//			$this->sharesBy($input->getOption('by'), $json);
-//
-//			return 0;
-//		}
-//
-//		if ($this->fileId > 0) {
-//			$this->sharedFile($json);
-//
-//			return 0;
-//		}
+		//
+		//		if ($input->getOption('to')) {
+		//			$this->sharedToCircle(
+		//				$input->getOption('to'),
+		//				$input->getOption('with'),
+		//				$input->getOption('by'),
+		//				$input->getOption('all'),
+		//				$json
+		//			);
+		//
+		//			return 0;
+		//		}
+		//
+		//		if ($input->getOption('with')) {
+		//			$this->sharedWith($input->getOption('with'), $json);
+		//
+		//			return 0;
+		//		}
+		//
+		//		if ($input->getOption('by')) {
+		//			$this->sharesBy($input->getOption('by'), $json);
+		//
+		//			return 0;
+		//		}
+		//
+		//		if ($this->fileId > 0) {
+		//			$this->sharedFile($json);
+		//
+		//			return 0;
+		//		}
 	}
 
 
@@ -313,8 +313,6 @@ class SharesFiles extends Base {
 			);
 		}
 
-		throw new MissingInputException(
-			'Specify a FileId or an option: --with (USER), --by (USER), --to (CIRCLE)'
-		);
+		throw new InvalidArgumentException('Specify a FileId or an option: --with (USER), --by (USER), --to (CIRCLE)');
 	}
 }

@@ -31,8 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Listeners\Files;
 
-use OCA\Circles\Tools\Traits\TNCLogger;
-use OCA\Circles\Tools\Traits\TStringTools;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Events\PreparingCircleMemberEvent;
 use OCA\Circles\Exceptions\FederatedItemException;
@@ -47,14 +45,12 @@ use OCA\Circles\Service\ContactService;
 use OCA\Circles\Service\SendMailService;
 use OCA\Circles\Service\ShareTokenService;
 use OCA\Circles\Service\ShareWrapperService;
+use OCA\Circles\Tools\Traits\TNCLogger;
+use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 
-/**
- * Class PreparingMemberSendMail
- *
- * @package OCA\Circles\Listeners\Files
- */
+/** @template-implements IEventListener<PreparingCircleMemberEvent|Event> */
 class PreparingMemberSendMail implements IEventListener {
 	use TStringTools;
 	use TNCLogger;
@@ -75,16 +71,6 @@ class PreparingMemberSendMail implements IEventListener {
 	/** @var ContactService */
 	private $contactService;
 
-
-	/**
-	 * AddingMember constructor.
-	 *
-	 * @param ShareWrapperService $shareWrapperService
-	 * @param ShareTokenService $shareTokenService
-	 * @param SendMailService $sendMailService
-	 * @param ContactService $contactService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
 		ShareWrapperService $shareWrapperService,
 		ShareTokenService $shareTokenService,
@@ -103,8 +89,6 @@ class PreparingMemberSendMail implements IEventListener {
 
 
 	/**
-	 * @param Event $event
-	 *
 	 * @throws RequestBuilderException
 	 * @throws FederatedItemException
 	 * @throws RemoteInstanceException

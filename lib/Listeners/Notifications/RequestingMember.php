@@ -1,8 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
-
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -28,53 +26,27 @@ declare(strict_types=1);
  *
  */
 
-
 namespace OCA\Circles\Listeners\Notifications;
 
-use OCA\Circles\Tools\Traits\TNCLogger;
-use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Events\CircleGenericEvent;
 use OCA\Circles\Events\RequestingCircleMemberEvent;
-use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Service\NotificationService;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 
-/**
- * Class RequestingMember
- *
- * @package OCA\Circles\Listeners\Notifications
- */
+/** @template-implements IEventListener<RequestingCircleMemberEvent|Event> */
 class RequestingMember implements IEventListener {
-	use TNCLogger;
-
-
-	/** @var NotificationService */
-	private $notificationService;
-
-
-	/**
-	 * RequestingMember constructor.
-	 */
-	public function __construct(NotificationService $notificationService) {
-		$this->notificationService = $notificationService;
-
-		$this->setup('app', Application::APP_ID);
+	public function __construct(
+		private NotificationService $notificationService,
+	) {
 	}
 
-
-	/**
-	 * @param Event $event
-	 *
-	 * @throws RequestBuilderException
-	 */
 	public function handle(Event $event): void {
 		if (!$event instanceof RequestingCircleMemberEvent) {
 			return;
 		}
 
 		$member = $event->getMember();
-
 		if ($event->getType() === CircleGenericEvent::REQUESTED) {
 			$this->notificationService->notificationRequested($member);
 		} else {

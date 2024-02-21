@@ -31,10 +31,10 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
-use OCA\Circles\Tools\Exceptions\RowNotFoundException;
-use OCP\Share\IShare;
 use OCA\Circles\Exceptions\ShareWrapperNotFoundException;
 use OCA\Circles\Model\ShareWrapper;
+use OCA\Circles\Tools\Exceptions\RowNotFoundException;
+use OCP\Share\IShare;
 
 /**
  * Class ShareWrapperRequestBuilder

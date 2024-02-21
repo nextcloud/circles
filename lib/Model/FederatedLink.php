@@ -379,7 +379,7 @@ class FederatedLink implements \JsonSerializable {
 	}
 
 
-	public function jsonSerialize() {
+	public function jsonSerialize(): array {
 		return [
 			'id' => $this->getId(),
 			'token' => $this->getToken($this->fullJson),

@@ -31,13 +31,13 @@ declare(strict_types=1);
 
 namespace OCA\Circles\UnifiedSearch;
 
-use OCA\Circles\Tools\Traits\TNCLogger;
 use Exception;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Tools\Traits\TNCLogger;
 use OCP\IL10N;
 use OCP\IURLGenerator;
 use OCP\IUser;

@@ -31,8 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
-use OCA\Circles\Tools\Traits\TNCLogger;
-use OCA\Circles\Tools\Traits\TStringTools;
 use Exception;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemAsyncProcess;
@@ -42,12 +40,9 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Tools\Traits\TNCLogger;
+use OCA\Circles\Tools\Traits\TStringTools;
 
-/**
- * Class MemberAdd
- *
- * @package OCA\Circles\GlobalScale
- */
 class MassiveMemberAdd extends SingleMemberAdd implements
 	IFederatedItem,
 	IFederatedItemAsyncProcess,
@@ -55,7 +50,6 @@ class MassiveMemberAdd extends SingleMemberAdd implements
 	IFederatedItemMemberEmpty {
 	use TStringTools;
 	use TNCLogger;
-
 
 	/**
 	 * @param FederatedEvent $event

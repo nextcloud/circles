@@ -31,8 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Listeners\Files;
 
-use OCA\Circles\Tools\Traits\TNCLogger;
-use OCA\Circles\Tools\Traits\TStringTools;
 use Exception;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Events\AddingCircleMemberEvent;
@@ -42,14 +40,12 @@ use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\ContactService;
 use OCA\Circles\Service\ShareTokenService;
 use OCA\Circles\Service\ShareWrapperService;
+use OCA\Circles\Tools\Traits\TNCLogger;
+use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 
-/**
- * Class AddingMemberSendMail
- *
- * @package OCA\Circles\Listeners\Files
- */
+/** @template-implements IEventListener<AddingCircleMemberEvent|Event> */
 class AddingMemberSendMail implements IEventListener {
 	use TStringTools;
 	use TNCLogger;
@@ -67,15 +63,6 @@ class AddingMemberSendMail implements IEventListener {
 	/** @var ContactService */
 	private $contactService;
 
-
-	/**
-	 * AddingMember constructor.
-	 *
-	 * @param ShareWrapperService $shareWrapperService
-	 * @param ShareTokenService $shareTokenService
-	 * @param ContactService $contactService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
 		ShareWrapperService $shareWrapperService,
 		ShareTokenService $shareTokenService,
@@ -92,8 +79,6 @@ class AddingMemberSendMail implements IEventListener {
 
 
 	/**
-	 * @param Event $event
-	 *
 	 * @throws RequestBuilderException
 	 */
 	public function handle(Event $event): void {

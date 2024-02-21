@@ -31,9 +31,9 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
+use JsonSerializable;
 use OCA\Circles\Tools\IDeserializable;
 use OCA\Circles\Tools\Traits\TArrayTools;
-use JsonSerializable;
 
 /**
  * Class Report

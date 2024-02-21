@@ -31,12 +31,12 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
-use OCA\Circles\Tools\Db\IQueryRow;
-use OCA\Circles\Tools\IDeserializable;
-use OCA\Circles\Tools\Traits\TArrayTools;
 use JsonSerializable;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\MountManager\CircleMountManager;
+use OCA\Circles\Tools\Db\IQueryRow;
+use OCA\Circles\Tools\IDeserializable;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use OCP\Federation\ICloudIdManager;
 use OCP\Http\Client\IClientService;
 
@@ -57,9 +57,9 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 
 	/** @var string */
 	private $circleId = '';
-//
-//	/** @var string */
-//	private $singleId = '';
+	//
+	//	/** @var string */
+	//	private $singleId = '';
 
 	/** @var Member */
 	private $owner;
@@ -155,25 +155,25 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 		return $this;
 	}
 
-//
-//	/**
-//	 *
-//	 * @return string
-//	 */
-//	public function getSingleId(): string {
-//		return $this->singleId;
-//	}
-//
-//	/**
-//	 * @param string $singleId
-//	 *
-//	 * @return Mount
-//	 */
-//	public function setSingleId(string $singleId): self {
-//		$this->singleId = $singleId;
-//
-//		return $this;
-//	}
+	//
+	//	/**
+	//	 *
+	//	 * @return string
+	//	 */
+	//	public function getSingleId(): string {
+	//		return $this->singleId;
+	//	}
+	//
+	//	/**
+	//	 * @param string $singleId
+	//	 *
+	//	 * @return Mount
+	//	 */
+	//	public function setSingleId(string $singleId): self {
+	//		$this->singleId = $singleId;
+	//
+	//		return $this;
+	//	}
 
 
 	/**
@@ -379,24 +379,24 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 	}
 
 
-//
-//	/**
-//	 * @param string $storage
-//	 *
-//	 * @return Mount
-//	 */
-//	public function setStorage(string $storage): self {
-//		$this->storage = $storage;
-//
-//		return $this;
-//	}
-//
-//	/**
-//	 * @return string
-//	 */
-//	public function getStorage(): string {
-//		return $this->storage;
-//	}
+	//
+	//	/**
+	//	 * @param string $storage
+	//	 *
+	//	 * @return Mount
+	//	 */
+	//	public function setStorage(string $storage): self {
+	//		$this->storage = $storage;
+	//
+	//		return $this;
+	//	}
+	//
+	//	/**
+	//	 * @return string
+	//	 */
+	//	public function getStorage(): string {
+	//		return $this->storage;
+	//	}
 
 
 	/**
@@ -466,7 +466,7 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 		$this->setMountPoint($this->get('mountpoint', $data));
 		$this->setMountPointHash($this->get('mountpoint_hash', $data));
 
-//		$this->setDefaultMountPoint($this->get('mountpoint', $data));
+		//		$this->setDefaultMountPoint($this->get('mountpoint', $data));
 
 		$this->getManager()->manageImportFromDatabase($this, $data, $prefix);
 

@@ -1,8 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
-
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -28,12 +26,9 @@ declare(strict_types=1);
  *
  */
 
-
 namespace OCA\Circles\Command;
 
 use Exception;
-use OC;
-use OC\AppConfig;
 use OC\Core\Command\Base;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\AppInfo\Capabilities;
@@ -63,6 +58,7 @@ use OCA\Circles\Tools\Model\SimpleDataStore;
 use OCA\Circles\Tools\Traits\TArrayTools;
 use OCA\Circles\Tools\Traits\TNCRequest;
 use OCA\Circles\Tools\Traits\TStringTools;
+use OCP\IAppConfig;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -79,70 +75,26 @@ class CirclesCheck extends Base {
 	use TArrayTools;
 	use TNCRequest;
 
-
-	public static $checks = [
+	public static array $checks = [
 		'internal',
 		'frontal',
 		'loopback'
 	];
 
-	/** @var Capabilities */
-	private $capabilities;
+	private array $sessions = [];
 
-	/** @var InterfaceService */
-	private $interfaceService;
-
-	/** @var FederatedEventService */
-	private $federatedEventService;
-
-	/** @var RemoteService */
-	private $remoteService;
-
-	/** @var RemoteStreamService */
-	private $remoteStreamService;
-
-	/** @var RemoteUpstreamService */
-	private $remoteUpstreamService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
-	/** @var array */
-	private $sessions = [];
-
-
-	/**
-	 * CirclesCheck constructor.
-	 *
-	 * @param Capabilities $capabilities
-	 * @param InterfaceService $interfaceService
-	 * @param FederatedEventService $federatedEventService
-	 * @param RemoteService $remoteService
-	 * @param RemoteStreamService $remoteStreamService
-	 * @param RemoteUpstreamService $remoteUpstreamService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
-		Capabilities $capabilities,
-		InterfaceService $interfaceService,
-		FederatedEventService $federatedEventService,
-		RemoteService $remoteService,
-		RemoteStreamService $remoteStreamService,
-		RemoteUpstreamService $remoteUpstreamService,
-		ConfigService $configService
+		private Capabilities $capabilities,
+		private IAppConfig $appConfig,
+		private InterfaceService $interfaceService,
+		private FederatedEventService $federatedEventService,
+		private RemoteService $remoteService,
+		private RemoteStreamService $remoteStreamService,
+		private RemoteUpstreamService $remoteUpstreamService,
+		private ConfigService $configService
 	) {
 		parent::__construct();
-
-		$this->capabilities = $capabilities;
-		$this->interfaceService = $interfaceService;
-		$this->federatedEventService = $federatedEventService;
-		$this->remoteService = $remoteService;
-		$this->remoteStreamService = $remoteStreamService;
-		$this->remoteUpstreamService = $remoteUpstreamService;
-		$this->configService = $configService;
 	}
-
 
 	protected function configure() {
 		parent::configure();
@@ -153,7 +105,6 @@ class CirclesCheck extends Base {
 			 ->addOption('alpha', '', InputOption::VALUE_NONE, 'allow ALPHA features')
 			 ->addOption('test', '', InputOption::VALUE_REQUIRED, 'specify an url to test', '');
 	}
-
 
 	/**
 	 * @param InputInterface $input
@@ -180,7 +131,7 @@ class CirclesCheck extends Base {
 			throw new Exception('Unknown type: ' . implode(', ', self::$checks));
 		}
 
-//		$this->configService->setAppValue(ConfigService::TEST_NC_BASE, $test);
+		//		$this->configService->setAppValue(ConfigService::TEST_NC_BASE, $test);
 
 		if ($type === '' || $type === 'loopback') {
 			$output->writeln('### Checking <info>loopback</info> address.');
@@ -188,7 +139,6 @@ class CirclesCheck extends Base {
 			$output->writeln('');
 			$output->writeln('');
 		}
-
 
 		if ($type === '' || $type === 'internal') {
 			$output->writeln('### Testing <info>internal</info> address.');
@@ -209,7 +159,6 @@ class CirclesCheck extends Base {
 
 		return 0;
 	}
-
 
 	/**
 	 * @param InputInterface $input
@@ -254,9 +203,7 @@ class CirclesCheck extends Base {
 
 		$helper = $this->getHelper('question');
 		while (true) {
-			$question = new Question(
-				'<info>Please write down a new loopback address to test</info>: ', ''
-			);
+			$question = new Question('<info>Please write down a new loopback address to test</info>: ', '');
 
 			$loopback = $helper->ask($input, $output, $question);
 			if (is_null($loopback) || $loopback === '') {
@@ -285,7 +232,6 @@ class CirclesCheck extends Base {
 		}
 	}
 
-
 	/**
 	 * @throws Exception
 	 */
@@ -311,7 +257,6 @@ class CirclesCheck extends Base {
 			throw $e;
 		}
 	}
-
 
 	/**
 	 * @param InputInterface $input
@@ -385,7 +330,6 @@ class CirclesCheck extends Base {
 
 		return true;
 	}
-
 
 	/**
 	 * @param InputInterface $input
@@ -543,8 +487,7 @@ class CirclesCheck extends Base {
 				$pastedSignatory = new SimpleDataStore();
 				$pastedSignatory->json(trim($helper->ask($input, $output, $question)));
 
-				// small hack to refresh the cached config
-				OC::$server->get(AppConfig::class)->clearCachedConfig();
+				$this->appConfig->clearCache();
 				$this->interfaceService->setCurrentInterface(InterfaceService::IFACE_TEST);
 				$appSignatory = $this->remoteStreamService->getAppSignatory(false);
 
@@ -567,7 +510,6 @@ class CirclesCheck extends Base {
 			return;
 		}
 	}
-
 
 	/**
 	 * @param InputInterface $input
@@ -600,7 +542,6 @@ class CirclesCheck extends Base {
 		$output->writeln('- Address <info>' . $internal . '</info> is now used as <info>internal</info>');
 	}
 
-
 	/**
 	 * @param InputInterface $input
 	 * @param OutputInterface $output
@@ -628,7 +569,6 @@ class CirclesCheck extends Base {
 
 			return;
 		}
-
 
 		while (true) {
 			$question = new Question(
@@ -673,7 +613,6 @@ class CirclesCheck extends Base {
 					. '/.well-known/webfinger?resource=http://nextcloud.com/&test='
 					. $testToken . '"'
 				);
-
 
 				$output->writeln('paste the result here: ');
 				$question = new Question('', '');
@@ -726,9 +665,7 @@ class CirclesCheck extends Base {
 				$pastedSignatory = new SimpleDataStore();
 				$pastedSignatory->json(trim($helper->ask($input, $output, $question)));
 
-				// small hack to refresh the cached config
-				OC::$server->get(AppConfig::class)->clearCachedConfig();
-
+				$this->appConfig->clearCache();
 				$this->interfaceService->setCurrentInterface(InterfaceService::IFACE_TEST);
 				$appSignatory = $this->remoteStreamService->getAppSignatory(false);
 
@@ -751,7 +688,6 @@ class CirclesCheck extends Base {
 			return;
 		}
 	}
-
 
 	/**
 	 * @param InputInterface $input
@@ -783,7 +719,6 @@ class CirclesCheck extends Base {
 
 		$output->writeln('- Address <info>' . $frontal . '</info> is now used as <info>frontal</info>');
 	}
-
 
 	/**
 	 * @param OutputInterface $o
@@ -829,7 +764,6 @@ class CirclesCheck extends Base {
 		return false;
 	}
 
-
 	/**
 	 * @param InputInterface $input
 	 * @param OutputInterface $output
@@ -863,7 +797,6 @@ class CirclesCheck extends Base {
 			. $address . '\'</info> stored in database'
 		);
 	}
-
 
 	/**
 	 * @param string $test

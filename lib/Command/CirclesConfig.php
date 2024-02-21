@@ -1,8 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
-
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -28,9 +26,9 @@ declare(strict_types=1);
  *
  */
 
-
 namespace OCA\Circles\Command;
 
+use InvalidArgumentException;
 use OC\Core\Command\Base;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedEventException;
@@ -53,42 +51,19 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\FederatedUserService;
-use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * Class CirclesConfig
- *
- * @package OCA\Circles\Command
- */
 class CirclesConfig extends Base {
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var CircleService */
-	private $circleService;
-
-
-	/**
-	 * CirclesConfig constructor.
-	 *
-	 * @param FederatedUserService $federatedUserService
-	 * @param CircleService $circlesService
-	 */
-	public function __construct(FederatedUserService $federatedUserService, CircleService $circlesService) {
+	public function __construct(
+		private FederatedUserService $federatedUserService,
+		private CircleService $circleService
+	) {
 		parent::__construct();
-
-		$this->federatedUserService = $federatedUserService;
-		$this->circleService = $circlesService;
 	}
 
-
-	/**
-	 *
-	 */
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:manage:config')

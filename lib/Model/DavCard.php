@@ -29,8 +29,8 @@
 
 namespace OCA\Circles\Model;
 
-use OCA\Circles\Tools\Traits\TArrayTools;
 use JsonSerializable;
+use OCA\Circles\Tools\Traits\TArrayTools;
 
 /**
  * Class DavCard
@@ -43,7 +43,7 @@ class DavCard implements JsonSerializable {
 
 	public const TYPE_CONTACT = 1;
 	public const TYPE_LOCAL = 2;
-//	const TYPE_FEDERATED = 3;
+	//	const TYPE_FEDERATED = 3;
 
 
 	/** @var int */

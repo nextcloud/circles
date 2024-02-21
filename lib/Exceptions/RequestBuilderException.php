@@ -1,8 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
-
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -28,15 +26,9 @@ declare(strict_types=1);
  *
  */
 
-
 namespace OCA\Circles\Exceptions;
 
 use Exception;
 
-/**
- * Class MigrationTo22Exception
- *
- * @package OCA\Circles\Exceptions
- */
 class RequestBuilderException extends Exception {
 }

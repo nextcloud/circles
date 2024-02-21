@@ -28,10 +28,10 @@
 namespace OCA\Circles\Tests;
 
 use OCA\Circles\Model\DeprecatedCircle;
-use PHPUnit\Framework\TestListener;
-use PHPUnit\Framework\Test;
-use PHPUnit\Framework\TestSuite;
 use PHPUnit\Framework\AssertionFailedError;
+use PHPUnit\Framework\Test;
+use PHPUnit\Framework\TestListener;
+use PHPUnit\Framework\TestSuite;
 use PHPUnit\Framework\Warning;
 use Throwable;
 

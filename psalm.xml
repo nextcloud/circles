@@ -30,6 +30,10 @@
 				<referencedClass name="OCP\Accounts\UserUpdatedEvent" />
 				<referencedClass name="OCA\Files\Event\LoadAdditionalScriptsEvent" />
 				<referencedClass name="OC\Share20\ShareAttributes" />
+				<referencedClass name="Symfony\Component\Console\Question\Question" />
+				<referencedClass name="Symfony\Component\Console\Output\ConsoleOutput" />
+				<referencedClass name="Symfony\Component\Console\Exception\MissingInputException" />
+				<referencedClass name="Symfony\Component\Process\Process" />
 			</errorLevel>
 		</UndefinedClass>
 		<UndefinedDocblockClass>

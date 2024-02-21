@@ -1,8 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
-
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -28,9 +26,9 @@ declare(strict_types=1);
  *
  */
 
-
 namespace OCA\Circles\Command;
 
+use InvalidArgumentException;
 use OC\Core\Command\Base;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedItemException;
@@ -48,50 +46,20 @@ use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CircleService;
-use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
-use OCP\IL10N;
-use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * Class CirclesEdit
- *
- * @package OCA\Circles\Command
- */
 class CirclesEdit extends Base {
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var CircleService */
-	private $circleService;
-
-
-	/**
-	 * CirclesEdit constructor.
-	 *
-	 * @param IL10N $l10n
-	 * @param FederatedUserService $federatedUserService
-	 * @param CircleService $circlesService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
-		IL10N $l10n, FederatedUserService $federatedUserService, CircleService $circlesService,
-		ConfigService $configService
+		private FederatedUserService $federatedUserService,
+		private CircleService $circleService,
 	) {
 		parent::__construct();
-
-		$this->federatedUserService = $federatedUserService;
-		$this->circleService = $circlesService;
 	}
 
-
-	/**
-	 *
-	 */
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:manage:edit')
@@ -103,7 +71,6 @@ class CirclesEdit extends Base {
 			 ->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
 			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
 	}
-
 
 	/**
 	 * @param InputInterface $input

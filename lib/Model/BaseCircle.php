@@ -30,6 +30,9 @@ use OC;
 use OCA\Circles\AppInfo\Application;
 use OCP\IL10N;
 
+/**
+ * @deprecated
+ */
 class BaseCircle {
 	public const CIRCLES_SETTINGS_DEFAULT = [
 		'password_enforcement' => 'false',
@@ -155,12 +158,6 @@ class BaseCircle {
 		}
 
 		return substr($this->uniqueId, 0, self::SHORT_UNIQUE_ID_LENGTH);
-	}
-
-	public function generateUniqueId() {
-		$uniqueId = bin2hex(openssl_random_pseudo_bytes(24));
-		$this->setUniqueId($uniqueId);
-		$this->setId($this->getUniqueId());
 	}
 
 	/**
@@ -544,33 +541,33 @@ class BaseCircle {
 	}
 
 
-//	public function getRemote() {
-//		return $this->remote;
-//	}
-//
-//	public function addRemote($link) {
-//		array_push($this->remote, $link);
-//	}
-//
-//	public function getRemoteFromToken($token) {
-//		foreach ($this->links AS $link) {
-//			if ($link->getToken() === $token) {
-//				return $link;
-//			}
-//		}
-//
-//		return null;
-//	}
-//
-//	public function getRemoteFromAddressAndId($address, $id) {
-//		foreach ($this->links AS $link) {
-//			if ($link->getAddress() === $address && $link->getUniqueId() === $id) {
-//				return $link;
-//			}
-//		}
-//
-//		return null;
-//	}
+	//	public function getRemote() {
+	//		return $this->remote;
+	//	}
+	//
+	//	public function addRemote($link) {
+	//		array_push($this->remote, $link);
+	//	}
+	//
+	//	public function getRemoteFromToken($token) {
+	//		foreach ($this->links AS $link) {
+	//			if ($link->getToken() === $token) {
+	//				return $link;
+	//			}
+	//		}
+	//
+	//		return null;
+	//	}
+	//
+	//	public function getRemoteFromAddressAndId($address, $id) {
+	//		foreach ($this->links AS $link) {
+	//			if ($link->getAddress() === $address && $link->getUniqueId() === $id) {
+	//				return $link;
+	//			}
+	//		}
+	//
+	//		return null;
+	//	}
 
 	/**
 	 * @param integer|string $type

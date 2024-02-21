@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -28,7 +27,6 @@ declare(strict_types=1);
  *
  */
 
-
 namespace OCA\Circles\Model;
 
 use JsonSerializable;
@@ -39,389 +37,180 @@ use OCA\Circles\Tools\Exceptions\InvalidItemException;
 use OCA\Circles\Tools\IDeserializable;
 use OCA\Circles\Tools\Traits\TArrayTools;
 
-/**
- * Class FileCacheWrapper
- *
- * @package OCA\Circles\Model
- */
 class FileCacheWrapper extends ManagedModel implements IQueryRow, IDeserializable, JsonSerializable {
 	use TArrayTools;
 
+	private int $id = 0;
+	private string $path = '';
+	private int $permissions = 0;
+	private int $storageId = 0;
+	private string $pathHash = '';
+	private int $parent = 0;
+	private string $name = '';
+	private int $mimeType = 0;
+	private int $mimePart = 0;
+	private int $size = 0;
+	private int $mTime = 0;
+	private int $storageMTime = 0;
+	private bool $encrypted = false;
+	private int $unencryptedSize = 0;
+	private string $etag = '';
+	private string $checksum = '';
+	private string $storage = '';
 
-	/** @var int */
-	private $id = 0;
-
-	/** @var string */
-	private $path = '';
-
-	/** @var int */
-	private $permissions = 0;
-
-	/** @var int */
-	private $storageId = 0;
-
-	/** @var string */
-	private $pathHash = '';
-
-	/** @var int */
-	private $parent = 0;
-
-	/** @var string */
-	private $name = '';
-
-	/** @var int */
-	private $mimeType = 0;
-
-	/** @var int */
-	private $mimePart = 0;
-
-	/** @var int */
-	private $size = 0;
-
-	/** @var int */
-	private $mTime = 0;
-
-	/** @var int */
-	private $storageMTime = 0;
-
-	/** @var bool */
-	private $encrypted = false;
-
-	/** @var int */
-	private $unencryptedSize = 0;
-
-	/** @var string */
-	private $etag = '';
-
-	/** @var string */
-	private $checksum = '';
-
-	/** @var string */
-	private $storage = '';
-
-
-	/**
-	 * @param int $id
-	 *
-	 * @return FileCacheWrapper
-	 */
 	public function setId(int $id): self {
 		$this->id = $id;
-
 		return $this;
 	}
 
-	/**
-	 * @return int
-	 */
 	public function getId(): int {
 		return $this->id;
 	}
 
-	/**
-	 * @param string $path
-	 *
-	 * @return FileCacheWrapper
-	 */
 	public function setPath(string $path): self {
 		$this->path = $path;
-
 		return $this;
 	}
 
-	/**
-	 * @return string
-	 */
 	public function getPath(): string {
 		return $this->path;
 	}
 
-	/**
-	 * @param string $pathHash
-	 *
-	 * @return FileCacheWrapper
-	 */
 	public function setPathHash(string $pathHash): self {
 		$this->pathHash = $pathHash;
-
 		return $this;
 	}
 
-	/**
-	 * @return string
-	 */
 	public function getPathHash(): string {
 		return $this->pathHash;
 	}
 
-	/**
-	 * @param string $name
-	 *
-	 * @return FileCacheWrapper
-	 */
 	public function setName(string $name): self {
 		$this->name = $name;
-
 		return $this;
 	}
 
-	/**
-	 * @return string
-	 */
 	public function getName(): string {
 		return $this->name;
 	}
 
-	/**
-	 * @param int $storageMTime
-	 *
-	 * @return FileCacheWrapper
-	 */
 	public function setStorageMTime(int $storageMTime): self {
 		$this->storageMTime = $storageMTime;
-
 		return $this;
 	}
 
-	/**
-	 * @return int
-	 */
 	public function getStorageMTime(): int {
 		return $this->storageMTime;
 	}
 
-
-	/**
-	 * @param bool $encrypted
-	 *
-	 * @return FileCacheWrapper
-	 */
 	public function setEncrypted(bool $encrypted): self {
 		$this->encrypted = $encrypted;
-
 		return $this;
 	}
 
-	/**
-	 * @return bool
-	 */
 	public function isEncrypted(): bool {
 		return $this->encrypted;
 	}
 
-
-	/**
-	 * @param int $unencryptedSize
-	 *
-	 * @return FileCacheWrapper
-	 */
 	public function setUnencryptedSize(int $unencryptedSize): self {
 		$this->unencryptedSize = $unencryptedSize;
-
 		return $this;
 	}
 
-	/**
-	 * @return int
-	 */
 	public function getUnencryptedSize(): int {
 		return $this->unencryptedSize;
 	}
 
-
-	/**
-	 * @param string $etag
-	 *
-	 * @return FileCacheWrapper
-	 */
 	public function setEtag(string $etag): self {
 		$this->etag = $etag;
-
 		return $this;
 	}
 
-	/**
-	 * @return string
-	 */
 	public function getEtag(): string {
 		return $this->etag;
 	}
 
-
-	/**
-	 * @param string $checksum
-	 *
-	 * @return FileCacheWrapper
-	 */
 	public function setChecksum(string $checksum): self {
 		$this->checksum = $checksum;
-
 		return $this;
 	}
 
-	/**
-	 * @return string
-	 */
 	public function getChecksum(): string {
 		return $this->checksum;
 	}
 
-
-	/**
-	 * @param int $size
-	 *
-	 * @return FileCacheWrapper
-	 */
 	public function setSize(int $size): self {
 		$this->size = $size;
-
 		return $this;
 	}
 
-	/**
-	 * @return int
-	 */
 	public function getSize(): int {
 		return $this->size;
 	}
 
-
-	/**
-	 * @param int $mTime
-	 *
-	 * @return FileCacheWrapper
-	 */
 	public function setMTime(int $mTime): self {
 		$this->mTime = $mTime;
-
 		return $this;
 	}
 
-	/**
-	 * @return int
-	 */
 	public function getMTime(): int {
 		return $this->mTime;
 	}
 
-
-	/**
-	 * @param int $mimeType
-	 *
-	 * @return FileCacheWrapper
-	 */
 	public function setMimeType(int $mimeType): self {
 		$this->mimeType = $mimeType;
-
 		return $this;
 	}
 
-	/**
-	 * @return int
-	 */
 	public function getMimeType(): int {
 		return $this->mimeType;
 	}
 
-
-	/**
-	 * @param int $mimePart
-	 *
-	 * @return FileCacheWrapper
-	 */
 	public function setMimePart(int $mimePart): self {
 		$this->mimePart = $mimePart;
-
 		return $this;
 	}
 
-	/**
-	 * @return int
-	 */
 	public function getMimePart(): int {
 		return $this->mimePart;
 	}
 
-
-	/**
-	 * @param int $storageId
-	 *
-	 * @return FileCacheWrapper
-	 */
 	public function setStorageId(int $storageId): self {
 		$this->storageId = $storageId;
-
 		return $this;
 	}
 
-	/**
-	 * @return int
-	 */
 	public function getStorageId(): int {
 		return $this->storageId;
 	}
 
-
-	/**
-	 * @param string $storage
-	 *
-	 * @return FileCacheWrapper
-	 */
 	public function setStorage(string $storage): self {
 		$this->storage = $storage;
-
 		return $this;
 	}
 
-	/**
-	 * @return string
-	 */
 	public function getStorage(): string {
 		return $this->storage;
 	}
 
-
-	/**
-	 * @param int $permissions
-	 *
-	 * @return FileCacheWrapper
-	 */
 	public function setPermissions(int $permissions): self {
 		$this->permissions = $permissions;
-
 		return $this;
 	}
 
-	/**
-	 * @return int
-	 */
 	public function getPermissions(): int {
 		return $this->permissions;
 	}
 
-
-	/**
-	 * @param int $parent
-	 *
-	 * @return FileCacheWrapper
-	 */
 	public function setParent(int $parent): self {
 		$this->parent = $parent;
-
 		return $this;
 	}
 
-	/**
-	 * @return int
-	 */
 	public function getParent(): int {
 		return $this->parent;
 	}
 
-
-	/**
-	 * @return array
-	 */
 	public function toCache(): array {
 		return [
 			'fileid' => $this->getId(),
@@ -465,7 +254,6 @@ class FileCacheWrapper extends ManagedModel implements IQueryRow, IDeserializabl
 
 		return !(explode('/', $path, 2)[0] !== 'files' && $storageType === 'home');
 	}
-
 
 	/**
 	 * @param array $data
@@ -535,10 +323,6 @@ class FileCacheWrapper extends ManagedModel implements IQueryRow, IDeserializabl
 		return $this;
 	}
 
-
-	/**
-	 * @return string[]
-	 */
 	public function jsonSerialize(): array {
 		return [
 			'id' => $this->getId(),

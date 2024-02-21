@@ -34,6 +34,7 @@ use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\Util;
 
+/** @template-implements IEventListener<LoadAdditionalScriptsEvent|Event> */
 class ListenerFilesLoadScripts implements IEventListener {
 	public function __construct(
 	) {

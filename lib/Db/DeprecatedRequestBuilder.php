@@ -256,26 +256,26 @@ class DeprecatedRequestBuilder {
 		$this->limitToDBField($qb, 'share_id', $hash);
 	}
 
-//
-//	/**
-//	 * Limit the request to the Circle by its Shorten Unique Id.
-//	 *
-//	 * @param IQueryBuilder $qb
-//	 * @param string $circleUniqueId
-//	 * @param $length
-//	 */
-//	protected function limitToShortenUniqueId(IQueryBuilder $qb, $circleUniqueId, $length) {
-//		$expr = $qb->expr();
-//		$pf = ($qb->getType() === QueryBuilder::SELECT) ? '`' . $this->default_select_alias . '`.' : '';
-//
-//		$qb->andWhere(
-//			$expr->eq(
-//				$qb->createNamedParameter($circleUniqueId),
-//				$qb->createFunction('SUBSTR(' . $pf . '`unique_id`' . ', 1, ' . $length . ')')
-//			)
-//		);
-//
-//	}
+	//
+	//	/**
+	//	 * Limit the request to the Circle by its Shorten Unique Id.
+	//	 *
+	//	 * @param IQueryBuilder $qb
+	//	 * @param string $circleUniqueId
+	//	 * @param $length
+	//	 */
+	//	protected function limitToShortenUniqueId(IQueryBuilder $qb, $circleUniqueId, $length) {
+	//		$expr = $qb->expr();
+	//		$pf = ($qb->getType() === QueryBuilder::SELECT) ? '`' . $this->default_select_alias . '`.' : '';
+	//
+	//		$qb->andWhere(
+	//			$expr->eq(
+	//				$qb->createNamedParameter($circleUniqueId),
+	//				$qb->createFunction('SUBSTR(' . $pf . '`unique_id`' . ', 1, ' . $length . ')')
+	//			)
+	//		);
+	//
+	//	}
 
 
 	/**

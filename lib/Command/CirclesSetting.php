@@ -1,8 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
-
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -28,9 +26,9 @@ declare(strict_types=1);
  *
  */
 
-
 namespace OCA\Circles\Command;
 
+use InvalidArgumentException;
 use OC\Core\Command\Base;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedEventException;
@@ -56,36 +54,21 @@ use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
 use OCP\Security\IHasher;
-use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class CirclesSetting extends Base {
-	private IHasher $hasher;
-	private FederatedUserService $federatedUserService;
-	private CircleService $circleService;
-	private ConfigService $configService;
-
 	public function __construct(
-		IHasher $hasher,
-		FederatedUserService $federatedUserService,
-		CircleService $circlesService,
-		ConfigService $configService
+		private IHasher $hasher,
+		private FederatedUserService $federatedUserService,
+		private CircleService $circleService,
+		private ConfigService $configService
 	) {
 		parent::__construct();
-
-		$this->hasher = $hasher;
-		$this->federatedUserService = $federatedUserService;
-		$this->circleService = $circlesService;
-		$this->configService = $configService;
 	}
 
-
-	/**
-	 *
-	 */
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:manage:setting')

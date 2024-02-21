@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
-use OCA\Circles\Tools\Traits\TDeserialize;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
@@ -47,6 +46,7 @@ use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\MembershipService;
+use OCA\Circles\Tools\Traits\TDeserialize;
 
 /**
  * Class CircleCreate

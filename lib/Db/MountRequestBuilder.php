@@ -31,9 +31,9 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
-use OCA\Circles\Tools\Exceptions\RowNotFoundException;
 use OCA\Circles\Exceptions\MountNotFoundException;
 use OCA\Circles\Model\Mount;
+use OCA\Circles\Tools\Exceptions\RowNotFoundException;
 
 /**
  * Class MountRequestBuilder
