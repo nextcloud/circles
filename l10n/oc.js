@@ -14,10 +14,10 @@ OC.L10N.register(
     "Owner" : "Owner",
     "Open »%s«" : "Dobrir « %s »",
     "Accept" : "Acceptar",
-    "now" : "ara",
     "No files in here" : "Cap de fichièr aicí",
     "Name" : "Nom",
     "Size" : "Talha",
-    "Modified" : "Modificat"
+    "Modified" : "Modificat",
+    "now" : "ara"
 },
 "nplurals=2; plural=(n > 1);");
