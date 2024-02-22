@@ -12,10 +12,10 @@
     "Owner" : "Owner",
     "Open »%s«" : "Dobrir « %s »",
     "Accept" : "Acceptar",
-    "now" : "ara",
     "No files in here" : "Cap de fichièr aicí",
     "Name" : "Nom",
     "Size" : "Talha",
-    "Modified" : "Modificat"
+    "Modified" : "Modificat",
+    "now" : "ara"
 },"pluralForm" :"nplurals=2; plural=(n > 1);"
 }
