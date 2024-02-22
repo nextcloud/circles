@@ -19,16 +19,16 @@ OC.L10N.register(
     "Password to access »%s«" : "Parool ligipääsuks: %s",
     "Click the button below to open it." : "Vajuta allolevat nuppu, et see avada.",
     "Open »%s«" : "Ava »%s«",
-    "Federated link not found" : "Liit-linki ei leitud",
     "The circle is not federated" : "Ring ei ole liidetud",
     "Accept" : "Nõustu",
     "%s" : "%s",
     "Personal Circle" : "Isiklik ring",
-    "now" : "kohe",
     "No files in here" : "Siin ei ole faile",
     "No entries found in this folder" : "Selles kaustas ei leitud kirjeid",
     "Name" : "Nimi",
     "Size" : "Suurus",
-    "Modified" : "Muudetud"
+    "Modified" : "Muudetud",
+    "Federated link not found" : "Liit-linki ei leitud",
+    "now" : "kohe"
 },
 "nplurals=2; plural=(n != 1);");

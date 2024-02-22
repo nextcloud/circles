@@ -31,11 +31,11 @@ OC.L10N.register(
     "Accept" : "Прифати",
     "%s" : "%s",
     "Personal Circle" : "Сопствен круг",
-    "now" : "сега",
     "No files in here" : "Тука нема датотеки",
     "No entries found in this folder" : "Нема ништо во оваа папка",
     "Name" : "Име",
     "Size" : "Големина",
-    "Modified" : "Изменето"
+    "Modified" : "Изменето",
+    "now" : "сега"
 },
 "nplurals=2; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : 1;");
