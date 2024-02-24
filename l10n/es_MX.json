@@ -66,6 +66,7 @@
     "%s shared »%s« with you." : "%s compartió »%s« contigo.",
     "%s on %s" : "%s en %s",
     "Password to access »%s«" : "Contraseña para acceder  »%s«",
+    "%1$s via %2$s" : "%1$s vía %2$s",
     "Click the button below to open it." : "Haz click en el botón para abrirlo.",
     "Open »%s«" : "Abrir »%s«",
     "Password to access files" : "Contraseña para acceder a los archivos",
