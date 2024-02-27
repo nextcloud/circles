@@ -9,6 +9,7 @@ OC.L10N.register(
     "{author} created the circle {circle}" : "{author} creó'l círculu «{circle}»",
     "You deleted {circle}" : "Desaniciesti «{circle}»",
     "{author} deleted {circle}" : "{author} desanició «{circle}»",
+    "Open" : "Abrir",
     "Backend" : "Backend",
     "Mount point" : "Puntu de montaxe",
     "Nextcloud Account" : "Cuenta de Nextcloud",
