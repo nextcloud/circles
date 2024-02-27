@@ -111,15 +111,15 @@ class Capabilities implements ICapability {
 				Circle::CFG_VISIBLE => $this->l10n->t('Visible'),
 				Circle::CFG_OPEN => $this->l10n->t('Open'),
 				Circle::CFG_INVITE => $this->l10n->t('Invite'),
-				Circle::CFG_REQUEST => $this->l10n->t('Join Request'),
+				Circle::CFG_REQUEST => $this->l10n->t('Join request'),
 				Circle::CFG_FRIEND => $this->l10n->t('Friends'),
-				Circle::CFG_PROTECTED => $this->l10n->t('Password Protected'),
+				Circle::CFG_PROTECTED => $this->l10n->t('Password protected'),
 				Circle::CFG_NO_OWNER => $this->l10n->t('No Owner'),
 				Circle::CFG_HIDDEN => $this->l10n->t('Hidden'),
 				Circle::CFG_BACKEND => $this->l10n->t('Backend'),
 				Circle::CFG_LOCAL => $this->l10n->t('Local'),
 				Circle::CFG_ROOT => $this->l10n->t('Root'),
-				Circle::CFG_CIRCLE_INVITE => $this->l10n->t('Circle Invite'),
+				Circle::CFG_CIRCLE_INVITE => $this->l10n->t('Team invite'),
 				Circle::CFG_FEDERATED => $this->l10n->t('Federated'),
 				Circle::CFG_MOUNTPOINT => $this->l10n->t('Mount point')
 			],
@@ -128,7 +128,7 @@ class Capabilities implements ICapability {
 					'core' => [
 						Member::TYPE_USER => $this->l10n->t('Nextcloud Account'),
 						Member::TYPE_GROUP => $this->l10n->t('Nextcloud Group'),
-						Member::TYPE_MAIL => $this->l10n->t('Email Address'),
+						Member::TYPE_MAIL => $this->l10n->t('Email address'),
 						Member::TYPE_CONTACT => $this->l10n->t('Contact'),
 						Member::TYPE_CIRCLE => $this->l10n->t('Circle'),
 						Member::TYPE_APP => $this->l10n->t('Nextcloud App')

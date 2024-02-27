@@ -179,7 +179,7 @@ class ShareByCircleProvider implements IShareProvider {
 		try {
 			$knowShareWrapper = $this->shareWrapperService->searchShare($share->getSharedWith(), $nodeId);
 			throw new AlreadySharedException(
-				$this->l10n->t('This item is already shared with this circle'),
+				$this->l10n->t('This item is already shared with this team'),
 				$knowShareWrapper->getShare($this->rootFolder, $this->userManager, $this->urlGenerator)
 			);
 		} catch (ShareWrapperNotFoundException $e) {

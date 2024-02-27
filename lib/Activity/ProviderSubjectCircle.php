@@ -47,8 +47,8 @@ class ProviderSubjectCircle extends ProviderParser {
 
 		$this->parseCircleEvent(
 			$event, $circle,
-			$this->l10n->t('You created the circle {circle}'),
-			$this->l10n->t('{author} created the circle {circle}')
+			$this->l10n->t('You created the team {circle}'),
+			$this->l10n->t('{author} created the team {circle}')
 		);
 
 		throw new FakeException();

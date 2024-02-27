@@ -109,8 +109,8 @@ class ProviderSubjectCircleMember extends ProviderParser {
 
 		$this->parseMemberCircleEvent(
 			$event, $circle, $member,
-			$this->l10n->t('You added circle {member} as member to {circle}'),
-			$this->l10n->t('{author} added circle {member} has been added as member to {circle}')
+			$this->l10n->t('You added team {member} as member to {circle}'),
+			$this->l10n->t('{author} added team {member} has been added as member to {circle}')
 		);
 
 		throw new FakeException();
