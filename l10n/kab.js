@@ -4,6 +4,7 @@ OC.L10N.register(
     "Personal" : "Udmawan",
     "Open" : "Ldi",
     "Local" : "Adigan",
+    "Email address" : "Tansa imayl",
     "Circle" : "Tawinest",
     "Moderator" : "Amaẓrag",
     "Admin" : "Anedbal",
