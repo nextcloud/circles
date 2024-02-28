@@ -1,9 +1,9 @@
 OC.L10N.register(
     "circles",
     {
-    "Circles" : "Sirklar",
     "Personal" : "Personleg",
     "System" : "System",
+    "Password protected" : "Passordverna",
     "Local" : "Lokal",
     "Federated" : "Federated",
     "Circle" : "Sirkel",
@@ -15,6 +15,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Ingen oppføringar funne i denne mappa",
     "Name" : "Namn",
     "Size" : "Storleik",
-    "Modified" : "Endra"
+    "Modified" : "Endra",
+    "Circles" : "Sirklar"
 },
 "nplurals=2; plural=(n != 1);");

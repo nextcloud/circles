@@ -6,6 +6,7 @@ OC.L10N.register(
     "Visible" : "Redzams",
     "Open" : "Atvērt",
     "Invite" : "Uzaicināt",
+    "Password protected" : "Aizsargāts ar paroli",
     "Hidden" : "Paslēpts",
     "Local" : "Lokāls",
     "Root" : "Root",
