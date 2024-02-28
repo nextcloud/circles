@@ -4,6 +4,7 @@ OC.L10N.register(
     "Personal" : "Personal",
     "System" : "Systema",
     "Visible" : "Visibile",
+    "Password protected" : "Protegite per contrasigno",
     "Hidden" : "Occultate",
     "Local" : "Local",
     "Root" : "Root",

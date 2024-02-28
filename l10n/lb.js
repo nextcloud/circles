@@ -3,6 +3,7 @@ OC.L10N.register(
     {
     "Personal" : "Perséinlech",
     "Visible" : "Visibel",
+    "Password protected" : "Passwuertgeschützt",
     "Hidden" : "Verstoppt",
     "Federated" : "Federated",
     "Admin" : "Admin",
