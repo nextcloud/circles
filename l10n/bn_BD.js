@@ -3,6 +3,7 @@ OC.L10N.register(
     {
     "Personal" : "ব্যক্তিগত",
     "Visible" : "দর্শনযোগ্য",
+    "Password protected" : "কূটশব্দদ্বারা সুরক্ষিত",
     "Hidden" : "লুকনো",
     "Local" : "স্থানীয়",
     "Root" : "শেকড়",

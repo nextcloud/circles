@@ -1,5 +1,6 @@
 { "translations": {
     "Personal" : "Osobno",
+    "Password protected" : "Zaštićeno lozinkom",
     "Local" : "Lokalno",
     "Federated" : "Federated",
     "Circle" : "Krug",

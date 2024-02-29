@@ -2,6 +2,7 @@ OC.L10N.register(
     "circles",
     {
     "Personal" : "Osobno",
+    "Password protected" : "Zaštićeno lozinkom",
     "Local" : "Lokalno",
     "Federated" : "Federated",
     "Circle" : "Krug",
