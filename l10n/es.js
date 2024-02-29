@@ -49,6 +49,7 @@ OC.L10N.register(
     "Open" : "Abrir",
     "Invite" : "Invitar",
     "Friends" : "Amigos",
+    "Password protected" : "Protegido por contraseña",
     "No Owner" : "Sin propietario",
     "Hidden" : "Oculto",
     "Backend" : "Backend",

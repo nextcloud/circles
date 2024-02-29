@@ -5,6 +5,7 @@ OC.L10N.register(
     "System" : "Sistema",
     "Visible" : "Visible",
     "Open" : "Abrir",
+    "Password protected" : "Protegido con contraseña",
     "Hidden" : "Oculto",
     "Local" : "Local",
     "Root" : "Raíz",

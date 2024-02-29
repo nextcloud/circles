@@ -6,6 +6,7 @@ OC.L10N.register(
     "Visible" : "Sigbaar",
     "Open" : "Open",
     "Hidden" : "Versteek",
+    "Email address" : "E-posadres",
     "Contact" : "Kontak",
     "Admin" : "Admin",
     "Owner" : "Eienaar",
