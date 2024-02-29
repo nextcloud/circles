@@ -46,6 +46,7 @@ OC.L10N.register(
     "System" : "Sistemo",
     "Visible" : "Videbla",
     "Open" : "Malfermi",
+    "Password protected" : "Protektita per pasvorto",
     "Hidden" : "Nevidebla",
     "Local" : "Loka",
     "Root" : "Radiko",
