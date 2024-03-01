@@ -54,6 +54,7 @@ OC.L10N.register(
     "On events happening in a <strong>team</strong> of which you are a member" : "Sobre eventos que pasen nun <strong>equipu</strong> del que seyas miembru",
     "Any important event in a <strong>team</strong> you are moderating" : "Cualesquier eventu nun <strong>equipu</strong> que llendes",
     "On global events happening in any <strong>team</strong>" : "Sobre eventos globales que pasen en cualesquier <strong>equipu</strong>",
+    "Personal" : "Personal",
     "System" : "Sistema",
     "Visible" : "Visible",
     "Open" : "Abrir",
