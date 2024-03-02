@@ -213,6 +213,8 @@ OC.L10N.register(
     "This contact is not available" : "Denne kontakten er ikke tilgjengelig",
     "You have no permission to create a new circle" : "Du har ikke tilgang til å opprette ny sirkel",
     "This item is already shared with this circle" : "Elementet er allerede delt med denne sirkelen",
-    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Circles lar folk lage sine egne grupper av mennesker / kolleger / venner.\nDisse persongruppene (eller \"sirklene\") kan deretter brukes av en hvilken som helst annen app til delingsformål."
+    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Circles lar folk lage sine egne grupper av mennesker / kolleger / venner.\nDisse persongruppene (eller \"sirklene\") kan deretter brukes av en hvilken som helst annen app til delingsformål.",
+    "You added circle {member} as member to {circle}" : "Du la til sirkel-{member} som medlem i {circle}",
+    "{author} added circle {member} has been added as member to {circle}" : "{author} la til sirkelen {member} har blitt lagt til som medlem i {circle}"
 },
 "nplurals=2; plural=(n != 1);");
