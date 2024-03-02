@@ -213,6 +213,8 @@ OC.L10N.register(
     "This contact is not available" : "此聯絡人不可用",
     "You have no permission to create a new circle" : "您無權建立新的小圈圈",
     "This item is already shared with this circle" : "此項目已與此小圈圈分享",
-    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "小圈圈讓您的夥伴可以建立他們自己的夥伴／同事／朋友群組。\n然後，其他任何的應用程式都可以將那些夥伴群組（或「小圈圈」）用於分享目的。"
+    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "小圈圈讓您的夥伴可以建立他們自己的夥伴／同事／朋友群組。\n然後，其他任何的應用程式都可以將那些夥伴群組（或「小圈圈」）用於分享目的。",
+    "You added circle {member} as member to {circle}" : "您已將小圈圈 {member} 新增為 {circle} 的成員",
+    "{author} added circle {member} has been added as member to {circle}" : "{author} 新增了小圈圈 {member} 已作為成員新增至 {circle}"
 },
 "nplurals=1; plural=0;");

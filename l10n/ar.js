@@ -213,6 +213,8 @@ OC.L10N.register(
     "This contact is not available" : "جهة الاتصال هذه غير مُتاحةٍ",
     "You have no permission to create a new circle" : "ليس عندك الصلاحية لإنشاء دائرةٍ جديدةٍ",
     "This item is already shared with this circle" : "هذا العنصر سبق و أن تمّت مشاركته مع هذه الدائرة",
-    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "تسمح \"الدوائر\" Circles للأشخاص بإنشاء مجموعات خاصة بهم من الزملاء و الأصدقاء. \nيمكن بعد ذلك استخدام هذه المجموعات من الأشخاص (أو \"الدوائر\") بواسطة أي تطبيق آخر لأغراض المشاركة."
+    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "تسمح \"الدوائر\" Circles للأشخاص بإنشاء مجموعات خاصة بهم من الزملاء و الأصدقاء. \nيمكن بعد ذلك استخدام هذه المجموعات من الأشخاص (أو \"الدوائر\") بواسطة أي تطبيق آخر لأغراض المشاركة.",
+    "You added circle {member} as member to {circle}" : "أنت قمت بضم {member} كعضو في {circle}",
+    "{author} added circle {member} has been added as member to {circle}" : "{author} قام بإضافة الحلقة {member} كعضو في الحلقة {circle}"
 },
 "nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;");

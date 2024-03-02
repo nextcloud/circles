@@ -45,6 +45,7 @@ OC.L10N.register(
     "Personal" : "Personal",
     "System" : "Sistema",
     "Visible" : "Visible",
+    "Password protected" : "Protegido con contraseña",
     "Hidden" : "Oculto",
     "Local" : "Local",
     "Root" : "Raíz",
