@@ -213,6 +213,8 @@ OC.L10N.register(
     "This contact is not available" : "Овај контакт није доступан",
     "You have no permission to create a new circle" : "Немате дозволу да креирате нови круг",
     "This item is already shared with this circle" : "Ова ставка је већ подељена овом кругу",
-    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Кругови омогућава људима да креирају своје сопствене групе људи/колега/пријатеља.\nБило која друга апликација затим може за дељење да користи те групе људи (или „кругове”)."
+    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Кругови омогућава људима да креирају своје сопствене групе људи/колега/пријатеља.\nБило која друга апликација затим може за дељење да користи те групе људи (или „кругове”).",
+    "You added circle {member} as member to {circle}" : "Додали сте круг {member} као члана {circle}",
+    "{author} added circle {member} has been added as member to {circle}" : "{author} је додао круг {member} као члана {circle}"
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");
