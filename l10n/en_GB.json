@@ -211,6 +211,8 @@
     "This contact is not available" : "This contact is not available",
     "You have no permission to create a new circle" : "You have no permission to create a new circle",
     "This item is already shared with this circle" : "This item is already shared with this circle",
-    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose."
+    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose.",
+    "You added circle {member} as member to {circle}" : "You added circle {member} as member to {circle}",
+    "{author} added circle {member} has been added as member to {circle}" : "{author} added circle {member} has been added as member to {circle}"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

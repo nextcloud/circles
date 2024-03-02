@@ -213,6 +213,8 @@ OC.L10N.register(
     "This contact is not available" : "Dieser Kontakt ist nicht verfügbar",
     "You have no permission to create a new circle" : "Sie haben nicht die Berechtigung einen neuen Kreis zu erstellen",
     "This item is already shared with this circle" : "Dieses Element wird bereits mit diesem Kreis geteilt",
-    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Mit Kreisen können Benutzer ihre eigenen Gruppen von Benutzern/Kollegen/Freunden erstellen.\nDiese Benutzergruppen (oder \"Kreise\") können dann von jeder anderen App zum Zweck der gemeinsamen Nutzung verwendet werden."
+    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Mit Kreisen können Benutzer ihre eigenen Gruppen von Benutzern/Kollegen/Freunden erstellen.\nDiese Benutzergruppen (oder \"Kreise\") können dann von jeder anderen App zum Zweck der gemeinsamen Nutzung verwendet werden.",
+    "You added circle {member} as member to {circle}" : "Sie haben den Kreis {member} als Mitglied zu {circle} hinzugefügt",
+    "{author} added circle {member} has been added as member to {circle}" : "{author} hat den Kreis {member} als Mitglied zu {circle} hinzugefügt"
 },
 "nplurals=2; plural=(n != 1);");
