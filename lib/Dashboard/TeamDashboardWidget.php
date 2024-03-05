@@ -29,6 +29,7 @@ use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
+use OCP\App\IAppManager;
 use OCP\Dashboard\IAPIWidgetV2;
 use OCP\Dashboard\IButtonWidget;
 use OCP\Dashboard\IConditionalWidget;
@@ -50,6 +51,7 @@ class TeamDashboardWidget implements IAPIWidgetV2, IIconWidget, IButtonWidget, I
 		private FederatedUserService $federatedUserService,
 		private ConfigService $configService,
 		private IUserSession $userSession,
+		private IAppManager $appManager,
 		private LoggerInterface $logger,
 	) {
 	}
@@ -155,6 +157,7 @@ class TeamDashboardWidget implements IAPIWidgetV2, IIconWidget, IButtonWidget, I
 	}
 
 	public function isEnabled(): bool {
-		return $this->configService->getAppValueBool(ConfigService::FRONTEND_ENABLED);
+		return $this->appManager->isEnabledForUser('contacts') &&
+			$this->configService->getAppValueBool(ConfigService::FRONTEND_ENABLED);
 	}
 }
