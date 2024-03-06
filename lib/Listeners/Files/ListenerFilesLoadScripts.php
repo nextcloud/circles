@@ -45,8 +45,9 @@ class ListenerFilesLoadScripts implements IEventListener {
 			return;
 		}
 
-		Util::addScript('circles', 'files/circles.files.app');
-		Util::addScript('circles', 'files/circles.files.list');
+		// FIXME: Those scripts need to be migrated to the new files API first
+		// Util::addScript('circles', 'files/circles.files.app');
+		// Util::addScript('circles', 'files/circles.files.list');
 		Util::addStyle('circles', 'files/circles.filelist');
 	}
 }
