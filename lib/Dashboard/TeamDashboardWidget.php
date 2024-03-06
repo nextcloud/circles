@@ -147,7 +147,7 @@ class TeamDashboardWidget implements IAPIWidgetV2, IIconWidget, IButtonWidget, I
 	}
 
 	public function getIconUrl(): string {
-		return $this->urlGenerator->getAbsoluteURL($this->urlGenerator->imagePath('circles', 'app.svg'));
+		return $this->urlGenerator->getAbsoluteURL($this->urlGenerator->imagePath('circles', 'circles.svg'));
 	}
 
 	private function getTeamPage(): string {
