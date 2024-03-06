@@ -110,6 +110,8 @@
     "Building Local Database" : "Lokale Datenbank wird erstellt",
     "Testing Basic Circle Creation" : "Testen der grundlegenden Kreiserstellung",
     "Adding local users and moderators" : "Lokale Benutzer und Moderatoren werden hinzugefügt",
+    "Show all teams" : "Alle Teams anzeigen",
+    "Create a new team" : "Ein neues Team erstellen",
     "This feature is not available for personal circles" : "Diese Funktion steht für persönliche Kreise nicht zur Verfügung",
     "The team is not federated" : "Das Team ist nicht federiert",
     "You cannot join this team" : "Du kannst diesem Team nicht beitreten",
