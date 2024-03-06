@@ -110,6 +110,8 @@
     "Building Local Database" : "Bygger lokal database",
     "Testing Basic Circle Creation" : "Tester opprettelse av grunnleggende sirkel",
     "Adding local users and moderators" : "Legger til lokale brukere og moderatorer",
+    "Show all teams" : "Vis alle lag",
+    "Create a new team" : "Opprett et nytt lag",
     "This feature is not available for personal circles" : "Funksjonen er ikke tilgjengelig for personlige sirkler",
     "The team is not federated" : "Laget er ikke sammenknyttet",
     "You cannot join this team" : "Du kan ikke bli med i dette laget",

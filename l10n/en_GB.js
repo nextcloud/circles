@@ -112,6 +112,8 @@ OC.L10N.register(
     "Building Local Database" : "Building Local Database",
     "Testing Basic Circle Creation" : "Testing Basic Circle Creation",
     "Adding local users and moderators" : "Adding local users and moderators",
+    "Show all teams" : "Show all teams",
+    "Create a new team" : "Create a new team",
     "This feature is not available for personal circles" : "This feature is not available for personal circles",
     "The team is not federated" : "The team is not federated",
     "You cannot join this team" : "You cannot join this team",
