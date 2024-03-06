@@ -110,6 +110,8 @@
     "Building Local Database" : "正在建構本地資料庫",
     "Testing Basic Circle Creation" : "正在測試基本小圈圈建立",
     "Adding local users and moderators" : "正在新增本地使用者與主持人",
+    "Show all teams" : "顯示所有團隊",
+    "Create a new team" : "建立新團隊",
     "This feature is not available for personal circles" : "此功能不適用於私人小圈圈",
     "The team is not federated" : "團隊未加入聯盟",
     "You cannot join this team" : "您無法加入此團隊",
