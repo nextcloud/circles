@@ -69,19 +69,19 @@ Those groups of people (or "circles") can then be used by any other app for shar
 		<!--		<command>OCA\Circles\Command\SyncContact</command>-->
 	</commands>
 
-	<!--	<activity>-->
-	<!--		<settings>-->
-	<!--			<setting>OCA\Circles\Activity\SettingAsNonMember</setting>-->
-	<!--			<setting>OCA\Circles\Activity\SettingAsMember</setting>-->
-	<!--			<setting>OCA\Circles\Activity\SettingAsModerator</setting>-->
-	<!--		</settings>-->
-	<!--		<filters>-->
-	<!--			<filter>OCA\Circles\Activity\Filter</filter>-->
-	<!--		</filters>-->
-	<!--		<providers>-->
-	<!--			<provider>OCA\Circles\Activity\Provider</provider>-->
-	<!--		</providers>-->
-	<!--	</activity>-->
+		<activity>
+			<settings>
+				<setting>OCA\Circles\Activity\SettingAsNonMember</setting>
+				<setting>OCA\Circles\Activity\SettingAsMember</setting>
+				<setting>OCA\Circles\Activity\SettingAsModerator</setting>
+			</settings>
+			<filters>
+				<filter>OCA\Circles\Activity\Filter</filter>
+			</filters>
+			<providers>
+				<provider>OCA\Circles\Activity\Provider</provider>
+			</providers>
+		</activity>
 
 	<collaboration>
 		<plugins>

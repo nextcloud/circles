@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -34,9 +33,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use OCA\Circles\Tools\Model\SimpleDataStore;
-use OCA\Circles\Tools\Traits\TNCLogger;
-use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Events\AddingCircleMemberEvent;
 use OCA\Circles\Events\CircleCreatedEvent;
 use OCA\Circles\Events\CircleDestroyedEvent;
@@ -62,30 +58,14 @@ use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Membership;
 use OCA\Circles\Model\Mount;
 use OCA\Circles\Model\ShareWrapper;
+use OCA\Circles\Tools\Model\SimpleDataStore;
 use OCP\EventDispatcher\IEventDispatcher;
 
-/**
- * Class EventService
- *
- * @package OCA\Circles\Service
- */
 class EventService {
-	use TNCLogger;
-
-
-	/** @var IEventDispatcher */
-	private $eventDispatcher;
-
-
-	/**
-	 * EventService constructor.
-	 *
-	 * @param IEventDispatcher $eventDispatcher
-	 */
-	public function __construct(IEventDispatcher $eventDispatcher) {
-		$this->eventDispatcher = $eventDispatcher;
-
-		$this->setup('app', Application::APP_ID);
+	public function __construct(
+		private IEventDispatcher $eventDispatcher,
+		private ActivityService $activityService
+	) {
 	}
 
 
@@ -104,6 +84,7 @@ class EventService {
 	public function circleCreated(FederatedEvent $federatedEvent, array $results): void {
 		$event = new CircleCreatedEvent($federatedEvent, $results);
 		$this->eventDispatcher->dispatchTyped($event);
+		$this->activityService->onCircleCreation($event->getCircle());
 	}
 
 
@@ -124,13 +105,13 @@ class EventService {
 		$this->eventDispatcher->dispatchTyped($event);
 	}
 
-
 	/**
 	 * @param FederatedEvent $federatedEvent
 	 */
 	public function circleDestroying(FederatedEvent $federatedEvent): void {
 		$event = new DestroyingCircleEvent($federatedEvent);
 		$this->eventDispatcher->dispatchTyped($event);
+		$this->activityService->onCircleDestruction($event->getCircle());
 	}
 
 	/**
@@ -156,8 +137,9 @@ class EventService {
 	 */
 	public function memberAdding(FederatedEvent $federatedEvent): void {
 		$event = new AddingCircleMemberEvent($federatedEvent);
-		$event->setType(CircleGenericEvent::INVITED);
+		$event->setType(CircleGenericEvent::ADDED);
 		$this->eventDispatcher->dispatchTyped($event);
+		$this->activityService->onMemberNew($event->getCircle(), $event->getMember(), CircleGenericEvent::ADDED);
 	}
 
 	/**
@@ -166,7 +148,7 @@ class EventService {
 	 */
 	public function memberAdded(FederatedEvent $federatedEvent, array $results): void {
 		$event = new CircleMemberAddedEvent($federatedEvent, $results);
-		$event->setType(CircleGenericEvent::INVITED);
+		$event->setType(CircleGenericEvent::ADDED);
 		$this->eventDispatcher->dispatchTyped($event);
 	}
 
@@ -178,6 +160,7 @@ class EventService {
 		$event = new RequestingCircleMemberEvent($federatedEvent);
 		$event->setType(CircleGenericEvent::INVITED);
 		$this->eventDispatcher->dispatchTyped($event);
+		$this->activityService->onMemberNew($event->getCircle(), $event->getMember(), CircleGenericEvent::INVITED);
 	}
 
 	/**
@@ -198,6 +181,7 @@ class EventService {
 		$event = new RequestingCircleMemberEvent($federatedEvent);
 		$event->setType(CircleGenericEvent::REQUESTED);
 		$this->eventDispatcher->dispatchTyped($event);
+		$this->activityService->onMemberNew($event->getCircle(), $event->getMember(), CircleGenericEvent::REQUESTED);
 	}
 
 	/**
@@ -218,6 +202,7 @@ class EventService {
 		$event = new AddingCircleMemberEvent($federatedEvent);
 		$event->setType(CircleGenericEvent::JOINED);
 		$this->eventDispatcher->dispatchTyped($event);
+		$this->activityService->onMemberNew($event->getCircle(), $event->getMember(), CircleGenericEvent::JOINED);
 	}
 
 	/**
@@ -239,6 +224,7 @@ class EventService {
 		$event->setLevel($federatedEvent->getData()->gInt('level'));
 		$event->setType(CircleGenericEvent::LEVEL);
 		$this->eventDispatcher->dispatchTyped($event);
+		$this->activityService->onMemberLevel($event->getCircle(), $event->getMember(), $event->getLevel());
 	}
 
 	/**
@@ -292,6 +278,7 @@ class EventService {
 		$event = new CircleMemberRemovedEvent($federatedEvent, $results);
 		$event->setType(CircleGenericEvent::REMOVED);
 		$this->eventDispatcher->dispatchTyped($event);
+		$this->activityService->onMemberRemove($event->getCircle(), $event->getMember(), CircleGenericEvent::REMOVED);
 	}
 
 
@@ -312,6 +299,7 @@ class EventService {
 		$event = new CircleMemberRemovedEvent($federatedEvent, $results);
 		$event->setType(CircleGenericEvent::LEFT);
 		$this->eventDispatcher->dispatchTyped($event);
+		$this->activityService->onMemberRemove($event->getCircle(), $event->getMember(), CircleGenericEvent::LEFT);
 	}
 
 
@@ -343,6 +331,7 @@ class EventService {
 	public function fileShareCreated(FederatedEvent $federatedEvent, array $result): void {
 		$event = new FileShareCreatedEvent($federatedEvent, $result);
 		$this->eventDispatcher->dispatchTyped($event);
+		$this->activityService->onShareNew($event->getCircle(), $event->getFederatedEvent());
 	}
 
 
@@ -354,7 +343,6 @@ class EventService {
 		$this->eventDispatcher->dispatchTyped($event);
 	}
 
-
 	/**
 	 * @param Membership[] $deprecated
 	 */
@@ -363,25 +351,11 @@ class EventService {
 		$this->eventDispatcher->dispatchTyped($event);
 	}
 
-
 	/**
 	 * @param ShareWrapper $wrappedShare
 	 */
 	public function localShareCreated(ShareWrapper $wrappedShare): void {
 	}
-
-	/**
-	 * @param ShareWrapper $wrappedShare
-	 * @param Mount $mount
-	 */
-	public function federatedShareCreated(ShareWrapper $wrappedShare, Mount $mount): void {
-//		Circles::shareToCircle(
-//			$circle->getUniqueId(), 'files', '',
-//			['id' => $share->getId(), 'share' => $this->shareObjectToArray($share)],
-//			'\OCA\Circles\Circles\FileSharingBroadcaster'
-//		);
-	}
-
 
 	/**
 	 * @param ShareWrapper $wrappedShare
@@ -394,14 +368,4 @@ class EventService {
 	 */
 	public function federatedShareDeleted(ShareWrapper $wrappedShare): void {
 	}
-
-
-
-//	/**
-//	 * @param FederatedEvent $federatedEvent
-//	 */
-//	public function onSharedItemsSyncRequested(FederatedEvent $federatedEvent) {
-//		$event = new SharedItemsSyncRequestedEvent($federatedEvent);
-//		$this->eventDispatcher->dispatchTyped($event);
-//	}
 }
