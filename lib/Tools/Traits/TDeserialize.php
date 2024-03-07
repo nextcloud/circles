@@ -63,10 +63,6 @@ trait TDeserialize {
 	 * @throws InvalidItemException
 	 */
 	public function deserialize(array $data, string $class): IDeserializable {
-		if ($class instanceof IDeserializable) {
-			throw new InvalidItemException(get_class($class) . ' does not implement IDeserializable');
-		}
-
 		/** @var IDeserializable $item */
 		$item = new $class;
 		$item->import($data);

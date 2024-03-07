@@ -31,9 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
-use OCA\Circles\Tools\Traits\TDeserialize;
-use OCA\Circles\Tools\Traits\TNCLogger;
-use OCA\Circles\Tools\Traits\TStringTools;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedItemBadRequestException;
@@ -73,6 +70,9 @@ use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\Service\RemoteStreamService;
 use OCA\Circles\StatusCode;
+use OCA\Circles\Tools\Traits\TDeserialize;
+use OCA\Circles\Tools\Traits\TNCLogger;
+use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\IUserManager;
 
 /**
@@ -87,73 +87,20 @@ class SingleMemberAdd implements
 	IFederatedItemMemberRequired,
 	IFederatedItemMemberCheckNotRequired {
 	use TDeserialize;
-
-
 	use TStringTools;
 	use TNCLogger;
 
-
-	/** @var IUserManager */
-	protected $userManager;
-
-	/** @var MemberRequest */
-	protected $memberRequest;
-
-	/** @var FederatedUserService */
-	protected $federatedUserService;
-
-	/** @var RemoteStreamService */
-	protected $remoteStreamService;
-
-	/** @var CircleService */
-	protected $circleService;
-
-	/** @var MemberService */
-	protected $memberService;
-
-	/** @var MembershipService */
-	protected $membershipService;
-
-	/** @var EventService */
-	protected $eventService;
-
-	/** @var ConfigService */
-	protected $configService;
-
-
-	/**
-	 * SingleMemberAdd constructor.
-	 *
-	 * @param IUserManager $userManager
-	 * @param MemberRequest $memberRequest
-	 * @param FederatedUserService $federatedUserService
-	 * @param RemoteStreamService $remoteStreamService
-	 * @param CircleService $circleService
-	 * @param MemberService $memberService
-	 * @param MembershipService $membershipService
-	 * @param EventService $eventService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
-		IUserManager $userManager,
-		MemberRequest $memberRequest,
-		FederatedUserService $federatedUserService,
-		RemoteStreamService $remoteStreamService,
-		CircleService $circleService,
-		MemberService $memberService,
-		MembershipService $membershipService,
-		EventService $eventService,
-		ConfigService $configService
+		protected IUserManager $userManager,
+		protected MemberRequest $memberRequest,
+		protected FederatedUserService $federatedUserService,
+		protected RemoteStreamService $remoteStreamService,
+		protected CircleService $circleService,
+		protected MemberService $memberService,
+		protected MembershipService $membershipService,
+		protected EventService $eventService,
+		protected ConfigService $configService
 	) {
-		$this->userManager = $userManager;
-		$this->memberRequest = $memberRequest;
-		$this->federatedUserService = $federatedUserService;
-		$this->remoteStreamService = $remoteStreamService;
-		$this->circleService = $circleService;
-		$this->memberService = $memberService;
-		$this->membershipService = $membershipService;
-		$this->eventService = $eventService;
-		$this->configService = $configService;
 	}
 
 
@@ -207,27 +154,6 @@ class SingleMemberAdd implements
 		}
 
 		$this->membershipService->updatePopulation($event->getCircle());
-
-//		//
-//		// TODO: verifiez comment se passe le cached name sur un member_add
-//		//
-//		$cachedName = $member->getCachedName();
-//		$password = $event->getData()
-//						  ->g('password');
-//
-//		$shares = $this->generateUnknownSharesLinks($circle, $member, $password);
-//		$result = [
-//			'unknownShares' => $shares,
-//			'cachedName'    => $cachedName
-//		];
-//
-//		if ($member->getType() === DeprecatedMember::TYPE_CONTACT
-//			&& $this->configService->isLocalInstance($member->getInstance())) {
-//			$result['contact'] = $this->miscService->getInfosFromContact($member);
-//		}
-//
-//		$event->setResult(new SimpleDataStore($result));
-//		$this->eventsService->onMemberNew($circle, $member);
 	}
 
 
@@ -237,54 +163,12 @@ class SingleMemberAdd implements
 	 */
 	public function result(FederatedEvent $event, array $results): void {
 		$member = $event->getMember();
+		\OC::$server->getLogger()->log(3, '>> ' . $member->getStatus());
 		if ($member->getStatus() === Member::STATUS_INVITED) {
 			$this->eventService->memberInvited($event, $results);
 		} else {
 			$this->eventService->memberAdded($event, $results);
 		}
-
-//		$password = $cachedName = '';
-//		$circle = $member = null;
-//		$links = [];
-//		$recipients = [];
-//		foreach ($events as $event) {
-//			$data = $event->getData();
-//			if ($data->gBool('passwordByMail') !== false) {
-//				$password = $data->g('password');
-//			}
-//			$circle = $event->getDeprecatedCircle();
-//			$member = $event->getMember();
-//			$result = $event->getResult();
-//			if ($result->g('cachedName') !== '') {
-//				$cachedName = $result->g('cachedName');
-//			}
-//
-//			$links = array_merge($links, $result->gArray('unknownShares'));
-//			$contact = $result->gArray('contact');
-//			if (!empty($contact)) {
-//				$recipients = $contact['emails'];
-//			}
-//		}
-//
-//		if (empty($links) || $circle === null || $member === null) {
-//			return;
-//		}
-//
-//		if ($cachedName !== '') {
-//			$member->setCachedName($cachedName);
-//			$this->membersService->updateMember($member);
-//		}
-//
-//		if ($member->getType() === DeprecatedMember::TYPE_MAIL
-//			|| $member->getType() === DeprecatedMember::TYPE_CONTACT) {
-//			if ($member->getType() === DeprecatedMember::TYPE_MAIL) {
-//				$recipients = [$member->getUserId()];
-//			}
-//
-//			foreach ($recipients as $recipient) {
-//				$this->memberIsMailbox($circle, $recipient, $links, $password);
-//			}
-//		}
 	}
 
 
