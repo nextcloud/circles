@@ -60,7 +60,7 @@ class FileSharingTeamResourceProvider implements ITeamResourceProvider {
 
 		$shares = $this->shareByCircleProvider->getSharesToCircle($teamId);
 		usort($shares, function ($a, $b) {
-			return ($b->getItemType() === 'folder') - ($a->getItemType() === 'folder');
+			return (int)($b->getItemType() === 'folder') - (int)($a->getItemType() === 'folder');
 		});
 		return array_map(function (ShareWrapper $shareWrapper) {
 			$isFolder = $shareWrapper->getItemType() === 'folder';
