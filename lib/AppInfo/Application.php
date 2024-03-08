@@ -46,6 +46,7 @@ use OCA\Circles\Events\Files\PreparingFileShareEvent;
 use OCA\Circles\Events\PreparingCircleMemberEvent;
 use OCA\Circles\Events\RemovingCircleMemberEvent;
 use OCA\Circles\Events\RequestingCircleMemberEvent;
+use OCA\Circles\FileSharingTeamResourceProvider;
 use OCA\Circles\Handlers\WebfingerHandler;
 use OCA\Circles\Listeners\AccountUpdated;
 use OCA\Circles\Listeners\Files\AddingMemberSendMail as ListenerFilesAddingMemberSendMail;
@@ -140,6 +141,7 @@ class Application extends App implements IBootstrap {
 		$context->registerWellKnownHandler(WebfingerHandler::class);
 
 		$context->registerDashboardWidget(TeamDashboardWidget::class);
+		$context->registerTeamResourceProvider(FileSharingTeamResourceProvider::class);
 	}
 
 
