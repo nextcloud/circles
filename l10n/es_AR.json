@@ -30,7 +30,6 @@
     "Size" : "Tamaño",
     "Modified" : "Modificado",
     "Circles" : "Círculos",
-    "The link between {circle} and {remote} has been shutdown remotely" : "El enlace entre {círculo} y {remoto} se ha cerrado de forma remota",
     "You cannot join this circle" : "Usted no puede unirse a este cículo",
     "This member is the owner of the circle" : "Este miembro es el dueño del círculo",
     "Personal Circle" : "Círculo Personal",
