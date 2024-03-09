@@ -8,6 +8,7 @@ OC.L10N.register(
     "Federated" : "Federated",
     "Admin" : "﻿ನಿರ್ವಹಕ",
     "Owner" : "Owner",
+    "Files" : "﻿ಕಡತಗಳು",
     "Name" : "﻿ಹೆಸರು",
     "Size" : "﻿ ಗಾತ್ರ",
     "Modified" : "﻿ಬದಲಾಯಿಸಿದ"

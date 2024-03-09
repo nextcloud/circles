@@ -8,6 +8,7 @@ OC.L10N.register(
     "Member" : "Member",
     "Admin" : "Admin",
     "Owner" : "Owner",
+    "Files" : "Files",
     "No files in here" : "No files in here",
     "No entries found in this folder" : "Ushbu papkada hech qanday yozuv topilmadi",
     "Name" : "Name",

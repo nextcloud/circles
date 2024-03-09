@@ -88,6 +88,7 @@ OC.L10N.register(
     "Building Local Database" : "Creschende sa base de datos locale",
     "Testing Basic Circle Creation" : " Proa de creatzione de giru de base",
     "Adding local users and moderators" : "Agiunta de utentes locales e persones chi moderent",
+    "Files" : "Archìvios",
     "This feature is not available for personal circles" : "Sa funtzionalidade no est a disponimentu pro giros personales",
     "This member is not a moderator" : "Custa persone no est chie mòderat",
     "Insufficient privileges" : "Permissos non sufitzientes",

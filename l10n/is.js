@@ -91,6 +91,7 @@ OC.L10N.register(
     "Building Local Database" : "Byggi staðværan gagnagrunn",
     "Testing Basic Circle Creation" : "Prófa einfalda gerð hrings",
     "Adding local users and moderators" : "Bæti við notendum og umsjónarmönnum",
+    "Files" : "Skráaforrit",
     "This feature is not available for personal circles" : "Þessi eiginleiki er ekki tiltækur fyrir persónulega hringi",
     "This member is not a moderator" : "Þessi meðlimur er ekki umsjónarmaður",
     "Insufficient privileges" : "Ekki næg réttindi",

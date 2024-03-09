@@ -1,6 +1,7 @@
 OC.L10N.register(
     "circles",
     {
+    "Teams" : "Tímy",
     "You deleted {circle}" : "Vymazali ste {circle}",
     "{author} deleted {circle}" : "{author} zmazal {circle}",
     "You joined {circle}" : "Pripojili ste sa ku kruhu {circle}",
@@ -89,6 +90,7 @@ OC.L10N.register(
     "Building Local Database" : "Vytváram Lokálnu Databázu",
     "Testing Basic Circle Creation" : "Testujem základné pridávanie Kruhov",
     "Adding local users and moderators" : "Pridávam lokálnych užívateľov a moderátorov",
+    "Files" : "Súbory",
     "This feature is not available for personal circles" : "Táto funkcia nie je k dispozícii pre osobné kruhy",
     "This member is not a moderator" : "Tento člen nie je moderátor",
     "Insufficient privileges" : "Nedostatočné oprávnenia",

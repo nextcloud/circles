@@ -65,6 +65,7 @@ OC.L10N.register(
     "Click the button below to open it." : "Haz click en el botón para abrirlo.",
     "Open »%s«" : "Abrir »%s«",
     "Password to access files" : "Contraseña para acceder a los archivos",
+    "Files" : "Archivo",
     "This feature is not available for personal circles" : "Esta característica no está disponible para círculos personales",
     "This member is not a moderator" : "Este miembro no es un moderador",
     "Insufficient privileges" : "Privilegios insuficientes",
