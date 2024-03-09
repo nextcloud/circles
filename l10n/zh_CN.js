@@ -91,6 +91,7 @@ OC.L10N.register(
     "Building Local Database" : "正在构建本地数据库",
     "Testing Basic Circle Creation" : "正在测试基础 Circle 创建",
     "Adding local users and moderators" : "添加本地用户和管理员",
+    "Files" : "文件",
     "This feature is not available for personal circles" : "此功能不适用于个人圈子",
     "This member is not a moderator" : "此成员不是管理员",
     "Insufficient privileges" : "权限不足",

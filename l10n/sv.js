@@ -99,6 +99,7 @@ OC.L10N.register(
     "Building Local Database" : "Bygger lokal databas",
     "Testing Basic Circle Creation" : "Testar grundläggande Cirkel-skapande",
     "Adding local users and moderators" : "Lägger till lokala användare och moderatorer ",
+    "Files" : "Filer",
     "This feature is not available for personal circles" : "Funktionen är inte tillgänglig för personliga cirklar",
     "This member is not a moderator" : "Medlemmen är inte en moderator",
     "Insufficient privileges" : "Otillräckliga privilegier",

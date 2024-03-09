@@ -114,6 +114,7 @@ OC.L10N.register(
     "Adding local users and moderators" : "添加近端用戶和主持人",
     "Show all teams" : "顯示所有團隊",
     "Create a new team" : "創建新團隊",
+    "Files" : "檔案",
     "This feature is not available for personal circles" : "此功能不適用於個人圈子",
     "The team is not federated" : "團隊沒有聯合",
     "You cannot join this team" : "您不能加入此團隊",

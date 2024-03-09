@@ -70,6 +70,7 @@
     "Password to access files shared to you by %1$s" : "Salasana jäsenen %1$s kanssasi jakamiin tiedostoihin",
     "Password to access files" : "Salasana tiedostoihin",
     "%s shared multiple files with you." : "%s jakoi useita tiedostoja kanssasi.",
+    "Files" : "Tiedostot",
     "This feature is not available for personal circles" : "Tämä ominaisuus ei ole henkilökohtaisten piirien käytössä",
     "This member is not a moderator" : "Tämä jäsen ei ole moderaattori",
     "Insufficient privileges" : "Riittämättömät oikeudet",

@@ -20,6 +20,7 @@ OC.L10N.register(
     "Password to access »%s«" : "Contraseña para acceder  »%s«",
     "Click the button below to open it." : "Haga click en el botón de abajo para abrirlo.",
     "Open »%s«" : "Abrir »%s«",
+    "Files" : "Archivo",
     "This member is not a moderator" : "Este miembro no es un moderador",
     "This member does not exist" : "Este miembro no existe",
     "You are already a member of this circle" : "Usted ya es un miembro de este círculo",

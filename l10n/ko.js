@@ -79,6 +79,7 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s님이 여러 파일을 공유했습니다.",
     "Testing Basic Circle Creation" : "기본 서클 생성 테스트 중",
     "Adding local users and moderators" : "로컬 사용자와 중재자 추가 중",
+    "Files" : "파일",
     "This feature is not available for personal circles" : "이 기능은 개인 서클에서 사용할 수 없음",
     "This member is not a moderator" : "이 회원은 중재자가 아님",
     "Insufficient privileges" : "권한이 부족함",

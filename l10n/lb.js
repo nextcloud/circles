@@ -8,6 +8,7 @@ OC.L10N.register(
     "Federated" : "Federated",
     "Admin" : "Admin",
     "Owner" : "Owner",
+    "Files" : "Dateien",
     "No files in here" : "Keng Dokumenter hei",
     "No entries found in this folder" : "Keng Elementer an dësem Dossier fonnt",
     "Name" : "Numm",
