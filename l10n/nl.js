@@ -91,6 +91,7 @@ OC.L10N.register(
     "Building Local Database" : "Aanmaken lokale database",
     "Testing Basic Circle Creation" : "Testen basis kringcreatie",
     "Adding local users and moderators" : "Toevoegen lokale gebruikers en moderatoren",
+    "Files" : "Bestanden",
     "This feature is not available for personal circles" : "Deze functie is niet beschikbaar voor persoonlijke kringen",
     "This member is not a moderator" : "Dit lid is geen moderator",
     "Insufficient privileges" : "Onvoldoende rechten",

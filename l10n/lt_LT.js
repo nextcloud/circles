@@ -69,6 +69,7 @@ OC.L10N.register(
     "Password to access files shared to you by %1$s" : "Slaptažodis, skirtas pasiekti failus, kuriuos su jumis bendrino %1$s",
     "Password to access files" : "Prieigos prie failų slaptažodis",
     "%s shared multiple files with you." : "%s bendrino kelis failus su Jumis.",
+    "Files" : "Failai",
     "This feature is not available for personal circles" : "Ši ypatybė nėra prieinama asmeniniams ratams",
     "This member is not a moderator" : "Šis narys nėra moderatorius",
     "Insufficient privileges" : "Nepakanka teisių",

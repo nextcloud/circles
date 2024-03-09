@@ -114,6 +114,7 @@ OC.L10N.register(
     "Adding local users and moderators" : "Додавање локалних корисника и модератора",
     "Show all teams" : "Прикажи све тимове",
     "Create a new team" : "Креирај нови тим",
+    "Files" : "Фајлови",
     "This feature is not available for personal circles" : "Ова функционалност није доступна за личне кругове",
     "The team is not federated" : "Круг није федерисан",
     "You cannot join this team" : "Не можете да се придружите овом тиму",

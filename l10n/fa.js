@@ -91,6 +91,7 @@ OC.L10N.register(
     "Building Local Database" : "Building Local Database",
     "Testing Basic Circle Creation" : "Testing Basic Circle Creation",
     "Adding local users and moderators" : "Adding local users and moderators",
+    "Files" : "پرونده‌ها",
     "This feature is not available for personal circles" : "This feature is not available for personal circles",
     "This member is not a moderator" : "This member is not a moderator",
     "Insufficient privileges" : "Insufficient privileges",

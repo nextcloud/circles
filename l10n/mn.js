@@ -15,6 +15,7 @@ OC.L10N.register(
     "Admin" : "Админ",
     "Owner" : "Эзэмшигч",
     "Open »%s«" : "»%s« нээх",
+    "Files" : "Файлууд",
     "This member is not a moderator" : "Энэ гишүүн нь зохицуулагч биш",
     "This member does not exist" : "ийм гишүүн байхгүй байна",
     "You are already a member of this circle" : "та аль хэдийн энэ тойргийн гишүүн болсон",

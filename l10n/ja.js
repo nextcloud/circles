@@ -91,6 +91,7 @@ OC.L10N.register(
     "Building Local Database" : "ローカルデータベースの構築",
     "Testing Basic Circle Creation" : "基本的なサークル作成のテスト",
     "Adding local users and moderators" : "ローカルユーザーとモデレーターを追加する",
+    "Files" : "ファイル",
     "This feature is not available for personal circles" : "この機能は個人のサークルでは使用できません",
     "This member is not a moderator" : "このメンバーはモデレーターではありません",
     "Insufficient privileges" : "権限が不十分です",
