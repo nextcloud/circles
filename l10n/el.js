@@ -89,6 +89,7 @@ OC.L10N.register(
     "Building Local Database" : "Δημιουργία Τοπικής Βάσης Δεδομένων",
     "Testing Basic Circle Creation" : "Δοκιμή Βασικής Δημιουργίας Κύκλου",
     "Adding local users and moderators" : "Προσθήκη τοπικών χρηστών και συντονιστών",
+    "Files" : "Αρχεία",
     "This feature is not available for personal circles" : "Αυτή η επιλογή δεν είναι διαθέσιμη για προσωπικούς κύκλους",
     "This member is not a moderator" : "Αυτό το μέλος δεν είναι επιμελητής",
     "Insufficient privileges" : "Μη επαρκή δικαιώματα",

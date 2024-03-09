@@ -111,6 +111,7 @@ OC.L10N.register(
     "Adding local users and moderators" : "Ajout d'utilisateurs locaux et de modérateurs",
     "Show all teams" : "Afficher toutes les équipes",
     "Create a new team" : "Créer une nouvelle équipe",
+    "Files" : "Fichiers",
     "This feature is not available for personal circles" : "Cette fonctionnalité n'est pas disponible pour les cercles personnels",
     "The team is not federated" : "L'équipe n'est pas fédérée",
     "You cannot join this team" : "Vous ne pouvez pas rejoindre cette équipe",

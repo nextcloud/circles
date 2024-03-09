@@ -60,6 +60,7 @@ OC.L10N.register(
     "Building Local Database" : "מסד הנתונים המקומי נבנה",
     "Testing Basic Circle Creation" : "נבדקת יצירת מעגל בסיסי",
     "Adding local users and moderators" : "הוספת משתמשים ומפקחים מקומיים",
+    "Files" : "קבצים",
     "This feature is not available for personal circles" : "תכונה זו אינה זמינה למעגלים אישיים",
     "Insufficient privileges" : "אין מספיק הרשאות",
     "This member does not exist" : "חבר זה אינו קיים",

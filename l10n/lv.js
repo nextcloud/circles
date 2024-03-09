@@ -16,6 +16,7 @@ OC.L10N.register(
     "Admin" : "Admin",
     "Owner" : "Īpašnieks",
     "Open »%s«" : "Atvērt »%s«",
+    "Files" : "Faili",
     "Accept" : "Akceptēt",
     "%s" : "%s",
     "No files in here" : "Šeit nav datņu",

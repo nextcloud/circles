@@ -26,6 +26,7 @@ OC.L10N.register(
     "%1$s via %2$s" : "%1$s преку %2$s",
     "Click the button below to open it." : "Кликнете на копчето подолу за да ја отворите.",
     "Open »%s«" : "Отвори »%s«",
+    "Files" : "Датотеки",
     "Accept" : "Прифати",
     "%s" : "%s",
     "No files in here" : "Тука нема датотеки",
