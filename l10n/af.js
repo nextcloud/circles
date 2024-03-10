@@ -11,6 +11,7 @@ OC.L10N.register(
     "Admin" : "Admin",
     "Owner" : "Eienaar",
     "Open »%s«" : "Open »%s«",
+    "Files" : "Lêer ",
     "Accept" : "Aanvaar",
     "No files in here" : "Geen lêers hier nie",
     "No entries found in this folder" : "Geen inskrwyings in hierdie gids gevind",
