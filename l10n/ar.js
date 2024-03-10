@@ -114,6 +114,7 @@ OC.L10N.register(
     "Adding local users and moderators" : "إضافة مُستخدَمين محلّيّين و مُنسِّقِين moderators",
     "Show all teams" : "عرض كل الفِرَق",
     "Create a new team" : "إنشاء فريق جديد",
+    "Files" : "الملفّات",
     "This feature is not available for personal circles" : "هذه الميزة غير مُتاحة في الدوائر الشخصية",
     "The team is not federated" : "الفريق ليس اتحاديّاً",
     "You cannot join this team" : "لا يمكنك الانضمام إلى هذا الفريق",

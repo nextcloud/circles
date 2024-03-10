@@ -91,6 +91,7 @@ OC.L10N.register(
     "Building Local Database" : "Изграждане на Локална База Данни",
     "Testing Basic Circle Creation" : "Тестване на създаването на основен кръг",
     "Adding local users and moderators" : "Добавяне на локални потребители и модератори",
+    "Files" : "Файлове",
     "This feature is not available for personal circles" : "Тази функция не е налична за лични кръгове",
     "This member is not a moderator" : "Този член не е модератор",
     "Insufficient privileges" : "Недостатъчни привилегии",

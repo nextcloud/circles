@@ -114,6 +114,7 @@ OC.L10N.register(
     "Adding local users and moderators" : "S'estan afegint usuaris i moderadors locals",
     "Show all teams" : "Mostra tots els equips",
     "Create a new team" : "Crea un equip nou",
+    "Files" : "Fitxers",
     "This feature is not available for personal circles" : "Aquesta característica no està disponible per als cercles personals",
     "The team is not federated" : "L'equip no està federat",
     "You cannot join this team" : "No us podeu unir a aquest equip",
