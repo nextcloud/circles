@@ -91,6 +91,7 @@ OC.L10N.register(
     "Fresh installation status" : "Estáu de la instalación nueva",
     "Building Local Database" : "Creando la base de datos llocal",
     "Testing Basic Circle Creation" : "Probando la creación d'un círculu básicu",
+    "Files" : "Ficheros",
     "This feature is not available for personal circles" : "Esta función nun ta disponible pa los círculos personales",
     "The team is not federated" : "L'equipu nun ta federáu",
     "You cannot join this team" : "Nun pues xunite a esti equipu",
