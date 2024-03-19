@@ -1,6 +1,12 @@
 OC.L10N.register(
     "circles",
     {
+    "Teams" : "团队",
+    "Teams' files" : "团队文件",
+    "Select team to filter by" : "选择要筛选的团队",
+    "No teams found" : "未找到任何团队",
+    "Please select teams to filter by" : "请选择要筛选的团队",
+    "No files found for the selected teams" : "没有找到所选团队的文件",
     "You deleted {circle}" : "您删除了 {circle}",
     "{author} deleted {circle}" : "{author} 已删除 {circle}",
     "You joined {circle}" : "您已经加入了 {circle}",
