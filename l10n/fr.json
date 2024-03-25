@@ -84,7 +84,7 @@
     "Admin" : "Administrateur",
     "Owner" : "Propriétaire",
     "%s shared »%s« with you." : "%s a partagé «%s» avec vous.",
-    "%s shared »%s« with \"%s\"." : "%s a partagé »%s« avec \"%s\".",
+    "%s shared »%s« with \"%s\"." : "%s a partagé »%s« avec « %s ».",
     "%s on %s" : "%s sur %s",
     "%1$s shared »%2$s« with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s a partagé »%2$s« avec vous.\nVous devriez déjà avoir reçu un e-mail avec un lien pour y accéder.\n",
     "%1$s shared »%2$s« with you. You should have already received a separate email with a link to access it." : "%1$s a partagé »%2$s« avec vous. Vous devriez déjà avoir reçu un e-mail avec un lien pour y accéder.",
@@ -98,7 +98,7 @@
     "%1$s shared multiple files with you. You should have already received a separate email with a link to access them." : "%1$sa partagé plusieurs fichiers avec vous. Vous devriez déjà avoir reçu un courrier avec un lien pour y accéder.",
     "Password to access files shared to you by %1$s" : "Mot de passe pour accéder aux fichiers partagés avec vous par %1$s",
     "Password to access files" : "Mot de passe pour accéder aux fichiers",
-    "%s shared multiple files with \"%s\"." : "%s a partagé plusieurs fichiers avec \"%s\".",
+    "%s shared multiple files with \"%s\"." : "%s a partagé plusieurs fichiers avec « %s ».",
     "%s shared multiple files with you." : "%s a partagé plusieurs fichiers avec vous.",
     "Boot up" : "Démarrage",
     "Nextcloud Initialization" : "Initialisation de Nexctcloud",
@@ -123,9 +123,9 @@
     "The account is already a member of this circle" : "Le compte est déjà membre de ce cercle",
     "The account has already been invited into this circle" : "Le compte a déjà été invité à participer à ce cercle",
     "%s (Team owned by %s)" : "%s (%s est propriétaire de l'équipe)",
-    "You are now a member of the Circle \"%2$s\"" : "Vous êtes maintenant membre du cercle \"%2$s\"",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "Vous avez été invité par %1$s dans le cercle \"%2$s\"",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s a demandé à être membre du cercle \"%2$s\"",
+    "You are now a member of the Circle \"%2$s\"" : "Vous êtes maintenant membre du cercle « %2$s »",
+    "You have been invited by %1$s into the Circle \"%2$s\"" : "Vous avez été invité par %1$s dans le cercle « %2$s »",
+    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s a demandé à être membre du cercle « %2$s »",
     "Accept" : "Accepter",
     "Refuse" : "Refuser",
     "Leave the circle" : "Quitter le cercle",
@@ -133,7 +133,7 @@
     "Personal team" : "Équipe personnelle",
     "%s owned by %s" : "%s appartenant à %s",
     "You have no permission to create a new team" : "Vous n'avez pas l'autorisation de créer une nouvelle équipe",
-    "%s shared a file with \"%s\"." : "%s a partagé un fichier avec \"%s\".",
+    "%s shared a file with \"%s\"." : "%s a partagé un fichier avec « %s ».",
     "%s shared a file with you." : "%s a partagé un fichier avec vous.",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s a partagé quelque chose avec vous\nVous devriez avoir déjà reçu un e-mail séparé avec un lien pour y accéder\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s a partagé quelque chose avec vous\nVous devriez avoir déjà reçu un e-mail séparé avec un lien pour y accéder",
@@ -188,6 +188,6 @@
     "This contact is not available" : "Ce contact n'est pas disponible",
     "You have no permission to create a new circle" : "Vous n'avez pas l'autorisation de créer un nouveau cercle",
     "This item is already shared with this circle" : "Cet item est déjà partagé avec ce cercle",
-    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "L'application \"Cercles\" permet aux utilisateurs de créer leurs propres groupes de personnes/collègues/amis\nCes groupes de gens (ou \"cercles\" peuvent alors être utilisés par toutes les autres applications à des fins de partage."
+    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "L’application « Cercles » permet aux utilisateurs de créer leurs propres groupes de personnes/collègues/amis\nCes groupes de gens (ou « cercles ») peuvent alors être utilisés par toutes les autres applications à des fins de partage."
 },"pluralForm" :"nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }
