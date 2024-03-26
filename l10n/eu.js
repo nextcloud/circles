@@ -1,6 +1,10 @@
 OC.L10N.register(
     "circles",
     {
+    "Teams" : "Taldeak",
+    "Teams' files" : "Taldeen fitxategiak",
+    "Select team to filter by" : "Hautatu iragazteko taldea",
+    "No teams found" : "Ez da talderik aurkitu",
     "You deleted {circle}" : "{circle} ezabatu duzu",
     "{author} deleted {circle}" : "{author}(e)k {circle} ezabatu du",
     "You joined {circle}" : "{circle} zirkuluan sartu zara",
@@ -91,6 +95,8 @@ OC.L10N.register(
     "Building Local Database" : "Datu-base lokala eraikitzen",
     "Testing Basic Circle Creation" : "Oinarrizko zirkulu sorrera probatzen",
     "Adding local users and moderators" : "Erabiltzaile eta moderatzaile lokalak gehitzen",
+    "Show all teams" : "Erakutsi talde guztiak",
+    "Create a new team" : "Sortu talde berri bat",
     "Files" : "Fitxategiak",
     "This feature is not available for personal circles" : "Ezaugarri hau ez da existitzen zirkulu pertsonaletarako",
     "This member is not a moderator" : "Kide hau ez da moderatzailea",
@@ -108,6 +114,7 @@ OC.L10N.register(
     "Refuse" : "Ukatu",
     "Leave the circle" : "Utzi zirkulua",
     "%s" : "%s",
+    "Personal team" : "Talde pertsonala",
     "%s owned by %s" : "%s jabea: %s",
     "%s shared a file with \"%s\"." : "%s fitxategi bat partekatu du \"%s\"(r)ekin.",
     "%s shared a file with you." : "%s zurekin fitxategi bat partekatu du.",
