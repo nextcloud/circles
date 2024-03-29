@@ -169,8 +169,6 @@ OC.L10N.register(
     "Password Protected" : "密碼保護",
     "Circle Invite" : "小圈圈邀請",
     "Email Address" : "電子郵件地址",
-    "Initialisation Nextcloud" : "初始化 Nextcloud",
-    "Initialisation Circles App" : "初始化小圈圈應用程式",
     "Circle not found" : "找不到小圈圈",
     "Circle not found " : "找不到小圈圈",
     "This account is already a member of the circle" : "此帳號已是小圈圈的成員",

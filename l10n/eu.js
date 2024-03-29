@@ -143,8 +143,6 @@ OC.L10N.register(
     "Password Protected" : "Pasahitzez babestua",
     "Circle Invite" : "Zirkulu gonbidapena",
     "Email Address" : "Helbide elektronikoa",
-    "Initialisation Nextcloud" : "Hasieratze Nextcloud",
-    "Initialisation Circles App" : "Hasieratze zirkulu aplikazioa",
     "Circle not found" : "Ez da zirkulua aurkitu",
     "Circle not found " : "Ez da zirkulua aurkitu",
     "This account is already a member of the circle" : "Kontu hau zirkuluko kidea da dagoeneko",

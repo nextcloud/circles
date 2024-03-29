@@ -169,8 +169,6 @@ OC.L10N.register(
     "Password Protected" : "Passordbeskyttet",
     "Circle Invite" : "Sirkel-invitasjo",
     "Email Address" : "Epostadresse",
-    "Initialisation Nextcloud" : "Forbereder Nextcloud",
-    "Initialisation Circles App" : "Forbereder Sirkel-app",
     "Circle not found" : "Fant ikke sirkelen",
     "Circle not found " : "Fant ikke sirkelen",
     "This account is already a member of the circle" : "Denne kontoen er allerede medlem av sirkelen",

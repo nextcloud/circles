@@ -136,8 +136,6 @@ OC.L10N.register(
     "Password Protected" : "Passwortgeschützt",
     "Circle Invite" : "Einladung zu Kreis",
     "Email Address" : "E-Mail-Adresse",
-    "Initialisation Nextcloud" : "Initialisierung von Nextcloud",
-    "Initialisation Circles App" : "Initialisierung der Circles-App",
     "Circle not found" : "Kreis nicht gefunden",
     "Circle not found " : "Kreis nicht gefunden",
     "This account is already a member of the circle" : "Dieses Konto ist bereits Mitglied dieses Kreises",

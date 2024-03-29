@@ -136,8 +136,6 @@ OC.L10N.register(
     "Password Protected" : "Zaščiteno z geslom",
     "Circle Invite" : "Povabilo v krog",
     "Email Address" : "Elektronski naslov",
-    "Initialisation Nextcloud" : "Začenjanje okolja Nextcloud",
-    "Initialisation Circles App" : "Začenjanje programa Krogi",
     "Circle not found" : "Kroga ni mogoče najti",
     "Circle not found " : "Kroga ni mogoče najti",
     "This account is already a member of the circle" : "Ta račun ima že potrjeno članstvo v krogu.",
