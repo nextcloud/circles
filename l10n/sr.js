@@ -169,8 +169,6 @@ OC.L10N.register(
     "Password Protected" : "Заштићено лозинком",
     "Circle Invite" : "Позив у круг",
     "Email Address" : "И-мејл адреса",
-    "Initialisation Nextcloud" : "Иницијализација програма Nextcloud",
-    "Initialisation Circles App" : "Иницијализација апликације Кругови",
     "Circle not found" : "Круг није нађен",
     "Circle not found " : "Криг није нађен",
     "This account is already a member of the circle" : "Овај налог је већ члан круга",

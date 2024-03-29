@@ -135,8 +135,6 @@ OC.L10N.register(
     "Password Protected" : "Chránené heslom",
     "Circle Invite" : "Pozvať do kruhu",
     "Email Address" : "E-mailová adresa",
-    "Initialisation Nextcloud" : "Inicializácia Nextcloudu",
-    "Initialisation Circles App" : "Inicializácia Aplikácie Kruhy",
     "Circle not found" : "Kruh sa nenašiel",
     "Circle not found " : "Kruh nebol nájdený ",
     "This account is already a member of the circle" : "Tento užívateľ už je členom kruhu",

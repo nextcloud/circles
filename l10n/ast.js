@@ -80,6 +80,7 @@ OC.L10N.register(
     "%s shared »%s« with \"%s\"." : "%s compartió «%s» con «%s».",
     "%1$s shared »%2$s« with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s compartió «%2$s» contigo.\nHubiesti recibir un corréu electrónicu con un enllaz p'acceder al elementu.\n",
     "%1$s shared »%2$s« with you. You should have already received a separate email with a link to access it." : "%1$s compartió «%2$s» contigo. Hubiesti recibir un corréu electrónicu con un enllaz p'acceder al elementu.",
+    "Password to access »%s«" : "La contraseña p'acceder a «%s»",
     "%1$s via %2$s" : "%1$s per %2$s",
     "Click the button below to open it." : "Calca nel botón p'abrilo.",
     "Open »%s«" : "Abrir «%s»",

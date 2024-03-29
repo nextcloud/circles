@@ -133,8 +133,6 @@ OC.L10N.register(
     "Password Protected" : "Protejat prin parolă",
     "Circle Invite" : "Invitație la Cerc",
     "Email Address" : "Adresă de mail",
-    "Initialisation Nextcloud" : "Se inițializează Nextcloud",
-    "Initialisation Circles App" : "Se inițializează aplicația Cercuri",
     "Circle not found" : "Cercul nu a fost găsit",
     "Circle not found " : "Cercul nu există",
     "This account is already a member of the circle" : "Acest cont este deja membru al cercului",
