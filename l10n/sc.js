@@ -127,8 +127,6 @@ OC.L10N.register(
     "Password Protected" : "Crae bardiada",
     "Circle Invite" : "Invitu in su giru",
     "Email Address" : "Indiritzu de posta eletrònica",
-    "Initialisation Nextcloud" : "Apariciamentu de Nextcloud",
-    "Initialisation Circles App" : "Apariciamentu de s'aplicatzione Giros",
     "Circle not found" : "Giru no agatadu",
     "Circle not found " : "Giru no agatadu",
     "Federated link not found" : "Ligòngiu federadu no agatadu",

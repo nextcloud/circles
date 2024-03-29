@@ -136,8 +136,6 @@ OC.L10N.register(
     "Password Protected" : "Beveiligd met wachtwoord",
     "Circle Invite" : "Kringuitnodiging",
     "Email Address" : "E-mailadres",
-    "Initialisation Nextcloud" : "Initialisatie Nextcloud",
-    "Initialisation Circles App" : "Initialisatie Circles App",
     "Circle not found" : "Kring niet gevonden",
     "Circle not found " : "Kring niet gevonden",
     "This account is already a member of the circle" : "Dit account is al lid van de cirkel",

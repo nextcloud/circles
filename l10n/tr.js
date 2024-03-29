@@ -140,8 +140,6 @@ OC.L10N.register(
     "Password Protected" : "Parola korumalı",
     "Circle Invite" : "Çevre daveti",
     "Email Address" : "E-posta adresi",
-    "Initialisation Nextcloud" : "Nextcloud hazırlanıyor",
-    "Initialisation Circles App" : "Nextcloud çevreler uygulaması hazırlanıyor",
     "Circle not found" : "Çevre bulunamadı",
     "Circle not found " : "Çevre bulunamadı ",
     "This account is already a member of the circle" : "Bu hesap zaten bu çevrenin üyesi",

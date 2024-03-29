@@ -136,8 +136,6 @@ OC.L10N.register(
     "Password Protected" : "Được bảo vệ mật khẩu",
     "Circle Invite" : "Mời vòng kết nối",
     "Email Address" : "Địa chỉ email",
-    "Initialisation Nextcloud" : "Khởi tạo Nextcloud",
-    "Initialisation Circles App" : "Khởi tạo Ứng dụng vòng kết nối",
     "Circle not found" : "Vòng kết nối không được tìm thấy",
     "Circle not found " : "Vòng kết nối không được tìm thấy",
     "This account is already a member of the circle" : "Tài khoản này đã là thành viên của Vòng kết nối",

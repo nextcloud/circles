@@ -137,8 +137,6 @@ OC.L10N.register(
     "Password Protected" : "Защищено паролем",
     "Circle Invite" : "Приглашение в круг",
     "Email Address" : "Адрес электронной почты",
-    "Initialisation Nextcloud" : "Инициализация Nextcloud",
-    "Initialisation Circles App" : "Инициализация приложения Круги",
     "Circle not found" : "Круг не найден",
     "Circle not found " : "Круг не найден",
     "This account is already a member of the circle" : "Эта учётная запись уже участник круга",

@@ -126,8 +126,6 @@ OC.L10N.register(
     "Password Protected" : "Zaštićeno zaporkom",
     "Circle Invite" : "Poziv u krug",
     "Email Address" : "Adresa e-pošte",
-    "Initialisation Nextcloud" : "Inicijalizacija Nextclouda",
-    "Initialisation Circles App" : "Inicijalizacija aplikacije Circles",
     "Circle not found" : "Krug nije pronađen",
     "Circle not found " : "Krug nije pronađen ",
     "Federated link not found" : "Udružena poveznica nije pronađena",
