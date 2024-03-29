@@ -135,8 +135,6 @@ OC.L10N.register(
     "Password Protected" : "Diogelu gyda Chyfrinair",
     "Circle Invite" : "Gwahoddiad Cylch",
     "Email Address" : "Cyfeiriad E-bost",
-    "Initialisation Nextcloud" : "Cychwyniad Nextcloud",
-    "Initialisation Circles App" : "Cychwyniad Ap Cylchoedd",
     "Circle not found" : "Cylch heb ei ddarganfod",
     "Circle not found " : "Cylch heb ei ddarganfod ",
     "This account is already a member of the circle" : "Mae'r cyfrif hwn eisoes yn aelod o'r cylch",

@@ -169,8 +169,6 @@ OC.L10N.register(
     "Password Protected" : "محمي بكلمة المرور",
     "Circle Invite" : "دعوة للدائرة",
     "Email Address" : "عنوان البريد الالكتروني",
-    "Initialisation Nextcloud" : "بدء تشغيل نكست كلاود",
-    "Initialisation Circles App" : "بدء تشغيل تطبيق \"الدوائر\" Circles",
     "Circle not found" : "تعذّر العثور على الدائرة",
     "Circle not found " : "تعذّر العثور على الدائرة",
     "This account is already a member of the circle" : "هذا الحساب عضوٌ في الدائرة مُسبقاً",
