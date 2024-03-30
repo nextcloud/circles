@@ -1,8 +1,16 @@
 OC.L10N.register(
     "circles",
     {
+    "Teams" : "Teams",
+    "Teams' files" : "Teamets filer",
+    "Select team to filter by" : "Vælg team at filtrere efter",
+    "No teams found" : "Ingen teams fundet",
+    "Please select teams to filter by" : "Vælg venligst teams at filtrere efter",
+    "No files found for the selected teams" : "Inge filer funder for det valgte team",
     "You deleted {circle}" : "Du slettede {circle}",
     "{author} deleted {circle}" : "{author} slettede {circle}",
+    "{author} added team {member} has been added as member to {circle}" : "{author} tilføjede team {member} er blevet tilføjet som medlem til {circle}",
+    "You removed {member} leave {circle}" : "Du fjernede {member} forlad {circle}",
     "You joined {circle}" : "Du har forbundet med {circle}",
     "{member} joined {circle}" : "{member} sluttede sig til {circle}",
     "You accepted the invitation to join {circle}" : "Du accepterede invitationen til at deltage i {circle}",
