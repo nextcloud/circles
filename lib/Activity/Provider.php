@@ -93,10 +93,7 @@ class Provider implements IProvider {
 	 * @param IEvent $event
 	 */
 	private function setIcon(IEvent $event): void {
-		$path = $this->urlGenerator->imagePath(
-			Application::APP_ID,
-			'circles.' . $this->activityManager->getRequirePNG() ? 'png' : 'svg'
-		);
+		$path = $this->urlGenerator->imagePath(Application::APP_ID, 'circles.svg');
 		$event->setIcon($this->urlGenerator->getAbsoluteURL($path));
 	}
 
