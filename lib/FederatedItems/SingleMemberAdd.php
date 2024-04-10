@@ -163,7 +163,6 @@ class SingleMemberAdd implements
 	 */
 	public function result(FederatedEvent $event, array $results): void {
 		$member = $event->getMember();
-		\OC::$server->getLogger()->log(3, '>> ' . $member->getStatus());
 		if ($member->getStatus() === Member::STATUS_INVITED) {
 			$this->eventService->memberInvited($event, $results);
 		} else {
