@@ -269,6 +269,7 @@ class ProviderParser {
 		return [
 			'type' => 'email',
 			'id' => $member->getUserId(),
+			'link' => '',
 			'name' => $member->getDisplayName(),
 			'_parsed' => $member->getDisplayName()
 		];
