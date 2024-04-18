@@ -1,25 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.29.0@7ec5ffbd5f68ae03782d7fd33fff0c45a69f95b3">
-  <file src="lib/Activity/Provider.php">
-    <ParamNameMismatch occurrences="1">
-      <code>$lang</code>
-    </ParamNameMismatch>
-  </file>
-  <file src="lib/Activity/ProviderParser.php">
-    <InvalidNullableReturnType occurrences="1">
-      <code>array&lt;string,string|integer&gt;</code>
-    </InvalidNullableReturnType>
-    <NullableReturnStatement occurrences="1">
-      <code>null</code>
-    </NullableReturnStatement>
-    <UndefinedMethod occurrences="1">
-      <code>Circles::generateAbsoluteLink($circle-&gt;getUniqueId())</code>
-    </UndefinedMethod>
-  </file>
+<files psalm-version="4.30.0@d0bc6e25d89f649e4f36a534f330f8bb4643dd69">
   <file src="lib/AppInfo/Application.php">
-    <UndefinedClass occurrences="1">
-      <code>OCA\Files\App</code>
-    </UndefinedClass>
+    <InvalidArgument occurrences="8">
+      <code>registerEventListener</code>
+      <code>registerEventListener</code>
+      <code>registerEventListener</code>
+      <code>registerEventListener</code>
+      <code>registerEventListener</code>
+      <code>registerEventListener</code>
+      <code>registerEventListener</code>
+      <code>registerEventListener</code>
+    </InvalidArgument>
+  </file>
+  <file src="lib/AppInfo/Capabilities.php">
+    <LessSpecificImplementedReturnType occurrences="1">
+      <code>array</code>
+    </LessSpecificImplementedReturnType>
   </file>
   <file src="lib/Circles/FileSharingBroadcaster.php">
     <InvalidScalarArgument occurrences="2">
@@ -37,28 +33,29 @@
       <code>$this-&gt;federationNotifications</code>
       <code>Notifications</code>
     </UndefinedDocblockClass>
-    <UndefinedInterfaceMethod occurrences="4">
+    <UndefinedInterfaceMethod occurrences="1">
       <code>getLazyRootFolder</code>
-      <code>setHtmlBody</code>
-      <code>setPlainBody</code>
-      <code>setSubject</code>
     </UndefinedInterfaceMethod>
-  </file>
-  <file src="lib/CirclesManager.php">
-    <InvalidNullableReturnType occurrences="1">
-      <code>IFederatedUser</code>
-    </InvalidNullableReturnType>
-    <NullableReturnStatement occurrences="1">
-      <code>$this-&gt;federatedUserService-&gt;getCurrentUser()</code>
-    </NullableReturnStatement>
   </file>
   <file src="lib/Command/CirclesCheck.php">
     <UndefinedClass occurrences="2">
       <code>AppConfig</code>
+      <code>AppConfig</code>
     </UndefinedClass>
   </file>
-  <file src="lib/Command/CirclesRemote.php">
+  <file src="lib/Command/CirclesList.php">
     <UndefinedMethod occurrences="1">
+      <code>section</code>
+    </UndefinedMethod>
+  </file>
+  <file src="lib/Command/CirclesMemberships.php">
+    <UndefinedMethod occurrences="1">
+      <code>section</code>
+    </UndefinedMethod>
+  </file>
+  <file src="lib/Command/CirclesRemote.php">
+    <UndefinedMethod occurrences="2">
+      <code>section</code>
       <code>setType</code>
     </UndefinedMethod>
   </file>
@@ -78,6 +75,12 @@
     <TypeDoesNotContainNull occurrences="1">
       <code>$owner === null</code>
     </TypeDoesNotContainNull>
+    <UndefinedClass occurrences="1">
+      <code>Process</code>
+    </UndefinedClass>
+    <UndefinedMethod occurrences="1">
+      <code>section</code>
+    </UndefinedMethod>
   </file>
   <file src="lib/Command/MembersAdd.php">
     <UndefinedMethod occurrences="1">
@@ -94,6 +97,22 @@
       <code>getStatus</code>
       <code>hasInvitedBy</code>
     </UndefinedInterfaceMethod>
+    <UndefinedMethod occurrences="1">
+      <code>section</code>
+    </UndefinedMethod>
+  </file>
+  <file src="lib/Command/MembersSearch.php">
+    <UndefinedMethod occurrences="1">
+      <code>section</code>
+    </UndefinedMethod>
+  </file>
+  <file src="lib/Command/SharesFiles.php">
+    <UndefinedClass occurrences="1">
+      <code>MissingInputException</code>
+    </UndefinedClass>
+    <UndefinedMethod occurrences="1">
+      <code>section</code>
+    </UndefinedMethod>
   </file>
   <file src="lib/Command/SyncContact.php">
     <InvalidReturnType occurrences="1">
@@ -218,11 +237,6 @@
       <code>!$sendPasswordByMail</code>
       <code>$sendPasswordByMail</code>
     </TypeDoesNotContainType>
-    <UndefinedInterfaceMethod occurrences="3">
-      <code>setHtmlBody</code>
-      <code>setPlainBody</code>
-      <code>setSubject</code>
-    </UndefinedInterfaceMethod>
   </file>
   <file src="lib/GlobalScale/FileUnshare.php">
     <ParamNameMismatch occurrences="1">
@@ -250,11 +264,6 @@
     <ParamNameMismatch occurrences="1">
       <code>$mustBeChecked</code>
     </ParamNameMismatch>
-    <UndefinedInterfaceMethod occurrences="3">
-      <code>setHtmlBody</code>
-      <code>setPlainBody</code>
-      <code>setSubject</code>
-    </UndefinedInterfaceMethod>
   </file>
   <file src="lib/GlobalScale/MemberJoin.php">
     <InvalidScalarArgument occurrences="1">
@@ -431,8 +440,8 @@
   </file>
   <file src="lib/Model/ShareWrapper.php">
     <InvalidArgument occurrences="2">
+      <code>$attributes</code>
       <code>Cache::cacheEntryFromData($this-&gt;getFileCache()-&gt;toCache(), OC::$server-&gt;getMimeTypeLoader())</code>
-      <code>$this-&gt;setAttributes($attributes)</code>
     </InvalidArgument>
     <InvalidNullableReturnType occurrences="5">
       <code>Circle</code>
@@ -515,8 +524,12 @@
       <code>$bookId</code>
       <code>$bookId</code>
     </InvalidScalarArgument>
-    <UndefinedClass occurrences="1">
+    <UndefinedClass occurrences="5">
       <code>CardDavBackend</code>
+      <code>GenericEvent</code>
+      <code>GenericEvent</code>
+      <code>GenericEvent</code>
+      <code>GenericEvent</code>
     </UndefinedClass>
     <UndefinedDocblockClass occurrences="6">
       <code>$this-&gt;cardDavBackend</code>
@@ -528,20 +541,19 @@
     </UndefinedDocblockClass>
   </file>
   <file src="lib/Service/EventsService.php">
-    <InvalidArgument occurrences="2">
-      <code>$context</code>
-      <code>new GenericEvent(null, $arguments)</code>
-    </InvalidArgument>
+    <UndefinedClass occurrences="2">
+      <code>EventDispatcher</code>
+      <code>GenericEvent</code>
+    </UndefinedClass>
+    <UndefinedDocblockClass occurrences="2">
+      <code>$this-&gt;eventDispatcher</code>
+      <code>EventDispatcher</code>
+    </UndefinedDocblockClass>
   </file>
   <file src="lib/Service/FederatedShareService.php">
     <InvalidMethodCall occurrences="1">
       <code>gObj</code>
     </InvalidMethodCall>
-  </file>
-  <file src="lib/Service/FederatedUserService.php">
-    <InvalidReturnType occurrences="1">
-      <code>FederatedUser</code>
-    </InvalidReturnType>
   </file>
   <file src="lib/Service/GSDownstreamService.php">
     <UndefinedMethod occurrences="7">
@@ -571,7 +583,6 @@
       <code>asyncBroadcast</code>
       <code>getGlobalScaleEvent</code>
       <code>getGlobalScaleEvent</code>
-      <code>getInstances</code>
       <code>getInstances</code>
       <code>getKey</code>
     </UndefinedMethod>
@@ -630,13 +641,6 @@
     <TypeDoesNotContainNull occurrences="1">
       <code>$signed === null</code>
     </TypeDoesNotContainNull>
-  </file>
-  <file src="lib/Service/SendMailService.php">
-    <UndefinedInterfaceMethod occurrences="3">
-      <code>setHtmlBody</code>
-      <code>setPlainBody</code>
-      <code>setSubject</code>
-    </UndefinedInterfaceMethod>
   </file>
   <file src="lib/Service/SyncService.php">
     <InvalidClass occurrences="2">
@@ -705,15 +709,15 @@
     </TooManyArguments>
   </file>
   <file src="lib/Tools/Traits/TNCLogger.php">
+    <RedundantCondition occurrences="1">
+      <code>isset($this-&gt;logger) &amp;&amp; $this-&gt;logger instanceof LoggerInterface</code>
+    </RedundantCondition>
     <RedundantPropertyInitializationCheck occurrences="1">
       <code>isset($this-&gt;logger)</code>
     </RedundantPropertyInitializationCheck>
     <UndefinedClass occurrences="1">
       <code>HintException</code>
     </UndefinedClass>
-    <RedundantCondition occurrences="1">
-      <code>isset($this->logger)</code>
-    </RedundantCondition>
   </file>
   <file src="lib/Tools/Traits/TNCRequest.php">
     <InvalidArgument occurrences="1">
@@ -732,10 +736,5 @@
     <InvalidArrayOffset occurrences="1">
       <code>$s[$e]</code>
     </InvalidArrayOffset>
-  </file>
-  <file src="lib/Listeners/AccountUpdated.php">
-    <RedundantCondition occurrences="1">
-      <code>$event instanceof UserUpdatedEvent</code>
-    </RedundantCondition>
   </file>
 </files>
