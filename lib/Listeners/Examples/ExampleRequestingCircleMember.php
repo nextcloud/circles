@@ -31,12 +31,12 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Listeners\Examples;
 
-use OCA\Circles\Tools\Traits\TNCLogger;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Events\CircleGenericEvent;
 use OCA\Circles\Events\RequestingCircleMemberEvent;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Tools\Traits\TNCLogger;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 

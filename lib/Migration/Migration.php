@@ -31,11 +31,11 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Migration;
 
-use OCA\Circles\Tools\Traits\TNCLogger;
 use Exception;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MigrationService;
 use OCA\Circles\Service\OutputService;
+use OCA\Circles\Tools\Traits\TNCLogger;
 use OCP\Migration\IOutput;
 use OCP\Migration\IRepairStep;
 

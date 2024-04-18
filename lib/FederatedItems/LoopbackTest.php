@@ -31,11 +31,11 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
-use OCA\Circles\Tools\Model\SimpleDataStore;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\IFederatedItemLoopbackTest;
 use OCA\Circles\Model\Federated\FederatedEvent;
+use OCA\Circles\Tools\Model\SimpleDataStore;
 
 /**
  * Class LoopbackTest

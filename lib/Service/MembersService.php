@@ -26,12 +26,6 @@
 
 namespace OCA\Circles\Service;
 
-use OCA\Circles\Tools\Exceptions\RequestNetworkException;
-use OCA\Circles\Tools\Exceptions\RequestResultNotJsonException;
-use OCA\Circles\Tools\Model\NCRequest;
-use OCA\Circles\Tools\Model\Request;
-use OCA\Circles\Tools\Traits\TNCRequest;
-use OCA\Circles\Tools\Traits\TArrayTools;
 use Exception;
 use OC;
 use OC\User\NoUserException;
@@ -54,6 +48,12 @@ use OCA\Circles\Exceptions\MemberIsNotModeratorException;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\GlobalScale\GSEvent;
+use OCA\Circles\Tools\Exceptions\RequestNetworkException;
+use OCA\Circles\Tools\Exceptions\RequestResultNotJsonException;
+use OCA\Circles\Tools\Model\NCRequest;
+use OCA\Circles\Tools\Model\Request;
+use OCA\Circles\Tools\Traits\TArrayTools;
+use OCA\Circles\Tools\Traits\TNCRequest;
 use OCP\IL10N;
 use OCP\IUserManager;
 
@@ -217,10 +217,10 @@ class MembersService {
 		$new = $event->getMember();
 		$new->setJoined($this->l10n->t('now'));
 		if ($circle->getType() === DeprecatedCircle::CIRCLES_CLOSED) {
-//			$new->setLevel(Member::LEVEL_MEMBER);
+			//			$new->setLevel(Member::LEVEL_MEMBER);
 			$new->setStatus(DeprecatedMember::STATUS_INVITED);
 		} else {
-//			$new->setLevel(Member::LEVEL_MEMBER);
+			//			$new->setLevel(Member::LEVEL_MEMBER);
 			$new->setStatus(DeprecatedMember::STATUS_MEMBER);
 		}
 
@@ -339,7 +339,7 @@ class MembersService {
 
 		$this->verifyIdentLocalMember($ident, $type, $instance);
 		$this->verifyIdentEmailAddress($ident, $type);
-//		$this->verifyIdentContact($ident, $type);
+		//		$this->verifyIdentContact($ident, $type);
 	}
 
 

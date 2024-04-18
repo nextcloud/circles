@@ -31,8 +31,8 @@ declare(strict_types=1);
 
 namespace OCA\Circles\GlobalScale;
 
-use OCA\Circles\Tools\Model\SimpleDataStore;
 use OCA\Circles\Model\GlobalScale\GSEvent;
+use OCA\Circles\Tools\Model\SimpleDataStore;
 
 /**
  * Class Test

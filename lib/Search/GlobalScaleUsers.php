@@ -26,18 +26,18 @@
 
 namespace OCA\Circles\Search;
 
-use OCA\Circles\Tools\Exceptions\RequestNetworkException;
-use OCA\Circles\Tools\Exceptions\RequestResultNotJsonException;
-use OCA\Circles\Tools\Model\NCRequest;
-use OCA\Circles\Tools\Model\Request;
-use OCA\Circles\Tools\Traits\TNCRequest;
-use OCA\Circles\Tools\Traits\TArrayTools;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\ISearch;
 use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\SearchResult;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
+use OCA\Circles\Tools\Exceptions\RequestNetworkException;
+use OCA\Circles\Tools\Exceptions\RequestResultNotJsonException;
+use OCA\Circles\Tools\Model\NCRequest;
+use OCA\Circles\Tools\Model\Request;
+use OCA\Circles\Tools\Traits\TArrayTools;
+use OCA\Circles\Tools\Traits\TNCRequest;
 
 /**
  * Class GlobalScaleUsers

@@ -31,10 +31,10 @@ declare(strict_types=1);
 
 namespace OCA\Circles\GlobalScale\GSMount;
 
-use OCA\Circles\Tools\Traits\TArrayTools;
 use Exception;
 use OC\Files\Mount\MountPoint;
 use OC\Files\Mount\MoveableMount;
+use OCA\Circles\Tools\Traits\TArrayTools;
 
 /**
  * Class Mount

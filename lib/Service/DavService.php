@@ -38,8 +38,8 @@ use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\NotLocalMemberException;
-use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\DavCard;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\DeprecatedMember;
 use OCA\DAV\CardDAV\CardDavBackend;
 use OCP\App\ManagerEvent;
@@ -130,7 +130,7 @@ class DavService {
 		}
 
 		try {
-//			$this->migration();
+			//			$this->migration();
 		} catch (Exception $e) {
 		}
 	}
@@ -243,9 +243,9 @@ class DavService {
 				$this->manageLocalContact($davCard);
 				break;
 
-//			case DavCard::TYPE_FEDERATED:
-//				$this->manageFederatedContact($davCard);
-//				break;
+				//			case DavCard::TYPE_FEDERATED:
+				//				$this->manageFederatedContact($davCard);
+				//				break;
 		}
 	}
 
@@ -327,9 +327,9 @@ class DavService {
 			try {
 				$this->membersRequest->createMember($member);
 
-//				if ($type === Member::TYPE_CONTACT) {
-//					$this->fileSharingBroadcaster->sendMailAboutExistingShares($circle, $member);
-//				}
+				//				if ($type === Member::TYPE_CONTACT) {
+				//					$this->fileSharingBroadcaster->sendMailAboutExistingShares($circle, $member);
+				//				}
 			} catch (MemberAlreadyExistsException $e) {
 				$this->membersRequest->checkMember($member, false);
 			}

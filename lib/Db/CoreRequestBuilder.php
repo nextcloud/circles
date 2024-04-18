@@ -313,8 +313,8 @@ class CoreRequestBuilder {
 	 */
 	public function uninstallFromJobs() {
 		$qb = $this->getQueryBuilder();
-//		$qb->delete('jobs');
-//		$qb->where($this->exprLimitToDBField($qb, 'class', 'OCA\Circles\', true, true));
-//		$qb->execute();
+		//		$qb->delete('jobs');
+		//		$qb->where($this->exprLimitToDBField($qb, 'class', 'OCA\Circles\', true, true));
+		//		$qb->execute();
 	}
 }

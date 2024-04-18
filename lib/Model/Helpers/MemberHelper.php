@@ -31,11 +31,11 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model\Helpers;
 
-use OCA\Circles\Tools\Traits\TArrayTools;
 use OCA\Circles\Exceptions\MemberHelperException;
 use OCA\Circles\Exceptions\MemberLevelException;
 use OCA\Circles\Exceptions\ParseMemberLevelException;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Tools\Traits\TArrayTools;
 
 /**
  * Class MemberHelper

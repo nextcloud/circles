@@ -37,8 +37,8 @@ use OCA\Circles\Exceptions\GlobalScaleDSyncException;
 use OCA\Circles\Exceptions\GlobalScaleEventException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Model\DeprecatedCircle;
-use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\DeprecatedMember;
+use OCA\Circles\Model\GlobalScale\GSEvent;
 
 /**
  * Class MemberDelete

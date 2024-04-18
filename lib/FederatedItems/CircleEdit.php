@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
-use OCA\Circles\Tools\Traits\TDeserialize;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNameTooShortException;
@@ -41,6 +40,7 @@ use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\EventService;
+use OCA\Circles\Tools\Traits\TDeserialize;
 
 /**
  * Class CircleEdit

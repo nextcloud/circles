@@ -31,13 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
-use OCA\Circles\Tools\Exceptions\RequestContentException;
-use OCA\Circles\Tools\Exceptions\RequestNetworkException;
-use OCA\Circles\Tools\Exceptions\RequestResultNotJsonException;
-use OCA\Circles\Tools\Exceptions\RequestResultSizeException;
-use OCA\Circles\Tools\Exceptions\RequestServerException;
-use OCA\Circles\Tools\Model\NCRequest;
-use OCA\Circles\Tools\Model\Request;
 use Exception;
 use OC\Core\Command\Base;
 use OCA\Circles\Exceptions\FederatedItemException;
@@ -46,6 +39,13 @@ use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
+use OCA\Circles\Tools\Exceptions\RequestContentException;
+use OCA\Circles\Tools\Exceptions\RequestNetworkException;
+use OCA\Circles\Tools\Exceptions\RequestResultNotJsonException;
+use OCA\Circles\Tools\Exceptions\RequestResultSizeException;
+use OCA\Circles\Tools\Exceptions\RequestServerException;
+use OCA\Circles\Tools\Model\NCRequest;
+use OCA\Circles\Tools\Model\Request;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -192,11 +192,11 @@ class MembersAdd extends Base {
 			$result[] = $user['userid']['value'] . ' <info>@' . $host . '</info>';
 		}
 
-//		if ($userId === '') {
-//			foreach($result as $item) {
-//				$output->writeln($item);
-//			}
-//		}
+		//		if ($userId === '') {
+		//			foreach($result as $item) {
+		//				$output->writeln($item);
+		//			}
+		//		}
 
 		return $userId;
 	}

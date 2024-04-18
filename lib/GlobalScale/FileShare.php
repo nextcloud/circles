@@ -31,8 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\GlobalScale;
 
-use OCA\Circles\Tools\Model\SimpleDataStore;
-use OCA\Circles\Tools\Traits\TArrayTools;
 use Exception;
 use OC;
 use OC\Share20\Share;
@@ -41,12 +39,14 @@ use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\Model\DeprecatedCircle;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\GlobalScale\GSShare;
-use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\SharesToken;
 use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\MiscService;
+use OCA\Circles\Tools\Model\SimpleDataStore;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use OCP\Files\NotFoundException;
 use OCP\IUser;
 use OCP\Mail\IEMailTemplate;
@@ -198,14 +198,14 @@ class FileShare extends AGlobalScaleEvent {
 		$newCircle = $this->circlesRequest->forceGetCircle($circle->getUniqueId(), true);
 		$password = '';
 		$sendPasswordByMail = true;
-//		if ($this->configService->enforcePasswordProtection($newCircle)) {
-//			if ($newCircle->getSetting('password_single_enabled') === 'true') {
-//				$password = $newCircle->getPasswordSingle();
-//				$sendPasswordByMail = false;
-//			} else {
-//				$password = $this->miscService->token(15);
-//			}
-//		}
+		//		if ($this->configService->enforcePasswordProtection($newCircle)) {
+		//			if ($newCircle->getSetting('password_single_enabled') === 'true') {
+		//				$password = $newCircle->getPasswordSingle();
+		//				$sendPasswordByMail = false;
+		//			} else {
+		//				$password = $this->miscService->token(15);
+		//			}
+		//		}
 
 		try {
 			$sharesToken =
@@ -310,9 +310,9 @@ class FileShare extends AGlobalScaleEvent {
 	 * @throws Exception
 	 */
 	protected function sendPasswordByMail(IShare $share, $circleName, $email, $password) {
-//		if (!$this->configService->sendPasswordByMail() || $password === '') {
-//			return;
-//		}
+		//		if (!$this->configService->sendPasswordByMail() || $password === '') {
+		//			return;
+		//		}
 
 		$message = $this->mailer->createMessage();
 

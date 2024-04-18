@@ -31,13 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
-use OCA\Circles\Tools\Exceptions\RequestNetworkException;
-use OCA\Circles\Tools\Exceptions\SignatoryException;
-use OCA\Circles\Tools\Exceptions\SignatureException;
-use OCA\Circles\Tools\Model\NCRequest;
-use OCA\Circles\Tools\Model\NCSignedRequest;
-use OCA\Circles\Tools\Traits\TNCWellKnown;
-use OCA\Circles\Tools\Traits\TStringTools;
 use Exception;
 use OC\Core\Command\Base;
 use OCA\Circles\AppInfo\Application;
@@ -49,6 +42,13 @@ use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\GlobalScaleService;
 use OCA\Circles\Service\InterfaceService;
 use OCA\Circles\Service\RemoteStreamService;
+use OCA\Circles\Tools\Exceptions\RequestNetworkException;
+use OCA\Circles\Tools\Exceptions\SignatoryException;
+use OCA\Circles\Tools\Exceptions\SignatureException;
+use OCA\Circles\Tools\Model\NCRequest;
+use OCA\Circles\Tools\Model\NCSignedRequest;
+use OCA\Circles\Tools\Traits\TNCWellKnown;
+use OCA\Circles\Tools\Traits\TStringTools;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

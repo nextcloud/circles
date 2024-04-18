@@ -31,11 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use OCA\Circles\Tools\Exceptions\InvalidItemException;
-use OCA\Circles\Tools\Exceptions\RequestNetworkException;
-use OCA\Circles\Tools\Exceptions\SignatoryException;
-use OCA\Circles\Tools\Traits\TAsync;
-use OCA\Circles\Tools\Traits\TNCLogger;
 use Exception;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
@@ -54,6 +49,11 @@ use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Probes\CircleProbe;
+use OCA\Circles\Tools\Exceptions\InvalidItemException;
+use OCA\Circles\Tools\Exceptions\RequestNetworkException;
+use OCA\Circles\Tools\Exceptions\SignatoryException;
+use OCA\Circles\Tools\Traits\TAsync;
+use OCA\Circles\Tools\Traits\TNCLogger;
 
 /**
  * Class RemoteDownstreamService
@@ -106,25 +106,25 @@ class RemoteDownstreamService {
 	}
 
 
-//
-//
-//	/**
-//	 * @param GSEvent $event
-//	 *
-//	 * @throws CircleDoesNotExistException
-//	 * @throws ConfigNoCircleAvailableException
-//	 * @throws GSKeyException
-//	 * @throws GlobalScaleDSyncException
-//	 * @throws GlobalScaleEventException
-//	 */
-//	public function statusEvent(GSEvent $event) {
-//		$this->globalScaleService->checkEvent($event);
-//
-//		$gs = $this->globalScaleService->getGlobalScaleEvent($event);
-//		$gs->verify($event, false);
-//		$gs->manage($event);
-//	}
-//
+	//
+	//
+	//	/**
+	//	 * @param GSEvent $event
+	//	 *
+	//	 * @throws CircleDoesNotExistException
+	//	 * @throws ConfigNoCircleAvailableException
+	//	 * @throws GSKeyException
+	//	 * @throws GlobalScaleDSyncException
+	//	 * @throws GlobalScaleEventException
+	//	 */
+	//	public function statusEvent(GSEvent $event) {
+	//		$this->globalScaleService->checkEvent($event);
+	//
+	//		$gs = $this->globalScaleService->getGlobalScaleEvent($event);
+	//		$gs->verify($event, false);
+	//		$gs->manage($event);
+	//	}
+	//
 
 
 	/**

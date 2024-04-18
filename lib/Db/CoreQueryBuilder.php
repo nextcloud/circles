@@ -974,9 +974,9 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			$expr->eq($aliasMembership . '.circle_id', $alias . '.' . $field)
 		);
 
-//		if (!$this->getBool('getData', $options, false)) {
-//			return;
-//		}
+		//		if (!$this->getBool('getData', $options, false)) {
+		//			return;
+		//		}
 
 		if ($aliasInheritedBy === '') {
 			$aliasInheritedBy = $this->generateAlias($alias, self::INHERITED_BY);
@@ -1331,8 +1331,8 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			 		$this->exprLimitInt('level', Member::LEVEL_OWNER, $aliasInitiator)
 			 	)
 			 );
-//
-//		$this->leftJoinBasedOn($aliasInitiator);
+		//
+		//		$this->leftJoinBasedOn($aliasInitiator);
 	}
 
 	/**
@@ -1548,7 +1548,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			[]
 		);
 
-//		$this->selectAlias($aliasShareParent . '.permissions', 'parent_perms');
+		//		$this->selectAlias($aliasShareParent . '.permissions', 'parent_perms');
 	}
 
 

@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\GlobalScale;
 
-use OCA\Circles\Tools\Model\SimpleDataStore;
 use Exception;
 use OC\User\NoUserException;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
@@ -46,9 +45,10 @@ use OCA\Circles\Exceptions\MemberIsNotModeratorException;
 use OCA\Circles\Exceptions\MembersLimitException;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\Model\DeprecatedCircle;
-use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\DeprecatedMember;
+use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\SharesToken;
+use OCA\Circles\Tools\Model\SimpleDataStore;
 use OCP\IUser;
 use OCP\Mail\IEMailTemplate;
 use OCP\Util;
@@ -109,14 +109,14 @@ class MemberAdd extends AGlobalScaleEvent {
 
 		$password = '';
 		$sendPasswordByMail = false;
-//		if ($this->configService->enforcePasswordProtection($circle)) {
-//			if ($circle->getSetting('password_single_enabled') === 'true') {
-//				$password = $circle->getPasswordSingle();
-//			} else {
-//				$sendPasswordByMail = true;
-//				$password = $this->miscService->token(15);
-//			}
-//		}
+		//		if ($this->configService->enforcePasswordProtection($circle)) {
+		//			if ($circle->getSetting('password_single_enabled') === 'true') {
+		//				$password = $circle->getPasswordSingle();
+		//			} else {
+		//				$sendPasswordByMail = true;
+		//				$password = $this->miscService->token(15);
+		//			}
+		//		}
 
 		$event->setData(
 			new SimpleDataStore(

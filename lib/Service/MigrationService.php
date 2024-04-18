@@ -189,7 +189,7 @@ class MigrationService {
 		if ($force) {
 			$this->configService->setAppValue(ConfigService::MIGRATION_22, '0');
 			$this->configService->setAppValue(ConfigService::MIGRATION_22_1, '0');
-//			$this->configService->setAppValue(ConfigService::MIGRATION_23, '0');
+			//			$this->configService->setAppValue(ConfigService::MIGRATION_23, '0');
 		}
 
 		$this->appCircle = $this->federatedUserService->getAppInitiator(

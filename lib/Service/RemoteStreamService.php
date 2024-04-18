@@ -283,7 +283,7 @@ class RemoteStreamService extends NCSignature {
 
 		try {
 			$app = $this->getAppSignatory();
-//		$app->setAlgorithm(NCSignatory::SHA512);
+			//		$app->setAlgorithm(NCSignatory::SHA512);
 			$signedRequest = $this->signOutgoingRequest($request, $app);
 			$this->doRequest($signedRequest->getOutgoingRequest(), false);
 		} catch (RequestNetworkException | SignatoryException $e) {

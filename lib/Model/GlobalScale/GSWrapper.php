@@ -31,10 +31,10 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model\GlobalScale;
 
-use OCA\Circles\Tools\Traits\TArrayTools;
 use JsonSerializable;
 use OCA\Circles\Exceptions\JsonException;
 use OCA\Circles\Exceptions\ModelException;
+use OCA\Circles\Tools\Traits\TArrayTools;
 
 /**
  * Class GSEvent

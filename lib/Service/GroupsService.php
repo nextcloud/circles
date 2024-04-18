@@ -185,7 +185,7 @@ class GroupsService {
 		} catch (MemberDoesNotExistException $e) {
 			$member = new DeprecatedMember($groupId, DeprecatedMember::TYPE_GROUP, $circleId);
 			$this->membersRequest->createMember($member);
-//			$this->membersRequest->insertGroup($member);
+			//			$this->membersRequest->insertGroup($member);
 		}
 
 		if ($member->getLevel() > DeprecatedMember::LEVEL_NONE) {

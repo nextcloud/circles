@@ -559,10 +559,10 @@ class CirclesManager {
 	 * @throws MemberNotFoundException
 	 * @throws RequestBuilderException
 	 */
-//	public function getMember(string $circleId, string $singleId): Member {
-//		$this->federatedUserService->bypassCurrentUserCondition(true);
-//		$this->memberService->getMemberById($circleId, $singleId);
-//	}
+	//	public function getMember(string $circleId, string $singleId): Member {
+	//		$this->federatedUserService->bypassCurrentUserCondition(true);
+	//		$this->memberService->getMemberById($circleId, $singleId);
+	//	}
 
 
 	/**
@@ -572,5 +572,5 @@ class CirclesManager {
 	 *
 	 * @return Member
 	 */
-//	public function getMemberById(string $memberId): Member {
+	//	public function getMemberById(string $memberId): Member {
 }

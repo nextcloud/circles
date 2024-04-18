@@ -288,11 +288,11 @@ class RemoteService extends NCSignature {
 	 * @throws RemoteInstanceException
 	 */
 	public function syncCircle(Circle $circle): void {
-//		if ($this->configService->isLocalInstance($circle->getInstance())) {
-//			$this->syncLocalCircle($circle);
-//		} else {
+		//		if ($this->configService->isLocalInstance($circle->getInstance())) {
+		//			$this->syncLocalCircle($circle);
+		//		} else {
 		$this->syncRemoteCircle($circle->getSingleId(), $circle->getInstance());
-//		}
+		//		}
 	}
 
 

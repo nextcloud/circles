@@ -59,8 +59,8 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 	 * @throws NotFoundException
 	 */
 	public function save(IShare $share, int $parentId = 0): int {
-//		$hasher = \OC::$server->getHasher();
-//		$password = ($share->getPassword() !== null) ? $hasher->hash($share->getPassword()) : '';
+		//		$hasher = \OC::$server->getHasher();
+		//		$password = ($share->getPassword() !== null) ? $hasher->hash($share->getPassword()) : '';
 		$password = '';
 
 		$qb = $this->getShareInsertSql();
@@ -164,9 +164,9 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 			$qb->generateAlias(CoreQueryBuilder::SHARE, CoreQueryBuilder::UPSTREAM_MEMBERSHIPS);
 		$qb->limitToInheritedMemberships(CoreQueryBuilder::SHARE, $circleId, 'share_with');
 
-//		if (!is_null($shareRecipient)) {
-//			$qb->limitToInitiator(CoreRequestBuilder::SHARE, $shareRecipient, 'share_with');
-//		}
+		//		if (!is_null($shareRecipient)) {
+		//			$qb->limitToInitiator(CoreRequestBuilder::SHARE, $shareRecipient, 'share_with');
+		//		}
 
 		// TODO: add shareInitiator and shareRecipient to filter the request
 		if (!is_null($shareRecipient) || $completeDetails) {
@@ -263,7 +263,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		if ($getData) {
 			$qb->setOptions([CoreQueryBuilder::SHARE], ['getData' => $getData]);
 			$qb->leftJoinCircle(CoreQueryBuilder::SHARE, null, 'share_with');
-//			$qb->leftJoinFileCache(CoreRequestBuilder::SHARE);
+			//			$qb->leftJoinFileCache(CoreRequestBuilder::SHARE);
 			$qb->limitNull('parent', false);
 
 			$aliasMembership = $qb->generateAlias(CoreQueryBuilder::SHARE, CoreQueryBuilder::MEMBERSHIPS);

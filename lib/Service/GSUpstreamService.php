@@ -31,15 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use OCA\Circles\Tools\Exceptions\RequestContentException;
-use OCA\Circles\Tools\Exceptions\RequestNetworkException;
-use OCA\Circles\Tools\Exceptions\RequestResultNotJsonException;
-use OCA\Circles\Tools\Exceptions\RequestResultSizeException;
-use OCA\Circles\Tools\Exceptions\RequestServerException;
-use OCA\Circles\Tools\Model\NCRequest;
-use OCA\Circles\Tools\Model\Request;
-use OCA\Circles\Tools\Model\SimpleDataStore;
-use OCA\Circles\Tools\Traits\TNCRequest;
 use Exception;
 use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Db\DeprecatedMembersRequest;
@@ -52,6 +43,15 @@ use OCA\Circles\GlobalScale\CircleStatus;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\GlobalScale\GSWrapper;
+use OCA\Circles\Tools\Exceptions\RequestContentException;
+use OCA\Circles\Tools\Exceptions\RequestNetworkException;
+use OCA\Circles\Tools\Exceptions\RequestResultNotJsonException;
+use OCA\Circles\Tools\Exceptions\RequestResultSizeException;
+use OCA\Circles\Tools\Exceptions\RequestServerException;
+use OCA\Circles\Tools\Model\NCRequest;
+use OCA\Circles\Tools\Model\Request;
+use OCA\Circles\Tools\Model\SimpleDataStore;
+use OCA\Circles\Tools\Traits\TNCRequest;
 use OCP\IURLGenerator;
 
 /**
@@ -385,7 +385,7 @@ class GSUpstreamService {
 
 			try {
 				$result = $this->retrieveJson($request);
-//				$this->miscService->log('result: ' . json_encode($result));
+				//				$this->miscService->log('result: ' . json_encode($result));
 				if ($this->getInt('status', $result, 0) !== 1) {
 					throw new RequestContentException('result status is not good');
 				}
@@ -452,6 +452,6 @@ class GSUpstreamService {
 	 *
 	 */
 	private function removeDeprecatedEvents() {
-//		$this->deprecatedEvents();
+		//		$this->deprecatedEvents();
 	}
 }

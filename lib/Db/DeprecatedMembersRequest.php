@@ -27,13 +27,13 @@
 
 namespace OCA\Circles\Db;
 
-use OCA\Circles\Tools\Traits\TStringTools;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Exception;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Model\DeprecatedMember;
+use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\IGroup;
 
 class DeprecatedMembersRequest extends DeprecatedMembersRequestBuilder {
@@ -136,9 +136,9 @@ class DeprecatedMembersRequest extends DeprecatedMembersRequestBuilder {
 		$cursor->closeCursor();
 
 		try {
-//			if ($this->configService->isLinkedGroupsAllowed() && $incGroup === true) {
-//				$this->includeGroupMembers($members, $circleUniqueId, $level);
-//			}
+			//			if ($this->configService->isLinkedGroupsAllowed() && $incGroup === true) {
+			//				$this->includeGroupMembers($members, $circleUniqueId, $level);
+			//			}
 		} catch (GSStatusException $e) {
 		}
 
@@ -348,14 +348,14 @@ class DeprecatedMembersRequest extends DeprecatedMembersRequestBuilder {
 		} catch (MemberDoesNotExistException $e) {
 			$member = new DeprecatedMember($name, $type, $circleUniqueId);
 			$member->setInstance($instance);
-//			$member->setMemberId($this->token(14));
+			//			$member->setMemberId($this->token(14));
 		}
 
-//		if ($member->alreadyExistOrJoining()) {
-//			throw new MemberAlreadyExistsException(
-//				$this->l10n->t('This account is already a member of the circle')
-//			);
-//		}
+		//		if ($member->alreadyExistOrJoining()) {
+		//			throw new MemberAlreadyExistsException(
+		//				$this->l10n->t('This account is already a member of the circle')
+		//			);
+		//		}
 
 		return $member;
 	}

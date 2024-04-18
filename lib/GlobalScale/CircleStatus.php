@@ -32,8 +32,8 @@ declare(strict_types=1);
 namespace OCA\Circles\GlobalScale;
 
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
-use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\DeprecatedMember;
+use OCA\Circles\Model\GlobalScale\GSEvent;
 
 /**
  * Class CircleStatus

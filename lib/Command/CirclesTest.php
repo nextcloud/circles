@@ -31,11 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
-use OCA\Circles\Tools\Exceptions\InvalidItemException;
-use OCA\Circles\Tools\Exceptions\ItemNotFoundException;
-use OCA\Circles\Tools\Traits\TDeserialize;
-use OCA\Circles\Tools\Traits\TArrayTools;
-use OCA\Circles\Tools\Traits\TStringTools;
 use Exception;
 use OC\Core\Command\Base;
 use OCA\Circles\AppInfo\Application;
@@ -47,6 +42,11 @@ use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Tools\Exceptions\InvalidItemException;
+use OCA\Circles\Tools\Exceptions\ItemNotFoundException;
+use OCA\Circles\Tools\Traits\TArrayTools;
+use OCA\Circles\Tools\Traits\TDeserialize;
+use OCA\Circles\Tools\Traits\TStringTools;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -157,7 +157,7 @@ class CirclesTest extends Base {
 		// loading CirclesManager
 		/** @var CirclesManager $circlesManager */
 		$circlesManager = \OC::$server->get(CirclesManager::class);
-//		$circlesManager->startSuperSession();
+		//		$circlesManager->startSuperSession();
 
 
 		$federatedUser = $circlesManager->getFederatedUser('test1', Member::TYPE_USER);
@@ -169,11 +169,11 @@ class CirclesTest extends Base {
 		//$probe->includePersonalCircles();
 
 		// get hidden circles (to get Groups)
-//		$probe->includeHiddenCircles();
+		//		$probe->includeHiddenCircles();
 
-//		$probe->includePersonalCircles();
-//		$probe->addOptionBool('filterPersonalCircles', true);
-//		$probe->mustBeMember();
+		//		$probe->includePersonalCircles();
+		//		$probe->addOptionBool('filterPersonalCircles', true);
+		//		$probe->mustBeMember();
 
 		$circles = $circlesManager->getCircles($probe);
 
@@ -205,7 +205,7 @@ class CirclesTest extends Base {
 		$federatedUser = $circlesManager->getFederatedUser('testGroup', Member::TYPE_GROUP);
 		echo 'singleId: ' . $federatedUser->getSingleId() . "\n";
 
-//		$federatedUser->getMemberships();
+		//		$federatedUser->getMemberships();
 
 
 		// get Circles available to test1
@@ -248,12 +248,12 @@ class CirclesTest extends Base {
 		);
 
 		echo json_encode($members, JSON_PRETTY_PRINT);
-//		$circlesManager->startSession($federatedUser);
+		//		$circlesManager->startSession($federatedUser);
 
-//		$circlesManager->destroyCircle('XXHHLGdwQTxENgU');
-//		$circles = array_map(function(Circle $circle): string {
-//			return $circle->getDisplayName();
-//		}, $circlesManager->getCircles());
+		//		$circlesManager->destroyCircle('XXHHLGdwQTxENgU');
+		//		$circles = array_map(function(Circle $circle): string {
+		//			return $circle->getDisplayName();
+		//		}, $circlesManager->getCircles());
 		return 0;
 
 		$circlesManager->stopSession();
@@ -262,27 +262,27 @@ class CirclesTest extends Base {
 		//echo json_encode($circles, JSON_PRETTY_PRINT);
 
 
-//		$circle = $circlesManager->createCircle('This is a test2');
-//
-//
-//		$federatedUser2 = $circlesManager->getFederatedUser('test3', Member::TYPE_USER);
-//		$circlesManager->startSession($federatedUser);
-//
+		//		$circle = $circlesManager->createCircle('This is a test2');
+		//
+		//
+		//		$federatedUser2 = $circlesManager->getFederatedUser('test3', Member::TYPE_USER);
+		//		$circlesManager->startSession($federatedUser);
+		//
 		////		$info = $circlesManager->getCircle($circle->getSingleId());
 		////echo json_encode($info);
-//
-//		$circles = $circlesManager->getCircles();
-//		foreach ($circles as $circle) {
-//			echo $circle->getDisplayName() . "\n";
+		//
+		//		$circles = $circlesManager->getCircles();
+		//		foreach ($circles as $circle) {
+		//			echo $circle->getDisplayName() . "\n";
 		////			$circlesManager->startSession($federatedUser2);
 		////			$circlesManager->destroyCircle($circle->getSingleId());
-//		}
-//
-//
-//		// testing getCircle()
-//
-//
-//		return 0;
+		//		}
+		//
+		//
+		//		// testing getCircle()
+		//
+		//
+		//		return 0;
 
 
 		// testing queryHelper;
@@ -301,26 +301,26 @@ class CirclesTest extends Base {
 		/** @var FederatedUser $federatedUser */
 		$federatedUser = $circlesManager->getFederatedUser('test1', Member::TYPE_USER);
 
-//		$circlesQueryHelper->limitToInheritedMembers('test', 'shared_to', $federatedUser, true);
-//		$circlesQueryHelper->addCircleDetails('test', 'shared_to');
-//
-//		$items = [];
-//		$cursor = $qb->execute();
-//		while ($row = $cursor->fetch()) {
-//			try {
-//				$items[] = [
-//					'id'     => $row['id'],
-//					'data'   => $row['data'],
-//					'circle' => $circlesQueryHelper->extractCircle($row)
-//				];
-//			} catch (Exception $e) {
-//			}
-//		}
-//		$cursor->closeCursor();
-//
-//		echo json_encode($items, JSON_PRETTY_PRINT);
-//
-//		return 0;
+		//		$circlesQueryHelper->limitToInheritedMembers('test', 'shared_to', $federatedUser, true);
+		//		$circlesQueryHelper->addCircleDetails('test', 'shared_to');
+		//
+		//		$items = [];
+		//		$cursor = $qb->execute();
+		//		while ($row = $cursor->fetch()) {
+		//			try {
+		//				$items[] = [
+		//					'id'     => $row['id'],
+		//					'data'   => $row['data'],
+		//					'circle' => $circlesQueryHelper->extractCircle($row)
+		//				];
+		//			} catch (Exception $e) {
+		//			}
+		//		}
+		//		$cursor->closeCursor();
+		//
+		//		echo json_encode($items, JSON_PRETTY_PRINT);
+		//
+		//		return 0;
 
 
 		if ($input->getOption('are-you-aware-this-will-delete-all-my-data') === 'yes-i-am') {
@@ -397,14 +397,14 @@ class CirclesTest extends Base {
 
 		$this->t('Adding local users and moderators');
 		$this->addLocalMemberByUserId();
-//		$this->addLocalMemberBySingleId();
-//		$this->addLocalMemberUsingMember();
-//		$this->levelLocalMemberToModerator();
-//		$this->addRemoteMemberUsingModerator();
-//		$this->addRemoteMemberUsingRemoteMember();
-//		$this->levelRemoteMemberToAdmin();
-//		$this->addRemoteMemberUsingRemoteAdmin();
-//
+		//		$this->addLocalMemberBySingleId();
+		//		$this->addLocalMemberUsingMember();
+		//		$this->levelLocalMemberToModerator();
+		//		$this->addRemoteMemberUsingModerator();
+		//		$this->addRemoteMemberUsingRemoteMember();
+		//		$this->levelRemoteMemberToAdmin();
+		//		$this->addRemoteMemberUsingRemoteAdmin();
+		//
 	}
 
 

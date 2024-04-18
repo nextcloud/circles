@@ -31,9 +31,9 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Events\Files;
 
-use OCA\Circles\Tools\Model\SimpleDataStore;
 use OCA\Circles\Events\CircleResultGenericEvent;
 use OCA\Circles\Model\Federated\FederatedEvent;
+use OCA\Circles\Tools\Model\SimpleDataStore;
 
 /**
  * Class CreatingFileShareEvent

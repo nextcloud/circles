@@ -29,7 +29,6 @@
 
 namespace OCA\Circles\Service;
 
-use OCA\Circles\Tools\Traits\TArrayTools;
 use Exception;
 use OC;
 use OCA\Circles\AppInfo\Application;
@@ -49,6 +48,7 @@ use OCA\Circles\Exceptions\MembersLimitException;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\GlobalScale\GSEvent;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use OCP\IGroupManager;
 use OCP\IL10N;
 use OCP\IUserSession;
@@ -189,11 +189,11 @@ class CirclesService {
 			);
 		}
 
-//		if (!$this->configService->isCircleAllowed($type)) {
-//			throw new CircleTypeDisabledException(
-//				$this->l10n->t('You cannot create this type of circle')
-//			);
-//		}
+		//		if (!$this->configService->isCircleAllowed($type)) {
+		//			throw new CircleTypeDisabledException(
+		//				$this->l10n->t('You cannot create this type of circle')
+		//			);
+		//		}
 
 		$circle = new DeprecatedCircle($type, $name);
 		if ($ownerId === '') {
@@ -246,11 +246,11 @@ class CirclesService {
 			throw new Exception('UserID cannot be null');
 		}
 
-//		if (!$this->configService->isCircleAllowed((int)$type)) {
-//			throw new CircleTypeDisabledException(
-//				$this->l10n->t('You cannot display this type of circle')
-//			);
-//		}
+		//		if (!$this->configService->isCircleAllowed((int)$type)) {
+		//			throw new CircleTypeDisabledException(
+		//				$this->l10n->t('You cannot display this type of circle')
+		//			);
+		//		}
 
 		$data = [];
 		$result = $this->circlesRequest->getCircles($userId, $type, $name, $level, $forceAll);
@@ -325,15 +325,15 @@ class CirclesService {
 	 * @throws GSStatusException
 	 */
 	private function detailsCircleLinkedGroups(DeprecatedCircle $circle) {
-//		$groups = [];
-//		if ($this->configService->isLinkedGroupsAllowed()) {
-//			$groups =
-//				$this->membersRequest->getGroupsFromCircle(
-//					$circle->getUniqueId(), $circle->getHigherViewer()
-//				);
-//		}
-//
-//		$circle->setGroups($groups);
+		//		$groups = [];
+		//		if ($this->configService->isLinkedGroupsAllowed()) {
+		//			$groups =
+		//				$this->membersRequest->getGroupsFromCircle(
+		//					$circle->getUniqueId(), $circle->getHigherViewer()
+		//				);
+		//		}
+		//
+		//		$circle->setGroups($groups);
 	}
 
 

@@ -41,11 +41,11 @@ use OCA\Circles\Model\ShareWrapper;
 use OCA\Circles\Tools\Exceptions\InvalidItemException;
 use OCA\Circles\Tools\Traits\TDeserialize;
 use OCA\Circles\Tools\Traits\TStringTools;
+use OCP\Files\Folder;
 use OCP\Files\NotFoundException;
 use OCP\ICache;
 use OCP\ICacheFactory;
 use OCP\Share\IShare;
-use OCP\Files\Folder;
 
 /**
  * Class ShareWrapperService

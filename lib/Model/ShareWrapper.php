@@ -458,22 +458,22 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		$share->setSharedWithAvatar($icon);
 
 
-//		if (array_key_exists('circle_type', $data)
-//			&& method_exists($share, 'setSharedWithDisplayName')) {
-//			$name = $data['circle_name'];
-//			if ($data['circle_alt_name'] !== '') {
-//				$name = $data['circle_alt_name'];
-//			}
-//
-//			$share->setSharedWithAvatar(CirclesService::getCircleIcon($data['circle_type']))
-//				  ->setSharedWithDisplayName(
-//					  sprintf(
-//						  ' % s(%s, %s)', $name,
-//						  $this->l10n->t(DeprecatedCircle::TypeLongString($data['circle_type'])),
-//						  $this->miscService->getDisplayName($data['circle_owner'], true)
-//					  )
-//				  );
-//		}
+		//		if (array_key_exists('circle_type', $data)
+		//			&& method_exists($share, 'setSharedWithDisplayName')) {
+		//			$name = $data['circle_name'];
+		//			if ($data['circle_alt_name'] !== '') {
+		//				$name = $data['circle_alt_name'];
+		//			}
+		//
+		//			$share->setSharedWithAvatar(CirclesService::getCircleIcon($data['circle_type']))
+		//				  ->setSharedWithDisplayName(
+		//					  sprintf(
+		//						  ' % s(%s, %s)', $name,
+		//						  $this->l10n->t(DeprecatedCircle::TypeLongString($data['circle_type'])),
+		//						  $this->miscService->getDisplayName($data['circle_owner'], true)
+		//					  )
+		//				  );
+		//		}
 	}
 
 
@@ -569,11 +569,11 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 
 		$this->importAttributesFromDatabase($this->get('attributes', $data));
 
-//		if (($password = $this->get('personal_password', $data, '')) !== '') {
-//			$share->setPassword($this->get('personal_password', $data, ''));
-//		} else if (($password = $this->get('password', $data, '')) !== '') {
-//			$share->setPassword($this->get('password', $data, ''));
-//		}
+		//		if (($password = $this->get('personal_password', $data, '')) !== '') {
+		//			$share->setPassword($this->get('personal_password', $data, ''));
+		//		} else if (($password = $this->get('password', $data, '')) !== '') {
+		//			$share->setPassword($this->get('password', $data, ''));
+		//		}
 
 		$this->setChildId($this->getInt($prefix . 'child_id', $data))
 			 ->setChildFileTarget($this->get($prefix . 'child_file_target', $data))

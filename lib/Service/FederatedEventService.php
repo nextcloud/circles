@@ -201,9 +201,9 @@ class FederatedEventService extends NCSignature {
 				return $event->getOutcome();
 			}
 
-//			if (!$event->isAsync()) {
-//				$federatedItem->manage($event);
-//			}
+			//			if (!$event->isAsync()) {
+			//				$federatedItem->manage($event);
+			//			}
 		}
 
 		return $event->getOutcome();
@@ -281,7 +281,7 @@ class FederatedEventService extends NCSignature {
 		$this->confirmRequiredCondition($event, $item, $checkLocalOnly);
 		$this->configureEvent($event, $item);
 
-//		$this->confirmSharedItem($event, $item);
+		//		$this->confirmSharedItem($event, $item);
 
 		return $item;
 	}

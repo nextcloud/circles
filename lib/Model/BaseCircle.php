@@ -544,33 +544,33 @@ class BaseCircle {
 	}
 
 
-//	public function getRemote() {
-//		return $this->remote;
-//	}
-//
-//	public function addRemote($link) {
-//		array_push($this->remote, $link);
-//	}
-//
-//	public function getRemoteFromToken($token) {
-//		foreach ($this->links AS $link) {
-//			if ($link->getToken() === $token) {
-//				return $link;
-//			}
-//		}
-//
-//		return null;
-//	}
-//
-//	public function getRemoteFromAddressAndId($address, $id) {
-//		foreach ($this->links AS $link) {
-//			if ($link->getAddress() === $address && $link->getUniqueId() === $id) {
-//				return $link;
-//			}
-//		}
-//
-//		return null;
-//	}
+	//	public function getRemote() {
+	//		return $this->remote;
+	//	}
+	//
+	//	public function addRemote($link) {
+	//		array_push($this->remote, $link);
+	//	}
+	//
+	//	public function getRemoteFromToken($token) {
+	//		foreach ($this->links AS $link) {
+	//			if ($link->getToken() === $token) {
+	//				return $link;
+	//			}
+	//		}
+	//
+	//		return null;
+	//	}
+	//
+	//	public function getRemoteFromAddressAndId($address, $id) {
+	//		foreach ($this->links AS $link) {
+	//			if ($link->getAddress() === $address && $link->getUniqueId() === $id) {
+	//				return $link;
+	//			}
+	//		}
+	//
+	//		return null;
+	//	}
 
 	/**
 	 * @param integer|string $type

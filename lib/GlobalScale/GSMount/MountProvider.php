@@ -31,13 +31,13 @@ declare(strict_types=1);
 
 namespace OCA\Circles\GlobalScale\GSMount;
 
-use OCA\Circles\Tools\Traits\TArrayTools;
 use Exception;
 use OC;
 use OCA\Circles\Db\GSSharesRequest;
 use OCA\Circles\Model\GlobalScale\GSShare;
 use OCA\Circles\Model\GlobalScale\GSShareMountpoint;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use OCP\Federation\ICloudIdManager;
 use OCP\Files\Config\IMountProvider;
 use OCP\Files\Mount\IMountPoint;

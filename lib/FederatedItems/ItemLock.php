@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
-use OCA\Circles\Tools\Traits\TStringTools;
 use OCA\Circles\Db\ShareLockRequest;
 use OCA\Circles\Exceptions\FederatedShareNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
@@ -39,6 +38,7 @@ use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemDataRequestOnly;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\FederatedShare;
+use OCA\Circles\Tools\Traits\TStringTools;
 
 /**
  * Class ItemLock
@@ -115,9 +115,9 @@ class ItemLock implements
 	 * @param FederatedEvent $event
 	 */
 	public function manage(FederatedEvent $event): void {
-//		$this->circleEventService->onSharedItemsSyncRequested($event);
-//
-//		$event->setResult(new SimpleDataStore(['shares' => 'ok']));
+		//		$this->circleEventService->onSharedItemsSyncRequested($event);
+		//
+		//		$event->setResult(new SimpleDataStore(['shares' => 'ok']));
 	}
 
 
