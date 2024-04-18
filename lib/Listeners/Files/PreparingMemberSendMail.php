@@ -54,6 +54,7 @@ use OCP\EventDispatcher\IEventListener;
  * Class PreparingMemberSendMail
  *
  * @package OCA\Circles\Listeners\Files
+ * @implements IEventListener<PreparingCircleMemberEvent>
  */
 class PreparingMemberSendMail implements IEventListener {
 	use TStringTools;

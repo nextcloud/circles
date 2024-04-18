@@ -55,6 +55,7 @@ use OCP\Security\IHasher;
  * Class PreparingShareSendMail
  *
  * @package OCA\Circles\Listeners\Files
+ * @implements IEventListener<PreparingFileShareEvent>
  */
 class PreparingShareSendMail implements IEventListener {
 	use TStringTools;

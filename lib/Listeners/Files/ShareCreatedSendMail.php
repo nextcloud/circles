@@ -57,6 +57,7 @@ use OCP\EventDispatcher\IEventListener;
  * Class ShareCreatedSendMail
  *
  * @package OCA\Circles\Listeners\Files
+ * @implements IEventListener<FileShareCreatedEvent>
  */
 class ShareCreatedSendMail implements IEventListener {
 	use TStringTools;

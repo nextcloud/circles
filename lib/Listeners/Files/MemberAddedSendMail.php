@@ -47,6 +47,7 @@ use OCP\EventDispatcher\IEventListener;
  * Class MemberAdded
  *
  * @package OCA\Circles\Listeners\Files
+ * @implements IEventListener<CircleMemberAddedEvent>
  */
 class MemberAddedSendMail implements IEventListener {
 	use TStringTools;

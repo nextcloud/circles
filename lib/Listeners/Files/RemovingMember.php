@@ -47,6 +47,7 @@ use Psr\Log\LoggerInterface;
  * Class RemovingMember
  *
  * @package OCA\Circles\Listeners\Files
+ * @implements IEventListener<RemovingCircleMemberEvent>
  */
 class RemovingMember implements IEventListener {
 	use TStringTools;

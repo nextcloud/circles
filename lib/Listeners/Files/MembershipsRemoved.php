@@ -59,6 +59,7 @@ use OCP\EventDispatcher\IEventListener;
  * Class MembershipsRemoved
  *
  * @package OCA\Circles\Listeners\Files
+ * @implements IEventListener<MembershipsRemovedEvent>
  */
 class MembershipsRemoved implements IEventListener {
 	use TStringTools;
