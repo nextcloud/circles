@@ -247,7 +247,31 @@ class ActivityService {
 			return;
 		}
 
+		switch ($member->getUserType()) {
+			case Member::TYPE_USER:
+			case Member::TYPE_MAIL:
+			case Member::TYPE_CONTACT:
+				$this->onMemberRemoveAccount($circle, $member, $eventType);
+				break;
+
+			case Member::TYPE_CIRCLE:
+				$this->onMemberRemoveCircle(
+					$circle,
+					$member,
+					$eventType
+				);
+				break;
+		}
+	}
+
+
+	private function onMemberRemoveAccount(
+		Circle $circle,
+		Member $member,
+		int $eventType
+	): void {
 		$event = $this->generateEvent('circles_as_member');
+
 		try {
 			$event->setSubject(
 				match ($eventType) {
@@ -266,6 +290,40 @@ class ActivityService {
 		$this->publishEvent(
 			$event, array_merge(
 				[$member],
+				$this->memberRequest->getInheritedMembers(
+					$circle->getSingleId(),
+					false,
+					Member::LEVEL_MODERATOR
+				)
+			)
+		);
+	}
+
+	private function onMemberRemoveCircle(
+		Circle $circle,
+		Member $member,
+		int $eventType = CircleGenericEvent::JOINED
+	): void {
+		$event = $this->generateEvent('circles_as_member');
+
+		try {
+			$event->setSubject(
+				match ($eventType) {
+					CircleGenericEvent::LEFT => 'member_circle_left',
+					CircleGenericEvent::REMOVED => 'member_circle_removed'
+				},
+				[
+					'circle' => json_encode($circle),
+					'member' => json_encode($member)
+				]
+			);
+		} catch (UnhandledMatchError $e) {
+			return;
+		}
+
+		$this->publishEvent(
+			$event, array_merge(
+				$this->memberRequest->getInheritedMembers($member->getSingleId(), false, Member::LEVEL_MEMBER),
 				$this->memberRequest->getInheritedMembers($circle->getSingleId(), false, Member::LEVEL_MODERATOR)
 			)
 		);
