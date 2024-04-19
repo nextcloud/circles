@@ -1,6 +1,7 @@
 { "translations": {
     "You deleted {circle}" : "여러분이 {circle}을(를) 삭제함",
     "{author} deleted {circle}" : "{author} 님이 {circle}을(를) 삭제함",
+    "You removed {member} from {circle}" : "여러분이 {member} 님을 {circle}에서 삭제함",
     "You joined {circle}" : "여러분이 {circle}에 참가함",
     "{member} joined {circle}" : "{member} 님이 {circle}에 참가함",
     "You accepted the invitation to join {circle}" : "여러분이 {circle}에 등록할 초대장을 수락함",
@@ -18,7 +19,6 @@
     "You declined the invitation to join {circle}" : "여러분이 {circle}에 등록할 초대장을 거절함",
     "{member} declined an invitation to join {circle}" : "{member} 님이 {circle}에 등록할 초대장을 거절함",
     "You cancelled your request to join {circle}" : "여러분이 {circle} 가입 요청을 취소함",
-    "You removed {member} from {circle}" : "여러분이 {member} 님을 {circle}에서 삭제함",
     "You have been removed from {circle} by {author}" : "{author} 님이 여러분을 {circle}에서 삭제함",
     "{member} has been removed from {circle} by {author}" : "{author} 님이 {member} 님을 {circle}에서 삭제함",
     "You removed {external} from {circle}" : "여러분이 {external}을(를) {circle}에서 삭제함",

@@ -1,6 +1,7 @@
 { "translations": {
     "You deleted {circle}" : "Jūs ištrynėte {circle}",
     "{author} deleted {circle}" : "{author} ištrynė {circle}",
+    "You removed {member} from {circle}" : "Jūs pašalinote {member} iš {circle}",
     "You joined {circle}" : "Jūs prisijungėte prie {circle}",
     "{member} joined {circle}" : "{member} prisijungė prie {circle}",
     "You accepted the invitation to join {circle}" : "Jūs priėmėte pakvietimą prisijungti prie {circle}",
@@ -18,7 +19,6 @@
     "You declined the invitation to join {circle}" : "Jūs atmetėte pakvietimą prisijungti prie {circle}",
     "{member} declined an invitation to join {circle}" : "{member} atmetė pakvietimą prisijungti prie {circle}",
     "You cancelled your request to join {circle}" : "Jūs atšaukėte prašymą prisijungti prie {circle}",
-    "You removed {member} from {circle}" : "Jūs pašalinote {member} iš {circle}",
     "You have been removed from {circle} by {author}" : "{author} pašalino jus iš {circle}",
     "{member} has been removed from {circle} by {author}" : "{author} pašalino {member} iš {circle}",
     "You removed {external} from {circle}" : "Jūs pašalinote {external} iš {circle}",

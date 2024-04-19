@@ -3,6 +3,7 @@ OC.L10N.register(
     {
     "You deleted {circle}" : "As cantzelladu {circle}",
     "{author} deleted {circle}" : "{author} at cantzelladu {circle}",
+    "You removed {member} from {circle}" : "As bogadu a {member} dae {circle}",
     "You joined {circle}" : "As fatu s'atzessu a {circle}",
     "{member} joined {circle}" : "{member} at fatu s'atzessu a {circle}",
     "You accepted the invitation to join {circle}" : "As atzetadu s'invitu a atzèdere {circle}",
@@ -20,7 +21,6 @@ OC.L10N.register(
     "You declined the invitation to join {circle}" : "As refudadu s'invitu a intrare in {circle}",
     "{member} declined an invitation to join {circle}" : "{member} at refudadu un'invitu a intrare in {circle}",
     "You cancelled your request to join {circle}" : "As annulladu sa rechesta de intrare in {circle}",
-    "You removed {member} from {circle}" : "As bogadu a {member} dae {circle}",
     "You have been removed from {circle} by {author}" : "{author} ti nch'at bogadu dae {circle}",
     "{member} has been removed from {circle} by {author}" : "{author} nch'at bogadu a {member} dae {circle}",
     "You removed {external} from {circle}" : "As bogadu a {external} dae {circle}",

@@ -1,6 +1,7 @@
 { "translations": {
     "You deleted {circle}" : "Törölte ezt: {circle}",
     "{author} deleted {circle}" : "{author} törölte a(z) {circle} kört",
+    "You removed {member} from {circle}" : "Eltávolította {member} tagot a(z) {circle} körből",
     "You joined {circle}" : "Csatlakozott ehhez: {circle}",
     "{member} joined {circle}" : "{member} csatlakozott ehhez: {circle}",
     "You accepted the invitation to join {circle}" : "Elfogadta a meghívást, hogy csatlakozzon a(z) {circle} körhöz",
@@ -18,7 +19,6 @@
     "You declined the invitation to join {circle}" : "Visszautasította a meghívást, hogy csatlakozzon a(z) {circle} körbe",
     "{member} declined an invitation to join {circle}" : "{member} visszautasította a meghívást, hogy csatlakozzon a(z) {circle} körbe",
     "You cancelled your request to join {circle}" : "Visszavonta a kérését, hogy csatlakozzon a(z) {circle} körhöz",
-    "You removed {member} from {circle}" : "Eltávolította {member} tagot a(z) {circle} körből",
     "You have been removed from {circle} by {author}" : "{author} eltávolította a(z) {circle} körből",
     "{member} has been removed from {circle} by {author}" : "{author} eltávolította {member} tagot a(z) {circle} körből",
     "You removed {external} from {circle}" : "Eltávolította a következőt a(z) {circle} körből: {external}",

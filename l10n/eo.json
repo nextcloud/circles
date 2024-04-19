@@ -1,6 +1,7 @@
 { "translations": {
     "You deleted {circle}" : "Vi forigis la rondon {circle}",
     "{author} deleted {circle}" : "{author} forigis la rondon {circle}",
+    "You removed {member} from {circle}" : "Vi forigis {member} el {circle}",
     "You joined {circle}" : "Vi membriĝis al {circle}",
     "{member} joined {circle}" : "{member} membriĝis al {circle}",
     "You accepted the invitation to join {circle}" : "Vi akceptis inviton membriĝi al {circle}",
@@ -18,7 +19,6 @@
     "You declined the invitation to join {circle}" : "Vi rifuzis inviton membriĝi al {circle}",
     "{member} declined an invitation to join {circle}" : "{member} rifuzis inviton membriĝi al {circle}",
     "You cancelled your request to join {circle}" : "Vi nuligis peton por membriĝi al {circle}",
-    "You removed {member} from {circle}" : "Vi forigis {member} el {circle}",
     "You have been removed from {circle} by {author}" : "{author} forigis vin el {circle}",
     "{member} has been removed from {circle} by {author}" : "{author} forigis membron {member} el {circle}",
     "You removed {external} from {circle}" : "Vi forigis {external} el {circle}",

@@ -3,6 +3,7 @@ OC.L10N.register(
     {
     "You deleted {circle}" : "Poistit piirin {circle}",
     "{author} deleted {circle}" : "{author} poisti piirin {circle}",
+    "You removed {member} from {circle}" : "Poistit jäsenen {member} piiristä {circle}",
     "You joined {circle}" : "Liityit piiriin {circle}",
     "{member} joined {circle}" : "{member} liittyi piiriin {circle}",
     "You accepted the invitation to join {circle}" : "Hyväksyit kutsun liittyä piirin {circle}",
@@ -20,7 +21,6 @@ OC.L10N.register(
     "You declined the invitation to join {circle}" : "Kieltäydyit kutsusta liittyä piiriin {circle}",
     "{member} declined an invitation to join {circle}" : "{member} kieltäytyi kutsusta liittyä piiriin {circle}",
     "You cancelled your request to join {circle}" : "Peruit pyyntösi liittyä piiriin {circle}",
-    "You removed {member} from {circle}" : "Poistit jäsenen {member} piiristä {circle}",
     "You have been removed from {circle} by {author}" : "Sinut poistettiin piiristä {circle} käyttäjän {author} toimesta",
     "{member} has been removed from {circle} by {author}" : "{member} poistettiin piiristä {circle} käyttäjän {author} toimesta",
     "You removed {external} from {circle}" : "Poistit {external} piiristä {circle}",
