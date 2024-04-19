@@ -3,6 +3,7 @@ OC.L10N.register(
     {
     "You deleted {circle}" : "Izbrisali ste {circle}",
     "{author} deleted {circle}" : "{author} je izbrisao {circle}",
+    "You removed {member} from {circle}" : "Uklonili ste {member} iz {circle}",
     "You joined {circle}" : "Pridružili ste se {circle}",
     "{member} joined {circle}" : "{member} se pridružio {circle}",
     "You accepted the invitation to join {circle}" : "Prihvatili ste pozivnicu za pridruživanje {circle}",
@@ -20,7 +21,6 @@ OC.L10N.register(
     "You declined the invitation to join {circle}" : "Odbili ste poziv za pridruživanje {circle}",
     "{member} declined an invitation to join {circle}" : "{član} je odbio poziv za pridruživanje {circle}",
     "You cancelled your request to join {circle}" : "Otkazali ste zahtjev za pridruživanje {circle}",
-    "You removed {member} from {circle}" : "Uklonili ste {member} iz {circle}",
     "You have been removed from {circle} by {author}" : "{author} vas je uklonio iz {circle}",
     "{member} has been removed from {circle} by {author}" : "{author} je uklonio {member} iz {circle}",
     "You removed {external} from {circle}" : "Uklonili ste {external} iz {circle}",

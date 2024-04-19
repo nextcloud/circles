@@ -3,6 +3,7 @@ OC.L10N.register(
     {
     "You deleted {circle}" : "Bạn đã xóa {circle}",
     "{author} deleted {circle}" : "{author} đã xóa {circle}",
+    "You removed {member} from {circle}" : "Bạn đã gỡ bỏ {member} ra khỏi {circle}",
     "You joined {circle}" : "Bạn đã gia nhập {circle}",
     "{member} joined {circle}" : "{nember} đã gia nhập {circle}",
     "You accepted the invitation to join {circle}" : "Bạn đã chấp thuận lời mời để gia nhập {circle}",
@@ -20,7 +21,6 @@ OC.L10N.register(
     "You declined the invitation to join {circle}" : "Bạn đã từ chối lời mời gia nhập vào {circle}",
     "{member} declined an invitation to join {circle}" : "{member} đã từ chối một lời mời gia nhập vào {circle}",
     "You cancelled your request to join {circle}" : "Bạn đã hủy bỏ yêu cầu của bạn để gia nhập {circle}",
-    "You removed {member} from {circle}" : "Bạn đã gỡ bỏ {member} ra khỏi {circle}",
     "You have been removed from {circle} by {author}" : "Bạn vừa mới bị gỡ bỏ khỏi {circle} bởi {author}",
     "{member} has been removed from {circle} by {author}" : "{member} vừa mới bị gỡ bỏ khỏi {circle} bởi {author}",
     "You removed {external} from {circle}" : "Bạn gỡ bỏ {external} khỏi {circle}",
