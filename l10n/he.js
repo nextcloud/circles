@@ -3,6 +3,7 @@ OC.L10N.register(
     {
     "You deleted {circle}" : "מחקת את {circle}",
     "{author} deleted {circle}" : "{circle} נמחק על ידי {author}",
+    "You removed {member} from {circle}" : "הסרת את {member} מהמעגל {circle}",
     "You joined {circle}" : "הטרפת אל {circle}",
     "You accepted the invitation to join {circle}" : "קיבלת את הבקשה להצטרף אל {circle}",
     "{member} accepted the invitation to join {circle}" : "הבקשה להצטרף אל {circle} התקבלה על ידי {member}",
@@ -13,7 +14,6 @@ OC.L10N.register(
     "You left {circle}" : "עזבת את {circle}",
     "You declined the invitation to join {circle}" : "דחית את ההזמנה להצטרף אל {circle}",
     "You cancelled your request to join {circle}" : "ביטלת את בקשתך להצטרף אל {circle}",
-    "You removed {member} from {circle}" : "הסרת את {member} מהמעגל {circle}",
     "You have been removed from {circle} by {author}" : "הוסרת מהמעגל {circle} על ידי {author}",
     "You removed {external} from {circle}" : "הסרת את {external} מהמעגל {circle}",
     "You cancelled {member}'s invitation to join {circle}" : "ביטלת את ההזמנה של {member} להצטרף אל {circle}",

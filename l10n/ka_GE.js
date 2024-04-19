@@ -3,6 +3,7 @@ OC.L10N.register(
     {
     "You deleted {circle}" : "თქვენ წაშალეთ {circle}",
     "{author} deleted {circle}" : "{author} მომხმარებელმა წაშალა {circle}",
+    "You removed {member} from {circle}" : "თქვენ ამოშალეთ {member} {circle} წრიდან",
     "You joined {circle}" : "თქვენ შეუერთიდ წრეს {circle}",
     "{member} joined {circle}" : "{member} შეუერთდა წრეს {circle}",
     "You accepted the invitation to join {circle}" : "თქვენ მიიღეთ მოწვევა შეუერთდეთ {circle} წრეს",
@@ -20,7 +21,6 @@ OC.L10N.register(
     "You declined the invitation to join {circle}" : "თქვენ უარყავით მოწვევა გაწევრიანდეთ {circle} წრეში",
     "{member} declined an invitation to join {circle}" : "{member} მომხმარებელმა უარყო მოწვევა გაწევრიანდეს {circle} წრეში",
     "You cancelled your request to join {circle}" : "თქვენ გააუქმეთ მოთხოვნა გაწევრიანდეთ {circle} წრეში",
-    "You removed {member} from {circle}" : "თქვენ ამოშალეთ {member} {circle} წრიდან",
     "You have been removed from {circle} by {author}" : "თქვენ {author} მომხმარებელმა {circle} წრიდან ამოგშალათ",
     "{member} has been removed from {circle} by {author}" : "{member} მომხმარებელი {circle} წრიდან {author} მომხმარებელმა ამოშალა",
     "You removed {external} from {circle}" : "თქვენ {external} ამოშალეთ {circle} წრიდან",

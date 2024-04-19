@@ -3,6 +3,7 @@ OC.L10N.register(
     {
     "You deleted {circle}" : "Rydych wedi dileu {circle}",
     "{author} deleted {circle}" : "Mae {author} wedi dileu {circle}",
+    "You removed {member} from {circle}" : "Rydych wedi dileu {member} o {circle}",
     "You joined {circle}" : "Rydych wedi ymuno â {circle}",
     "{member} joined {circle}" : "Ymunodd {member} â {circle}",
     "You accepted the invitation to join {circle}" : "Rydych wedi derbyn y gwahoddiad i ymuno â {circle}",
@@ -20,7 +21,6 @@ OC.L10N.register(
     "You declined the invitation to join {circle}" : "Rydych wedi gwrthod y gwahoddiad i ymuno â {circle}",
     "{member} declined an invitation to join {circle}" : "Mae {member} wedi gwrthod gwahoddiad i ymuno â {circle}",
     "You cancelled your request to join {circle}" : "Rydych chi wedi diddymu'ch cais i ymuno â {circle}",
-    "You removed {member} from {circle}" : "Rydych wedi dileu {member} o {circle}",
     "You have been removed from {circle} by {author}" : "Rydych wedi cael eich tynnu o {circle} gan {author}",
     "{member} has been removed from {circle} by {author}" : "Mae {member} wedi'i dynnu o {circle} gan {author}",
     "You removed {external} from {circle}" : "Rydych wedi dileu {external} o {circle}",
