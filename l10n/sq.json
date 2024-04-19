@@ -1,6 +1,7 @@
 { "translations": {
     "You deleted {circle}" : "Ju fshitë {circle}",
     "{author} deleted {circle}" : "{author} fshiu {circle}",
+    "You removed {member} from {circle}" : "Ju hoqët {member} nga {circle}",
     "You joined {circle}" : "Ju iu bashkuat {circle}",
     "{member} joined {circle}" : "{member} iu bashkua {circle}",
     "You accepted the invitation to join {circle}" : "Ju pranuat ftesën për t'u bashkuar {circle}",
@@ -16,7 +17,6 @@
     "{member} left {circle}" : "{member} la {circle}",
     "You declined the invitation to join {circle}" : "Ju refuzuat ftesën për t'u bashkuar {circle}",
     "{member} declined an invitation to join {circle}" : "{member} refuzoi ftesën për tu bashkuar {circle}",
-    "You removed {member} from {circle}" : "Ju hoqët {member} nga {circle}",
     "You changed {member}'s level in {circle} to %1$s" : "ju ndryshuat nivelin e {member} në {circle} në %1$s",
     "{author} changed your level in {circle} to %1$s" : "{author} ndryshoi nivelin tuaj në {circle} në %1$s",
     "{author} changed {member}'s level in {circle} to %1$s" : "{author} ndryshoi nivelin e {member} në {circle} në %1$s",

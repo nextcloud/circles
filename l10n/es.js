@@ -3,6 +3,7 @@ OC.L10N.register(
     {
     "You deleted {circle}" : "Has eliminado {circle}",
     "{author} deleted {circle}" : "{author} ha eliminado  {circle}",
+    "You removed {member} from {circle}" : "Has eliminado a {member} de {circle}",
     "You joined {circle}" : "Te has unido a {circle}",
     "{member} joined {circle}" : "{member} se ha unido a  {circle}",
     "You accepted the invitation to join {circle}" : "Has aceptado la invitación para unirte a '{circle}'",
@@ -20,7 +21,6 @@ OC.L10N.register(
     "You declined the invitation to join {circle}" : "Has declinado la invitación para unirte a {circle}",
     "{member} declined an invitation to join {circle}" : "{member} ha declinado una invitación para unirse a {circle}",
     "You cancelled your request to join {circle}" : "Has cancelado tu petición para unirte a {circle}",
-    "You removed {member} from {circle}" : "Has eliminado a {member} de {circle}",
     "You have been removed from {circle} by {author}" : "Has sido eliminado de {circle} por {author}",
     "{member} has been removed from {circle} by {author}" : "{member} ha sido eliminado de {circle} por {author}",
     "You removed {external} from {circle}" : "Has eliminado a {external} de {circle}",

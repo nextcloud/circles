@@ -1,6 +1,7 @@
 { "translations": {
     "You deleted {circle}" : "Διαγράψατε τον {circle}",
     "{author} deleted {circle}" : "{author} διέγραψε {circle}",
+    "You removed {member} from {circle}" : "Απομακρύνατε {member} από {circle}",
     "You joined {circle}" : "Συμμετέχετε στον {circle}",
     "{member} joined {circle}" : "{member} συμμετέχει {circle}",
     "You accepted the invitation to join {circle}" : "Αποδεχθήκατε την πρόσκληση για να συμμετέχετε σε {circle}",
@@ -18,7 +19,6 @@
     "You declined the invitation to join {circle}" : "Απορρίψατε την πρόσκληση να συμμετάσχετε στο {circle}",
     "{member} declined an invitation to join {circle}" : " {member} δεν αποδέχτηκε την πρόσκληση για το {circle}",
     "You cancelled your request to join {circle}" : "Ακυρώσατε το αίτημα συμμετοχής στο {circle}",
-    "You removed {member} from {circle}" : "Απομακρύνατε {member} από {circle}",
     "You have been removed from {circle} by {author}" : "Απομακρυνθήκατε από {circle} από {author}",
     "{member} has been removed from {circle} by {author}" : "Ο/η {member} απομακρύνθηκε από {circle} από {author}",
     "You removed {external} from {circle}" : "Καταργήσατε το {external} από {circle}",
