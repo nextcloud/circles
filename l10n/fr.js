@@ -13,6 +13,7 @@ OC.L10N.register(
     "{author} deleted {circle}" : "{author} a supprimé {circle}",
     "You made {member} join {circle}" : "Vous avez fait rejoindre {circle} à {member}",
     "{author} made {member} join {circle}" : "{author} a fait rejoindre {circle} à {member}",
+    "You added team {member} as member to {circle}" : "Vous avez ajouté l'équipe {member} comme membre de {circle}",
     "You made {member} leave {circle}" : "Vous avez fait quitter {circle} à {member}",
     "{author} made {member} leave {circle}" : "{author} a fait quitter {circle} à {member}",
     "You removed {member} from {circle}" : "Vous avez supprimé {member} de {circle}",
