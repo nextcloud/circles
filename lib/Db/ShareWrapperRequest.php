@@ -343,7 +343,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		$qb->setOptions([CoreQueryBuilder::SHARE], ['getData' => $getData]);
 		$qb->leftJoinCircle(CoreQueryBuilder::SHARE, null, 'share_with');
 
-		$qb->limitToShareOwner(CoreQueryBuilder::SHARE, $federatedUser, $reshares);
+		$qb->limitToShareOwner(CoreQueryBuilder::SHARE, $federatedUser, $reshares, $nodeId);
 		$qb->limitNull('parent', false);
 
 		if ($nodeId > 0) {
