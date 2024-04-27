@@ -160,7 +160,7 @@ class ProviderSubjectCircleMember extends ProviderParser {
 		$this->parseCircleMemberEvent(
 			$event, $circle, $member,
 			$this->l10n->t('You removed {member} from {circle}'),
-			$this->l10n->t('{author} made {member} leave {circle}')
+			$this->l10n->t('{author} removed {member} from {circle}')
 		);
 
 		throw new FakeException();
