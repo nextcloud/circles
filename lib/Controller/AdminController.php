@@ -263,6 +263,7 @@ class AdminController extends OCSController {
 	 * @param string $emulated
 	 * @param int $limit
 	 * @param int $offset
+	 *
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
@@ -482,9 +483,6 @@ class AdminController extends OCSController {
 	}
 
 
-
-
-
 	/**
 	 * @param string $emulated
 	 * @param string $circleId
@@ -529,7 +527,7 @@ class AdminController extends OCSController {
 
 
 	/**
-	 * @param string $emulated
+	 * @param string $emulated by default, userId; can be an entity using singleId=<singleId>
 	 *
 	 * @throws FederatedUserException
 	 * @throws FederatedUserNotFoundException
@@ -543,6 +541,18 @@ class AdminController extends OCSController {
 	private function setLocalFederatedUser(string $emulated): void {
 		$user = $this->userSession->getUser();
 		$this->federatedUserService->setCurrentPatron($user->getUID());
+
+		if (strpos($emulated, '=') > 0) {
+			[$type, $id] = explode('=', $emulated, 2);
+			switch (strtolower($type)) {
+				case 'singleid':
+					$federatedUser = $this->federatedUserService->getFederatedUser($id, Member::TYPE_SINGLE);
+					$this->federatedUserService->setCurrentUser($federatedUser);
+					break;
+			}
+
+			return;
+		}
 		$this->federatedUserService->setLocalCurrentUserId($emulated);
 	}
 }
