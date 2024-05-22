@@ -3,6 +3,8 @@ OC.L10N.register(
     {
     "Personal" : "Pearsanta",
     "Open" : "Oscail",
+    "Local" : "Áitiúil",
+    "Federated" : "Cónaidhme",
     "Email address" : "Seoladh ríomhphoist",
     "Admin" : "Riarachán",
     "Files" : "Comhaid",
