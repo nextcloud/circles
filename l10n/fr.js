@@ -158,6 +158,7 @@ OC.L10N.register(
     "No files found for the selected circles" : "Aucun fichier pour les cercles sélectionnés",
     "You created the circle {circle}" : "Vous avez créé le cercle {circle}",
     "{author} created the circle {circle}" : "{author} a créé le cercle {circle}",
+    "You added circle {member} as member to {circle}" : "Vous avez ajouté le cercle {member} en tant que membre de {circle}",
     "On events happening in a <strong>Circle</strong> of which you are a member" : "Sur les événements survenant dans un <strong>Cercle</strong> dont vous êtes membre",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Tous les événements importants dans un <strong>Cercle</strong> que vous modérez",
     "On global events happening in any <strong>Circle</strong>" : "Sur les événements globaux survenant dans n’importe quel <strong>Cercle</strong>",
