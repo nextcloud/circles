@@ -7,6 +7,7 @@ OC.L10N.register(
     "Federated" : "Cónaidhme",
     "Email address" : "Seoladh ríomhphoist",
     "Admin" : "Riarachán",
+    "Owner" : "Úinéir",
     "Password to access »%1$s« shared to you by %2$s" : "Tá pasfhocal chun rochtain a fháil ar »%1$s« roinnte agat ag %2$s",
     "Password to access »%s«" : "Pasfhocal le rochtain »%s«",
     "It is protected with the following password:" : "Tá sé cosanta leis an bhfocal faire seo a leanas:",
