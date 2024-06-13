@@ -58,6 +58,7 @@ use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\FederatedItems\Files\FileShare;
 use OCA\Circles\FederatedItems\Files\FileUnshare;
 use OCA\Circles\Model\Federated\FederatedEvent;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\Probes\DataProbe;
 use OCA\Circles\Model\ShareWrapper;
@@ -654,7 +655,43 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @return array
 	 */
 	public function getAccessList($nodes, $currentAccess): array {
-		return [];
+		$ids = [];
+		foreach ($nodes as $node) {
+			$ids[] = $node->getId();
+		}
+
+		$users = $remote = $mails = [];
+		$shares = $this->shareWrapperService->getSharesByFileIds($ids, true);
+
+		foreach($shares as $share) {
+			$circle = $share->getCircle();
+			foreach ($circle->getInheritedMembers() as $member) {
+				switch ($member->getUserType()) {
+					case Member::TYPE_USER:
+						if ($member->isLocal()) {
+							if (!in_array($member->getUserId(), $users)) {
+								$users[] = $member->getUserId();
+							}
+						} else {
+							if (!in_array($member->getUserId(), $remote)) {
+								$remote[] = $member->getUserid() . '@' . $member->getInstance();
+							}
+						}
+						break;
+					case Member::TYPE_MAIL:
+						if (!in_array($member->getUserId(), $mails)) {
+							$mails[] = $member->getUserId();
+						}
+						break;
+				}
+			}
+		}
+
+		return [
+			'users' => $users,
+			'remote' => $remote,
+			'email' => $mails
+		];
 	}
 
 

@@ -528,10 +528,6 @@ class ExtendedQueryBuilder extends QueryBuilder {
 		string $alias = '',
 		bool $cs = true
 	): ICompositeExpression {
-		if ($this->getType() === DBALQueryBuilder::SELECT) {
-			$field = (($alias === '') ? $this->getDefaultSelectAlias() : $alias) . '.' . $field;
-		}
-
 		$andX = $this->expr()->andX();
 		foreach ($values as $value) {
 			if (is_integer($value)) {
