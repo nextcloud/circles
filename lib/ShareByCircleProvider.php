@@ -663,7 +663,7 @@ class ShareByCircleProvider implements IShareProvider {
 		$users = $remote = $mails = [];
 		$shares = $this->shareWrapperService->getSharesByFileIds($ids, true);
 
-		foreach($shares as $share) {
+		foreach ($shares as $share) {
 			$circle = $share->getCircle();
 			foreach ($circle->getInheritedMembers() as $member) {
 				switch ($member->getUserType()) {
