@@ -1,11 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: maxence
- * Date: 7/4/17
- * Time: 5:01 PM
- */
 
+/**
+ * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
 namespace OCA\Circles\Db;
 
 use Doctrine\DBAL\Query\QueryBuilder;

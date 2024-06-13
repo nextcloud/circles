@@ -10,6 +10,9 @@
  * https://jquery.org/license
  *
  * Date: 2019-05-01T21:04Z
+ *
+ * SPDX-FileCopyrightText: 2019 JS Foundation and other contributors
+ * SPDX-License-Identifier: MIT
  */
 ( function( global, factory ) {
 
