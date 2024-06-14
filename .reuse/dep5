@@ -1,0 +1,28 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: circles
+Upstream-Contact: Nextcloud <info@nextcloud.com>
+Source: https://github.com/nextcloud/circles
+
+Files: l10n/*.js l10n/*.json composer.json composer.lock
+Copyright: 2017 Nextcloud GmbH and Nextcloud contributors
+License: AGPL-3.0-or-later 
+
+Files: screenshots/0.12.0.png screenshots/1.png
+Copyright: 2017 Nextcloud GmbH and Nextcloud contributors
+License: AGPL-3.0-or-later
+
+Files: .tx/config
+Copyright: 2018 Nextcloud GmbH and Nextcloud contributors
+License: AGPL-3.0-or-later
+
+Files: screenshots/contacts_backend.png
+Copyright: 2020 Nextcloud GmbH and Nextcloud contributors
+License: AGPL-3.0-or-later
+
+Files: .github/CODEOWNERS
+Copyright: 2023 Nextcloud GmbH and Nextcloud contributors
+License: AGPL-3.0-or-later
+
+Files: img/circles-dark.svg img/circles.svg
+Copyright: 2018-2024 Google LLC
+License: Apache-2.0

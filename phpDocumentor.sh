@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2023 Nextcloud GmbH and Nextcloud contributors
+# SPDX-License-Identifier: AGPL-3.0-or-later
 BUILD_DIR=build/docs
 
 [ -e phpDocumentor.phar ] || wget https://phpdoc.org/phpDocumentor.phar

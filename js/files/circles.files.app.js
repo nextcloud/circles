@@ -1,16 +1,7 @@
-/*
- * Copyright (c) 2017 Cooperativa EITA (eita.org.br)
- *
- * @author Vinicius Cubas Brand <vinicius@eita.org.br>
- * @author Daniel Tygel <dtygel@eita.org.br>
- *
- * This file is licensed under the Affero General Public License version 3
- * or later.
- *
- * See the COPYING-README file.
- *
+/**
+ * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 (function() {
 	if (!OCA.Circles) {
 		/**
