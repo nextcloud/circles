@@ -11,6 +11,7 @@ OC.L10N.register(
     "Local" : "Lokāls",
     "Root" : "Root",
     "Federated" : "Federated",
+    "Email address" : "E-pasta adrese",
     "Contact" : "Kontakts",
     "Circle" : "Loks",
     "Admin" : "Admin",
