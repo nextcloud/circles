@@ -12,7 +12,6 @@
     "You made {member} join {circle}" : "Rinne tú {ball} dul isteach i {circle}",
     "{author} made {member} join {circle}" : "Rinne {author} {member} dul isteach i {circle}",
     "You added team {member} as member to {circle}" : "Chuir tú foireann {member} mar bhall le {circle}",
-    "{author} added team {member} has been added as member to {circle}" : "Chuir {author} foireann {member} leis mar bhall le {circle}",
     "You made {member} leave {circle}" : "Rinne tú {ball} {circle} a fhágáil",
     "{author} made {member} leave {circle}" : "Rinne {author} {member} {circle} a fhágáil",
     "You removed {member} from {circle}" : "Bhain tú {member} de {circle}",
@@ -191,6 +190,7 @@
     "This contact is not available" : "Níl an teagmhálaí seo ar fáil",
     "You have no permission to create a new circle" : "Níl cead agat ciorcal nua a chruthú",
     "This item is already shared with this circle" : "Tá an mhír seo roinnte leis an gciorcal seo cheana féin",
-    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Ligeann ciorcail do dhaoine a ngrúpaí daoine/comhghleacaithe/cairde féin a chruthú.\nFéadfaidh aon aip eile na grúpaí daoine sin (nó \"ciorcail\") a úsáid chun críche comhroinnte ansin."
+    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Ligeann ciorcail do dhaoine a ngrúpaí daoine/comhghleacaithe/cairde féin a chruthú.\nFéadfaidh aon aip eile na grúpaí daoine sin (nó \"ciorcail\") a úsáid chun críche comhroinnte ansin.",
+    "{author} added team {member} has been added as member to {circle}" : "Chuir {author} foireann {member} leis mar bhall le {circle}"
 },"pluralForm" :"nplurals=5; plural=(n==1 ? 0 : n==2 ? 1 : n<7 ? 2 : n<11 ? 3 : 4);"
 }

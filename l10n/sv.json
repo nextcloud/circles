@@ -12,7 +12,6 @@
     "You made {member} join {circle}" : "Du fick {member} att gå med i {circle}",
     "{author} made {member} join {circle}" : "{author} fick {member} att gå med i {circle}",
     "You added team {member} as member to {circle}" : "Du lade till team {member} som medlem till {circle}",
-    "{author} added team {member} has been added as member to {circle}" : "{author} lade till team {member} som medlem i {circle}",
     "You made {member} leave {circle}" : "Du fick {member} att lämna {circle}",
     "{author} made {member} leave {circle}" : "{author} fick {member} att lämna {circle}",
     "You removed {member} from {circle}" : "Du tog bort {member} från {circle}",
@@ -191,6 +190,7 @@
     "This contact is not available" : "Denna kontakt är inte tillgänglig",
     "You have no permission to create a new circle" : "Du har inte behörighet att skapa en ny cirkel",
     "This item is already shared with this circle" : "Detta objektet delas redan med denna cirkeln.",
-    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Cirklar låter användare att skapa deras egna grupper av användare/kollegor/vänner.\nDessa grupper av användare (eller \"cirklar\") kan användas av alla andra appar vid delning."
+    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Cirklar låter användare att skapa deras egna grupper av användare/kollegor/vänner.\nDessa grupper av användare (eller \"cirklar\") kan användas av alla andra appar vid delning.",
+    "{author} added team {member} has been added as member to {circle}" : "{author} lade till team {member} som medlem i {circle}"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

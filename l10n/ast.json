@@ -12,7 +12,6 @@
     "You made {member} join {circle}" : "Ficiesti que {member} se xuniere a «{circle}»",
     "{author} made {member} join {circle}" : "{author} fizo que {member} se xuniere a «{circle}»",
     "You added team {member} as member to {circle}" : "Amestesti l'equipu «{member}» como miembru de «{circle}»",
-    "{author} added team {member} has been added as member to {circle}" : "{actor} amestó l'equipu «{member}» como miembru de «{circle}»",
     "You made {member} leave {circle}" : "Ficiesti que {member} colare de: {cicle}",
     "{author} made {member} leave {circle}" : "{author} fizo que {member} colare de: {circle}",
     "You removed {member} from {circle}" : "Quitesti a {member} de: {circle}",
@@ -191,6 +190,7 @@
     "This contact is not available" : "Esti contautu nun ta disponible",
     "You have no permission to create a new circle" : "Nun tienes permisu pa crear un círculu",
     "This item is already shared with this circle" : "Esti elementu yá se compartió con esti círculu",
-    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Los círculos permiten a les persones crear los sos grupos de xente.\nCualesquier otra aplicación pue usar estos grupos de persones (o «círculos») pa compartir."
+    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Los círculos permiten a les persones crear los sos grupos de xente.\nCualesquier otra aplicación pue usar estos grupos de persones (o «círculos») pa compartir.",
+    "{author} added team {member} has been added as member to {circle}" : "{actor} amestó l'equipu «{member}» como miembru de «{circle}»"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
