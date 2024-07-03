@@ -14,7 +14,6 @@ OC.L10N.register(
     "You made {member} join {circle}" : "You made {member} join {circle}",
     "{author} made {member} join {circle}" : "{author} made {member} join {circle}",
     "You added team {member} as member to {circle}" : "You added team {member} as member to {circle}",
-    "{author} added team {member} has been added as member to {circle}" : "{author} added team {member} has been added as member to {circle}",
     "You made {member} leave {circle}" : "You made {member} leave {circle}",
     "{author} made {member} leave {circle}" : "{author} made {member} leave {circle}",
     "You removed {member} from {circle}" : "You removed {member} from {circle}",
@@ -193,6 +192,7 @@ OC.L10N.register(
     "This contact is not available" : "This contact is not available",
     "You have no permission to create a new circle" : "You have no permission to create a new circle",
     "This item is already shared with this circle" : "This item is already shared with this circle",
-    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose."
+    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose.",
+    "{author} added team {member} has been added as member to {circle}" : "{author} added team {member} has been added as member to {circle}"
 },
 "nplurals=2; plural=(n != 1);");

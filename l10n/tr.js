@@ -14,7 +14,6 @@ OC.L10N.register(
     "You made {member} join {circle}" : "{member} üyesini {circle} takımına kattınız",
     "{author} made {member} join {circle}" : "{author}, {member} üyesini {circle} takımına kattı",
     "You added team {member} as member to {circle}" : "{member} üyesini {circle} takımına eklediniz",
-    "{author} added team {member} has been added as member to {circle}" : "{author}, {member} takım üyesini {circle} takımına ekledi",
     "You made {member} leave {circle}" : "{member} üyesini {circle} takımından çıkardınız",
     "{author} made {member} leave {circle}" : "{author}, {member} üyesini {circle} takımından çıkardı",
     "You removed {member} from {circle}" : "{member} üyesini {circle} takımından çıkardınız",
@@ -193,6 +192,7 @@ OC.L10N.register(
     "This contact is not available" : "Bu kişi kullanılamıyor",
     "You have no permission to create a new circle" : "Yeni bir takım ekleme izniniz yok",
     "This item is already shared with this circle" : "Bu öge zaten bu takım ile paylaşılmış",
-    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Takımlar, kişilerin kendi kişi/iş arkadaşı/arkadaş gruplarını oluşturmasını sağlar.\nBu kişi grupları (ya da \"takımlar\") başka uygulamalar tarafından paylaşım amacıyla kullanılabilir."
+    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Takımlar, kişilerin kendi kişi/iş arkadaşı/arkadaş gruplarını oluşturmasını sağlar.\nBu kişi grupları (ya da \"takımlar\") başka uygulamalar tarafından paylaşım amacıyla kullanılabilir.",
+    "{author} added team {member} has been added as member to {circle}" : "{author}, {member} takım üyesini {circle} takımına ekledi"
 },
 "nplurals=2; plural=(n > 1);");
