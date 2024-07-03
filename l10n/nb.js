@@ -14,7 +14,6 @@ OC.L10N.register(
     "You made {member} join {circle}" : "Du fikk {member} til å bli med i {circle}",
     "{author} made {member} join {circle}" : "{author} fikk {member} til å bli med i {circle}",
     "You added team {member} as member to {circle}" : "Du la til lag-{member} som medlem til {circle}",
-    "{author} added team {member} has been added as member to {circle}" : "{author} la til lag-{member} er blitt lagt til medlem til {circle}",
     "You made {member} leave {circle}" : "Du fikk {member} til å forlate {circle}",
     "{author} made {member} leave {circle}" : "{author} fikk {member} til å forlate {circle}",
     "You removed {member} from {circle}" : "Du fjernet {member} fra {circle}",
@@ -193,6 +192,7 @@ OC.L10N.register(
     "This contact is not available" : "Denne kontakten er ikke tilgjengelig",
     "You have no permission to create a new circle" : "Du har ikke tilgang til å opprette ny sirkel",
     "This item is already shared with this circle" : "Elementet er allerede delt med denne sirkelen",
-    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Circles lar folk lage sine egne grupper av mennesker / kolleger / venner.\nDisse persongruppene (eller \"sirklene\") kan deretter brukes av en hvilken som helst annen app til delingsformål."
+    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Circles lar folk lage sine egne grupper av mennesker / kolleger / venner.\nDisse persongruppene (eller \"sirklene\") kan deretter brukes av en hvilken som helst annen app til delingsformål.",
+    "{author} added team {member} has been added as member to {circle}" : "{author} la til lag-{member} er blitt lagt til medlem til {circle}"
 },
 "nplurals=2; plural=(n != 1);");

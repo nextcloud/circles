@@ -14,7 +14,6 @@ OC.L10N.register(
     "You made {member} join {circle}" : "Du inviterede {member} til at deltage i {circle}",
     "{author} made {member} join {circle}" : "{author} inviterede {member} til at deltage i {circle}",
     "You added team {member} as member to {circle}" : "Du tilføjede team {member} som medlem i {circle}",
-    "{author} added team {member} has been added as member to {circle}" : "{author} tilføjede team {member} er blevet tilføjet som medlem til {circle}",
     "You made {member} leave {circle}" : "Du fik {member} til at forlade {circle}",
     "{author} made {member} leave {circle}" : "{author} fik {member} til at forlade {circle}",
     "You removed {member} from {circle}" : "Du fjernede {member} fra {circle}",
@@ -193,6 +192,7 @@ OC.L10N.register(
     "This contact is not available" : "Denne kontakt er ikke tilgængelig ",
     "You have no permission to create a new circle" : "Du har ikke tilladelse til at oprette en ny cirkel",
     "This item is already shared with this circle" : "Dette element er allerede delt med denne cirkel",
-    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Cirkler giver dine brugere mulighed for at oprette deres egne grupper af brugere/kolleger/venner.\nDisse grupper af brugere (eller \"cirkler\") kan derefter bruges af enhver anden app til delingsformål."
+    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Cirkler giver dine brugere mulighed for at oprette deres egne grupper af brugere/kolleger/venner.\nDisse grupper af brugere (eller \"cirkler\") kan derefter bruges af enhver anden app til delingsformål.",
+    "{author} added team {member} has been added as member to {circle}" : "{author} tilføjede team {member} er blevet tilføjet som medlem til {circle}"
 },
 "nplurals=2; plural=(n != 1);");

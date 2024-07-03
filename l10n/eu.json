@@ -12,7 +12,6 @@
     "You made {member} join {circle}" : "{member} kidea {circle}(e)n sartu duzu",
     "{author} made {member} join {circle}" : "{author}(e)k {circle} zirkuluan [member} kidea sartu du",
     "You added team {member} as member to {circle}" : "{member} lantaldea gehitu duzu kide gisa {circle}(e)ra",
-    "{author} added team {member} has been added as member to {circle}" : "{author}(e)k {member} lantaldea gehitu du kide bezala {circle}(e)ra",
     "You made {member} leave {circle}" : "{member} kidea {circle}(e)tik atera duzu",
     "{author} made {member} leave {circle}" : "{author}(e)k {member} kidea {circle}(e)tik atera du",
     "You removed {member} from {circle}" : "{member} kidea atera duzu {circle} zirkulutik",
@@ -191,6 +190,7 @@
     "This contact is not available" : "Kontaktu hori ez dago erabilgarri",
     "You have no permission to create a new circle" : "Ez duzu zirkulu berri bat sortzeko baimenik",
     "This item is already shared with this circle" : "Elementu hau dagoeneko partekatu da zirkulu honekin",
-    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Circles jendeak erabiltzaile/lankide/lagun taldeak sortzen ahalbidetzen die.\nPertsona talde (edo \"zirkulu\") hauek beste aplikazio batzuetan erabili daitezke partekatzeko xedearekin. "
+    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Circles jendeak erabiltzaile/lankide/lagun taldeak sortzen ahalbidetzen die.\nPertsona talde (edo \"zirkulu\") hauek beste aplikazio batzuetan erabili daitezke partekatzeko xedearekin. ",
+    "{author} added team {member} has been added as member to {circle}" : "{author}(e)k {member} lantaldea gehitu du kide bezala {circle}(e)ra"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

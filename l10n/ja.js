@@ -14,7 +14,6 @@ OC.L10N.register(
     "You made {member} join {circle}" : "あなたは {member} を {circle} に加入させました",
     "{author} made {member} join {circle}" : "{author} は {member} を {circle} に加入させました",
     "You added team {member} as member to {circle}" : "あなたは {circle} にチーム {member} をメンバーとして追加しました",
-    "{author} added team {member} has been added as member to {circle}" : "{author} がチーム {member} のメンバーとして {circle} に追加されました",
     "You made {member} leave {circle}" : "あなたは {member} を {circle} から脱退させました",
     "{author} made {member} leave {circle}" : "{author} が {member} を {circle} から脱退させました",
     "You removed {member} from {circle}" : "あなたは {member} を {circle} から除名しました",
@@ -193,6 +192,7 @@ OC.L10N.register(
     "This contact is not available" : "この連絡先は利用できません",
     "You have no permission to create a new circle" : "新しいサークルを作成する権限がありません",
     "This item is already shared with this circle" : "このアイテムは既にこのサークルで共有されています",
-    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "サークルを使って自分のグループ(同僚、友達)を作ることができます。\n他のアプリでこれらのグループ(または「サークル」)を共有先として使用できます。"
+    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "サークルを使って自分のグループ(同僚、友達)を作ることができます。\n他のアプリでこれらのグループ(または「サークル」)を共有先として使用できます。",
+    "{author} added team {member} has been added as member to {circle}" : "{author} がチーム {member} のメンバーとして {circle} に追加されました"
 },
 "nplurals=1; plural=0;");

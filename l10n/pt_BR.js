@@ -14,7 +14,6 @@ OC.L10N.register(
     "You made {member} join {circle}" : "Você fez com que {member} se juntasse a {circle}",
     "{author} made {member} join {circle}" : "{author} fez com que {member} se juntasse a {circle}",
     "You added team {member} as member to {circle}" : "Você adicionou a equipe {member} como membro de {circle}",
-    "{author} added team {member} has been added as member to {circle}" : "{author} adicionou a equipe {member} como membro de {circle}",
     "You made {member} leave {circle}" : "Você fez {member} sair de {circle}",
     "{author} made {member} leave {circle}" : "{author} fez com que {membro} saísse de {circle}",
     "You removed {member} from {circle}" : "Você excluiu {member} de {circle}",
@@ -193,6 +192,7 @@ OC.L10N.register(
     "This contact is not available" : "Este contato não está disponível",
     "You have no permission to create a new circle" : "Você não tem permissão para criar um novo círculo",
     "This item is already shared with this circle" : "Este item já está compartilhado com este círculo",
-    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Os círculos permitem que as pessoas criem seus próprios grupos de pessoas/colegas/amigos.\nEsses grupos de pessoas (ou \"círculos\") podem ser usados por qualquer outro aplicativo para fins de compartilhamento."
+    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Os círculos permitem que as pessoas criem seus próprios grupos de pessoas/colegas/amigos.\nEsses grupos de pessoas (ou \"círculos\") podem ser usados por qualquer outro aplicativo para fins de compartilhamento.",
+    "{author} added team {member} has been added as member to {circle}" : "{author} adicionou a equipe {member} como membro de {circle}"
 },
 "nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");
