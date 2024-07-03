@@ -14,7 +14,6 @@ OC.L10N.register(
     "You made {member} join {circle}" : "你让 {member} 加入了 {circle}",
     "{author} made {member} join {circle}" : "{author} 让 {member} 加入了 {circle}",
     "You added team {member} as member to {circle}" : "你将团队 {member} 添加至 {circle} 团队",
-    "{author} added team {member} has been added as member to {circle}" : "{author} 将团队 {member} 添加至 {circle} 团队",
     "You made {member} leave {circle}" : "你让 {member} 离开了 {circle}",
     "{author} made {member} leave {circle}" : "{author} 让 {member} 离开了 {circle}",
     "You removed {member} from {circle}" : "您已从 {circle} 删除 {member}",
@@ -193,6 +192,7 @@ OC.L10N.register(
     "This contact is not available" : "此联系人不可用",
     "You have no permission to create a new circle" : "您没有权限创建新的圈子",
     "This item is already shared with this circle" : "这个项目已经分享给这个圈子了",
-    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "圈子允许人们与他人/同事/朋友创建他们自己的小组。\n这些小组的成员（或“圈子”）可以被其它APP用来分享。"
+    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "圈子允许人们与他人/同事/朋友创建他们自己的小组。\n这些小组的成员（或“圈子”）可以被其它APP用来分享。",
+    "{author} added team {member} has been added as member to {circle}" : "{author} 将团队 {member} 添加至 {circle} 团队"
 },
 "nplurals=1; plural=0;");

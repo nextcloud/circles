@@ -14,7 +14,6 @@ OC.L10N.register(
     "You made {member} join {circle}" : "Вы присоединили {member} к {circle}",
     "{author} made {member} join {circle}" : "{author} присоединил {member} к {circle}",
     "You added team {member} as member to {circle}" : "Вы добавили группу {member} в качестве участника в {circle}",
-    "{author} added team {member} has been added as member to {circle}" : "{author} добавил группу {member} в качестве участника в {circle}",
     "You made {member} leave {circle}" : "Вы исключили {member} из {circle}",
     "{author} made {member} leave {circle}" : "{author} исключил {member} из {circle}",
     "You removed {member} from {circle}" : "Вы удалили пользователя {member} из круга «{circle}»",
@@ -193,6 +192,7 @@ OC.L10N.register(
     "This contact is not available" : "Контакт не доступен",
     "You have no permission to create a new circle" : "У вас нет разрешения на создание нового круга",
     "This item is already shared with this circle" : "Этот элемент уже используется в этом круге",
-    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Круги позволяют пользователям создавать свои собственные группы пользователей, коллег или друзей.\nЭти группы пользователей («круги») могут затем использоваться любым другим приложением для обмена информацией."
+    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Круги позволяют пользователям создавать свои собственные группы пользователей, коллег или друзей.\nЭти группы пользователей («круги») могут затем использоваться любым другим приложением для обмена информацией.",
+    "{author} added team {member} has been added as member to {circle}" : "{author} добавил группу {member} в качестве участника в {circle}"
 },
 "nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);");

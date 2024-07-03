@@ -14,7 +14,6 @@ OC.L10N.register(
     "You made {member} join {circle}" : "Heu fet que {member} s'uneixi a {circle}",
     "{author} made {member} join {circle}" : "{author} ha fet que {member} s'uneixi a {circle}",
     "You added team {member} as member to {circle}" : "Heu afegit l'equip {member} com a membre de {circle}",
-    "{author} added team {member} has been added as member to {circle}" : "{author} ha afegit l'equip {member} com a membre de {circle}",
     "You made {member} leave {circle}" : "Heu fet que {member} abandoni {circle}",
     "{author} made {member} leave {circle}" : "{author} ha fet que {member} abandoni {circle}",
     "You removed {member} from {circle}" : "Heu suprimit {member} del cercle {circle}",
@@ -193,6 +192,7 @@ OC.L10N.register(
     "This contact is not available" : "Aquest contacte no està disponible",
     "You have no permission to create a new circle" : "No teniu permís per a crear un cercle nou",
     "This item is already shared with this circle" : "Aquest element ja està compartit amb aquest cercle",
-    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Els cercles permeten que les persones creïn els seus propis grups de persones, companys i amics.\nQualsevol altra aplicació pot utilitzar aquests grups de persones (o «cercles») per a compartir contingut."
+    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Els cercles permeten que les persones creïn els seus propis grups de persones, companys i amics.\nQualsevol altra aplicació pot utilitzar aquests grups de persones (o «cercles») per a compartir contingut.",
+    "{author} added team {member} has been added as member to {circle}" : "{author} ha afegit l'equip {member} com a membre de {circle}"
 },
 "nplurals=2; plural=(n != 1);");
