@@ -67,7 +67,7 @@ OC.L10N.register(
     "Visible" : "Видљив",
     "Open" : "Отвори",
     "Invite" : "Позив",
-    "Join request" : "Захтев за приступање`",
+    "Join request" : "Захтев за приступање",
     "Friends" : "Пријатељи",
     "Password protected" : "Заштићено лозинком",
     "No Owner" : "Без власника",
