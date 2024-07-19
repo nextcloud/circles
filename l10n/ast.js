@@ -173,7 +173,7 @@ OC.L10N.register(
     "This account is already a member of the circle" : "Esta cuenta yá ye miembru del círculu",
     "Federated link not found" : "Nun s'atopó l'enllaz federáu",
     "The circle is not federated" : "El círculu nun ta federáu",
-    "You cannot join this circle" : "Nun te pues xunir a esti círculu",
+    "You cannot join this circle" : "Nun pues xunite a esti círculu",
     "This member is the owner of the circle" : "Esti miembru ye'l propietariu del círculu",
     "%s (Circle owned by %s)" : "%s (círculu propiedá de: %s)",
     "Personal Circle" : "Círculu personal",
