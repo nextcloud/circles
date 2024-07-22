@@ -56,6 +56,7 @@ use OCA\Circles\Tools\Traits\TNCLogger;
 use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\ICache;
 use OCP\ICacheFactory;
+use OCP\IConfig;
 use OCP\IGroupManager;
 use OCP\IUser;
 use OCP\IUserManager;
@@ -72,9 +73,9 @@ class FederatedUserService {
 	use TNCLogger;
 	use TDeserialize;
 
-
+	public const USERPREF_SINGLE_CIRCLE = 'single_circle';
 	public const CACHE_SINGLE_CIRCLE = 'circles/singleCircle';
-	public const CACHE_SINGLE_CIRCLE_TTL = 900;
+	public const CACHE_SINGLE_CIRCLE_TTL = 86400;
 
 	public const CONFLICT_001 = 1;
 	public const CONFLICT_002 = 2;
@@ -82,6 +83,8 @@ class FederatedUserService {
 	public const CONFLICT_004 = 4;
 	public const CONFLICT_005 = 5;
 
+	/** @var IConfig $config */
+	private $config;
 
 	/** @var IUserSession */
 	private $userSession;
@@ -163,6 +166,7 @@ class FederatedUserService {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
+		IConfig $config,
 		IUserSession $userSession,
 		IUserManager $userManager,
 		IGroupManager $groupManager,
@@ -178,6 +182,7 @@ class FederatedUserService {
 		InterfaceService $interfaceService,
 		ConfigService $configService
 	) {
+		$this->config = $config;
 		$this->userSession = $userSession;
 		$this->userManager = $userManager;
 		$this->groupManager = $groupManager;
@@ -1263,8 +1268,9 @@ class FederatedUserService {
 	 * @throws SingleCircleNotFoundException
 	 */
 	private function getCachedSingleCircle(FederatedUser $federatedUser): Circle {
-		$key = $this->generateCacheKey($federatedUser);
-		$cachedData = $this->cache->get($key);
+		$cachedData = ($federatedUser->getUserType() === Member::TYPE_USER) ?
+			$this->config->getUserValue($federatedUser->getUserId(), 'circles', self::USERPREF_SINGLE_CIRCLE)
+			: $this->cache->get($this->generateCacheKey($federatedUser));
 
 		if (!is_string($cachedData)) {
 			throw new SingleCircleNotFoundException();
@@ -1285,6 +1291,11 @@ class FederatedUserService {
 	 * @param Circle $singleCircle
 	 */
 	private function cacheSingleCircle(FederatedUser $federatedUser, Circle $singleCircle): void {
+		if ($federatedUser->getUserType() === Member::TYPE_USER) {
+			$this->config->setUserValue($federatedUser->getUserId(), 'circles', self::USERPREF_SINGLE_CIRCLE, json_encode($singleCircle));
+			return;
+		}
+
 		$key = $this->generateCacheKey($federatedUser);
 		$this->cache->set($key, json_encode($singleCircle), self::CACHE_SINGLE_CIRCLE_TTL);
 	}

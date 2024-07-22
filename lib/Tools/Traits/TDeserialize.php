@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Tools\Traits;
 
+use JsonException;
 use JsonSerializable;
 use OCA\Circles\Tools\Exceptions\InvalidItemException;
 use OCA\Circles\Tools\IDeserializable;
@@ -110,7 +111,11 @@ trait TDeserialize {
 	 * @throws InvalidItemException
 	 */
 	public function deserializeJson(string $json, string $class): IDeserializable {
-		$data = json_decode($json, true);
+		try {
+			$data = json_decode($json, true, flags: JSON_THROW_ON_ERROR);
+		} catch (JsonException) {
+			throw new InvalidItemException('not json');
+		}
 
 		return $this->deserialize($data, $class);
 	}
