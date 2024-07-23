@@ -1,4 +1,8 @@
 { "translations": {
+    "Teams" : "Csapatok",
+    "Teams' files" : "Csapatfájlok",
+    "No teams found" : "Nem találhatók csapatok",
+    "Please select teams to filter by" : "Válasszon csapatokat a szűréshez:",
     "You deleted {circle}" : "Törölte ezt: {circle}",
     "{author} deleted {circle}" : "{author} törölte a(z) {circle} kört",
     "You removed {member} from {circle}" : "Eltávolította {member} tagot a(z) {circle} körből",
