@@ -415,6 +415,24 @@ class CircleRequest extends CircleRequestBuilder {
 		}
 	}
 
+	/**
+	 * method that return the single-user Circle based on a FederatedUser.
+	 *
+	 * @param string $singleId
+	 *
+	 * @return Circle
+	 * @throws SingleCircleNotFoundException
+	 */
+	public function getSingleCircleById(string $singleId): Circle {
+		$qb = $this->getCircleSelectSql(CoreQueryBuilder::SINGLE, true);
+		$qb->limitToUniqueId($singleId);
+
+		try {
+			return $this->getItemFromRequest($qb);
+		} catch (CircleNotFoundException $e) {
+			throw new SingleCircleNotFoundException();
+		}
+	}
 
 	/**
 	 * @param Circle $circle

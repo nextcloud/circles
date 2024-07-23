@@ -1066,6 +1066,9 @@ class FederatedUserService {
 		}
 
 		$this->cacheSingleCircle($federatedUser, $singleCircle);
+		if ($federatedUser->getUserType() === Member::TYPE_USER) {
+			$this->config->setUserValue($federatedUser->getUserId(), 'circles', self::USERPREF_SINGLE_CIRCLE, $singleCircle->getSingleId());
+		}
 
 		return $singleCircle;
 	}
@@ -1262,28 +1265,38 @@ class FederatedUserService {
 
 
 	/**
+	 * if data is in cache (15m) we returns the circle generation from the json in cache
+	 * if user prefs contains single id, we get details from the circle fom db
+	 * if nothing else, means there is no cache
 	 * @param FederatedUser $federatedUser
 	 *
 	 * @return Circle
 	 * @throws SingleCircleNotFoundException
 	 */
 	private function getCachedSingleCircle(FederatedUser $federatedUser): Circle {
-		$cachedData = ($federatedUser->getUserType() === Member::TYPE_USER) ?
-			$this->config->getUserValue($federatedUser->getUserId(), 'circles', self::USERPREF_SINGLE_CIRCLE)
-			: $this->cache->get($this->generateCacheKey($federatedUser));
-
-		if (!is_string($cachedData)) {
-			throw new SingleCircleNotFoundException();
-		}
-
+		$cachedData = $this->cache->get($this->generateCacheKey($federatedUser));
 		try {
-			/** @var Circle $singleCircle */
-			$singleCircle = $this->deserializeJson($cachedData, Circle::class);
-		} catch (InvalidItemException $e) {
-			throw new SingleCircleNotFoundException();
+			if (is_string($cachedData)) {
+				/** @var Circle $singleCircle */
+				$singleCircle = $this->deserializeJson($cachedData, Circle::class);
+				return $singleCircle;
+			}
+		} catch (InvalidItemException) {
 		}
 
-		return $singleCircle;
+		if ($federatedUser->getUserType() === Member::TYPE_USER) {
+			$userSingleId = $this->config->getUserValue($federatedUser->getUserId(), 'circles', self::USERPREF_SINGLE_CIRCLE);
+			if ($userSingleId !== '') {
+				try {
+					$singleCircle = $this->circleRequest->getSingleCircleById($userSingleId);
+					$this->cacheSingleCircle($federatedUser, $singleCircle);
+					return $singleCircle;
+				} catch (CircleNotFoundException) {
+				}
+			}
+		}
+
+		throw new SingleCircleNotFoundException();
 	}
 
 	/**
@@ -1291,11 +1304,6 @@ class FederatedUserService {
 	 * @param Circle $singleCircle
 	 */
 	private function cacheSingleCircle(FederatedUser $federatedUser, Circle $singleCircle): void {
-		if ($federatedUser->getUserType() === Member::TYPE_USER) {
-			$this->config->setUserValue($federatedUser->getUserId(), 'circles', self::USERPREF_SINGLE_CIRCLE, json_encode($singleCircle));
-			return;
-		}
-
 		$key = $this->generateCacheKey($federatedUser);
 		$this->cache->set($key, json_encode($singleCircle), self::CACHE_SINGLE_CIRCLE_TTL);
 	}
