@@ -1,6 +1,7 @@
 OC.L10N.register(
     "circles",
     {
+    "Teams" : "Teams",
     "You deleted {circle}" : "Du hast {circle} gelöscht",
     "{author} deleted {circle}" : "{author} hat {circle} gelöscht",
     "You removed {member} from {circle}" : "Du hast {member} aus {circle} entfernt",
