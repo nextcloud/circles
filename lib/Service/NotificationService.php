@@ -205,4 +205,18 @@ class NotificationService {
 
 		return parse_url($absolute, PHP_URL_PATH);
 	}
+
+	public function markInvitationAsProcessed(Member $member): void {
+		if ($member->getUserType() !== Member::TYPE_USER || !$member->isLocal()) {
+			return;
+		}
+
+		$notification = $this->notificationManager->createNotification();
+		$notification->setApp('circles')
+			->setUser($member->getUserId())
+			->setObject('member', $member->getId())
+			->setSubject('invitation');
+
+		$this->notificationManager->markProcessed($notification);
+	}
 }
