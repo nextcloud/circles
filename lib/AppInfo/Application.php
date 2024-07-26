@@ -129,6 +129,7 @@ class Application extends App implements IBootstrap {
 		$context->registerEventListener(LoadAdditionalScriptsEvent::class, ListenerFilesLoadScripts::class);
 		$context->registerEventListener(PreparingCircleMemberEvent::class, ListenerFilesPreparingMemberSendMail::class);
 		$context->registerEventListener(AddingCircleMemberEvent::class, ListenerFilesAddingMemberSendMail::class);
+		$context->registerEventListener(AddingCircleMemberEvent::class, ListenerNotificationsRequestingMember::class);
 		$context->registerEventListener(CircleMemberAddedEvent::class, ListenerFilesMemberAddedSendMail::class);
 		$context->registerEventListener(PreparingFileShareEvent::class, ListenerFilesPreparingShareSendMail::class);
 		$context->registerEventListener(CreatingFileShareEvent::class, ListenerFilesCreatingShareSendMail::class);
