@@ -59,6 +59,7 @@ use OCP\Group\Events\GroupDeletedEvent;
 use OCP\Group\Events\UserAddedEvent;
 use OCP\Group\Events\UserRemovedEvent;
 use OCP\IServerContainer;
+use OCP\User\Events\UserChangedEvent;
 use OCP\User\Events\UserCreatedEvent;
 use OCP\User\Events\UserDeletedEvent;
 use Throwable;
@@ -94,6 +95,7 @@ class Application extends App implements IBootstrap {
 		// User Events
 		$context->registerEventListener(UserCreatedEvent::class, UserCreated::class);
 		$context->registerEventListener(UserUpdatedEvent::class, AccountUpdated::class);
+		$context->registerEventListener(UserChangedEvent::class, AccountUpdated::class);
 		$context->registerEventListener(UserDeletedEvent::class, UserDeleted::class);
 
 		// Group Events
