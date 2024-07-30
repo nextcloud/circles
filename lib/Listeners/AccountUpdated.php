@@ -40,6 +40,7 @@ use OCA\Circles\Service\FederatedUserService;
 use OCP\Accounts\UserUpdatedEvent;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
+use OCP\User\Events\UserChangedEvent;
 use Psr\Log\LoggerInterface;
 
 class AccountUpdated implements IEventListener {
@@ -57,7 +58,7 @@ class AccountUpdated implements IEventListener {
 	 * @param Event $event
 	 */
 	public function handle(Event $event): void {
-		if (!($event instanceof UserUpdatedEvent)) {
+		if (!($event instanceof UserUpdatedEvent) && !($event instanceof UserChangedEvent)) {
 			return;
 		}
 
