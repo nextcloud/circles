@@ -31,6 +31,8 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Listeners\Notifications;
 
+use OCA\Circles\Events\AddingCircleMemberEvent;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Tools\Traits\TNCLogger;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Events\CircleGenericEvent;
@@ -69,7 +71,7 @@ class RequestingMember implements IEventListener {
 	 * @throws RequestBuilderException
 	 */
 	public function handle(Event $event): void {
-		if (!$event instanceof RequestingCircleMemberEvent) {
+		if (!$event instanceof RequestingCircleMemberEvent && !$event instanceof AddingCircleMemberEvent) {
 			return;
 		}
 
@@ -77,6 +79,8 @@ class RequestingMember implements IEventListener {
 
 		if ($event->getType() === CircleGenericEvent::REQUESTED) {
 			$this->notificationService->notificationRequested($member);
+		} elseif ($event->getType() === CircleGenericEvent::JOINED && $event->getCircle()->isConfig(Circle::CFG_INVITE)) {
+			$this->notificationService->markInvitationAsProcessed($member);
 		} else {
 			$this->notificationService->notificationInvited($member);
 		}
