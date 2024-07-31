@@ -18,13 +18,16 @@ use Exception;
 use OC;
 use OC\DB\QueryBuilder\QueryBuilder;
 use OC\SystemConfig;
+use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Tools\Exceptions\DateTimeException;
 use OCA\Circles\Tools\Exceptions\InvalidItemException;
 use OCA\Circles\Tools\Exceptions\RowNotFoundException;
 use OCA\Circles\Tools\Traits\TArrayTools;
 use OCP\DB\QueryBuilder\ICompositeExpression;
 use OCP\DB\QueryBuilder\IQueryBuilder;
+use OCP\IAppConfig;
 use OCP\IDBConnection;
+use OCP\Server;
 use Psr\Log\LoggerInterface;
 
 class ExtendedQueryBuilder extends QueryBuilder {
@@ -36,13 +39,16 @@ class ExtendedQueryBuilder extends QueryBuilder {
 
 	/** @var array */
 	private $defaultValues = [];
-
+	private LoggerInterface $logger;
+	private IAppConfig $appConfig;
 
 	public function __construct() {
+		$this->logger = Server::get(LoggerInterface::class);
+		$this->appConfig = Server::get(IAppConfig::class);
 		parent::__construct(
 			OC::$server->get(IDBConnection::class),
 			OC::$server->get(SystemConfig::class),
-			OC::$server->get(LoggerInterface::class)
+			$this->logger
 		);
 	}
 
@@ -1023,6 +1029,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	 */
 	public function getRows(callable $method, string $object = '', array $params = []): array {
 		$rows = [];
+		$st = microtime(true);
 		$cursor = $this->execute();
 		while ($data = $cursor->fetch()) {
 			try {
@@ -1031,7 +1038,10 @@ class ExtendedQueryBuilder extends QueryBuilder {
 			}
 		}
 		$cursor->closeCursor();
-
+		$spent = microtime(true) - $st;
+		if ($spent > $this->appConfig->getValueFloat(Application::APP_ID, 'slow_queries_time', 3)) { // in case request takes more than n seconds, we add a notice to logs
+			$this->logger->warning('Teams - slow request', ['exception' => new Exception('slow request'), 'spent' => $spent]);
+		}
 		return $rows;
 	}
 
