@@ -180,8 +180,8 @@ class ShareWrapperService {
 	 * @return ShareWrapper[]
 	 * @throws RequestBuilderException
 	 */
-	public function getSharesByFileIds(array $fileIds, bool $getData = false): array {
-		return ($fileIds === []) ? [] : $this->shareWrapperRequest->getSharesByFileIds($fileIds, $getData);
+	public function getSharesByFileIds(array $fileIds, bool $getData = false, bool $getChild = false): array {
+		return ($fileIds === []) ? [] : $this->shareWrapperRequest->getSharesByFileIds($fileIds, $getData, $getChild);
 	}
 
 	/**
