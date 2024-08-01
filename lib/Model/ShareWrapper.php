@@ -77,6 +77,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 	private ?DateTime $expirationDate = null;
 	private string $shareOwner = '';
 	private int $shareType = 0;
+	private int $parent = 0;
 	private ?Circle $circle = null;
 	private int $childId = 0;
 	private string $childFileTarget = '';
@@ -250,6 +251,15 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 
 	public function getShareType(): int {
 		return $this->shareType;
+	}
+
+	public function setParent(int $parent): self {
+		$this->parent = $parent;
+		return $this;
+	}
+
+	public function getParent(): int {
+		return $this->parent;
 	}
 
 	public function setCircle(Circle $circle): self {
@@ -492,6 +502,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 
 		$this->setId($this->get('id', $data))
 			 ->setShareType($this->getInt('shareType', $data))
+			 ->setParent($data['parent'] ?? 0)
 			 ->setPermissions($this->getInt('permissions', $data))
 			 ->setHideDownload($this->getBool('hideDownload', $data))
 			 ->setItemType($this->get('itemType', $data))

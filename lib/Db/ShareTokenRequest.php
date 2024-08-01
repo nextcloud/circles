@@ -33,6 +33,7 @@ namespace OCA\Circles\Db;
 
 use OCA\Circles\Exceptions\ShareTokenNotFoundException;
 use OCA\Circles\Model\ShareToken;
+use OCP\DB\QueryBuilder\IQueryBuilder;
 
 /**
  * Class ShareTokenRequest
@@ -115,5 +116,17 @@ class ShareTokenRequest extends ShareTokenRequestBuilder {
 		$qb->limitToCircleId($circleId);
 
 		$qb->execute();
+	}
+
+	/**
+	 * @param array $shareIds
+	 *
+	 * @return ShareToken[]
+	 */
+	public function getTokensFromShares(array $shareIds): array {
+		$qb = $this->getTokenSelectSql();
+		$qb->limitInArray('share_id', $shareIds, type: IQueryBuilder::PARAM_INT_ARRAY);
+
+		return $this->getItemsFromRequest($qb);
 	}
 }
