@@ -66,6 +66,7 @@ use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\FederatedEventService;
 use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Service\ShareTokenService;
 use OCA\Circles\Service\ShareWrapperService;
 use OCA\Circles\Tools\Traits\TArrayTools;
 use OCA\Circles\Tools\Traits\TNCLogger;
@@ -108,6 +109,7 @@ class ShareByCircleProvider implements IShareProvider {
 	private LoggerInterface $logger;
 	private IURLGenerator $urlGenerator;
 	private ShareWrapperService $shareWrapperService;
+	private ShareTokenService $shareTokenService;
 	private FederatedUserService $federatedUserService;
 	private FederatedEventService $federatedEventService;
 	private CircleService $circleService;
@@ -131,6 +133,7 @@ class ShareByCircleProvider implements IShareProvider {
 		$this->federatedUserService = OC::$server->get(FederatedUserService::class);
 		$this->federatedEventService = OC::$server->get(FederatedEventService::class);
 		$this->shareWrapperService = OC::$server->get(ShareWrapperService::class);
+		$this->shareTokenService = OC::$server->get(ShareTokenService::class);
 		$this->circleService = OC::$server->get(CircleService::class);
 		$this->eventService = OC::$server->get(EventService::class);
 	}
@@ -649,6 +652,27 @@ class ShareByCircleProvider implements IShareProvider {
 
 
 	/**
+	 * if $currentAccess, returns long version of the access list:
+	 * [
+	 *   'users'  => [
+	 *     'user1' => ['node_id' => 42, 'node_path' => '/fileA'],
+	 *     'user4' => ['node_id' => 32, 'node_path' => '/folder2'],
+	 *     'user2' => ['node_id' => 23, 'node_path' => '/folder (1)'],
+	 *   ],
+	 *   'remote' => [
+	 *     'user1@server1' => ['node_id' => 42, 'token' => 'SeCr3t'],
+	 *     'user2@server2' => ['node_id' => 23, 'token' => 'FooBaR'],
+	 *   ],
+	 *   'public' => bool,
+	 *   'mail' => [
+	 *     'email1@maildomain1' => ['node_id' => 42, 'token' => 'aBcDeFg'],
+	 *     'email2@maildomain2' => ['node_id' => 23, 'token' => 'hIjKlMn'],
+	 *   ]
+	 * ]
+	 *
+	 *
+	 *
+	 *
 	 * @param Node[] $nodes
 	 * @param bool $currentAccess
 	 *
@@ -660,10 +684,83 @@ class ShareByCircleProvider implements IShareProvider {
 			$ids[] = $node->getId();
 		}
 
-		$users = $remote = $mails = [];
-		$shares = $this->shareWrapperService->getSharesByFileIds($ids, true);
+		if (!$currentAccess) {
+			return $this->getAccessListShort($ids);
+		}
 
-		foreach ($shares as $share) {
+		$shareIds = $knownIds = $users = $remote = $mails = [];
+		foreach ($this->shareWrapperService->getSharesByFileIds($ids, true, true) as $share) {
+			$shareIds[] = $share->getId();
+			$circle = $share->getCircle();
+			foreach ($circle->getInheritedMembers() as $member) {
+				if ($share->getParent() > 0 && in_array($member->getSingleId(), $knownIds[$share->getFileSource()] ?? [])) {
+					continue;
+				}
+				$knownIds[$share->getFileSource()][] = $member->getSingleId();
+
+				switch ($member->getUserType()) {
+					case Member::TYPE_USER:
+						if ($member->isLocal()) {
+							$users[$member->getUserId()] = [
+								'node_id' => $share->getFileSource(),
+								'node_path' => $share->getFileTarget()
+							];
+						} else {
+							// we only store temp value, as token is unknown at this point
+							$remote[$member->getUserid() . '@' . $member->getInstance()] = [
+								'node_id' => $share->getFileSource(),
+								'shareId' => $share->getId(),
+								'memberId' => $member->getId(),
+							];
+						}
+						break;
+					case Member::TYPE_MAIL:
+						// we only store temp value, as token is unknown at this point
+						$mails[$member->getUserId()] = [
+							'node_id' => $share->getFileSource(),
+							'shareId' => $share->getId(),
+							'memberId' => $member->getId(),
+						];
+						break;
+				}
+			}
+		}
+
+		// list share tokens in an indexed array and update details for remote/mail entries with the correct token
+		$shareTokens = [];
+		foreach ($this->shareTokenService->getTokensFromShares(array_values(array_unique($shareIds))) as $shareToken) {
+			$shareTokens[$shareToken->getShareId()][$shareToken->getMemberId()] = $shareToken->getToken();
+		}
+
+		return [
+			'users' => $users,
+			'remote' => $this->updateAccessListTokens($remote, $shareTokens),
+			'email' => $this->updateAccessListTokens($mails, $shareTokens)
+		];
+	}
+
+	/**
+	 * returns short version of the access list:
+	 * [
+	 *   'users'  => ['user1', 'user2', 'user4'],
+	 *   'remote' => bool,
+	 *   'mail' => ['email1@maildomain1', 'email2@maildomain2']
+	 * ]
+	 *
+	 * @param array $ids
+	 *
+	 * @return array
+	 * @throws FederatedItemException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws UnknownRemoteException
+	 */
+	private function getAccessListShort(array $ids): array {
+		$users = $mails = [];
+		$remote = false;
+		foreach ($this->shareWrapperService->getSharesByFileIds($ids, true) as $share) {
 			$circle = $share->getCircle();
 			foreach ($circle->getInheritedMembers() as $member) {
 				switch ($member->getUserType()) {
@@ -673,9 +770,7 @@ class ShareByCircleProvider implements IShareProvider {
 								$users[] = $member->getUserId();
 							}
 						} else {
-							if (!in_array($member->getUserId(), $remote)) {
-								$remote[] = $member->getUserid() . '@' . $member->getInstance();
-							}
+							$remote = true;
 						}
 						break;
 					case Member::TYPE_MAIL:
@@ -694,6 +789,23 @@ class ShareByCircleProvider implements IShareProvider {
 		];
 	}
 
+	/**
+	 * @param array $list
+	 * @param array<int, array<string, string>> $shareTokens
+	 *
+	 * @return array
+	 */
+	private function updateAccessListTokens(array $list, array $shareTokens): array {
+		$result = [];
+		foreach ($list as $id => $data) {
+			$result[$id] = [
+				'node_id' => $data['node_id'],
+				'token' => $shareTokens[$data['shareId']][$data['memberId']]
+			];
+		}
+
+		return $result;
+	}
 
 	/**
 	 * We don't return a thing about children.

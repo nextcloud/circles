@@ -169,4 +169,13 @@ class ShareTokenService {
 	public function removeTokens(string $singleId, string $circleId) {
 		$this->shareTokenRequest->removeTokens($singleId, $circleId);
 	}
+
+	/**
+	 * @param array $shareIds
+	 *
+	 * @return ShareToken[]
+	 */
+	public function getTokensFromShares(array $shareIds): array {
+		return ($shareIds === []) ? [] : $this->shareTokenRequest->getTokensFromShares($shareIds);
+	}
 }
