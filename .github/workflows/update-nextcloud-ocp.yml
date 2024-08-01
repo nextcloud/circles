@@ -20,23 +20,23 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        branches: ["main", "master", "stable29", "stable28", "stable27"]
+        branches: ['main', 'master', 'stable29', 'stable28', 'stable27']
 
     name: update-nextcloud-ocp-${{ matrix.branches }}
 
     steps:
       - id: checkout
-        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
           ref: ${{ matrix.branches }}
           submodules: true
         continue-on-error: true
 
-      - name: Set up php8.1
+      - name: Set up php8.2
         if: steps.checkout.outcome == 'success'
-        uses: shivammathur/setup-php@4bd44f22a98a19e0950cbad5f31095157cc9621b # v2
+        uses: shivammathur/setup-php@2e947f1f6932d141d076ca441d0e1e881775e95b # v2.31.0
         with:
-          php-version: 8.1
+          php-version: 8.2
           # https://docs.nextcloud.com/server/stable/admin_manual/installation/source_installation.html#prerequisites-for-manual-installation
           extensions: bz2, ctype, curl, dom, fileinfo, gd, iconv, intl, json, libxml, mbstring, openssl, pcntl, posix, session, simplexml, xmlreader, xmlwriter, zip, zlib, sqlite, pdo_sqlite
           coverage: none
@@ -57,15 +57,15 @@ jobs:
       - name: Composer update nextcloud/ocp
         id: update_branch
         if: ${{ steps.checkout.outcome == 'success' && matrix.branches != 'main' }}
-        run: composer require --dev nextcloud/ocp:dev-${{ matrix.branches }}
+        run: composer require --dev 'nextcloud/ocp:dev-${{ matrix.branches }}'
 
       - name: Raise on issue on failure
-        uses: dacbd/create-issue-action@ba4d1c45cccf9c483f2720cefb40e437f0ee6f7d # v1.2.1
+        uses: dacbd/create-issue-action@cdb57ab6ff8862aa09fee2be6ba77a59581921c2 # v2.0.0
         if: ${{ steps.checkout.outcome == 'success' && failure() && steps.update_branch.conclusion == 'failure' }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          title: Failed to update nextcloud/ocp package on branch ${{ matrix.branches }}
-          body: Please check the output of the GitHub action and manually resolve the issues<br>${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}<br>${{ steps.codeowners.outputs.codeowners }}
+          title: 'Failed to update nextcloud/ocp package on branch ${{ matrix.branches }}'
+          body: 'Please check the output of the GitHub action and manually resolve the issues<br>${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}<br>${{ steps.codeowners.outputs.codeowners }}'
 
       - name: Composer update nextcloud/ocp
         id: update_main
@@ -73,12 +73,12 @@ jobs:
         run: composer require --dev nextcloud/ocp:dev-master
 
       - name: Raise on issue on failure
-        uses: dacbd/create-issue-action@ba4d1c45cccf9c483f2720cefb40e437f0ee6f7d # v1.2.1
+        uses: dacbd/create-issue-action@cdb57ab6ff8862aa09fee2be6ba77a59581921c2 # v2.0.0
         if: ${{ steps.checkout.outcome == 'success' && failure() && steps.update_main.conclusion == 'failure' }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          title: Failed to update nextcloud/ocp package on branch ${{ matrix.branches }}
-          body: Please check the output of the GitHub action and manually resolve the issues<br>${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}<br>${{ steps.codeowners.outputs.codeowners }}
+          title: 'Failed to update nextcloud/ocp package on branch ${{ matrix.branches }}'
+          body: 'Please check the output of the GitHub action and manually resolve the issues<br>${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}<br>${{ steps.codeowners.outputs.codeowners }}'
 
       - name: Reset checkout 3rdparty
         if: steps.checkout.outcome == 'success'
@@ -103,15 +103,15 @@ jobs:
 
       - name: Create Pull Request
         if: steps.checkout.outcome == 'success'
-        uses: peter-evans/create-pull-request@153407881ec5c347639a548ade7d8ad1d6740e38 # v3
+        uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c # v6.1.0
         with:
           token: ${{ secrets.COMMAND_BOT_PAT }}
-          commit-message: "chore(dev-deps): Bump nextcloud/ocp package"
+          commit-message: 'chore(dev-deps): Bump nextcloud/ocp package'
           committer: GitHub <noreply@github.com>
           author: nextcloud-command <nextcloud-command@users.noreply.github.com>
           signoff: true
-          branch: automated/noid/${{ matrix.branches }}-update-nextcloud-ocp
-          title: "[${{ matrix.branches }}] Update nextcloud/ocp dependency"
+          branch: 'automated/noid/${{ matrix.branches }}-update-nextcloud-ocp'
+          title: '[${{ matrix.branches }}] Update nextcloud/ocp dependency'
           body: |
             Auto-generated update of [nextcloud/ocp](https://github.com/nextcloud-deps/ocp/) dependency
           labels: |
