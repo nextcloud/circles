@@ -281,19 +281,23 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 	 * @return ShareWrapper[]
 	 * @throws RequestBuilderException
 	 */
-	public function getSharesByFileIds(array $fileIds, bool $getData = false): array {
+	public function getSharesByFileIds(array $fileIds, bool $getData = false, bool $getChild = false): array {
 		$qb = $this->getShareSelectSql();
 		$qb->limitToFileSourceArray($fileIds);
 
 		if ($getData) {
 			$qb->setOptions([CoreQueryBuilder::SHARE], ['getData' => $getData]);
 			$qb->leftJoinCircle(CoreQueryBuilder::SHARE, null, 'share_with');
-			$qb->limitNull('parent', false);
 		}
 
+		if ($getChild) {
+			$qb->orderBy('parent', 'asc');
+		} else {
+			$qb->limitNull('parent', false);
+		}
 		return $this->getItemsFromRequest($qb);
 	}
-	
+
 
 	/**
 	 * @param FederatedUser $federatedUser
