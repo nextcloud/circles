@@ -65,6 +65,7 @@ use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\FederatedEventService;
 use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Service\ShareTokenService;
 use OCA\Circles\Service\ShareWrapperService;
 use OCA\Circles\Tools\Traits\TArrayTools;
 use OCA\Circles\Tools\Traits\TNCLogger;
@@ -107,6 +108,7 @@ class ShareByCircleProvider implements IShareProvider {
 	private LoggerInterface $logger;
 	private IURLGenerator $urlGenerator;
 	private ShareWrapperService $shareWrapperService;
+	private ShareTokenService $shareTokenService;
 	private FederatedUserService $federatedUserService;
 	private FederatedEventService $federatedEventService;
 	private CircleService $circleService;
@@ -130,6 +132,7 @@ class ShareByCircleProvider implements IShareProvider {
 		$this->federatedUserService = OC::$server->get(FederatedUserService::class);
 		$this->federatedEventService = OC::$server->get(FederatedEventService::class);
 		$this->shareWrapperService = OC::$server->get(ShareWrapperService::class);
+		$this->shareTokenService = OC::$server->get(ShareTokenService::class);
 		$this->circleService = OC::$server->get(CircleService::class);
 		$this->eventService = OC::$server->get(EventService::class);
 	}
@@ -648,6 +651,27 @@ class ShareByCircleProvider implements IShareProvider {
 
 
 	/**
+	 * if $currentAccess, returns long version of the access list:
+	 * [
+	 *   'users'  => [
+	 *     'user1' => ['node_id' => 42, 'node_path' => '/fileA'],
+	 *     'user4' => ['node_id' => 32, 'node_path' => '/folder2'],
+	 *     'user2' => ['node_id' => 23, 'node_path' => '/folder (1)'],
+	 *   ],
+	 *   'remote' => [
+	 *     'user1@server1' => ['node_id' => 42, 'token' => 'SeCr3t'],
+	 *     'user2@server2' => ['node_id' => 23, 'token' => 'FooBaR'],
+	 *   ],
+	 *   'public' => bool,
+	 *   'mail' => [
+	 *     'email1@maildomain1' => ['node_id' => 42, 'token' => 'aBcDeFg'],
+	 *     'email2@maildomain2' => ['node_id' => 23, 'token' => 'hIjKlMn'],
+	 *   ]
+	 * ]
+	 *
+	 *
+	 *
+	 *
 	 * @param Node[] $nodes
 	 * @param bool $currentAccess
 	 *
@@ -657,6 +681,23 @@ class ShareByCircleProvider implements IShareProvider {
 		return [];
 	}
 
+	/**
+	 * @param array $list
+	 * @param array<int, array<string, string>> $shareTokens
+	 *
+	 * @return array
+	 */
+	private function updateAccessListTokens(array $list, array $shareTokens): array {
+		$result = [];
+		foreach($list as $id => $data) {
+			$result[$id] = [
+				'node_id' => $data['node_id'],
+				'token' => $shareTokens[$data['shareId']][$data['memberId']]
+			];
+		}
+
+		return $result;
+	}
 
 	/**
 	 * We don't return a thing about children.

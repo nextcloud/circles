@@ -359,9 +359,10 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	 * @param string $field
 	 * @param array $value
 	 * @param string $alias
+	 * @param int $type
 	 */
-	public function limitInArray(string $field, array $value, string $alias = ''): void {
-		$this->andWhere($this->exprLimitInArray($field, $value, $alias));
+	public function limitInArray(string $field, array $value, string $alias = '', int $type = IQueryBuilder::PARAM_STR_ARRAY): void {
+		$this->andWhere($this->exprLimitInArray($field, $value, $alias, $type));
 	}
 
 	/**
@@ -544,22 +545,26 @@ class ExtendedQueryBuilder extends QueryBuilder {
 		return $andX;
 	}
 
-
 	/**
 	 * @param string $field
 	 * @param array $values
 	 * @param string $alias
+	 * @param int $type
 	 *
 	 * @return string
 	 */
-	public function exprLimitInArray(string $field, array $values, string $alias = ''): string {
+	public function exprLimitInArray(
+		string $field,
+		array $values,
+		string $alias = '',
+		int $type = IQueryBuilder::PARAM_STR_ARRAY
+	): string {
 		if ($this->getType() === DBALQueryBuilder::SELECT) {
 			$field = (($alias === '') ? $this->getDefaultSelectAlias() : $alias) . '.' . $field;
 		}
 
 		$expr = $this->expr();
-
-		return $expr->in($field, $this->createNamedParameter($values, IQueryBuilder::PARAM_STR_ARRAY));
+		return $expr->in($field, $this->createNamedParameter($values, $type));
 	}
 
 

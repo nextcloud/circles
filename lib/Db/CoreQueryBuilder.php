@@ -369,7 +369,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 	 * @param array $files
 	 */
 	public function limitToFileSourceArray(array $files): void {
-		$this->limitArray('file_source', $files);
+		$this->limitInArray('file_source', $files, type: IQueryBuilder::PARAM_INT_ARRAY);
 	}
 
 
