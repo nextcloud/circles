@@ -55,7 +55,6 @@ use OCP\Files\Node;
 use OCP\Files\NotFoundException;
 use OCP\IDBConnection;
 use OCP\IL10N;
-use OCP\ILogger;
 use OCP\IURLGenerator;
 use OCP\IUserManager;
 use OCP\Security\ISecureRandom;
@@ -98,7 +97,7 @@ class ShareByCircleProvider implements IShareProvider {
 		IUserManager $userManager,
 		IRootFolder $rootFolder,
 		IL10N $l10n,
-		ILogger $logger,
+		mixed $logger, // unused, only kept for compatibility with server
 		IURLGenerator $urlGenerator
 	) {
 		$this->userManager = $userManager;
