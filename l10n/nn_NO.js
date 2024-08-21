@@ -6,6 +6,7 @@ OC.L10N.register(
     "Password protected" : "Passordverna",
     "Local" : "Lokal",
     "Federated" : "Federated",
+    "Contact" : "Kontakt",
     "Circle" : "Sirkel",
     "Moderator" : "Moderator",
     "Admin" : "Administrer",
