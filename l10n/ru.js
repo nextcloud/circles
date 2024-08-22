@@ -2,11 +2,6 @@ OC.L10N.register(
     "circles",
     {
     "Teams" : "Команды",
-    "Teams' files" : "Файлы групп",
-    "Select team to filter by" : "Выберите группу для фильтрации по",
-    "No teams found" : "Группы не найдены",
-    "Please select teams to filter by" : "Пожалуйста, выберите группы для фильтрации по",
-    "No files found for the selected teams" : "Для выбранных групп файлы не найдены",
     "You created the team {circle}" : "Вы создали группу {circle}",
     "{author} created the team {circle}" : "{author} создал группу {circle}",
     "You deleted {circle}" : "Вы удалили круг «{circle}»",
@@ -195,6 +190,11 @@ OC.L10N.register(
     "You have no permission to create a new circle" : "У вас нет разрешения на создание нового круга",
     "This item is already shared with this circle" : "Этот элемент уже используется в этом круге",
     "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Круги позволяют пользователям создавать свои собственные группы пользователей, коллег или друзей.\nЭти группы пользователей («круги») могут затем использоваться любым другим приложением для обмена информацией.",
+    "Teams' files" : "Файлы групп",
+    "Select team to filter by" : "Выберите группу для фильтрации по",
+    "No teams found" : "Группы не найдены",
+    "Please select teams to filter by" : "Пожалуйста, выберите группы для фильтрации по",
+    "No files found for the selected teams" : "Для выбранных групп файлы не найдены",
     "{author} added team {member} has been added as member to {circle}" : "{author} добавил группу {member} в качестве участника в {circle}"
 },
 "nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);");

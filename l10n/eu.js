@@ -2,11 +2,6 @@ OC.L10N.register(
     "circles",
     {
     "Teams" : "Lantaldeak",
-    "Teams' files" : "Lantaldeen fitxategiak",
-    "Select team to filter by" : "Hautatu iragazteko lantaldea",
-    "No teams found" : "Ez da lantalderik aurkitu",
-    "Please select teams to filter by" : "Hautatu lantaldeak iragazteko",
-    "No files found for the selected teams" : "Ez da fitxategirik aurkitu hautatutako lantaldeetarako",
     "You created the team {circle}" : "{circle} lantaldea zuk sortu duzu",
     "{author} created the team {circle}" : "{author}(e)k {circle} lantaldea sortu du",
     "You deleted {circle}" : "{circle} ezabatu duzu",
@@ -195,6 +190,11 @@ OC.L10N.register(
     "You have no permission to create a new circle" : "Ez duzu zirkulu berri bat sortzeko baimenik",
     "This item is already shared with this circle" : "Elementu hau dagoeneko partekatu da zirkulu honekin",
     "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Circles jendeak erabiltzaile/lankide/lagun taldeak sortzen ahalbidetzen die.\nPertsona talde (edo \"zirkulu\") hauek beste aplikazio batzuetan erabili daitezke partekatzeko xedearekin. ",
+    "Teams' files" : "Lantaldeen fitxategiak",
+    "Select team to filter by" : "Hautatu iragazteko lantaldea",
+    "No teams found" : "Ez da lantalderik aurkitu",
+    "Please select teams to filter by" : "Hautatu lantaldeak iragazteko",
+    "No files found for the selected teams" : "Ez da fitxategirik aurkitu hautatutako lantaldeetarako",
     "{author} added team {member} has been added as member to {circle}" : "{author}(e)k {member} lantaldea gehitu du kide bezala {circle}(e)ra"
 },
 "nplurals=2; plural=(n != 1);");

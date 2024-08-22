@@ -1,10 +1,5 @@
 { "translations": {
     "Teams" : "Takımlar",
-    "Teams' files" : "Takımların dosyaları",
-    "Select team to filter by" : "Süzülecek takımı seçin",
-    "No teams found" : "Herhangi bir takım bulunamadı",
-    "Please select teams to filter by" : "Lütfen süzülecek takımları seçin",
-    "No files found for the selected teams" : "Seçilmiş takımlara uyan bir dosya bulunamadı",
     "You created the team {circle}" : "{circle} takımını eklediniz",
     "{author} created the team {circle}" : "{author}, {circle} takımını ekledi",
     "You deleted {circle}" : "{circle} takımını sildiniz",
@@ -193,6 +188,11 @@
     "You have no permission to create a new circle" : "Yeni bir takım ekleme izniniz yok",
     "This item is already shared with this circle" : "Bu öge zaten bu takım ile paylaşılmış",
     "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Takımlar, kişilerin kendi kişi/iş arkadaşı/arkadaş gruplarını oluşturmasını sağlar.\nBu kişi grupları (ya da \"takımlar\") başka uygulamalar tarafından paylaşım amacıyla kullanılabilir.",
+    "Teams' files" : "Takımların dosyaları",
+    "Select team to filter by" : "Süzülecek takımı seçin",
+    "No teams found" : "Herhangi bir takım bulunamadı",
+    "Please select teams to filter by" : "Lütfen süzülecek takımları seçin",
+    "No files found for the selected teams" : "Seçilmiş takımlara uyan bir dosya bulunamadı",
     "{author} added team {member} has been added as member to {circle}" : "{author}, {member} takım üyesini {circle} takımına ekledi"
 },"pluralForm" :"nplurals=2; plural=(n > 1);"
 }

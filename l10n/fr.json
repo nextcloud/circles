@@ -1,10 +1,5 @@
 { "translations": {
     "Teams" : "Équipes",
-    "Teams' files" : "Fichiers de l'équipe",
-    "Select team to filter by" : "Sélectionner l'équipe à filtrer",
-    "No teams found" : "Aucune équipe trouvée",
-    "Please select teams to filter by" : "Veuillez sélectionner les équipes à filtrer",
-    "No files found for the selected teams" : "Aucun fichier trouvé pour les équipes sélectionnées",
     "You created the team {circle}" : "Vous avez créé l'équipe {circle}",
     "{author} created the team {circle}" : "{author} a créé l'équipe {circle}",
     "You deleted {circle}" : "Vous avez supprimé {circle}",
@@ -136,8 +131,8 @@
     "You have no permission to create a new team" : "Vous n'avez pas l'autorisation de créer une nouvelle équipe",
     "%s shared a file with \"%s\"." : "%s a partagé un fichier avec « %s ».",
     "%s shared a file with you." : "%s a partagé un fichier avec vous.",
-    "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s a partagé quelque chose avec vous\nVous devriez avoir déjà reçu un e-mail séparé avec un lien pour y accéder\n",
-    "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s a partagé quelque chose avec vous\nVous devriez avoir déjà reçu un e-mail séparé avec un lien pour y accéder",
+    "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s a partagé quelque chose avec vous.\nVous devriez avoir déjà reçu un e-mail séparé avec un lien pour y accéder.\n",
+    "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s a partagé quelque chose avec vous.\nVous devriez avoir déjà reçu un e-mail séparé avec un lien pour y accéder.",
     "Password to access content shared with you by %1$s" : "Mot de passe pour accéder au contenu partagé avec vous par %1$s",
     "Password to access content" : "Mot de passe pour accéder au contenu",
     "This item is already shared with this team" : "Cet objet est déjà partagé avec cette équipe",
@@ -188,6 +183,11 @@
     "This contact is not available" : "Ce contact n'est pas disponible",
     "You have no permission to create a new circle" : "Vous n'avez pas l'autorisation de créer un nouveau cercle",
     "This item is already shared with this circle" : "Cet item est déjà partagé avec ce cercle",
-    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "L’application « Cercles » permet aux utilisateurs de créer leurs propres groupes de personnes/collègues/amis\nCes groupes de gens (ou « cercles ») peuvent alors être utilisés par toutes les autres applications à des fins de partage."
+    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "L’application « Cercles » permet aux utilisateurs de créer leurs propres groupes de personnes/collègues/amis\nCes groupes de gens (ou « cercles ») peuvent alors être utilisés par toutes les autres applications à des fins de partage.",
+    "Teams' files" : "Fichiers de l'équipe",
+    "Select team to filter by" : "Sélectionner l'équipe à filtrer",
+    "No teams found" : "Aucune équipe trouvée",
+    "Please select teams to filter by" : "Veuillez sélectionner les équipes à filtrer",
+    "No files found for the selected teams" : "Aucun fichier trouvé pour les équipes sélectionnées"
 },"pluralForm" :"nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }

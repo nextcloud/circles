@@ -1,10 +1,5 @@
 { "translations": {
     "Teams" : "Команди",
-    "Teams' files" : "Файли команд",
-    "Select team to filter by" : "Виберіть команду для відфільтрування",
-    "No teams found" : "Жодної команди не знайдено",
-    "Please select teams to filter by" : "Виберіть команди для відфільтрування",
-    "No files found for the selected teams" : "Жодних файлів не знайдено для вибраних команд",
     "You created the team {circle}" : "Ви створити команду {circle}",
     "{author} created the team {circle}" : "{author} створив(-ла) команду {circle}",
     "You deleted {circle}" : "Ви вилучили коло {circle}",
@@ -191,6 +186,11 @@
     "You have no permission to create a new circle" : "У вас немає дозволу на створення нового кола",
     "This item is already shared with this circle" : "Цей елемент уже надано спільно для цього кола",
     "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Застосунок \"Кола\" дозволяє людям створювати власні групи людей/колег/друзів. \nПотім ці групи людей (або \"кола\") можуть використовуватися будь-яким іншим застосунком для спільного використання.",
+    "Teams' files" : "Файли команд",
+    "Select team to filter by" : "Виберіть команду для відфільтрування",
+    "No teams found" : "Жодної команди не знайдено",
+    "Please select teams to filter by" : "Виберіть команди для відфільтрування",
+    "No files found for the selected teams" : "Жодних файлів не знайдено для вибраних команд",
     "{author} added team {member} has been added as member to {circle}" : "{author} додав(-ла) {member} учасником(-цею) {circle}"
 },"pluralForm" :"nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);"
 }

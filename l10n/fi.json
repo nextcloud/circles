@@ -1,10 +1,5 @@
 { "translations": {
     "Teams" : "Tiimit",
-    "Teams' files" : "Tiimin tiedostot",
-    "Select team to filter by" : "Valitse tiimi, jonka perusteella suodatetaan",
-    "No teams found" : "Tiimejä ei löytynyt",
-    "Please select teams to filter by" : "Valitse tiimit, joiden perusteella suodatetaan",
-    "No files found for the selected teams" : "Valitulle tiimille ei löytynyt tiedostoja",
     "You created the team {circle}" : "Loit tiimin {circle}",
     "{author} created the team {circle}" : "{author} loi tiimin {circle}",
     "You deleted {circle}" : "Poistit piirin {circle}",
@@ -145,6 +140,11 @@
     "Email format is not valid" : "Sähköpostin muoto ei ole kelvollinen",
     "This contact is not available" : "Tämä yhteystieto ei ole saatavilla",
     "You have no permission to create a new circle" : "Sinulla ei ole oikeutta luoda uutta piiriä",
-    "This item is already shared with this circle" : "Tämä kohde on jo jaettu tämän piirin kanssa"
+    "This item is already shared with this circle" : "Tämä kohde on jo jaettu tämän piirin kanssa",
+    "Teams' files" : "Tiimin tiedostot",
+    "Select team to filter by" : "Valitse tiimi, jonka perusteella suodatetaan",
+    "No teams found" : "Tiimejä ei löytynyt",
+    "Please select teams to filter by" : "Valitse tiimit, joiden perusteella suodatetaan",
+    "No files found for the selected teams" : "Valitulle tiimille ei löytynyt tiedostoja"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
