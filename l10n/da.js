@@ -2,11 +2,6 @@ OC.L10N.register(
     "circles",
     {
     "Teams" : "Teams",
-    "Teams' files" : "Teamets filer",
-    "Select team to filter by" : "Vælg team at filtrere efter",
-    "No teams found" : "Ingen teams fundet",
-    "Please select teams to filter by" : "Vælg venligst teams at filtrere efter",
-    "No files found for the selected teams" : "Inge filer funder for det valgte team",
     "You created the team {circle}" : "Du oprettede teamet {circle}",
     "{author} created the team {circle}" : "{author} oprettede team {circle}",
     "You deleted {circle}" : "Du slettede {circle}",
@@ -195,6 +190,11 @@ OC.L10N.register(
     "You have no permission to create a new circle" : "Du har ikke tilladelse til at oprette en ny cirkel",
     "This item is already shared with this circle" : "Dette element er allerede delt med denne cirkel",
     "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Cirkler giver dine brugere mulighed for at oprette deres egne grupper af brugere/kolleger/venner.\nDisse grupper af brugere (eller \"cirkler\") kan derefter bruges af enhver anden app til delingsformål.",
+    "Teams' files" : "Teamets filer",
+    "Select team to filter by" : "Vælg team at filtrere efter",
+    "No teams found" : "Ingen teams fundet",
+    "Please select teams to filter by" : "Vælg venligst teams at filtrere efter",
+    "No files found for the selected teams" : "Inge filer funder for det valgte team",
     "{author} added team {member} has been added as member to {circle}" : "{author} tilføjede team {member} er blevet tilføjet som medlem til {circle}"
 },
 "nplurals=2; plural=(n != 1);");

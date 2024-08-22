@@ -2,11 +2,6 @@ OC.L10N.register(
     "circles",
     {
     "Teams" : "Tímy",
-    "Teams' files" : "Súbory tímov",
-    "Select team to filter by" : "Vybrať tím pre filtrovanie",
-    "No teams found" : "Žiadne tímy sa nenašli",
-    "Please select teams to filter by" : "Prosím, vyberte tímy pre filtrovanie",
-    "No files found for the selected teams" : "Pre vybrané tímy neboli nájdené žiadne súbory",
     "You created the team {circle}" : "Vytvorili ste tím {circle}",
     "{author} created the team {circle}" : "{author} vytvoril tím {circle}",
     "You deleted {circle}" : "Vymazali ste {circle}",
@@ -193,6 +188,11 @@ OC.L10N.register(
     "You have no permission to create a new circle" : "Nemáte oprávnenia pre vytváranie nových kruhov",
     "This item is already shared with this circle" : "Táto položka je už zdieľaná s týmto kruhom",
     "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Kruhy umožňujú vašim užívateľom vytvárať ich vlastné skupiny užívateľov/kolegov/priateľov.\nTieto skupiny užívateľov (alebo \"kruhov\") môžu buť potom používané akoukoľvek inou aplikáciou pre potreby zdieľania.",
+    "Teams' files" : "Súbory tímov",
+    "Select team to filter by" : "Vybrať tím pre filtrovanie",
+    "No teams found" : "Žiadne tímy sa nenašli",
+    "Please select teams to filter by" : "Prosím, vyberte tímy pre filtrovanie",
+    "No files found for the selected teams" : "Pre vybrané tímy neboli nájdené žiadne súbory",
     "{author} added team {member} has been added as member to {circle}" : "{author} pridal tím {member} ako člena k {circle}"
 },
 "nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);");

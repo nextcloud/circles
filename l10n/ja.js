@@ -2,11 +2,6 @@ OC.L10N.register(
     "circles",
     {
     "Teams" : "チーム",
-    "Teams' files" : "チームのファイル",
-    "Select team to filter by" : "フィルターするチームを選択",
-    "No teams found" : "チームは見つかりませんでした",
-    "Please select teams to filter by" : "フィルターするチームを選択してください",
-    "No files found for the selected teams" : "選択したチームに割りあてられているファイルはありません",
     "You created the team {circle}" : "あなたはチーム {circle} を作成しました",
     "{author} created the team {circle}" : "{author} がチーム {circle} を作成しました",
     "You deleted {circle}" : "あなたは {circle} を削除しました",
@@ -195,6 +190,11 @@ OC.L10N.register(
     "You have no permission to create a new circle" : "新しいサークルを作成する権限がありません",
     "This item is already shared with this circle" : "このアイテムは既にこのサークルで共有されています",
     "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "サークルを使って自分のグループ(同僚、友達)を作ることができます。\n他のアプリでこれらのグループ(または「サークル」)を共有先として使用できます。",
+    "Teams' files" : "チームのファイル",
+    "Select team to filter by" : "フィルターするチームを選択",
+    "No teams found" : "チームは見つかりませんでした",
+    "Please select teams to filter by" : "フィルターするチームを選択してください",
+    "No files found for the selected teams" : "選択したチームに割りあてられているファイルはありません",
     "{author} added team {member} has been added as member to {circle}" : "{author} がチーム {member} のメンバーとして {circle} に追加されました"
 },
 "nplurals=1; plural=0;");

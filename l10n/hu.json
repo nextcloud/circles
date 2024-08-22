@@ -1,8 +1,5 @@
 { "translations": {
     "Teams" : "Csapatok",
-    "Teams' files" : "Csapatfájlok",
-    "No teams found" : "Nem találhatók csapatok",
-    "Please select teams to filter by" : "Válasszon csapatokat a szűréshez:",
     "You deleted {circle}" : "Törölte ezt: {circle}",
     "{author} deleted {circle}" : "{author} törölte a(z) {circle} kört",
     "You removed {member} from {circle}" : "Eltávolította {member} tagot a(z) {circle} körből",
@@ -171,6 +168,9 @@
     "This contact is not available" : "A névjegy nem érhető el",
     "You have no permission to create a new circle" : "Nincs jogosultsága arra, hogy új kört hozzon létre",
     "This item is already shared with this circle" : "Ez az elem már megosztásra került ezzel a körrel",
-    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "A Körök lehetővé teszi, hogy az emberek létrehozzák a saját köreiket a felhasználóinak/kollégáinak/barátaiknak.\nEzeket a csoportokat (vagy „köröket”) aztán bármely más alkalmazás használhatja megosztási célokra."
+    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "A Körök lehetővé teszi, hogy az emberek létrehozzák a saját köreiket a felhasználóinak/kollégáinak/barátaiknak.\nEzeket a csoportokat (vagy „köröket”) aztán bármely más alkalmazás használhatja megosztási célokra.",
+    "Teams' files" : "Csapatfájlok",
+    "No teams found" : "Nem találhatók csapatok",
+    "Please select teams to filter by" : "Válasszon csapatokat a szűréshez:"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

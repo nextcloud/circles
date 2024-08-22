@@ -2,11 +2,6 @@ OC.L10N.register(
     "circles",
     {
     "Teams" : "Teams",
-    "Teams' files" : "Teams filer",
-    "Select team to filter by" : "Välj team att filtrera efter",
-    "No teams found" : "Inga team hittades",
-    "Please select teams to filter by" : "Välj team att filtrera efter",
-    "No files found for the selected teams" : "Inga filer hittade för valda team",
     "You created the team {circle}" : "Du skapade teamet {circle}",
     "{author} created the team {circle}" : "{author} skapade teamet {circle}",
     "You deleted {circle}" : "Du tog bort {circle}",
@@ -195,6 +190,11 @@ OC.L10N.register(
     "You have no permission to create a new circle" : "Du har inte behörighet att skapa en ny cirkel",
     "This item is already shared with this circle" : "Detta objektet delas redan med denna cirkeln.",
     "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Cirklar låter användare att skapa deras egna grupper av användare/kollegor/vänner.\nDessa grupper av användare (eller \"cirklar\") kan användas av alla andra appar vid delning.",
+    "Teams' files" : "Teams filer",
+    "Select team to filter by" : "Välj team att filtrera efter",
+    "No teams found" : "Inga team hittades",
+    "Please select teams to filter by" : "Välj team att filtrera efter",
+    "No files found for the selected teams" : "Inga filer hittade för valda team",
     "{author} added team {member} has been added as member to {circle}" : "{author} lade till team {member} som medlem i {circle}"
 },
 "nplurals=2; plural=(n != 1);");

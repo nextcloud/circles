@@ -1,10 +1,5 @@
 { "translations": {
     "Teams" : "Equipos",
-    "Teams' files" : "Archivos del equipo",
-    "Select team to filter by" : "Selecciona el equipo por el que filtrar",
-    "No teams found" : "No se encontraron equipos",
-    "Please select teams to filter by" : "Por favor, seleccione los equipos por los que filtrar",
-    "No files found for the selected teams" : "No se encontraron archivos para los equipos seleccionados",
     "You created the team {circle}" : "Ha creado el equipo {circle}",
     "{author} created the team {circle}" : "{author} creó el equipo {circle}",
     "You deleted {circle}" : "Has eliminado {circle}",
@@ -191,6 +186,11 @@
     "You have no permission to create a new circle" : "No tienes permiso para crear un nuevo círculo",
     "This item is already shared with this circle" : "Este elemento ya ha sido compartido en este círculo",
     "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Los círculos permiten a tus usuarios crear sus propios grupos de usuarios/compañeros/amigos.\nEstos grupos de usuarios (o \"círculos\") pueden ser utilizados por cualquier otra aplicación con el propósito de compartir información.",
+    "Teams' files" : "Archivos del equipo",
+    "Select team to filter by" : "Selecciona el equipo por el que filtrar",
+    "No teams found" : "No se encontraron equipos",
+    "Please select teams to filter by" : "Por favor, seleccione los equipos por los que filtrar",
+    "No files found for the selected teams" : "No se encontraron archivos para los equipos seleccionados",
     "{author} added team {member} has been added as member to {circle}" : "{author} añadió al equipo {member} como miembro de {circle}"
 },"pluralForm" :"nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }
