@@ -2,11 +2,6 @@ OC.L10N.register(
     "circles",
     {
     "Teams" : "團隊",
-    "Teams' files" : "團隊檔案",
-    "Select team to filter by" : "依照選擇的團隊篩選",
-    "No teams found" : "找不到團隊",
-    "Please select teams to filter by" : "請選擇團隊以篩選",
-    "No files found for the selected teams" : "沒有找到所選團隊的檔案",
     "You created the team {circle}" : "您創建了團隊 {circle}",
     "{author} created the team {circle}" : "{author} 創建了團隊 {circle}",
     "You deleted {circle}" : "您刪除了 {circle}",
@@ -195,6 +190,11 @@ OC.L10N.register(
     "You have no permission to create a new circle" : "您沒有權限來創建新社交圈子",
     "This item is already shared with this circle" : "已和這社交圈子分享了此項目",
     "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "圈子允許人們創建自己的人/同事/朋友群組。\n然後，這些人群（或“圈子”）可以被其他應用程式用於共享目的。",
+    "Teams' files" : "團隊檔案",
+    "Select team to filter by" : "依照選擇的團隊篩選",
+    "No teams found" : "找不到團隊",
+    "Please select teams to filter by" : "請選擇團隊以篩選",
+    "No files found for the selected teams" : "沒有找到所選團隊的檔案",
     "{author} added team {member} has been added as member to {circle}" : "{author} 已將團隊 {member} 添加為 {circle} 的成員"
 },
 "nplurals=1; plural=0;");

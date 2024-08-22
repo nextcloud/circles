@@ -2,11 +2,6 @@ OC.L10N.register(
     "circles",
     {
     "Teams" : "Equipos",
-    "Teams' files" : "Ficheiros dos equipos",
-    "Select team to filter by" : "Seleccione o equipo polo que filtrar",
-    "No teams found" : "Non se atoparon equipos",
-    "Please select teams to filter by" : "Seleccione os equipos polos que filtrar",
-    "No files found for the selected teams" : "Non se atoparon ficheiros para os equipos seleccionados",
     "You created the team {circle}" : "Vde. creou o equipo {circle}",
     "{author} created the team {circle}" : "{author} creou o equipo {circle}",
     "You deleted {circle}" : "Vde. eliminou {circle}",
@@ -195,6 +190,11 @@ OC.L10N.register(
     "You have no permission to create a new circle" : "Vde. non ten permiso para crear un novo círculo",
     "This item is already shared with this circle" : "Este elemento xa está compartido con este círculo",
     "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Círculos permítelle ás persoas crear os seus propios grupos de persoas/compañeiros/amigos.\nEses grupos de persoas (ou «círculos») poden ser usados por calquera outra aplicación para compartir.",
+    "Teams' files" : "Ficheiros dos equipos",
+    "Select team to filter by" : "Seleccione o equipo polo que filtrar",
+    "No teams found" : "Non se atoparon equipos",
+    "Please select teams to filter by" : "Seleccione os equipos polos que filtrar",
+    "No files found for the selected teams" : "Non se atoparon ficheiros para os equipos seleccionados",
     "{author} added team {member} has been added as member to {circle}" : "{author} engadiu o equipo {member} como participante en {circle}"
 },
 "nplurals=2; plural=(n != 1);");
