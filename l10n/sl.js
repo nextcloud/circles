@@ -2,11 +2,6 @@ OC.L10N.register(
     "circles",
     {
     "Teams" : "Skupine",
-    "Teams' files" : "Datoteke skupine",
-    "Select team to filter by" : "Izbor skupine za filtriranje",
-    "No teams found" : "Ni oblikovanih skupin",
-    "Please select teams to filter by" : "Izbrati je treba skupino za filtriranje",
-    "No files found for the selected teams" : "Za izbrano skupino ni najdenih datotek",
     "You created the team {circle}" : "Ustvarite skupino {circle}",
     "{author} created the team {circle}" : "{author} ustvari skupino {circle}",
     "You deleted {circle}" : "Izbrišete krog {circle}",
@@ -177,6 +172,11 @@ OC.L10N.register(
     "This contact is not available" : "Ta stik ni na voljo.",
     "You have no permission to create a new circle" : "Ni ustreznih dovoljenj za ustvarjanje novega kroga.",
     "This item is already shared with this circle" : "Ta predmet je v tem krogu že v souporabi",
-    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Program Krogi omogoča uporabnikom ustvariti lastne skupine uporabnikov, sodelavcev, prijateljev ...\nTe skupine uporabnikov (oziroma »krogov«) je nato mogoče uporabiti kot skupine za souporabo in izmenjavo datotek in podatkov v različnih programih."
+    "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Program Krogi omogoča uporabnikom ustvariti lastne skupine uporabnikov, sodelavcev, prijateljev ...\nTe skupine uporabnikov (oziroma »krogov«) je nato mogoče uporabiti kot skupine za souporabo in izmenjavo datotek in podatkov v različnih programih.",
+    "Teams' files" : "Datoteke skupine",
+    "Select team to filter by" : "Izbor skupine za filtriranje",
+    "No teams found" : "Ni oblikovanih skupin",
+    "Please select teams to filter by" : "Izbrati je treba skupino za filtriranje",
+    "No files found for the selected teams" : "Za izbrano skupino ni najdenih datotek"
 },
 "nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);");

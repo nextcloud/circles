@@ -1,10 +1,5 @@
 { "translations": {
     "Teams" : "Teams",
-    "Teams' files" : "Team-Dateien",
-    "Select team to filter by" : "Team auswählen, nach dem gefiltert werden soll",
-    "No teams found" : "Keine Teams gefunden",
-    "Please select teams to filter by" : "Bitte wähle Teams, nach denen gefiltert werden soll",
-    "No files found for the selected teams" : "Keine Dateien für die ausgewählten Teams gefunden",
     "You created the team {circle}" : "Du hast das Team {circle} erstellt",
     "{author} created the team {circle}" : "{author} hat das Team {circle} erstellt",
     "You deleted {circle}" : "Du hast {circle} gelöscht",
@@ -65,7 +60,7 @@
     "Visible" : "Sichtbar",
     "Open" : "Offen",
     "Invite" : "Einladen",
-    "Join request" : "Betrittsanfrage",
+    "Join request" : "Beitrittsanfrage",
     "Friends" : "Freunde",
     "Password protected" : "Passwortgeschützt",
     "No Owner" : "Kein Besitzer",
@@ -164,7 +159,7 @@
     "On events happening in a <strong>Circle</strong> of which you are a member" : "Bei Ereignissen in einem <strong>Kreis</strong> , in dem du Mitglied bist",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Irgend ein wichtiger Termin in einem <strong>Kreis</strong>, den du moderierst",
     "On global events happening in any <strong>Circle</strong>" : "Bei globalen Ereignissen in irgendeinem <strong>Kreis</strong> ",
-    "Join Request" : "Betrittsanfrage",
+    "Join Request" : "Beitrittsanfrage",
     "Password Protected" : "Passwortgeschützt",
     "Circle Invite" : "Einladung zu Kreis",
     "Email Address" : "E-Mail-Adresse",
@@ -193,6 +188,11 @@
     "You have no permission to create a new circle" : "Du hast keine Berechtigung, einen neuen Kreis zu erstellen",
     "This item is already shared with this circle" : "Dieses Element wird bereits mit diesem Kreis geteilt",
     "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Mit Kreisen können deine Benutzer ihre eigenen Gruppen von Benutzern/Kollegen/Freunden erstellen.\nDiese Benutzergruppen (oder \"Kreise\") können dann von jeder anderen App zum Zweck der gemeinsamen Nutzung verwendet werden.",
+    "Teams' files" : "Team-Dateien",
+    "Select team to filter by" : "Team auswählen, nach dem gefiltert werden soll",
+    "No teams found" : "Keine Teams gefunden",
+    "Please select teams to filter by" : "Bitte wähle Teams, nach denen gefiltert werden soll",
+    "No files found for the selected teams" : "Keine Dateien für die ausgewählten Teams gefunden",
     "{author} added team {member} has been added as member to {circle}" : "{author} hat das Team {member} als Mitglied zu {circle} hinzugefügt"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

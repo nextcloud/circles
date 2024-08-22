@@ -2,11 +2,6 @@ OC.L10N.register(
     "circles",
     {
     "Teams" : "Zespoły",
-    "Teams' files" : "Pliki zespołów",
-    "Select team to filter by" : "Wybierz zespół, według którego chcesz filtrować",
-    "No teams found" : "Nie znaleziono żadnych zespołów",
-    "Please select teams to filter by" : "Wybierz zespoły, według których chcesz filtrować",
-    "No files found for the selected teams" : "Nie znaleziono plików dla wybranych zespołów",
     "You created the team {circle}" : "Utworzyłeś zespół {circle}",
     "{author} created the team {circle}" : "{author} utworzył zespół {circle}",
     "You deleted {circle}" : "Usunąłeś {circle}",
@@ -193,6 +188,11 @@ OC.L10N.register(
     "You have no permission to create a new circle" : "Nie masz uprawnień do utworzenia nowego kręgu",
     "This item is already shared with this circle" : "Element jest już udostępniony w tym kręgu",
     "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Kręgi umożliwiają ludziom tworzyć własne grupy osób/współpracowników/przyjaciół.\nTe grupy osób (lub \"kręgi\") mogą być następnie używane przez dowolną inną aplikację do celów udostępniania.",
+    "Teams' files" : "Pliki zespołów",
+    "Select team to filter by" : "Wybierz zespół, według którego chcesz filtrować",
+    "No teams found" : "Nie znaleziono żadnych zespołów",
+    "Please select teams to filter by" : "Wybierz zespoły, według których chcesz filtrować",
+    "No files found for the selected teams" : "Nie znaleziono plików dla wybranych zespołów",
     "{author} added team {member} has been added as member to {circle}" : "{author} dodał zespół {member} jako członka do {circle}"
 },
 "nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);");

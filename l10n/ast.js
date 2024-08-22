@@ -2,11 +2,6 @@ OC.L10N.register(
     "circles",
     {
     "Teams" : "Equipos",
-    "Teams' files" : "Ficheros d'Equipos",
-    "Select team to filter by" : "Seleiciona los equipos polos que quies peñerar",
-    "No teams found" : "Nun s'atopó nengún equipu",
-    "Please select teams to filter by" : "Seleiciona los equipos polos que quies peñerar",
-    "No files found for the selected teams" : "Nun s'atopó nengún ficheru pa los equipos seleicionaos",
     "You created the team {circle}" : "Creesti l'equipu «{circle}»",
     "{author} created the team {circle}" : "{author} creó l'equipu «{circle}»",
     "You deleted {circle}" : "Desaniciesti «{circle}»",
@@ -193,6 +188,11 @@ OC.L10N.register(
     "You have no permission to create a new circle" : "Nun tienes permisu pa crear un círculu",
     "This item is already shared with this circle" : "Esti elementu yá se compartió con esti círculu",
     "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Los círculos permiten a les persones crear los sos grupos de xente.\nCualesquier otra aplicación pue usar estos grupos de persones (o «círculos») pa compartir.",
+    "Teams' files" : "Ficheros d'Equipos",
+    "Select team to filter by" : "Seleiciona los equipos polos que quies peñerar",
+    "No teams found" : "Nun s'atopó nengún equipu",
+    "Please select teams to filter by" : "Seleiciona los equipos polos que quies peñerar",
+    "No files found for the selected teams" : "Nun s'atopó nengún ficheru pa los equipos seleicionaos",
     "{author} added team {member} has been added as member to {circle}" : "{actor} amestó l'equipu «{member}» como miembru de «{circle}»"
 },
 "nplurals=2; plural=(n != 1);");

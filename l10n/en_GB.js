@@ -2,11 +2,6 @@ OC.L10N.register(
     "circles",
     {
     "Teams" : "Teams",
-    "Teams' files" : "Teams' files",
-    "Select team to filter by" : "Select team to filter by",
-    "No teams found" : "No teams found",
-    "Please select teams to filter by" : "Please select teams to filter by",
-    "No files found for the selected teams" : "No files found for the selected teams",
     "You created the team {circle}" : "You created the team {circle}",
     "{author} created the team {circle}" : "{author} created the team {circle}",
     "You deleted {circle}" : "You deleted {circle}",
@@ -195,6 +190,11 @@ OC.L10N.register(
     "You have no permission to create a new circle" : "You have no permission to create a new circle",
     "This item is already shared with this circle" : "This item is already shared with this circle",
     "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose.",
+    "Teams' files" : "Teams' files",
+    "Select team to filter by" : "Select team to filter by",
+    "No teams found" : "No teams found",
+    "Please select teams to filter by" : "Please select teams to filter by",
+    "No files found for the selected teams" : "No files found for the selected teams",
     "{author} added team {member} has been added as member to {circle}" : "{author} added team {member} has been added as member to {circle}"
 },
 "nplurals=2; plural=(n != 1);");

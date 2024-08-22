@@ -1,10 +1,5 @@
 { "translations": {
     "Teams" : "Equips",
-    "Teams' files" : "Fitxers dels equips",
-    "Select team to filter by" : "Seleccioneu l'equip que voleu filtrar",
-    "No teams found" : "No s'ha trobat cap equip",
-    "Please select teams to filter by" : "Seleccioneu els equips que voleu filtrar",
-    "No files found for the selected teams" : "No s'ha trobat cap fitxer per als equips seleccionats",
     "You created the team {circle}" : "Heu creat l'equip {circle}",
     "{author} created the team {circle}" : "{author} ha creat l'equip {circle}",
     "You deleted {circle}" : "Heu suprimit {circle}",
@@ -191,6 +186,11 @@
     "You have no permission to create a new circle" : "No teniu permís per a crear un cercle nou",
     "This item is already shared with this circle" : "Aquest element ja està compartit amb aquest cercle",
     "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Els cercles permeten que les persones creïn els seus propis grups de persones, companys i amics.\nQualsevol altra aplicació pot utilitzar aquests grups de persones (o «cercles») per a compartir contingut.",
+    "Teams' files" : "Fitxers dels equips",
+    "Select team to filter by" : "Seleccioneu l'equip que voleu filtrar",
+    "No teams found" : "No s'ha trobat cap equip",
+    "Please select teams to filter by" : "Seleccioneu els equips que voleu filtrar",
+    "No files found for the selected teams" : "No s'ha trobat cap fitxer per als equips seleccionats",
     "{author} added team {member} has been added as member to {circle}" : "{author} ha afegit l'equip {member} com a membre de {circle}"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
