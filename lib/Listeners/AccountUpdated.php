@@ -31,6 +31,7 @@ namespace OCA\Circles\Listeners;
 
 use Exception;
 use OCA\Circles\Db\CircleRequest;
+use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\FederatedItems\MemberDisplayName;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Probes\CircleProbe;
@@ -49,7 +50,8 @@ class AccountUpdated implements IEventListener {
 		private CircleService $circleService,
 		private FederatedEventService $federatedEventService,
 		private FederatedUserService $federatedUserService,
-		private LoggerInterface $logger
+		private LoggerInterface $logger,
+		private MemberRequest $memberRequest
 	) {
 	}
 
@@ -66,6 +68,7 @@ class AccountUpdated implements IEventListener {
 			$user = $event->getUser();
 			$federatedUser = $this->federatedUserService->getLocalFederatedUser($user->getUID());
 
+			$this->memberRequest->updateDisplayName($federatedUser->getSingleId(), $user->getDisplayName());
 			$this->circleRequest->updateDisplayName($federatedUser->getSingleId(), $user->getDisplayName());
 			$this->federatedUserService->setCurrentUser($federatedUser);
 
