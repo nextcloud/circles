@@ -81,7 +81,14 @@ class MigrateCustomGroups extends Base {
 			$owner = $this->cachedFed($ownerId);
 
 			$this->circlesManager->startSession($owner);
-			$circle = $this->circlesManager->createCircle($rowCG['display_name']);
+			try {
+				$circle = $this->circlesManager->createCircle($rowCG['display_name']);
+			} catch (\Exception $e) {
+				$this->output->writeln('<error>' . get_class($e) . ' ' . $e->getMessage() . '</error> with data ' . json_encode($rowCG));
+				$this->logger->log(2, 'error while creating circle', ['exception' => $e]);
+				$this->circlesManager->stopSession();
+				continue;
+			}
 
 			// we get all members for this custom group
 			$queryMembers = $this->connection->getQueryBuilder();
