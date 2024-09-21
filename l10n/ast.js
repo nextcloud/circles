@@ -16,7 +16,7 @@ OC.L10N.register(
     "{member} joined {circle}" : "{member} xunióse a «{circle}»",
     "You accepted the invitation to join {circle}" : "Aceptesti la invitación pa xunite a «{circle}»",
     "{member} accepted the invitation to join {circle}" : "{member} aceptó la invitación a xunise a «{circle}»",
-    "You added {member} as member to {circle}" : "Metiesti a {memeber} nel «{circle}»",
+    "You added {member} as member to {circle}" : "Metiesti a {member} nel «{circle}»",
     "You have been added as member to {circle} by {author}" : "{author} metióte en: {circle}",
     "{member} has been added as member to {circle} by {author}" : "{author} metió a {member} en: {circle}",
     "You added {external} to {circle}" : "Amestesti «{external}» a «{circle}»",
@@ -193,6 +193,6 @@ OC.L10N.register(
     "No teams found" : "Nun s'atopó nengún equipu",
     "Please select teams to filter by" : "Seleiciona los equipos polos que quies peñerar",
     "No files found for the selected teams" : "Nun s'atopó nengún ficheru pa los equipos seleicionaos",
-    "{author} added team {member} has been added as member to {circle}" : "{actor} amestó l'equipu «{member}» como miembru de «{circle}»"
+    "{author} added team {member} has been added as member to {circle}" : "{author} amestó l'equipu «{member}» como miembru de «{circle}»"
 },
 "nplurals=2; plural=(n != 1);");
