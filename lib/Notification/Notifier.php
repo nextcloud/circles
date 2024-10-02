@@ -170,7 +170,7 @@ class Notifier implements INotifier {
 		switch ($notification->getSubject()) {
 			case 'memberAdd':
 				$subject = $this->l10n->t(
-					'You are now a member of the Circle "%2$s"',
+					'You are now a member of the Team "%2$s"',
 					[
 						$member->getCircle()->getDisplayName()
 					]
@@ -179,7 +179,7 @@ class Notifier implements INotifier {
 
 			case 'invitation':
 				$subject = $this->l10n->t(
-					'You have been invited by %1$s into the Circle "%2$s"',
+					'You have been invited by %1$s into the Team "%2$s"',
 					[
 						$member->getInvitedBy()->getDisplayName(),
 						$member->getCircle()->getDisplayName()
@@ -189,7 +189,7 @@ class Notifier implements INotifier {
 
 			case 'joinRequest':
 				$subject = $this->l10n->t(
-					'%1$s sent a request to be a member of the Circle "%2$s"',
+					'%1$s sent a request to be a member of the Team "%2$s"',
 					[
 						$this->configService->displayFederatedUser($member, true),
 						$member->getCircle()->getDisplayName()
@@ -221,7 +221,7 @@ class Notifier implements INotifier {
 					break;
 
 				case 'leave':
-					$action->setParsedLabel($this->l10n->t('Leave the circle'));
+					$action->setParsedLabel($this->l10n->t('Leave the team'));
 					break;
 			}
 
