@@ -9,13 +9,13 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Activity;
 
-use InvalidArgumentException;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\FakeException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Tools\Exceptions\InvalidItemException;
 use OCA\Circles\Tools\Traits\TDeserialize;
+use OCP\Activity\Exceptions\UnknownActivityException;
 use OCP\Activity\IEvent;
 use OCP\Activity\IManager;
 use OCP\Activity\IProvider;
@@ -61,11 +61,11 @@ class Provider implements IProvider {
 	 */
 	private function initActivityParser(IEvent $event, array $params): void {
 		if ($event->getApp() !== Application::APP_ID) {
-			throw new InvalidArgumentException();
+			throw new UnknownActivityException();
 		}
 
 		if (!key_exists('circle', $params)) {
-			throw new InvalidArgumentException();
+			throw new UnknownActivityException();
 		}
 	}
 
