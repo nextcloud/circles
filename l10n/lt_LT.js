@@ -1,6 +1,7 @@
 OC.L10N.register(
     "circles",
     {
+    "Teams" : "Komandos",
     "You deleted {circle}" : "Jūs ištrynėte {circle}",
     "{author} deleted {circle}" : "{author} ištrynė {circle}",
     "You removed {member} from {circle}" : "Jūs pašalinote {member} iš {circle}",
