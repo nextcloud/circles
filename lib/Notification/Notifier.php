@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace OCA\Circles\Notification;
 
 use Exception;
-use InvalidArgumentException;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
@@ -30,8 +29,10 @@ use OCP\Federation\ICloudIdManager;
 use OCP\IL10N;
 use OCP\IURLGenerator;
 use OCP\L10N\IFactory;
+use OCP\Notification\AlreadyProcessedException;
 use OCP\Notification\INotification;
 use OCP\Notification\INotifier;
+use OCP\Notification\UnknownNotificationException;
 
 /**
  * Class Notifier
@@ -114,11 +115,12 @@ class Notifier implements INotifier {
 	 * @param string $languageCode The code of the language that should be used to prepare the notification
 	 *
 	 * @return INotification
-	 * @throws InvalidArgumentException
+	 * @throws UnknownNotificationException
+	 * @throws AlreadyProcessedException
 	 */
 	public function prepare(INotification $notification, string $languageCode): INotification {
 		if ($notification->getApp() !== Application::APP_ID) {
-			throw new InvalidArgumentException();
+			throw new UnknownNotificationException();
 		}
 
 		$iconPath = $this->urlGenerator->imagePath(Application::APP_ID, 'circles.svg');
@@ -127,8 +129,10 @@ class Notifier implements INotifier {
 		if ($notification->getObjectType() === 'member') {
 			try {
 				$this->prepareMemberNotification($notification);
+			} catch (UnknownNotificationException $e) {
+				throw $e;
 			} catch (Exception $e) {
-				// TODO: delete notification
+				throw new AlreadyProcessedException();
 			}
 		}
 
@@ -148,6 +152,7 @@ class Notifier implements INotifier {
 	 * @throws FederatedUserNotFoundException
 	 * @throws InvalidIdException
 	 * @throws SingleCircleNotFoundException
+	 * @throws UnknownNotificationException
 	 */
 	private function prepareMemberNotification(INotification $notification) {
 		$this->federatedUserService->initCurrentUser($notification->getUser());
@@ -193,7 +198,7 @@ class Notifier implements INotifier {
 				break;
 
 			default:
-				throw new InvalidArgumentException();
+				throw new UnknownNotificationException();
 		}
 
 		$notification->setParsedSubject($subject);
