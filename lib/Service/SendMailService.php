@@ -138,12 +138,12 @@ class SendMailService {
 		$emailTemplate->addHeader();
 
 		if ($multiple) {
-			$text = $this->l10n->t('%s shared multiple files with "%s".', [$author, $circleName]);
+			$text = $this->l10n->t('%s shared multiple files with you via a team.', [$author]);
 		} else {
-			$text = $this->l10n->t('%s shared a file with "%s".', [$author, $circleName]);
+			$text = $this->l10n->t('%s shared a file with you via a team.', [$author]);
 		}
 
-		$text = $this->l10n->t('%s shared multiple files with "%s".', [$author, $circleName]);
+		$text = $this->l10n->t('%s shared multiple files with you via a team.', [$author]);
 		$emailTemplate->addBodyText(htmlspecialchars($text), $text);
 
 		return $emailTemplate;
