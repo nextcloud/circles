@@ -118,7 +118,7 @@ OC.L10N.register(
     "This member does not exist" : "هذا العضو غير موجود",
     "This member is the owner of the team" : "هذا العضو هو مالك الفريق",
     "Level cannot be changed for this type of member" : "لا يمكن تغيير المستوى لعضو من هذا النوع",
-    "You are already a member of this circle" : "أنت عضوُ في هذه الدائرة من قبل",
+    "You are already a member of this circle" : "أنت عضو في هذه الدائرة من قبل",
     "You have been blocked from this circle" : "أنت محظور من هذه الدائرة ",
     "The account is already a member of this circle" : "هذا الحساب عضوٌ في هذه الدائرة من قبل",
     "The account has already been invited into this circle" : "هذا الحساب تمّت دعوته لهذه الدائرة مُسبقاً",
