@@ -67,7 +67,7 @@ OC.L10N.register(
     "Password protected" : "محمي بكلمة مرور",
     "No Owner" : "لا يوجد مالك",
     "Hidden" : "مخفي",
-    "Backend" : "جهة الخادوم",
+    "Backend" : "جهة الخادم",
     "Local" : "المحلي",
     "Root" : "الجذر",
     "Team invite" : "دعوة الفريق",
