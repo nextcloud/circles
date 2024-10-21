@@ -7,9 +7,11 @@
     "You made {member} join {circle}" : "Vous avez fait rejoindre {circle} à {member}",
     "{author} made {member} join {circle}" : "{author} a fait rejoindre {circle} à {member}",
     "You added team {member} as member to {circle}" : "Vous avez ajouté l'équipe {member} comme membre de {circle}",
+    "{author} added team {member} as member to {circle}" : "{author} à ajoutée {member} des l'équipe en tant que membre à {circle}",
     "You made {member} leave {circle}" : "Vous avez fait quitter {circle} à {member}",
     "{author} made {member} leave {circle}" : "{author} a fait quitter {circle} à {member}",
     "You removed {member} from {circle}" : "Vous avez supprimé {member} de {circle}",
+    "{author} removed {member} from {circle}" : "{author} à retirer {member} de {circle}",
     "You joined {circle}" : "Vous avez rejoint {circle}",
     "{member} joined {circle}" : "{member} a rejoint {circle}",
     "You accepted the invitation to join {circle}" : "Vous avez accepté l'invitation pour rejoindre {circle}",
@@ -119,6 +121,9 @@
     "The account is already a member of this circle" : "Le compte est déjà membre de ce cercle",
     "The account has already been invited into this circle" : "Le compte a déjà été invité à participer à ce cercle",
     "%s (Team owned by %s)" : "%s (%s est propriétaire de l'équipe)",
+    "You are now a member of the Team \"%2$s\"" : "Vous êtes désormais membre de l'équipe \"%2$s\"",
+    "You have been invited by %1$s into the Team \"%2$s\"" : "Vous avez été invité par %1$s dans l'équipe \"%2$s\"",
+    "%1$s sent a request to be a member of the Team \"%2$s\"" : "%1$s a envoyé une demande pour être membre de l'équipe \"%2$s\"",
     "Accept" : "Accepter",
     "Refuse" : "Refuser",
     "Leave the team" : "Quitter l'équipe",
@@ -149,6 +154,8 @@
     "You created the circle {circle}" : "Vous avez créé le cercle {circle}",
     "{author} created the circle {circle}" : "{author} a créé le cercle {circle}",
     "You added circle {member} as member to {circle}" : "Vous avez ajouté le cercle {member} en tant que membre de {circle}",
+    "{author} added circle {member} has been added as member to {circle}" : "{author} à ajouté {member} dans le cercle et a été ajouté en tant que membre à {circle}",
+    "You removed {member} leave {circle}" : "Vous avez retirer {member} du {circle}",
     "On events happening in a <strong>Circle</strong> of which you are a member" : "Sur les événements survenant dans un <strong>Cercle</strong> dont vous êtes membre",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Tous les événements importants dans un <strong>Cercle</strong> que vous modérez",
     "On global events happening in any <strong>Circle</strong>" : "Sur les événements globaux survenant dans n’importe quel <strong>Cercle</strong>",
@@ -189,6 +196,7 @@
     "Select team to filter by" : "Sélectionner l'équipe à filtrer",
     "No teams found" : "Aucune équipe trouvée",
     "Please select teams to filter by" : "Veuillez sélectionner les équipes à filtrer",
-    "No files found for the selected teams" : "Aucun fichier trouvé pour les équipes sélectionnées"
+    "No files found for the selected teams" : "Aucun fichier trouvé pour les équipes sélectionnées",
+    "{author} added team {member} has been added as member to {circle}" : "{author} a ajoutée {member} à l'équipe et a été ajouté en tant que membre à {circle}"
 },"pluralForm" :"nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }
