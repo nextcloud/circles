@@ -77,7 +77,7 @@ class MigrateCustomGroups extends Base {
 			}
 
 			$name = $rowCG['display_name'];
-			while(strlen($name) < 3) {
+			while (strlen($name) < 3) {
 				$name = '_' . $name;
 			}
 
@@ -192,7 +192,7 @@ class MigrateCustomGroups extends Base {
 			->andWhere($update->expr()->eq('share_with', $update->createParameter('old_recipient')));
 
 		$count = 0;
-		foreach($memberIds as $memberId) {
+		foreach ($memberIds as $memberId) {
 			$update->setParameter('old_recipient', $memberId);
 			$update->setParameter('new_recipient', $this->cachedFed($memberId)->getSingleId());
 			$count += $update->executeStatement();
