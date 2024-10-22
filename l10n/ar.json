@@ -1,5 +1,5 @@
 { "translations": {
-    "Teams" : "الفِرَق",
+    "Teams" : "الفرق",
     "You created the team {circle}" : "لقد قُمت بإنشاء الفريق {circle}",
     "{author} created the team {circle}" : "{author} قام بإنشاء الفريق {circle}",
     "You deleted {circle}" : "أنت حذفت الدائرة {circle}",
@@ -105,7 +105,7 @@
     "Building Local Database" : "بناء قاعدة بياناتٍ محلّيّةٍ",
     "Testing Basic Circle Creation" : "اختبار إنشاء دائرة أساسية basic circle",
     "Adding local users and moderators" : "إضافة مُستخدَمين محلّيّين و مُنسِّقِين moderators",
-    "Show all teams" : "عرض كل الفِرَق",
+    "Show all teams" : "عرض كل الفرق",
     "Create a new team" : "إنشاء فريق جديد",
     "Files" : "الملفّات",
     "This feature is not available for personal circles" : "هذه الميزة غير مُتاحة في الدوائر الشخصية",
@@ -139,7 +139,7 @@
     "Password to access content" : "كلمة مرورٍ للوصول إلى المحتوى",
     "This item is already shared with this team" : "هذا العنصر سبقت مشاركته سلفاً مع هذا الفريق",
     "Bring cloud-users closer together." : "تقريب مستخدمي السحابة من بعضهم البعض.",
-    "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "تسمح الفِرَق للأشخاص بإنشاء مجموعاتهم الخاصة من الأشخاص/الزملاء/الأصدقاء. يمكن بعد ذلك استخدام هذه المجموعات من الأشخاص بواسطة أي تطبيق آخر لغرض المشاركة.",
+    "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "تسمح الفرق للأشخاص بإنشاء مجموعاتهم الخاصة من الأشخاص/الزملاء/الأصدقاء. يمكن بعد ذلك استخدام هذه المجموعات من الأشخاص بواسطة أي تطبيق آخر لغرض المشاركة.",
     "No files in here" : "لا توجد ملفات هنا",
     "No entries found in this folder" : "لا يوجد مدخلات في هذا المجلد ",
     "Name" : "الاسم",
@@ -192,11 +192,11 @@
     "You have no permission to create a new circle" : "ليس عندك الصلاحية لإنشاء دائرةٍ جديدةٍ",
     "This item is already shared with this circle" : "هذا العنصر سبق و أن تمّت مشاركته مع هذه الدائرة",
     "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "تسمح \"الدوائر\" Circles للأشخاص بإنشاء مجموعات خاصة بهم من الزملاء و الأصدقاء. \nيمكن بعد ذلك استخدام هذه المجموعات من الأشخاص (أو \"الدوائر\") بواسطة أي تطبيق آخر لأغراض المشاركة.",
-    "Teams' files" : "ملفات الفِرَق",
+    "Teams' files" : "ملفات الفرق",
     "Select team to filter by" : "قم بتحديد فريق للتصفية بحسبه",
     "No teams found" : "لا يوجد أي فريق",
     "Please select teams to filter by" : "رجاءً، قم تتحديد فرق للتصفية بحسبها",
-    "No files found for the selected teams" : "لا توجد أي ملفات للفِرَق المحددة",
+    "No files found for the selected teams" : "لا توجد أي ملفات للفرق المحددة",
     "{author} added team {member} has been added as member to {circle}" : "{author} قام بإضافة الفريق {member} كعضو في {circle}"
 },"pluralForm" :"nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;"
 }
