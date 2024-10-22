@@ -76,13 +76,18 @@ class MigrateCustomGroups extends Base {
 				continue; // if group or owner is not know, we ignore the entry.
 			}
 
+			$name = $rowCG['display_name'];
+			while(strlen($name) < 3) {
+				$name = '_' . $name;
+			}
+
 			// based on owner's userid, we create federateduser and a new circle
-			$this->output->writeln('+ New Team <info>' . $rowCG['display_name'] . '</info>, owner by <info>' . $ownerId . '</info>');
+			$this->output->writeln('+ New Team <info>' . $name . '</info>, owner by <info>' . $ownerId . '</info>');
 			$owner = $this->cachedFed($ownerId);
 
 			$this->circlesManager->startSession($owner);
 			try {
-				$circle = $this->circlesManager->createCircle($rowCG['display_name']);
+				$circle = $this->circlesManager->createCircle($name);
 			} catch (\Exception $e) {
 				$this->output->writeln('<error>' . get_class($e) . ' ' . $e->getMessage() . '</error> with data ' . json_encode($rowCG));
 				$this->logger->log(2, 'error while creating circle', ['exception' => $e]);
