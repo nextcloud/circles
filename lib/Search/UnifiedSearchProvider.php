@@ -45,7 +45,7 @@ class UnifiedSearchProvider implements IProvider {
 	public function __construct(
 		IL10N $l10n,
 		FederatedUserService $federatedUserService,
-		SearchService $searchService
+		SearchService $searchService,
 	) {
 		$this->l10n = $l10n;
 		$this->federatedUserService = $federatedUserService;

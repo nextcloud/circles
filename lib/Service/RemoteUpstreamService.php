@@ -59,7 +59,7 @@ class RemoteUpstreamService {
 		EventWrapperRequest $eventWrapperRequest,
 		RemoteStreamService $remoteStreamService,
 		InterfaceService $interfaceService,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		$this->eventWrapperRequest = $eventWrapperRequest;
 		$this->remoteStreamService = $remoteStreamService;

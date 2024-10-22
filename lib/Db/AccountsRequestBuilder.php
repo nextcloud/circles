@@ -54,7 +54,7 @@ class AccountsRequestBuilder extends DeprecatedRequestBuilder {
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select('a.uid', 'a.data')
-		   ->from(self::NC_TABLE_ACCOUNTS, 'a');
+			->from(self::NC_TABLE_ACCOUNTS, 'a');
 
 		$this->default_select_alias = 'a';
 

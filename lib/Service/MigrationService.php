@@ -129,7 +129,7 @@ class MigrationService {
 		ContactService $contactService,
 		TimezoneService $timezoneService,
 		OutputService $outputService,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		$this->dbConnection = $dbConnection;
 		$this->urlGenerator = $urlGenerator;
@@ -316,13 +316,13 @@ class MigrationService {
 	private function generateCircleFrom21(SimpleDataStore $data): Circle {
 		$circle = new Circle();
 		$circle->setSingleId($data->g('unique_id'))
-			   ->setName($data->g('name'))
-			   ->setDisplayName($data->g('display_name'))
-			   ->setSettings($data->gArray('settings'))
-			   ->setDescription($data->g('description'))
-			   ->setContactAddressBook($data->gInt('contact_addressbook'))
-			   ->setContactGroupName($data->g('contact_groupname'))
-			   ->setSource(Member::TYPE_CIRCLE);
+			->setName($data->g('name'))
+			->setDisplayName($data->g('display_name'))
+			->setSettings($data->gArray('settings'))
+			->setDescription($data->g('description'))
+			->setContactAddressBook($data->gInt('contact_addressbook'))
+			->setContactGroupName($data->g('contact_groupname'))
+			->setSource(Member::TYPE_CIRCLE);
 
 		$dTime = $this->timezoneService->getDateTime($data->g('creation'));
 		$circle->setCreation($dTime->getTimestamp());
@@ -433,15 +433,15 @@ class MigrationService {
 		$member = new Member();
 
 		$member->setCircleId($data->g('circle_id'))
-			   ->setId($data->g('member_id'))
-			   ->setUserId($data->g('user_id'))
-			   ->setInstance($data->g('instance'))
-			   ->setDisplayName($data->g('cached_name'))
-			   ->setLevel($data->gInt('level'))
-			   ->setStatus($data->g('status'))
-			   ->setContactMeta($data->g('contact_meta'))
-			   ->setContactId($data->g('contact_id'))
-			   ->setInvitedBy($this->appCircle);
+			->setId($data->g('member_id'))
+			->setUserId($data->g('user_id'))
+			->setInstance($data->g('instance'))
+			->setDisplayName($data->g('cached_name'))
+			->setLevel($data->gInt('level'))
+			->setStatus($data->g('status'))
+			->setContactMeta($data->g('contact_meta'))
+			->setContactId($data->g('contact_id'))
+			->setInvitedBy($this->appCircle);
 
 		$this->convertMemberUserTypeFrom21($member, $data->gInt('user_type'));
 
@@ -489,9 +489,9 @@ class MigrationService {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$expr = $qb->expr();
 		$qb->select('*')
-		   ->from('share')
-		   ->where($expr->eq('share_type', $qb->createNamedParameter(IShare::TYPE_CIRCLE)))
-		   ->andWhere($expr->isNotNull('parent'));
+			->from('share')
+			->where($expr->eq('share_type', $qb->createNamedParameter(IShare::TYPE_CIRCLE)))
+			->andWhere($expr->isNotNull('parent'));
 
 		try {
 			$cursor = $qb->executeQuery();
@@ -531,10 +531,10 @@ class MigrationService {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$expr = $qb->expr();
 		$qb->select('*')
-		   ->from('share')
-		   ->where($expr->eq('share_type', $qb->createNamedParameter(IShare::TYPE_CIRCLE)))
-		   ->andWhere($expr->eq('parent', $qb->createNamedParameter($data->gInt('parent'))))
-		   ->andWhere($expr->eq('share_with', $qb->createNamedParameter($federatedUser->getSingleId())));
+			->from('share')
+			->where($expr->eq('share_type', $qb->createNamedParameter(IShare::TYPE_CIRCLE)))
+			->andWhere($expr->eq('parent', $qb->createNamedParameter($data->gInt('parent'))))
+			->andWhere($expr->eq('share_with', $qb->createNamedParameter($federatedUser->getSingleId())));
 
 		$cursor = $qb->executeQuery();
 		if ($cursor->rowCount() > 0) {
@@ -546,10 +546,10 @@ class MigrationService {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$expr = $qb->expr();
 		$qb->update('share')
-		   ->set('share_with', $qb->createNamedParameter($federatedUser->getSingleId()))
-		   ->where($expr->eq('share_type', $qb->createNamedParameter(IShare::TYPE_CIRCLE)))
-		   ->andWhere($expr->eq('id', $qb->createNamedParameter($data->gInt('id'))))
-		   ->setMaxResults(1);
+			->set('share_with', $qb->createNamedParameter($federatedUser->getSingleId()))
+			->where($expr->eq('share_type', $qb->createNamedParameter(IShare::TYPE_CIRCLE)))
+			->andWhere($expr->eq('id', $qb->createNamedParameter($data->gInt('id'))))
+			->setMaxResults(1);
 
 		$qb->executeStatement();
 	}
@@ -646,12 +646,12 @@ class MigrationService {
 		}
 
 		$shareToken->setShareId($data->gInt('share_id'))
-				   ->setCircleId($data->g('circle_id'))
-				   ->setSingleId($member->getSingleId())
-				   ->setMemberId($data->g('member_id'))
-				   ->setToken($data->g('token'))
-				   ->setPassword($data->g('password'))
-				   ->setAccepted(IShare::STATUS_ACCEPTED);
+			->setCircleId($data->g('circle_id'))
+			->setSingleId($member->getSingleId())
+			->setMemberId($data->g('member_id'))
+			->setToken($data->g('token'))
+			->setPassword($data->g('password'))
+			->setAccepted(IShare::STATUS_ACCEPTED);
 
 		return $shareToken;
 	}

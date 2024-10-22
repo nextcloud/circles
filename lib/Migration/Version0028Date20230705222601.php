@@ -20,7 +20,7 @@ use Psr\Log\LoggerInterface;
 
 class Version0028Date20230705222601 extends SimpleMigrationStep {
 	public function __construct(
-		private LoggerInterface $logger
+		private LoggerInterface $logger,
 	) {
 	}
 

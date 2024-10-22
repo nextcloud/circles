@@ -27,7 +27,7 @@ class RemoteRequestBuilder extends CoreRequestBuilder {
 	protected function getRemoteInsertSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->insert(self::TABLE_REMOTE)
-		   ->setValue('creation', $qb->createNamedParameter($this->timezoneService->getUTCDate()));
+			->setValue('creation', $qb->createNamedParameter($this->timezoneService->getUTCDate()));
 
 		return $qb;
 	}

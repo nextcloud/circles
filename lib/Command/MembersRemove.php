@@ -62,7 +62,7 @@ class MembersRemove extends Base {
 	 * @param MemberService $memberService
 	 */
 	public function __construct(
-		MemberRequest $memberRequest, FederatedUserService $federatedUserService, MemberService $memberService
+		MemberRequest $memberRequest, FederatedUserService $federatedUserService, MemberService $memberService,
 	) {
 		parent::__construct();
 		$this->memberRequest = $memberRequest;
@@ -74,10 +74,10 @@ class MembersRemove extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:members:remove')
-			 ->setDescription('remove a member from a circle')
-			 ->addArgument('member_id', InputArgument::REQUIRED, 'ID of the member from the Circle')
-			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
-			 ->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0');
+			->setDescription('remove a member from a circle')
+			->addArgument('member_id', InputArgument::REQUIRED, 'ID of the member from the Circle')
+			->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
+			->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0');
 	}
 
 

@@ -144,13 +144,13 @@ class GSEvent implements JsonSerializable {
 
 		if ($this->hasCircle()
 			&& $this->getDeprecatedCircle()
-					->hasViewer()
+				->hasViewer()
 			&& $this->getDeprecatedCircle()
-					->getViewer()
-					->getInstance() === '') {
+				->getViewer()
+				->getInstance() === '') {
 			$this->getDeprecatedCircle()
-				 ->getViewer()
-				 ->setInstance($source);
+				->getViewer()
+				->setInstance($source);
 		}
 
 		return $this;

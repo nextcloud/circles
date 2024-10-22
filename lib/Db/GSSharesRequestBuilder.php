@@ -80,7 +80,7 @@ class GSSharesRequestBuilder extends DeprecatedRequestBuilder {
 			'gsh.id', 'gsh.circle_id', 'gsh.owner', 'gsh.instance', 'gsh.token', 'gsh.parent',
 			'gsh.mountpoint', 'gsh.mountpoint_hash'
 		)
-		   ->from(self::TABLE_GSSHARES, 'gsh');
+			->from(self::TABLE_GSSHARES, 'gsh');
 
 		$this->default_select_alias = 'gsh';
 
@@ -98,7 +98,7 @@ class GSSharesRequestBuilder extends DeprecatedRequestBuilder {
 		$qb->select(
 			'gsmp.user_id', 'gsmp.share_id', 'gsmp.mountpoint', 'gsmp.mountpoint_hash'
 		)
-		   ->from(self::TABLE_GSSHARES_MOUNTPOINT, 'gsmp');
+			->from(self::TABLE_GSSHARES_MOUNTPOINT, 'gsmp');
 
 		$this->default_select_alias = 'gsmp';
 

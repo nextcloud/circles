@@ -58,7 +58,7 @@ class CirclesSync extends Base {
 		SyncService $syncService,
 		MigrationService $migrationService,
 		OutputService $outputService,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		parent::__construct();
 
@@ -75,16 +75,16 @@ class CirclesSync extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:sync')
-			 ->setDescription('Sync Circles and Members')
-			 ->addOption('migration', '', InputOption::VALUE_NONE, 'Migrate from Circles 0.21.0')
-			 ->addOption('force', '', InputOption::VALUE_NONE, 'Force migration')
-			 ->addOption('force-run', '', InputOption::VALUE_NONE, 'Force migration run')
-			 ->addOption('apps', '', InputOption::VALUE_NONE, 'Sync Apps')
-			 ->addOption('users', '', InputOption::VALUE_NONE, 'Sync Nextcloud Account')
-			 ->addOption('groups', '', InputOption::VALUE_NONE, 'Sync Nextcloud Groups')
-			 ->addOption('contacts', '', InputOption::VALUE_NONE, 'Sync Contacts')
-			 ->addOption('remotes', '', InputOption::VALUE_NONE, 'Sync Remotes')
-			 ->addOption('global-scale', '', InputOption::VALUE_NONE, 'Sync GlobalScale');
+			->setDescription('Sync Circles and Members')
+			->addOption('migration', '', InputOption::VALUE_NONE, 'Migrate from Circles 0.21.0')
+			->addOption('force', '', InputOption::VALUE_NONE, 'Force migration')
+			->addOption('force-run', '', InputOption::VALUE_NONE, 'Force migration run')
+			->addOption('apps', '', InputOption::VALUE_NONE, 'Sync Apps')
+			->addOption('users', '', InputOption::VALUE_NONE, 'Sync Nextcloud Account')
+			->addOption('groups', '', InputOption::VALUE_NONE, 'Sync Nextcloud Groups')
+			->addOption('contacts', '', InputOption::VALUE_NONE, 'Sync Contacts')
+			->addOption('remotes', '', InputOption::VALUE_NONE, 'Sync Remotes')
+			->addOption('global-scale', '', InputOption::VALUE_NONE, 'Sync GlobalScale');
 	}
 
 

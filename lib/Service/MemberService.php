@@ -90,7 +90,7 @@ class MemberService {
 		FederatedUserService $federatedUserService,
 		MembershipService $membershipService,
 		FederatedEventService $federatedEventService,
-		RemoteStreamService $remoteStreamService
+		RemoteStreamService $remoteStreamService,
 	) {
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
@@ -126,7 +126,7 @@ class MemberService {
 	public function getMemberById(
 		string $memberId,
 		string $circleId = '',
-		?MemberProbe $probe = null
+		?MemberProbe $probe = null,
 	): Member {
 		$this->federatedUserService->mustHaveCurrentUser();
 

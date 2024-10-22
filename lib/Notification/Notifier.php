@@ -77,7 +77,7 @@ class Notifier implements INotifier {
 		ICloudIdManager $cloudIdManager,
 		MemberService $memberService,
 		FederatedUserService $federatedUserService,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		$this->l10n = $l10n;
 		$this->factory = $factory;
@@ -159,7 +159,7 @@ class Notifier implements INotifier {
 
 		$probe = new CircleProbe();
 		$probe->initiatorAsDirectMember()
-			  ->includeNonVisibleCircles();
+			->includeNonVisibleCircles();
 
 		$member = $this->memberService->getMemberById(
 			$notification->getObjectId(),
@@ -213,7 +213,7 @@ class Notifier implements INotifier {
 			switch ($action->getLabel()) {
 				case 'accept':
 					$action->setParsedLabel($this->l10n->t('Accept'))
-						   ->setPrimary(true);
+						->setPrimary(true);
 					break;
 
 				case 'refuse':

@@ -105,7 +105,7 @@ class NCSignature {
 	public function signOutgoingRequest(NCRequest $request, NCSignatory $signatory): NCSignedRequest {
 		$signedRequest = new NCSignedRequest($request->getDataBody());
 		$signedRequest->setOutgoingRequest($request)
-					  ->setSignatory($signatory);
+			->setSignatory($signatory);
 
 		$this->setOutgoingSignatureHeader($signedRequest);
 		$this->setOutgoingClearSignature($signedRequest);
@@ -196,7 +196,7 @@ class NCSignature {
 			throw new SignatureException('missing elements in \'headers\'');
 		}
 
-		$target = strtolower($request->getMethod()) . " " . $request->getRequestUri();
+		$target = strtolower($request->getMethod()) . ' ' . $request->getRequestUri();
 		$estimated = ['(request-target): ' . $target];
 
 		foreach ($headers as $key) {
@@ -281,10 +281,10 @@ class NCSignature {
 
 		$data = new SimpleDataStore();
 		$data->s('(request-target)', NCRequest::method($request->getType()) . ' ' . $request->getPath())
-			 ->sInt('content-length', strlen($signedRequest->getBody()))
-			 ->s('date', gmdate($this->dateHeader))
-			 ->s('digest', $signedRequest->getDigest())
-			 ->s('host', $request->getHost());
+			->sInt('content-length', strlen($signedRequest->getBody()))
+			->s('date', gmdate($this->dateHeader))
+			->s('digest', $signedRequest->getDigest())
+			->s('host', $request->getHost());
 
 		$signedRequest->setSignatureHeader($data);
 	}

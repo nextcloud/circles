@@ -87,7 +87,7 @@ class CirclesList extends Base {
 	 */
 	public function __construct(
 		ModelManager $modelManager, FederatedUserService $federatedUserService, RemoteService $remoteService,
-		CircleService $circleService, ConfigService $configService
+		CircleService $circleService, ConfigService $configService,
 	) {
 		parent::__construct();
 		$this->modelManager = $modelManager;
@@ -101,19 +101,19 @@ class CirclesList extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:manage:list')
-			 ->setDescription('listing current circles')
-			 ->addOption('instance', '', InputOption::VALUE_REQUIRED, 'Instance of the circle', '')
-			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
-			 ->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
-			 ->addOption('member', '', InputOption::VALUE_REQUIRED, 'search for member', '')
-			 ->addOption('def', '', InputOption::VALUE_NONE, 'display complete circle configuration')
-			 ->addOption('display-name', '', InputOption::VALUE_NONE, 'display the displayName')
-			 ->addOption('personal', '', InputOption::VALUE_NONE, 'include Personal Circles')
-			 ->addOption('system', '', InputOption::VALUE_NONE, 'include System Circles')
-			 ->addOption('hidden', '', InputOption::VALUE_NONE, 'include Hidden Circles')
-			 ->addOption('backend', '', InputOption::VALUE_NONE, 'include Backend Circles')
-			 ->addOption('single', '', InputOption::VALUE_NONE, 'returns only Single Circles')
-			 ->addOption('all', '', InputOption::VALUE_NONE, 'include all Circles');
+			->setDescription('listing current circles')
+			->addOption('instance', '', InputOption::VALUE_REQUIRED, 'Instance of the circle', '')
+			->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
+			->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
+			->addOption('member', '', InputOption::VALUE_REQUIRED, 'search for member', '')
+			->addOption('def', '', InputOption::VALUE_NONE, 'display complete circle configuration')
+			->addOption('display-name', '', InputOption::VALUE_NONE, 'display the displayName')
+			->addOption('personal', '', InputOption::VALUE_NONE, 'include Personal Circles')
+			->addOption('system', '', InputOption::VALUE_NONE, 'include System Circles')
+			->addOption('hidden', '', InputOption::VALUE_NONE, 'include Hidden Circles')
+			->addOption('backend', '', InputOption::VALUE_NONE, 'include Backend Circles')
+			->addOption('single', '', InputOption::VALUE_NONE, 'returns only Single Circles')
+			->addOption('all', '', InputOption::VALUE_NONE, 'include all Circles');
 	}
 
 
@@ -171,8 +171,8 @@ class CirclesList extends Base {
 
 			$probe = new CircleProbe();
 			$probe->filterHiddenCircles()
-				  ->filterBackendCircles()
-				  ->addDetail(BasicProbe::DETAILS_POPULATION);
+				->filterBackendCircles()
+				->addDetail(BasicProbe::DETAILS_POPULATION);
 
 			if ($input->getOption('system')) {
 				$probe->includeSystemCircles();
@@ -187,7 +187,7 @@ class CirclesList extends Base {
 				$singleCircle = new Circle();
 				$singleCircle->setConfig(Circle::CFG_SINGLE);
 				$probe->setFilterCircle($singleCircle)
-					  ->includeSingleCircles();
+					->includeSingleCircles();
 			}
 
 			if ($input->getOption('all')) {

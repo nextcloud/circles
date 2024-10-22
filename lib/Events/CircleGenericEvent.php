@@ -28,7 +28,7 @@ class CircleGenericEvent extends Event {
 	private Circle $circle;
 
 	public function __construct(
-		private FederatedEvent $federatedEvent
+		private FederatedEvent $federatedEvent,
 	) {
 		parent::__construct();
 		$this->circle = $federatedEvent->getCircle();

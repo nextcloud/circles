@@ -95,7 +95,7 @@ class LocalController extends OCSController {
 		MembershipService $membershipService,
 		PermissionService $permissionService,
 		SearchService $searchService,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		parent::__construct($appName, $request);
 
@@ -410,10 +410,10 @@ class LocalController extends OCSController {
 
 			$probe = new CircleProbe();
 			$probe->filterHiddenCircles()
-				  ->filterBackendCircles()
-				  ->addDetail(BasicProbe::DETAILS_POPULATION)
-				  ->setItemsLimit($limit)
-				  ->setItemsOffset($offset);
+				->filterBackendCircles()
+				->addDetail(BasicProbe::DETAILS_POPULATION)
+				->setItemsLimit($limit)
+				->setItemsOffset($offset);
 
 			return new DataResponse($this->serializeArray($this->circleService->getCircles($probe)));
 		} catch (Exception $e) {

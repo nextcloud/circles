@@ -37,7 +37,7 @@ class MemberAddedSendMail implements IEventListener {
 
 	public function __construct(
 		ShareWrapperService $shareWrapperService,
-		SendMailService $sendMailService
+		SendMailService $sendMailService,
 	) {
 		$this->sendMailService = $sendMailService;
 		$this->shareWrapperService = $shareWrapperService;

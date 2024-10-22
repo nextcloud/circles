@@ -66,7 +66,7 @@ class GlobalScaleUsers implements ISearch {
 		try {
 			$users = $this->retrieveJson($request);
 		} catch (
-			RequestNetworkException |
+			RequestNetworkException|
 			RequestResultNotJsonException $e
 		) {
 			$this->miscService->log(

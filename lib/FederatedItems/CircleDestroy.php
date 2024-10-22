@@ -65,7 +65,7 @@ class CircleDestroy implements
 	 */
 	public function __construct(
 		CircleRequest $circleRequest, MemberRequest $memberRequest, EventService $eventService,
-		MembershipService $membershipService
+		MembershipService $membershipService,
 	) {
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;

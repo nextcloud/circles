@@ -27,7 +27,7 @@ class ActivityService {
 		private IActivityManager $activityManager,
 		private IUserManager $userManager,
 		private MemberRequest $memberRequest,
-		private ConfigService $configService
+		private ConfigService $configService,
 	) {
 	}
 
@@ -75,7 +75,7 @@ class ActivityService {
 	public function onMemberNew(
 		Circle $circle,
 		Member $member,
-		int $eventType
+		int $eventType,
 	): void {
 		if ($circle->isConfig(Circle::CFG_PERSONAL)) {
 			return;
@@ -111,7 +111,7 @@ class ActivityService {
 	private function onMemberNewAccount(
 		Circle $circle,
 		Member $member,
-		int $eventType
+		int $eventType,
 	): void {
 		$event = $this->generateEvent('circles_as_member');
 
@@ -150,7 +150,7 @@ class ActivityService {
 	private function onMemberNewCircle(
 		Circle $circle,
 		Member $member,
-		int $eventType = CircleGenericEvent::JOINED
+		int $eventType = CircleGenericEvent::JOINED,
 	): void {
 		$event = $this->generateEvent('circles_as_member');
 
@@ -185,7 +185,7 @@ class ActivityService {
 	private function onMemberAlmost(
 		Circle $circle,
 		Member $member,
-		int $eventType
+		int $eventType,
 	): void {
 		if ($member->getUserType() !== Member::TYPE_USER) {
 			return; // only if almost-member is a local account
@@ -248,7 +248,7 @@ class ActivityService {
 	private function onMemberRemoveAccount(
 		Circle $circle,
 		Member $member,
-		int $eventType
+		int $eventType,
 	): void {
 		$event = $this->generateEvent('circles_as_member');
 
@@ -282,7 +282,7 @@ class ActivityService {
 	private function onMemberRemoveCircle(
 		Circle $circle,
 		Member $member,
-		int $eventType = CircleGenericEvent::JOINED
+		int $eventType = CircleGenericEvent::JOINED,
 	): void {
 		$event = $this->generateEvent('circles_as_member');
 
@@ -317,7 +317,7 @@ class ActivityService {
 	public function onMemberLevel(
 		Circle $circle,
 		Member $member,
-		int $level
+		int $level,
 	): void {
 		if ($member->getLevel() === Member::LEVEL_OWNER) {
 			$this->onMemberOwner($circle, $member);

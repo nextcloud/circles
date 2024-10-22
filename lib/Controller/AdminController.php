@@ -92,7 +92,7 @@ class AdminController extends OCSController {
 		MemberService $memberService,
 		MembershipService $membershipService,
 		SearchService $searchService,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		parent::__construct($appName, $request);
 		$this->userSession = $userSession;
@@ -120,7 +120,7 @@ class AdminController extends OCSController {
 		string $emulated,
 		string $name,
 		bool $personal = false,
-		bool $local = false
+		bool $local = false,
 	): DataResponse {
 		try {
 			$this->setLocalFederatedUser($emulated);
@@ -252,10 +252,10 @@ class AdminController extends OCSController {
 
 			$probe = new CircleProbe();
 			$probe->filterHiddenCircles()
-				  ->filterBackendCircles()
-				  ->addDetail(BasicProbe::DETAILS_POPULATION)
-				  ->setItemsLimit($limit)
-				  ->setItemsOffset($offset);
+				->filterBackendCircles()
+				->addDetail(BasicProbe::DETAILS_POPULATION)
+				->setItemsLimit($limit)
+				->setItemsOffset($offset);
 
 			return new DataResponse($this->serializeArray($this->circleService->getCircles($probe)));
 		} catch (Exception $e) {

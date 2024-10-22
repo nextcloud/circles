@@ -81,7 +81,7 @@ class CircleLeave implements
 		CircleRequest $circleRequest,
 		MembershipService $membershipService,
 		EventService $eventService,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		$this->memberRequest = $memberRequest;
 		$this->circleRequest = $circleRequest;

@@ -73,7 +73,7 @@ class CirclesDetails extends Base {
 	 */
 	public function __construct(
 		FederatedUserService $federatedUserService, RemoteService $remoteService,
-		CircleService $circlesService, MemberService $membersService, ConfigService $configService
+		CircleService $circlesService, MemberService $membersService, ConfigService $configService,
 	) {
 		parent::__construct();
 		$this->federatedUserService = $federatedUserService;
@@ -90,12 +90,12 @@ class CirclesDetails extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:manage:details')
-			 ->setDescription('get details about a circle by its ID')
-			 ->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
-			 ->addOption('instance', '', InputOption::VALUE_REQUIRED, 'Instance of the circle', '')
-			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
-			 ->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
-			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
+			->setDescription('get details about a circle by its ID')
+			->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
+			->addOption('instance', '', InputOption::VALUE_REQUIRED, 'Instance of the circle', '')
+			->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
+			->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
+			->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
 	}
 
 

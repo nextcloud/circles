@@ -29,12 +29,12 @@ class ShareTokenRequest extends ShareTokenRequestBuilder {
 	public function save(ShareToken $token): void {
 		$qb = $this->getTokenInsertSql();
 		$qb->setValue('share_id', $qb->createNamedParameter($token->getShareId()))
-		   ->setValue('circle_id', $qb->createNamedParameter($token->getCircleId()))
-		   ->setValue('single_id', $qb->createNamedParameter($token->getSingleId()))
-		   ->setValue('member_id', $qb->createNamedParameter($token->getMemberId()))
-		   ->setValue('token', $qb->createNamedParameter($token->getToken()))
-		   ->setValue('password', $qb->createNamedParameter($token->getPassword()))
-		   ->setValue('accepted', $qb->createNamedParameter($token->getAccepted()));
+			->setValue('circle_id', $qb->createNamedParameter($token->getCircleId()))
+			->setValue('single_id', $qb->createNamedParameter($token->getSingleId()))
+			->setValue('member_id', $qb->createNamedParameter($token->getMemberId()))
+			->setValue('token', $qb->createNamedParameter($token->getToken()))
+			->setValue('password', $qb->createNamedParameter($token->getPassword()))
+			->setValue('accepted', $qb->createNamedParameter($token->getAccepted()));
 
 		$qb->execute();
 		$id = $qb->getLastInsertId();

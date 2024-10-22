@@ -37,17 +37,17 @@ class MemberRequest extends MemberRequestBuilder {
 
 		$qb = $this->getMemberInsertSql();
 		$qb->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
-		   ->setValue('single_id', $qb->createNamedParameter($member->getSingleId()))
-		   ->setValue('member_id', $qb->createNamedParameter($member->getId()))
-		   ->setValue('user_id', $qb->createNamedParameter($member->getUserId()))
-		   ->setValue('user_type', $qb->createNamedParameter($member->getUserType()))
-		   ->setValue('cached_name', $qb->createNamedParameter($member->getDisplayName()))
-		   ->setValue('cached_update', $qb->createNamedParameter($this->timezoneService->getUTCDate()))
-		   ->setValue('instance', $qb->createNamedParameter($qb->getInstance($member)))
-		   ->setValue('level', $qb->createNamedParameter($member->getLevel()))
-		   ->setValue('status', $qb->createNamedParameter($member->getStatus()))
-		   ->setValue('contact_id', $qb->createNamedParameter($member->getContactId()))
-		   ->setValue('note', $qb->createNamedParameter(json_encode($member->getNotes())));
+			->setValue('single_id', $qb->createNamedParameter($member->getSingleId()))
+			->setValue('member_id', $qb->createNamedParameter($member->getId()))
+			->setValue('user_id', $qb->createNamedParameter($member->getUserId()))
+			->setValue('user_type', $qb->createNamedParameter($member->getUserType()))
+			->setValue('cached_name', $qb->createNamedParameter($member->getDisplayName()))
+			->setValue('cached_update', $qb->createNamedParameter($this->timezoneService->getUTCDate()))
+			->setValue('instance', $qb->createNamedParameter($qb->getInstance($member)))
+			->setValue('level', $qb->createNamedParameter($member->getLevel()))
+			->setValue('status', $qb->createNamedParameter($member->getStatus()))
+			->setValue('contact_id', $qb->createNamedParameter($member->getContactId()))
+			->setValue('note', $qb->createNamedParameter(json_encode($member->getNotes())));
 
 		if ($member->hasInvitedBy()) {
 			$qb->setValue('invited_by', $qb->createNamedParameter($member->getInvitedBy()->getSingleId()));
@@ -67,12 +67,12 @@ class MemberRequest extends MemberRequestBuilder {
 
 		$qb = $this->getMemberUpdateSql();
 		$qb->set('member_id', $qb->createNamedParameter($member->getId()))
-		   ->set('cached_name', $qb->createNamedParameter($member->getDisplayName()))
-		   ->set('cached_update', $qb->createNamedParameter($this->timezoneService->getUTCDate()))
-		   ->set('level', $qb->createNamedParameter($member->getLevel()))
-		   ->set('status', $qb->createNamedParameter($member->getStatus()))
-		   ->set('contact_id', $qb->createNamedParameter($member->getContactId()))
-		   ->set('note', $qb->createNamedParameter(json_encode($member->getNotes())));
+			->set('cached_name', $qb->createNamedParameter($member->getDisplayName()))
+			->set('cached_update', $qb->createNamedParameter($this->timezoneService->getUTCDate()))
+			->set('level', $qb->createNamedParameter($member->getLevel()))
+			->set('status', $qb->createNamedParameter($member->getStatus()))
+			->set('contact_id', $qb->createNamedParameter($member->getContactId()))
+			->set('note', $qb->createNamedParameter(json_encode($member->getNotes())));
 
 		$qb->limitToCircleId($member->getCircleId());
 		$qb->limitToSingleId($member->getSingleId());
@@ -105,7 +105,7 @@ class MemberRequest extends MemberRequestBuilder {
 	public function updateDisplayName(string $singleId, string $displayName, string $circleId = ''): void {
 		$qb = $this->getMemberUpdateSql();
 		$qb->set('cached_name', $qb->createNamedParameter($displayName))
-		   ->set('cached_update', $qb->createNamedParameter($this->timezoneService->getUTCDate()));
+			->set('cached_update', $qb->createNamedParameter($this->timezoneService->getUTCDate()));
 
 		$qb->limitToSingleId($singleId);
 		if ($circleId !== '') {
@@ -197,7 +197,7 @@ class MemberRequest extends MemberRequestBuilder {
 	public function getMembers(
 		string $singleId,
 		?IFederatedUser $initiator = null,
-		?MemberProbe $probe = null
+		?MemberProbe $probe = null,
 	): array {
 		if (is_null($probe)) {
 			$probe = new MemberProbe();
@@ -297,7 +297,7 @@ class MemberRequest extends MemberRequestBuilder {
 	public function getMemberById(
 		string $memberId,
 		?FederatedUser $initiator = null,
-		?MemberProbe $probe = null
+		?MemberProbe $probe = null,
 	): Member {
 		if (is_null($probe)) {
 			$probe = new MemberProbe();

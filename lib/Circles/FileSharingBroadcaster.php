@@ -114,7 +114,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 			$this->miscService = OC::$server->query(MiscService::class);
 		} catch (QueryException $e) {
 			OC::$server->getLogger()
-					   ->log(1, 'Circles: cannot init FileSharingBroadcaster - ' . $e->getMessage());
+				->log(1, 'Circles: cannot init FileSharingBroadcaster - ' . $e->getMessage());
 		}
 
 		try {
@@ -330,7 +330,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 *
 	 * @return bool
 	 */
-	public function sharedByFederated(DeprecatedCircle $circle, IShare $share, string $address, SharesToken $token
+	public function sharedByFederated(DeprecatedCircle $circle, IShare $share, string $address, SharesToken $token,
 	): bool {
 		try {
 			$cloudId = $this->federationCloudIdManager->resolveCloudId($address);
@@ -347,7 +347,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 				$token->getToken(),
 				$address,
 				$share->getNode()
-					  ->getName(),
+					->getName(),
 				$share->getId(),
 				$share->getShareOwner(),
 				$ownerCloudId->getId(),
@@ -377,7 +377,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 * @param string $password
 	 */
 	private function sharedByMail(
-		DeprecatedCircle $circle, IShare $share, string $email, SharesToken $sharesToken, string $password
+		DeprecatedCircle $circle, IShare $share, string $email, SharesToken $sharesToken, string $password,
 	) {
 		// genelink
 		$link = $this->urlGenerator->linkToRouteAbsolute(
@@ -394,12 +394,12 @@ class FileSharingBroadcaster implements IBroadcaster {
 		try {
 			$this->sendMail(
 				$share->getNode()
-					  ->getName(), $link, $displayName, $circle->getName(), $email
+					->getName(), $link, $displayName, $circle->getName(), $email
 			);
 			$this->sendPasswordByMail($share, $displayName, $email, $password);
 		} catch (Exception $e) {
 			OC::$server->getLogger()
-					   ->log(1, 'Circles::sharedByMail - mail were not sent: ' . $e->getMessage());
+				->log(1, 'Circles::sharedByMail - mail were not sent: ' . $e->getMessage());
 		}
 	}
 
@@ -459,7 +459,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 		$this->logger->log(0, "Sending password mail to circle '" . $circleName . "': " . $email);
 
 		$filename = $share->getNode()
-						  ->getName();
+			->getName();
 		$initiator = $share->getSharedBy();
 		$shareWith = $share->getSharedWith();
 
@@ -532,7 +532,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 *
 	 * @return IEMailTemplate
 	 */
-	private function generateEmailTemplate($subject, $text, $fileName, $link, $author, $circleName
+	private function generateEmailTemplate($subject, $text, $fileName, $link, $author, $circleName,
 	) {
 		$emailTemplate = $this->mailer->createEMailTemplate(
 			'circles.ShareNotification', [
@@ -566,7 +566,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 * @param string $recipient
 	 */
 	public function sendMailExitingShares(
-		DeprecatedCircle $circle, array $unknownShares, DeprecatedMember $author, DeprecatedMember $member, string $recipient
+		DeprecatedCircle $circle, array $unknownShares, DeprecatedMember $author, DeprecatedMember $member, string $recipient,
 	) {
 		$data = [];
 

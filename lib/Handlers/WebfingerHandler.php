@@ -33,7 +33,7 @@ class WebfingerHandler implements IHandler {
 		private IURLGenerator $urlGenerator,
 		private RemoteStreamService $remoteStreamService,
 		private InterfaceService $interfaceService,
-		private ConfigService $configService
+		private ConfigService $configService,
 	) {
 	}
 

@@ -68,7 +68,7 @@ class EventWrapperController extends Controller {
 		FederatedEventService $federatedEventService,
 		RemoteUpstreamService $remoteUpstreamService,
 		RemoteDownstreamService $remoteDownstreamService,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		parent::__construct($appName, $request);
 		$this->eventWrapperService = $eventWrapperService;

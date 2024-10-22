@@ -73,7 +73,7 @@ class GlobalScaleService {
 		Signer $signer,
 		EventWrapperRequest $eventWrapperRequest,
 		ConfigService $configService,
-		MiscService $miscService
+		MiscService $miscService,
 	) {
 		$this->urlGenerator = $urlGenerator;
 		$this->userManager = $userManager;

@@ -15,7 +15,7 @@ class SearchResult implements JsonSerializable {
 		private string $ident = '',
 		private int $type = 0,
 		private string $instance = '',
-		private array $data = []
+		private array $data = [],
 	) {
 	}
 

@@ -54,7 +54,7 @@ class NotificationService {
 		IURLGenerator $urlGenerator,
 		INotificationManager $notificationManager,
 		MemberRequest $memberRequest,
-		TimezoneService $timezoneService
+		TimezoneService $timezoneService,
 	) {
 		$this->urlGenerator = $urlGenerator;
 		$this->notificationManager = $notificationManager;
@@ -83,13 +83,13 @@ class NotificationService {
 		$declineAction = $notification->createAction();
 		$declineUrl = $this->linkToOCS('circles.Local.circleLeave', ['circleId' => $member->getCircleId()]);
 		$declineAction->setLabel('refuse')
-					  ->setLink($declineUrl, 'PUT');
+			->setLink($declineUrl, 'PUT');
 		$notification->addAction($declineAction);
 
 		$acceptAction = $notification->createAction();
 		$acceptUrl = $this->linkToOCS('circles.Local.circleJoin', ['circleId' => $member->getCircleId()]);
 		$acceptAction->setLabel('accept')
-					 ->setLink($acceptUrl, 'PUT');
+			->setLink($acceptUrl, 'PUT');
 		$notification->addAction($acceptAction);
 
 		$this->notificationManager->notify($notification);
@@ -134,7 +134,7 @@ class NotificationService {
 				]
 			);
 			$declineAction->setLabel('refuse')
-						  ->setLink($declineUrl, 'DELETE');
+				->setLink($declineUrl, 'DELETE');
 			$notification->addAction($declineAction);
 
 			$acceptAction = $notification->createAction();
@@ -146,7 +146,7 @@ class NotificationService {
 				]
 			);
 			$acceptAction->setLabel('accept')
-						 ->setLink($acceptUrl, 'PUT');
+				->setLink($acceptUrl, 'PUT');
 			$notification->addAction($acceptAction);
 
 			$this->notificationManager->notify($notification);
@@ -181,14 +181,14 @@ class NotificationService {
 	private function createMemberNotification(
 		string $userId,
 		string $memberId,
-		string $subject
+		string $subject,
 	): INotification {
 		$notification = $this->notificationManager->createNotification();
 		$notification->setApp('circles')
-					 ->setDateTime($this->timezoneService->getDateTime())
-					 ->setUser($userId)
-					 ->setObject('member', $memberId)
-					 ->setSubject($subject);
+			->setDateTime($this->timezoneService->getDateTime())
+			->setUser($userId)
+			->setObject('member', $memberId)
+			->setSubject($subject);
 
 		return $notification;
 	}

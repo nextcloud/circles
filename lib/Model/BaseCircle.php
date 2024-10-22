@@ -256,8 +256,8 @@ class BaseCircle {
 		}
 
 		if ($this->getGroupViewer()
-				 ->getLevel() > $this->getViewer()
-									 ->getLevel()
+			->getLevel() > $this->getViewer()
+			->getLevel()
 		) {
 			return $this->getGroupViewer();
 		}

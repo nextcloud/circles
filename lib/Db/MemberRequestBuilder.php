@@ -30,7 +30,7 @@ class MemberRequestBuilder extends CoreRequestBuilder {
 	protected function getMemberInsertSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->insert(self::TABLE_MEMBER)
-		   ->setValue('joined', $qb->createNamedParameter($this->timezoneService->getUTCDate()));
+			->setValue('joined', $qb->createNamedParameter($this->timezoneService->getUTCDate()));
 
 		return $qb;
 	}
@@ -56,7 +56,7 @@ class MemberRequestBuilder extends CoreRequestBuilder {
 	 */
 	protected function getMemberSelectSql(
 		?IFederatedUser $initiator = null,
-		bool $getBasedOn = true
+		bool $getBasedOn = true,
 	): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->generateSelect(
@@ -64,7 +64,7 @@ class MemberRequestBuilder extends CoreRequestBuilder {
 			self::$tables[self::TABLE_MEMBER],
 			CoreQueryBuilder::MEMBER
 		)
-		   ->orderBy(CoreQueryBuilder::MEMBER . '.joined');
+			->orderBy(CoreQueryBuilder::MEMBER . '.joined');
 
 		if ($getBasedOn) {
 			$qb->leftJoinBasedOn(CoreQueryBuilder::MEMBER, $initiator);

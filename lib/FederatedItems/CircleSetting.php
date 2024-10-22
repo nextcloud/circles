@@ -34,7 +34,7 @@ class CircleSetting implements
 	public function __construct(
 		CircleRequest $circleRequest,
 		ShareTokenService $shareTokenService,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		$this->circleRequest = $circleRequest;
 		$this->shareTokenService = $shareTokenService;

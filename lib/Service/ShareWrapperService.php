@@ -138,7 +138,7 @@ class ShareWrapperService {
 		string $circleId,
 		?FederatedUser $shareRecipient = null,
 		?FederatedUser $shareInitiator = null,
-		bool $completeDetails = false
+		bool $completeDetails = false,
 	): array {
 		return $this->shareWrapperRequest->getSharesToCircle(
 			$circleId,
@@ -208,7 +208,7 @@ class ShareWrapperService {
 	public function getSharedWith(
 		FederatedUser $federatedUser,
 		int $nodeId,
-		?CircleProbe $probe
+		?CircleProbe $probe,
 	): array {
 		$key = $this->generateSharedWithCacheKey($federatedUser, $nodeId, $probe->getChecksum());
 
@@ -248,7 +248,7 @@ class ShareWrapperService {
 		int $limit,
 		int $offset,
 		bool $getData = false,
-		bool $completeDetails = false
+		bool $completeDetails = false,
 	): array {
 		return $this->shareWrapperRequest->getSharesBy(
 			$federatedUser, $nodeId, $reshares, $limit, $offset, $getData, $completeDetails
@@ -322,7 +322,7 @@ class ShareWrapperService {
 	private function generateSharedWithCacheKey(
 		FederatedUser $federatedUser,
 		int $nodeId,
-		string $probeSum
+		string $probeSum,
 	): string {
 		return $federatedUser->getSingleId() . '#'
 			   . $nodeId . '#'

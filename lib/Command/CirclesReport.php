@@ -80,7 +80,7 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 		CircleService $circleService,
 		MemberService $memberService,
 		InterfaceService $interfaceService,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		parent::__construct();
 
@@ -98,9 +98,9 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:report')
-			 ->setDescription('Read and write obfuscated report')
-			 ->addOption('local', '', InputOption::VALUE_NONE, 'Use local report')
-			 ->addOption('read', '', InputOption::VALUE_REQUIRED, 'File containing the report to read', '');
+			->setDescription('Read and write obfuscated report')
+			->addOption('local', '', InputOption::VALUE_NONE, 'Use local report')
+			->addOption('read', '', InputOption::VALUE_REQUIRED, 'File containing the report to read', '');
 	}
 
 
@@ -222,10 +222,10 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 	private function obfuscateCircle(Circle $circle): Circle {
 		$singleId = $this->obfuscateId($circle->getSingleId());
 		$circle->setSingleId($singleId)
-			   ->setName($singleId)
-			   ->setDisplayName($singleId)
-			   ->setDescription('')
-			   ->setCreation(0);
+			->setName($singleId)
+			->setDisplayName($singleId)
+			->setDescription('')
+			->setCreation(0);
 
 		if ($circle->hasOwner()) {
 			$circle->setOwner($this->obfuscateMember($circle->getOwner()));
@@ -267,15 +267,15 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 		$circleId = $this->obfuscateId($member->getCircleId());
 
 		$member->setSingleId($singleId)
-			   ->setCircleId($circleId)
-			   ->setId($memberId)
-			   ->setUserId($singleId)
-			   ->setDisplayName($singleId)
-			   ->setDisplayUpdate(0)
-			   ->setNotes('')
-			   ->setContactId('')
-			   ->setContactMeta('')
-			   ->setJoined(0);
+			->setCircleId($circleId)
+			->setId($memberId)
+			->setUserId($singleId)
+			->setDisplayName($singleId)
+			->setDisplayUpdate(0)
+			->setNotes('')
+			->setContactId('')
+			->setContactMeta('')
+			->setJoined(0);
 
 		if ($member->hasCircle()) {
 			$member->setCircle($this->obfuscateCircle($member->getCircle()));
@@ -317,7 +317,7 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 	private function obfuscateFederatedUser(FederatedUser $federatedUser): FederatedUser {
 		$singleId = $this->obfuscateId($federatedUser->getSingleId());
 		$federatedUser->setSingleId($singleId)
-					  ->setUserId($singleId);
+			->setUserId($singleId);
 
 		if ($federatedUser->hasBasedOn()) {
 			$federatedUser->setBasedOn($this->obfuscateCircle($federatedUser->getBasedOn()));
@@ -399,7 +399,7 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 		}
 
 		$session->setGlobalCommands($commands)
-				->setPrompt($prompt);
+			->setPrompt($prompt);
 	}
 
 

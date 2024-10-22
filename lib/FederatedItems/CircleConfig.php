@@ -53,7 +53,7 @@ class CircleConfig implements
 	public function __construct(
 		CircleRequest $circleRequest,
 		PermissionService $permissionService,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		$this->circleRequest = $circleRequest;
 		$this->permissionService = $permissionService;

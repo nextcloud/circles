@@ -71,7 +71,7 @@ class CirclesCheck extends Base {
 		private RemoteService $remoteService,
 		private RemoteStreamService $remoteStreamService,
 		private RemoteUpstreamService $remoteUpstreamService,
-		private ConfigService $configService
+		private ConfigService $configService,
 	) {
 		parent::__construct();
 	}
@@ -79,11 +79,11 @@ class CirclesCheck extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:check')
-			 ->setDescription('Checking your configuration')
-			 ->addOption('capabilities', '', InputOption::VALUE_NONE, 'listing app\'s capabilities')
-			 ->addOption('type', '', InputOption::VALUE_REQUIRED, 'configuration to check', '')
-			 ->addOption('alpha', '', InputOption::VALUE_NONE, 'allow ALPHA features')
-			 ->addOption('test', '', InputOption::VALUE_REQUIRED, 'specify an url to test', '');
+			->setDescription('Checking your configuration')
+			->addOption('capabilities', '', InputOption::VALUE_NONE, 'listing app\'s capabilities')
+			->addOption('type', '', InputOption::VALUE_REQUIRED, 'configuration to check', '')
+			->addOption('alpha', '', InputOption::VALUE_NONE, 'allow ALPHA features')
+			->addOption('test', '', InputOption::VALUE_REQUIRED, 'specify an url to test', '');
 	}
 
 	/**
@@ -712,7 +712,7 @@ class CirclesCheck extends Base {
 		OutputInterface $output,
 		string $type,
 		string $route,
-		array $args = []
+		array $args = [],
 	): bool {
 		$request = new NCRequest('', Request::type($type));
 		$this->configService->configureLoopbackRequest($request, $route, $args);

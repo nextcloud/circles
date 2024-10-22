@@ -67,7 +67,7 @@ class RemoteService extends NCSignature {
 	 */
 	public function __construct(
 		CircleRequest $circleRequest, MemberRequest $memberRequest, RemoteStreamService $remoteStreamService,
-		MembershipService $membershipService, ShareService $shareService
+		MembershipService $membershipService, ShareService $shareService,
 	) {
 		$this->setup('app', 'circles');
 
@@ -369,7 +369,7 @@ class RemoteService extends NCSignature {
 	public function getFederatedUserFromInstance(
 		string $userId,
 		string $instance,
-		int $type = Member::TYPE_USER
+		int $type = Member::TYPE_USER,
 	): FederatedUser {
 		$result = $this->remoteStreamService->resultRequestRemoteInstance(
 			$instance,

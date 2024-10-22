@@ -31,8 +31,8 @@ class ShareLockRequest extends ShareLockRequestBuilder {
 
 		$qb = $this->getShareLockInsertSql();
 		$qb->setValue('item_id', $qb->createNamedParameter($share->getItemId()))
-		   ->setValue('circle_id', $qb->createNamedParameter($share->getCircleId()))
-		   ->setValue('instance', $qb->createNamedParameter($qb->getInstance($share)));
+			->setValue('circle_id', $qb->createNamedParameter($share->getCircleId()))
+			->setValue('instance', $qb->createNamedParameter($qb->getInstance($share)));
 
 		$qb->execute();
 	}

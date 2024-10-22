@@ -99,7 +99,7 @@ class CircleJoin implements
 		MemberService $memberService,
 		MembershipService $membershipService,
 		EventService $eventService,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		$this->userManager = $userManager;
 		$this->memberRequest = $memberRequest;
@@ -135,7 +135,7 @@ class CircleJoin implements
 		$this->circleService->confirmCircleNotFull($circle);
 
 		$event->setMember($member)
-			  ->setOutcome($this->serialize($member));
+			->setOutcome($this->serialize($member));
 
 		return;
 

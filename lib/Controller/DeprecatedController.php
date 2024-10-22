@@ -20,7 +20,7 @@ use OCP\IRequest;
  * re-implemented only to re-enable an old feature until we switch to a better integration.
  */
 class DeprecatedController extends Controller {
-	/** @var FederatedUserService  */
+	/** @var FederatedUserService */
 	private $federatedUserService;
 
 	/** @var CircleService */
@@ -30,7 +30,7 @@ class DeprecatedController extends Controller {
 		string $appName,
 		IRequest $request,
 		FederatedUserService $federatedUserService,
-		CircleService $circleService
+		CircleService $circleService,
 	) {
 		parent::__construct($appName, $request);
 		$this->federatedUserService = $federatedUserService;
@@ -53,7 +53,7 @@ class DeprecatedController extends Controller {
 
 			$filterCircle = new Circle();
 			$filterCircle->setName($term)
-						 ->setDisplayName($term);
+				->setDisplayName($term);
 			$probe->setFilterCircle($filterCircle);
 			$probe->filterSystemCircles();
 

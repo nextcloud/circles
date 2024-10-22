@@ -54,7 +54,7 @@ class CreatingShareSendMail implements IEventListener {
 		ShareWrapperService $shareWrapperService,
 		ShareTokenService $shareTokenService,
 		ContactService $contactService,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		$this->shareWrapperService = $shareWrapperService;
 		$this->shareTokenService = $shareTokenService;

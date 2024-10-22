@@ -21,7 +21,7 @@ class ProviderParser {
 	public function __construct(
 		protected IURLGenerator $url,
 		protected IManager $activityManager,
-		protected IL10N $l10n
+		protected IL10N $l10n,
 	) {
 	}
 
@@ -35,7 +35,7 @@ class ProviderParser {
 		IEvent $event,
 		Circle $circle,
 		string $ownEvent,
-		string $othersEvent
+		string $othersEvent,
 	): void {
 		$data = [
 			'author' => $this->generateViewerParameter($circle),
@@ -59,7 +59,7 @@ class ProviderParser {
 	protected function setSubject(
 		IEvent $event,
 		string $line,
-		array $data
+		array $data,
 	): void {
 		$this->setParsedSubject($event, $line, $data);
 		$this->setRichSubject($event, $line, $data);
@@ -73,7 +73,7 @@ class ProviderParser {
 	protected function setRichSubject(
 		IEvent $event,
 		string $line,
-		array $data
+		array $data,
 	): void {
 		$ak = array_keys($data);
 		foreach ($ak as $k) {
@@ -96,7 +96,7 @@ class ProviderParser {
 	protected function setParsedSubject(
 		IEvent $event,
 		string $line,
-		array $data
+		array $data,
 	): void {
 		$ak = array_keys($data);
 		$replace = [];
@@ -123,7 +123,7 @@ class ProviderParser {
 		Circle $circle,
 		Member $member,
 		string $ownEvent,
-		string $othersEvent
+		string $othersEvent,
 	): void {
 		$data = [
 			'circle' => $this->generateCircleParameter($circle),
@@ -152,7 +152,7 @@ class ProviderParser {
 		Circle $circle,
 		Member $member,
 		string $ownEvent,
-		string $othersEvent
+		string $othersEvent,
 	): void {
 		$data = [
 			'author' => $this->generateViewerParameter($circle),
@@ -187,7 +187,7 @@ class ProviderParser {
 		Member $member,
 		string $ownEvent,
 		string $targetEvent,
-		string $othersEvent
+		string $othersEvent,
 	): void {
 		$data = [
 			'author' => $this->generateViewerParameter($circle),

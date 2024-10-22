@@ -64,7 +64,7 @@ class EventWrapperService extends NCSignature {
 		EventWrapperRequest $eventWrapperRequest,
 		FederatedEventService $federatedEventService,
 		RemoteUpstreamService $remoteUpstreamService,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		$this->eventWrapperRequest = $eventWrapperRequest;
 		$this->federatedEventService = $federatedEventService;

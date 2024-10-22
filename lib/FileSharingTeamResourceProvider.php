@@ -21,7 +21,7 @@ class FileSharingTeamResourceProvider implements ITeamResourceProvider {
 		private IL10N $l10n,
 		private ?CirclesManager $circlesManager,
 		private ShareWrapperService $shareByCircleProvider,
-		private IURLGenerator $urlGenerator
+		private IURLGenerator $urlGenerator,
 	) {
 	}
 

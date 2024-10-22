@@ -48,7 +48,7 @@ class CircleMount extends MountPoint implements MoveableMount, JsonSerializable 
 	public function __construct(
 		Mount $mount,
 		string $storage,
-		?IStorageFactory $loader = null
+		?IStorageFactory $loader = null,
 	) {
 		try {
 			parent::__construct(

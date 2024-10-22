@@ -61,7 +61,7 @@ class PreparingShareSendMail implements IEventListener {
 		ShareTokenService $shareTokenService,
 		SendMailService $sendMailService,
 		ContactService $contactService,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		$this->hasher = $hasher;
 		$this->shareWrapperService = $shareWrapperService;

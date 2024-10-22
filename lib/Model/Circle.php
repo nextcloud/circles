@@ -781,17 +781,17 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		}
 
 		$this->setSingleId($this->get('id', $data))
-			 ->setName($this->get('name', $data))
-			 ->setDisplayName($this->get('displayName', $data))
-			 ->setSanitizedName($this->get('sanitizedName', $data))
-			 ->setSource($this->getInt('source', $data))
-			 ->setConfig($this->getInt('config', $data))
-			 ->setPopulation($this->getInt('population', $data))
-			 ->setSettings($this->getArray('settings', $data))
+			->setName($this->get('name', $data))
+			->setDisplayName($this->get('displayName', $data))
+			->setSanitizedName($this->get('sanitizedName', $data))
+			->setSource($this->getInt('source', $data))
+			->setConfig($this->getInt('config', $data))
+			->setPopulation($this->getInt('population', $data))
+			->setSettings($this->getArray('settings', $data))
 //			 ->setContactAddressBook($this->get('contact_addressbook', $data))
 //			 ->setContactGroupName($this->get('contact_groupname', $data))
-			 ->setDescription($this->get('description', $data))
-			 ->setCreation($this->getInt('creation', $data));
+			->setDescription($this->get('description', $data))
+			->setCreation($this->getInt('creation', $data));
 
 		try {
 			/** @var Member $owner */
@@ -857,7 +857,7 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 			try {
 				$initiatorHelper->mustBeAdmin();
 				$arr['settings'] = $this->getSettings();
-			} catch (MemberHelperException | MemberLevelException $e) {
+			} catch (MemberHelperException|MemberLevelException $e) {
 			}
 		}
 
@@ -878,20 +878,20 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		}
 
 		$this->setSingleId($this->get($prefix . 'unique_id', $data))
-			 ->setName($this->get($prefix . 'name', $data))
-			 ->setDisplayName($this->get($prefix . 'display_name', $data))
-			 ->setSanitizedName($this->get($prefix . 'sanitized_name', $data))
-			 ->setConfig($this->getInt($prefix . 'config', $data))
-			 ->setSource($this->getInt($prefix . 'source', $data))
-			 ->setInstance($this->get($prefix . 'instance', $data))
-			 ->setSettings($this->getArray($prefix . 'settings', $data))
-			 ->setContactAddressBook($this->getInt($prefix . 'contact_addressbook', $data))
-			 ->setContactGroupName($this->get($prefix . 'contact_groupname', $data))
-			 ->setDescription($this->get($prefix . 'description', $data));
+			->setName($this->get($prefix . 'name', $data))
+			->setDisplayName($this->get($prefix . 'display_name', $data))
+			->setSanitizedName($this->get($prefix . 'sanitized_name', $data))
+			->setConfig($this->getInt($prefix . 'config', $data))
+			->setSource($this->getInt($prefix . 'source', $data))
+			->setInstance($this->get($prefix . 'instance', $data))
+			->setSettings($this->getArray($prefix . 'settings', $data))
+			->setContactAddressBook($this->getInt($prefix . 'contact_addressbook', $data))
+			->setContactGroupName($this->get($prefix . 'contact_groupname', $data))
+			->setDescription($this->get($prefix . 'description', $data));
 
 		$creation = $this->get($prefix . 'creation', $data);
 		$dateTime = DateTime::createFromFormat('Y-m-d H:i:s', $creation);
-		$timestamp = $dateTime ? $dateTime->getTimestamp() : (int) strtotime($creation);
+		$timestamp = $dateTime ? $dateTime->getTimestamp() : (int)strtotime($creation);
 		$this->setCreation($timestamp);
 
 		$this->setPopulation($this->getInt('population', $this->getSettings()));

@@ -105,11 +105,11 @@ class TokensRequest extends TokensRequestBuilder {
 
 			$qb = $this->getTokensInsertSql();
 			$qb->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
-			   ->setValue('user_id', $qb->createNamedParameter($member->getUserId()))
-			   ->setValue('share_id', $qb->createNamedParameter($shareId))
-			   ->setValue('member_id', $qb->createNamedParameter($member->getMemberId()))
-			   ->setValue('token', $qb->createNamedParameter($token))
-			   ->setValue('password', $qb->createNamedParameter($password));
+				->setValue('user_id', $qb->createNamedParameter($member->getUserId()))
+				->setValue('share_id', $qb->createNamedParameter($shareId))
+				->setValue('member_id', $qb->createNamedParameter($member->getMemberId()))
+				->setValue('token', $qb->createNamedParameter($token))
+				->setValue('password', $qb->createNamedParameter($password));
 
 			$qb->execute();
 		} catch (UniqueConstraintViolationException $e) {

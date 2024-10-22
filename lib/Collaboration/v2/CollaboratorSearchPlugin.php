@@ -54,7 +54,7 @@ class CollaboratorSearchPlugin implements ISearchPlugin {
 	public function __construct(
 		IRequest $request,
 		FederatedUserService $federatedUserService,
-		CircleService $circleService
+		CircleService $circleService,
 	) {
 		$this->request = $request;
 		$this->federatedUserService = $federatedUserService;
@@ -85,23 +85,23 @@ class CollaboratorSearchPlugin implements ISearchPlugin {
 
 		$filterCircle = new Circle();
 		$filterCircle->setName($search)
-					 ->setDisplayName($search);
+			->setDisplayName($search);
 
 		try {
 			$this->federatedUserService->initCurrentUser();
 
 			$probe = new CircleProbe();
 			$probe->filterBackendCircles()
-				  ->filterSystemCircles()
-				  ->setItemsLimit($limit)
-				  ->setItemsOffset($offset)
-				  ->setFilterCircle($filterCircle);
+				->filterSystemCircles()
+				->setItemsLimit($limit)
+				->setItemsOffset($offset)
+				->setFilterCircle($filterCircle);
 
 			// If from the OCS API, we use getCircles(), to get more complex result at the price of huge resource,
 			// if not (ie. share popup) we only need probeCircles()
 			if ($fromFrontEnd) {
 				$probe->mustBeMember(false)
-					  ->filterConfig(Circle::CFG_ROOT, true);
+					->filterConfig(Circle::CFG_ROOT, true);
 
 				$circles = $this->circleService->getCircles($probe);
 			} else {

@@ -27,7 +27,7 @@ trait TConsoleTree {
 			'height' => 1,
 			'node-spacing' => 0,
 			'item-spacing' => 0,
-		]
+		],
 	): void {
 		$config = array_merge(
 			[

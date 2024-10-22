@@ -65,7 +65,7 @@ class Membership extends ManagedModel implements IDeserializable, IQueryRow, Jso
 	public function __construct(
 		string $singleId = '',
 		string $inheritanceLast = '',
-		?Member $member = null
+		?Member $member = null,
 	) {
 		if (is_null($member)) {
 			return;

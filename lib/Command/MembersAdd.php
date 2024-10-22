@@ -57,7 +57,7 @@ class MembersAdd extends Base {
 	public function __construct(
 		FederatedUserService $federatedUserService,
 		MemberService $memberService,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		parent::__construct();
 
@@ -70,13 +70,13 @@ class MembersAdd extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:members:add')
-			 ->setDescription('Add a member to a Circle')
-			 ->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
-			 ->addArgument('user', InputArgument::REQUIRED, 'username of the member')
-			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
-			 ->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
-			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception')
-			 ->addOption('type', '', InputOption::VALUE_REQUIRED, 'type of the user', '0');
+			->setDescription('Add a member to a Circle')
+			->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
+			->addArgument('user', InputArgument::REQUIRED, 'username of the member')
+			->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
+			->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
+			->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception')
+			->addOption('type', '', InputOption::VALUE_REQUIRED, 'type of the user', '0');
 	}
 
 
@@ -148,10 +148,10 @@ class MembersAdd extends Base {
 		try {
 			$users = $this->retrieveJson($request);
 		} catch (
-			RequestContentException |
-			RequestNetworkException |
-			RequestResultSizeException |
-			RequestServerException |
+			RequestContentException|
+			RequestNetworkException|
+			RequestResultSizeException|
+			RequestServerException|
 			RequestResultNotJsonException $e
 		) {
 			return '';

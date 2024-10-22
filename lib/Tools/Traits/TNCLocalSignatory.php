@@ -38,9 +38,9 @@ trait TNCLocalSignatory {
 		$sign = $this->getArray($signatory->getId(), $signatories);
 		if (!empty($sign)) {
 			$signatory->setKeyId($this->get('keyId', $sign))
-					  ->setKeyOwner($this->get('keyOwner', $sign))
-					  ->setPublicKey($this->get('publicKey', $sign))
-					  ->setPrivateKey($this->get('privateKey', $sign));
+				->setKeyOwner($this->get('keyOwner', $sign))
+				->setPublicKey($this->get('publicKey', $sign))
+				->setPrivateKey($this->get('privateKey', $sign));
 
 			return;
 		}

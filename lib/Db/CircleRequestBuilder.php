@@ -27,7 +27,7 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 	protected function getCircleInsertSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->insert(self::TABLE_CIRCLE)
-		   ->setValue('creation', $qb->createNamedParameter($this->timezoneService->getUTCDate()));
+			->setValue('creation', $qb->createNamedParameter($this->timezoneService->getUTCDate()));
 
 		return $qb;
 	}
@@ -52,7 +52,7 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 	 */
 	protected function getCircleSelectSql(
 		string $alias = CoreQueryBuilder::CIRCLE,
-		bool $single = false
+		bool $single = false,
 	): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->generateSelect(self::TABLE_CIRCLE, self::$tables[self::TABLE_CIRCLE], $alias);

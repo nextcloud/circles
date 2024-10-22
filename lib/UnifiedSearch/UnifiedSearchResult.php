@@ -35,7 +35,7 @@ class UnifiedSearchResult extends SearchResultEntry {
 		string $subtitle = '',
 		string $resourceUrl = '',
 		string $icon = '',
-		bool $rounded = false
+		bool $rounded = false,
 	) {
 		parent::__construct($thumbnailUrl, $title, $subtitle, $resourceUrl, $icon, $rounded);
 	}

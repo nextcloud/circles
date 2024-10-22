@@ -86,7 +86,7 @@ class CirclesManager {
 		MemberService $memberService,
 		MembershipService $membershipService,
 		ConfigService $configService,
-		CirclesQueryHelper $circlesQueryHelper
+		CirclesQueryHelper $circlesQueryHelper,
 	) {
 		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circleService;
@@ -212,7 +212,7 @@ class CirclesManager {
 	public function startOccSession(
 		string $userId,
 		int $userType = Member::TYPE_SINGLE,
-		string $circleId = ''
+		string $circleId = '',
 	): void {
 		$this->federatedUserService->commandLineInitiator($userId, $userType, $circleId);
 	}
@@ -272,7 +272,7 @@ class CirclesManager {
 		string $name,
 		?FederatedUser $owner = null,
 		bool $personal = false,
-		bool $local = false
+		bool $local = false,
 	): Circle {
 		$outcome = $this->circleService->create($name, $owner, $personal, $local);
 		$circle = new Circle();
@@ -320,7 +320,7 @@ class CirclesManager {
 		if (is_null($probe)) {
 			$probe = new CircleProbe();
 			$probe->filterHiddenCircles()
-				  ->filterBackendCircles();
+				->filterBackendCircles();
 		}
 
 		return $this->circleService->getCircles($probe, !$refreshCache);
@@ -521,7 +521,7 @@ class CirclesManager {
 		if (is_null($circleProbe)) {
 			$circleProbe = new CircleProbe();
 			$circleProbe->filterHiddenCircles()
-						->filterBackendCircles();
+				->filterBackendCircles();
 		}
 
 		return $this->circleService->probeCircles($circleProbe, $dataProbe);

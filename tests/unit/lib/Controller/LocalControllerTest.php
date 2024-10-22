@@ -97,10 +97,10 @@ class LocalControllerTest extends TestCase {
 	public function testCirclesList(int $limit, int $offset): void {
 		$probe = new CircleProbe();
 		$probe->filterHiddenCircles()
-			  ->filterBackendCircles()
-			  ->addDetail(BasicProbe::DETAILS_POPULATION)
-			  ->setItemsOffset($offset)
-			  ->setItemsLimit($limit);
+			->filterBackendCircles()
+			->addDetail(BasicProbe::DETAILS_POPULATION)
+			->setItemsOffset($offset)
+			->setItemsLimit($limit);
 		$circle1 = new Circle();
 		$circle1->setName('Circle One');
 		$circle1->setSingleId('CircleOne');

@@ -43,13 +43,13 @@ class CirclesEdit extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:manage:edit')
-			 ->setDescription('edit displayName or description of a Circle')
-			 ->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
-			 ->addArgument('edit', InputArgument::REQUIRED, 'displayName or description')
-			 ->addArgument('value', InputArgument::REQUIRED, 'new value')
-			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
-			 ->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
-			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
+			->setDescription('edit displayName or description of a Circle')
+			->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
+			->addArgument('edit', InputArgument::REQUIRED, 'displayName or description')
+			->addArgument('value', InputArgument::REQUIRED, 'new value')
+			->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
+			->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
+			->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
 	}
 
 	/**

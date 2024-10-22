@@ -60,7 +60,7 @@ class MembersDetails extends Base {
 	 * @param MemberService $memberService
 	 */
 	public function __construct(
-		MemberRequest $memberRequest, FederatedUserService $federatedUserService, MemberService $memberService
+		MemberRequest $memberRequest, FederatedUserService $federatedUserService, MemberService $memberService,
 	) {
 		parent::__construct();
 		$this->memberRequest = $memberRequest;
@@ -72,11 +72,11 @@ class MembersDetails extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:members:details')
-			 ->setDescription('get details about a member by its ID')
-			 ->addArgument('member_id', InputArgument::REQUIRED, 'ID of the member')
-			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
-			 ->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
-			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
+			->setDescription('get details about a member by its ID')
+			->addArgument('member_id', InputArgument::REQUIRED, 'ID of the member')
+			->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
+			->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
+			->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
 	}
 
 

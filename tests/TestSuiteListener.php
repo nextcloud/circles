@@ -44,7 +44,7 @@ class Env implements TestListener {
 	}
 
 	public function addFailure(
-		Test $test, AssertionFailedError $e, float $time
+		Test $test, AssertionFailedError $e, float $time,
 	): void {
 	}
 
@@ -85,14 +85,14 @@ class Env implements TestListener {
 
 		foreach ($this->users as $UID) {
 			$user = \OC::$server->getUserManager()
-								->get($UID);
+				->get($UID);
 			if ($user !== null) {
 				$user->delete();
 			}
 		}
 	}
 
-	public function addWarning(Test $test, Warning $e, float $time
+	public function addWarning(Test $test, Warning $e, float $time,
 	): void {
 	}
 
@@ -100,7 +100,7 @@ class Env implements TestListener {
 		$userSession = \OC::$server->getUserSession();
 		$userSession->setUser(
 			\OC::$server->getUserManager()
-						->get($which)
+				->get($which)
 		);
 
 		return $userSession->getUser()->getUID();
@@ -109,7 +109,7 @@ class Env implements TestListener {
 	public static function currentUser() {
 		$userSession = \OC::$server->getUserSession();
 		return $userSession->getUser()
-					->getUID();
+			->getUID();
 	}
 
 	public static function logout() {

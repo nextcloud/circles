@@ -55,7 +55,7 @@ class ShareTokenService {
 		IURLGenerator $urlGenerator,
 		ShareTokenRequest $shareTokenRequest,
 		InterfaceService $interfaceService,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		$this->urlGenerator = $urlGenerator;
 		$this->shareTokenRequest = $shareTokenRequest;
@@ -76,7 +76,7 @@ class ShareTokenService {
 	public function generateShareToken(
 		ShareWrapper $share,
 		Member $member,
-		string $hashedPassword = ''
+		string $hashedPassword = '',
 	): ShareToken {
 		if ($member->getUserType() !== Member::TYPE_MAIL
 			&& $member->getUserType() !== Member::TYPE_CONTACT) {
@@ -86,12 +86,12 @@ class ShareTokenService {
 		$token = $this->token(19);
 		$shareToken = new ShareToken();
 		$shareToken->setShareId((int)$share->getId())
-				   ->setCircleId($share->getSharedWith())
-				   ->setSingleId($member->getSingleId())
-				   ->setMemberId($member->getId())
-				   ->setToken($token)
-				   ->setPassword($hashedPassword)
-				   ->setAccepted(IShare::STATUS_ACCEPTED);
+			->setCircleId($share->getSharedWith())
+			->setSingleId($member->getSingleId())
+			->setMemberId($member->getId())
+			->setToken($token)
+			->setPassword($hashedPassword)
+			->setAccepted(IShare::STATUS_ACCEPTED);
 
 		try {
 			$this->shareTokenRequest->search($shareToken);

@@ -117,7 +117,7 @@ class MiscService {
 	public function getRealUserId($userId) {
 		if ($this->userManager->userExists($userId)) {
 			return $this->userManager->get($userId)
-									 ->getUID();
+				->getUID();
 		}
 
 		$result = $this->userManager->search($userId);
@@ -195,7 +195,7 @@ class MiscService {
 		}
 
 		$user = OC::$server->getUserManager()
-						   ->get($ident);
+			->get($ident);
 		if ($user !== null) {
 			$display = $user->getDisplayName();
 		}

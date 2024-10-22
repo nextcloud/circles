@@ -41,7 +41,7 @@ class CircleMountProvider implements IMountProvider {
 		private ICloudIdManager $cloudIdManager,
 		private MountRequest $mountRequest,
 		private FederatedUserService $federatedUserService,
-		private ConfigService $configService
+		private ConfigService $configService,
 	) {
 	}
 
@@ -93,9 +93,9 @@ class CircleMountProvider implements IMountProvider {
 		}
 
 		$mount->setCloudIdManager($this->cloudIdManager)
-			  ->setHttpClientService($this->clientService)
+			->setHttpClientService($this->clientService)
 //		->setStorage(self::EXTERNAL_STORAGE)
-			  ->setMountManager($this->circleMountManager);
+			->setMountManager($this->circleMountManager);
 
 		return new CircleMount(
 			$mount,

@@ -56,7 +56,7 @@ class CircleEdit implements IFederatedItem {
 		CircleRequest $circleRequest,
 		MemberRequest $memberRequest,
 		CircleService $circleService,
-		EventService $eventService
+		EventService $eventService,
 	) {
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;

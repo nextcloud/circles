@@ -117,7 +117,7 @@ class CirclesMemberships extends Base {
 		FederatedUserService $federatedUserService,
 		CircleService $circleService,
 		MembershipService $membershipService,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		parent::__construct();
 		$this->userManager = $userManager;
@@ -137,15 +137,15 @@ class CirclesMemberships extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:memberships')
-			 ->setDescription('index and display memberships for local and federated users')
-			 ->addArgument('userId', InputArgument::OPTIONAL, 'userId to generate memberships', '')
-			 ->addOption('display-name', '', InputOption::VALUE_NONE, 'display the displayName')
+			->setDescription('index and display memberships for local and federated users')
+			->addArgument('userId', InputArgument::OPTIONAL, 'userId to generate memberships', '')
+			->addOption('display-name', '', InputOption::VALUE_NONE, 'display the displayName')
 //			 ->addOption('reset', '', InputOption::VALUE_NONE, 'reset memberships')
-			 ->addOption('all', '', InputOption::VALUE_NONE, 'refresh memberships for all entities')
-			 ->addOption(
-			 	'type', '', InputOption::VALUE_REQUIRED, 'type of the user',
-			 	Member::$TYPE[Member::TYPE_SINGLE]
-			 );
+			->addOption('all', '', InputOption::VALUE_NONE, 'refresh memberships for all entities')
+			->addOption(
+				'type', '', InputOption::VALUE_REQUIRED, 'type of the user',
+				Member::$TYPE[Member::TYPE_SINGLE]
+			);
 	}
 
 
@@ -319,13 +319,13 @@ class CirclesMemberships extends Base {
 					if ($owner->hasBasedOn()) {
 						$line .= '(' . Circle::$DEF_SOURCE[$owner->getBasedOn()->getSource()] . ') ';
 					}
-					$type = implode(", ", Circle::getCircleFlags($circle, Circle::FLAGS_LONG));
+					$type = implode(', ', Circle::getCircleFlags($circle, Circle::FLAGS_LONG));
 					$line .= ($type === '') ? '' : '<info>Config</info>: ' . $type;
 				}
 
 				return $line;
 			}
-		} catch (InvalidItemException | ItemNotFoundException | UnknownTypeException $e) {
+		} catch (InvalidItemException|ItemNotFoundException|UnknownTypeException $e) {
 		}
 
 		return '';
@@ -349,8 +349,8 @@ class CirclesMemberships extends Base {
 
 		$probe = new CircleProbe();
 		$probe->includeSystemCircles()
-			  ->includeSingleCircles()
-			  ->includePersonalCircles();
+			->includeSingleCircles()
+			->includePersonalCircles();
 		$circles = $this->circleService->getCircles($probe);
 
 		$output = new ConsoleOutput();

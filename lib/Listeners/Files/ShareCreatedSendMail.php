@@ -63,7 +63,7 @@ class ShareCreatedSendMail implements IEventListener {
 		RemoteStreamService $remoteStreamService,
 		SendMailService $sendMailService,
 		ContactService $contactService,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		$this->shareWrapperService = $shareWrapperService;
 		$this->shareTokenService = $shareTokenService;

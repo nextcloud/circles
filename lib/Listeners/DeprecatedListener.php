@@ -65,7 +65,7 @@ class DeprecatedListener {
 		CircleRequest $circleRequest,
 		FederatedUserService $federatedUserService,
 		FederatedEventService $federatedEventService,
-		CircleService $circleService
+		CircleService $circleService,
 	) {
 		$this->circleRequest = $circleRequest;
 		$this->federatedUserService = $federatedUserService;
@@ -93,8 +93,8 @@ class DeprecatedListener {
 
 		$probe = new CircleProbe();
 		$probe->includeSystemCircles()
-			  ->mustBeMember()
-			  ->canBeRequestingMembership();
+			->mustBeMember()
+			->canBeRequestingMembership();
 
 		$circles = $this->circleService->getCircles($probe);
 

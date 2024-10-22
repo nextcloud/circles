@@ -462,17 +462,17 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 		parent::import($data);
 
 		$this->setTest($this->get(self::TEST, $data))
-			 ->setAliases($this->getArray(self::ALIASES, $data))
-			 ->setEvent($this->get(self::EVENT, $data))
-			 ->setRoot($this->get(self::ROOT, $data))
-			 ->setIncoming($this->get(self::INCOMING, $data))
-			 ->setCircles($this->get(self::CIRCLES, $data))
-			 ->setCircle($this->get(self::CIRCLE, $data))
-			 ->setMembers($this->get(self::MEMBERS, $data))
-			 ->setMember($this->get(self::MEMBER, $data))
-			 ->setInherited($this->get(self::INHERITED, $data))
-			 ->setMemberships($this->get(self::MEMBERSHIPS, $data))
-			 ->setUid($this->get(self::UID, $data));
+			->setAliases($this->getArray(self::ALIASES, $data))
+			->setEvent($this->get(self::EVENT, $data))
+			->setRoot($this->get(self::ROOT, $data))
+			->setIncoming($this->get(self::INCOMING, $data))
+			->setCircles($this->get(self::CIRCLES, $data))
+			->setCircle($this->get(self::CIRCLE, $data))
+			->setMembers($this->get(self::MEMBERS, $data))
+			->setMember($this->get(self::MEMBER, $data))
+			->setInherited($this->get(self::INHERITED, $data))
+			->setMemberships($this->get(self::MEMBERSHIPS, $data))
+			->setUid($this->get(self::UID, $data));
 
 		$algo = '';
 		$authSigned = trim($this->get(self::AUTH_SIGNED, $data), ':');
@@ -481,7 +481,7 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 		}
 
 		$this->setAuthSigned($authSigned)
-			 ->setAlgorithm($algo);
+			->setAlgorithm($algo);
 
 		return $this;
 	}

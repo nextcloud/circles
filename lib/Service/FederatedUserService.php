@@ -176,7 +176,7 @@ class FederatedUserService {
 		RemoteStreamService $remoteStreamService,
 		ContactService $contactService,
 		InterfaceService $interfaceService,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		$this->userSession = $userSession;
 		$this->userManager = $userManager;
@@ -545,7 +545,7 @@ class FederatedUserService {
 	public function getAppInitiator(
 		string $appId,
 		int $appNumber,
-		string $appDisplayName = ''
+		string $appDisplayName = '',
 	): FederatedUser {
 		if ($appDisplayName === '') {
 			$appDisplayName = $this->get(
@@ -596,7 +596,7 @@ class FederatedUserService {
 		string $userId,
 		int $userType = Member::TYPE_SINGLE,
 		string $circleId = '',
-		bool $bypass = false
+		bool $bypass = false,
 	): void {
 		if ($userId !== '') {
 			$this->setCurrentUser($this->getFederatedUser($userId, $userType));
@@ -635,7 +635,7 @@ class FederatedUserService {
 	public function setOwnerAsCurrentUser(string $circleId): void {
 		$probe = new CircleProbe();
 		$probe->includeSystemCircles()
-			  ->includePersonalCircles();
+			->includePersonalCircles();
 		
 		$localCircle = $this->circleRequest->getCircle($circleId, null, $probe);
 		if ($this->configService->isLocalInstance($localCircle->getInstance())) {
@@ -1024,9 +1024,9 @@ class FederatedUserService {
 				: Member::$TYPE[$federatedUser->getUserType()];
 
 			$circle->setName($prefix . ':' . $federatedUser->getUserId() . ':' . $id)
-				   ->setDisplayName($federatedUser->getDisplayName())
-				   ->setSingleId($id)
-				   ->setSource($source);
+				->setDisplayName($federatedUser->getDisplayName())
+				->setSingleId($id)
+				->setSource($source);
 
 			if ($federatedUser->getUserType() === Member::TYPE_APP) {
 				$circle->setConfig(Circle::CFG_SINGLE | Circle::CFG_ROOT);
@@ -1038,11 +1038,11 @@ class FederatedUserService {
 			$owner = new Member();
 			$owner->importFromIFederatedUser($federatedUser);
 			$owner->setLevel(Member::LEVEL_OWNER)
-				  ->setCircleId($id)
-				  ->setSingleId($id)
-				  ->setId($id)
-				  ->setDisplayName($owner->getDisplayName())
-				  ->setStatus('Member');
+				->setCircleId($id)
+				->setSingleId($id)
+				->setId($id)
+				->setDisplayName($owner->getDisplayName())
+				->setStatus('Member');
 
 			if ($federatedUser->getUserType() !== Member::TYPE_APP) {
 				$owner->setInvitedBy(
@@ -1228,18 +1228,18 @@ class FederatedUserService {
 
 		$circle = new Circle();
 		$circle->setName('group:' . $groupId)
-			   ->setConfig(Circle::CFG_SYSTEM | Circle::CFG_NO_OWNER | Circle::CFG_HIDDEN)
-			   ->setSingleId($this->token(ManagedModel::ID_LENGTH))
-			   ->setSource(Member::TYPE_GROUP);
+			->setConfig(Circle::CFG_SYSTEM | Circle::CFG_NO_OWNER | Circle::CFG_HIDDEN)
+			->setSingleId($this->token(ManagedModel::ID_LENGTH))
+			->setSource(Member::TYPE_GROUP);
 
 		$member = new Member();
 		$member->importFromIFederatedUser($owner);
 		$member->setId($this->token(ManagedModel::ID_LENGTH))
-			   ->setCircleId($circle->getSingleId())
-			   ->setLevel(Member::LEVEL_OWNER)
-			   ->setStatus(Member::STATUS_MEMBER);
+			->setCircleId($circle->getSingleId())
+			->setLevel(Member::LEVEL_OWNER)
+			->setStatus(Member::STATUS_MEMBER);
 		$circle->setOwner($member)
-			   ->setInitiator($member);
+			->setInitiator($member);
 
 		try {
 			return $this->circleRequest->searchCircle($circle, $owner);
