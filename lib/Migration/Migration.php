@@ -47,7 +47,7 @@ class Migration implements IRepairStep {
 	public function __construct(
 		MigrationService $migrationService,
 		OutputService $outputService,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		$this->migrationService = $migrationService;
 		$this->outputService = $outputService;

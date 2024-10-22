@@ -247,22 +247,22 @@ class FileCacheWrapper extends ManagedModel implements IQueryRow, IDeserializabl
 		}
 
 		$this->setId($this->getInt('id', $data))
-			 ->setPath($this->get('path', $data))
-			 ->setPermissions($this->getInt('permissions', $data))
-			 ->setStorage($this->get('storage', $data))
-			 ->setStorageId($this->getInt('storageId', $data))
-			 ->setPathHash($this->get('pathHash', $data))
-			 ->setParent($this->getInt('parent', $data))
-			 ->setName($this->get('name', $data))
-			 ->setMimeType($this->getInt('mimeType', $data))
-			 ->setMimePart($this->getInt('mimePart', $data))
-			 ->setSize($this->getInt('size', $data))
-			 ->setMTime($this->getInt('mTime', $data))
-			 ->setStorageMTime($this->getInt('storageMTime', $data))
-			 ->setEncrypted($this->getBool('encrypted', $data))
-			 ->setUnencryptedSize($this->getInt('unencryptedSize', $data))
-			 ->setEtag($this->get('etag', $data))
-			 ->setChecksum($this->get('checksum', $data));
+			->setPath($this->get('path', $data))
+			->setPermissions($this->getInt('permissions', $data))
+			->setStorage($this->get('storage', $data))
+			->setStorageId($this->getInt('storageId', $data))
+			->setPathHash($this->get('pathHash', $data))
+			->setParent($this->getInt('parent', $data))
+			->setName($this->get('name', $data))
+			->setMimeType($this->getInt('mimeType', $data))
+			->setMimePart($this->getInt('mimePart', $data))
+			->setSize($this->getInt('size', $data))
+			->setMTime($this->getInt('mTime', $data))
+			->setStorageMTime($this->getInt('storageMTime', $data))
+			->setEncrypted($this->getBool('encrypted', $data))
+			->setUnencryptedSize($this->getInt('unencryptedSize', $data))
+			->setEtag($this->get('etag', $data))
+			->setChecksum($this->get('checksum', $data));
 
 		return $this;
 	}

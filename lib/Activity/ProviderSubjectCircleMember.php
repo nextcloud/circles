@@ -28,7 +28,7 @@ class ProviderSubjectCircleMember extends ProviderParser {
 		Circle $circle,
 		Member $member,
 		string $ownEvent,
-		string $othersEvent
+		string $othersEvent,
 	): void {
 		$data = [
 			'author' => $this->generateViewerParameter($circle),
@@ -56,7 +56,7 @@ class ProviderSubjectCircleMember extends ProviderParser {
 	public function parseSubjectCircleMemberJoin(
 		IEvent $event,
 		Circle $circle,
-		Member $member
+		Member $member,
 	): void {
 		if ($event->getSubject() !== 'member_circle_joined') {
 			return;
@@ -81,7 +81,7 @@ class ProviderSubjectCircleMember extends ProviderParser {
 	public function parseSubjectCircleMemberAdd(
 		IEvent $event,
 		Circle $circle,
-		Member $member
+		Member $member,
 	): void {
 		if ($event->getSubject() !== 'member_circle_added') {
 			return;
@@ -106,7 +106,7 @@ class ProviderSubjectCircleMember extends ProviderParser {
 	public function parseSubjectCircleMemberLeft(
 		IEvent $event,
 		Circle $circle,
-		Member $member
+		Member $member,
 	): void {
 		if ($event->getSubject() !== 'member_circle_left') {
 			return;
@@ -131,7 +131,7 @@ class ProviderSubjectCircleMember extends ProviderParser {
 	public function parseSubjectCircleMemberRemove(
 		IEvent $event,
 		Circle $circle,
-		Member $member
+		Member $member,
 	): void {
 		if ($event->getSubject() !== 'member_circle_removed') {
 			return;

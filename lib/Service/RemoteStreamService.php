@@ -86,7 +86,7 @@ class RemoteStreamService extends NCSignature {
 		IURLGenerator $urlGenerator,
 		RemoteRequest $remoteRequest,
 		InterfaceService $interfaceService,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		$this->setup('app', 'circles');
 
@@ -201,7 +201,7 @@ class RemoteStreamService extends NCSignature {
 		string $item,
 		int $type = Request::TYPE_GET,
 		?JsonSerializable $object = null,
-		array $params = []
+		array $params = [],
 	): array {
 		$this->interfaceService->setCurrentInterfaceFromInstance($instance);
 
@@ -245,7 +245,7 @@ class RemoteStreamService extends NCSignature {
 		string $item,
 		int $type = Request::TYPE_GET,
 		?JsonSerializable $object = null,
-		array $params = []
+		array $params = [],
 	): NCSignedRequest {
 		$request = new NCRequest('', $type);
 		$this->configService->configureRequest($request);
@@ -266,7 +266,7 @@ class RemoteStreamService extends NCSignature {
 			//		$app->setAlgorithm(NCSignatory::SHA512);
 			$signedRequest = $this->signOutgoingRequest($request, $app);
 			$this->doRequest($signedRequest->getOutgoingRequest(), false);
-		} catch (RequestNetworkException | SignatoryException $e) {
+		} catch (RequestNetworkException|SignatoryException $e) {
 			throw new RemoteInstanceException($e->getMessage());
 		}
 
@@ -392,7 +392,7 @@ class RemoteStreamService extends NCSignature {
 		string $instance,
 		string $type = RemoteInstance::TYPE_EXTERNAL,
 		int $iface = InterfaceService::IFACE_FRONTAL,
-		bool $overwrite = false
+		bool $overwrite = false,
 	): void {
 		if ($this->configService->isLocalInstance($instance)) {
 			throw new RemoteAlreadyExistsException('instance is local');
@@ -400,7 +400,7 @@ class RemoteStreamService extends NCSignature {
 
 		$remoteInstance = $this->retrieveRemoteInstance($instance);
 		$remoteInstance->setType($type)
-					   ->setInterface($iface);
+			->setInterface($iface);
 
 		if (!$this->interfaceService->isInterfaceInternal($remoteInstance->getInterface())) {
 			$remoteInstance->setAliases([]);
@@ -499,7 +499,7 @@ class RemoteStreamService extends NCSignature {
 			$test = new ReflectionClass($class);
 			$this->confirmFederatedItemExceptionFromClass($test);
 			$e = $class;
-		} catch (ReflectionException | FederatedItemException $_e) {
+		} catch (ReflectionException|FederatedItemException $_e) {
 			$e = $this->getFederatedItemExceptionFromStatus($result->getStatusCode());
 		}
 

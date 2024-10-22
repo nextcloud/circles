@@ -25,18 +25,18 @@ class EventWrapperRequest extends EventWrapperRequestBuilder {
 	public function save(EventWrapper $wrapper): void {
 		$qb = $this->getEventWrapperInsertSql();
 		$qb->setValue('token', $qb->createNamedParameter($wrapper->getToken()))
-		   ->setValue(
-		   	'event', $qb->createNamedParameter(json_encode($wrapper->getEvent(), JSON_UNESCAPED_SLASHES))
-		   )
-		   ->setValue(
-		   	'result', $qb->createNamedParameter(json_encode($wrapper->getResult(), JSON_UNESCAPED_SLASHES))
-		   )
-		   ->setValue('instance', $qb->createNamedParameter($wrapper->getInstance()))
-		   ->setValue('interface', $qb->createNamedParameter($wrapper->getInterface()))
-		   ->setValue('severity', $qb->createNamedParameter($wrapper->getSeverity()))
-		   ->setValue('retry', $qb->createNamedParameter($wrapper->getRetry()))
-		   ->setValue('status', $qb->createNamedParameter($wrapper->getStatus()))
-		   ->setValue('creation', $qb->createNamedParameter($wrapper->getCreation()));
+			->setValue(
+				'event', $qb->createNamedParameter(json_encode($wrapper->getEvent(), JSON_UNESCAPED_SLASHES))
+			)
+			->setValue(
+				'result', $qb->createNamedParameter(json_encode($wrapper->getResult(), JSON_UNESCAPED_SLASHES))
+			)
+			->setValue('instance', $qb->createNamedParameter($wrapper->getInstance()))
+			->setValue('interface', $qb->createNamedParameter($wrapper->getInterface()))
+			->setValue('severity', $qb->createNamedParameter($wrapper->getSeverity()))
+			->setValue('retry', $qb->createNamedParameter($wrapper->getRetry()))
+			->setValue('status', $qb->createNamedParameter($wrapper->getStatus()))
+			->setValue('creation', $qb->createNamedParameter($wrapper->getCreation()));
 
 		$qb->execute();
 	}
@@ -47,8 +47,8 @@ class EventWrapperRequest extends EventWrapperRequestBuilder {
 	public function update(EventWrapper $wrapper): void {
 		$qb = $this->getEventWrapperUpdateSql();
 		$qb->set('result', $qb->createNamedParameter(json_encode($wrapper->getResult())))
-		   ->set('status', $qb->createNamedParameter($wrapper->getStatus()))
-		   ->set('retry', $qb->createNamedParameter($wrapper->getRetry()));
+			->set('status', $qb->createNamedParameter($wrapper->getStatus()))
+			->set('retry', $qb->createNamedParameter($wrapper->getRetry()));
 
 		$qb->limitToInstance($wrapper->getInstance());
 		$qb->limitToToken($wrapper->getToken());

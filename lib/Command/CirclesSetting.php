@@ -44,7 +44,7 @@ class CirclesSetting extends Base {
 		private IHasher $hasher,
 		private FederatedUserService $federatedUserService,
 		private CircleService $circleService,
-		private ConfigService $configService
+		private ConfigService $configService,
 	) {
 		parent::__construct();
 	}
@@ -52,18 +52,18 @@ class CirclesSetting extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:manage:setting')
-			 ->setDescription('edit setting for a Circle')
-			 ->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
-			 ->addArgument('setting', InputArgument::OPTIONAL, 'setting to edit', '')
-			 ->addArgument('value', InputArgument::OPTIONAL, 'value', '')
-			 ->addOption('unset', '', InputOption::VALUE_NONE, 'unset the setting')
-			 ->addOption(
-			 	'test-password', '', InputOption::VALUE_REQUIRED,
-			 	'test and compare password with hash (in case of static password)'
-			 )
-			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
-			 ->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
-			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
+			->setDescription('edit setting for a Circle')
+			->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
+			->addArgument('setting', InputArgument::OPTIONAL, 'setting to edit', '')
+			->addArgument('value', InputArgument::OPTIONAL, 'value', '')
+			->addOption('unset', '', InputOption::VALUE_NONE, 'unset the setting')
+			->addOption(
+				'test-password', '', InputOption::VALUE_REQUIRED,
+				'test and compare password with hash (in case of static password)'
+			)
+			->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
+			->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
+			->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
 	}
 
 

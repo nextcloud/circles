@@ -30,7 +30,7 @@ class TimezoneService {
 	public function __construct(
 		$userId,
 		TimeFactory $timeFactory,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		$this->userId = $userId;
 		$this->timeFactory = $timeFactory;

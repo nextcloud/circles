@@ -81,7 +81,7 @@ class DeprecatedRequestBuilder {
 	 */
 	public function __construct(
 		IL10N $l10n, IDBConnection $connection, ConfigService $configService,
-		TimezoneService $timezoneService, MiscService $miscService
+		TimezoneService $timezoneService, MiscService $miscService,
 	) {
 		$this->l10n = $l10n;
 		$this->dbConnection = $connection;
@@ -464,13 +464,13 @@ class DeprecatedRequestBuilder {
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->selectAlias('lc.type', 'circle_type')
-		   ->selectAlias('lc.name', 'circle_name')
-		   ->selectAlias('lc.alt_name', 'circle_alt_name')
-		   ->selectAlias('lc.settings', 'circle_settings')
-		   ->leftJoin(
-		   	$this->default_select_alias, DeprecatedRequestBuilder::TABLE_CIRCLES, 'lc',
-		   	$expr->eq($pf . 'circle_id', 'lc.unique_id')
-		   );
+			->selectAlias('lc.name', 'circle_name')
+			->selectAlias('lc.alt_name', 'circle_alt_name')
+			->selectAlias('lc.settings', 'circle_settings')
+			->leftJoin(
+				$this->default_select_alias, DeprecatedRequestBuilder::TABLE_CIRCLES, 'lc',
+				$expr->eq($pf . 'circle_id', 'lc.unique_id')
+			);
 	}
 
 

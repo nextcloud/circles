@@ -32,7 +32,7 @@ class AccountUpdated implements IEventListener {
 		private FederatedEventService $federatedEventService,
 		private FederatedUserService $federatedUserService,
 		private LoggerInterface $logger,
-		private MemberRequest $memberRequest
+		private MemberRequest $memberRequest,
 	) {
 	}
 

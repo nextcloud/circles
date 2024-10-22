@@ -56,7 +56,7 @@ class PreparingMemberSendMail implements IEventListener {
 		ShareTokenService $shareTokenService,
 		SendMailService $sendMailService,
 		ContactService $contactService,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		$this->shareWrapperService = $shareWrapperService;
 		$this->shareTokenService = $shareTokenService;

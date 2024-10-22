@@ -660,7 +660,7 @@ class ConfigService {
 	public function displayFederatedUser(
 		IFederatedUser $federatedUser,
 		bool $displayName = false,
-		bool $displayInstance = true
+		bool $displayInstance = true,
 	): string {
 		$name = ($displayName) ? $federatedUser->getDisplayName() : $federatedUser->getUserId();
 		if ($federatedUser->getUserType() === Member::TYPE_MAIL) {
@@ -710,7 +710,7 @@ class ConfigService {
 	public function configureLoopbackRequest(
 		NCRequest $request,
 		string $route = '',
-		array $args = []
+		array $args = [],
 	): void {
 		$this->configureRequest($request);
 		$request->setVerifyPeer(false);

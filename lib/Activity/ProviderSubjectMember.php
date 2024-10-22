@@ -25,7 +25,7 @@ class ProviderSubjectMember extends ProviderParser {
 	public function parseSubjectMemberJoin(
 		IEvent $event,
 		Circle $circle,
-		Member $member
+		Member $member,
 	): void {
 		if ($event->getSubject() !== 'member_join') {
 			return;
@@ -50,7 +50,7 @@ class ProviderSubjectMember extends ProviderParser {
 	private function parseSubjectMemberJoinOnInvite(
 		IEvent $event,
 		Circle $circle,
-		Member $member
+		Member $member,
 	): void {
 		if (!$circle->isConfig(Circle::CFG_INVITE)) {
 			return;
@@ -76,7 +76,7 @@ class ProviderSubjectMember extends ProviderParser {
 	public function parseSubjectMemberAdd(
 		IEvent $event,
 		Circle $circle,
-		Member $member
+		Member $member,
 	): void {
 		if ($event->getSubject() !== 'member_added') {
 			return;
@@ -104,7 +104,7 @@ class ProviderSubjectMember extends ProviderParser {
 	private function parseSubjectMemberAddNotLocalMember(
 		IEvent $event,
 		Circle $circle,
-		Member $member
+		Member $member,
 	): void {
 		if ($member->getUserType() === Member::TYPE_USER) {
 			return;
@@ -130,7 +130,7 @@ class ProviderSubjectMember extends ProviderParser {
 	private function parseSubjectMemberAddClosedCircle(
 		IEvent $event,
 		Circle $circle,
-		Member $member
+		Member $member,
 	): void {
 		if (!$circle->isConfig(Circle::CFG_REQUEST)) {
 			return;
@@ -157,7 +157,7 @@ class ProviderSubjectMember extends ProviderParser {
 	public function parseSubjectMemberLeft(
 		IEvent $event,
 		Circle $circle,
-		Member $member
+		Member $member,
 	): void {
 		if ($event->getSubject() !== 'member_left') {
 			return;
@@ -185,7 +185,7 @@ class ProviderSubjectMember extends ProviderParser {
 	private function parseSubjectNonMemberLeftInvite(
 		IEvent $event,
 		Circle $circle,
-		Member $member
+		Member $member,
 	): void {
 		if (!$circle->isConfig(Circle::CFG_INVITE)
 			|| $member->getLevel() > Member::LEVEL_NONE) {
@@ -194,8 +194,8 @@ class ProviderSubjectMember extends ProviderParser {
 
 		$this->parseCircleMemberEvent(
 			$event, $circle, $member,
-			$this->l10n->t("You declined the invitation to join {circle}"),
-			$this->l10n->t("{member} declined an invitation to join {circle}")
+			$this->l10n->t('You declined the invitation to join {circle}'),
+			$this->l10n->t('{member} declined an invitation to join {circle}')
 		);
 
 		throw new FakeException();
@@ -212,7 +212,7 @@ class ProviderSubjectMember extends ProviderParser {
 	private function parseSubjectNonMemberLeftRequest(
 		IEvent $event,
 		Circle $circle,
-		Member $member
+		Member $member,
 	): void {
 		if (!$circle->isConfig(Circle::CFG_REQUEST)
 			|| $member->getLevel() > Member::LEVEL_NONE) {
@@ -221,8 +221,8 @@ class ProviderSubjectMember extends ProviderParser {
 
 		$this->parseCircleMemberEvent(
 			$event, $circle, $member,
-			$this->l10n->t("You cancelled your request to join {circle}"),
-			$this->l10n->t("{member} cancelled a request to join {circle}")
+			$this->l10n->t('You cancelled your request to join {circle}'),
+			$this->l10n->t('{member} cancelled a request to join {circle}')
 		);
 
 		throw new FakeException();
@@ -239,7 +239,7 @@ class ProviderSubjectMember extends ProviderParser {
 	public function parseSubjectMemberRemove(
 		IEvent $event,
 		Circle $circle,
-		Member $member
+		Member $member,
 	): void {
 		if ($event->getSubject() !== 'member_remove') {
 			return;
@@ -267,7 +267,7 @@ class ProviderSubjectMember extends ProviderParser {
 	private function parseSubjectMemberRemoveNotLocalMember(
 		IEvent $event,
 		Circle $circle,
-		Member $member
+		Member $member,
 	): void {
 		if ($member->getUserType() === Member::TYPE_USER) {
 			return;
@@ -293,7 +293,7 @@ class ProviderSubjectMember extends ProviderParser {
 	private function parseSubjectMemberRemoveNotYetMember(
 		IEvent $event,
 		Circle $circle,
-		Member $member
+		Member $member,
 	): void {
 		if (!$circle->isConfig(Circle::CFG_INVITE)
 			|| $member->getLevel() > Member::LEVEL_NONE) {
@@ -320,7 +320,7 @@ class ProviderSubjectMember extends ProviderParser {
 	private function parseSubjectMemberRemoveNotYetMemberRequesting(
 		IEvent $event,
 		Circle $circle,
-		Member $member
+		Member $member,
 	): void {
 		if ($member->getStatus() !== Member::STATUS_REQUEST) {
 			return;
@@ -369,7 +369,7 @@ class ProviderSubjectMember extends ProviderParser {
 		IEvent $event,
 		Circle $circle,
 		Member $member,
-		int $level
+		int $level,
 	): void {
 		if ($event->getSubject() !== 'member_level') {
 			return;
@@ -397,7 +397,7 @@ class ProviderSubjectMember extends ProviderParser {
 	public function parseMemberRequestInvitation(
 		IEvent $event,
 		Circle $circle,
-		Member $member
+		Member $member,
 	): void {
 		if ($event->getSubject() !== 'member_request_invitation') {
 			return;
@@ -422,7 +422,7 @@ class ProviderSubjectMember extends ProviderParser {
 	public function parseMemberOwner(
 		IEvent $event,
 		Circle $circle,
-		Member $member
+		Member $member,
 	): void {
 		if ($event->getSubject() !== 'member_owner') {
 			return;

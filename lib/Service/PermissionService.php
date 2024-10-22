@@ -37,7 +37,7 @@ class PermissionService {
 	public function __construct(
 		IL10N $l10n,
 		FederatedUserService $federatedUserService,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		$this->l10n = $l10n;
 		$this->federatedUserService = $federatedUserService;

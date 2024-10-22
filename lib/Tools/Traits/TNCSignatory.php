@@ -56,7 +56,7 @@ trait TNCSignatory {
 		NCSignatory $signatory,
 		string $keyId = '',
 		array $params = [],
-		?NCRequest $request = null
+		?NCRequest $request = null,
 	): void {
 		if (is_null($request)) {
 			$request = new NCRequest();
@@ -86,7 +86,7 @@ trait TNCSignatory {
 	 */
 	public function updateSignatory(NCSignatory $signatory, array $json, string $keyId = ''): void {
 		$signatory->setOrigData($json)
-				  ->import($json);
+			->import($json);
 
 		if ($keyId === '') {
 			$keyId = $signatory->getKeyId();
@@ -132,7 +132,7 @@ trait TNCSignatory {
 		NCSignatory $signatory,
 		string $digest = 'rsa',
 		int $bits = 2048,
-		int $type = OPENSSL_KEYTYPE_RSA
+		int $type = OPENSSL_KEYTYPE_RSA,
 	) {
 		$res = openssl_pkey_new(
 			[
@@ -178,7 +178,7 @@ trait TNCSignatory {
 	 * @throws SignatureException
 	 */
 	public function verifyString(
-		string $clear, string $signed, string $publicKey, string $algo = NCSignatory::SHA256
+		string $clear, string $signed, string $publicKey, string $algo = NCSignatory::SHA256,
 	) {
 		if (openssl_verify($clear, $signed, $publicKey, $algo) !== 1) {
 			throw new SignatureException('signature issue');

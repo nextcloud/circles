@@ -115,7 +115,7 @@ class NCSignedRequest implements JsonSerializable {
 	 */
 	public function setBody(string $body): self {
 		$this->body = $body;
-		$this->setDigest('SHA-256=' . base64_encode(hash("sha256", utf8_encode($body), true)));
+		$this->setDigest('SHA-256=' . base64_encode(hash('sha256', utf8_encode($body), true)));
 
 		return $this;
 	}

@@ -36,7 +36,7 @@ class RemovingMember implements IEventListener {
 		LoggerInterface $logger,
 		MemberService $memberService,
 		ShareTokenService $shareTokenService,
-		ShareWrapperService $shareWrapperService
+		ShareWrapperService $shareWrapperService,
 	) {
 		$this->logger = $logger;
 		$this->memberService = $memberService;

@@ -74,7 +74,7 @@ class Application extends App implements IBootstrap {
 
 	public const APP_SUBJECT = 'http://nextcloud.com/';
 	public const APP_REL = 'https://apps.nextcloud.com/apps/circles';
-	public const APP_API = "1";
+	public const APP_API = '1';
 
 	public const CLIENT_TIMEOUT = 3;
 
@@ -131,7 +131,7 @@ class Application extends App implements IBootstrap {
 		$serverContainer = $context->getServerContainer();
 
 		$this->configService = $context->getAppContainer()
-									   ->get(ConfigService::class);
+			->get(ConfigService::class);
 
 		$context->injectFn(Closure::fromCallable([$this, 'registerMountProvider']));
 		$context->injectFn(Closure::fromCallable([$this, 'registerFilesNavigation']));

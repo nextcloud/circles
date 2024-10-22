@@ -101,7 +101,7 @@ class MembersList extends Base {
 	public function __construct(
 		MemberRequest $memberRequest, FederatedUserService $federatedUserService,
 		RemoteService $remoteService, CircleService $circleService, MemberService $memberService,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		parent::__construct();
 
@@ -117,14 +117,14 @@ class MembersList extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:members:list')
-			 ->setDescription('listing Members from a Circle')
-			 ->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
-			 ->addOption('instance', '', InputOption::VALUE_REQUIRED, 'Instance of the circle', '')
-			 ->addOption('inherited', '', InputOption::VALUE_NONE, 'Display all inherited members')
-			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
-			 ->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
-			 ->addOption('display-name', '', InputOption::VALUE_NONE, 'display the displayName')
-			 ->addOption('tree', '', InputOption::VALUE_OPTIONAL, 'display members as a tree', false);
+			->setDescription('listing Members from a Circle')
+			->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
+			->addOption('instance', '', InputOption::VALUE_REQUIRED, 'Instance of the circle', '')
+			->addOption('inherited', '', InputOption::VALUE_NONE, 'Display all inherited members')
+			->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
+			->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
+			->addOption('display-name', '', InputOption::VALUE_NONE, 'display the displayName')
+			->addOption('tree', '', InputOption::VALUE_OPTIONAL, 'display members as a tree', false);
 	}
 
 
@@ -170,7 +170,7 @@ class MembersList extends Base {
 			$output->writeln('<info>Name</info>: ' . $circle->getName());
 			$owner = $circle->getOwner();
 			$output->writeln('<info>Owner</info>: ' . $owner->getUserId() . '@' . $owner->getInstance());
-			$type = implode(", ", Circle::getCircleFlags($circle, Circle::FLAGS_LONG));
+			$type = implode(', ', Circle::getCircleFlags($circle, Circle::FLAGS_LONG));
 			$output->writeln('<info>Config</info>: ' . $type);
 			$output->writeln(' ');
 
@@ -284,7 +284,7 @@ class MembersList extends Base {
 		string $initiator,
 		int $initiatorType,
 		?TreeNode $tree,
-		array $knownIds = []
+		array $knownIds = [],
 	): array {
 		if (in_array($circleId, $knownIds)) {
 			return [];
@@ -327,7 +327,7 @@ class MembersList extends Base {
 							$circle = $this->remoteService->getCircleFromInstance(
 								$member->getSingleId(), $member->getInstance(), $data
 							);
-						} catch (CircleNotFoundException | RemoteInstanceException $e) {
+						} catch (CircleNotFoundException|RemoteInstanceException $e) {
 						}
 					} else {
 						$this->federatedUserService->commandLineInitiator(
@@ -432,7 +432,7 @@ class MembersList extends Base {
 					}
 					$owner = $circle->getOwner();
 					$line .= '<info>Owner</info>: ' . $owner->getUserId() . '@' . $owner->getInstance();
-					$type = implode(", ", Circle::getCircleFlags($circle, Circle::FLAGS_LONG));
+					$type = implode(', ', Circle::getCircleFlags($circle, Circle::FLAGS_LONG));
 					$line .= ($type === '') ? '' : ' <info>Config</info>: ' . $type;
 				}
 			} else {
@@ -445,7 +445,7 @@ class MembersList extends Base {
 			}
 
 			return $line;
-		} catch (InvalidItemException | ItemNotFoundException | UnknownTypeException $e) {
+		} catch (InvalidItemException|ItemNotFoundException|UnknownTypeException $e) {
 		}
 
 		return '';

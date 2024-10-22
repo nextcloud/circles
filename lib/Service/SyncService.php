@@ -119,7 +119,7 @@ class SyncService {
 		CircleService $circleService,
 		MembershipService $membershipService,
 		OutputService $outputService,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		$this->userManager = $userManager;
 		$this->groupManager = $groupManager;
@@ -352,8 +352,8 @@ class SyncService {
 	public function groupDeleted(string $groupId): void {
 		$circle = new Circle();
 		$circle->setName('group:' . $groupId)
-			   ->setConfig(Circle::CFG_SYSTEM | Circle::CFG_NO_OWNER | Circle::CFG_HIDDEN)
-			   ->setSource(Member::TYPE_GROUP);
+			->setConfig(Circle::CFG_SYSTEM | Circle::CFG_NO_OWNER | Circle::CFG_HIDDEN)
+			->setSource(Member::TYPE_GROUP);
 
 		$owner = $this->federatedUserService->getAppInitiator(
 			Application::APP_ID,
@@ -364,7 +364,7 @@ class SyncService {
 		$member = new Member();
 		$member->importFromIFederatedUser($owner);
 		$member->setLevel(Member::LEVEL_OWNER)
-			   ->setStatus(Member::STATUS_MEMBER);
+			->setStatus(Member::STATUS_MEMBER);
 		$circle->setOwner($member);
 
 		try {

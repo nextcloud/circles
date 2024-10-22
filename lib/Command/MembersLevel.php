@@ -63,7 +63,7 @@ class MembersLevel extends Base {
 	 * @param MemberService $memberService
 	 */
 	public function __construct(
-		MemberRequest $memberRequest, FederatedUserService $federatedUserService, MemberService $memberService
+		MemberRequest $memberRequest, FederatedUserService $federatedUserService, MemberService $memberService,
 	) {
 		parent::__construct();
 
@@ -76,13 +76,13 @@ class MembersLevel extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:members:level')
-			 ->setDescription('Change the level of a member from a Circle')
-			 ->addArgument('member_id', InputArgument::REQUIRED, 'ID of the member from the Circle')
-			 ->addOption('circle', '', InputOption::VALUE_REQUIRED, 'ID of the circle', '')
-			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
-			 ->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
-			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception')
-			 ->addArgument('level', InputArgument::REQUIRED, 'new level');
+			->setDescription('Change the level of a member from a Circle')
+			->addArgument('member_id', InputArgument::REQUIRED, 'ID of the member from the Circle')
+			->addOption('circle', '', InputOption::VALUE_REQUIRED, 'ID of the circle', '')
+			->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
+			->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
+			->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception')
+			->addArgument('level', InputArgument::REQUIRED, 'new level');
 	}
 
 

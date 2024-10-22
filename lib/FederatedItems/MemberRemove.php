@@ -53,7 +53,7 @@ class MemberRemove implements
 	public function __construct(
 		MemberRequest $memberRequest,
 		MembershipService $membershipService,
-		EventService $eventService
+		EventService $eventService,
 	) {
 		$this->memberRequest = $memberRequest;
 		$this->membershipService = $membershipService;

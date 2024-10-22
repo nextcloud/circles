@@ -60,7 +60,7 @@ class FileUnshare implements
 	public function __construct(
 		MountRequest $mountRequest,
 		EventService $eventService,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		$this->mountRequest = $mountRequest;
 		$this->eventService = $eventService;

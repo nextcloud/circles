@@ -79,7 +79,7 @@ class InterfaceService {
 	public function __construct(
 		IURLGenerator $urlGenerator,
 		RemoteRequest $remoteRequest,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		$this->urlGenerator = $urlGenerator;
 		$this->remoteRequest = $remoteRequest;

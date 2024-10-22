@@ -197,7 +197,7 @@ trait TStringTools {
 		int $first,
 		int $second = 0,
 		bool $short = false,
-		array $words = []
+		array $words = [],
 	): string {
 		if ($second === 0) {
 			$first = time() - $first;

@@ -64,7 +64,7 @@ class MemberDisplayName implements
 		MemberRequest $memberRequest,
 		MembershipService $membershipService,
 		EventService $eventService,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		$this->memberRequest = $memberRequest;
 		$this->membershipService = $membershipService;
@@ -82,7 +82,7 @@ class MemberDisplayName implements
 	 */
 	public function verify(FederatedEvent $event): void {
 		$member = $event->getCircle()
-						->getInitiator();
+			->getInitiator();
 
 		$displayName = $event->getParams()->g('displayName');
 

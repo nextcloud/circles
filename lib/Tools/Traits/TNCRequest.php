@@ -55,7 +55,7 @@ trait TNCRequest {
 	public function doRequest(NCRequest $request, bool $exceptionOnIssue = true): void {
 		$request->setClient(
 			$this->clientService()
-				 ->newClient()
+				->newClient()
 		);
 
 		$this->generationClientOptions($request);

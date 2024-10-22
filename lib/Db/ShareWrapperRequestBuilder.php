@@ -52,7 +52,7 @@ class ShareWrapperRequestBuilder extends CoreRequestBuilder {
 	protected function getShareSelectSql(string $alias = CoreQueryBuilder::SHARE): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->generateSelect(self::TABLE_SHARE, self::$outsideTables[self::TABLE_SHARE], $alias)
-		   ->limitToShareType(IShare::TYPE_CIRCLE);
+			->limitToShareType(IShare::TYPE_CIRCLE);
 
 		return $qb;
 	}
@@ -66,7 +66,7 @@ class ShareWrapperRequestBuilder extends CoreRequestBuilder {
 	protected function getShareDeleteSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->delete(self::TABLE_SHARE)
-		   ->limitToShareType(IShare::TYPE_CIRCLE);
+			->limitToShareType(IShare::TYPE_CIRCLE);
 
 		return $qb;
 	}

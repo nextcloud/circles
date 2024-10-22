@@ -29,7 +29,7 @@ class Provider implements IProvider {
 		private IURLGenerator $urlGenerator,
 		private ProviderSubjectCircle $parserCircle,
 		private ProviderSubjectMember $parserMember,
-		private ProviderSubjectCircleMember $parserCircleMember
+		private ProviderSubjectCircleMember $parserCircleMember,
 	) {
 	}
 
@@ -86,7 +86,7 @@ class Provider implements IProvider {
 	 */
 	private function parseAsNonMember(
 		IEvent $event,
-		Circle $circle
+		Circle $circle,
 	): void {
 		if ($event->getType() !== 'circles_as_non_member') {
 			return;
@@ -105,7 +105,7 @@ class Provider implements IProvider {
 	private function parseAsMember(
 		IEvent $event,
 		Circle $circle,
-		array $params
+		array $params,
 	): void {
 		if ($event->getType() !== 'circles_as_member') {
 			return;
@@ -144,7 +144,7 @@ class Provider implements IProvider {
 	private function parseMemberAsMember(
 		IEvent $event,
 		Circle $circle,
-		array $params
+		array $params,
 	): void {
 		if (!key_exists('member', $params)) {
 			return;
@@ -170,7 +170,7 @@ class Provider implements IProvider {
 	private function parseCircleMemberAsMember(
 		IEvent $event,
 		Circle $circle,
-		array $params
+		array $params,
 	): void {
 		if (!key_exists('member', $params)) {
 			return;
@@ -196,7 +196,7 @@ class Provider implements IProvider {
 	private function parseMemberAsModerator(
 		IEvent $event,
 		Circle $circle,
-		array $params
+		array $params,
 	): void {
 		if (!key_exists('member', $params)) {
 			return;

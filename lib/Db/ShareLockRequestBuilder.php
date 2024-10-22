@@ -39,8 +39,8 @@ class ShareLockRequestBuilder extends CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
 
 		$qb->select('s.id', 's.item_id', 's.circle_id', 's.instance')
-		   ->from(self::TABLE_SHARE_LOCK, 's')
-		   ->setDefaultSelectAlias('s');
+			->from(self::TABLE_SHARE_LOCK, 's')
+			->setDefaultSelectAlias('s');
 
 		return $qb;
 	}

@@ -118,7 +118,7 @@ class RemoteController extends Controller {
 		MembershipService $membershipService,
 		InterfaceService $interfaceService,
 		ConfigService $configService,
-		IUserSession $userSession
+		IUserSession $userSession,
 	) {
 		parent::__construct($appName, $request);
 		$this->circleRequest = $circleRequest;
@@ -253,8 +253,8 @@ class RemoteController extends Controller {
 
 			$probe = new CircleProbe();
 			$probe->setFilterCircle($filterCircle)
-				  ->setFilterMember($filterMember)
-				  ->addDetail(BasicProbe::DETAILS_POPULATION);
+				->setFilterMember($filterMember)
+				->addDetail(BasicProbe::DETAILS_POPULATION);
 
 			$circles = $this->circleService->getCircles($probe);
 
@@ -449,21 +449,21 @@ class RemoteController extends Controller {
 			/** @var FederatedUser $initiator */
 			$initiator = $store->gObj('initiator', FederatedUser::class);
 			$this->federatedUserService->setCurrentUser($initiator);
-		} catch (InvalidItemException | ItemNotFoundException $e) {
+		} catch (InvalidItemException|ItemNotFoundException $e) {
 		}
 
 		try {
 			/** @var FederatedUser $initiator */
 			$filterMember = $store->gObj('filterMember', Member::class);
 			$data->aObj('filterMember', $filterMember);
-		} catch (InvalidItemException | ItemNotFoundException $e) {
+		} catch (InvalidItemException|ItemNotFoundException $e) {
 		}
 
 		try {
 			/** @var FederatedUser $initiator */
 			$filterCircle = $store->gObj('filterCircle', Circle::class);
 			$data->aObj('filterCircle', $filterCircle);
-		} catch (InvalidItemException | ItemNotFoundException $e) {
+		} catch (InvalidItemException|ItemNotFoundException $e) {
 		}
 
 		return $data;
@@ -505,7 +505,7 @@ class RemoteController extends Controller {
 	 */
 	public function exceptionResponse(
 		Exception $e,
-		int $httpErrorCode = Http::STATUS_BAD_REQUEST
+		int $httpErrorCode = Http::STATUS_BAD_REQUEST,
 	): DataResponse {
 		if ($e instanceof FederatedItemException) {
 			return new DataResponse($this->serialize($e), $e->getStatus());

@@ -26,7 +26,7 @@ class FileSharesRequestBuilder extends DeprecatedRequestBuilder {
 		$qb->delete(self::TABLE_FILE_SHARES);
 		$qb->where(
 			$qb->expr()
-			   ->eq('share_type', $qb->createNamedParameter(self::SHARE_TYPE))
+				->eq('share_type', $qb->createNamedParameter(self::SHARE_TYPE))
 		);
 
 		return $qb;
@@ -51,7 +51,7 @@ class FileSharesRequestBuilder extends DeprecatedRequestBuilder {
 			's.password',
 			's.file_target'
 		)
-		   ->from(self::TABLE_FILE_SHARES, 's');
+			->from(self::TABLE_FILE_SHARES, 's');
 
 		$this->default_select_alias = 's';
 

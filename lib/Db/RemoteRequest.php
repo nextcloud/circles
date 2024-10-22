@@ -34,11 +34,11 @@ class RemoteRequest extends RemoteRequestBuilder {
 		$remote->mustBeIdentityAuthed();
 		$qb = $this->getRemoteInsertSql();
 		$qb->setValue('uid', $qb->createNamedParameter($remote->getUid(true)))
-		   ->setValue('instance', $qb->createNamedParameter($remote->getInstance()))
-		   ->setValue('href', $qb->createNamedParameter($remote->getId()))
-		   ->setValue('type', $qb->createNamedParameter($remote->getType()))
-		   ->setValue('interface', $qb->createNamedParameter($remote->getInterface()))
-		   ->setValue('item', $qb->createNamedParameter(json_encode($remote->getOrigData())));
+			->setValue('instance', $qb->createNamedParameter($remote->getInstance()))
+			->setValue('href', $qb->createNamedParameter($remote->getId()))
+			->setValue('type', $qb->createNamedParameter($remote->getType()))
+			->setValue('interface', $qb->createNamedParameter($remote->getInterface()))
+			->setValue('item', $qb->createNamedParameter(json_encode($remote->getOrigData())));
 
 		$qb->execute();
 	}
@@ -53,9 +53,9 @@ class RemoteRequest extends RemoteRequestBuilder {
 		$remote->mustBeIdentityAuthed();
 		$qb = $this->getRemoteUpdateSql();
 		$qb->set('uid', $qb->createNamedParameter($remote->getUid(true)))
-		   ->set('href', $qb->createNamedParameter($remote->getId()))
-		   ->set('type', $qb->createNamedParameter($remote->getType()))
-		   ->set('item', $qb->createNamedParameter(json_encode($remote->getOrigData())));
+			->set('href', $qb->createNamedParameter($remote->getId()))
+			->set('type', $qb->createNamedParameter($remote->getType()))
+			->set('item', $qb->createNamedParameter(json_encode($remote->getOrigData())));
 
 		$qb->limitToInstance($remote->getInstance());
 

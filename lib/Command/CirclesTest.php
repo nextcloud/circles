@@ -110,15 +110,15 @@ class CirclesTest extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:test')
-			 ->setDescription('testing some features')
-			 ->addArgument('deprecated', InputArgument::OPTIONAL, '')
-			 ->addOption(
-			 	'are-you-aware-this-will-delete-all-my-data', '', InputOption::VALUE_REQUIRED,
-			 	'Well, are you ?', ''
-			 )
-			 ->addOption('skip-init', '', InputOption::VALUE_NONE, 'Bypass Initialization')
-			 ->addOption('skip-setup', '', InputOption::VALUE_NONE, 'Bypass Circles Setup')
-			 ->addOption('only-setup', '', InputOption::VALUE_NONE, 'Stop after Circles Setup, pre-Sync');
+			->setDescription('testing some features')
+			->addArgument('deprecated', InputArgument::OPTIONAL, '')
+			->addOption(
+				'are-you-aware-this-will-delete-all-my-data', '', InputOption::VALUE_REQUIRED,
+				'Well, are you ?', ''
+			)
+			->addOption('skip-init', '', InputOption::VALUE_NONE, 'Bypass Initialization')
+			->addOption('skip-setup', '', InputOption::VALUE_NONE, 'Bypass Circles Setup')
+			->addOption('only-setup', '', InputOption::VALUE_NONE, 'Stop after Circles Setup, pre-Sync');
 	}
 
 
@@ -275,7 +275,7 @@ class CirclesTest extends Base {
 			'test.shared_to',
 			'test.data'
 		)
-		   ->from('circles_test', 'test');
+			->from('circles_test', 'test');
 
 
 		/** @var FederatedUser $federatedUser */
@@ -568,26 +568,26 @@ class CirclesTest extends Base {
 
 				$compareToOwnerBasedOn = new Circle();
 				$compareToOwnerBasedOn->setConfig(Circle::CFG_SINGLE)
-									  ->setName('user:' . $userId . ':{CIRCLEID}')
-									  ->setDisplayName($userId);
+					->setName('user:' . $userId . ':{CIRCLEID}')
+					->setDisplayName($userId);
 
 				$compareToOwner = new Member();
 				$compareToOwner->setUserId($userId)
-							   ->setUserType(Member::TYPE_USER)
-							   ->setInstance($instance)
-							   ->setDisplayName($userId)
-							   ->setId('{CIRCLEID}')
-							   ->setCircleId('{CIRCLEID}')
-							   ->setSingleId('{CIRCLEID}')
-							   ->setStatus(Member::STATUS_MEMBER)
-							   ->setLevel(Member::LEVEL_OWNER)
-							   ->setBasedOn($compareToOwnerBasedOn);
+					->setUserType(Member::TYPE_USER)
+					->setInstance($instance)
+					->setDisplayName($userId)
+					->setId('{CIRCLEID}')
+					->setCircleId('{CIRCLEID}')
+					->setSingleId('{CIRCLEID}')
+					->setStatus(Member::STATUS_MEMBER)
+					->setLevel(Member::LEVEL_OWNER)
+					->setBasedOn($compareToOwnerBasedOn);
 
 				$compareTo = new Circle();
 				$compareTo->setOwner($compareToOwner)
-						  ->setConfig(Circle::CFG_SINGLE)
-						  ->setName('user:' . $userId . ':{CIRCLEID}')
-						  ->setDisplayName($userId);
+					->setConfig(Circle::CFG_SINGLE)
+					->setName('user:' . $userId . ':{CIRCLEID}')
+					->setDisplayName($userId);
 
 				$this->confirmCircleData($circle, $compareTo);
 				$this->r(true, $circle->getSingleId());
@@ -598,26 +598,26 @@ class CirclesTest extends Base {
 
 			$compareToOwnerBasedOn = new Circle();
 			$compareToOwnerBasedOn->setConfig(Circle::CFG_SINGLE | Circle::CFG_ROOT)
-								  ->setName('app:circles:{CIRCLEID}')
-								  ->setDisplayName('circles');
+				->setName('app:circles:{CIRCLEID}')
+				->setDisplayName('circles');
 
 			$compareToOwner = new Member();
 			$compareToOwner->setUserId(Application::APP_ID)
-						   ->setUserType(Member::TYPE_APP)
-						   ->setInstance($instance)
-						   ->setDisplayName(Application::APP_ID)
-						   ->setId('{CIRCLEID}')
-						   ->setCircleId('{CIRCLEID}')
-						   ->setSingleId('{CIRCLEID}')
-						   ->setStatus(Member::STATUS_MEMBER)
-						   ->setLevel(Member::LEVEL_OWNER)
-						   ->setBasedOn($compareToOwnerBasedOn);
+				->setUserType(Member::TYPE_APP)
+				->setInstance($instance)
+				->setDisplayName(Application::APP_ID)
+				->setId('{CIRCLEID}')
+				->setCircleId('{CIRCLEID}')
+				->setSingleId('{CIRCLEID}')
+				->setStatus(Member::STATUS_MEMBER)
+				->setLevel(Member::LEVEL_OWNER)
+				->setBasedOn($compareToOwnerBasedOn);
 
 			$compareTo = new Circle();
 			$compareTo->setOwner($compareToOwner)
-					  ->setConfig(Circle::CFG_SINGLE | Circle::CFG_ROOT)
-					  ->setName('app:circles:{CIRCLEID}')
-					  ->setDisplayName('circles');
+				->setConfig(Circle::CFG_SINGLE | Circle::CFG_ROOT)
+				->setName('app:circles:{CIRCLEID}')
+				->setDisplayName('circles');
 
 			$this->confirmCircleData($circle, $compareTo);
 			$this->r(true, $circle->getSingleId());
@@ -631,25 +631,25 @@ class CirclesTest extends Base {
 
 				$compareToOwnerBasedOn = new Circle();
 				$compareToOwnerBasedOn->setConfig(Circle::CFG_SINGLE | Circle::CFG_ROOT)
-									  ->setName($appCircle->getName())
-									  ->setDisplayName($appCircle->getDisplayName());
+					->setName($appCircle->getName())
+					->setDisplayName($appCircle->getDisplayName());
 
 				$compareToOwner = new Member();
 				$compareToOwner->setUserId($appOwner->getUserId())
-							   ->setUserType($appOwner->getUserType())
-							   ->setInstance($appOwner->getInstance())
-							   ->setDisplayName($appOwner->getDisplayName())
-							   ->setCircleId('{CIRCLEID}')
-							   ->setSingleId($appOwner->getSingleId())
-							   ->setStatus($appOwner->getStatus())
-							   ->setLevel($appOwner->getLevel())
-							   ->setBasedOn($compareToOwnerBasedOn);
+					->setUserType($appOwner->getUserType())
+					->setInstance($appOwner->getInstance())
+					->setDisplayName($appOwner->getDisplayName())
+					->setCircleId('{CIRCLEID}')
+					->setSingleId($appOwner->getSingleId())
+					->setStatus($appOwner->getStatus())
+					->setLevel($appOwner->getLevel())
+					->setBasedOn($compareToOwnerBasedOn);
 
 				$compareTo = new Circle();
 				$compareTo->setOwner($compareToOwner)
-						  ->setConfig(Circle::CFG_SYSTEM | Circle::CFG_NO_OWNER | Circle::CFG_HIDDEN)
-						  ->setName('group:' . $groupId)
-						  ->setDisplayName($groupId);
+					->setConfig(Circle::CFG_SYSTEM | Circle::CFG_NO_OWNER | Circle::CFG_HIDDEN)
+					->setName('group:' . $groupId)
+					->setDisplayName($groupId);
 
 				$this->confirmCircleData($circle, $compareTo);
 				$this->r(true, $circle->getSingleId());
@@ -740,11 +740,11 @@ class CirclesTest extends Base {
 
 		$compareTo = new Circle();
 		$compareTo->setOwner($knownOwner)
-				  ->setSingleId($createdCircle->getSingleId())
-				  ->setInitiator($knownOwner)
-				  ->setConfig(Circle::CFG_CIRCLE)
-				  ->setName($name)
-				  ->setDisplayName($name);
+			->setSingleId($createdCircle->getSingleId())
+			->setInitiator($knownOwner)
+			->setConfig(Circle::CFG_CIRCLE)
+			->setName($name)
+			->setDisplayName($name);
 		echo json_encode($createdCircle, JSON_PRETTY_PRINT);
 		$this->confirmCircleData($createdCircle, $compareTo, 'circle', true);
 		$this->r();
@@ -769,7 +769,7 @@ class CirclesTest extends Base {
 				$tmpCircle = $this->deserialize($dataCircle, Circle::class);
 				// we reset some data that should not be available on remote instance
 				$createdCircle->setInitiator(null)
-							  ->getOwner()->setBasedOn(null);
+					->getOwner()->setBasedOn(null);
 				$this->confirmCircleData($tmpCircle, $createdCircle);
 				$this->r(true, $tmpCircle->getSingleId());
 			} else {
@@ -929,7 +929,7 @@ class CirclesTest extends Base {
 		Circle $compareTo,
 		string $prefix = 'circle',
 		bool $versa = false,
-		array $params = []
+		array $params = [],
 	) {
 		if (empty($params)) {
 			$params = [
@@ -991,7 +991,7 @@ class CirclesTest extends Base {
 		Member $compareTo,
 		string $prefix = 'member',
 		bool $versa = false,
-		array $params = []
+		array $params = [],
 	) {
 		$this->compare($compareTo->getId(), $member->getId(), $prefix . '.id', $params);
 		$this->compare($compareTo->getCircleId(), $member->getCircleId(), $prefix . '.circleId', $params);
@@ -1198,7 +1198,7 @@ class CirclesTest extends Base {
 		string $cmd,
 		bool $exceptionOnFail = true,
 		bool $jsonAsOutput = true,
-		array $env = []
+		array $env = [],
 	): ?array {
 		$configInstance = $this->getConfigInstance($instance);
 		$path = $this->get('path', $configInstance);
@@ -1279,7 +1279,7 @@ class CirclesTest extends Base {
 	 * @throws InvalidItemException
 	 * @throws ItemNotFoundException
 	 */
-	private function processMemberAdd(string $instanceId, string $circleName, string $userId, string $type
+	private function processMemberAdd(string $instanceId, string $circleName, string $userId, string $type,
 	): Member {
 		$circle = $this->getCircleByName($instanceId, $circleName);
 		$dataAddedMember =

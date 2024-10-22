@@ -46,7 +46,7 @@ class CirclesQueryHelper {
 	 */
 	public function __construct(
 		CoreRequestBuilder $coreRequestBuilder,
-		FederatedUserService $federatedUserService
+		FederatedUserService $federatedUserService,
 	) {
 		$this->coreRequestBuilder = $coreRequestBuilder;
 		$this->federatedUserService = $federatedUserService;
@@ -75,7 +75,7 @@ class CirclesQueryHelper {
 	public function limitToSession(
 		string $alias,
 		string $field,
-		bool $fullDetails = false
+		bool $fullDetails = false,
 	): ICompositeExpression {
 		$session = $this->federatedUserService->getCurrentUser();
 		if (is_null($session)) {
@@ -113,7 +113,7 @@ class CirclesQueryHelper {
 		string $alias,
 		string $field,
 		IFederatedUser $federatedUser,
-		bool $fullDetails = false
+		bool $fullDetails = false,
 	): ICompositeExpression {
 		$this->queryBuilder->setDefaultSelectAlias($alias);
 		$this->queryBuilder->setOptions(
@@ -143,7 +143,7 @@ class CirclesQueryHelper {
 	 */
 	public function addCircleDetails(
 		string $alias,
-		string $field
+		string $field,
 	): void {
 		$this->queryBuilder->setDefaultSelectAlias($alias);
 		$this->queryBuilder->setOptions(

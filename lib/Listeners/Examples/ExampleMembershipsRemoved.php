@@ -37,7 +37,7 @@ class ExampleMembershipsRemoved implements IEventListener {
 
 	public function __construct(
 		CirclesManager $circlesManager,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		$this->circlesManager = $circlesManager;
 		$this->configService = $configService;

@@ -71,7 +71,7 @@ class CircleCreate implements
 		MemberRequest $memberRequest,
 		CircleService $circleService,
 		MembershipService $membershipService,
-		EventService $eventService
+		EventService $eventService,
 	) {
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;

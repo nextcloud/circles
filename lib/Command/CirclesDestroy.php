@@ -65,11 +65,11 @@ class CirclesDestroy extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:manage:destroy')
-			 ->setDescription('destroy a circle by its ID')
-			 ->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle to be destroyed')
-			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
-			 ->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
-			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
+			->setDescription('destroy a circle by its ID')
+			->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle to be destroyed')
+			->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
+			->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
+			->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
 	}
 
 

@@ -51,7 +51,7 @@ class MembershipsRemoved implements IEventListener {
 	public function __construct(
 		CirclesManager $circlesManager,
 		ShareWrapperService $shareWrapperService,
-		FederatedUserService $federatedUserService
+		FederatedUserService $federatedUserService,
 	) {
 		$this->circlesManager = $circlesManager;
 		$this->shareWrapperService = $shareWrapperService;

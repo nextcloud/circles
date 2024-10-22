@@ -22,7 +22,7 @@ class Capabilities implements ICapability {
 		private IL10N $l10n,
 		private IAppManager $appManager,
 		private InterfaceService $interfaceService,
-		private ConfigService $configService
+		private ConfigService $configService,
 	) {
 	}
 

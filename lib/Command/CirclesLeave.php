@@ -50,7 +50,7 @@ class CirclesLeave extends Base {
 	 */
 	public function __construct(
 		FederatedUserService $federatedUserService, CircleService $circlesService,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		parent::__construct();
 
@@ -66,11 +66,11 @@ class CirclesLeave extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:manage:leave')
-			 ->setDescription('simulate a user joining a Circle')
-			 ->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
-			 ->addArgument('initiator', InputArgument::REQUIRED, 'initiator to the request')
-			 ->addOption('type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
-			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
+			->setDescription('simulate a user joining a Circle')
+			->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
+			->addArgument('initiator', InputArgument::REQUIRED, 'initiator to the request')
+			->addOption('type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
+			->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
 	}
 
 

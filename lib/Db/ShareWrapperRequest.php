@@ -127,7 +127,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		string $circleId,
 		?FederatedUser $shareRecipient = null,
 		?FederatedUser $shareInitiator = null,
-		bool $completeDetails = false
+		bool $completeDetails = false,
 	): array {
 		$qb = $this->getShareSelectSql();
 		$qb->limitNull('parent', false);
@@ -292,7 +292,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 	public function getSharedWith(
 		FederatedUser $federatedUser,
 		int $nodeId,
-		CircleProbe $probe
+		CircleProbe $probe,
 	): array {
 		$qb = $this->getShareSelectSql();
 		$qb->setOptions(
@@ -341,7 +341,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		int $limit,
 		int $offset,
 		bool $getData = false,
-		bool $completeDetails = false
+		bool $completeDetails = false,
 	): array {
 		$qb = $this->getShareSelectSql();
 		$qb->setOptions([CoreQueryBuilder::SHARE], ['getData' => $getData]);
@@ -380,7 +380,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		FederatedUser $federatedUser,
 		Folder $node,
 		bool $reshares,
-		bool $shallow = true
+		bool $shallow = true,
 	): array {
 		$qb = $this->getShareSelectSql();
 

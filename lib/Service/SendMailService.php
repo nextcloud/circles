@@ -58,7 +58,7 @@ class SendMailService {
 		IHasher $hasher,
 		IMailer $mailer,
 		Defaults $defaults,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		$this->l10n = $l10n;
 		$this->hasher = $hasher;
@@ -82,7 +82,7 @@ class SendMailService {
 		Member $member,
 		array $shares,
 		array $mails,
-		string $password = ''
+		string $password = '',
 	): void {
 		if (empty($shares)) {
 			return;
@@ -132,7 +132,7 @@ class SendMailService {
 	private function generateMailExitingShares(
 		string $author,
 		string $circleName,
-		bool $multiple = false
+		bool $multiple = false,
 	): IEMailTemplate {
 		$emailTemplate = $this->mailer->createEMailTemplate('circles.ExistingShareNotification', []);
 		$emailTemplate->addHeader();
@@ -174,7 +174,7 @@ class SendMailService {
 		IEMailTemplate $emailTemplate,
 		string $author,
 		string $recipient,
-		bool $multiple = false
+		bool $multiple = false,
 	) {
 		if ($multiple) {
 			$subject = $this->l10n->t('%s shared multiple files with you.', [$author]);
@@ -209,7 +209,7 @@ class SendMailService {
 		Circle $circle,
 		string $author,
 		string $email,
-		string $password
+		string $password,
 	): void {
 		if (!$this->configService->sendPasswordByMail($circle) || $password === '') {
 			return;

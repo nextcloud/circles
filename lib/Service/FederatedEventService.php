@@ -110,7 +110,7 @@ class FederatedEventService extends NCSignature {
 		RemoteUpstreamService $remoteUpstreamService,
 		EventService $eventService,
 		InterfaceService $interfaceService,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		$this->eventWrapperRequest = $eventWrapperRequest;
 		$this->remoteRequest = $remoteRequest;
@@ -142,7 +142,7 @@ class FederatedEventService extends NCSignature {
 	 */
 	public function newEvent(FederatedEvent $event): array {
 		$event->setOrigin($this->interfaceService->getLocalInstance())
-			  ->resetData();
+			->resetData();
 
 		$federatedItem = $this->getFederatedItem($event, false);
 		$this->confirmInitiator($event, true);
@@ -304,7 +304,7 @@ class FederatedEventService extends NCSignature {
 	private function confirmRequiredCondition(
 		FederatedEvent $event,
 		IFederatedItem $item,
-		bool $checkLocalOnly = true
+		bool $checkLocalOnly = true,
 	) {
 		if (!$event->canBypass(FederatedEvent::BYPASS_CIRCLE) && !$event->hasCircle()) {
 			throw new FederatedEventException('FederatedEvent has no Circle linked');

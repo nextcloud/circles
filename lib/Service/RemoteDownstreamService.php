@@ -74,7 +74,7 @@ class RemoteDownstreamService {
 		MemberRequest $memberRequest,
 		FederatedEventService $federatedEventService,
 		RemoteService $remoteService,
-		ConfigService $configService
+		ConfigService $configService,
 	) {
 		$this->setup('app', 'circles');
 
@@ -227,7 +227,7 @@ class RemoteDownstreamService {
 		try {
 			$probe = new CircleProbe();
 			$probe->includeSystemCircles()
-				  ->includePersonalCircles();
+				->includePersonalCircles();
 			$localCircle = $this->circleRequest->getCircle($circle->getSingleId(), null, $probe);
 		} catch (CircleNotFoundException $e) {
 			try {
@@ -258,7 +258,7 @@ class RemoteDownstreamService {
 	/**
 	 * @param FederatedEvent $event
 	 * @param bool $full
-	 * // TODO: Check IFederatedItemMember*
+	 *                   // TODO: Check IFederatedItemMember*
 	 *
 	 * @throws FederatedEventDSyncException
 	 */

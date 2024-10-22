@@ -48,7 +48,7 @@ class SearchService {
 	 */
 	public function __construct(
 		IURLGenerator $urlGenerator,
-		CircleService $circleService
+		CircleService $circleService,
 	) {
 		$this->urlGenerator = $urlGenerator;
 		$this->circleService = $circleService;
@@ -131,7 +131,7 @@ class SearchService {
 		}
 
 		$probe->filterHiddenCircles()
-			  ->filterBackendCircles();
+			->filterBackendCircles();
 
 		$circle = new Circle();
 		$circle->setDisplayName($term);
