@@ -88,6 +88,7 @@ OC.L10N.register(
     "Building Local Database" : "Creschende sa base de datos locale",
     "Testing Basic Circle Creation" : " Proa de creatzione de giru de base",
     "Adding local users and moderators" : "Agiunta de utentes locales e persones chi moderent",
+    "Create a new team" : "Crea un'iscuadra noa",
     "Files" : "Archìvios",
     "This feature is not available for personal circles" : "Sa funtzionalidade no est a disponimentu pro giros personales",
     "This member is not a moderator" : "Custa persone no est chie mòderat",
@@ -100,6 +101,7 @@ OC.L10N.register(
     "Refuse" : "Refuda",
     "%s" : "%s",
     "%s owned by %s" : "%s de propiedade de %s",
+    "You have no permission to create a new team" : "Non tenes permissu pro creare un'iscuadra noa",
     "%s shared a file with \"%s\"." : "%s at cumpartzidu un'archìviu cun \"%s\".",
     "%s shared a file with you." : "%s at cumpartzidu un'archìviu cun tegus.",
     "Bring cloud-users closer together." : "Acosta impare a is utentes de sa nue.",
@@ -146,6 +148,7 @@ OC.L10N.register(
     "now" : "immoe",
     "Email format is not valid" : "Su formadu de s'indiritzu de posta no est vàlidu",
     "This contact is not available" : "Custu cuntatu no est a disponimentu",
+    "You have no permission to create a new circle" : "Non tenes permissu pro creare unu tzìrculu nou",
     "This item is already shared with this circle" : "Custu elementu est giai istadu cumpartzidu cun custu giru"
 },
 "nplurals=2; plural=(n != 1);");
