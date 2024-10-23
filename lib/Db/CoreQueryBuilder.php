@@ -100,7 +100,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 				self::OPTIONS => [
 					'getData' => true
 				],
-				self::OWNER,
+				//self::OWNER,
 				self::MEMBERSHIPS => [
 					self::CONFIG
 				],
@@ -136,7 +136,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 				]
 			],
 			self::INVITED_BY => [
-				self::OWNER,
+				//self::OWNER,
 				self::BASED_ON
 			]
 		],
