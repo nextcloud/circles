@@ -186,8 +186,8 @@ class Circles {
 	public static function detailsCircle(string $circleUniqueId, bool $forceAll = false): Circle {
 		/** @var FederatedUserService $federatedUserService */
 		$federatedUserService = \OC::$server->get(FederatedUserService::class);
-		if ($forceAll) {
-			$federatedUserService->bypassCurrentUserCondition($forceAll);
+		if ($forceAll || \OC::$CLI) {
+			$federatedUserService->bypassCurrentUserCondition(true);
 		} else {
 			$federatedUserService->initCurrentUser();
 		}
