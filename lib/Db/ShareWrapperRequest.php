@@ -64,7 +64,8 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		$password = '';
 
 		$qb = $this->getShareInsertSql();
-		$qb->setValue('share_type', $qb->createNamedParameter($share->getShareType()))
+		$qb->setValue('attributes', $qb->createNamedParameter($this->formatShareAttributes($share->getAttributes())))
+			->setValue('share_type', $qb->createNamedParameter($share->getShareType()))
 			->setValue('item_type', $qb->createNamedParameter($share->getNodeType()))
 			->setValue('item_source', $qb->createNamedParameter($share->getNodeId()))
 			->setValue('file_source', $qb->createNamedParameter($share->getNodeId()))
@@ -538,7 +539,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 			$compressedAttributes[] = [
 				$attribute['scope'],
 				$attribute['key'],
-				$attribute['enabled']
+				$attribute['value']
 			];
 		}
 
