@@ -516,6 +516,8 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 			 ->setToken($this->get('token', $data))
 			 ->setShareTime($shareTime);
 
+		$this->importAttributesFromDatabase($this->get('attributes', $data));
+
 		try {
 			$this->setExpirationDate(new DateTime($this->get('expiration', $data)));
 		} catch (\Exception $e) {
@@ -628,7 +630,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 			'shareType' => $this->getShareType(),
 			'providerId' => $this->getProviderId(),
 			'permissions' => $this->getPermissions(),
-			'attributes' => $this->getAttributes(),
+			'attributes' => json_encode($this->getAttributes()->toArray()),
 			'hideDownload' => $this->getHideDownload(),
 			'itemType' => $this->getItemType(),
 			'itemSource' => $this->getItemSource(),
