@@ -123,6 +123,7 @@ OC.L10N.register(
     "%s (Team owned by %s)" : "%s (Zespół należący do %s)",
     "Accept" : "Akceptuj",
     "Refuse" : "Odrzuć",
+    "Leave the team" : "Opuść zespół",
     "%s" : "%s",
     "Personal team" : "Zespół osobisty",
     "%s owned by %s" : "%s należący do %s",
