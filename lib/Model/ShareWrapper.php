@@ -592,7 +592,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 			'shareType' => $this->getShareType(),
 			'providerId' => $this->getProviderId(),
 			'permissions' => $this->getPermissions(),
-			'attributes' => json_encode($this->getAttributes()->toArray()),
+			'attributes' => ($this->getAttributes() !== null) ? json_encode($this->getAttributes()->toArray()) : null,
 			'hideDownload' => $this->getHideDownload(),
 			'itemType' => $this->getItemType(),
 			'itemSource' => $this->getItemSource(),
