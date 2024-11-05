@@ -14,7 +14,7 @@ OC.L10N.register(
     "Email address" : "E-pasta adrese",
     "Contact" : "Kontakts",
     "Circle" : "Loks",
-    "Admin" : "Admin",
+    "Admin" : "Pārvaldītājs",
     "Owner" : "Īpašnieks",
     "Open »%s«" : "Atvērt »%s«",
     "Files" : "Datnes",
