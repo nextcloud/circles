@@ -25,8 +25,10 @@
 		<UndefinedClass>
 			<errorLevel type="suppress">
 				<referencedClass name="OC" />
+				<referencedClass name="OC\DB\Exceptions\DbalException" />
 				<referencedClass name="Doctrine\DBAL\Schema\SchemaException" />
 				<referencedClass name="OCA\Files\App" />
+				<referencedClass name="OCA\Files_Sharing\External\Manager" />
 				<referencedClass name="OCP\Accounts\UserUpdatedEvent" />
 				<referencedClass name="OCA\Files\Event\LoadAdditionalScriptsEvent" />
 				<referencedClass name="OC\Share20\ShareAttributes" />
@@ -44,5 +46,10 @@
 				<referencedClass name="Doctrine\DBAL\Schema\Table" />
 			</errorLevel>
 		</UndefinedDocblockClass>
+		<InvalidThrow>
+			<errorLevel type="suppress">
+				<referencedClass name="OC\DB\Exceptions\DbalException" />
+			</errorLevel>
+		</InvalidThrow>
 	</issueHandlers>
 </psalm>

@@ -83,7 +83,7 @@ class MountRequest extends MountRequestBuilder {
 		$qb = $this->getMountSelectSql();
 		$qb->setOptions([CoreQueryBuilder::MOUNT], ['getData' => true]);
 		$qb->leftJoinMember(CoreQueryBuilder::MOUNT);
-		$qb->leftJoinMountpoint(CoreQueryBuilder::MOUNT);
+		$qb->leftJoinMountpoint(CoreQueryBuilder::MOUNT, $federatedUser);
 		$qb->limitToInitiator(CoreQueryBuilder::MOUNT, $federatedUser, 'circle_id');
 
 		return $this->getItemsFromRequest($qb);
