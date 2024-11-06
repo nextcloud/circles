@@ -13,6 +13,7 @@ namespace OCA\Circles\MountManager;
 
 use OCA\Circles\Db\GSSharesRequest;
 use OCA\Circles\Model\GlobalScale\GSShareMountpoint;
+use OCA\Files_Sharing\External\Manager;
 use OCP\Share\Exceptions\ShareNotFound;
 
 /**
@@ -20,7 +21,7 @@ use OCP\Share\Exceptions\ShareNotFound;
  * @deprecated
  * @package OCA\Circles\MountManager
  */
-class CircleMountManager {
+class CircleMountManager extends Manager {
 	/** @var string */
 	private $userId;
 
@@ -33,6 +34,8 @@ class CircleMountManager {
 	 *
 	 * @param string $userId
 	 * @param GSSharesRequest $gsSharesRequest
+	 *
+	 * @noinspection PhpMissingParentConstructorInspection
 	 */
 	public function __construct($userId, GSSharesRequest $gsSharesRequest) {
 		$this->userId = $userId;
@@ -75,7 +78,7 @@ class CircleMountManager {
 	}
 
 	// TODO: implement !
-	public function removeShare($mountPoint) {
+	public function removeShare($mountPoint): bool {
 	}
 
 	// TODO: implement !
