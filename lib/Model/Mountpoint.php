@@ -39,112 +39,61 @@ use JsonSerializable;
  *
  * @package OCA\Circles\Model
  */
-class Mountpoint implements JsonSerializable {
+class Mountpoint implements IQueryRow, JsonSerializable {
 	use TArrayTools;
 
-
-	/** @var int */
-	private $shareId = 0;
-
-	/** @var string */
-	private $userId = '';
-
-	/** @var string */
-	private $mountPoint = '';
-
-
-	/**
-	 * GSShareMountpoint constructor.
-	 *
-	 * @param int $shareId
-	 * @param string $userId
-	 * @param string $mountPoint
-	 */
-	public function __construct(int $shareId = 0, string $userId = '', string $mountPoint = '') {
-		$this->shareId = $shareId;
-		$this->userId = $userId;
-		$this->mountPoint = $mountPoint;
+	public function __construct(
+		private string $mountId = '',
+		private string $singleId = '',
+		private string $mountPoint = '',
+	) {
 	}
 
-
-	/**
-	 * @return string
-	 */
-	public function getUserId(): string {
-		return $this->userId;
+	public function getMountId(): string {
+		return $this->mountId;
 	}
 
-	/**
-	 * @param string $userId
-	 *
-	 * @return Mountpoint
-	 */
-	public function setUserId(string $userId): self {
-		$this->userId = $userId;
+	public function setMountId(string $mountId): self {
+		$this->mountId = $mountId;
 
 		return $this;
 	}
 
-
-	/**
-	 * @return int
-	 */
-	public function getShareId(): int {
-		return $this->shareId;
+	public function getSingleId(): string {
+		return $this->singleId;
 	}
 
-	/**
-	 * @param int $shareId
-	 *
-	 * @return $this
-	 */
-	public function setShareId(int $shareId): self {
-		$this->shareId = $shareId;
+	public function setSingleId(string $singleId): self {
+		$this->singleId = $singleId;
 
 		return $this;
 	}
 
-
-	/**
-	 * @return string
-	 */
 	public function getMountPoint(): string {
 		return $this->mountPoint;
 	}
-
-	/**
-	 * @param string $mountPoint
-	 *
-	 * @return Mountpoint
-	 */
 	public function setMountPoint(string $mountPoint): self {
 		$this->mountPoint = $mountPoint;
 
 		return $this;
 	}
 
+	public function importFromDatabase(array $data, string $prefix = ''): IQueryRow {
+		if ($this->get($prefix . 'mountpoint', $data) === '') {
+			throw new MountPointNotFoundException();
+		}
 
-	/**
-	 * @param array $data
-	 *
-	 * @return Mountpoint
-	 */
-	public function importFromDatabase(array $data): self {
-		$this->setShareId($this->getInt('share_id', $data));
-		$this->setUserId($this->get('user_id', $data));
-		$this->setMountPoint($this->get('mountpoint', $data));
+		$this->setMountId($this->get($prefix . 'mount_id', $data));
+		$this->setSingleId($this->get($prefix . 'single_id', $data));
+		$this->setMountPoint($this->get($prefix . 'mountpoint', $data));
 
 		return $this;
 	}
 
-
-	/**
-	 * @return array
-	 */
 	public function jsonSerialize(): array {
 		return [
-			'userId' => $this->getUserId(),
-			'shareId' => $this->getShareId(),
+			'mountId' => $this->getMountId(),
+			'singleId' => $this->getSingleId(),
 			'mountPoint' => $this->getMountPoint(),
 		];
 	}

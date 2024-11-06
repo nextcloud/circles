@@ -42,6 +42,7 @@ use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\FileCacheNotFoundException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\MembershipNotFoundException;
+use OCA\Circles\Exceptions\MountPointNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
@@ -482,7 +483,7 @@ class ModelManager {
 					$member = new Member();
 					$member->importFromDatabase($data, $prefix);
 					$mount->setOwner($member);
-				} catch (MemberNotFoundException $e) {
+				} catch (MemberNotFoundException) {
 				}
 				break;
 
@@ -491,7 +492,16 @@ class ModelManager {
 					$initiator = new Member();
 					$initiator->importFromDatabase($data, $prefix);
 					$mount->setInitiator($initiator);
-				} catch (MemberNotFoundException $e) {
+				} catch (MemberNotFoundException) {
+				}
+				break;
+
+			case CoreQueryBuilder::MOUNTPOINT:
+				try {
+					$mountPoint = new Mountpoint();
+					$mountPoint->importFromDatabase($data, $prefix);
+					$mount->setAlternateMountPoint($mountPoint);
+				} catch (MountPointNotFoundException) {
 				}
 				break;
 		}

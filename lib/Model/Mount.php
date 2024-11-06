@@ -182,43 +182,59 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 	 * @return string
 	 */
 	public function getMountPoint(bool $raw = true): string {
+		$mountPoint = $this->getAlternateMountPoint()?->getMountPoint() ?? $this->getOriginalMountPoint();
 		if ($raw) {
-			return $this->mountPoint;
+			return $mountPoint;
 		}
 
-		return '/' . $this->getInitiator()->getUserId() . '/files/' . ltrim($this->mountPoint, '/');
+		return '/' . $this->getInitiator()->getUserId() . '/files/' . ltrim($mountPoint, '/');
 	}
-
-	/**
-	 * @param string $mountPoint
-	 *
-	 * @return Mount
-	 */
-	public function setMountPoint(string $mountPoint): self {
-		$this->mountPoint = $mountPoint;
-
-		return $this;
-	}
-
 
 	/**
 	 * @return string
 	 */
-	public function getMountPointHash(): string {
-		return $this->mountPointHash;
+	public function getOriginalMountPoint(): string {
+		return $this->originalMountPoint;
 	}
 
 	/**
-	 * @param string $mountPointHash
+	 * @param string $originalMountPoint
 	 *
 	 * @return Mount
 	 */
-	public function setMountPointHash(string $mountPointHash): self {
-		$this->mountPointHash = $mountPointHash;
+	public function setOriginalMountPoint(string $originalMountPoint): self {
+		$this->originalMountPoint = $originalMountPoint;
 
 		return $this;
 	}
 
+	/**
+	 * @return string
+	 */
+	public function getOriginalMountPointHash(): string {
+		return $this->originalMountPointHash;
+	}
+
+	/**
+	 * @param string $originalMountPointHash
+	 *
+	 * @return Mount
+	 */
+	public function setOriginalMountPointHash(string $originalMountPointHash): self {
+		$this->originalMountPointHash = $originalMountPointHash;
+
+		return $this;
+	}
+
+	public function setAlternateMountPoint(Mountpoint $mountPoint): self {
+		$this->alternateMountPoint = $mountPoint;
+
+		return $this;
+	}
+
+	public function getAlternateMountPoint(): ?Mountpoint {
+		return $this->alternateMountPoint;
+	}
 
 	/**
 	 * @return int
@@ -437,8 +453,8 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 		$this->setOwner($wrappedShare->getOwner());
 		$this->setToken($wrappedShare->getToken());
 		$this->setParent(-1);
-		$this->setMountPoint($wrappedShare->getFileTarget());
-		$this->setMountPointHash(md5($wrappedShare->getFileTarget()));
+		$this->setOriginalMountPoint($wrappedShare->getFileTarget());
+		$this->setOriginalMountPointHash(md5($wrappedShare->getFileTarget()));
 	}
 
 
@@ -486,8 +502,9 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 			'owner' => $this->getOwner(),
 			'token' => $this->getToken(),
 			'password' => $this->getPassword(),
-			'mountPoint' => $this->getMountPoint(),
-			'mountPointHash' => $this->getMountPointHash(),
+			'originalMountPoint' => $this->getOriginalMountPoint(),
+			'originalMountPointHash' => $this->getOriginalMountPointHash(),
+			'alternateMountPoint' => $this->getAlternateMountPoint()
 		];
 
 		if ($this->hasInitiator()) {

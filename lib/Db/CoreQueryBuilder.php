@@ -1584,7 +1584,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 	 *
 	 * @throws RequestBuilderException
 	 */
-	public function leftJoinMountpoint(string $aliasMount, string $aliasMountMemberships = '') {
+	public function leftJoinMountpoint(string $aliasMount, IFederatedUser $federatedUser, string $aliasMountMemberships = '') {
 		$expr = $this->expr();
 
 		$aliasMountpoint = $this->generateAlias($aliasMount, self::MOUNTPOINT);
@@ -1596,7 +1596,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			$aliasMountMemberships, CoreRequestBuilder::TABLE_MOUNTPOINT, $aliasMountpoint,
 			$expr->andX(
 				$expr->eq($aliasMountpoint . '.mount_id', $aliasMount . '.mount_id'),
-				$expr->eq($aliasMountpoint . '.single_id', $aliasMountMemberships . '.single_id')
+				$expr->eq($aliasMountpoint . '.single_id', $this->createNamedParameter($federatedUser->getSingleId()))
 			)
 		);
 

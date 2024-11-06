@@ -424,6 +424,13 @@
       <code>self</code>
     </LessSpecificImplementedReturnType>
   </file>
+  <file src="lib/Model/Mount.php">
+    <MissingDependency>
+      <code><![CDATA[OCA\Files_Sharing\External\Manager]]></code>
+      <code><![CDATA[CircleMountManager]]></code>
+      <code><![CDATA[CircleMountManager]]></code>
+    </MissingDependency>
+  </file>
   <file src="lib/Model/Probes/BasicProbe.php">
     <InvalidReturnType occurrences="1">
       <code>$this</code>
@@ -467,6 +474,11 @@
     <UndefinedClass occurrences="1">
       <code>MoveableMount</code>
     </UndefinedClass>
+  </file>
+  <file src="lib/MountManager/CircleMountManager.php">
+    <MissingDependency>
+      <code><![CDATA[OCA\Files_Sharing\External\Manager]]></code>
+    </MissingDependency>
   </file>
   <file src="lib/MountManager/CircleMountProvider.php">
     <MissingDependency occurrences="1">
