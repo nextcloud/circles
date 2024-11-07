@@ -350,9 +350,6 @@ class MembershipService {
 			if (!in_array($item->getCircleId(), $circleIds)) {
 				$deprecated[] = $item;
 				$this->membershipRequest->delete($item);
-
-				// clearing the getSharedWith() cache for singleId related to the membership
-				$this->shareWrapperService->clearCache($item->getSingleId());
 			}
 		}
 
@@ -382,9 +379,6 @@ class MembershipService {
 				$this->membershipRequest->insert($membership);
 				$new[] = $membership;
 			}
-
-			// clearing the getSharedWith() cache for singleId related to the membership
-			$this->shareWrapperService->clearCache($membership->getSingleId());
 		}
 
 		return $new;
