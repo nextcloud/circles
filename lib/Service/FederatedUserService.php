@@ -74,7 +74,7 @@ class FederatedUserService {
 
 
 	public const CACHE_SINGLE_CIRCLE = 'circles/singleCircle';
-	public const CACHE_SINGLE_CIRCLE_TTL = 900;
+	public const CACHE_SINGLE_CIRCLE_TTL = 604800; // one week
 
 	public const CONFLICT_001 = 1;
 	public const CONFLICT_002 = 2;
