@@ -1307,8 +1307,8 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			->leftJoin(
 				$alias, CoreRequestBuilder::TABLE_MEMBER, $aliasInitiator,
 				$expr->andX(
-					$expr->eq($aliasInitiator . '.circle_id', $helperAlias . '.' . $field),
-					$this->exprLimitInt('level', Member::LEVEL_OWNER, $aliasInitiator)
+					$expr->eq($aliasInitiator . '.circle_id', $alias . '.unique_id'),
+					$expr->eq($aliasInitiator . '.' . $field, $helperAlias . '.inheritance_first'),
 				)
 			);
 		//
