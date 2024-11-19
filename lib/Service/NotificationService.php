@@ -81,13 +81,13 @@ class NotificationService {
 		);
 
 		$declineAction = $notification->createAction();
-		$declineUrl = $this->linkToOCS('circles.Local.circleLeave', ['circleId' => $member->getCircleId()]);
+		$declineUrl = $this->urlGenerator->linkToOCSRouteAbsolute('circles.Local.circleLeave', ['circleId' => $member->getCircleId()]);
 		$declineAction->setLabel('refuse')
 			->setLink($declineUrl, 'PUT');
 		$notification->addAction($declineAction);
 
 		$acceptAction = $notification->createAction();
-		$acceptUrl = $this->linkToOCS('circles.Local.circleJoin', ['circleId' => $member->getCircleId()]);
+		$acceptUrl = $this->urlGenerator->linkToOCSRouteAbsolute('circles.Local.circleJoin', ['circleId' => $member->getCircleId()]);
 		$acceptAction->setLabel('accept')
 			->setLink($acceptUrl, 'PUT');
 		$notification->addAction($acceptAction);
@@ -126,7 +126,7 @@ class NotificationService {
 			);
 
 			$declineAction = $notification->createAction();
-			$declineUrl = $this->linkToOCS(
+			$declineUrl = $this->urlGenerator->linkToOCSRouteAbsolute(
 				'circles.Local.memberRemove',
 				[
 					'circleId' => $member->getCircleId(),
@@ -138,7 +138,7 @@ class NotificationService {
 			$notification->addAction($declineAction);
 
 			$acceptAction = $notification->createAction();
-			$acceptUrl = $this->linkToOCS(
+			$acceptUrl = $this->urlGenerator->linkToOCSRouteAbsolute(
 				'circles.Local.memberConfirm',
 				[
 					'circleId' => $member->getCircleId(),
@@ -191,19 +191,6 @@ class NotificationService {
 			->setSubject($subject);
 
 		return $notification;
-	}
-
-
-	/**
-	 * @param string $route
-	 * @param array $params
-	 *
-	 * @return string
-	 */
-	private function linkToOCS(string $route, array $params = []): string {
-		$absolute = $this->urlGenerator->linkToOCSRouteAbsolute($route, $params);
-
-		return parse_url($absolute, PHP_URL_PATH);
 	}
 
 	public function markInvitationAsProcessed(Member $member): void {
