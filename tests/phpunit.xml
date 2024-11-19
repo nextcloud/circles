@@ -1,20 +1,15 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<phpunit bootstrap="bootstrap.php" convertDeprecationsToExceptions="true">
-	<testsuite name="circles">
-		<directory suffix='Test.php'>.</directory>
-	</testsuite>
-	<filter>
-		<whitelist>
-			<directory suffix=".php">../appinfo</directory>
-			<directory suffix=".php">../lib</directory>
-		</whitelist>
-	</filter>
-	<logging>
-		<log type="coverage-clover" target="clover.xml"/>
-		<!--<log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>-->
-	</logging>
-	<listeners>
-		<listener class="OCA\Circles\Tests\Env" file="TestSuiteListener.php"/>
-	</listeners>
-
+<?xml version="1.0" encoding="utf-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="bootstrap.php" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd" cacheDirectory=".phpunit.cache">
+  <testsuite name="circles">
+    <directory suffix="Test.php">.</directory>
+  </testsuite>
+  <logging>
+    <!--<log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>-->
+  </logging>
+  <source>
+    <include>
+      <directory suffix=".php">../appinfo</directory>
+      <directory suffix=".php">../lib</directory>
+    </include>
+  </source>
 </phpunit>
