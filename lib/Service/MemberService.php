@@ -212,7 +212,7 @@ class MemberService {
 	 * @throws InvalidIdException
 	 * @throws SingleCircleNotFoundException
 	 */
-	public function addMember(string $circleId, FederatedUser $federatedUser): array {
+	public function addMember(string $circleId, FederatedUser $federatedUser, bool $forceSync = false): array {
 		$this->federatedUserService->mustHaveCurrentUser();
 		$circle = $this->circleRequest->getCircle($circleId, $this->federatedUserService->getCurrentUser());
 
@@ -224,6 +224,7 @@ class MemberService {
 		$event = new FederatedEvent(SingleMemberAdd::class);
 		$event->setCircle($circle);
 		$event->setMember($member);
+		$event->forceSync($forceSync);
 
 		$this->federatedEventService->newEvent($event);
 
@@ -281,6 +282,7 @@ class MemberService {
 
 	/**
 	 * @param string $memberId
+	 * @param bool $forceSync
 	 *
 	 * @return array
 	 * @throws FederatedEventException
@@ -294,7 +296,7 @@ class MemberService {
 	 * @throws UnknownRemoteException
 	 * @throws RequestBuilderException
 	 */
-	public function removeMember(string $memberId): array {
+	public function removeMember(string $memberId, bool $forceSync = false): array {
 		$this->federatedUserService->mustHaveCurrentUser();
 		$member = $this->memberRequest->getMemberById(
 			$memberId,
@@ -304,6 +306,7 @@ class MemberService {
 		$event = new FederatedEvent(MemberRemove::class);
 		$event->setCircle($member->getCircle());
 		$event->setMember($member);
+		$event->forceSync($forceSync);
 
 		$this->federatedEventService->newEvent($event);
 
