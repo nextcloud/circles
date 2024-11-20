@@ -89,6 +89,7 @@ class CirclesManager {
 	/** @var CirclesQueryHelper */
 	private $circlesQueryHelper;
 
+	private bool $forceSync = false;
 
 	/**
 	 * CirclesManager constructor.
@@ -172,7 +173,8 @@ class CirclesManager {
 	 * @throws InvalidIdException
 	 * @throws FederatedUserException
 	 */
-	public function startSession(?FederatedUser $federatedUser = null): void {
+	public function startSession(?FederatedUser $federatedUser = null, bool $forceSync = false): void {
+		$this->forceSync = $forceSync;
 		if (is_null($federatedUser)) {
 			$this->federatedUserService->initCurrentUser();
 		} else {
@@ -183,7 +185,8 @@ class CirclesManager {
 	/**
 	 *
 	 */
-	public function startSuperSession(): void {
+	public function startSuperSession(bool $forceSync = false): void {
+		$this->forceSync = $forceSync;
 		$this->federatedUserService->unsetCurrentUser();
 		$this->federatedUserService->bypassCurrentUserCondition(true);
 	}
@@ -244,6 +247,7 @@ class CirclesManager {
 	public function stopSession(): void {
 		$this->federatedUserService->unsetCurrentUser();
 		$this->federatedUserService->bypassCurrentUserCondition(false);
+		$this->forceSync = false;
 	}
 
 
@@ -318,7 +322,7 @@ class CirclesManager {
 	 * @throws UnknownRemoteException
 	 */
 	public function destroyCircle(string $singleId): void {
-		$this->circleService->destroy($singleId);
+		$this->circleService->destroy($singleId, $this->forceSync);
 	}
 
 
@@ -446,7 +450,7 @@ class CirclesManager {
 	 * @throws UnknownRemoteException
 	 */
 	public function addMember(string $circleId, FederatedUser $federatedUser): Member {
-		$outcome = $this->memberService->addMember($circleId, $federatedUser);
+		$outcome = $this->memberService->addMember($circleId, $federatedUser, $this->forceSync);
 		$member = new Member();
 		$member->import($outcome);
 
@@ -495,7 +499,7 @@ class CirclesManager {
 	 * @throws UnknownRemoteException
 	 */
 	public function removeMember(string $memberId): void {
-		$this->memberService->removeMember($memberId);
+		$this->memberService->removeMember($memberId, $this->forceSync);
 	}
 
 
