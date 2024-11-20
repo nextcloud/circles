@@ -94,6 +94,8 @@ class FederatedEvent implements JsonSerializable {
 	/** @var int */
 	private $bypass = 0;
 
+	private bool $forceSync = false;
+
 
 	/**
 	 * FederatedEvent constructor.
@@ -550,6 +552,15 @@ class FederatedEvent implements JsonSerializable {
 	 */
 	public function canBypass(int $flag): bool {
 		return (($this->bypass & $flag) !== 0);
+	}
+
+	public function forceSync(bool $forceSync): self {
+		$this->forceSync = $forceSync;
+		return $this;
+	}
+
+	public function isForceSync(): bool {
+		return $this->forceSync;
 	}
 
 
