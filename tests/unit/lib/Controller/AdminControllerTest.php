@@ -125,7 +125,7 @@ class AdminControllerTest extends TestCase {
 		$this->assertEquals($response, $this->adminController->circles('an-user-id', $limit, $offset));
 	}
 
-	public function dataForCirclesList(): array {
+	public static function dataForCirclesList(): array {
 		return [
 			[-1, 0],
 			[1, 1]
