@@ -134,7 +134,7 @@ class LocalControllerTest extends TestCase {
 		$this->assertEquals($response, $this->localController->circles($limit, $offset));
 	}
 
-	public function dataForCirclesList(): array {
+	public static function dataForCirclesList(): array {
 		return [
 			[-1, 0],
 			[1, 1]

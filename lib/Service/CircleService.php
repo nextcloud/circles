@@ -241,6 +241,7 @@ class CircleService {
 
 	/**
 	 * @param string $circleId
+	 * @param bool $forceSync
 	 *
 	 * @return array
 	 * @throws CircleNotFoundException
@@ -255,13 +256,14 @@ class CircleService {
 	 * @throws RequestBuilderException
 	 * @throws UnknownRemoteException
 	 */
-	public function destroy(string $circleId): array {
+	public function destroy(string $circleId, bool $forceSync = false): array {
 		$this->federatedUserService->mustHaveCurrentUser();
 
 		$circle = $this->getCircle($circleId);
 
 		$event = new FederatedEvent(CircleDestroy::class);
 		$event->setCircle($circle);
+		$event->forceSync($forceSync);
 		$this->federatedEventService->newEvent($event);
 
 		return $event->getOutcome();
