@@ -364,7 +364,7 @@ class FederatedEventService extends NCSignature {
 	 * @param IFederatedItem $item
 	 */
 	private function configureEvent(FederatedEvent $event, IFederatedItem $item) {
-		if ($item instanceof IFederatedItemAsyncProcess) {
+		if ($item instanceof IFederatedItemAsyncProcess && !$event->isForceSync()) {
 			$event->setAsync(true);
 		}
 		if ($item instanceof IFederatedItemLimitedToInstanceWithMembership) {
