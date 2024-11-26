@@ -129,4 +129,22 @@ class EventWrapperRequest extends EventWrapperRequestBuilder {
 
 		return $this->getItemsFromRequest($qb);
 	}
+
+	/**
+	 * delete completed entries older than a month
+	 *
+	 * @param bool $allOldEntries delete also not-completed entries
+	 */
+	public function deleteOldEntries(bool $allOldEntries = false): void {
+		$qb = $this->getEventWrapperDeleteSql();
+		$qb->where(
+			$qb->exprLimitInt('status', EventWrapper::STATUS_OVER),
+			$qb->exprLt('creation', time() - 30 * 86400)
+		);
+		if (!$allOldEntries) {
+			$qb->andWhere($qb->exprLimitInt('status', EventWrapper::STATUS_OVER));
+		}
+
+		$qb->executeStatement();
+	}
 }
