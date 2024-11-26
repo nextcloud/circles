@@ -54,19 +54,21 @@ class MaintenanceService {
 	private ?OutputInterface $output = null;
 
 	public function __construct(
-		IUserManager $userManager,
-		IGroupManager $groupManager,
-		CircleRequest $circleRequest,
-		AccountsRequest $accountRequest,
-		MemberRequest $memberRequest,
-		ShareWrapperRequest $shareWrapperRequest,
-		SyncService $syncService,
-		FederatedUserService $federatedUserService,
-		ShareWrapperService $shareWrapperService,
-		MembershipService $membershipService,
-		EventWrapperService $eventWrapperService,
-		CircleService $circleService,
-		ConfigService $configService
+		private IUserManager $userManager,
+		private IGroupManager $groupManager,
+		private CircleRequest $circleRequest,
+		private AccountsRequest $accountRequest,
+		private MemberRequest $memberRequest,
+		private ShareWrapperRequest $shareWrapperRequest,
+		private EventWrapperRequest $eventWrapperRequest,
+		private SyncService $syncService,
+		private FederatedUserService $federatedUserService,
+		private ShareWrapperService $shareWrapperService,
+		private MembershipService $membershipService,
+		private EventWrapperService $eventWrapperService,
+		private CircleService $circleService,
+		private ConfigService $configService,
+		private LoggerInterface $logger,
 	) {
 	}
 
