@@ -35,6 +35,7 @@ use Exception;
 use OC\User\NoUserException;
 use OCA\Circles\Db\AccountsRequest;
 use OCA\Circles\Db\CircleRequest;
+use OCA\Circles\Db\EventWrapperRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\ShareWrapperRequest;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
@@ -49,6 +50,7 @@ use OCA\Circles\Tools\Model\SimpleDataStore;
 use OCA\Circles\Tools\Traits\TNCLogger;
 use OCP\IGroupManager;
 use OCP\IUserManager;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -60,7 +62,6 @@ class MaintenanceService {
 	use TNCLogger;
 
 	public const TIMEOUT = 18000;
-
 	public static $DELAY =
 		[
 			1 => 60,    // every minute
@@ -70,66 +71,8 @@ class MaintenanceService {
 			5 => 432000 // evey week
 		];
 
+	private ?OutputInterface $output = null;
 
-	/** @var IUserManager */
-	private $userManager;
-
-	/** @var IGroupManager */
-	private $groupManager;
-
-	/** @var AccountsRequest */
-	private $accountRequest;
-
-	/** @var CircleRequest */
-	private $circleRequest;
-
-	/** @var MemberRequest */
-	private $memberRequest;
-
-	/** @var ShareWrapperRequest */
-	private $shareWrapperRequest;
-
-	/** @var SyncService */
-	private $syncService;
-
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	private ShareWrapperService $shareWrapperService;
-
-	/** @var MembershipService */
-	private $membershipService;
-
-	/** @var EventWrapperService */
-	private $eventWrapperService;
-
-	/** @var CircleService */
-	private $circleService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
-	/** @var OutputInterface */
-	private $output;
-
-
-	/**
-	 * MaintenanceService constructor.
-	 *
-	 * @param IUserManager $userManager
-	 * @param IGroupManager $groupManager
-	 * @param CircleRequest $circleRequest
-	 * @param MemberRequest $memberRequest
-	 * @param ShareWrapperRequest $shareWrapperRequest
-	 * @param SyncService $syncService
-	 * @param FederatedUserService $federatedUserService
-	 * @param ShareWrapperService $shareWrapperService
-	 * @param MembershipService $membershipService
-	 * @param EventWrapperService $eventWrapperService
-	 * @param CircleService $circleService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
 		IUserManager $userManager,
 		IGroupManager $groupManager,
@@ -145,19 +88,6 @@ class MaintenanceService {
 		CircleService $circleService,
 		ConfigService $configService
 	) {
-		$this->userManager = $userManager;
-		$this->groupManager = $groupManager;
-		$this->circleRequest = $circleRequest;
-		$this->accountRequest = $accountRequest;
-		$this->memberRequest = $memberRequest;
-		$this->shareWrapperRequest = $shareWrapperRequest;
-		$this->syncService = $syncService;
-		$this->federatedUserService = $federatedUserService;
-		$this->shareWrapperService = $shareWrapperService;
-		$this->eventWrapperService = $eventWrapperService;
-		$this->membershipService = $membershipService;
-		$this->circleService = $circleService;
-		$this->configService = $configService;
 	}
 
 
@@ -286,6 +216,13 @@ class MaintenanceService {
 			$this->output('Synchronizing local entities');
 			$this->syncService->sync();
 		} catch (Exception $e) {
+		}
+
+		try {
+			$this->output('Delete old and terminated FederatedEvents');
+			$this->eventWrapperRequest->deleteOldEntries(false);
+		} catch (Exception $e) {
+			$this->logger->warning('issue while deleting old events', ['exception' => $e]);
 		}
 	}
 
@@ -519,8 +456,6 @@ class MaintenanceService {
 	 * @param string $message
 	 */
 	private function output(string $message): void {
-		if (!is_null($this->output)) {
-			$this->output->writeln('- ' . $message);
-		}
+		$this->output?->writeln('- ' . $message);
 	}
 }
