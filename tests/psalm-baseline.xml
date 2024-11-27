@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.22.1@e9dad66e11274315dac27e08349c628c7d6a1a43">
+<files psalm-version="5.26.1@d747f6500b38ac4f7dfc5edbcae6e4b637d7add0">
   <file src="lib/Activity/ProviderParser.php">
     <TypeDoesNotContainType>
       <code><![CDATA[str_starts_with($sK, '_')]]></code>
@@ -221,6 +221,13 @@
       <code><![CDATA[self]]></code>
     </LessSpecificImplementedReturnType>
   </file>
+  <file src="lib/Model/Mount.php">
+    <MissingDependency>
+      <code><![CDATA[OCA\Files_Sharing\External\Manager]]></code>
+      <code><![CDATA[CircleMountManager]]></code>
+      <code><![CDATA[CircleMountManager]]></code>
+    </MissingDependency>
+  </file>
   <file src="lib/Model/Probes/BasicProbe.php">
     <InvalidReturnType>
       <code><![CDATA[$this]]></code>
@@ -229,7 +236,7 @@
   <file src="lib/Model/ShareWrapper.php">
     <InvalidArgument>
       <code><![CDATA[Cache::cacheEntryFromData($this->getFileCache()->toCache(), OC::$server->getMimeTypeLoader())]]></code>
-      <code><![CDATA[$this->setAttributes($attributes);]]></code>
+      <code><![CDATA[$this->setAttributes($attributes)]]></code>
     </InvalidArgument>
     <InvalidNullableReturnType>
       <code><![CDATA[Circle]]></code>
@@ -265,12 +272,15 @@
       <code><![CDATA[MoveableMount]]></code>
     </UndefinedClass>
   </file>
+  <file src="lib/MountManager/CircleMountManager.php">
+    <MissingDependency>
+      <code><![CDATA[OCA\Files_Sharing\External\Manager]]></code>
+    </MissingDependency>
+  </file>
   <file src="lib/MountManager/CircleMountProvider.php">
-    <InvalidConstantAssignmentValue>
-      <code><![CDATA[EXTERNAL_STORAGE = ExternalStorage::class]]></code>
-    </InvalidConstantAssignmentValue>
     <MissingDependency>
       <code><![CDATA[CircleMount]]></code>
+      <code><![CDATA[CircleMountManager]]></code>
     </MissingDependency>
     <UndefinedClass>
       <code><![CDATA[ExternalStorage]]></code>
@@ -393,15 +403,15 @@
     </TooManyArguments>
   </file>
   <file src="lib/Tools/Traits/TNCLogger.php">
-    <RedundantPropertyInitializationCheck>
-      <code><![CDATA[isset($this->logger)]]></code>
-    </RedundantPropertyInitializationCheck>
-    <RedundantCondition>
-      <code><![CDATA[isset($this->logger)]]></code>
-    </RedundantCondition>
     <UndefinedClass>
       <code><![CDATA[HintException]]></code>
     </UndefinedClass>
+    <RedundantCondition>
+      <code><![CDATA[$this->logger]]></code>
+    </RedundantCondition>
+    <RedundantPropertyInitializationCheck>
+      <code><![CDATA[isset($this->logger)]]></code>
+    </RedundantPropertyInitializationCheck>
   </file>
   <file src="lib/Tools/Traits/TNCRequest.php">
     <InvalidArgument>
