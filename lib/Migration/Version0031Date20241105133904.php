@@ -14,10 +14,13 @@ namespace OCA\Circles\Migration;
 use Closure;
 use Doctrine\DBAL\Schema\SchemaException;
 use OCP\DB\ISchemaWrapper;
+use OCP\Migration\Attributes\AddIndex;
+use OCP\Migration\Attributes\IndexType;
 use OCP\Migration\IOutput;
 use OCP\Migration\SimpleMigrationStep;
 use Psr\Log\LoggerInterface;
 
+#[AddIndex('circles_mountpoint', IndexType::UNIQUE, 'add uniqueness to mountpoint per user')]
 class Version0031Date20241105133904 extends SimpleMigrationStep {
 	public function __construct(
 		private LoggerInterface $logger,
@@ -30,7 +33,7 @@ class Version0031Date20241105133904 extends SimpleMigrationStep {
 
 		try {
 			$table = $schema->getTable('circles_mountpoint');
-			if (!$table->hasIndex('dname')) {
+			if (!$table->hasIndex('mp_sid_hash')) {
 				$table->addUniqueIndex(['single_id', 'mountpoint_hash'], 'mp_sid_hash');
 			}
 		} catch (SchemaException $e) {
