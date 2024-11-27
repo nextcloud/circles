@@ -285,7 +285,7 @@ class ProviderParser {
 			'id' => $circle->getSingleId(),
 			'name' => $circle->getName(),
 			'_parsed' => $circle->getName(),
-			'link' => $circle->getUrl()
+			'link' => $this->url->getAbsoluteURL($circle->getUrl()),
 		];
 	}
 
