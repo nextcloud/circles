@@ -35,8 +35,8 @@ class MountRequest extends MountRequestBuilder {
 		   ->setValue('single_id', $qb->createNamedParameter($mount->getOwner()->getSingleId()))
 		   ->setValue('token', $qb->createNamedParameter($mount->getToken()))
 		   ->setValue('parent', $qb->createNamedParameter($mount->getParent()))
-		   ->setValue('mountpoint', $qb->createNamedParameter($mount->getMountPoint()))
-		   ->setValue('mountpoint_hash', $qb->createNamedParameter(md5($mount->getMountPoint())));
+		   ->setValue('mountpoint', $qb->createNamedParameter($mount->getOriginalMountPoint()))
+		   ->setValue('mountpoint_hash', $qb->createNamedParameter(md5($mount->getOriginalMountPoint())));
 
 		$qb->execute();
 	}
@@ -63,7 +63,7 @@ class MountRequest extends MountRequestBuilder {
 		$qb = $this->getMountSelectSql();
 		$qb->setOptions([CoreQueryBuilder::MOUNT], ['getData' => true]);
 		$qb->leftJoinMember(CoreQueryBuilder::MOUNT);
-		$qb->leftJoinMountpoint(CoreQueryBuilder::MOUNT);
+		$qb->leftJoinMountpoint(CoreQueryBuilder::MOUNT, $federatedUser);
 		$qb->limitToInitiator(CoreQueryBuilder::MOUNT, $federatedUser, 'circle_id');
 
 		return $this->getItemsFromRequest($qb);
