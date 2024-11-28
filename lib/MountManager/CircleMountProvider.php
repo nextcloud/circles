@@ -52,7 +52,8 @@ class CircleMountProvider implements IMountProvider {
 		private MountRequest $mountRequest,
 		private MountPointRequest $mountPointRequest,
 		private FederatedUserService $federatedUserService,
-		private ConfigService $configService
+		private ConfigService $configService,
+		private LoggerInterface $logger,
 	) {
 	}
 
