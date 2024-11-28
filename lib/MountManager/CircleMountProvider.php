@@ -62,8 +62,6 @@ use Psr\Log\LoggerInterface;
 class CircleMountProvider implements IMountProvider {
 	use TArrayTools;
 
-	public const EXTERNAL_STORAGE = ExternalStorage::class;
-
 	public function __construct(
 		private IClientService $clientService,
 		private IRootFolder $rootFolder,
@@ -72,7 +70,8 @@ class CircleMountProvider implements IMountProvider {
 		private MountRequest $mountRequest,
 		private MountPointRequest $mountPointRequest,
 		private FederatedUserService $federatedUserService,
-		private ConfigService $configService
+		private ConfigService $configService,
+		private LoggerInterface $logger,
 	) {
 	}
 
@@ -129,7 +128,7 @@ class CircleMountProvider implements IMountProvider {
 
 		return new CircleMount(
 			$mount,
-			self::EXTERNAL_STORAGE,
+			ExternalStorage::class,
 			$storageFactory
 		);
 	}

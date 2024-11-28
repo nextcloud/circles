@@ -30,7 +30,7 @@ class Version0031Date20241105133904 extends SimpleMigrationStep {
 
 		try {
 			$table = $schema->getTable('circles_mountpoint');
-			if (!$table->hasIndex('dname')) {
+			if (!$table->hasIndex('mp_sid_hash')) {
 				$table->addUniqueIndex(['single_id', 'mountpoint_hash'], 'mp_sid_hash');
 			}
 		} catch (SchemaException $e) {
