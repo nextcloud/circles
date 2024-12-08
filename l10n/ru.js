@@ -3,7 +3,7 @@ OC.L10N.register(
     {
     "Teams" : "Команды",
     "You created the team {circle}" : "Вы создали группу {circle}",
-    "{author} created the team {circle}" : "{author} создал группу {circle}",
+    "{author} created the team {circle}" : "{author} создал круг {circle}",
     "You deleted {circle}" : "Вы удалили круг «{circle}»",
     "{author} deleted {circle}" : "{author} удалил(а) круг «{circle}»",
     "You made {member} join {circle}" : "Вы присоединили {member} к {circle}",
