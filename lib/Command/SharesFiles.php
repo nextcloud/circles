@@ -196,6 +196,10 @@ class SharesFiles extends Base {
 		$table->render();
 
 		foreach ($shareWrappers as $share) {
+			if (!$share->hasInitiator()) {
+				continue;
+			}
+
 			if (!$filterRecipient) {
 				$recipient = $share->getInitiator();
 				$sharedTo = $recipient->getDisplayName();
