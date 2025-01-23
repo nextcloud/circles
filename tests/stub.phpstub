@@ -1088,3 +1088,34 @@ namespace OC\Share20 {
 		public function getHideDownload(): bool;
 	}
 }
+
+namespace OC\AppFramework\Bootstrap {
+	use OCP\Teams\ITeamResourceProvider;
+
+	class Coordinator {
+		public function getRegistrationContext(): ?RegistrationContext {}
+	}
+
+	class RegistrationContext {
+		/**
+		 * @return ServiceRegistration<ITeamResourceProvider>[]
+		 */
+		public function getTeamResourceProviders(): array {}
+	}
+
+	/**
+	 * @psalm-immutable
+	 * @template T
+	 */
+	class ServiceRegistration extends ARegistration {
+		/**
+		* @psalm-return class-string<T>
+		*/
+		public function getService(): string {}
+	}
+
+	/**
+	 * @psalm-immutable
+	 */
+	abstract class ARegistration {}
+}
