@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace OCA\Circles\AppInfo;
 
+use OC\AppFramework\Bootstrap\Coordinator;
+use OC\AppFramework\Bootstrap\ServiceRegistration;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
@@ -16,13 +18,17 @@ use OCA\Circles\Service\InterfaceService;
 use OCP\App\IAppManager;
 use OCP\Capabilities\ICapability;
 use OCP\IL10N;
+use OCP\Teams\ITeamResourceProvider;
+use Psr\Container\ContainerInterface;
 
 class Capabilities implements ICapability {
 	public function __construct(
 		private IL10N $l10n,
 		private IAppManager $appManager,
 		private InterfaceService $interfaceService,
-		private ConfigService $configService
+		private ConfigService $configService,
+		private Coordinator $coordinator,
+		private ContainerInterface $container,
 	) {
 	}
 
@@ -33,7 +39,8 @@ class Capabilities implements ICapability {
 				'status' => $this->getCapabilitiesStatus($complete),
 				'settings' => $this->configService->getSettings(),
 				'circle' => $this->getCapabilitiesCircle(),
-				'member' => $this->getCapabilitiesMember()
+				'member' => $this->getCapabilitiesMember(),
+				'teamResourceProviders' => $this->getCapabilitiesTeamResourceProviders(),
 			],
 		];
 	}
@@ -142,5 +149,24 @@ class Capabilities implements ICapability {
 				Member::LEVEL_OWNER => $this->l10n->t('Owner')
 			]
 		];
+	}
+
+	/**
+	 * @return string[]
+	 */
+	private function getCapabilitiesTeamResourceProviders() {
+		$providers = $this->coordinator->getRegistrationContext()?->getTeamResourceProviders();
+		if ($providers === null) {
+			return [];
+		}
+		$providerIds = array_map(
+			function (ServiceRegistration $registration) {
+				/** @var ITeamResourceProvider $provider */
+				$provider = $this->container->get($registration->getService());
+				return $provider->getId();
+			},
+			$providers,
+		);
+		return $providerIds;
 	}
 }
