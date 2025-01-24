@@ -20,7 +20,6 @@ OC.L10N.register(
     "No entries found in this folder" : "ไม่พบรายการในโฟลเดอร์นี้",
     "Name" : "ชื่อ",
     "Size" : "ขนาด",
-    "Modified" : "แก้ไขเมื่อ",
-    "now" : "ตอนนี้"
+    "Modified" : "แก้ไขเมื่อ"
 },
 "nplurals=1; plural=0;");

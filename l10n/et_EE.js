@@ -27,10 +27,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Selles kaustas ei leitud kirjeid",
     "Name" : "Nimi",
     "Size" : "Suurus",
-    "Modified" : "Muudetud",
-    "Federated link not found" : "Liit-linki ei leitud",
-    "The circle is not federated" : "Ring ei ole liidetud",
-    "Personal Circle" : "Isiklik ring",
-    "now" : "kohe"
+    "Modified" : "Muudetud"
 },
 "nplurals=2; plural=(n != 1);");
