@@ -17,9 +17,6 @@ OC.L10N.register(
     "No files in here" : "Cap de fichièr aicí",
     "Name" : "Nom",
     "Size" : "Talha",
-    "Modified" : "Modificat",
-    "Circles" : "Cercles",
-    "Password Protected" : "Protegit per senhal",
-    "now" : "ara"
+    "Modified" : "Modificat"
 },
 "nplurals=2; plural=(n > 1);");

@@ -17,7 +17,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Geen inskrwyings in hierdie gids gevind",
     "Name" : "Naam",
     "Size" : "Grootte",
-    "Modified" : "Gewysig",
-    "now" : "nou"
+    "Modified" : "Gewysig"
 },
 "nplurals=2; plural=(n != 1);");
