@@ -23,14 +23,6 @@
     "No entries found in this folder" : "Энэ хавтаст юм олдсонгүй",
     "Name" : "Нэр",
     "Size" : "Хэмжээ",
-    "Modified" : "Өөрчлөгдсөн",
-    "Circles" : "Тойрог",
-    "Circle not found" : "тойрог олдоогүй",
-    "You cannot join this circle" : "Та энэ тойрогт нэгдэх боломжгүй",
-    "This member is the owner of the circle" : "энэ гишүүн бүлгийн эзэн",
-    "Personal Circle" : "хувийн тойрог",
-    "You need a specify a type of circle" : "та тойргийн төрлийг тодорхойлах хэрэгтэй",
-    "This member is not the owner of the circle" : "Энэ гишүүн нь бүлгийн эзэн биш",
-    "You cannot edit level in a personal circle" : " та энэ хувийн тойргийн түвшинг засварлах боломжгүй"
+    "Modified" : "Өөрчлөгдсөн"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
