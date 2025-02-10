@@ -12,7 +12,7 @@
 Those groups of people can then be used by any other app for sharing purpose.
 		]]>
 	</description>
-	<version>31.0.0-dev.0</version>
+	<version>31.0.0-dev.1</version>
 	<licence>agpl</licence>
 	<author>Maxence Lange</author>
 	<types>
@@ -45,6 +45,7 @@ Those groups of people can then be used by any other app for sharing purpose.
 	</repair-steps>
 
 	<commands>
+		<command>OCA\Circles\Command\Test</command>
 		<command>OCA\Circles\Command\CirclesCreate</command>
 		<command>OCA\Circles\Command\MembersAdd</command>
 		<command>OCA\Circles\Command\CirclesJoin</command>
