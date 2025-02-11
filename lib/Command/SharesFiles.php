@@ -223,15 +223,20 @@ class SharesFiles extends Base {
 					$sharedTo .= '@' . $recipient->getInstance();
 				}
 			}
-			$circle = $share->getCircle();
+			$circleField = '';
+			if ($share->hasCircle()) {
+				$circle = $share->getCircle();
+				$circleField = $circle->getDisplayName()
+					. ' (' . $share->getSharedWith()
+					. ', ' . Circle::$DEF_SOURCE[$circle->getSource()] . ')';
+			}
 			$row = [
 				$share->getId(),
 				$share->getFileSource(),
 				$share->getShareOwner(),
 				$share->getFileTarget(),
 				$share->getSharedBy(),
-				$circle->getDisplayName() . ' (' . $share->getSharedWith()
-				. ', ' . Circle::$DEF_SOURCE[$circle->getSource()] . ')'
+				$circleField,
 			];
 
 			if (!$filterRecipient) {
