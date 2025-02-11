@@ -9,22 +9,23 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Listeners;
 
+use OCA\Circles\AppInfo\Application;
+use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\FederatedUserService;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\Group\Events\GroupChangedEvent;
-use OCP\IUserSession;
-use Psr\Log\LoggerInterface;
 
 /** @template-implements IEventListener<GroupChangedEvent|Event> */
 class GroupChanged implements IEventListener {
 	public function __construct(
-		private IUserSession $userSession,
 		private FederatedUserService $federatedUserService,
 		private CircleService $circleService,
-		private LoggerInterface $logger,
+		private CircleRequest $circleRequest,
 	) {
 	}
 
@@ -37,19 +38,31 @@ class GroupChanged implements IEventListener {
 			return;
 		}
 
-		$user = $this->userSession->getUser();
-		$this->federatedUserService->setLocalCurrentUser($user);
-
 		$groupId = $event->getGroup()->getGID();
+
+		$circle = new Circle();
+		$circle->setName('group:' . $groupId)
+			->setConfig(Circle::CFG_SYSTEM | Circle::CFG_NO_OWNER | Circle::CFG_HIDDEN)
+			->setSource(Member::TYPE_GROUP);
+
+		$owner = $this->federatedUserService->getAppInitiator(
+			Application::APP_ID,
+			Member::APP_CIRCLES,
+			Application::APP_NAME
+		);
+		$member = new Member();
+		$member->importFromIFederatedUser($owner);
+		$member->setLevel(Member::LEVEL_OWNER)
+			->setStatus(Member::STATUS_MEMBER);
+		$circle->setOwner($member);
+
 		try {
-			$this->circleService->updateName("group:$groupId", $event->getValue());
-		} catch (CircleNotFoundException $e) {
-			// Silently ignore (there is no circle for the group yet)
-		} catch (\Exception $e) {
-			$this->logger->warning("Failed to update display name of circle of group $groupId: " . $e->getMessage(), [
-				'exception' => $e,
-				'groupId' => $groupId,
-			]);
+			$this->federatedUserService->setCurrentUser($owner);
+			$circle = $this->circleRequest->searchCircle($circle);
+		} catch (CircleNotFoundException) {
+			return;
 		}
+
+		$this->circleService->updateDisplayName($circle->getSingleId(), $event->getValue());
 	}
 }
