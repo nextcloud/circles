@@ -391,6 +391,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		$share->setTarget($this->getFileTarget());
 		$share->setProviderId($this->getProviderId());
 		$share->setStatus($this->getStatus());
+		$share->setToken($this->getToken());
 		$share->setHideDownload($this->getHideDownload());
 		$share->setAttributes($this->getAttributes());
 		$share->setNote($this->getShareNote());
