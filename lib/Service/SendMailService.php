@@ -22,6 +22,7 @@ use OCP\IL10N;
 use OCP\Mail\IEMailTemplate;
 use OCP\Mail\IMailer;
 use OCP\Security\IHasher;
+use OCP\Share\IManager;
 use OCP\Util;
 
 class SendMailService {
@@ -59,6 +60,7 @@ class SendMailService {
 		IMailer $mailer,
 		Defaults $defaults,
 		ConfigService $configService,
+		private IManager $shareManager,
 	) {
 		$this->l10n = $l10n;
 		$this->hasher = $hasher;
@@ -84,6 +86,10 @@ class SendMailService {
 		array $mails,
 		string $password = '',
 	): void {
+		if (!$this->shareManager->shareApiAllowLinks()) {
+			return;
+		}
+
 		if (empty($shares)) {
 			return;
 		}
