@@ -134,6 +134,29 @@ class CirclesQueryHelper {
 		);
 	}
 
+	/**
+	 * lighter version with small inner join
+	 */
+	public function limitToMemberships(
+		string $alias,
+		string $field,
+		IFederatedUser $federatedUser,
+	): void {
+		$this->queryBuilder->setDefaultSelectAlias($alias);
+		$expr = $this->queryBuilder->expr();
+		$aliasMembership = $this->queryBuilder->generateAlias(CoreQueryBuilder::HELPER, CoreQueryBuilder::MEMBERSHIPS, $options);
+
+		$this->queryBuilder->innerJoin(
+			$alias,
+			CoreRequestBuilder::TABLE_MEMBERSHIP,
+			$aliasMembership,
+			$expr->andX(
+				$this->queryBuilder->exprLimit('single_id', $federatedUser->getSingleId(), $aliasMembership),
+				$expr->eq($aliasMembership . '.circle_id', $alias . '.' . $field)
+			)
+		);
+	}
+
 
 	/**
 	 * @param string $field
