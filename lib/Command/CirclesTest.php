@@ -544,7 +544,7 @@ class CirclesTest extends Base {
 			$expectedSize = sizeof($this->getConfigArray($instanceId, 'groups'))
 							+ sizeof($this->getConfigArray($instanceId, 'users'))
 							+ 1;
-			$this->r((sizeof($result) === $expectedSize), sizeof($result) . ' circles');
+			$this->r((sizeof($result) === $expectedSize), ((string)sizeof($result)) . ' circles');
 
 			$membersList = $groupsList = [];
 			foreach ($result as $item) {
@@ -1048,7 +1048,7 @@ class CirclesTest extends Base {
 	private function compareInt(int $expected, int $compare, string $def, bool $force = false) {
 		if (($expected > 0 || ($force && $expected >= 0))
 			&& $expected !== $compare) {
-			throw new Exception('wrong ' . $def . ': ' . $compare . ' (' . $expected . ')');
+			throw new Exception('wrong ' . $def . ': ' . ((string)$compare) . ' (' . ((string)$expected) . ')');
 		}
 	}
 
@@ -1144,7 +1144,7 @@ class CirclesTest extends Base {
 	 * @param string $instance
 	 * @param string $key
 	 *
-	 * @return array
+	 * @return array<string, mixed>
 	 * @throws ItemNotFoundException
 	 */
 	private function getConfigArray(string $instance, string $key): array {

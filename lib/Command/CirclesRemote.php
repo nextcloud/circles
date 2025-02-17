@@ -246,7 +246,7 @@ class CirclesRemote extends Base {
 
 		$result = $signedRequest->getOutgoingRequest()->getResult();
 		$code = $result->getStatusCode();
-		$this->output->writeln(' * Result: ' . (($code === 200) ? '<info>' . $code . '</info>' : $code));
+		$this->output->writeln(' * Result: ' . (($code === 200) ? '<info>' . ((string)$code) . '</info>' : $code));
 		$this->output->writeln(
 			json_encode(json_decode($result->getContent(), true), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
 		);

@@ -28,71 +28,7 @@
       <code><![CDATA[getLazyRootFolder]]></code>
     </UndefinedInterfaceMethod>
   </file>
-  <file src="lib/Command/CirclesCheck.php">
-    <InvalidOperand>
-      <code><![CDATA[$checkManage]]></code>
-      <code><![CDATA[$checkManage]]></code>
-      <code><![CDATA[$checkVerify]]></code>
-      <code><![CDATA[$checkVerify]]></code>
-      <code><![CDATA[$cloudIdPort]]></code>
-      <code><![CDATA[$result->getStatusCode()]]></code>
-      <code><![CDATA[microtime(true) * 1000]]></code>
-      <code><![CDATA[microtime(true) * 1000]]></code>
-      <code><![CDATA[round(microtime(true) * 1000) - $timer]]></code>
-    </InvalidOperand>
-  </file>
-  <file src="lib/Command/CirclesConfig.php">
-    <InvalidOperand>
-      <code><![CDATA[$e->getStatus()]]></code>
-    </InvalidOperand>
-  </file>
-  <file src="lib/Command/CirclesCreate.php">
-    <InvalidOperand>
-      <code><![CDATA[$e->getStatus()]]></code>
-    </InvalidOperand>
-  </file>
-  <file src="lib/Command/CirclesDestroy.php">
-    <InvalidOperand>
-      <code><![CDATA[$e->getStatus()]]></code>
-    </InvalidOperand>
-  </file>
-  <file src="lib/Command/CirclesDetails.php">
-    <InvalidOperand>
-      <code><![CDATA[$e->getStatus()]]></code>
-    </InvalidOperand>
-  </file>
-  <file src="lib/Command/CirclesEdit.php">
-    <InvalidOperand>
-      <code><![CDATA[$e->getStatus()]]></code>
-    </InvalidOperand>
-  </file>
-  <file src="lib/Command/CirclesJoin.php">
-    <InvalidOperand>
-      <code><![CDATA[$e->getStatus()]]></code>
-    </InvalidOperand>
-  </file>
-  <file src="lib/Command/CirclesLeave.php">
-    <InvalidOperand>
-      <code><![CDATA[$e->getStatus()]]></code>
-    </InvalidOperand>
-  </file>
-  <file src="lib/Command/CirclesList.php">
-    <InvalidOperand>
-      <code><![CDATA[$circle->getPopulation()]]></code>
-      <code><![CDATA[$circle->getPopulationInherited()]]></code>
-      <code><![CDATA[$this->getInt('members_limit', $circle->getSettings(), -1)]]></code>
-    </InvalidOperand>
-  </file>
-  <file src="lib/Command/CirclesMemberships.php">
-    <InvalidOperand>
-      <code><![CDATA[$count]]></code>
-      <code><![CDATA[$count]]></code>
-    </InvalidOperand>
-  </file>
   <file src="lib/Command/CirclesRemote.php">
-    <InvalidOperand>
-      <code><![CDATA[$code]]></code>
-    </InvalidOperand>
     <UndefinedMethod>
       <code><![CDATA[setType]]></code>
     </UndefinedMethod>
@@ -102,24 +38,7 @@
       <code><![CDATA[IInteractiveShellClient]]></code>
     </UndefinedClass>
   </file>
-  <file src="lib/Command/CirclesSetting.php">
-    <InvalidOperand>
-      <code><![CDATA[$e->getStatus()]]></code>
-    </InvalidOperand>
-  </file>
   <file src="lib/Command/CirclesTest.php">
-    <InvalidOperand>
-      <code><![CDATA[$compare]]></code>
-      <code><![CDATA[$expected]]></code>
-      <code><![CDATA[$groupId]]></code>
-      <code><![CDATA[$groupId]]></code>
-      <code><![CDATA[$groupId]]></code>
-      <code><![CDATA[$groupId]]></code>
-      <code><![CDATA[$groupId]]></code>
-      <code><![CDATA[$groupId]]></code>
-      <code><![CDATA[$k]]></code>
-      <code><![CDATA[sizeof($result)]]></code>
-    </InvalidOperand>
     <NullArgument>
       <code><![CDATA[null]]></code>
     </NullArgument>
@@ -132,17 +51,9 @@
     </TypeDoesNotContainNull>
   </file>
   <file src="lib/Command/MembersAdd.php">
-    <InvalidOperand>
-      <code><![CDATA[$e->getStatus()]]></code>
-    </InvalidOperand>
     <UndefinedMethod>
       <code><![CDATA[retrieveJson]]></code>
     </UndefinedMethod>
-  </file>
-  <file src="lib/Command/MembersLevel.php">
-    <InvalidOperand>
-      <code><![CDATA[$e->getStatus()]]></code>
-    </InvalidOperand>
   </file>
   <file src="lib/Command/MembersList.php">
     <UndefinedInterfaceMethod>
@@ -154,12 +65,6 @@
       <code><![CDATA[getStatus]]></code>
       <code><![CDATA[hasInvitedBy]]></code>
     </UndefinedInterfaceMethod>
-  </file>
-  <file src="lib/Command/MigrateCustomGroups.php">
-    <InvalidOperand>
-      <code><![CDATA[$count]]></code>
-      <code><![CDATA[$count]]></code>
-    </InvalidOperand>
   </file>
   <file src="lib/Db/CoreRequestBuilder.php">
     <UndefinedClass>

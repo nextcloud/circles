@@ -198,7 +198,7 @@ trait TArrayTools {
 
 	/**
 	 * @param string $k
-	 * @param array $arr
+	 * @param array<string, mixed> $arr
 	 * @param array $default
 	 *
 	 * @return array

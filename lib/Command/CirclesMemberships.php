@@ -204,7 +204,7 @@ class CirclesMemberships extends Base {
 		if ($count === 0) {
 			$output->writeln('(database not updated)');
 		} else {
-			$output->writeln('(' . $count . ' entries generated/updated in the database)');
+			$output->writeln('(' . ((string)$count) . ' entries generated/updated in the database)');
 		}
 
 		foreach ($federatedUser->getMemberships() as $membership) {
@@ -379,6 +379,6 @@ class CirclesMemberships extends Base {
 			);
 		}
 
-		$output->writeln($count . ' memberships updated');
+		$output->writeln(((string)$count) . ' memberships updated');
 	}
 }

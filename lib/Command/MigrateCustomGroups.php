@@ -158,7 +158,7 @@ class MigrateCustomGroups extends Base {
 			->where($update->expr()->in('id', $update->createNamedParameter($shareIds, IQueryBuilder::PARAM_INT_ARRAY)));
 
 		$count = $update->executeStatement();
-		$this->output->writeln('> ' . $count . ' shares updated');
+		$this->output->writeln('> ' . ((string)$count) . ' shares updated');
 
 		$this->fixShareChildren($shareIds, $memberIds);
 	}
@@ -198,7 +198,7 @@ class MigrateCustomGroups extends Base {
 			$count += $update->executeStatement();
 		}
 
-		$this->output->writeln('> ' . $count . ' children shares updated');
+		$this->output->writeln('> ' . ((string)$count) . ' children shares updated');
 	}
 
 
