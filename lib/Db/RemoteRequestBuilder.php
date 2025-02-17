@@ -14,6 +14,7 @@ namespace OCA\Circles\Db;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Tools\Exceptions\RowNotFoundException;
+use OCP\DB\QueryBuilder\IQueryBuilder;
 
 /**
  * Class RemoteRequestBuilder
@@ -22,7 +23,7 @@ use OCA\Circles\Tools\Exceptions\RowNotFoundException;
  */
 class RemoteRequestBuilder extends CoreRequestBuilder {
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getRemoteInsertSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
@@ -36,7 +37,7 @@ class RemoteRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * Base of the Sql Update request for Groups
 	 *
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getRemoteUpdateSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
@@ -49,7 +50,7 @@ class RemoteRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * @param string $alias
 	 *
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getRemoteSelectSql(string $alias = CoreQueryBuilder::REMOTE): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
@@ -62,7 +63,7 @@ class RemoteRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * Base of the Sql Delete request
 	 *
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getRemoteDeleteSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();

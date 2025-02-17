@@ -14,6 +14,7 @@ namespace OCA\Circles\Db;
 use OCA\Circles\Exceptions\FederatedShareNotFoundException;
 use OCA\Circles\Model\Federated\FederatedShare;
 use OCA\Circles\Tools\Exceptions\RowNotFoundException;
+use OCP\DB\QueryBuilder\IQueryBuilder;
 
 /**
  * Class ShareRequestBuilder
@@ -22,7 +23,7 @@ use OCA\Circles\Tools\Exceptions\RowNotFoundException;
  */
 class ShareLockRequestBuilder extends CoreRequestBuilder {
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getShareLockInsertSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
@@ -33,7 +34,7 @@ class ShareLockRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getShareLockSelectSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
@@ -47,7 +48,7 @@ class ShareLockRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getShareLockUpdateSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
@@ -58,7 +59,7 @@ class ShareLockRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getShareDeleteSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
