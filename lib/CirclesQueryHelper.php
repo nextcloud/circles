@@ -31,7 +31,7 @@ class CirclesQueryHelper {
 	/** @var CoreRequestBuilder */
 	private $coreRequestBuilder;
 
-	/** @var CoreQueryBuilder */
+	/** @var CoreQueryBuilder&IQueryBuilder */
 	private $queryBuilder;
 
 	/** @var FederatedUserService */
@@ -54,9 +54,9 @@ class CirclesQueryHelper {
 
 
 	/**
-	 * @return IQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
-	public function getQueryBuilder(): IQueryBuilder {
+	public function getQueryBuilder(): CoreQueryBuilder {
 		$this->queryBuilder = $this->coreRequestBuilder->getQueryBuilder();
 
 		return $this->queryBuilder;

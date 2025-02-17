@@ -14,6 +14,7 @@ namespace OCA\Circles\Db;
 use OCA\Circles\Exceptions\ShareWrapperNotFoundException;
 use OCA\Circles\Model\ShareWrapper;
 use OCA\Circles\Tools\Exceptions\RowNotFoundException;
+use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\Share\IShare;
 
 /**
@@ -23,7 +24,7 @@ use OCP\Share\IShare;
  */
 class ShareWrapperRequestBuilder extends CoreRequestBuilder {
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getShareInsertSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
@@ -34,7 +35,7 @@ class ShareWrapperRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getShareUpdateSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
@@ -47,7 +48,7 @@ class ShareWrapperRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * @param string $alias
 	 *
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getShareSelectSql(string $alias = CoreQueryBuilder::SHARE): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
@@ -61,7 +62,7 @@ class ShareWrapperRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * Base of the Sql Delete request
 	 *
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getShareDeleteSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();

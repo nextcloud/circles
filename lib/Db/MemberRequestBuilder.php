@@ -17,6 +17,7 @@ use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Tools\Exceptions\RowNotFoundException;
+use OCP\DB\QueryBuilder\IQueryBuilder;
 
 /**
  * Class MemberRequestBuilder
@@ -25,7 +26,7 @@ use OCA\Circles\Tools\Exceptions\RowNotFoundException;
  */
 class MemberRequestBuilder extends CoreRequestBuilder {
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getMemberInsertSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
@@ -37,7 +38,7 @@ class MemberRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getMemberUpdateSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
@@ -51,7 +52,7 @@ class MemberRequestBuilder extends CoreRequestBuilder {
 	 * @param IFederatedUser|null $initiator
 	 * @param bool $getBasedOn
 	 *
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 * @throws RequestBuilderException
 	 */
 	protected function getMemberSelectSql(
@@ -77,7 +78,7 @@ class MemberRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * Base of the Sql Delete request
 	 *
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getMemberDeleteSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();

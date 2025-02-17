@@ -14,6 +14,7 @@ namespace OCA\Circles\Db;
 use OCA\Circles\Exceptions\MountNotFoundException;
 use OCA\Circles\Model\Mount;
 use OCA\Circles\Tools\Exceptions\RowNotFoundException;
+use OCP\DB\QueryBuilder\IQueryBuilder;
 
 /**
  * Class MountRequestBuilder
@@ -22,7 +23,7 @@ use OCA\Circles\Tools\Exceptions\RowNotFoundException;
  */
 class MountRequestBuilder extends CoreRequestBuilder {
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getMountInsertSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
@@ -33,7 +34,7 @@ class MountRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getMountUpdateSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
@@ -46,7 +47,7 @@ class MountRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * @param string $alias
 	 *
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getMountSelectSql(string $alias = CoreQueryBuilder::MOUNT): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
@@ -57,7 +58,7 @@ class MountRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getMountDeleteSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
