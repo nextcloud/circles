@@ -258,7 +258,7 @@ class MembersList extends Base {
 	 * @param TreeNode|null $tree
 	 * @param array $knownIds
 	 *
-	 * @return array
+	 * @return list<Member>
 	 * @throws CircleNotFoundException
 	 * @throws FederatedItemException
 	 * @throws FederatedUserException
@@ -391,9 +391,9 @@ class MembersList extends Base {
 			$line = '';
 			$circle = null;
 			if ($data->hasKey('circle')) {
-				/** @var Circle $circle */
 				try {
 					$circle = $data->gObj('circle', Circle::class);
+					/** @var Circle $circle */
 				} catch (Exception $e) {
 				}
 			}
