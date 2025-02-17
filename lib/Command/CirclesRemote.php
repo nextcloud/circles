@@ -29,6 +29,7 @@ use OCA\Circles\Tools\Model\NCRequest;
 use OCA\Circles\Tools\Model\NCSignedRequest;
 use OCA\Circles\Tools\Traits\TNCWellKnown;
 use OCA\Circles\Tools\Traits\TStringTools;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -318,6 +319,7 @@ class CirclesRemote extends Base {
 	 */
 	private function saveRemote(RemoteInstance $remoteSignatory) {
 		$this->output->writeln('');
+		/** @var QuestionHelper $helper */
 		$helper = $this->getHelper('question');
 
 		$this->output->writeln(
@@ -349,6 +351,7 @@ class CirclesRemote extends Base {
 	 */
 	private function updateRemote(RemoteInstance $remoteSignatory): void {
 		$this->output->writeln('');
+		/** @var QuestionHelper $helper */
 		$helper = $this->getHelper('question');
 
 		$this->output->writeln(

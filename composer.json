@@ -33,7 +33,7 @@
       "@test:unit"
     ],
     "test:unit": "vendor/bin/phpunit -c tests/phpunit.xml",
-    "lint": "find . -name \\*.php -not -path './vendor/*' -print0 | xargs -0 -n1 php -l"
+    "lint": "find . -name \\*.php -not -path './vendor/*' -not -path './tests/stubs/*' -print0 | xargs -0 -n1 php -l"
   },
   "require-dev": {
     "phpunit/phpunit": "^10.5",

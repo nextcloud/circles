@@ -17,5 +17,6 @@ $config
 	->notPath('l10n')
 	->notPath('src')
 	->notPath('vendor')
+	->notPath('tests/stubs')
 	->in(__DIR__);
 return $config;
