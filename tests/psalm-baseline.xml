@@ -38,33 +38,10 @@
       <code><![CDATA[IInteractiveShellClient]]></code>
     </UndefinedClass>
   </file>
-  <file src="lib/Command/CirclesTest.php">
-    <NullArgument>
-      <code><![CDATA[null]]></code>
-    </NullArgument>
-    <RedundantCondition>
-      <code><![CDATA[$compareToInitiator !== null]]></code>
-      <code><![CDATA[$compareToOwner !== null]]></code>
-    </RedundantCondition>
-    <TypeDoesNotContainNull>
-      <code><![CDATA[$owner === null]]></code>
-    </TypeDoesNotContainNull>
-  </file>
   <file src="lib/Command/MembersAdd.php">
     <UndefinedMethod>
       <code><![CDATA[retrieveJson]]></code>
     </UndefinedMethod>
-  </file>
-  <file src="lib/Command/MembersList.php">
-    <UndefinedInterfaceMethod>
-      <code><![CDATA[getInstance]]></code>
-      <code><![CDATA[getInstance]]></code>
-      <code><![CDATA[getInvitedBy]]></code>
-      <code><![CDATA[getOwner]]></code>
-      <code><![CDATA[getSingleId]]></code>
-      <code><![CDATA[getStatus]]></code>
-      <code><![CDATA[hasInvitedBy]]></code>
-    </UndefinedInterfaceMethod>
   </file>
   <file src="lib/Db/CoreRequestBuilder.php">
     <UndefinedClass>
