@@ -39,6 +39,7 @@ use OCA\Circles\Tools\Traits\TArrayTools;
 use OCA\Circles\Tools\Traits\TNCRequest;
 use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\IAppConfig;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -181,6 +182,7 @@ class CirclesCheck extends Base {
 		$output->writeln('- <comment>You do not have a valid loopback address setup right now.</comment>');
 		$output->writeln('');
 
+		/** @var QuestionHelper $helper */
 		$helper = $this->getHelper('question');
 		while (true) {
 			$question = new Question('<info>Please write down a new loopback address to test</info>: ', '');
@@ -328,6 +330,7 @@ class CirclesCheck extends Base {
 			false, '/^(y|Y)/i'
 		);
 
+		/** @var QuestionHelper $helper */
 		$helper = $this->getHelper('question');
 		if (!$helper->ask($input, $output, $question)) {
 			$output->writeln('skipping.');
@@ -364,6 +367,7 @@ class CirclesCheck extends Base {
 			'- <comment>Do you want to enable this feature ?</comment> (y/N) ', false, '/^(y|Y)/i'
 		);
 
+		/** @var QuestionHelper $helper */
 		$helper = $this->getHelper('question');
 		if (!$helper->ask($input, $output, $question)) {
 			$output->writeln('skipping.');
@@ -508,6 +512,7 @@ class CirclesCheck extends Base {
 			false, '/^(y|Y)/i'
 		);
 
+		/** @var QuestionHelper $helper */
 		$helper = $this->getHelper('question');
 		if (!$helper->ask($input, $output, $question)) {
 			$output->writeln('skipping.');
@@ -543,6 +548,7 @@ class CirclesCheck extends Base {
 			'- <comment>Do you want to enable this feature ?</comment> (y/N) ', false, '/^(y|Y)/i'
 		);
 
+		/** @var QuestionHelper $helper */
 		$helper = $this->getHelper('question');
 		if (!$helper->ask($input, $output, $question)) {
 			$output->writeln('skipping.');
@@ -686,6 +692,7 @@ class CirclesCheck extends Base {
 			false, '/^(y|Y)/i'
 		);
 
+		/** @var QuestionHelper $helper */
 		$helper = $this->getHelper('question');
 		if (!$helper->ask($input, $output, $question)) {
 			$output->writeln('skipping.');
@@ -759,6 +766,7 @@ class CirclesCheck extends Base {
 			'The address <info>' . $address . '</info> seems to reach your local Nextcloud.'
 		);
 
+		/** @var QuestionHelper $helper */
 		$helper = $this->getHelper('question');
 		$output->writeln('');
 		$question = new ConfirmationQuestion(

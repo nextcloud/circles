@@ -17,16 +17,10 @@
       <code><![CDATA[!$sendPasswordByMail]]></code>
       <code><![CDATA[$sendPasswordByMail]]></code>
     </TypeDoesNotContainType>
-    <UndefinedClass>
-      <code><![CDATA[Notifications]]></code>
-    </UndefinedClass>
-    <UndefinedDocblockClass>
-      <code><![CDATA[$this->federationNotifications]]></code>
-      <code><![CDATA[Notifications]]></code>
-    </UndefinedDocblockClass>
-    <UndefinedInterfaceMethod>
-      <code><![CDATA[getLazyRootFolder]]></code>
-    </UndefinedInterfaceMethod>
+    <UndefinedMethod>
+      <code><![CDATA[getLogger]]></code>
+      <code><![CDATA[getLogger]]></code>
+    </UndefinedMethod>
   </file>
   <file src="lib/Command/CirclesRemote.php">
     <UndefinedMethod>
@@ -41,15 +35,6 @@
   <file src="lib/Command/MembersAdd.php">
     <UndefinedMethod>
       <code><![CDATA[retrieveJson]]></code>
-    </UndefinedMethod>
-  </file>
-  <file src="lib/Db/CoreRequestBuilder.php">
-    <UndefinedClass>
-      <code><![CDATA[Connection]]></code>
-    </UndefinedClass>
-    <UndefinedMethod>
-      <code><![CDATA[dropTable]]></code>
-      <code><![CDATA[hasTable]]></code>
     </UndefinedMethod>
   </file>
   <file src="lib/Db/FileSharesRequest.php">
@@ -79,9 +64,6 @@
       <code><![CDATA[$shareId]]></code>
       <code><![CDATA[$shareId]]></code>
     </InvalidScalarArgument>
-    <UndefinedClass>
-      <code><![CDATA[UniqueConstraintViolationException]]></code>
-    </UndefinedClass>
   </file>
   <file src="lib/FederatedItems/SharedItemsSync.php">
     <UndefinedClass>
@@ -96,15 +78,6 @@
     <InvalidOperand>
       <code><![CDATA[$shareWrapper->getFileSource()]]></code>
     </InvalidOperand>
-  </file>
-  <file src="lib/Migration/Version0022Date20220526111723.php">
-    <UndefinedClass>
-      <code><![CDATA[Connection]]></code>
-    </UndefinedClass>
-    <UndefinedDocblockClass>
-      <code><![CDATA[$this->connection]]></code>
-      <code><![CDATA[Connection]]></code>
-    </UndefinedDocblockClass>
   </file>
   <file src="lib/Migration/Version0022Date20220526113601.php">
     <UndefinedClass>
@@ -190,23 +163,12 @@
       <code><![CDATA[self]]></code>
     </LessSpecificImplementedReturnType>
   </file>
-  <file src="lib/Model/Mount.php">
-    <MissingDependency>
-      <code><![CDATA[CircleMountManager]]></code>
-      <code><![CDATA[CircleMountManager]]></code>
-      <code><![CDATA[CircleMountManager]]></code>
-    </MissingDependency>
-  </file>
   <file src="lib/Model/Probes/BasicProbe.php">
     <InvalidReturnType>
       <code><![CDATA[$this]]></code>
     </InvalidReturnType>
   </file>
   <file src="lib/Model/ShareWrapper.php">
-    <InvalidArgument>
-      <code><![CDATA[$attributes]]></code>
-      <code><![CDATA[Cache::cacheEntryFromData($this->getFileCache()->toCache(), OC::$server->getMimeTypeLoader())]]></code>
-    </InvalidArgument>
     <InvalidNullableReturnType>
       <code><![CDATA[Circle]]></code>
       <code><![CDATA[FileCacheWrapper]]></code>
@@ -245,10 +207,18 @@
       <code><![CDATA[MoveableMount]]></code>
     </UndefinedClass>
   </file>
+  <file src="lib/MountManager/CircleMountManager.php">
+    <InvalidReturnStatement>
+      <code><![CDATA[$this]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code><![CDATA[bool]]></code>
+      <code><![CDATA[getMountManager]]></code>
+    </InvalidReturnType>
+  </file>
   <file src="lib/MountManager/CircleMountProvider.php">
     <MissingDependency>
       <code><![CDATA[CircleMount]]></code>
-      <code><![CDATA[private]]></code>
     </MissingDependency>
     <UndefinedClass>
       <code><![CDATA[ExternalStorage]]></code>
@@ -264,11 +234,6 @@
     <InvalidOperand>
       <code><![CDATA[$loopback['port']]]></code>
     </InvalidOperand>
-  </file>
-  <file src="lib/Service/ContactService.php">
-    <UndefinedClass>
-      <code><![CDATA[ContactsManager]]></code>
-    </UndefinedClass>
   </file>
   <file src="lib/Service/FederatedShareService.php">
     <InvalidMethodCall>
@@ -302,9 +267,6 @@
     <InvalidOperand>
       <code><![CDATA[$data->gInt('id')]]></code>
     </InvalidOperand>
-    <UndefinedClass>
-      <code><![CDATA[ContactsManager]]></code>
-    </UndefinedClass>
   </file>
   <file src="lib/Service/MiscService.php">
     <InvalidOperand>
@@ -316,10 +278,6 @@
     <TypeDoesNotContainType>
       <code><![CDATA[is_array($contact)]]></code>
     </TypeDoesNotContainType>
-    <UndefinedDocblockClass>
-      <code><![CDATA[$cManager]]></code>
-      <code><![CDATA[$cManager]]></code>
-    </UndefinedDocblockClass>
   </file>
   <file src="lib/Service/RemoteStreamService.php">
     <RedundantCondition>
