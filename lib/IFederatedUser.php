@@ -20,9 +20,23 @@ use OCA\Circles\Model\Circle;
  */
 interface IFederatedUser extends IFederatedModel {
 	/**
+	 * @param string $singleId
+	 *
+	 * @return self
+	 */
+	public function setSingleId(string $singleId): self;
+
+	/**
 	 * @return string
 	 */
 	public function getSingleId(): string;
+
+	/**
+	 * @param string $userId
+	 *
+	 * @return self
+	 */
+	public function setUserId(string $userId): self;
 
 	/**
 	 * @return string
@@ -30,14 +44,35 @@ interface IFederatedUser extends IFederatedModel {
 	public function getUserId(): string;
 
 	/**
+	 * @param int $userType
+	 *
+	 * @return self
+	 */
+	public function setUserType(int $userType): self;
+
+	/**
 	 * @return int
 	 */
 	public function getUserType(): int;
 
 	/**
+	 * @param string $displayName
+	 *
+	 * @return IFederatedUser
+	 */
+	public function setDisplayName(string $displayName): self;
+
+	/**
 	 * @return string
 	 */
 	public function getDisplayName(): string;
+
+	/**
+	 * @param ?Circle $basedOn
+	 *
+	 * @return $this
+	 */
+	public function setBasedOn(?Circle $basedOn): self;
 
 	/**
 	 * @return Circle
@@ -48,4 +83,11 @@ interface IFederatedUser extends IFederatedModel {
 	 * @return bool
 	 */
 	public function hasBasedOn(): bool;
+
+	/**
+	 * @param string $instance
+	 *
+	 * @return self
+	 */
+	public function setInstance(string $instance): self;
 }

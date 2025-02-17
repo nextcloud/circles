@@ -558,7 +558,7 @@ class Member extends ManagedModel implements
 	/**
 	 * @param string $displayName
 	 *
-	 * @return Member
+	 * @return $this
 	 */
 	public function setDisplayName(string $displayName): self {
 		if ($displayName !== '') {
