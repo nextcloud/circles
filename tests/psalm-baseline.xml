@@ -175,19 +175,6 @@
     <LessSpecificImplementedReturnType>
       <code><![CDATA[self]]></code>
     </LessSpecificImplementedReturnType>
-    <MismatchingDocblockParamType>
-      <code><![CDATA[Circle|null]]></code>
-    </MismatchingDocblockParamType>
-  </file>
-  <file src="lib/Model/ManagedModel.php">
-    <UndefinedMethod>
-      <code><![CDATA[setBasedOn]]></code>
-      <code><![CDATA[setDisplayName]]></code>
-      <code><![CDATA[setInstance]]></code>
-      <code><![CDATA[setSingleId]]></code>
-      <code><![CDATA[setUserId]]></code>
-      <code><![CDATA[setUserType]]></code>
-    </UndefinedMethod>
   </file>
   <file src="lib/Model/Member.php">
     <InvalidClass>

@@ -184,11 +184,11 @@ class FederatedUser extends ManagedModel implements
 	}
 
 	/**
-	 * @param Circle|null $basedOn
+	 * @param ?Circle $basedOn
 	 *
 	 * @return $this
 	 */
-	public function setBasedOn(Circle $basedOn): self {
+	public function setBasedOn(?Circle $basedOn): self {
 		$this->basedOn = $basedOn;
 
 		return $this;
