@@ -34,6 +34,7 @@ return [
 
 		// LocalController
 		['name' => 'Local#circles', 'url' => '/circles', 'verb' => 'GET'],
+		['name' => 'Local#probeCircles', 'url' => '/probecircles', 'verb' => 'GET'],
 		['name' => 'Local#create', 'url' => '/circles', 'verb' => 'POST'],
 		['name' => 'Local#destroy', 'url' => '/circles/{circleId}', 'verb' => 'DELETE'],
 		['name' => 'Local#search', 'url' => '/search', 'verb' => 'GET'],
