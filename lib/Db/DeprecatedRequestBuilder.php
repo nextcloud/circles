@@ -368,16 +368,16 @@ class DeprecatedRequestBuilder {
 	 */
 	private function generateLimitToLevelMultipleTableRequest(IQueryBuilder $qb, int $level, $pf) {
 		$expr = $qb->expr();
-		$orX = $expr->orX();
+		$orX = [];
 
 		foreach ($pf as $p) {
 			if ($p === 'g' && !$this->leftJoinedNCGroupAndUser) {
 				continue;
 			}
-			$orX->add($expr->gte($p . '.level', $qb->createNamedParameter($level)));
+			$orX[] = $expr->gte($p . '.level', $qb->createNamedParameter($level));
 		}
 
-		return $orX;
+		return $expr->orX(...$orX);
 	}
 
 
@@ -391,12 +391,11 @@ class DeprecatedRequestBuilder {
 
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
 
-		$orX = $expr->orX();
-		$orX->add($expr->eq($pf . 'status', $qb->createNamedParameter(DeprecatedMember::STATUS_MEMBER)));
-		$orX->add($expr->eq($pf . 'status', $qb->createNamedParameter(DeprecatedMember::STATUS_INVITED)));
-		$orX->add($expr->eq($pf . 'status', $qb->createNamedParameter(DeprecatedMember::STATUS_REQUEST)));
-
-		$qb->andWhere($orX);
+		$qb->andWhere($expr->orX(
+			$expr->eq($pf . 'status', $qb->createNamedParameter(DeprecatedMember::STATUS_MEMBER)),
+			$expr->eq($pf . 'status', $qb->createNamedParameter(DeprecatedMember::STATUS_INVITED)),
+			$expr->eq($pf . 'status', $qb->createNamedParameter(DeprecatedMember::STATUS_REQUEST)),
+		));
 	}
 
 

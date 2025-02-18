@@ -84,15 +84,14 @@ class GSSharesRequest extends GSSharesRequestBuilder {
 		$qb->from(DeprecatedRequestBuilder::TABLE_MEMBERS, 'm');
 
 		$expr = $qb->expr();
-		$andX = $expr->andX();
 
-		$andX->add($expr->eq('m.user_id', $qb->createNamedParameter($userId)));
-		$andX->add($expr->eq('m.instance', $qb->createNamedParameter('')));
-		$andX->add($expr->gt('m.level', $qb->createNamedParameter(0)));
-		$andX->add($expr->eq('m.user_type', $qb->createNamedParameter(DeprecatedMember::TYPE_USER)));
-		$andX->add($expr->eq('m.circle_id', 'gsh.circle_id'));
-
-		$qb->andWhere($andX);
+		$qb->andWhere($expr->andX(
+			$expr->eq('m.user_id', $qb->createNamedParameter($userId)),
+			$expr->eq('m.instance', $qb->createNamedParameter('')),
+			$expr->gt('m.level', $qb->createNamedParameter(0)),
+			$expr->eq('m.user_type', $qb->createNamedParameter(DeprecatedMember::TYPE_USER)),
+			$expr->eq('m.circle_id', 'gsh.circle_id'),
+		));
 	}
 
 
@@ -100,9 +99,10 @@ class GSSharesRequest extends GSSharesRequestBuilder {
 		$expr = $qb->expr();
 		$pf = '' . $this->default_select_alias . '.';
 
-		$on = $expr->andX();
-		$on->add($expr->eq('mp.user_id', $qb->createNamedParameter($userId)));
-		$on->add($expr->eq('mp.share_id', $pf . 'id'));
+		$on = $expr->andX(
+			$expr->eq('mp.user_id', $qb->createNamedParameter($userId)),
+			$expr->eq('mp.share_id', $pf . 'id'),
+		);
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->selectAlias('mp.mountPoint', 'gsshares_mountpoint')

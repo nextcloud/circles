@@ -162,13 +162,11 @@ class RemoteRequest extends RemoteRequestBuilder {
 	public function getOutgoingRecipient(Circle $circle, bool $broadcastAsFederated = false): array {
 		$qb = $this->getRemoteSelectSql();
 		$expr = $qb->expr();
-		$orX = $expr->orX();
-
-		$orX->add($qb->exprLimit('type', RemoteInstance::TYPE_GLOBALSCALE, '', false));
+		$orX = [$qb->exprLimit('type', RemoteInstance::TYPE_GLOBALSCALE, '', false)];
 
 		if ($circle->isConfig(Circle::CFG_FEDERATED) || $broadcastAsFederated) {
 			// get all TRUSTED
-			$orX->add($qb->exprLimit('type', RemoteInstance::TYPE_TRUSTED, '', false));
+			$orX[] = $qb->exprLimit('type', RemoteInstance::TYPE_TRUSTED, '', false);
 
 			// get EXTERNAL with Members
 			$aliasMember = $qb->generateAlias(CoreQueryBuilder::REMOTE, CoreQueryBuilder::MEMBER);
@@ -184,13 +182,13 @@ class RemoteRequest extends RemoteRequestBuilder {
 				)
 			);
 
-			$external = $expr->andX();
-			$external->add($qb->exprLimit('type', RemoteInstance::TYPE_EXTERNAL, '', false));
-			$external->add($expr->isNotNull($aliasMember . '.instance'));
-			$orX->add($external);
+			$orX[] = $expr->andX(
+				$qb->exprLimit('type', RemoteInstance::TYPE_EXTERNAL, '', false),
+				$expr->isNotNull($aliasMember . '.instance'),
+			);
 		}
 
-		$qb->andWhere($orX);
+		$qb->andWhere($expr->orX(...$orX));
 
 		return $this->getItemsFromRequest($qb);
 	}
@@ -245,11 +243,11 @@ class RemoteRequest extends RemoteRequestBuilder {
 	 */
 	public function searchDuplicate(RemoteInstance $remoteInstance): RemoteInstance {
 		$qb = $this->getRemoteSelectSql();
-		$orX = $qb->expr()->orX();
-		$orX->add($qb->exprLimit('href', $remoteInstance->getId(), '', false));
-		$orX->add($qb->exprLimit('uid', $remoteInstance->getUid(true), '', false));
-		$orX->add($qb->exprLimit('instance', $remoteInstance->getInstance(), '', false));
-		$qb->andWhere($orX);
+		$qb->andWhere($qb->expr()->orX(
+			$qb->exprLimit('href', $remoteInstance->getId(), '', false),
+			$qb->exprLimit('uid', $remoteInstance->getUid(true), '', false),
+			$qb->exprLimit('instance', $remoteInstance->getInstance(), '', false),
+		));
 
 		return $this->getItemFromRequest($qb);
 	}
