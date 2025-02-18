@@ -214,16 +214,13 @@ class ExtendedQueryBuilder extends QueryBuilder {
 																. '.' : '';
 		$field = $pf . $field;
 
-		$orX = $expr->orX();
-		$orX->add(
-			$expr->lte($field, $this->createNamedParameter($date, IQueryBuilder::PARAM_DATE))
-		);
+		$orX = [$expr->lte($field, $this->createNamedParameter($date, IQueryBuilder::PARAM_DATE))];
 
 		if ($orNull === true) {
-			$orX->add($expr->isNull($field));
+			$orX[] = $expr->isNull($field);
 		}
 
-		$this->andWhere($orX);
+		$this->andWhere($expr->orX(...$orX));
 	}
 
 
@@ -245,12 +242,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 		$pf = ($this->getType() === DBALQueryBuilder::SELECT) ? $this->getDefaultSelectAlias() . '.' : '';
 		$field = $pf . $field;
 
-		$orX = $expr->orX();
-		$orX->add(
-			$expr->gte($field, $this->createNamedParameter($dTime, IQueryBuilder::PARAM_DATE))
-		);
-
-		$this->andWhere($orX);
+		$this->andWhere($expr->gte($field, $this->createNamedParameter($dTime, IQueryBuilder::PARAM_DATE)));
 	}
 
 
@@ -459,13 +451,12 @@ class ExtendedQueryBuilder extends QueryBuilder {
 		}
 
 		$expr = $this->expr();
-		$orX = $expr->orX();
-		$orX->add($expr->emptyString($field));
+		$orX = [$expr->emptyString($field)];
 		if ($orNull) {
-			$orX->add($expr->isNull($field));
+			$orX[] = $expr->isNull($field);
 		}
 
-		return $orX;
+		return $expr->orX(...$orX);
 	}
 
 	/**
@@ -485,13 +476,12 @@ class ExtendedQueryBuilder extends QueryBuilder {
 		}
 
 		$expr = $this->expr();
-		$orX = $expr->orX();
-		$orX->add($expr->isNull($field));
+		$orX = [$expr->isNull($field)];
 		if ($orEmpty) {
-			$orX->add($expr->emptyString($field));
+			$orX[] = $expr->emptyString($field);
 		}
 
-		return $orX;
+		return $expr->orX(...$orX);
 	}
 
 
@@ -853,16 +843,16 @@ class ExtendedQueryBuilder extends QueryBuilder {
 			$field = (($alias === '') ? $this->getDefaultSelectAlias() : $alias) . '.' . $field;
 		}
 
-		$orX = $this->expr()->orX();
+		$orX = [];
 		foreach ($values as $value) {
 			if (is_integer($value)) {
-				$orX->add($this->exprFilterInt($field, $value, $alias));
+				$orX[] = $this->exprFilterInt($field, $value, $alias);
 			} else {
-				$orX->add($this->exprFilter($field, $value, $alias, $cs));
+				$orX[] = $this->exprFilter($field, $value, $alias, $cs);
 			}
 		}
 
-		return $orX;
+		return $this->expr()->orX(...$orX);
 	}
 
 
