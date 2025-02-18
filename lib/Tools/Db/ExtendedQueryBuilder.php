@@ -499,16 +499,16 @@ class ExtendedQueryBuilder extends QueryBuilder {
 		string $alias = '',
 		bool $cs = true,
 	): ICompositeExpression {
-		$andX = $this->expr()->andX();
+		$andX = [];
 		foreach ($values as $value) {
 			if (is_integer($value)) {
-				$andX->add($this->exprLimitInt($field, $value, $alias));
+				$andX[] = $this->exprLimitInt($field, $value, $alias);
 			} else {
-				$andX->add($this->exprLimit($field, $value, $alias, $cs));
+				$andX[] = $this->exprLimit($field, $value, $alias, $cs);
 			}
 		}
 
-		return $andX;
+		return $this->expr()->andX(...$andX);
 	}
 
 	/**
@@ -789,13 +789,12 @@ class ExtendedQueryBuilder extends QueryBuilder {
 		}
 
 		$expr = $this->expr();
-		$andX = $expr->andX();
-		$andX->add($expr->nonEmptyString($field));
+		$andX = [$expr->nonEmptyString($field)];
 		if ($norNull) {
-			$andX->add($expr->isNotNull($field));
+			$andX[] = $expr->isNotNull($field);
 		}
 
-		return $andX;
+		return $expr->andX(...$andX);
 	}
 
 	/**
@@ -815,13 +814,12 @@ class ExtendedQueryBuilder extends QueryBuilder {
 		}
 
 		$expr = $this->expr();
-		$andX = $expr->andX();
-		$andX->add($expr->isNotNull($field));
+		$andX = [$expr->isNotNull($field)];
 		if ($norEmpty) {
-			$andX->add($expr->nonEmptyString($field));
+			$andX[] = $expr->nonEmptyString($field);
 		}
 
-		return $andX;
+		return $expr->andX(...$andX);
 	}
 
 

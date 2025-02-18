@@ -374,19 +374,17 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$expr = $this->expr();
 		$andX = null;
 		if ($circle->getDisplayName() !== '') {
-			$andX = $expr->andX();
+			$andX = [];
 			foreach (explode(' ', $circle->getDisplayName()) as $word) {
-				$andX->add(
-					$expr->iLike(
-						$this->getDefaultSelectAlias() . '.' . 'display_name',
-						$this->createNamedParameter('%' . $word . '%')
-					)
+				$andX[] = $expr->iLike(
+					$this->getDefaultSelectAlias() . '.' . 'display_name',
+					$this->createNamedParameter('%' . $word . '%')
 				);
 			}
 		}
 
 		if ($andX !== null) {
-			$this->andWhere($andX);
+			$this->andWhere(...$andX);
 		}
 
 		if ($circle->getSource() > 0) {
@@ -587,20 +585,21 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			$expr->isNotNull($aliasRemoteCircleOwner . '.instance'),
 		);
 
-		$andExternal = $expr->andX();
-		$andExternal->add($expr->orX(...$orExtOrPassive));
-		$andExternal->add($orInstance);
+		$andExternal = $expr->andX(
+			$expr->orX(...$orExtOrPassive),
+			$orInstance,
+		);
 
 		$orExtOrTrusted = $expr->orX(
 			$andExternal,
 			$expr->eq($aliasRemote . '.type', $this->createNamedParameter(RemoteInstance::TYPE_TRUSTED)),
 		);
 
-		$andTrusted = $expr->andX();
-		$andTrusted->add($orExtOrTrusted);
-		$andTrusted->add($this->exprLimitBitwise('config', Circle::CFG_FEDERATED, $aliasCircle));
-		$andTrusted->add($expr->emptyString($aliasOwner . '.instance'));
-		$orX[] = $andTrusted;
+		$orX[] = $expr->andX(
+			$orExtOrTrusted,
+			$this->exprLimitBitwise('config', Circle::CFG_FEDERATED, $aliasCircle),
+			$expr->emptyString($aliasOwner . '.instance'),
+		);
 
 		$this->andWhere($expr->orX(...$orX));
 	}
@@ -673,38 +672,30 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		}
 
 		$expr = $this->expr();
-		$andX = $expr->andX();
+		$andX = [];
 
 		if ($member->getUserId() !== '') {
-			$andX->add(
-				$expr->eq($aliasMember . '.user_id', $this->createNamedParameter($member->getUserId()))
-			);
+			$andX[] = $expr->eq($aliasMember . '.user_id', $this->createNamedParameter($member->getUserId()));
 		}
 
 		if ($member->getSingleId() !== '') {
-			$andX->add(
-				$expr->eq($aliasMember . '.single_id', $this->createNamedParameter($member->getSingleId()))
-			);
+			$andX[] = $expr->eq($aliasMember . '.single_id', $this->createNamedParameter($member->getSingleId()));
 		}
 
 		if ($member->getUserType() > 0) {
-			$andX->add(
-				$expr->eq($aliasMember . '.user_type', $this->createNamedParameter($member->getUserType()))
-			);
+			$andX[] = $expr->eq($aliasMember . '.user_type', $this->createNamedParameter($member->getUserType()));
 		}
 
 		$this->limitToInstance($this->getInstance($member));
 
 		if ($member->getLevel() > 0) {
-			$andX->add(
-				$expr->gte(
-					$aliasMember . '.level',
-					$this->createNamedParameter($member->getLevel(), IQueryBuilder::PARAM_INT)
-				)
+			$andX[] = $expr->gte(
+				$aliasMember . '.level',
+				$this->createNamedParameter($member->getLevel(), IQueryBuilder::PARAM_INT)
 			);
 		}
 
-		$this->andWhere($andX);
+		$this->andWhere($expr->andX(...$andX));
 	}
 
 
@@ -1337,7 +1328,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		}
 
 		$minimumLevel = $this->getInt('minimumLevel', $options);
-		$andXMember = $expr->andX();
 		$orXLevelCheck = $expr->orX(...array_map(
 			function (string $alias) use ($minimumLevel) {
 				return $this->expr()->gte(
@@ -1347,17 +1337,15 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			},
 			$levelCheck
 		));
-		$andXMember->add($orXLevelCheck);
+		$andXMember = [$orXLevelCheck];
 
 		if (!$this->getBool('includePersonalCircles', $options, false)) {
-			$andXMember->add(
-				$this->exprFilterBitwise(
-					'config', Circle::CFG_PERSONAL,
-					$aliasMembershipCircle
-				)
+			$andXMember[] = $this->exprFilterBitwise(
+				'config', Circle::CFG_PERSONAL,
+				$aliasMembershipCircle
 			);
 		}
-		$orX[] = $andXMember;
+		$orX[] = $expr->andX(...$andXMember);
 
 		if ($directMember !== '' && $this->getBool('allowRequestingMembership', $options, false)) {
 			$orX[] = $expr->orX(
@@ -1371,10 +1359,10 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		}
 
 		if ($this->getBool('includeNonVisibleCircles', $options)) {
-			$andXNonVisible = $expr->andX();
-			$andXNonVisible->add($this->exprLimitBitwise('config', Circle::CFG_OPEN, $alias));
-			$andXNonVisible->add($this->exprFilterBitwise('config', Circle::CFG_VISIBLE, $alias));
-			$orX[] = $andXNonVisible;
+			$orX[] = $expr->andX(
+				$this->exprLimitBitwise('config', Circle::CFG_OPEN, $alias),
+				$this->exprFilterBitwise('config', Circle::CFG_VISIBLE, $alias),
+			);
 		}
 
 		if ($this->getBool('visitingSingleCircles', $options, false)) {
@@ -1383,13 +1371,14 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 
 		// if Member can be Visitor, we only filter access to Personal Circles
 		if ($this->getBool('viewableThroughKeyhole', $options, false)) {
-			$andOpen = $expr->andX();
-			$andOpen->add($this->exprLimitBitwise('config', Circle::CFG_OPEN, $alias));
-			$andOpen->add($this->exprLimitBitwise('config', Circle::CFG_VISIBLE, $alias));
+			$andOpen = [
+				$this->exprLimitBitwise('config', Circle::CFG_OPEN, $alias),
+				$this->exprLimitBitwise('config', Circle::CFG_VISIBLE, $alias),
+			];
 			if (!$this->configService->getAppValueBool(ConfigService::KEYHOLE_CFG_REQUEST)) {
-				$andOpen->add($this->exprFilterBitwise('config', Circle::CFG_REQUEST, $alias));
+				$andOpen[] = $this->exprFilterBitwise('config', Circle::CFG_REQUEST, $alias);
 			}
-			$orX[] = $andOpen;
+			$orX[] = $expr->andX(...$andOpen);
 		}
 
 		$orX = $expr->orX(...$orX);
@@ -1421,23 +1410,18 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 	 */
 	private function limitRemoteVisibility_Sensitive_Members(string $alias): ICompositeExpression {
 		$expr = $this->expr();
-		$andPassive = $expr->andX();
-		$andPassive->add(
-			$expr->eq($alias . '.type', $this->createNamedParameter(RemoteInstance::TYPE_PASSIVE))
-		);
-
-		$orMemberOrLevel = $expr->orX(
-			$expr->eq($this->getDefaultSelectAlias() . '.instance', $alias . '.instance'),
-			// TODO: do we need this ? (display members from the local instance)
-			$expr->emptyString($this->getDefaultSelectAlias() . '.instance'),
-			$expr->eq(
-				$this->getDefaultSelectAlias() . '.level',
-				$this->createNamedParameter(Member::LEVEL_OWNER)
+		return $expr->andX(
+			$expr->eq($alias . '.type', $this->createNamedParameter(RemoteInstance::TYPE_PASSIVE)),
+			$expr->orX(
+				$expr->eq($this->getDefaultSelectAlias() . '.instance', $alias . '.instance'),
+				// TODO: do we need this ? (display members from the local instance)
+				$expr->emptyString($this->getDefaultSelectAlias() . '.instance'),
+				$expr->eq(
+					$this->getDefaultSelectAlias() . '.level',
+					$this->createNamedParameter(Member::LEVEL_OWNER)
+				),
 			),
 		);
-		$andPassive->add($orMemberOrLevel);
-
-		return $andPassive;
 	}
 
 

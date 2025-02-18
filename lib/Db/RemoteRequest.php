@@ -182,10 +182,10 @@ class RemoteRequest extends RemoteRequestBuilder {
 				)
 			);
 
-			$external = $expr->andX();
-			$external->add($qb->exprLimit('type', RemoteInstance::TYPE_EXTERNAL, '', false));
-			$external->add($expr->isNotNull($aliasMember . '.instance'));
-			$orX[] = $external;
+			$orX[] = $expr->andX(
+				$qb->exprLimit('type', RemoteInstance::TYPE_EXTERNAL, '', false),
+				$expr->isNotNull($aliasMember . '.instance'),
+			);
 		}
 
 		$qb->andWhere($expr->orX(...$orX));

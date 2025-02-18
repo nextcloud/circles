@@ -25,11 +25,11 @@ class FileSharesRequest extends FileSharesRequestBuilder {
 		$qb = $this->getFileSharesDeleteSql();
 		$expr = $qb->expr();
 
-		$andX = $expr->andX();
-		$andX->add($expr->eq('share_type', $qb->createNamedParameter(self::SHARE_TYPE)));
-		$andX->add($expr->eq('share_with', $qb->createNamedParameter($member->getCircleId())));
-		$andX->add($expr->eq('uid_initiator', $qb->createNamedParameter($member->getUserId())));
-		$qb->andWhere($andX);
+		$qb->andWhere($expr->andX(
+			$expr->eq('share_type', $qb->createNamedParameter(self::SHARE_TYPE)),
+			$expr->eq('share_with', $qb->createNamedParameter($member->getCircleId())),
+			$expr->eq('uid_initiator', $qb->createNamedParameter($member->getUserId())),
+		));
 
 		$qb->execute();
 	}
@@ -42,10 +42,10 @@ class FileSharesRequest extends FileSharesRequestBuilder {
 		$qb = $this->getFileSharesDeleteSql();
 		$expr = $qb->expr();
 
-		$andX = $expr->andX();
-		$andX->add($expr->eq('share_type', $qb->createNamedParameter(self::SHARE_TYPE)));
-		$andX->add($expr->eq('share_with', $qb->createNamedParameter($circleId)));
-		$qb->andWhere($andX);
+		$qb->andWhere($expr->andX(
+			$expr->eq('share_type', $qb->createNamedParameter(self::SHARE_TYPE)),
+			$expr->eq('share_with', $qb->createNamedParameter($circleId)),
+		));
 
 		$qb->execute();
 	}
