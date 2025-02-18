@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace OCA\Circles\AppInfo;
 
 use Closure;
-use OC;
 use OCA\Circles\Dashboard\TeamDashboardWidget;
 use OCA\Circles\Events\AddingCircleMemberEvent;
 use OCA\Circles\Events\CircleMemberAddedEvent;
@@ -45,7 +44,6 @@ use OCA\Circles\MountManager\CircleMountProvider;
 use OCA\Circles\Notification\Notifier;
 use OCA\Circles\Search\UnifiedSearchProvider;
 use OCA\Circles\Service\ConfigService;
-use OCA\Files\App as FilesApp;
 use OCP\Accounts\UserUpdatedEvent;
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
@@ -134,7 +132,6 @@ class Application extends App implements IBootstrap {
 			->get(ConfigService::class);
 
 		$context->injectFn(Closure::fromCallable([$this, 'registerMountProvider']));
-		$context->injectFn(Closure::fromCallable([$this, 'registerFilesNavigation']));
 	}
 
 
@@ -145,22 +142,5 @@ class Application extends App implements IBootstrap {
 
 		$mountProviderCollection = $container->get(IMountProviderCollection::class);
 		$mountProviderCollection->registerProvider($container->get(CircleMountProvider::class));
-	}
-
-	public function registerFilesNavigation() {
-		$appManager = FilesApp::getNavigationManager();
-		$appManager->add(
-			function () {
-				$l = OC::$server->getL10N('circles');
-
-				return [
-					'id' => 'circlesfilter',
-					'appname' => 'circles',
-					'script' => 'files/list.php',
-					'order' => 25,
-					'name' => $l->t('Shared to Circles'),
-				];
-			}
-		);
 	}
 }
