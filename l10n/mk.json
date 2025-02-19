@@ -1,5 +1,4 @@
 { "translations": {
-    "Shared to Circles" : "Споделено со кругови",
     "Personal" : "Сопствен",
     "System" : "Систем",
     "Visible" : "Видлив",
@@ -31,6 +30,7 @@
     "No entries found in this folder" : "Нема ништо во оваа папка",
     "Name" : "Име",
     "Size" : "Големина",
-    "Modified" : "Изменето"
+    "Modified" : "Изменето",
+    "Shared to Circles" : "Споделено со кругови"
 },"pluralForm" :"nplurals=2; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : 1;"
 }

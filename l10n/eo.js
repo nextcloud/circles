@@ -41,7 +41,6 @@ OC.L10N.register(
     "{member} sent a request to join {circle}" : "{member} sendis peton por membriĝi al {circle}",
     "You are the new owner of {circle}" : "Vi nun estas la nova posedanto de {circle}",
     "{member} is the new owner of {circle}" : "{member} nun estas la nova posedanto de {circle}",
-    "Shared to Circles" : "Kunhavigita kun rondoj",
     "Personal" : "Persona",
     "System" : "Sistemo",
     "Visible" : "Videbla",
@@ -77,6 +76,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Neniu elemento en tiu ĉi dosierujo",
     "Name" : "Nomo",
     "Size" : "Grando",
-    "Modified" : "Modifita"
+    "Modified" : "Modifita",
+    "Shared to Circles" : "Kunhavigita kun rondoj"
 },
 "nplurals=2; plural=(n != 1);");
