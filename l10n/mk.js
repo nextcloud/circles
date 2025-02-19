@@ -1,7 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Shared to Circles" : "Споделено со кругови",
     "Personal" : "Сопствен",
     "System" : "Систем",
     "Visible" : "Видлив",
@@ -33,6 +32,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Нема ништо во оваа папка",
     "Name" : "Име",
     "Size" : "Големина",
-    "Modified" : "Изменето"
+    "Modified" : "Изменето",
+    "Shared to Circles" : "Споделено со кругови"
 },
 "nplurals=2; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : 1;");

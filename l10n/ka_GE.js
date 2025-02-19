@@ -41,7 +41,6 @@ OC.L10N.register(
     "{member} sent a request to join {circle}" : "{member} მომხმარებელმა გააგზვნა მოთხოვნა გაწევრიანდეს {circle} წრეში",
     "You are the new owner of {circle}" : "თქვენ ხართ {circle} წრის ახალი მფლობელი",
     "{member} is the new owner of {circle}" : "{member} ახლა {circle} წრის ახალი მფლობელია",
-    "Shared to Circles" : "წრეებთან გაზიარებული",
     "Personal" : "პირადი",
     "System" : "სისტემა",
     "Visible" : "ჩანს",
@@ -74,6 +73,7 @@ OC.L10N.register(
     "No entries found in this folder" : "ამ დირექტორიაში შენატანები ვერ იქნა ნაპოვნი",
     "Name" : "სახელი",
     "Size" : "ზომა",
-    "Modified" : "შეიცვალა"
+    "Modified" : "შეიცვალა",
+    "Shared to Circles" : "წრეებთან გაზიარებული"
 },
 "nplurals=2; plural=(n!=1);");
