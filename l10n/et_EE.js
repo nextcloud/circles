@@ -55,7 +55,6 @@ OC.L10N.register(
     "On events happening in a <strong>team</strong> of which you are a member" : "Sündmuste kohta, mis toimuvad <strong>tiimis</strong>, mille liige te olete",
     "Any important event in a <strong>team</strong> you are moderating" : "Iga oluline sündmus <strong>tiimis</strong>, mida modereerite",
     "On global events happening in any <strong>team</strong>" : "Mis tahes <strong>tiimis</strong> toimuvate globaalsete sündmuste kohta",
-    "Shared to Circles" : "Jagatud Ringidesse",
     "Single" : "Üks",
     "Personal" : "Isiklik",
     "System" : "Süsteem",
@@ -103,6 +102,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Selles kaustas ei leitud kirjeid",
     "Name" : "Nimi",
     "Size" : "Suurus",
-    "Modified" : "Muudetud"
+    "Modified" : "Muudetud",
+    "Shared to Circles" : "Jagatud Ringidesse"
 },
 "nplurals=2; plural=(n != 1);");

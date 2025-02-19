@@ -24,7 +24,6 @@ OC.L10N.register(
     "{member} sent a request to join {circle}" : "נשלחה בקשה על ידי {member} להצטרף אל {circle}",
     "You are the new owner of {circle}" : "קיבלת בעלות על {circle}",
     "{member} is the new owner of {circle}" : "הבעלות על {circle} הועברה לידי {member}",
-    "Shared to Circles" : "שותף למעגלים",
     "Single" : "בודד",
     "Personal" : "אישי",
     "System" : "מערכת",
@@ -74,6 +73,7 @@ OC.L10N.register(
     "Name" : "שם",
     "Size" : "גודל",
     "Modified" : "מועד שינוי",
+    "Shared to Circles" : "שותף למעגלים",
     "You are now a member of the Circle \"%2$s\"" : "התקבלת לחברות במעגל „%2$s”",
     "You have been invited by %1$s into the Circle \"%2$s\"" : "הוזמנת על ידי %1$s למעגל „%2$s”",
     "Leave the circle" : "לעזוב את המעגל"

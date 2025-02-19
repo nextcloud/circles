@@ -41,7 +41,6 @@ OC.L10N.register(
     "{member} sent a request to join {circle}" : "{member} envió una solicitud para unirse a {circle}",
     "You are the new owner of {circle}" : "Eres el nuevo dueño de {circle}",
     "{member} is the new owner of {circle}" : "{member} es el nuevo dueño de {circle}",
-    "Shared to Circles" : "Compartido a Círculos",
     "Personal" : "Personal",
     "System" : "Sistema",
     "Visible" : "Visible",
@@ -76,6 +75,7 @@ OC.L10N.register(
     "No entries found in this folder" : "No se encontraron elementos en esta carpeta",
     "Name" : "Nombre",
     "Size" : "Tamaño",
-    "Modified" : "Modificado"
+    "Modified" : "Modificado",
+    "Shared to Circles" : "Compartido a Círculos"
 },
 "nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");
