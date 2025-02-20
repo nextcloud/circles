@@ -195,7 +195,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	 */
 	public function limitToCreation(int $delay = 0): self {
 		$date = new DateTime('now');
-		$date->sub(new DateInterval('PT' . $delay . 'M'));
+		$date->sub(new DateInterval('PT' . ((string)$delay) . 'M'));
 
 		$this->limitToDBFieldDateTime('creation', $date, true);
 
@@ -1063,7 +1063,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	 * @param array $fields
 	 * @param string $alias
 	 * @param string $prefix
-	 * @param array $default
+	 * @param array<string, mixed> $default
 	 *
 	 * @return $this
 	 */

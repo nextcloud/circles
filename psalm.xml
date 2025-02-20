@@ -5,9 +5,78 @@
     xmlns="https://getpsalm.org/schema/config"
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
     errorBaseline="tests/psalm-baseline.xml"
+	findUnusedCode="false"
+	ensureOverrideAttribute="false"
+	phpVersion="8.1"
 >
 	<stubs>
-		<file name="tests/stub.phpstub" preloadClasses="true"/>
+		<file name="tests/stubs/doctrine_dbal_connection.php" />
+		<file name="tests/stubs/doctrine_dbal_connections_primaryreadreplicaconnection.php" />
+		<file name="tests/stubs/doctrine_dbal_driver_exception.php" />
+		<file name="tests/stubs/doctrine_dbal_exception.php" />
+		<file name="tests/stubs/doctrine_dbal_exception_constraintviolationexception.php" />
+		<file name="tests/stubs/doctrine_dbal_exception_driverexception.php" />
+		<file name="tests/stubs/doctrine_dbal_exception_serverexception.php" />
+		<file name="tests/stubs/doctrine_dbal_exception_uniqueconstraintviolationexception.php" />
+		<file name="tests/stubs/doctrine_dbal_query_querybuilder.php" />
+		<file name="tests/stubs/doctrine_dbal_schema_abstractasset.php" />
+		<file name="tests/stubs/doctrine_dbal_schema_constraint.php" />
+		<file name="tests/stubs/doctrine_dbal_schema_index.php" />
+		<file name="tests/stubs/doctrine_dbal_schema_schemaexception.php" />
+		<file name="tests/stubs/doctrine_dbal_schema_table.php" />
+		<file name="tests/stubs/oc.php" />
+		<file name="tests/stubs/oc_appframework_bootstrap_aregistration.php" />
+		<file name="tests/stubs/oc_appframework_bootstrap_coordinator.php" />
+		<file name="tests/stubs/oc_appframework_bootstrap_registrationcontext.php" />
+		<file name="tests/stubs/oc_appframework_bootstrap_serviceregistration.php" />
+		<file name="tests/stubs/oc_appframework_middleware_security_exceptions_notloggedinexception.php" />
+		<file name="tests/stubs/oc_appframework_middleware_security_exceptions_securityexception.php" />
+		<file name="tests/stubs/oc_appframework_utility_simplecontainer.php" />
+		<file name="tests/stubs/oc_core_command_base.php" />
+		<file name="tests/stubs/oc_db_connection.php" />
+		<file name="tests/stubs/oc_db_connectionadapter.php" />
+		<file name="tests/stubs/oc_db_exceptions_dbalexception.php" />
+		<file name="tests/stubs/oc_db_querybuilder_querybuilder.php" />
+		<file name="tests/stubs/oc_db_schemawrapper.php" />
+		<file name="tests/stubs/oc_files_cache_cache.php" />
+		<file name="tests/stubs/oc_files_cache_cacheentry.php" />
+		<file name="tests/stubs/oc_files_mount_manager.php" />
+		<file name="tests/stubs/oc_files_mount_mountpoint.php" />
+		<file name="tests/stubs/oc_group_group.php" />
+		<file name="tests/stubs/oc_group_manager.php" />
+		<file name="tests/stubs/oc_hooks_basicemitter.php" />
+		<file name="tests/stubs/oc_hooks_emitter.php" />
+		<file name="tests/stubs/oc_hooks_publicemitter.php" />
+		<file name="tests/stubs/oc_server.php" />
+		<file name="tests/stubs/oc_servercontainer.php" />
+		<file name="tests/stubs/oc_share20_share.php" />
+		<file name="tests/stubs/oc_share20_shareattributes.php" />
+		<file name="tests/stubs/oc_systemconfig.php" />
+		<file name="tests/stubs/oc_user_manager.php" />
+		<file name="tests/stubs/oc_user_nouserexception.php" />
+		<file name="tests/stubs/oc_user_user.php" />
+		<file name="tests/stubs/oca_dav_carddav_contactsmanager.php" />
+		<file name="tests/stubs/oca_federatedfilesharing_notifications.php" />
+		<file name="tests/stubs/oca_files_sharing_external_manager.php" />
+		<file name="tests/stubs/stecman_component_symfony_console_bashcompletion_completion_completionawareinterface.php" />
+		<file name="tests/stubs/symfony_component_console_command_command.php" />
+		<file name="tests/stubs/symfony_component_console_helper_helper.php" />
+		<file name="tests/stubs/symfony_component_console_helper_helperinterface.php" />
+		<file name="tests/stubs/symfony_component_console_helper_questionhelper.php" />
+		<file name="tests/stubs/symfony_component_console_helper_table.php" />
+		<file name="tests/stubs/symfony_component_console_input_inputargument.php" />
+		<file name="tests/stubs/symfony_component_console_input_inputinterface.php" />
+		<file name="tests/stubs/symfony_component_console_input_inputoption.php" />
+		<file name="tests/stubs/symfony_component_console_input_inputoption.php" />
+		<file name="tests/stubs/symfony_component_console_output_consoleoutput.php" />
+		<file name="tests/stubs/symfony_component_console_output_consoleoutputinterface.php" />
+		<file name="tests/stubs/symfony_component_console_output_consolesectionoutput.php" />
+		<file name="tests/stubs/symfony_component_console_output_output.php" />
+		<file name="tests/stubs/symfony_component_console_output_outputinterface.php" />
+		<file name="tests/stubs/symfony_component_console_output_streamoutput.php" />
+		<file name="tests/stubs/symfony_component_console_question_confirmationquestion.php" />
+		<file name="tests/stubs/symfony_component_console_question_question.php" />
+		<file name="tests/stubs/symfony_component_process_process.php" />
 	</stubs>
 	<projectFiles>
 		<directory name="lib" />
@@ -21,35 +90,4 @@
 			<directory name="vendor/phpunit/php-code-coverage" />
 		</ignoreFiles>
 	</extraFiles>
-	<issueHandlers>
-		<UndefinedClass>
-			<errorLevel type="suppress">
-				<referencedClass name="OC" />
-				<referencedClass name="OC\DB\Exceptions\DbalException" />
-				<referencedClass name="Doctrine\DBAL\Schema\SchemaException" />
-				<referencedClass name="OCA\Files\App" />
-				<referencedClass name="OCA\Files_Sharing\External\Manager" />
-				<referencedClass name="OCP\Accounts\UserUpdatedEvent" />
-				<referencedClass name="OCA\Files\Event\LoadAdditionalScriptsEvent" />
-				<referencedClass name="OC\Share20\ShareAttributes" />
-				<referencedClass name="Symfony\Component\Console\Question\Question" />
-				<referencedClass name="Symfony\Component\Console\Output\ConsoleOutput" />
-				<referencedClass name="Symfony\Component\Console\Exception\MissingInputException" />
-				<referencedClass name="Symfony\Component\Process\Process" />
-			</errorLevel>
-		</UndefinedClass>
-		<UndefinedDocblockClass>
-			<errorLevel type="suppress">
-				<referencedClass name="Doctrine\DBAL\Schema\Schema" />
-				<referencedClass name="Doctrine\DBAL\Schema\SchemaException" />
-				<referencedClass name="Doctrine\DBAL\Driver\Statement" />
-				<referencedClass name="Doctrine\DBAL\Schema\Table" />
-			</errorLevel>
-		</UndefinedDocblockClass>
-		<InvalidThrow>
-			<errorLevel type="suppress">
-				<referencedClass name="OC\DB\Exceptions\DbalException" />
-			</errorLevel>
-		</InvalidThrow>
-	</issueHandlers>
 </psalm>

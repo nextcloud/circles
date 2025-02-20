@@ -14,6 +14,7 @@ namespace OCA\Circles\Db;
 use OCA\Circles\Exceptions\ShareTokenNotFoundException;
 use OCA\Circles\Model\ShareToken;
 use OCA\Circles\Tools\Exceptions\RowNotFoundException;
+use OCP\DB\QueryBuilder\IQueryBuilder;
 
 /**
  * Class ShareTokenRequestBuilder
@@ -22,7 +23,7 @@ use OCA\Circles\Tools\Exceptions\RowNotFoundException;
  */
 class ShareTokenRequestBuilder extends CoreRequestBuilder {
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getTokenInsertSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
@@ -33,7 +34,7 @@ class ShareTokenRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getTokenUpdateSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
@@ -46,7 +47,7 @@ class ShareTokenRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * @param string $alias
 	 *
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getTokenSelectSql(string $alias = CoreQueryBuilder::TOKEN): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
@@ -59,7 +60,7 @@ class ShareTokenRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * Base of the Sql Delete request
 	 *
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getTokenDeleteSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();

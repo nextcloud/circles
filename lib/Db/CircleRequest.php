@@ -23,6 +23,7 @@ use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\Probes\DataProbe;
+use OCP\DB\QueryBuilder\IQueryBuilder;
 
 /**
  * Class CircleRequest
@@ -239,7 +240,7 @@ class CircleRequest extends CircleRequestBuilder {
 	 * @param CircleProbe $circleProbe
 	 * @param DataProbe $dataProbe
 	 *
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 * @throws RequestBuilderException
 	 */
 	private function buildProbeCircle(
