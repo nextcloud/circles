@@ -12,8 +12,10 @@ declare(strict_types=1);
 namespace OCA\Circles\Model\Federated;
 
 use JsonSerializable;
+use OCA\Circles\Exceptions\TeamNotFoundException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\Team;
 use OCA\Circles\Tools\Exceptions\InvalidItemException;
 use OCA\Circles\Tools\Model\SimpleDataStore;
 use OCA\Circles\Tools\Traits\TArrayTools;
@@ -96,12 +98,8 @@ class FederatedEvent implements JsonSerializable {
 
 	private bool $forceSync = false;
 
+	private ?Team $team = null;
 
-	/**
-	 * FederatedEvent constructor.
-	 *
-	 * @param string $class
-	 */
 	public function __construct(string $class = '') {
 		$this->class = $class;
 		$this->params = new SimpleDataStore();
@@ -272,6 +270,22 @@ class FederatedEvent implements JsonSerializable {
 	 */
 	public function getCircle(): Circle {
 		return $this->circle;
+	}
+
+
+
+	public function setTeam(Team $team): self {
+		$this->team = $team;
+
+		return $this;
+	}
+
+	public function getTeam(): Team {
+		if ($this->team === null) {
+			throw new TeamNotFoundException('Team not found in FederatedEvent');
+		}
+
+		return $this->team;
 	}
 
 
