@@ -1,8 +1,12 @@
 OC.L10N.register(
     "circles",
     {
+    "You created the team {circle}" : "{circle} 팀을 생성했습니다.",
+    "{author} created the team {circle}" : "유저 {author}이/가 팀  {circle}을 생성했습니다.",
     "You deleted {circle}" : "여러분이 {circle}을(를) 삭제함",
     "{author} deleted {circle}" : "{author} 님이 {circle}을(를) 삭제함",
+    "You made {member} join {circle}" : "{member}를 {circle}에 할당했습니다.",
+    "{author} made {member} join {circle}" : "유저 {author}이/가 {member}를 {circle}에 할당했습니다.",
     "You removed {member} from {circle}" : "여러분이 {member} 님을 {circle}에서 삭제함",
     "You joined {circle}" : "여러분이 {circle}에 참가함",
     "{member} joined {circle}" : "{member} 님이 {circle}에 참가함",
