@@ -196,7 +196,7 @@ class CirclesCheck extends Base {
 			try {
 				[$scheme, $cloudId, $path] = $this->parseAddress($loopback);
 			} catch (Exception $e) {
-				$output->writeln('<error>format must be http[s]://domain.name[:post][/path]</error>');
+				$output->writeln('<error>format must be http[s]://domain.name[:port][/path]</error>');
 				continue;
 			}
 
@@ -391,7 +391,7 @@ class CirclesCheck extends Base {
 			try {
 				[$scheme, $cloudId, $path] = $this->parseAddress($internal);
 			} catch (Exception $e) {
-				$output->writeln('<error>format must be http[s]://domain.name[:post][/path]</error>');
+				$output->writeln('<error>format must be http[s]://domain.name[:port][/path]</error>');
 				continue;
 			}
 
@@ -571,7 +571,7 @@ class CirclesCheck extends Base {
 			try {
 				[$scheme, $cloudId, $path] = $this->parseAddress($frontal);
 			} catch (Exception $e) {
-				$output->writeln('<error>format must be http[s]://domain.name[:post][/path]</error>');
+				$output->writeln('<error>format must be http[s]://domain.name[:port][/path]</error>');
 				continue;
 			}
 
