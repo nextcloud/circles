@@ -54,7 +54,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 			->setValue('password', $qb->createNamedParameter(''))
 			->setValue('permissions', $qb->createNamedParameter($share->getPermissions()))
 			->setValue('token', $qb->createNamedParameter($share->getToken()))
-			->setValue('stime', $qb->createFunction('UNIX_TIMESTAMP()'));
+			->setValue('stime', (string)$qb->createFunction('UNIX_TIMESTAMP()'));
 
 		if ($parentId > 0) {
 			$qb->setValue('parent', $qb->createNamedParameter($parentId));

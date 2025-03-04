@@ -14,6 +14,7 @@ namespace OCA\Circles\Db;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Tools\Exceptions\RowNotFoundException;
+use OCP\DB\QueryBuilder\IQueryBuilder;
 
 /**
  * Class CircleRequestBuilder
@@ -22,7 +23,7 @@ use OCA\Circles\Tools\Exceptions\RowNotFoundException;
  */
 class CircleRequestBuilder extends CoreRequestBuilder {
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getCircleInsertSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
@@ -34,7 +35,7 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getCircleUpdateSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
@@ -48,7 +49,7 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 	 * @param string $alias
 	 * @param bool $single
 	 *
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getCircleSelectSql(
 		string $alias = CoreQueryBuilder::CIRCLE,
@@ -68,7 +69,7 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * Base of the Sql Delete request
 	 *
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getCircleDeleteSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
@@ -79,7 +80,7 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @param CoreQueryBuilder $qb
+	 * @param CoreQueryBuilder&IQueryBuilder $qb
 	 *
 	 * @return Circle
 	 * @throws CircleNotFoundException

@@ -16,6 +16,7 @@ use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MaintenanceService;
 use OCA\Circles\Service\OutputService;
 use OCP\IDBConnection;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -92,6 +93,7 @@ class CirclesMaintenance extends Base {
 				'/^(y|Y)/i'
 			);
 
+			/** @var QuestionHelper $helper */
 			$helper = $this->getHelper('question');
 			if (!$helper->ask($input, $output, $question)) {
 				$output->writeln('aborted.');
@@ -107,6 +109,7 @@ class CirclesMaintenance extends Base {
 				. '\'</comment>: ', ''
 			);
 
+			/** @var QuestionHelper $helper */
 			$helper = $this->getHelper('question');
 			$confirmation = $helper->ask($input, $output, $question);
 			if (strtolower($confirmation) !== $action) {

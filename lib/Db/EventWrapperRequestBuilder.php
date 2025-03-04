@@ -14,6 +14,7 @@ namespace OCA\Circles\Db;
 use OCA\Circles\Exceptions\EventWrapperNotFoundException;
 use OCA\Circles\Model\Federated\EventWrapper;
 use OCA\Circles\Tools\Exceptions\RowNotFoundException;
+use OCP\DB\QueryBuilder\IQueryBuilder;
 
 /**
  * Class GSEventsRequestBuilder
@@ -22,7 +23,7 @@ use OCA\Circles\Tools\Exceptions\RowNotFoundException;
  */
 class EventWrapperRequestBuilder extends CoreRequestBuilder {
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getEventWrapperInsertSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
@@ -33,7 +34,7 @@ class EventWrapperRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getEventWrapperUpdateSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
@@ -44,7 +45,7 @@ class EventWrapperRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getEventWrapperSelectSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
@@ -60,7 +61,7 @@ class EventWrapperRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getEventWrapperDeleteSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();

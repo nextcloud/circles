@@ -14,6 +14,7 @@ namespace OCA\Circles\Db;
 use OCA\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Model\Membership;
 use OCA\Circles\Tools\Exceptions\RowNotFoundException;
+use OCP\DB\QueryBuilder\IQueryBuilder;
 
 /**
  * Class MembershipRequestBuilder
@@ -22,7 +23,7 @@ use OCA\Circles\Tools\Exceptions\RowNotFoundException;
  */
 class MembershipRequestBuilder extends CoreRequestBuilder {
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getMembershipInsertSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
@@ -33,7 +34,7 @@ class MembershipRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getMembershipUpdateSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
@@ -44,7 +45,7 @@ class MembershipRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getMembershipSelectSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
@@ -61,7 +62,7 @@ class MembershipRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * Base of the Sql Delete request
 	 *
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	protected function getMembershipDeleteSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();

@@ -17,6 +17,7 @@ use OC\DB\SchemaWrapper;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\TimezoneService;
+use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\Share\IShare;
 
 /**
@@ -199,10 +200,12 @@ class CoreRequestBuilder {
 
 
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	public function getQueryBuilder(): CoreQueryBuilder {
-		return new CoreQueryBuilder();
+		/** @var CoreQueryBuilder&IQueryBuilder $qb */
+		$qb = new CoreQueryBuilder();
+		return $qb;
 	}
 
 

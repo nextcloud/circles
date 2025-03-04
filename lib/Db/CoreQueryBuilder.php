@@ -1551,7 +1551,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 	 * @param string $alias
 	 * @param array $default
 	 *
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	private function generateCircleSelectAlias(string $alias, array $default = []): self {
 		$this->generateSelectAlias(
@@ -1627,7 +1627,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 	 * @param array $path
 	 * @param array $options
 	 *
-	 * @return CoreQueryBuilder
+	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
 	public function setOptions(array $path, array $options): self {
 		$options = [self::OPTIONS => $options];

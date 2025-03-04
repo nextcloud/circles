@@ -544,7 +544,7 @@ class CirclesTest extends Base {
 			$expectedSize = sizeof($this->getConfigArray($instanceId, 'groups'))
 							+ sizeof($this->getConfigArray($instanceId, 'users'))
 							+ 1;
-			$this->r((sizeof($result) === $expectedSize), sizeof($result) . ' circles');
+			$this->r((sizeof($result) === $expectedSize), ((string)sizeof($result)) . ' circles');
 
 			$membersList = $groupsList = [];
 			foreach ($result as $item) {
@@ -947,29 +947,22 @@ class CirclesTest extends Base {
 
 		if ($compareTo->hasOwner()) {
 			$compareToOwner = $compareTo->getOwner();
-			if ($compareToOwner !== null) {
-				$owner = $circle->getOwner();
-				if ($owner === null) {
-					throw new Exception('empty owner');
-				}
-				if ($owner->getCircleId() !== $circle->getSingleId()) {
-					throw new Exception($prefix . '.owner.circleId is different than ' . $prefix . '.id');
-				}
-				$this->confirmMemberData($owner, $compareToOwner, 'owner', false, $params);
+			$owner = $circle->getOwner();
+			if ($owner->getCircleId() !== $circle->getSingleId()) {
+				throw new Exception($prefix . '.owner.circleId is different than ' . $prefix . '.id');
 			}
+			$this->confirmMemberData($owner, $compareToOwner, 'owner', false, $params);
 		}
 		if ($compareTo->hasInitiator()) {
 			$compareToInitiator = $compareTo->getInitiator();
-			if ($compareToInitiator !== null) {
-				if (!$circle->hasInitiator()) {
-					throw new Exception('empty initiator');
-				}
-				$initiator = $circle->getInitiator();
-				if ($initiator->getCircleId() !== $circle->getSingleId()) {
-					throw new Exception($prefix . '.initiator.circleId is different than ' . $prefix . '.id');
-				}
-				$this->confirmMemberData($initiator, $compareToInitiator, 'owner', false, $params);
+			if (!$circle->hasInitiator()) {
+				throw new Exception('empty initiator');
 			}
+			$initiator = $circle->getInitiator();
+			if ($initiator->getCircleId() !== $circle->getSingleId()) {
+				throw new Exception($prefix . '.initiator.circleId is different than ' . $prefix . '.id');
+			}
+			$this->confirmMemberData($initiator, $compareToInitiator, 'owner', false, $params);
 		}
 
 		if ($versa) {
@@ -1048,7 +1041,7 @@ class CirclesTest extends Base {
 	private function compareInt(int $expected, int $compare, string $def, bool $force = false) {
 		if (($expected > 0 || ($force && $expected >= 0))
 			&& $expected !== $compare) {
-			throw new Exception('wrong ' . $def . ': ' . $compare . ' (' . $expected . ')');
+			throw new Exception('wrong ' . $def . ': ' . ((string)$compare) . ' (' . ((string)$expected) . ')');
 		}
 	}
 
@@ -1144,7 +1137,7 @@ class CirclesTest extends Base {
 	 * @param string $instance
 	 * @param string $key
 	 *
-	 * @return array
+	 * @return array<string, mixed>
 	 * @throws ItemNotFoundException
 	 */
 	private function getConfigArray(string $instance, string $key): array {

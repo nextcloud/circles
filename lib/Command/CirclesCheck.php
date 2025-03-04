@@ -39,6 +39,7 @@ use OCA\Circles\Tools\Traits\TArrayTools;
 use OCA\Circles\Tools\Traits\TNCRequest;
 use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\IAppConfig;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -181,6 +182,7 @@ class CirclesCheck extends Base {
 		$output->writeln('- <comment>You do not have a valid loopback address setup right now.</comment>');
 		$output->writeln('');
 
+		/** @var QuestionHelper $helper */
 		$helper = $this->getHelper('question');
 		while (true) {
 			$question = new Question('<info>Please write down a new loopback address to test</info>: ', '');
@@ -265,13 +267,13 @@ class CirclesCheck extends Base {
 			return false;
 		}
 
-		$timer = round(microtime(true) * 1000);
+		$timer = round(microtime(true) * 1000.0);
 		$output->write('- Creating async FederatedEvent ');
 		$test = new FederatedEvent(LoopbackTest::class);
 		$this->federatedEventService->newEvent($test);
 		$output->writeln(
 			'<info>' . $test->getWrapperToken() . '</info> ' .
-			'(took ' . (round(microtime(true) * 1000) - $timer) . 'ms)'
+			'(took ' . ((string)(round(microtime(true) * 1000.0) - $timer)) . 'ms)'
 		);
 
 		$output->writeln('- Waiting for async process to finish (5s)');
@@ -290,18 +292,18 @@ class CirclesCheck extends Base {
 
 		$checkVerify = $wrapper->getEvent()->getData()->gInt('verify');
 		if ($checkVerify === LoopbackTest::VERIFY) {
-			$output->write('<info>verify=' . $checkVerify . '</info> ');
+			$output->write('<info>verify=' . ((string)$checkVerify) . '</info> ');
 		} else {
-			$output->writeln('<error>verify=' . $checkVerify . '</error>');
+			$output->writeln('<error>verify=' . ((string)$checkVerify) . '</error>');
 
 			return false;
 		}
 
 		$checkManage = $wrapper->getResult()->gInt('manage');
 		if ($checkManage === LoopbackTest::MANAGE) {
-			$output->write('<info>manage=' . $checkManage . '</info> ');
+			$output->write('<info>manage=' . ((string)$checkManage) . '</info> ');
 		} else {
-			$output->writeln('<error>manage=' . $checkManage . '</error>');
+			$output->writeln('<error>manage=' . ((string)$checkManage) . '</error>');
 
 			return false;
 		}
@@ -328,6 +330,7 @@ class CirclesCheck extends Base {
 			false, '/^(y|Y)/i'
 		);
 
+		/** @var QuestionHelper $helper */
 		$helper = $this->getHelper('question');
 		if (!$helper->ask($input, $output, $question)) {
 			$output->writeln('skipping.');
@@ -364,6 +367,7 @@ class CirclesCheck extends Base {
 			'- <comment>Do you want to enable this feature ?</comment> (y/N) ', false, '/^(y|Y)/i'
 		);
 
+		/** @var QuestionHelper $helper */
 		$helper = $this->getHelper('question');
 		if (!$helper->ask($input, $output, $question)) {
 			$output->writeln('skipping.');
@@ -508,6 +512,7 @@ class CirclesCheck extends Base {
 			false, '/^(y|Y)/i'
 		);
 
+		/** @var QuestionHelper $helper */
 		$helper = $this->getHelper('question');
 		if (!$helper->ask($input, $output, $question)) {
 			$output->writeln('skipping.');
@@ -543,6 +548,7 @@ class CirclesCheck extends Base {
 			'- <comment>Do you want to enable this feature ?</comment> (y/N) ', false, '/^(y|Y)/i'
 		);
 
+		/** @var QuestionHelper $helper */
 		$helper = $this->getHelper('question');
 		if (!$helper->ask($input, $output, $question)) {
 			$output->writeln('skipping.');
@@ -686,6 +692,7 @@ class CirclesCheck extends Base {
 			false, '/^(y|Y)/i'
 		);
 
+		/** @var QuestionHelper $helper */
 		$helper = $this->getHelper('question');
 		if (!$helper->ask($input, $output, $question)) {
 			$output->writeln('skipping.');
@@ -733,7 +740,7 @@ class CirclesCheck extends Base {
 				$color = 'info';
 			}
 
-			$output->writeln('<' . $color . '>' . $result->getStatusCode() . '</' . $color . '>');
+			$output->writeln('<' . $color . '>' . ((string)$result->getStatusCode()) . '</' . $color . '>');
 			if ($result->getStatusCode() === 200) {
 				return true;
 			}
@@ -759,6 +766,7 @@ class CirclesCheck extends Base {
 			'The address <info>' . $address . '</info> seems to reach your local Nextcloud.'
 		);
 
+		/** @var QuestionHelper $helper */
 		$helper = $this->getHelper('question');
 		$output->writeln('');
 		$question = new ConfirmationQuestion(
@@ -801,7 +809,7 @@ class CirclesCheck extends Base {
 		$path = rtrim($path, '/');
 
 		if (!is_null($cloudIdPort)) {
-			$cloudId = $cloudId . ':' . $cloudIdPort;
+			$cloudId = $cloudId . ':' . ((string)$cloudIdPort);
 		}
 
 		return [$scheme, $cloudId, $path];
