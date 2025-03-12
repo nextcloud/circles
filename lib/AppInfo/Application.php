@@ -34,6 +34,7 @@ use OCA\Circles\Listeners\Files\PreparingMemberSendMail as ListenerFilesPreparin
 use OCA\Circles\Listeners\Files\PreparingShareSendMail as ListenerFilesPreparingShareSendMail;
 use OCA\Circles\Listeners\Files\RemovingMember as ListenerFilesRemovingMember;
 use OCA\Circles\Listeners\Files\ShareCreatedSendMail as ListenerFilesShareCreatedSendMail;
+use OCA\Circles\Listeners\GroupChanged;
 use OCA\Circles\Listeners\GroupCreated;
 use OCA\Circles\Listeners\GroupDeleted;
 use OCA\Circles\Listeners\GroupMemberAdded;
@@ -52,6 +53,7 @@ use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\Files\Config\IMountProviderCollection;
+use OCP\Group\Events\GroupChangedEvent;
 use OCP\Group\Events\GroupCreatedEvent;
 use OCP\Group\Events\GroupDeletedEvent;
 use OCP\Group\Events\UserAddedEvent;
@@ -98,6 +100,7 @@ class Application extends App implements IBootstrap {
 
 		// Group Events
 		$context->registerEventListener(GroupCreatedEvent::class, GroupCreated::class);
+		$context->registerEventListener(GroupChangedEvent::class, GroupChanged::class);
 		$context->registerEventListener(GroupDeletedEvent::class, GroupDeleted::class);
 		$context->registerEventListener(UserAddedEvent::class, GroupMemberAdded::class);
 		$context->registerEventListener(UserRemovedEvent::class, GroupMemberRemoved::class);
