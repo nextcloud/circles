@@ -185,8 +185,8 @@ class MigrateCustomGroups extends Base {
 		if (!array_key_exists($userId, $this->fedList)) {
 			try {
 				$this->fedList[$userId] = $this->circlesManager->getLocalFederatedUser($userId);
-			} catch (\Exception) {
-				$this->logger->warning('unknown local user ' . $userId);
+			} catch (\Exception $e) {
+				$this->logger->warning('unknown local user ' . $userId, ['exception' => $e]);
 				$this->fedList[$userId] = null;
 			}
 		}
