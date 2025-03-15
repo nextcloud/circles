@@ -7,6 +7,7 @@ OC.L10N.register(
     "Invite" : "Taklif qiling",
     "Hidden" : "Yashirin",
     "Local" : "Local",
+    "Email address" : "E-pochta manzili",
     "Member" : "Member",
     "Admin" : "Admin",
     "Owner" : "Owner",
