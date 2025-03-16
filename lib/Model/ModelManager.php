@@ -117,9 +117,9 @@ class ModelManager {
 	/**
 	 * @param Circle $circle
 	 */
-	public function getMembers(Circle $circle): void {
+	public function getMembers(Circle $circle, int $limit = 0): void {
 		try {
-			$circle->setMembers($this->memberRequest->getMembers($circle->getSingleId()));
+			$circle->setMembers($this->memberRequest->getMembers($circle->getSingleId(), limit: $limit));
 		} catch (RequestBuilderException $e) {
 			// TODO: debug log
 		}
