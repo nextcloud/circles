@@ -16,6 +16,7 @@ use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MaintenanceService;
 use OCA\Circles\Service\OutputService;
 use OCP\IDBConnection;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -35,6 +36,7 @@ class CirclesMaintenance extends Base {
 		private MaintenanceService $maintenanceService,
 		private OutputService $outputService,
 		private IDBConnection $dbConnection,
+		private LoggerInterface $logger,
 	) {
 		parent::__construct();
 	}
@@ -135,6 +137,8 @@ class CirclesMaintenance extends Base {
 			try {
 				$this->maintenanceService->runMaintenance($i, $input->getOption('force-refresh'));
 			} catch (MaintenanceException $e) {
+				$this->logger->warning('issue while performing maintenance', ['level' => $i, ['exception' => $e]]);
+				$output->writeln('- <error>issue while performing maintenance</error> ' . $e->getMessage() . ' (more details in logs)');
 			}
 		}
 
