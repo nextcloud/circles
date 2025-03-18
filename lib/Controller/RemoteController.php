@@ -511,12 +511,13 @@ class RemoteController extends Controller {
 			return new DataResponse($this->serialize($e), $e->getStatus());
 		}
 
+		$errorCode = (int)$e->getCode();
 		return new DataResponse(
 			[
 				'message' => $e->getMessage(),
 				'code' => $e->getCode()
 			],
-			($e->getCode() > 0) ? $e->getCode() : $httpErrorCode
+			($errorCode > 0) ? $errorCode : $httpErrorCode
 		);
 	}
 
