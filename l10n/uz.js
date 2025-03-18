@@ -8,6 +8,7 @@ OC.L10N.register(
     "Hidden" : "Yashirin",
     "Local" : "Local",
     "Email address" : "E-pochta manzili",
+    "Contact" : "Aloqa",
     "Member" : "Member",
     "Admin" : "Admin",
     "Owner" : "Owner",
