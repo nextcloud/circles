@@ -535,7 +535,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 			$compressedAttributes[] = [
 				$attribute['scope'],
 				$attribute['key'],
-				$attribute['value']
+				$attribute['value'] ?? $attribute['enabled']
 			];
 		}
 
