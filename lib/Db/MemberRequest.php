@@ -198,6 +198,7 @@ class MemberRequest extends MemberRequestBuilder {
 		string $singleId,
 		?IFederatedUser $initiator = null,
 		?MemberProbe $probe = null,
+		int $limit = 0,
 	): array {
 		if (is_null($probe)) {
 			$probe = new MemberProbe();
@@ -205,6 +206,9 @@ class MemberRequest extends MemberRequestBuilder {
 
 		$qb = $this->getMemberSelectSql($initiator);
 		$qb->limitToCircleId($singleId);
+		if ($limit > 0) {
+			$qb->chunk(0, $limit);
+		}
 
 		$qb->setOptions(
 			[CoreQueryBuilder::MEMBER],
