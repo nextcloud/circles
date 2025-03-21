@@ -383,6 +383,17 @@ class CircleService {
 		return $event->getOutcome();
 	}
 
+	public function updateDisplayName(string $circleId, string $displayName): array {
+		$circle = $this->getCircle($circleId);
+
+		$event = new FederatedEvent(CircleEdit::class);
+		$event->setCircle($circle);
+		$event->setParams(new SimpleDataStore(['displayName' => $displayName]));
+		$this->federatedEventService->newEvent($event);
+
+		return $event->getOutcome();
+	}
+
 	/**
 	 * @param string $circleId
 	 * @param string $description

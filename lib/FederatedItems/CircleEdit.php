@@ -108,6 +108,11 @@ class CircleEdit implements IFederatedItem {
 			$event->getData()->s('name', $new->getName());
 		}
 
+		if ($data->hasKey('displayName')) {
+			$new->setDisplayName($data->g('displayName'));
+			$event->getData()->s('displayName', $new->getDisplayName());
+		}
+
 		if ($data->hasKey('description')) {
 			$new->setDescription($data->g('description'));
 			$event->getData()->s('description', $new->getDescription());
@@ -132,6 +137,10 @@ class CircleEdit implements IFederatedItem {
 		// use it as a thrustable base
 		if ($data->hasKey('name')) {
 			$circle->setName($data->g('name'));
+		}
+
+		if ($data->hasKey('displayName')) {
+			$circle->setDisplayName($data->g('displayName'));
 		}
 
 		$this->circleService->confirmName($circle);
