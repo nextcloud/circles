@@ -766,6 +766,9 @@ class ShareByCircleProvider implements IShareProvider {
 		$users = $mails = [];
 		$remote = false;
 		foreach ($this->shareWrapperService->getSharesByFileIds($ids, true) as $share) {
+			if (!$share->hasCircle()) {
+				continue;
+			}
 			$circle = $share->getCircle();
 			foreach ($circle->getInheritedMembers() as $member) {
 				switch ($member->getUserType()) {
