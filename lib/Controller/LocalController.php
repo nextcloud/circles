@@ -423,6 +423,34 @@ class LocalController extends OCSController {
 	}
 
 
+
+	/**
+	 * @NoAdminRequired
+	 *
+	 * @param int $limit
+	 * @param int $offset
+	 *
+	 * @return DataResponse
+	 * @throws OCSException
+	 */
+	public function currentCircles(int $limit = -1, int $offset = 0): DataResponse {
+		try {
+			$this->setCurrentFederatedUser();
+
+			$probe = new CircleProbe();
+			$probe->filterHiddenCircles()
+				  ->filterBackendCircles()
+				  ->setItemsLimit($limit)
+				  ->setItemsOffset($offset);
+
+			return new DataResponse($this->serializeArray($this->circleService->probeCircles($probe)));
+		} catch (Exception $e) {
+			$this->e($e);
+			throw new OCSException($e->getMessage(), (int)$e->getCode());
+		}
+	}
+
+
 	/**
 	 * @NoAdminRequired
 	 *
