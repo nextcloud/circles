@@ -293,6 +293,8 @@ class SyncService {
 		$this->outputService->output('Syncing Nextcloud Group \'' . $groupId . '\'', true);
 
 		$circle = $this->federatedUserService->getGroupCircle($groupId);
+		$this->circleService->updateDisplayName($circle->getSingleId(), $this->groupManager->getDisplayName($groupId));
+
 		$members = array_map(function (Member $member): string {
 			return $member->getSingleId();
 		}, $this->memberRequest->getMembers($circle->getSingleId()));
