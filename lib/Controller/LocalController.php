@@ -36,6 +36,7 @@ use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\FrontendException;
 use OCA\Circles\Exceptions\InvalidIdException;
+use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Model\FederatedUser;
@@ -273,10 +274,13 @@ class LocalController extends OCSController {
 			$federatedUsers = [];
 			foreach ($members as $member) {
 				// TODO: generate Multiple FederatedUsers using a single SQL request
-				$federatedUsers[] = $this->federatedUserService->generateFederatedUser(
-					$this->get('id', $member),
-					$this->getInt('type', $member)
-				);
+				try {
+					$federatedUsers[] = $this->federatedUserService->generateFederatedUser(
+						$this->get('id', $member),
+						$this->getInt('type', $member)
+					);
+				} catch (MemberNotFoundException) {
+				}
 			}
 
 			$result = $this->memberService->addMembers($circleId, $federatedUsers);
