@@ -758,6 +758,10 @@ class FederatedUserService {
 	 * @return FederatedUser
 	 */
 	public function generateFederatedUser(string $federatedId, int $type = 0): FederatedUser {
+		if ($federatedId === '') {
+			throw new MemberNotFoundException('empty user id');
+		}
+
 		if ($type === Member::TYPE_MAIL) {
 			$federatedId = strtolower($federatedId);
 		}
