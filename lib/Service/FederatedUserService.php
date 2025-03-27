@@ -994,7 +994,9 @@ class FederatedUserService {
 
 		$circle = $this->getSingleCircle($federatedUser, $generate);
 		$federatedUser->setSingleId($circle->getSingleId());
-		$federatedUser->setDisplayName($circle->getDisplayName());
+		if ($federatedUser->getUserType() !== Member::TYPE_USER || $federatedUser->getDisplayName() === '') {
+			$federatedUser->setDisplayName($circle->getDisplayName());
+		}
 		$federatedUser->setBasedOn($circle);
 	}
 
