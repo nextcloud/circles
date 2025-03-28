@@ -146,7 +146,9 @@ class SyncService {
 			$this->syncApps();
 		}
 
-		if ($this->shouldSync(self::SYNC_USERS, $sync)) {
+		// This is useless and too heavy on load
+		// we keep it available when running ./occ circles:sync --users
+		if ($sync === self::SYNC_USERS) {
 			$this->syncNextcloudUsers();
 		}
 
