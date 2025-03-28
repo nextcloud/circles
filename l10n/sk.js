@@ -118,7 +118,7 @@ OC.L10N.register(
     "This member is the owner of the team" : "Tento člen je vlastníkom tímu",
     "Level cannot be changed for this type of member" : "Pre tento typ člena, úroveň nemôže byť zmenená.",
     "You are already a member of this circle" : "Už ste členom tohto kruhu",
-    "You have been blocked from this circle" : "Boli ste zablokovaný z tohto kruhu",
+    "You have been blocked from this circle" : "V tomto kruhu ste boli zablokovaný",
     "The account is already a member of this circle" : "Tento užívateľ už je členom kruhu",
     "The account has already been invited into this circle" : "Užívateľ už bol pozvaný do tohto kruhu",
     "%s (Team owned by %s)" : "%s (Tím vlastnený %s)",
