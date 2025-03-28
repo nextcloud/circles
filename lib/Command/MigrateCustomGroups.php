@@ -24,7 +24,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class MigrateCustomGroups extends Base {
 	private OutputInterface $output;
-	/** @var IFederatedUser[] */
+	/** @var array<string, null|IFederatedUser> */
 	private array $fedList = [];
 
 	public function __construct(
@@ -77,15 +77,21 @@ class MigrateCustomGroups extends Base {
 			}
 
 			$name = $rowCG['display_name'];
-			while(strlen($name) < 3) {
+			while (strlen($name) < 3) {
 				$name = '_' . $name;
 			}
 
+			$this->output->writeln('+ New Team <info>' . $name . '</info>, owned by <info>' . $ownerId . '</info>');
+
 			// based on owner's userid, we create federateduser and a new circle
-			$this->output->writeln('+ New Team <info>' . $name . '</info>, owner by <info>' . $ownerId . '</info>');
 			$owner = $this->cachedFed($ownerId);
+			if ($owner === null) {
+				$this->output->writeln('<error>unknown user</error> ' . $ownerId);
+				continue;
+			}
 
 			$this->circlesManager->startSession($owner);
+
 			try {
 				$circle = $this->circlesManager->createCircle($name);
 			} catch (\Exception $e) {
@@ -116,8 +122,14 @@ class MigrateCustomGroups extends Base {
 						continue; // owner is already in the circles
 					}
 
-					$this->output->writeln(' - new member <info>' . $userId .'</info>');
-					$member = $this->circlesManager->addMember($circle->getSingleId(), $this->cachedFed($userId));
+					$fedUser = $this->cachedFed($userId);
+					if ($fedUser === null) {
+						$this->output->writeln('<error>unknown user</error> ' . $userId);
+						continue;
+					}
+					$this->output->writeln(' - new member <info>' . $userId . '</info>');
+
+					$member = $this->circlesManager->addMember($circle->getSingleId(), $fedUser);
 					if ($rowM['role'] === '1') {
 						$this->circlesManager->levelMember($member->getId(), Member::LEVEL_ADMIN);
 					}
@@ -158,7 +170,7 @@ class MigrateCustomGroups extends Base {
 			   ->where($update->expr()->in('id', $update->createNamedParameter($shareIds, IQueryBuilder::PARAM_INT_ARRAY)));
 
 		$count = $update->executeStatement();
-		$this->output->writeln('> ' . $count . ' shares updated');
+		$this->output->writeln('> ' . ((string)$count) . ' shares updated');
 
 		$this->fixShareChildren($shareIds, $memberIds);
 	}
@@ -167,11 +179,16 @@ class MigrateCustomGroups extends Base {
 	 * manage local cache FederatedUser
 	 *
 	 * @param string $userId
-	 * @return FederatedUser
+	 * @return null|FederatedUser
 	 */
-	private function cachedFed(string $userId): FederatedUser {
+	private function cachedFed(string $userId): ?FederatedUser {
 		if (!array_key_exists($userId, $this->fedList)) {
-			$this->fedList[$userId] = $this->circlesManager->getLocalFederatedUser($userId);
+			try {
+				$this->fedList[$userId] = $this->circlesManager->getLocalFederatedUser($userId);
+			} catch (\Exception $e) {
+				$this->logger->warning('unknown local user ' . $userId, ['exception' => $e]);
+				$this->fedList[$userId] = null;
+			}
 		}
 
 		return $this->fedList[$userId];
@@ -186,19 +203,24 @@ class MigrateCustomGroups extends Base {
 	private function fixShareChildren(array $shareIds, array $memberIds): void {
 		$update = $this->connection->getQueryBuilder();
 		$update->update('share')
-			->set('share_type', $update->createNamedParameter(IShare::TYPE_CIRCLE))
-			->set('share_with', $update->createParameter('new_recipient'))
-			->where($update->expr()->in('parent', $update->createNamedParameter($shareIds, IQueryBuilder::PARAM_INT_ARRAY)))
-			->andWhere($update->expr()->eq('share_with', $update->createParameter('old_recipient')));
+			   ->set('share_type', $update->createNamedParameter(IShare::TYPE_CIRCLE))
+			   ->set('share_with', $update->createParameter('new_recipient'))
+			   ->where($update->expr()->in('parent', $update->createNamedParameter($shareIds, IQueryBuilder::PARAM_INT_ARRAY)))
+			   ->andWhere($update->expr()->eq('share_with', $update->createParameter('old_recipient')));
 
 		$count = 0;
-		foreach($memberIds as $memberId) {
+		foreach ($memberIds as $memberId) {
+			$fedUser = $this->cachedFed($memberId);
+			if ($fedUser === null) {
+				// we dont update, user does not exist anymore
+				continue;
+			}
 			$update->setParameter('old_recipient', $memberId);
-			$update->setParameter('new_recipient', $this->cachedFed($memberId)->getSingleId());
+			$update->setParameter('new_recipient', $fedUser->getSingleId());
 			$count += $update->executeStatement();
 		}
 
-		$this->output->writeln('> ' . $count . ' children shares updated');
+		$this->output->writeln('> ' . ((string)$count) . ' children shares updated');
 	}
 
 
