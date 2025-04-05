@@ -8,7 +8,7 @@ OC.L10N.register(
     "Invite" : "Uzaicināt",
     "Password protected" : "Aizsargāts ar paroli",
     "Hidden" : "Paslēpts",
-    "Local" : "Lokāls",
+    "Local" : "Vietējs",
     "Root" : "Root",
     "Federated" : "Federated",
     "Email address" : "E-pasta adrese",
