@@ -38,9 +38,12 @@ use OCA\Circles\Exceptions\ShareWrapperNotFoundException;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\ShareWrapper;
+use OCA\Circles\Tools\Exceptions\InvalidItemException;
 use OCA\Circles\Tools\Traits\TDeserialize;
 use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\Files\NotFoundException;
+use OCP\ICache;
+use OCP\ICacheFactory;
 use OCP\Share\IShare;
 use OCP\Files\Folder;
 
@@ -53,9 +56,26 @@ class ShareWrapperService {
 	use TStringTools;
 	use TDeserialize;
 
-	public function __construct(
-		private ShareWrapperRequest $shareWrapperRequest,
-	) {
+	public const CACHE_SHARED_WITH = 'circles/getSharedWith';
+	public const CACHE_SHARED_WITH_TTL = 900;
+
+
+	/** @var ShareWrapperRequest */
+	private $shareWrapperRequest;
+
+	private ICache $cache;
+
+
+	/**
+	 * ShareWrapperService constructor.
+	 *
+	 * @param ICacheFactory $cacheFactory
+	 * @param ShareWrapperRequest $shareWrapperRequest
+	 */
+	public function __construct(ICacheFactory $cacheFactory, ShareWrapperRequest $shareWrapperRequest) {
+		$this->cache = $cacheFactory->createDistributed(self::CACHE_SHARED_WITH);
+
+		$this->shareWrapperRequest = $shareWrapperRequest;
 	}
 
 
@@ -78,6 +98,7 @@ class ShareWrapperService {
 	 * @throws NotFoundException
 	 */
 	public function save(IShare $share): void {
+		$this->cache->clear('');
 		$this->shareWrapperRequest->save($share);
 	}
 
@@ -86,6 +107,7 @@ class ShareWrapperService {
 	 * @param ShareWrapper $shareWrapper
 	 */
 	public function update(ShareWrapper $shareWrapper): void {
+		$this->cache->clear('');
 		$this->shareWrapperRequest->update($shareWrapper);
 	}
 
@@ -94,6 +116,7 @@ class ShareWrapperService {
 	 * @param ShareWrapper $shareWrapper
 	 */
 	public function delete(ShareWrapper $shareWrapper): void {
+		$this->cache->clear('');
 		$this->shareWrapperRequest->delete((int)$shareWrapper->getId());
 	}
 
@@ -108,6 +131,7 @@ class ShareWrapperService {
 			throw new Exception('$initiator cannot be empty');
 		}
 
+		$this->cache->clear('');
 		$this->shareWrapperRequest->deleteSharesToCircle($circleId, $userId);
 	}
 
@@ -116,6 +140,7 @@ class ShareWrapperService {
 	 * @param string $circleId
 	 */
 	public function deleteAllSharesToCircle(string $circleId): void {
+		$this->cache->clear('');
 		$this->shareWrapperRequest->deleteSharesToCircle($circleId, '');
 	}
 
@@ -205,7 +230,22 @@ class ShareWrapperService {
 		int $nodeId,
 		?CircleProbe $probe
 	): array {
-		return $this->shareWrapperRequest->getSharedWith($federatedUser, $nodeId, $probe);
+		$key = $this->generateSharedWithCacheKey($federatedUser, $nodeId, $probe->getChecksum());
+
+		$cachedData = $this->cache->get($key);
+		try {
+			if (!is_string($cachedData)) {
+				throw new InvalidItemException();
+			}
+
+			return $this->deserializeList($cachedData, ShareWrapper::class);
+		} catch (InvalidItemException $e) {
+		}
+
+		$shares = $this->shareWrapperRequest->getSharedWith($federatedUser, $nodeId, $probe);
+		$this->cache->set($key, json_encode($shares), self::CACHE_SHARED_WITH_TTL);
+
+		return $shares;
 	}
 
 
@@ -269,6 +309,11 @@ class ShareWrapperService {
 	}
 
 
+	public function clearCache(string $singleId): void {
+		$this->cache->clear($singleId);
+	}
+
+
 	/**
 	 * @param FederatedUser $federatedUser
 	 * @param IShare $share
@@ -279,6 +324,7 @@ class ShareWrapperService {
 	 * @throws RequestBuilderException
 	 */
 	private function createChild(IShare $share, FederatedUser $federatedUser): ShareWrapper {
+		$this->cache->clear('');
 		$share->setSharedWith($federatedUser->getSingleId());
 		$childId = $this->shareWrapperRequest->save($share, (int)$share->getId());
 
