@@ -204,7 +204,7 @@ class MemberRequest extends MemberRequestBuilder {
 			$probe = new MemberProbe();
 		}
 
-		$qb = $this->getMemberSelectSql($initiator);
+		$qb = $this->getMemberSelectSql($initiator, true);
 		$qb->limitToCircleId($singleId);
 		if ($limit > 0) {
 			$qb->chunk(0, $limit);
@@ -218,7 +218,6 @@ class MemberRequest extends MemberRequestBuilder {
 			)
 		);
 
-		$qb->leftJoinCircle(CoreQueryBuilder::MEMBER, $initiator);
 		$qb->leftJoinInvitedBy(CoreQueryBuilder::MEMBER);
 
 		if ($probe->hasFilterRemoteInstance()) {
