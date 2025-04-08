@@ -104,6 +104,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 			->set('uid_initiator', $qb->createNamedParameter($shareWrapper->getSharedBy()))
 			->set('accepted', $qb->createNamedParameter(IShare::STATUS_ACCEPTED))
 			->set('permissions', $qb->createNamedParameter($shareWrapper->getPermissions()))
+			->set('note', $qb->createNamedParameter($shareWrapper->getShareNote()))
 			->set('expiration', $qb->createNamedParameter($shareWrapper->getExpirationDate(), IQueryBuilder::PARAM_DATE))
 			->set('attributes', $qb->createNamedParameter($shareAttributes));
 
