@@ -1,6 +1,7 @@
 OC.L10N.register(
     "circles",
     {
+    "You deleted {circle}" : "Dilamet ho peus {circle}",
     "Personal" : "Personel",
     "System" : "Sistem",
     "Open" : "Digeriñ",
