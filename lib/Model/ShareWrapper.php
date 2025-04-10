@@ -52,6 +52,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 	private int $status = 0;
 	private string $providerId = '';
 	private DateTime $shareTime;
+	private string $note = '';
 	private string $sharedWith = '';
 	private string $sharedBy = '';
 	private ?DateTime $expirationDate = null;
@@ -181,6 +182,16 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 
 	public function getShareTime(): DateTime {
 		return $this->shareTime;
+	}
+
+	public function setShareNote(string $note): self {
+		$this->note = $note;
+
+		return $this;
+	}
+
+	public function getShareNote(): string {
+		return $this->note;
 	}
 
 	public function setSharedWith(string $sharedWith): self {
@@ -382,6 +393,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		$share->setStatus($this->getStatus());
 		$share->setHideDownload($this->getHideDownload());
 		$share->setAttributes($this->getAttributes());
+		$share->setNote($this->getShareNote());
 		if ($this->hasShareToken()) {
 			$password = $this->getShareToken()->getPassword();
 			if ($password !== '') {
@@ -476,7 +488,8 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 			 ->setSharedBy($this->get('sharedBy', $data))
 			 ->setShareOwner($this->get('shareOwner', $data))
 			 ->setToken($this->get('token', $data))
-			 ->setShareTime($shareTime);
+			 ->setShareTime($shareTime)
+			 ->setShareNote($this->get('note', $data));
 
 		$this->importAttributesFromDatabase($this->get('attributes', $data));
 
@@ -540,7 +553,8 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 			 ->setSharedBy($this->get($prefix . 'uid_initiator', $data))
 			 ->setShareOwner($this->get($prefix . 'uid_owner', $data))
 			 ->setToken($this->get($prefix . 'token', $data))
-			 ->setShareTime($shareTime);
+			 ->setShareTime($shareTime)
+			 ->setShareNote($this->get($prefix . 'note', $data));
 
 		$this->importAttributesFromDatabase($this->get('attributes', $data));
 
@@ -601,6 +615,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 			'fileTarget' => $this->getFileTarget(),
 			'status' => $this->getStatus(),
 			'shareTime' => $this->getShareTime()->getTimestamp(),
+			'note' => $this->getShareNote(),
 			'sharedWith' => $this->getSharedWith(),
 			'sharedBy' => $this->getSharedBy(),
 			'shareOwner' => $this->getShareOwner(),
