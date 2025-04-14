@@ -171,7 +171,7 @@ class MemberService {
 	 * @throws InitiatorNotFoundException
 	 * @throws RequestBuilderException
 	 */
-	public function getMembers(string $circleId): array {
+	public function getMembers(string $circleId, bool $fullDetails = false): array {
 		$this->federatedUserService->mustHaveCurrentUser();
 
 		$probe = new MemberProbe();
@@ -184,7 +184,8 @@ class MemberService {
 		return $this->memberRequest->getMembers(
 			$circleId,
 			$this->federatedUserService->getCurrentUser(),
-			$probe
+			$probe,
+			fullDetails: $fullDetails
 		);
 	}
 
