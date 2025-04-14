@@ -740,34 +740,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$this->leftJoinOwner($aliasCircle);
 	}
 
-
-	/**
-	 * @param string $aliasMember
-	 *
-	 * @throws RequestBuilderException
-	 */
-	public function leftJoinInvitedBy(string $aliasMember): void {
-		if ($this->getType() !== QueryBuilder::SELECT) {
-			return;
-		}
-
-		try {
-			$aliasInvitedBy = $this->generateAlias($aliasMember, self::INVITED_BY);
-		} catch (RequestBuilderException $e) {
-			return;
-		}
-
-		$expr = $this->expr();
-		$this->generateCircleSelectAlias($aliasInvitedBy)
-			->leftJoin(
-				$aliasMember, CoreRequestBuilder::TABLE_CIRCLE, $aliasInvitedBy,
-				$expr->eq($aliasMember . '.invited_by', $aliasInvitedBy . '.unique_id')
-			);
-
-		$this->leftJoinOwner($aliasInvitedBy);
-	}
-
-
 	/**
 	 * @param string $aliasMember
 	 * @param IFederatedUser|null $initiator

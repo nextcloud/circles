@@ -218,9 +218,6 @@ class MemberRequest extends MemberRequestBuilder {
 			)
 		);
 
-		$qb->leftJoinCircle(CoreQueryBuilder::MEMBER, $initiator);
-		$qb->leftJoinInvitedBy(CoreQueryBuilder::MEMBER);
-
 		if ($probe->hasFilterRemoteInstance()) {
 			$aliasCircle = $qb->generateAlias(CoreQueryBuilder::MEMBER, CoreQueryBuilder::CIRCLE);
 			$qb->limitToRemoteInstance(
