@@ -740,7 +740,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$this->leftJoinOwner($aliasCircle);
 	}
 
-
 	/**
 	 * @param string $aliasMember
 	 *
@@ -759,14 +758,13 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 
 		$expr = $this->expr();
 		$this->generateCircleSelectAlias($aliasInvitedBy)
-			->leftJoin(
-				$aliasMember, CoreRequestBuilder::TABLE_CIRCLE, $aliasInvitedBy,
-				$expr->eq($aliasMember . '.invited_by', $aliasInvitedBy . '.unique_id')
-			);
+			 ->leftJoin(
+				 $aliasMember, CoreRequestBuilder::TABLE_CIRCLE, $aliasInvitedBy,
+				 $expr->eq($aliasMember . '.invited_by', $aliasInvitedBy . '.unique_id')
+			 );
 
 		$this->leftJoinOwner($aliasInvitedBy);
 	}
-
 
 	/**
 	 * @param string $aliasMember

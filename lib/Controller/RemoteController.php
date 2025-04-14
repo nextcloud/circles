@@ -306,7 +306,7 @@ class RemoteController extends Controller {
 		}
 
 		try {
-			$members = $this->memberService->getMembers($circleId);
+			$members = $this->memberService->getMembers($circleId, true);
 
 			return new DataResponse($members);
 		} catch (Exception $e) {
