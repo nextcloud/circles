@@ -307,7 +307,7 @@ class MembersList extends Base {
 			}
 		} else {
 			$this->federatedUserService->commandLineInitiator($initiator, $initiatorType, $circleId, true);
-			$members = $this->memberService->getMembers($circleId);
+			$members = $this->memberService->getMembers($circleId, true);
 		}
 
 		if (!is_null($tree)) {
