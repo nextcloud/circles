@@ -131,7 +131,7 @@ class Circles {
 		$probe->includePersonalCircles($personalCircle);
 		$probe->filterHiddenCircles();
 
-		return $circleService->getCircles($probe);
+		return $circleService->probeCircles($probe);
 	}
 
 
