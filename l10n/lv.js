@@ -1,6 +1,7 @@
 OC.L10N.register(
     "circles",
     {
+    "You deleted {circle}" : "Tu izdzēsi {circle}",
     "Personal" : "Personīgs",
     "System" : "Sistēma",
     "Visible" : "Redzams",
