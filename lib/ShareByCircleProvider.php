@@ -213,6 +213,7 @@ class ShareByCircleProvider implements IShareProvider {
 			->setShareNote($share->getNote());
 
 		$this->shareWrapperService->update($wrappedShare);
+		$this->shareWrapperService->updateChildPermissions($wrappedShare);
 
 		return $wrappedShare->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
 	}
