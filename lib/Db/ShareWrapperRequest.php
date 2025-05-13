@@ -93,6 +93,22 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		$qb->execute();
 	}
 
+	/**
+	 * update permissions and attributes from child
+	 */
+	public function updateChildPermissions(ShareWrapper $shareWrapper): void {
+		$qb = $this->getShareUpdateSql();
+		$shareAttributes = $this->formatShareAttributes($shareWrapper->getAttributes());
+
+		$qb->set('permissions', $qb->createNamedParameter($shareWrapper->getPermissions()))
+			->set('attributes', $qb->createNamedParameter($shareAttributes));
+
+		$qb->limitToShareParent((int)$shareWrapper->getId());
+		$qb->gt('permissions', 0);
+
+		$qb->execute();
+	}
+
 
 	/**
 	 * @param Membership $membership
