@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 use Exception;
-use OC;
 use OCA\Circles\Exceptions\ContactAddressBookNotFoundException;
 use OCA\Circles\Exceptions\ContactFormatException;
 use OCA\Circles\Exceptions\ContactNotFoundException;
@@ -24,6 +23,7 @@ use OCA\DAV\CardDAV\ContactsManager;
 use OCP\Contacts\IManager;
 use OCP\IAddressBook;
 use OCP\IURLGenerator;
+use OCP\Server;
 
 /**
  * Class ContactService
@@ -114,8 +114,8 @@ class ContactService {
 			throw new ContactFormatException('issue with contact format USERID/ADDRESSBOOK/CONTACTID');
 		}
 
-		$contactsManager = OC::$server->get(ContactsManager::class);
-		$cm = OC::$server->get(IManager::class);
+		$contactsManager = Server::get(ContactsManager::class);
+		$cm = Server::get(IManager::class);
 		$contactsManager->setupContactsProvider($cm, $userId, $this->urlGenerator);
 
 		$addressBook = $this->getAddressBook($cm, $addressBookUri);

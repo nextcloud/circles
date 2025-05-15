@@ -38,7 +38,6 @@ namespace OCA\Circles\Tools\ActivityPub;
 
 use DateTime;
 use Exception;
-use OC;
 use OCA\Circles\Tools\Exceptions\InvalidOriginException;
 use OCA\Circles\Tools\Exceptions\ItemNotFoundException;
 use OCA\Circles\Tools\Exceptions\MalformedArrayException;
@@ -50,6 +49,7 @@ use OCA\Circles\Tools\Model\NCSignedRequest;
 use OCA\Circles\Tools\Model\SimpleDataStore;
 use OCA\Circles\Tools\Traits\TNCSignatory;
 use OCP\IRequest;
+use OCP\Server;
 
 class NCSignature {
 	public const DATE_HEADER = 'D, d M Y H:i:s T';
@@ -83,7 +83,7 @@ class NCSignature {
 		$this->debug('[<<] incoming', ['body' => $body]);
 
 		$signedRequest = new NCSignedRequest($body);
-		$signedRequest->setIncomingRequest(OC::$server->get(IRequest::class));
+		$signedRequest->setIncomingRequest(Server::get(IRequest::class));
 
 		$this->verifyIncomingRequestTime($signedRequest);
 		$this->verifyIncomingRequestContent($signedRequest);

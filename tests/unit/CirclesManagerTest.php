@@ -14,6 +14,7 @@ use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\DataProbe;
 use OCP\IGroupManager;
 use OCP\IUserManager;
+use OCP\Server;
 use Test\TestCase;
 
 /**
@@ -32,7 +33,7 @@ class CirclesManagerTest extends TestCase {
 		$this->circleName = sha1(uniqId(mt_rand(), true));
 
 		// Create test user
-		$userManager = \OC::$server->get(IUserManager::class);
+		$userManager = Server::get(IUserManager::class);
 		if (!$userManager->userExists($this->userId)) {
 			$user = $userManager->createUser($this->userId, $this->userId);
 		} else {
@@ -40,13 +41,13 @@ class CirclesManagerTest extends TestCase {
 		}
 
 		// Create test group and add user
-		$groupManager = \OC::$server->get(IGroupManager::class);
+		$groupManager = Server::get(IGroupManager::class);
 		if (!$groupManager->groupExists($this->groupId)) {
 			$group = $groupManager->createGroup($this->groupId);
 			$group->addUser($user);
 		}
 
-		$this->circlesManager = \OC::$server->get(CirclesManager::class);
+		$this->circlesManager = Server::get(CirclesManager::class);
 
 	}
 

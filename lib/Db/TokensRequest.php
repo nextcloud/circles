@@ -12,6 +12,8 @@ use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\SharesToken;
+use OCP\Security\IHasher;
+use OCP\Server;
 
 /**
  * @deprecated
@@ -100,7 +102,7 @@ class TokensRequest extends TokensRequestBuilder {
 			$token = $this->miscService->token(15);
 
 			if ($password !== '') {
-				$hasher = \OC::$server->getHasher();
+				$hasher = Server::get(IHasher::class);
 				$password = $hasher->hash($password);
 			}
 
@@ -147,7 +149,7 @@ class TokensRequest extends TokensRequestBuilder {
 		$qb = $this->getTokensUpdateSql();
 
 		if ($password !== '') {
-			$hasher = \OC::$server->getHasher();
+			$hasher = Server::get(IHasher::class);
 			$password = $hasher->hash($password);
 		}
 

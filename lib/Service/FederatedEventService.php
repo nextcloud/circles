@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use OC;
 use OCA\Circles\Db\EventWrapperRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\RemoteRequest;
@@ -53,6 +52,7 @@ use OCA\Circles\Tools\Model\NCRequest;
 use OCA\Circles\Tools\Model\Request;
 use OCA\Circles\Tools\Traits\TNCRequest;
 use OCA\Circles\Tools\Traits\TStringTools;
+use OCP\Server;
 use ReflectionClass;
 use ReflectionException;
 
@@ -248,7 +248,7 @@ class FederatedEventService extends NCSignature {
 			throw new FederatedEventException($class . ' does not implements IFederatedItem');
 		}
 
-		$item = OC::$server->get($class);
+		$item = Server::get($class);
 		if (!($item instanceof IFederatedItem)) {
 			throw new FederatedEventException($class . ' not an IFederatedItem');
 		}

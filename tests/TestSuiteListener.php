@@ -8,6 +8,9 @@
 namespace OCA\Circles\Tests;
 
 use OCA\Circles\Model\DeprecatedCircle;
+use OCP\IUserManager;
+use OCP\IUserSession;
+use OCP\Server;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Test;
 use PHPUnit\Framework\TestListener;
@@ -68,7 +71,7 @@ class Env implements TestListener {
 			return;
 		}
 
-		$userManager = \OC::$server->getUserManager();
+		$userManager = Server::get(IUserManager::class);
 		$this->users = self::listUsers();
 
 		foreach ($this->users as $UID) {
@@ -84,7 +87,7 @@ class Env implements TestListener {
 		}
 
 		foreach ($this->users as $UID) {
-			$user = \OC::$server->getUserManager()
+			$user = Server::get(IUserManager::class)
 				->get($UID);
 			if ($user !== null) {
 				$user->delete();
@@ -97,9 +100,9 @@ class Env implements TestListener {
 	}
 
 	public static function setUser($which) {
-		$userSession = \OC::$server->getUserSession();
+		$userSession = Server::get(IUserSession::class);
 		$userSession->setUser(
-			\OC::$server->getUserManager()
+			Server::get(IUserManager::class)
 				->get($which)
 		);
 
@@ -107,13 +110,13 @@ class Env implements TestListener {
 	}
 
 	public static function currentUser() {
-		$userSession = \OC::$server->getUserSession();
+		$userSession = Server::get(IUserSession::class);
 		return $userSession->getUser()
 			->getUID();
 	}
 
 	public static function logout() {
-		$userSession = \OC::$server->getUserSession();
+		$userSession = Server::get(IUserSession::class);
 		$userSession->setUser(null);
 	}
 

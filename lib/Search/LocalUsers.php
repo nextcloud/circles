@@ -13,6 +13,8 @@ use OCA\Circles\Model\SearchResult;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Tools\Traits\TArrayTools;
 use OCP\Collaboration\Collaborators\ISearch as ICollaboratorSearch;
+use OCP\IUserManager;
+use OCP\Server;
 use OCP\Share\IShare;
 
 class LocalUsers implements ISearch {
@@ -46,7 +48,7 @@ class LocalUsers implements ISearch {
 	 */
 	public function search($needle): array {
 		$result = [];
-		$userManager = \OC::$server->getUserManager();
+		$userManager = Server::get(IUserManager::class);
 
 		if ($this->configService->getAppValue(ConfigService::CIRCLES_SEARCH_FROM_COLLABORATOR) === '1') {
 			return $this->searchFromCollaborator($needle);

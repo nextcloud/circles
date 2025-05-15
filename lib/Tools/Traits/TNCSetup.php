@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Tools\Traits;
 
-use OC;
 use OCP\IConfig;
+use OCP\Server;
 
 trait TNCSetup {
 	use TArrayTools;
@@ -80,7 +80,7 @@ trait TNCSetup {
 		}
 
 		/** @var IConfig $config */
-		$config = OC::$server->get(IConfig::class);
+		$config = Server::get(IConfig::class);
 
 		return $config->getAppValue($app, $key, '');
 	}

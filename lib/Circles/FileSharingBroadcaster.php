@@ -34,6 +34,7 @@ use OCP\IUser;
 use OCP\IUserManager;
 use OCP\Mail\IEMailTemplate;
 use OCP\Mail\IMailer;
+use OCP\Server;
 use OCP\Share\Exceptions\IllegalIDChangeException;
 use OCP\Share\IShare;
 use OCP\Util;
@@ -101,18 +102,18 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 		$this->initiated = true;
 		$this->l10n = OC::$server->getL10N(Application::APP_ID);
-		$this->mailer = OC::$server->getMailer();
-		$this->rootFolder = OC::$server->getLazyRootFolder();
-		$this->userManager = OC::$server->getUserManager();
-		$this->federationCloudIdManager = OC::$server->getCloudIdManager();
-		$this->logger = \OCP\Server::get(LoggerInterface::class);
-		$this->urlGenerator = OC::$server->getURLGenerator();
+		$this->mailer = Server::get(IMailer::class);
+		$this->rootFolder = Server::get(IRootFolder::class);
+		$this->userManager = Server::get(IUserManager::class);
+		$this->federationCloudIdManager = Server::get(ICloudIdManager::class);
+		$this->logger = Server::get(LoggerInterface::class);
+		$this->urlGenerator = Server::get(IURLGenerator::class);
 		try {
-			$this->defaults = OC::$server->query(Defaults::class);
-			$this->fileSharesRequest = OC::$server->query(FileSharesRequest::class);
-			$this->tokensRequest = OC::$server->query(TokensRequest::class);
-			$this->configService = OC::$server->query(ConfigService::class);
-			$this->miscService = OC::$server->query(MiscService::class);
+			$this->defaults = Server::get(Defaults::class);
+			$this->fileSharesRequest = Server::get(FileSharesRequest::class);
+			$this->tokensRequest = Server::get(TokensRequest::class);
+			$this->configService = Server::get(ConfigService::class);
+			$this->miscService = Server::get(MiscService::class);
 		} catch (QueryException $e) {
 			OC::$server->getLogger()
 				->log(1, 'Circles: cannot init FileSharingBroadcaster - ' . $e->getMessage());
@@ -120,7 +121,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 		try {
 			$this->federationNotifications =
-				OC::$server->query(Notifications::class);
+				Server::get(Notifications::class);
 			$this->federatedEnabled = true;
 		} catch (QueryException $e) {
 		}
@@ -509,7 +510,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 				$instanceName
 			]
 		);
-		$message->setFrom([\OCP\Util::getDefaultEmailAddress($instanceName) => $senderName]);
+		$message->setFrom([Util::getDefaultEmailAddress($instanceName) => $senderName]);
 		if ($initiatorEmailAddress !== null) {
 			$message->setReplyTo([$initiatorEmailAddress => $initiatorDisplayName]);
 			$emailTemplate->addFooter($instanceName . ' - ' . $this->defaults->getSlogan());
@@ -655,7 +656,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 			]
 		);
 
-		$message->setFrom([\OCP\Util::getDefaultEmailAddress($instanceName) => $senderName]);
+		$message->setFrom([Util::getDefaultEmailAddress($instanceName) => $senderName]);
 		if ($authorEmail !== null) {
 			$message->setReplyTo([$authorEmail => $authorName]);
 			$emailTemplate->addFooter($instanceName . ' - ' . $this->defaults->getSlogan());

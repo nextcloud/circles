@@ -15,7 +15,6 @@ use DateInterval;
 use DateTime;
 use Doctrine\DBAL\Query\QueryBuilder as DBALQueryBuilder;
 use Exception;
-use OC;
 use OC\DB\QueryBuilder\QueryBuilder;
 use OC\SystemConfig;
 use OCA\Circles\Tools\Exceptions\DateTimeException;
@@ -25,6 +24,7 @@ use OCA\Circles\Tools\Traits\TArrayTools;
 use OCP\DB\QueryBuilder\ICompositeExpression;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
+use OCP\Server;
 use Psr\Log\LoggerInterface;
 
 class ExtendedQueryBuilder extends QueryBuilder {
@@ -40,9 +40,9 @@ class ExtendedQueryBuilder extends QueryBuilder {
 
 	public function __construct() {
 		parent::__construct(
-			OC::$server->get(IDBConnection::class),
-			OC::$server->get(SystemConfig::class),
-			OC::$server->get(LoggerInterface::class)
+			Server::get(IDBConnection::class),
+			Server::get(SystemConfig::class),
+			Server::get(LoggerInterface::class)
 		);
 	}
 

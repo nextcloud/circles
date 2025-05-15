@@ -13,13 +13,13 @@ namespace OCA\Circles\Tools\Traits;
 
 use Exception;
 use GuzzleHttp\Exception\ClientException;
-use OC;
 use OCA\Circles\Tools\Exceptions\RequestNetworkException;
 use OCA\Circles\Tools\Model\NCRequest;
 use OCA\Circles\Tools\Model\NCRequestResult;
 use OCA\Circles\Tools\Model\Request;
 use OCP\Http\Client\IClientService;
 use OCP\Http\Client\IResponse;
+use OCP\Server;
 
 trait TNCRequest {
 	use TNCLogger;
@@ -89,7 +89,7 @@ trait TNCRequest {
 		if (isset($this->clientService) && $this->clientService instanceof IClientService) {
 			return $this->clientService;
 		} else {
-			return OC::$server->get(IClientService::class);
+			return Server::get(IClientService::class);
 		}
 	}
 
