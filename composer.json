@@ -34,7 +34,7 @@
     ],
     "cs:check": "php-cs-fixer fix --dry-run --diff",
     "cs:fix": "php-cs-fixer fix",
-    "psalm": "psalm --no-cache --threads=$(nproc) --no-cache",
+    "psalm": "psalm --threads=$(nproc) --no-cache",
     "psalm:update-baseline": "psalm --threads=1 --no-cache --update-baseline",
     "psalm:clear": "psalm --clear-cache && psalm --clear-global-cache",
     "psalm:fix": "psalm --alter --issues=InvalidReturnType,InvalidNullableReturnType,MissingParamType,InvalidFalsableReturnType",
