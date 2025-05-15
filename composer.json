@@ -9,6 +9,9 @@
     "autoloader-suffix": "Circles",
     "platform": {
       "php": "8.1"
+    },
+    "allow-plugins": {
+      "bamarni/composer-bin-plugin": true
     }
   },
   "authors": [
@@ -23,12 +26,18 @@
     }
   },
   "scripts": {
+    "post-install-cmd": [
+        "[ $COMPOSER_DEV_MODE -eq 0 ] || composer bin all install --ansi"
+    ],
+    "post-update-cmd": [
+        "[ $COMPOSER_DEV_MODE -eq 0 ] || composer bin all update --ansi"
+    ],
     "cs:check": "php-cs-fixer fix --dry-run --diff",
     "cs:fix": "php-cs-fixer fix",
-    "psalm": "psalm.phar --threads=1 --no-cache",
-    "psalm:update-baseline": "psalm.phar --threads=1  --no-cache --update-baseline",
-    "psalm:clear": "psalm.phar --clear-cache && psalm.phar --clear-global-cache",
-    "psalm:fix": "psalm.phar --alter --issues=InvalidReturnType,InvalidNullableReturnType,MissingParamType,InvalidFalsableReturnType",
+    "psalm": "psalm --threads=$(nproc) --no-cache",
+    "psalm:update-baseline": "psalm --threads=1 --no-cache --update-baseline",
+    "psalm:clear": "psalm --clear-cache && psalm --clear-global-cache",
+    "psalm:fix": "psalm --alter --issues=InvalidReturnType,InvalidNullableReturnType,MissingParamType,InvalidFalsableReturnType",
     "test": [
       "@test:unit"
     ],
@@ -36,9 +45,7 @@
     "lint": "find . -name \\*.php -not -path './vendor/*' -not -path './tests/stubs/*' -print0 | xargs -0 -n1 php -l"
   },
   "require-dev": {
-    "phpunit/phpunit": "^10.5",
-    "psalm/phar": "^6.7",
     "nextcloud/ocp": "dev-master",
-    "nextcloud/coding-standard": "^1.2"
+    "bamarni/composer-bin-plugin": "^1.8"
   }
 }

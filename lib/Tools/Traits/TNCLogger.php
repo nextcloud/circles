@@ -172,7 +172,7 @@ trait TNCLogger {
 	 * @return LoggerInterface
 	 */
 	public function logger(): LoggerInterface {
-		if (isset($this->logger) && $this->logger instanceof LoggerInterface) {
+		if (isset($this->logger)) {
 			return $this->logger;
 		} else {
 			return OC::$server->get(LoggerInterface::class);
