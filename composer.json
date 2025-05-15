@@ -42,7 +42,8 @@
       "@test:unit"
     ],
     "test:unit": "vendor/bin/phpunit -c tests/phpunit.xml",
-    "lint": "find . -name \\*.php -not -path './vendor/*' -not -path './tests/stubs/*' -print0 | xargs -0 -n1 php -l"
+    "lint": "find . -name \\*.php -not -path './vendor/*' -not -path './tests/stubs/*' -print0 | xargs -0 -n1 php -l",
+    "rector": "rector && composer cs:fix"
   },
   "require-dev": {
     "nextcloud/ocp": "dev-master",
