@@ -26,16 +26,16 @@
     }
   },
   "scripts": {
-	"post-install-cmd": [
-		"[ $COMPOSER_DEV_MODE -eq 0 ] || composer bin all install --ansi"
-	],
-	"post-update-cmd": [
-		"[ $COMPOSER_DEV_MODE -eq 0 ] || composer bin all update --ansi"
-	],
+    "post-install-cmd": [
+        "[ $COMPOSER_DEV_MODE -eq 0 ] || composer bin all install --ansi"
+    ],
+    "post-update-cmd": [
+        "[ $COMPOSER_DEV_MODE -eq 0 ] || composer bin all update --ansi"
+    ],
     "cs:check": "php-cs-fixer fix --dry-run --diff",
     "cs:fix": "php-cs-fixer fix",
-    "psalm": "psalm --no-cache --threads=$(nproc)",
-    "psalm:update-baseline": "psalm --threads=1 --update-baseline",
+    "psalm": "psalm --no-cache --threads=$(nproc) --no-cache",
+    "psalm:update-baseline": "psalm --threads=1 --no-cache --update-baseline",
     "psalm:clear": "psalm --clear-cache && psalm --clear-global-cache",
     "psalm:fix": "psalm --alter --issues=InvalidReturnType,InvalidNullableReturnType,MissingParamType,InvalidFalsableReturnType",
     "test": [
