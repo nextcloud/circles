@@ -4,54 +4,65 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1545f7bfbd997db4cf6df7e9cde711bd",
+    "content-hash": "71c09d46065fa909fa057684e8f904ab",
     "packages": [],
     "packages-dev": [
         {
-            "name": "kubawerlos/php-cs-fixer-custom-fixers",
-            "version": "v3.22.0",
+            "name": "bamarni/composer-bin-plugin",
+            "version": "1.8.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/kubawerlos/php-cs-fixer-custom-fixers.git",
-                "reference": "8701394f0c7cd450ac4fa577d24589122c1d5d5e"
+                "url": "https://github.com/bamarni/composer-bin-plugin.git",
+                "reference": "92fd7b1e6e9cdae19b0d57369d8ad31a37b6a880"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kubawerlos/php-cs-fixer-custom-fixers/zipball/8701394f0c7cd450ac4fa577d24589122c1d5d5e",
-                "reference": "8701394f0c7cd450ac4fa577d24589122c1d5d5e",
+                "url": "https://api.github.com/repos/bamarni/composer-bin-plugin/zipball/92fd7b1e6e9cdae19b0d57369d8ad31a37b6a880",
+                "reference": "92fd7b1e6e9cdae19b0d57369d8ad31a37b6a880",
                 "shasum": ""
             },
             "require": {
-                "ext-filter": "*",
-                "ext-tokenizer": "*",
-                "friendsofphp/php-cs-fixer": "^3.61.1",
-                "php": "^7.4 || ^8.0"
+                "composer-plugin-api": "^2.0",
+                "php": "^7.2.5 || ^8.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^9.6.4 || ^10.5.29"
+                "composer/composer": "^2.0",
+                "ext-json": "*",
+                "phpstan/extension-installer": "^1.1",
+                "phpstan/phpstan": "^1.8",
+                "phpstan/phpstan-phpunit": "^1.1",
+                "phpunit/phpunit": "^8.5 || ^9.5",
+                "symfony/console": "^2.8.52 || ^3.4.35 || ^4.4 || ^5.0 || ^6.0",
+                "symfony/finder": "^2.8.52 || ^3.4.35 || ^4.4 || ^5.0 || ^6.0",
+                "symfony/process": "^2.8.52 || ^3.4.35 || ^4.4 || ^5.0 || ^6.0"
             },
-            "type": "library",
+            "type": "composer-plugin",
+            "extra": {
+                "class": "Bamarni\\Composer\\Bin\\BamarniBinPlugin"
+            },
             "autoload": {
                 "psr-4": {
-                    "PhpCsFixerCustomFixers\\": "src"
+                    "Bamarni\\Composer\\Bin\\": "src"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
-            "authors": [
-                {
-                    "name": "Kuba Werłos",
-                    "email": "werlos@gmail.com"
-                }
+            "description": "No conflicts for your bin dependencies",
+            "keywords": [
+                "composer",
+                "conflict",
+                "dependency",
+                "executable",
+                "isolation",
+                "tool"
             ],
-            "description": "A set of custom fixers for PHP CS Fixer",
             "support": {
-                "issues": "https://github.com/kubawerlos/php-cs-fixer-custom-fixers/issues",
-                "source": "https://github.com/kubawerlos/php-cs-fixer-custom-fixers/tree/v3.22.0"
+                "issues": "https://github.com/bamarni/composer-bin-plugin/issues",
+                "source": "https://github.com/bamarni/composer-bin-plugin/tree/1.8.2"
             },
-            "time": "2024-08-16T20:44:35+00:00"
+            "time": "2022-10-31T08:38:03+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -112,48 +123,6 @@
                 }
             ],
             "time": "2024-06-12T14:39:25+00:00"
-        },
-        {
-            "name": "nextcloud/coding-standard",
-            "version": "v1.3.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/nextcloud/coding-standard.git",
-                "reference": "9c719c4747fa26efc12f2e8b21c14a9a75c6ba6d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/nextcloud/coding-standard/zipball/9c719c4747fa26efc12f2e8b21c14a9a75c6ba6d",
-                "reference": "9c719c4747fa26efc12f2e8b21c14a9a75c6ba6d",
-                "shasum": ""
-            },
-            "require": {
-                "kubawerlos/php-cs-fixer-custom-fixers": "^3.22",
-                "php": "^7.3|^8.0",
-                "php-cs-fixer/shim": "^3.17"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Nextcloud\\CodingStandard\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Christoph Wurst",
-                    "email": "christoph@winzerhof-wurst.at"
-                }
-            ],
-            "description": "Nextcloud coding standards for the php cs fixer",
-            "support": {
-                "issues": "https://github.com/nextcloud/coding-standard/issues",
-                "source": "https://github.com/nextcloud/coding-standard/tree/v1.3.2"
-            },
-            "time": "2024-10-14T16:49:05+00:00"
         },
         {
             "name": "nextcloud/ocp",
@@ -375,58 +344,6 @@
                 "source": "https://github.com/phar-io/version/tree/3.2.1"
             },
             "time": "2022-02-21T01:04:05+00:00"
-        },
-        {
-            "name": "php-cs-fixer/shim",
-            "version": "v3.64.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/PHP-CS-Fixer/shim.git",
-                "reference": "81ccfd24baf3a10810dab1152c403981a790b837"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/shim/zipball/81ccfd24baf3a10810dab1152c403981a790b837",
-                "reference": "81ccfd24baf3a10810dab1152c403981a790b837",
-                "shasum": ""
-            },
-            "require": {
-                "ext-json": "*",
-                "ext-tokenizer": "*",
-                "php": "^7.4 || ^8.0"
-            },
-            "replace": {
-                "friendsofphp/php-cs-fixer": "self.version"
-            },
-            "suggest": {
-                "ext-dom": "For handling output formats in XML",
-                "ext-mbstring": "For handling non-UTF8 characters."
-            },
-            "bin": [
-                "php-cs-fixer",
-                "php-cs-fixer.phar"
-            ],
-            "type": "application",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Dariusz Rumiński",
-                    "email": "dariusz.ruminski@gmail.com"
-                }
-            ],
-            "description": "A tool to automatically fix PHP code style",
-            "support": {
-                "issues": "https://github.com/PHP-CS-Fixer/shim/issues",
-                "source": "https://github.com/PHP-CS-Fixer/shim/tree/v3.64.0"
-            },
-            "time": "2024-08-30T23:10:11+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -849,41 +766,6 @@
                 }
             ],
             "time": "2024-07-03T05:49:17+00:00"
-        },
-        {
-            "name": "psalm/phar",
-            "version": "6.7.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/psalm/phar.git",
-                "reference": "a7112d33cfd48d857c2eb730ea642046d21bbdf5"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/psalm/phar/zipball/a7112d33cfd48d857c2eb730ea642046d21bbdf5",
-                "reference": "a7112d33cfd48d857c2eb730ea642046d21bbdf5",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.1 || ^8.0"
-            },
-            "conflict": {
-                "vimeo/psalm": "*"
-            },
-            "bin": [
-                "psalm.phar"
-            ],
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Composer-based Psalm Phar",
-            "support": {
-                "issues": "https://github.com/psalm/phar/issues",
-                "source": "https://github.com/psalm/phar/tree/6.7.1"
-            },
-            "time": "2025-02-17T10:54:35+00:00"
         },
         {
             "name": "psr/clock",
