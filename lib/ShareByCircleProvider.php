@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles;
 
@@ -52,12 +50,9 @@ use OCP\Files\InvalidPathException;
 use OCP\Files\IRootFolder;
 use OCP\Files\Node;
 use OCP\Files\NotFoundException;
-use OCP\IDBConnection;
 use OCP\IL10N;
 use OCP\IURLGenerator;
 use OCP\IUserManager;
-use OCP\Security\ISecureRandom;
-use OCP\Server;
 use OCP\Share\Exceptions\AlreadySharedException;
 use OCP\Share\Exceptions\IllegalIDChangeException;
 use OCP\Share\Exceptions\ShareNotFound;
@@ -75,53 +70,26 @@ class ShareByCircleProvider implements IShareProvider {
 	use TStringTools;
 	use TNCLogger;
 
-
 	public const IDENTIFIER = 'ocCircleShare';
 
-
-	private IUserManager $userManager;
-	private IRootFolder $rootFolder;
-	private IL10N $l10n;
-	private LoggerInterface $logger;
-	private IURLGenerator $urlGenerator;
-	private ShareWrapperService $shareWrapperService;
-	private ShareTokenService $shareTokenService;
-	private FederatedUserService $federatedUserService;
-	private FederatedEventService $federatedEventService;
-	private CircleService $circleService;
-	private EventService $eventService;
-
 	public function __construct(
-		IDBConnection $connection,
-		ISecureRandom $secureRandom,
-		IUserManager $userManager,
-		IRootFolder $rootFolder,
-		IL10N $l10n,
-		mixed $logger, // unused, only kept for compatibility with server
-		IURLGenerator $urlGenerator,
+		private IUserManager $userManager,
+		private IRootFolder $rootFolder,
+		private IL10N $l10n,
+		private LoggerInterface $logger,
+		private IURLGenerator $urlGenerator,
+		private ShareWrapperService $shareWrapperService,
+		private ShareTokenService $shareTokenService,
+		private FederatedUserService $federatedUserService,
+		private FederatedEventService $federatedEventService,
+		private CircleService $circleService,
+		private EventService $eventService,
 	) {
-		$this->userManager = $userManager;
-		$this->rootFolder = $rootFolder;
-		$this->l10n = $l10n;
-		$this->logger = Server::get(LoggerInterface::class);
-		$this->urlGenerator = $urlGenerator;
-
-		$this->federatedUserService = Server::get(FederatedUserService::class);
-		$this->federatedEventService = Server::get(FederatedEventService::class);
-		$this->shareWrapperService = Server::get(ShareWrapperService::class);
-		$this->shareTokenService = Server::get(ShareTokenService::class);
-		$this->circleService = Server::get(CircleService::class);
-		$this->eventService = Server::get(EventService::class);
 	}
 
-
-	/**
-	 * @return string
-	 */
 	public function identifier(): string {
 		return self::IDENTIFIER;
 	}
-
 
 	/**
 	 * @param IShare $share
