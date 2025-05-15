@@ -399,8 +399,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 			);
 			$this->sendPasswordByMail($share, $displayName, $email, $password);
 		} catch (Exception $e) {
-			OC::$server->getLogger()
-				->log(1, 'Circles::sharedByMail - mail were not sent: ' . $e->getMessage());
+			$this->logger->info('Circles::sharedByMail - mail were not sent: ' . $e->getMessage(), ['exception' => $e]);
 		}
 	}
 

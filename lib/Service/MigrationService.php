@@ -565,7 +565,6 @@ class MigrationService {
 
 		$contactsManager = Server::get(ContactsManager::class);
 
-		/** @var IManager $cm */
 		$cm = Server::get(IManager::class);
 		$contactsManager->setupContactsProvider($cm, $userId, $this->urlGenerator);
 

@@ -14,10 +14,6 @@
       <code><![CDATA[!$sendPasswordByMail]]></code>
       <code><![CDATA[$sendPasswordByMail]]></code>
     </TypeDoesNotContainType>
-    <UndefinedMethod>
-      <code><![CDATA[getLogger]]></code>
-      <code><![CDATA[getLogger]]></code>
-    </UndefinedMethod>
   </file>
   <file src="lib/Command/CirclesRemote.php">
     <UndefinedMethod>

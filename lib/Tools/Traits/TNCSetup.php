@@ -79,7 +79,6 @@ trait TNCSetup {
 			return '';
 		}
 
-		/** @var IConfig $config */
 		$config = Server::get(IConfig::class);
 
 		return $config->getAppValue($app, $key, '');
