@@ -22,6 +22,7 @@
 		<file name="tests/stubs/doctrine_dbal_schema_abstractasset.php" />
 		<file name="tests/stubs/doctrine_dbal_schema_constraint.php" />
 		<file name="tests/stubs/doctrine_dbal_schema_index.php" />
+		<file name="tests/stubs/doctrine_dbal_schema_schema.php" />
 		<file name="tests/stubs/doctrine_dbal_schema_schemaexception.php" />
 		<file name="tests/stubs/doctrine_dbal_schema_table.php" />
 		<file name="tests/stubs/oc.php" />
