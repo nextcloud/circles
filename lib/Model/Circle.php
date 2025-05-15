@@ -33,6 +33,7 @@ use OCA\Circles\Tools\IDeserializable;
 use OCA\Circles\Tools\Traits\TArrayTools;
 use OCA\Circles\Tools\Traits\TDeserialize;
 use OCP\Security\IHasher;
+use OCP\Server;
 
 /**
  * Class Circle
@@ -904,10 +905,8 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		// if password is not hashed (pre-22), hash it and update new settings in DB
 		$curr = $this->get('password_single', $this->getSettings());
 		if (strlen($curr) >= 1 && strlen($curr) < 64) {
-			/** @var IHasher $hasher */
-			$hasher = \OC::$server->get(IHasher::class);
-			/** @var CircleRequest $circleRequest */
-			$circleRequest = \OC::$server->get(CircleRequest::class);
+			$hasher = Server::get(IHasher::class);
+			$circleRequest = Server::get(CircleRequest::class);
 
 			$new = $hasher->hash($curr);
 			$settings = $this->getSettings();

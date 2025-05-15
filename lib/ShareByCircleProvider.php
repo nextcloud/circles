@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace OCA\Circles;
 
 use Exception;
-use OC;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\ContactAddressBookNotFoundException;
 use OCA\Circles\Exceptions\ContactFormatException;
@@ -58,6 +57,7 @@ use OCP\IL10N;
 use OCP\IURLGenerator;
 use OCP\IUserManager;
 use OCP\Security\ISecureRandom;
+use OCP\Server;
 use OCP\Share\Exceptions\AlreadySharedException;
 use OCP\Share\Exceptions\IllegalIDChangeException;
 use OCP\Share\Exceptions\ShareNotFound;
@@ -103,15 +103,15 @@ class ShareByCircleProvider implements IShareProvider {
 		$this->userManager = $userManager;
 		$this->rootFolder = $rootFolder;
 		$this->l10n = $l10n;
-		$this->logger = OC::$server->get(LoggerInterface::class);
+		$this->logger = Server::get(LoggerInterface::class);
 		$this->urlGenerator = $urlGenerator;
 
-		$this->federatedUserService = OC::$server->get(FederatedUserService::class);
-		$this->federatedEventService = OC::$server->get(FederatedEventService::class);
-		$this->shareWrapperService = OC::$server->get(ShareWrapperService::class);
-		$this->shareTokenService = OC::$server->get(ShareTokenService::class);
-		$this->circleService = OC::$server->get(CircleService::class);
-		$this->eventService = OC::$server->get(EventService::class);
+		$this->federatedUserService = Server::get(FederatedUserService::class);
+		$this->federatedEventService = Server::get(FederatedEventService::class);
+		$this->shareWrapperService = Server::get(ShareWrapperService::class);
+		$this->shareTokenService = Server::get(ShareTokenService::class);
+		$this->circleService = Server::get(CircleService::class);
+		$this->eventService = Server::get(EventService::class);
 	}
 
 

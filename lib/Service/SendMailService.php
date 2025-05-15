@@ -260,7 +260,7 @@ class SendMailService {
 				$instanceName
 			]
 		);
-		$message->setFrom([\OCP\Util::getDefaultEmailAddress($instanceName) => $senderName]);
+		$message->setFrom([Util::getDefaultEmailAddress($instanceName) => $senderName]);
 		//		if ($initiatorEmailAddress !== null) {
 		//			$message->setReplyTo([$initiatorEmailAddress => $initiatorDisplayName]);
 		//			$emailTemplate->addFooter($instanceName . ' - ' . $this->defaults->getSlogan());

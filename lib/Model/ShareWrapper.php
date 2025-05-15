@@ -13,7 +13,6 @@ namespace OCA\Circles\Model;
 
 use DateTime;
 use JsonSerializable;
-use OC;
 use OC\Files\Cache\Cache;
 use OC\Share20\Share;
 use OC\Share20\ShareAttributes;
@@ -24,10 +23,12 @@ use OCA\Circles\Tools\Exceptions\InvalidItemException;
 use OCA\Circles\Tools\IDeserializable;
 use OCA\Circles\Tools\Traits\TArrayTools;
 use OCA\Circles\Tools\Traits\TDeserialize;
+use OCP\Files\IMimeTypeLoader;
 use OCP\Files\IRootFolder;
 use OCP\IURLGenerator;
 use OCP\IUserManager;
 use OCP\L10N\IFactory;
+use OCP\Server;
 use OCP\Share\Exceptions\IllegalIDChangeException;
 use OCP\Share\IAttributes;
 use OCP\Share\IShare;
@@ -422,7 +423,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 				return null;
 			}
 			$share->setNodeCacheEntry(
-				Cache::cacheEntryFromData($this->getFileCache()->toCache(), OC::$server->getMimeTypeLoader())
+				Cache::cacheEntryFromData($this->getFileCache()->toCache(), Server::get(IMimeTypeLoader::class))
 			);
 		} elseif ($nullOnMissingFileCache) {
 			return null;
@@ -447,7 +448,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 
 		$display = $circle->getDisplayName();
 		if ($circle->getSource() === Member::TYPE_CIRCLE) {
-			$l10n = \OCP\Server::get(IFactory::class)->get('circles');
+			$l10n = Server::get(IFactory::class)->get('circles');
 			$display = $l10n->t('%s (Team owned by %s)', [$display, $circle->getOwner()->getDisplayName()]);
 		} else {
 			$display .= ' (' . Circle::$DEF_SOURCE[$circle->getSource()] . ')';

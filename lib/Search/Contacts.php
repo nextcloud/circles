@@ -11,6 +11,8 @@ use OCA\Circles\ISearch;
 use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\SearchResult;
 use OCA\Circles\Service\MiscService;
+use OCP\Contacts\IManager;
+use OCP\Server;
 
 class Contacts implements ISearch {
 	/**
@@ -18,7 +20,7 @@ class Contacts implements ISearch {
 	 */
 	public function search($needle): array {
 		$result = [];
-		$contactManager = \OC::$server->getContactsManager();
+		$contactManager = Server::get(IManager::class);
 
 		// Add 'ADR' to search also in the address
 		$contacts = $contactManager->search($needle, ['FN', 'ORG', 'EMAIL']);

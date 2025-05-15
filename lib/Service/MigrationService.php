@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 use Exception;
-use OC;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
@@ -48,6 +47,7 @@ use OCA\DAV\CardDAV\ContactsManager;
 use OCP\Contacts\IManager;
 use OCP\IDBConnection;
 use OCP\IURLGenerator;
+use OCP\Server;
 use OCP\Share\IShare;
 
 /**
@@ -563,10 +563,9 @@ class MigrationService {
 	private function fixContactId(Member $member) {
 		[$userId, $contactId] = explode(':', $member->getUserId());
 
-		$contactsManager = OC::$server->get(ContactsManager::class);
+		$contactsManager = Server::get(ContactsManager::class);
 
-		/** @var IManager $cm */
-		$cm = OC::$server->get(IManager::class);
+		$cm = Server::get(IManager::class);
 		$contactsManager->setupContactsProvider($cm, $userId, $this->urlGenerator);
 
 		$contact = $cm->search($contactId, ['UID']);

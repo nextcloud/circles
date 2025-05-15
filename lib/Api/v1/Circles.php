@@ -23,6 +23,7 @@ use OCA\Circles\Model\ShareWrapper;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\ShareWrapperService;
+use OCP\Server;
 
 class Circles {
 	public const API_VERSION = [0, 10, 0];
@@ -65,8 +66,7 @@ class Circles {
 	 * @return Circle[]
 	 */
 	public static function listCircles($type, $name = '', $level = 0, $userId = '', $forceAll = false) {
-		/** @var FederatedUserService $federatedUserService */
-		$federatedUserService = \OC::$server->get(FederatedUserService::class);
+		$federatedUserService = Server::get(FederatedUserService::class);
 
 		$personalCircle = false;
 		if ($forceAll) {
@@ -79,8 +79,7 @@ class Circles {
 			$federatedUserService->setLocalCurrentUserId($userId);
 		}
 
-		/** @var CircleService $circleService */
-		$circleService = \OC::$server->get(CircleService::class);
+		$circleService = Server::get(CircleService::class);
 
 		$probe = new CircleProbe();
 		$probe->includePersonalCircles($personalCircle);
@@ -109,8 +108,7 @@ class Circles {
 	 * Return all the circle the current user is a member.
 	 */
 	public static function joinedCircles($userId = '', $forceAll = false) {
-		/** @var FederatedUserService $federatedUserService */
-		$federatedUserService = \OC::$server->get(FederatedUserService::class);
+		$federatedUserService = Server::get(FederatedUserService::class);
 
 		$personalCircle = false;
 		if ($forceAll) {
@@ -123,8 +121,7 @@ class Circles {
 			$federatedUserService->setLocalCurrentUserId($userId);
 		}
 
-		/** @var CircleService $circleService */
-		$circleService = \OC::$server->get(CircleService::class);
+		$circleService = Server::get(CircleService::class);
 
 		$probe = new CircleProbe();
 		$probe->mustBeMember();
@@ -162,16 +159,14 @@ class Circles {
 	 *
 	 */
 	public static function detailsCircle(string $circleUniqueId, bool $forceAll = false): Circle {
-		/** @var FederatedUserService $federatedUserService */
-		$federatedUserService = \OC::$server->get(FederatedUserService::class);
+		$federatedUserService = Server::get(FederatedUserService::class);
 		if ($forceAll || \OC::$CLI) {
 			$federatedUserService->bypassCurrentUserCondition(true);
 		} else {
 			$federatedUserService->initCurrentUser();
 		}
 
-		/** @var CircleService $circleService */
-		$circleService = \OC::$server->get(CircleService::class);
+		$circleService = Server::get(CircleService::class);
 
 		return $circleService->getCircle($circleUniqueId);
 	}
@@ -194,8 +189,7 @@ class Circles {
 	 *
 	 */
 	public static function getMember($circleUniqueId, $ident, $type, $forceAll = false) {
-		/** @var CirclesManager $circlesManager */
-		$circlesManager = \OC::$server->get(CirclesManager::class);
+		$circlesManager = Server::get(CirclesManager::class);
 		$federatedUser = $circlesManager->getFederatedUser($ident, $type);
 
 		return $circlesManager->getLink($circleUniqueId, $federatedUser->getSingleId());
@@ -216,9 +210,9 @@ class Circles {
 	 */
 	public static function getFilesForCircles(array $circleUniqueIds): array {
 		try {
-			$circleService = \OC::$server->get(CircleService::class);
-			$federatedUserService = \OC::$server->get(FederatedUserService::class);
-			$shareWrapperService = \OC::$server->get(ShareWrapperService::class);
+			$circleService = Server::get(CircleService::class);
+			$federatedUserService = Server::get(FederatedUserService::class);
+			$shareWrapperService = Server::get(ShareWrapperService::class);
 
 			$federatedUserService->initCurrentUser();
 		} catch (\Exception $e) {

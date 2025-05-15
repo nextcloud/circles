@@ -18,6 +18,7 @@ use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\TimezoneService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
+use OCP\Server;
 use OCP\Share\IShare;
 
 /**
@@ -267,7 +268,7 @@ class CoreRequestBuilder {
 	 * this just empty all tables from the app.
 	 */
 	public function uninstallAppTables() {
-		$dbConn = \OC::$server->get(Connection::class);
+		$dbConn = Server::get(Connection::class);
 		$schema = new SchemaWrapper($dbConn);
 
 		foreach (array_keys(self::$tables) as $table) {

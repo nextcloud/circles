@@ -8,16 +8,19 @@
 namespace OCA\Circles\Service;
 
 use Exception;
-use OC;
 use OC\User\NoUserException;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\MissingKeyInArrayException;
 use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Tools\Traits\TArrayTools;
+use OCA\DAV\CardDAV\ContactsManager;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\Contacts\ContactsMenu\IContactsStore;
+use OCP\Contacts\IManager;
+use OCP\IURLGenerator;
 use OCP\IUserManager;
+use OCP\Server;
 use Psr\Log\LoggerInterface;
 
 class MiscService {
@@ -138,18 +141,18 @@ class MiscService {
 	 * @return string
 	 */
 	public function getContactDisplayName(string $ident): string {
-		if (!class_exists(\OCA\DAV\CardDAV\ContactsManager::class) || !strpos($ident, ':')) {
+		if (!class_exists(ContactsManager::class) || !strpos($ident, ':')) {
 			return '';
 		}
 
 		[$userId, $contactId] = explode(':', $ident);
 		$entries = [];
 		try {
-			/** @var \OCA\DAV\CardDAV\ContactsManager $cManager */
-			$cManager = OC::$server->query(\OCA\DAV\CardDAV\ContactsManager::class);
-			$urlGenerator = OC::$server->getURLGenerator();
+			/** @var ContactsManager $cManager */
+			$cManager = Server::get(ContactsManager::class);
+			$urlGenerator = Server::get(IURLGenerator::class);
 
-			$cm = OC::$server->getContactsManager();
+			$cm = Server::get(IManager::class);
 			$cManager->setupContactsProvider($cm, $userId, $urlGenerator);
 			$contact = $cm->search($contactId, ['UID']);
 
@@ -195,7 +198,7 @@ class MiscService {
 			return;
 		}
 
-		$user = OC::$server->getUserManager()
+		$user = Server::get(IUserManager::class)
 			->get($ident);
 		if ($user !== null) {
 			$display = $user->getDisplayName();
@@ -229,18 +232,18 @@ class MiscService {
 	 *
 	 */
 	public static function getContactData($ident) {
-		if (!class_exists(\OCA\DAV\CardDAV\ContactsManager::class) || !strpos($ident, ':')) {
+		if (!class_exists(ContactsManager::class) || !strpos($ident, ':')) {
 			return [];
 		}
 
 		[$userId, $contactId] = explode(':', $ident);
 
 		try {
-			/** @var \OCA\DAV\CardDAV\ContactsManager $cManager */
-			$cManager = OC::$server->query(\OCA\DAV\CardDAV\ContactsManager::class);
-			$urlGenerator = OC::$server->getURLGenerator();
+			/** @var ContactsManager $cManager */
+			$cManager = Server::get(ContactsManager::class);
+			$urlGenerator = Server::get(IURLGenerator::class);
 
-			$cm = OC::$server->getContactsManager();
+			$cm = Server::get(IManager::class);
 			$cManager->setupContactsProvider($cm, $userId, $urlGenerator);
 			$contact = $cm->search($contactId, ['UID']);
 

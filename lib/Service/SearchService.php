@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use OC;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
@@ -25,6 +24,7 @@ use OCA\Circles\Search\FederatedUsers;
 use OCA\Circles\Search\UnifiedSearchResult;
 use OCA\Circles\Tools\Traits\TArrayTools;
 use OCP\IURLGenerator;
+use OCP\Server;
 
 class SearchService {
 	use TArrayTools;
@@ -65,7 +65,7 @@ class SearchService {
 
 		foreach (self::$SERVICES as $entry) {
 			/** @var ISearch $service */
-			$service = OC::$server->get($entry);
+			$service = Server::get($entry);
 
 			$result = array_merge($result, $service->search($needle));
 		}

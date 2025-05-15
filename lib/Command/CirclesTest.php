@@ -27,6 +27,7 @@ use OCA\Circles\Tools\Exceptions\ItemNotFoundException;
 use OCA\Circles\Tools\Traits\TArrayTools;
 use OCA\Circles\Tools\Traits\TDeserialize;
 use OCA\Circles\Tools\Traits\TStringTools;
+use OCP\Server;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -135,8 +136,7 @@ class CirclesTest extends Base {
 
 
 		// loading CirclesManager
-		/** @var CirclesManager $circlesManager */
-		$circlesManager = \OC::$server->get(CirclesManager::class);
+		$circlesManager = Server::get(CirclesManager::class);
 		//		$circlesManager->startSuperSession();
 
 
