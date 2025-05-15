@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="6.7.1@a2f190972555ea01b0cfcc1913924d6c5fc1a64e">
+<files psalm-version="6.5.0@38fc8444edf0cebc9205296ee6e30e906ade783b">
   <file src="lib/Activity/ProviderParser.php">
-    <InvalidOperand>
-      <code><![CDATA[$k]]></code>
-    </InvalidOperand>
     <TypeDoesNotContainType>
       <code><![CDATA[str_starts_with($sK, '_')]]></code>
     </TypeDoesNotContainType>
@@ -74,11 +71,6 @@
       <code><![CDATA[CircleEventService]]></code>
     </UndefinedDocblockClass>
   </file>
-  <file src="lib/FileSharingTeamResourceProvider.php">
-    <InvalidOperand>
-      <code><![CDATA[$shareWrapper->getFileSource()]]></code>
-    </InvalidOperand>
-  </file>
   <file src="lib/Migration/Version0022Date20220526113601.php">
     <UndefinedClass>
       <code><![CDATA[Types]]></code>
@@ -112,9 +104,6 @@
     </LessSpecificImplementedReturnType>
   </file>
   <file src="lib/Model/DavCard.php">
-    <InvalidOperand>
-      <code><![CDATA[$this->getAddressBookId()]]></code>
-    </InvalidOperand>
     <InvalidScalarArgument>
       <code><![CDATA[$this->get('addressBookId', $data)]]></code>
     </InvalidScalarArgument>
@@ -224,26 +213,10 @@
       <code><![CDATA[ExternalStorage]]></code>
     </UndefinedClass>
   </file>
-  <file src="lib/Service/CircleService.php">
-    <InvalidOperand>
-      <code><![CDATA[$i]]></code>
-      <code><![CDATA[$i]]></code>
-    </InvalidOperand>
-  </file>
-  <file src="lib/Service/ConfigService.php">
-    <InvalidOperand>
-      <code><![CDATA[$loopback['port']]]></code>
-    </InvalidOperand>
-  </file>
   <file src="lib/Service/FederatedShareService.php">
     <InvalidMethodCall>
       <code><![CDATA[gObj]]></code>
     </InvalidMethodCall>
-  </file>
-  <file src="lib/Service/FederatedUserService.php">
-    <InvalidOperand>
-      <code><![CDATA[$federatedUser->getUserType()]]></code>
-    </InvalidOperand>
   </file>
   <file src="lib/Service/GlobalScaleService.php">
     <UndefinedClass>
@@ -253,25 +226,12 @@
       <code><![CDATA[Signer]]></code>
     </UndefinedDocblockClass>
   </file>
-  <file src="lib/Service/MaintenanceService.php">
-    <InvalidOperand>
-      <code><![CDATA[$level]]></code>
-    </InvalidOperand>
-  </file>
   <file src="lib/Service/MembershipService.php">
     <ConflictingReferenceConstraint>
       <code><![CDATA[if (!in_array($member->getCircleId(), $knownIds)) {]]></code>
     </ConflictingReferenceConstraint>
   </file>
-  <file src="lib/Service/MigrationService.php">
-    <InvalidOperand>
-      <code><![CDATA[$data->gInt('id')]]></code>
-    </InvalidOperand>
-  </file>
   <file src="lib/Service/MiscService.php">
-    <InvalidOperand>
-      <code><![CDATA[$size]]></code>
-    </InvalidOperand>
     <InvalidReturnType>
       <code><![CDATA[string]]></code>
     </InvalidReturnType>
@@ -283,11 +243,6 @@
     <RedundantCondition>
       <code><![CDATA[is_null($object)]]></code>
     </RedundantCondition>
-  </file>
-  <file src="lib/Service/ShareWrapperService.php">
-    <InvalidOperand>
-      <code><![CDATA[$nodeId]]></code>
-    </InvalidOperand>
   </file>
   <file src="lib/Service/SyncService.php">
     <InvalidClass>
@@ -353,12 +308,6 @@
       <code><![CDATA[string]]></code>
       <code><![CDATA[string]]></code>
     </InvalidNullableReturnType>
-    <InvalidOperand>
-      <code><![CDATA[$k]]></code>
-      <code><![CDATA[$k]]></code>
-      <code><![CDATA[$this->getPort()]]></code>
-      <code><![CDATA[$this->getPort()]]></code>
-    </InvalidOperand>
     <NullableReturnStatement>
       <code><![CDATA[preg_replace(
 			'/([(%5B)]{1})[0-9]+([(%5D)]{1})/', '$1$2', http_build_query($this->getData())
@@ -386,11 +335,6 @@
       <code><![CDATA[getArray]]></code>
     </TooManyArguments>
   </file>
-  <file src="lib/Tools/Traits/TAsync.php">
-    <InvalidOperand>
-      <code><![CDATA[$size]]></code>
-    </InvalidOperand>
-  </file>
   <file src="lib/Tools/Traits/TNCLogger.php">
     <RedundantCondition>
       <code><![CDATA[isset($this->logger)]]></code>
@@ -401,52 +345,6 @@
     <UndefinedClass>
       <code><![CDATA[HintException]]></code>
     </UndefinedClass>
-    <UndefinedThisPropertyFetch>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-      <code><![CDATA[$this->logger]]></code>
-    </UndefinedThisPropertyFetch>
   </file>
   <file src="lib/Tools/Traits/TNCRequest.php">
     <InvalidArgument>
@@ -455,18 +353,6 @@
     <UndefinedClass>
       <code><![CDATA[ClientException]]></code>
     </UndefinedClass>
-    <UndefinedThisPropertyFetch>
-      <code><![CDATA[$this->clientService]]></code>
-      <code><![CDATA[$this->clientService]]></code>
-      <code><![CDATA[$this->clientService]]></code>
-      <code><![CDATA[$this->clientService]]></code>
-      <code><![CDATA[$this->clientService]]></code>
-      <code><![CDATA[$this->clientService]]></code>
-      <code><![CDATA[$this->clientService]]></code>
-      <code><![CDATA[$this->clientService]]></code>
-      <code><![CDATA[$this->clientService]]></code>
-      <code><![CDATA[$this->clientService]]></code>
-    </UndefinedThisPropertyFetch>
   </file>
   <file src="lib/Tools/Traits/TNCSignatory.php">
     <UndefinedMethod>
@@ -477,12 +363,5 @@
     <InvalidArrayOffset>
       <code><![CDATA[$s[$e]]]></code>
     </InvalidArrayOffset>
-    <InvalidOperand>
-      <code><![CDATA[$bytes / pow(1024, $e)]]></code>
-      <code><![CDATA[$first]]></code>
-      <code><![CDATA[$k]]></code>
-      <code><![CDATA[$second]]></code>
-      <code><![CDATA[round($bytes / pow(1024, $e), 2)]]></code>
-    </InvalidOperand>
   </file>
 </files>
