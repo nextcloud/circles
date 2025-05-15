@@ -91,6 +91,10 @@ class ShareWrapperService {
 		$this->shareWrapperRequest->update($shareWrapper);
 	}
 
+	public function updateChildPermissions(ShareWrapper $shareWrapper): void {
+		$this->cache->clear('');
+		$this->shareWrapperRequest->updateChildPermissions($shareWrapper);
+	}
 
 	/**
 	 * @param ShareWrapper $shareWrapper
