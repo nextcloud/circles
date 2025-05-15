@@ -115,8 +115,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 			$this->configService = Server::get(ConfigService::class);
 			$this->miscService = Server::get(MiscService::class);
 		} catch (QueryException $e) {
-			OC::$server->getLogger()
-				->log(1, 'Circles: cannot init FileSharingBroadcaster - ' . $e->getMessage());
+			$this->logger->info('Circles: cannot init FileSharingBroadcaster - ' . $e->getMessage(), ['exception' => $e]);
 		}
 
 		try {

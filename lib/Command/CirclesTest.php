@@ -136,7 +136,6 @@ class CirclesTest extends Base {
 
 
 		// loading CirclesManager
-		/** @var CirclesManager $circlesManager */
 		$circlesManager = Server::get(CirclesManager::class);
 		//		$circlesManager->startSuperSession();
 

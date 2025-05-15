@@ -66,7 +66,6 @@ class Circles {
 	 * @return Circle[]
 	 */
 	public static function listCircles($type, $name = '', $level = 0, $userId = '', $forceAll = false) {
-		/** @var FederatedUserService $federatedUserService */
 		$federatedUserService = Server::get(FederatedUserService::class);
 
 		$personalCircle = false;
@@ -80,7 +79,6 @@ class Circles {
 			$federatedUserService->setLocalCurrentUserId($userId);
 		}
 
-		/** @var CircleService $circleService */
 		$circleService = Server::get(CircleService::class);
 
 		$probe = new CircleProbe();
@@ -110,7 +108,6 @@ class Circles {
 	 * Return all the circle the current user is a member.
 	 */
 	public static function joinedCircles($userId = '', $forceAll = false) {
-		/** @var FederatedUserService $federatedUserService */
 		$federatedUserService = Server::get(FederatedUserService::class);
 
 		$personalCircle = false;
@@ -124,7 +121,6 @@ class Circles {
 			$federatedUserService->setLocalCurrentUserId($userId);
 		}
 
-		/** @var CircleService $circleService */
 		$circleService = Server::get(CircleService::class);
 
 		$probe = new CircleProbe();
@@ -163,7 +159,6 @@ class Circles {
 	 *
 	 */
 	public static function detailsCircle(string $circleUniqueId, bool $forceAll = false): Circle {
-		/** @var FederatedUserService $federatedUserService */
 		$federatedUserService = Server::get(FederatedUserService::class);
 		if ($forceAll || \OC::$CLI) {
 			$federatedUserService->bypassCurrentUserCondition(true);
@@ -171,7 +166,6 @@ class Circles {
 			$federatedUserService->initCurrentUser();
 		}
 
-		/** @var CircleService $circleService */
 		$circleService = Server::get(CircleService::class);
 
 		return $circleService->getCircle($circleUniqueId);
@@ -195,7 +189,6 @@ class Circles {
 	 *
 	 */
 	public static function getMember($circleUniqueId, $ident, $type, $forceAll = false) {
-		/** @var CirclesManager $circlesManager */
 		$circlesManager = Server::get(CirclesManager::class);
 		$federatedUser = $circlesManager->getFederatedUser($ident, $type);
 

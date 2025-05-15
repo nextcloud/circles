@@ -905,9 +905,7 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		// if password is not hashed (pre-22), hash it and update new settings in DB
 		$curr = $this->get('password_single', $this->getSettings());
 		if (strlen($curr) >= 1 && strlen($curr) < 64) {
-			/** @var IHasher $hasher */
 			$hasher = Server::get(IHasher::class);
-			/** @var CircleRequest $circleRequest */
 			$circleRequest = Server::get(CircleRequest::class);
 
 			$new = $hasher->hash($curr);
