@@ -335,9 +335,6 @@
     <RedundantCondition>
       <code><![CDATA[isset($this->logger)]]></code>
     </RedundantCondition>
-    <RedundantPropertyInitializationCheck>
-      <code><![CDATA[isset($this->logger)]]></code>
-    </RedundantPropertyInitializationCheck>
     <UndefinedClass>
       <code><![CDATA[HintException]]></code>
     </UndefinedClass>
