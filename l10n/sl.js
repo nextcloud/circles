@@ -133,10 +133,6 @@ OC.L10N.register(
     "No teams found" : "Ni oblikovanih skupin",
     "Please select teams to filter by" : "Izbrati je treba skupino za filtriranje",
     "No files found for the selected teams" : "Za izbrano skupino ni najdenih datotek",
-    "Shared to Circles" : "Souporaba v krogu",
-    "You are now a member of the Circle \"%2$s\"" : "Sedaj ste včlanjeni v krog »%2$s«.",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : " %1$s vas povabi v krog »%2$s«",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s pošlje prošnjo za včlanitev v krog »%2$s«",
-    "Leave the circle" : "Zapusti krog"
+    "Shared to Circles" : "Souporaba v krogu"
 },
 "nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);");

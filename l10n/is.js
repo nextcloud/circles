@@ -151,11 +151,6 @@ OC.L10N.register(
     "No teams found" : "Engin teymi fundust",
     "Please select teams to filter by" : "Veldu teymi til að sía eftir",
     "No files found for the selected teams" : "Engar skrár fundust fyrir valin teymi",
-    "{author} added team {member} has been added as member to {circle}" : "Teyminu {member} var bætt við sem meðlimi í {circle} af {author}",
-    "Shared to Circles" : "Deilt til hringja",
-    "You are now a member of the Circle \"%2$s\"" : "Þú ert núna meðlimur í hringnum \"%2$s\"",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "%1$s bauð þér að ganga í hringinn \"%2$s\"",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s sendi beiðni um að taka þátt í hringnum \"%2$s\"",
-    "Leave the circle" : "Ganga úr þessum hring"
+    "Shared to Circles" : "Deilt til hringja"
 },
 "nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);");

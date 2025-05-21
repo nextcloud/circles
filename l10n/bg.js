@@ -116,10 +116,6 @@ OC.L10N.register(
     "Name" : "Име",
     "Size" : "Размер",
     "Modified" : "Променен на",
-    "Shared to Circles" : "Споделено с Кръгове",
-    "You are now a member of the Circle \"%2$s\"" : " \nВече сте член на Кръга \"%2$s\"",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "Вие сте поканени от %1$s в Кръга \"%2$s\"",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s са изпратили заявка да бъдат членове на Кръга \"%2$s\"",
-    "Leave the circle" : "Напускане на кръга"
+    "Shared to Circles" : "Споделено с Кръгове"
 },
 "nplurals=2; plural=(n != 1);");

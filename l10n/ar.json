@@ -149,11 +149,6 @@
     "No teams found" : "لا يوجد أي فريق",
     "Please select teams to filter by" : "رجاءً، قم تتحديد فرق للتصفية بحسبها",
     "No files found for the selected teams" : "لا توجد أي ملفات للفرق المحددة",
-    "{author} added team {member} has been added as member to {circle}" : "{author} قام بإضافة الفريق {member} كعضو في {circle}",
-    "Shared to Circles" : "مُشتركٌ مع الدوائر",
-    "You are now a member of the Circle \"%2$s\"" : "أنت الآن عضوٌ في الدائرة \"%2$s\"",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "لقد تمّت دعوتك من قِبَل %1$s إلى الدائرة \"%2$s\"",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s أرسل طلباً ليكون عضواً في الدائرة \"%2$s\"",
-    "Leave the circle" : "غادر الدائرة"
+    "Shared to Circles" : "مُشتركٌ مع الدوائر"
 },"pluralForm" :"nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;"
 }

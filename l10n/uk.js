@@ -151,11 +151,6 @@ OC.L10N.register(
     "No teams found" : "Жодної команди не знайдено",
     "Please select teams to filter by" : "Виберіть команди для відфільтрування",
     "No files found for the selected teams" : "Жодних файлів не знайдено для вибраних команд",
-    "{author} added team {member} has been added as member to {circle}" : "{author} додав(-ла) {member} учасником(-цею) {circle}",
-    "Shared to Circles" : "Опубліковано в Колах",
-    "You are now a member of the Circle \"%2$s\"" : "Тепер ви учасник кола \"%2$s\"",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "Вас запросив %1$s до кола \"%2$s\"",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s надіслав запит на участь у Колі \"%2$s\"",
-    "Leave the circle" : "Вийти з кола"
+    "Shared to Circles" : "Опубліковано в Колах"
 },
 "nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);");

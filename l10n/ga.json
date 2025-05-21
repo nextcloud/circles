@@ -149,11 +149,6 @@
     "No teams found" : "Níor aimsíodh foirne",
     "Please select teams to filter by" : "Roghnaigh foirne lena scagadh le do thoil",
     "No files found for the selected teams" : "Níor aimsíodh aon chomhaid do na foirne roghnaithe",
-    "{author} added team {member} has been added as member to {circle}" : "Chuir {author} foireann {member} leis mar bhall le {circle}",
-    "Shared to Circles" : "Roinnte go Ciorcail",
-    "You are now a member of the Circle \"%2$s\"" : "Is ball thú den Chiorcal \"%2$s\" anois",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "Thug %1$s cuireadh duit dul isteach sa Chiorcal \"%2$s\"",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "Sheol %1$s iarratas bheith ina bhall den Chiorcal \"%2$s\"",
-    "Leave the circle" : "Fág an ciorcal"
+    "Shared to Circles" : "Roinnte go Ciorcail"
 },"pluralForm" :"nplurals=5; plural=(n==1 ? 0 : n==2 ? 1 : n<7 ? 2 : n<11 ? 3 : 4);"
 }

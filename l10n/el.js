@@ -114,10 +114,6 @@ OC.L10N.register(
     "Name" : "Όνομα",
     "Size" : "Μέγεθος",
     "Modified" : "Τροποποιήθηκε",
-    "Shared to Circles" : "Κοινόχρηστο στους Κύκλους",
-    "You are now a member of the Circle \"%2$s\"" : "Είστε πλέον μέλος του Κύκλου \"%2$s\"",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "Έχετε προσκληθεί από %1$s στον Κυκλο \"%2$s\"",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "Ο/η %1$s αιτείται να γίνει μέλος του Κύκλου \"%2$s\"",
-    "Leave the circle" : "Αποχώρηση από τον Κύκλο"
+    "Shared to Circles" : "Κοινόχρηστο στους Κύκλους"
 },
 "nplurals=2; plural=(n != 1);");

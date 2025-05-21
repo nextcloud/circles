@@ -109,10 +109,6 @@ OC.L10N.register(
     "No teams found" : "Tiimejä ei löytynyt",
     "Please select teams to filter by" : "Valitse tiimit, joiden perusteella suodatetaan",
     "No files found for the selected teams" : "Valitulle tiimille ei löytynyt tiedostoja",
-    "Shared to Circles" : "Jaettu piireille",
-    "You are now a member of the Circle \"%2$s\"" : "Olet nyt piirin \"%2$s\" jäsen",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "%1$s kutsui sinut piiriin \"%2$s\"",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s lähetti liittymispyynnön piiriin \"%2$s\"",
-    "Leave the circle" : "Poistu piiristä"
+    "Shared to Circles" : "Jaettu piireille"
 },
 "nplurals=2; plural=(n != 1);");
