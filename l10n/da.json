@@ -149,11 +149,6 @@
     "No teams found" : "Ingen teams fundet",
     "Please select teams to filter by" : "Vælg venligst teams at filtrere efter",
     "No files found for the selected teams" : "Inge filer funder for det valgte team",
-    "{author} added team {member} has been added as member to {circle}" : "{author} tilføjede team {member} er blevet tilføjet som medlem til {circle}",
-    "Shared to Circles" : "Delt til Cirkler",
-    "You are now a member of the Circle \"%2$s\"" : "Du er nu medlem af cirklen \"%2$s\"",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "Du er blevet inviteret af %1$s ind i cirklen \"%2$s\"",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s sendte en anmodning om at blive medlem af cirklen \"%2$s\"",
-    "Leave the circle" : "Forlad cirklen"
+    "Shared to Circles" : "Delt til Cirkler"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

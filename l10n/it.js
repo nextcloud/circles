@@ -118,10 +118,6 @@ OC.L10N.register(
     "Name" : "Nome",
     "Size" : "Dimensione",
     "Modified" : "Modificato",
-    "Shared to Circles" : "Condivisi con cerchie",
-    "You are now a member of the Circle \"%2$s\"" : "Ora sei membro della cerchia \"%2$s\"",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "Sei stato invitato da %1$s nella cerchia \"%2$s\"",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s ha inviato una richiesta per essere membro della cerchia \"%2$s\"",
-    "Leave the circle" : "Abbandona la cerchia"
+    "Shared to Circles" : "Condivisi con cerchie"
 },
 "nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");

@@ -151,11 +151,6 @@ OC.L10N.register(
     "No teams found" : "Keine Teams gefunden",
     "Please select teams to filter by" : "Bitte wähle Teams, nach denen gefiltert werden soll",
     "No files found for the selected teams" : "Keine Dateien für die ausgewählten Teams gefunden",
-    "{author} added team {member} has been added as member to {circle}" : "{author} hat das Team {member} als Mitglied zu {circle} hinzugefügt",
-    "Shared to Circles" : "Geteilt mit Kreisen",
-    "You are now a member of the Circle \"%2$s\"" : "Du bist jetzt ein Mitglied des Kreises \"%2$s\"",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "Du wurdest von %1$s zum Kreis \"%2$s\" eingeladen",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s hat eine Mitgliedschaftsanfrage für den Kreis \"%2$s\" gesendet",
-    "Leave the circle" : "Diesen Kreis verlassen"
+    "Shared to Circles" : "Geteilt mit Kreisen"
 },
 "nplurals=2; plural=(n != 1);");

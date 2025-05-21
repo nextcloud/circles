@@ -151,11 +151,6 @@ OC.L10N.register(
     "No teams found" : "Ez da lantalderik aurkitu",
     "Please select teams to filter by" : "Hautatu lantaldeak iragazteko",
     "No files found for the selected teams" : "Ez da fitxategirik aurkitu hautatutako lantaldeetarako",
-    "{author} added team {member} has been added as member to {circle}" : "{author}(e)k {member} lantaldea gehitu du kide bezala {circle}(e)ra",
-    "Shared to Circles" : "Zirkuluetara partekatua",
-    "You are now a member of the Circle \"%2$s\"" : "«%2$s» zirkuluaren kide zara orain",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "%1$s(e)k «%2$s» zirkulura gonbidatu zaitu",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s(e)k «%2$s» zirkuluaren kide izateko eskaera bidali du",
-    "Leave the circle" : "Utzi zirkulua"
+    "Shared to Circles" : "Zirkuluetara partekatua"
 },
 "nplurals=2; plural=(n != 1);");

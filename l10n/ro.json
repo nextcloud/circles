@@ -111,10 +111,6 @@
     "Name" : "Nume",
     "Size" : "Mărime",
     "Modified" : "Modificat",
-    "Shared to Circles" : "Distribuit în Cercuri",
-    "You are now a member of the Circle \"%2$s\"" : "Sunteți acum membru al Cercului \"%2$s\"",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "Ați fost invitat de %1$s în Cercul \"%2$s\"",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s a solicitat să fie membru al Cercului \"%2$s\"",
-    "Leave the circle" : "Părăsește cercul"
+    "Shared to Circles" : "Distribuit în Cercuri"
 },"pluralForm" :"nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));"
 }

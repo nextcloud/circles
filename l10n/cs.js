@@ -151,11 +151,6 @@ OC.L10N.register(
     "No teams found" : "Nenalezeny žádné týmy",
     "Please select teams to filter by" : "Vyberte týmy podle kterých filtrovat",
     "No files found for the selected teams" : "Pro vybrané týmy nebyly nalezeny žádné soubory",
-    "{author} added team {member} has been added as member to {circle}" : "{author} přidal(a) tým {member} jako člena do {circle}",
-    "Shared to Circles" : "Sdíleno do okruhů",
-    "You are now a member of the Circle \"%2$s\"" : "Nyní jste členy okruhu „%2$s“",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "%1$s vás pozval(a) do okruhu „%2$s“",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s poslal(a) žádost o to, stát se členem okruhu „%2$s“",
-    "Leave the circle" : "Opustit okruh"
+    "Shared to Circles" : "Sdíleno do okruhů"
 },
 "nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;");

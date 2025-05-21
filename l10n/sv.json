@@ -149,11 +149,6 @@
     "No teams found" : "Inga team hittades",
     "Please select teams to filter by" : "Välj team att filtrera efter",
     "No files found for the selected teams" : "Inga filer hittade för valda team",
-    "{author} added team {member} has been added as member to {circle}" : "{author} lade till team {member} som medlem i {circle}",
-    "Shared to Circles" : "Delad med Cirklar",
-    "You are now a member of the Circle \"%2$s\"" : "Du är nu medlem i cirkel \"%2$s\"",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "Du har blivit inbjuden av %1$s till cirkel \"%2$s\"",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s skickade en förfrågan att bli medlem i cirkel \"%2$s\"",
-    "Leave the circle" : "Lämna cirkeln"
+    "Shared to Circles" : "Delad med Cirklar"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

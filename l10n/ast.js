@@ -145,11 +145,6 @@ OC.L10N.register(
     "No teams found" : "Nun s'atopó nengún equipu",
     "Please select teams to filter by" : "Seleiciona los equipos polos que quies peñerar",
     "No files found for the selected teams" : "Nun s'atopó nengún ficheru pa los equipos seleicionaos",
-    "{author} added team {member} has been added as member to {circle}" : "{author} amestó l'equipu «{member}» como miembru de «{circle}»",
-    "Shared to Circles" : "Compartióse en Círculos",
-    "You are now a member of the Circle \"%2$s\"" : "Agora yes miembru del círculu «%2$s»",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "%1$s convidóte al círculu «%2$s»",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s unvió una solicitú pa ser miembru del círculu «%2$s»",
-    "Leave the circle" : "Colar del círculu"
+    "Shared to Circles" : "Compartióse en Círculos"
 },
 "nplurals=2; plural=(n != 1);");

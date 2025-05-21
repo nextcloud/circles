@@ -151,11 +151,6 @@ OC.L10N.register(
     "No teams found" : "Herhangi bir takım bulunamadı",
     "Please select teams to filter by" : "Lütfen süzülecek takımları seçin",
     "No files found for the selected teams" : "Seçilmiş takımlara uyan bir dosya bulunamadı",
-    "{author} added team {member} has been added as member to {circle}" : "{author}, {member} takım üyesini {circle} takımına ekledi",
-    "Shared to Circles" : "Takımlarla paylaşıldı",
-    "You are now a member of the Circle \"%2$s\"" : "Artık \"%2$s\" takımının üyesisiniz",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "%1$s tarafından \"%2$s\" takımına davet edildiniz",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s, \"%2$s\" takımına üye olma isteğinde bulundu",
-    "Leave the circle" : "Takımdan çık"
+    "Shared to Circles" : "Takımlarla paylaşıldı"
 },
 "nplurals=2; plural=(n > 1);");

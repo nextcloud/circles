@@ -104,10 +104,6 @@
     "Name" : "이름",
     "Size" : "크기",
     "Modified" : "수정한 날짜",
-    "Shared to Circles" : "서클에 공유됨",
-    "You are now a member of the Circle \"%2$s\"" : "당신은 이제 서클 \"%2$s\"의 회원입니다.",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "%1$s님이 당신을 서클 \"%2$s\"에 초대했습니다.",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s님이 당신에게 서클 \"%2$s\"의 회원이 될 것을 요청했습니다.",
-    "Leave the circle" : "서클 떠나기"
+    "Shared to Circles" : "서클에 공유됨"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

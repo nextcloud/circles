@@ -116,10 +116,6 @@ OC.L10N.register(
     "Name" : "نام",
     "Size" : "اندازه",
     "Modified" : "تغییر یافته",
-    "Shared to Circles" : "Shared to Circles",
-    "You are now a member of the Circle \"%2$s\"" : "You are now a member of the Circle \"%2$s\"",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "You have been invited by %1$s into the Circle \"%2$s\"",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s sent a request to be a member of the Circle \"%2$s\"",
-    "Leave the circle" : "Leave the circle"
+    "Shared to Circles" : "Shared to Circles"
 },
 "nplurals=2; plural=(n > 1);");

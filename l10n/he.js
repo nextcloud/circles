@@ -73,9 +73,6 @@ OC.L10N.register(
     "Name" : "שם",
     "Size" : "גודל",
     "Modified" : "מועד שינוי",
-    "Shared to Circles" : "שותף למעגלים",
-    "You are now a member of the Circle \"%2$s\"" : "התקבלת לחברות במעגל „%2$s”",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "הוזמנת על ידי %1$s למעגל „%2$s”",
-    "Leave the circle" : "לעזוב את המעגל"
+    "Shared to Circles" : "שותף למעגלים"
 },
 "nplurals=3; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % 1 == 0) ? 1: 2;");

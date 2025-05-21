@@ -138,10 +138,6 @@
     "Select team to filter by" : "Selecteer team om te filteren",
     "No teams found" : "Geen teams gevonden",
     "No files found for the selected teams" : "Geen bestanden gevonden voor de geselecteerde teams",
-    "Shared to Circles" : "Gedeeld met Kringen",
-    "You are now a member of the Circle \"%2$s\"" : "Je bent nu lid van Kring \"%2$s\"",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "Je bent uitgenodigd door %1$sin Kring voor  \"%2$s\"",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s verstuurde een lidmaatschapsverzoek voor Kring \"%2$s\"",
-    "Leave the circle" : "Verlaat de kring"
+    "Shared to Circles" : "Gedeeld met Kringen"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

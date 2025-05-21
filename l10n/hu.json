@@ -149,11 +149,6 @@
     "No teams found" : "Nem találhatók csapatok",
     "Please select teams to filter by" : "Válasszon csapatokat a szűréshez:",
     "No files found for the selected teams" : "Nem található fájl a kiválasztott csapatokhoz",
-    "{author} added team {member} has been added as member to {circle}" : "{author} tagként hozzáadta a(z) {member} csapatot a(z) {circle} csapathoz",
-    "Shared to Circles" : "Körökkel megosztva",
-    "You are now a member of the Circle \"%2$s\"" : "Ön most már a(z) „%2$s” kör tagja",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "%1$s meghívta Önt a (z) „\"%2$s” körbe",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s csatlakozási kérést küldött, hogy a(z) „%2$s\" kör tagja lehessen",
-    "Leave the circle" : "Kör elhagyása"
+    "Shared to Circles" : "Körökkel megosztva"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
