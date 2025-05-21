@@ -114,10 +114,6 @@
     "Name" : "Tên",
     "Size" : "Kích cỡ",
     "Modified" : "Thay đổi",
-    "Shared to Circles" : "Đã được chia sẻ đến những Vòng kết nối",
-    "You are now a member of the Circle \"%2$s\"" : "Bây giờ bạn là thành viên của Vòng kết nối \"%2$s\"",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "Bạn vừa mới được mời bởi %1$s vào Vòng kết nối \"%2$s\"",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s đã gửi một yêu cầu để là một thành viên của Vòng kết nối \"%2$s\"",
-    "Leave the circle" : "Rời bỏ vòng kết nối"
+    "Shared to Circles" : "Đã được chia sẻ đến những Vòng kết nối"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

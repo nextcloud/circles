@@ -149,11 +149,6 @@
     "No teams found" : "ھېچقانداق كوماندا تېپىلمىدى",
     "Please select teams to filter by" : "سۈزۈش ئۈچۈن گۇرۇپپىلارنى تاللاڭ",
     "No files found for the selected teams" : "تاللانغان گۇرۇپپىلارغا ھۆججەت تېپىلمىدى",
-    "{author} added team {member} has been added as member to {circle}" : "{author} قوشۇلغان گۇرۇپپا {member} {circle} ئەزا سۈپىتىدە قوشۇلدى",
-    "Shared to Circles" : "چەمبىرەككە ئورتاقلاشتى",
-    "You are now a member of the Circle \"%2$s\"" : "سىز ھازىر «%2 $ s» چەمبىرىكىنىڭ ئەزاسى.",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "سىزنى%1 $ s چەمبىرىكىگە تەكلىپ قىلدىڭىز \"%2 $ s\"",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1 $ s چەمبىرەككە ئەزا بولۇش تەلىپىنى «%2 $ s» ئەۋەتتى",
-    "Leave the circle" : "چەمبىرەكتىن ئايرىڭ"
+    "Shared to Circles" : "چەمبىرەككە ئورتاقلاشتى"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

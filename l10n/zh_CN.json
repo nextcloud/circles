@@ -149,11 +149,6 @@
     "No teams found" : "未找到任何团队",
     "Please select teams to filter by" : "请选择要筛选的团队",
     "No files found for the selected teams" : "没有找到所选团队的文件",
-    "{author} added team {member} has been added as member to {circle}" : "{author} 将团队 {member} 添加至 {circle} 团队",
-    "Shared to Circles" : "共享圈子的文件",
-    "You are now a member of the Circle \"%2$s\"" : "您现在是\"%2$s\" 圈子的一员了",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "%1$s 已邀请您加入圈子 \"%2$s\"",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s发送了一条加入\"%2$s\" 圈子的请求",
-    "Leave the circle" : "离开圈子"
+    "Shared to Circles" : "共享圈子的文件"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

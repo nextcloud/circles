@@ -151,11 +151,6 @@ OC.L10N.register(
     "No teams found" : "Tiime ei leidu",
     "Please select teams to filter by" : "Palun vali tiimid, mille järgi filtreerida",
     "No files found for the selected teams" : "Valitud tiimide jaoks ei leidu ühtegi faili",
-    "{author} added team {member} has been added as member to {circle}" : "{author} lisas „{circle}“ „{member}“ tiimi liikmeks",
-    "Shared to Circles" : "Jagatud tiimidega",
-    "You are now a member of the Circle \"%2$s\"" : "Sa oled nüüd „%2$s“ tiimi liige",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "%1$s kutsus sind „%2$s“ tiimi",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s saatis päringu liitumaks „%2$s“ tiimiga",
-    "Leave the circle" : "Lahku tiimist"
+    "Shared to Circles" : "Jagatud tiimidega"
 },
 "nplurals=2; plural=(n != 1);");

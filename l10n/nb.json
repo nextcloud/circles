@@ -145,11 +145,6 @@
     "No teams found" : "Ingen lag funnet",
     "Please select teams to filter by" : "Vennligst velg lag å filtrere etter",
     "No files found for the selected teams" : "Ingen filer funnet for valgte lag",
-    "{author} added team {member} has been added as member to {circle}" : "{author} la til lag-{member} er blitt lagt til medlem til {circle}",
-    "Shared to Circles" : "Delt til Sirkler",
-    "You are now a member of the Circle \"%2$s\"" : "Du er nå medlem av sirkelen \"%2$s\"",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "Du har blitt invitert av %1$s til sirkelen \"%2$s\"",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s sendte en forespørsel om å bli medlem av sirkelen \"%2$s\"",
-    "Leave the circle" : "Forlat sirkelen"
+    "Shared to Circles" : "Delt til Sirkler"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

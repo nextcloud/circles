@@ -151,11 +151,6 @@ OC.L10N.register(
     "No teams found" : "No s'ha trobat cap equip",
     "Please select teams to filter by" : "Seleccioneu els equips que voleu filtrar",
     "No files found for the selected teams" : "No s'ha trobat cap fitxer per als equips seleccionats",
-    "{author} added team {member} has been added as member to {circle}" : "{author} ha afegit l'equip {member} com a membre de {circle}",
-    "Shared to Circles" : "Compartits en cercles",
-    "You are now a member of the Circle \"%2$s\"" : "Ara sou membre del cercle «%2$s»",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "%1$s us ha convidat al cercle «%2$s»",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s ha enviat una sol·licitud per a ser membre del cercle «%2$s»",
-    "Leave the circle" : "Surt del cercle"
+    "Shared to Circles" : "Compartits en cercles"
 },
 "nplurals=2; plural=(n != 1);");

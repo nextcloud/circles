@@ -114,10 +114,6 @@
     "Name" : "Nombre",
     "Size" : "Tamaño",
     "Modified" : "Modificado",
-    "Shared to Circles" : "Compartido a Círculos",
-    "You are now a member of the Circle \"%2$s\"" : "Ahora eres miembro del Círculo \"%2$s\"",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "Has sido invitado por %1$s al Círculo \"%2$s\"",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s envió una solicitud para ser miembro del Círculo \"%2$s\"",
-    "Leave the circle" : "Dejar el círculo"
+    "Shared to Circles" : "Compartido a Círculos"
 },"pluralForm" :"nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }

@@ -149,11 +149,6 @@
     "No teams found" : "Није пронађен ниједан тим",
     "Please select teams to filter by" : "Молимо васд да изаберите тимове по којима се филтрира",
     "No files found for the selected teams" : "Није пронађен ниједан фајл за изабране тимове",
-    "{author} added team {member} has been added as member to {circle}" : "{author} је додао тим {member} као члана {circle}",
-    "Shared to Circles" : "Дељено на Кругове",
-    "You are now a member of the Circle \"%2$s\"" : "Сада сте члан круга „%2$s“",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "%1$s Вас је позвао/ла у круг „%2$s“",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s је послао захтев да буде члан круга „%2$s“",
-    "Leave the circle" : "Напусти круг"
+    "Shared to Circles" : "Дељено на Кругове"
 },"pluralForm" :"nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);"
 }

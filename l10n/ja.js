@@ -151,11 +151,6 @@ OC.L10N.register(
     "No teams found" : "チームは見つかりませんでした",
     "Please select teams to filter by" : "フィルターするチームを選択してください",
     "No files found for the selected teams" : "選択したチームに割りあてられているファイルはありません",
-    "{author} added team {member} has been added as member to {circle}" : "{author} がチーム {member} のメンバーとして {circle} に追加されました",
-    "Shared to Circles" : "サークルと共有",
-    "You are now a member of the Circle \"%2$s\"" : "あなたはサークル \"%2$s\" のメンバーになりました",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "あなたは%1$sからサークル「%2$s」に招待されています",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$sがサークル「%2$s」のメンバー申請を送りました",
-    "Leave the circle" : "サークルを退会する"
+    "Shared to Circles" : "サークルと共有"
 },
 "nplurals=1; plural=0;");

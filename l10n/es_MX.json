@@ -143,11 +143,6 @@
     "No teams found" : "No se encontraron equipos",
     "Please select teams to filter by" : "Por favor, seleccione los equipos por los que filtrar",
     "No files found for the selected teams" : "No se encontraron archivos para los equipos seleccionados",
-    "{author} added team {member} has been added as member to {circle}" : "{author} añadió al equipo {member} como miembro de {circle}",
-    "Shared to Circles" : "Compartido a Círculos",
-    "You are now a member of the Circle \"%2$s\"" : "Ahora es miembro del círculo \"%2$s\"",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "Ha sido invitado por %1$s al círculo \"%2$s\"",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s envió una solicitud para ser miembro del círculo \"%2$s\"",
-    "Leave the circle" : "Dejar el círculo"
+    "Shared to Circles" : "Compartido a Círculos"
 },"pluralForm" :"nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }

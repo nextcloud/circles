@@ -113,10 +113,6 @@
     "Name" : "Enw",
     "Size" : "Maint",
     "Modified" : "Addaswyd",
-    "Shared to Circles" : "Wedi'i rannu i Gylchoedd",
-    "You are now a member of the Circle \"%2$s\"" : "Rydych nawr yn aelod o'r Cylch \"%2$s\"",
-    "You have been invited by %1$s into the Circle \"%2$s\"" : "Rydych chi wedi cael eich gwahodd gan %1$s i'r Cylch \"%2$s\"",
-    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "Anfonodd %1$s gais i fod yn aelod o'r Cylch \"%2$s\"",
-    "Leave the circle" : "Gadael y cylch"
+    "Shared to Circles" : "Wedi'i rannu i Gylchoedd"
 },"pluralForm" :"nplurals=4; plural=(n==1) ? 0 : (n==2) ? 1 : (n != 8 && n != 11) ? 2 : 3;"
 }
