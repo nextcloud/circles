@@ -199,6 +199,7 @@ class MemberRequest extends MemberRequestBuilder {
 		?IFederatedUser $initiator = null,
 		?MemberProbe $probe = null,
 		int $limit = 0,
+		bool $fullDetails = false,
 	): array {
 		if (is_null($probe)) {
 			$probe = new MemberProbe();
@@ -218,8 +219,10 @@ class MemberRequest extends MemberRequestBuilder {
 			)
 		);
 
-		$qb->leftJoinCircle(CoreQueryBuilder::MEMBER, $initiator);
-		$qb->leftJoinInvitedBy(CoreQueryBuilder::MEMBER);
+		if ($fullDetails) {
+			$qb->leftJoinCircle(CoreQueryBuilder::MEMBER, $initiator);
+			$qb->leftJoinInvitedBy(CoreQueryBuilder::MEMBER);
+		}
 
 		if ($probe->hasFilterRemoteInstance()) {
 			$aliasCircle = $qb->generateAlias(CoreQueryBuilder::MEMBER, CoreQueryBuilder::CIRCLE);
