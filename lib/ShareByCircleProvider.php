@@ -460,7 +460,7 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @throws RequestBuilderException
 	 */
 	public function getSharesByPath(Node $path): array {
-		$wrappedShares = $this->shareWrapperService->getSharesByFileId($path->getId());
+		$wrappedShares = $this->shareWrapperService->getSharesByFileId($path->getId(), true);
 
 		return array_filter(
 			array_map(
