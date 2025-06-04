@@ -459,15 +459,16 @@ class LocalController extends OCSController {
 	 * @NoAdminRequired
 	 *
 	 * @param string $circleId
+	 * @param bool $fullDetails
 	 *
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
-	public function members(string $circleId): DataResponse {
+	public function members(string $circleId, bool $fullDetails = false): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
 
-			return new DataResponse($this->serializeArray($this->memberService->getMembers($circleId)));
+			return new DataResponse($this->serializeArray($this->memberService->getMembers($circleId, $fullDetails)));
 		} catch (Exception $e) {
 			$this->e($e, ['circleId' => $circleId]);
 			throw new OCSException($e->getMessage(), (int)$e->getCode());
