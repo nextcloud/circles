@@ -5,6 +5,7 @@ OC.L10N.register(
     "Open" : "Fungua",
     "Invite" : "Alika",
     "Hidden" : "Iliyofichwa",
+    "Email address" : "Anwani ya barua pepe",
     "Owner" : "Mmiliki",
     "%s on %s" : "%sjuu ya %s",
     "Open »%s«" : "Fungua >> 1%s <<",
