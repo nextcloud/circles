@@ -1,6 +1,7 @@
 OC.L10N.register(
     "circles",
     {
+    "You deleted {circle}" : "Umefuta {circle}",
     "Personal" : "Binafsi",
     "Open" : "Fungua",
     "Invite" : "Alika",
@@ -9,8 +10,11 @@ OC.L10N.register(
     "Owner" : "Mmiliki",
     "%s on %s" : "%sjuu ya %s",
     "Open »%s«" : "Fungua >> 1%s <<",
+    "Files" : "Mafaili",
     "Accept" : "Kubali",
+    "No files in here" : "Hakuna faili hapa",
     "Name" : "Jina",
+    "Size" : "Ukubwa",
     "Modified" : "Boresha"
 },
 "nplurals=2; plural=(n != 1);");

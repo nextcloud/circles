@@ -1,4 +1,5 @@
 { "translations": {
+    "You deleted {circle}" : "Umefuta {circle}",
     "Personal" : "Binafsi",
     "Open" : "Fungua",
     "Invite" : "Alika",
@@ -7,8 +8,11 @@
     "Owner" : "Mmiliki",
     "%s on %s" : "%sjuu ya %s",
     "Open »%s«" : "Fungua >> 1%s <<",
+    "Files" : "Mafaili",
     "Accept" : "Kubali",
+    "No files in here" : "Hakuna faili hapa",
     "Name" : "Jina",
+    "Size" : "Ukubwa",
     "Modified" : "Boresha"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
