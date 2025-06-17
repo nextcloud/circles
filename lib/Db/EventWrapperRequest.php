@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace OCA\Circles\Db;
 
 use OCA\Circles\Model\Federated\EventWrapper;
+use OCP\DB\Exception;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class EventWrapperRequest
@@ -38,7 +40,12 @@ class EventWrapperRequest extends EventWrapperRequestBuilder {
 		   ->setValue('status', $qb->createNamedParameter($wrapper->getStatus()))
 		   ->setValue('creation', $qb->createNamedParameter($wrapper->getCreation()));
 
-		$qb->execute();
+		try {
+			$qb->execute();
+		} catch (Exception $e) {
+			$logger = \OCP\Server::get(LoggerInterface::class);
+			$logger->warning('issue while storing event', ['exception' => $e]);
+		}
 	}
 
 	/**
