@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
+use OC\User\NoUserException;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
@@ -25,6 +26,7 @@ use OCA\Circles\IFederatedItemMustBeInitializedLocally;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\EventService;
+use OCA\Circles\Service\MaintenanceService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\Tools\Traits\TDeserialize;
 
@@ -40,44 +42,14 @@ class CircleCreate implements
 	IFederatedItemMustBeInitializedLocally {
 	use TDeserialize;
 
-
-	/** @var CircleRequest */
-	private $circleRequest;
-
-	/** @var MemberRequest */
-	private $memberRequest;
-
-	/** @var CircleService */
-	private $circleService;
-
-	/** @var MembershipService */
-	private $membershipService;
-
-	/** @var EventService */
-	private $eventService;
-
-
-	/**
-	 * CircleCreate constructor.
-	 *
-	 * @param CircleRequest $circleRequest
-	 * @param MemberRequest $memberRequest
-	 * @param CircleService $circleService
-	 * @param MembershipService $membershipService
-	 * @param EventService $eventService
-	 */
 	public function __construct(
-		CircleRequest $circleRequest,
-		MemberRequest $memberRequest,
-		CircleService $circleService,
-		MembershipService $membershipService,
-		EventService $eventService
+		private CircleRequest $circleRequest,
+		private MemberRequest $memberRequest,
+		private CircleService $circleService,
+		private MembershipService $membershipService,
+		private MaintenanceService $maintenanceService,
+		private EventService $eventService,
 	) {
-		$this->circleRequest = $circleRequest;
-		$this->memberRequest = $memberRequest;
-		$this->circleService = $circleService;
-		$this->membershipService = $membershipService;
-		$this->eventService = $eventService;
 	}
 
 
@@ -125,6 +97,12 @@ class CircleCreate implements
 
 		$this->membershipService->onUpdate($owner->getSingleId());
 		$this->membershipService->updatePopulation($circle);
+
+		try {
+			$this->maintenanceService->updateDisplayName($owner);
+		} catch (NoUserException) {
+			// ignoreable
+		}
 
 		$this->eventService->circleCreating($event);
 	}

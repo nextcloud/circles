@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
+use OC\User\NoUserException;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedItemBadRequestException;
@@ -46,6 +47,7 @@ use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Service\MaintenanceService;
 use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\Service\RemoteStreamService;
@@ -79,7 +81,8 @@ class SingleMemberAdd implements
 		protected MemberService $memberService,
 		protected MembershipService $membershipService,
 		protected EventService $eventService,
-		protected ConfigService $configService
+		protected ConfigService $configService,
+		protected MaintenanceService $maintenanceService,
 	) {
 	}
 
@@ -234,6 +237,15 @@ class SingleMemberAdd implements
 		// The idea is that adding the member during the self::verify() will help during the broadcasting
 		// of the event to Federated RemoteInstance for their first member.
 		$this->memberRequest->insertOrUpdate($member);
+
+		try {
+			$displayName = $this->maintenanceService->updateDisplayName($member);
+			if ($displayName !== '') {
+				$member->setDisplayName($displayName);
+			}
+		} catch (NoUserException) {
+			// ignoreable
+		}
 
 		return $member;
 	}
