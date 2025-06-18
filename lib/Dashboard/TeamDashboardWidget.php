@@ -66,7 +66,7 @@ class TeamDashboardWidget implements IAPIWidgetV2, IIconWidget, IButtonWidget, I
 					$circle->getDisplayName(),
 					'',
 					$this->urlGenerator->getAbsoluteURL($this->modelManager->generateLinkToCircle($circle->getSingleId())),
-					$this->urlGenerator->getAbsoluteURL($this->urlGenerator->linkToRoute('core.GuestAvatar.getAvatar', ['guestName' => $circle->getDisplayName(), 'size' => 64]))
+					$this->urlGenerator->getAbsoluteURL($this->urlGenerator->linkToRoute('core.GuestAvatar.getAvatar', ['guestName' => $circle->getSanitizedName(), 'size' => 64]))
 				);
 			}, $this->circleService->probeCircles($probe));
 		} catch (\Exception $e) {
