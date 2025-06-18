@@ -81,7 +81,8 @@ class SingleMemberAdd implements
 		protected MemberService $memberService,
 		protected MembershipService $membershipService,
 		protected EventService $eventService,
-		protected ConfigService $configService
+		protected ConfigService $configService,
+		protected MaintenanceService $maintenanceService,
 	) {
 	}
 

@@ -43,11 +43,12 @@ class CircleCreate implements
 	use TDeserialize;
 
 	public function __construct(
-		CircleRequest $circleRequest,
-		MemberRequest $memberRequest,
-		CircleService $circleService,
-		MembershipService $membershipService,
-		EventService $eventService
+		private CircleRequest $circleRequest,
+		private MemberRequest $memberRequest,
+		private CircleService $circleService,
+		private MembershipService $membershipService,
+		private MaintenanceService $maintenanceService,
+		private EventService $eventService,
 	) {
 	}
 
