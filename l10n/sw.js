@@ -1,6 +1,7 @@
 OC.L10N.register(
     "circles",
     {
+    "Teams" : "Timu",
     "You deleted {circle}" : "Umefuta {circle}",
     "Personal" : "Binafsi",
     "Open" : "Fungua",
