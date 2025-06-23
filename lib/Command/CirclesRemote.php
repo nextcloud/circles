@@ -461,8 +461,8 @@ class CirclesRemote extends Base {
 		$output = $output->section();
 		$table = new Table($output);
 		$table->setHeaders(['Instance', 'Type', 'iface', 'UID', 'Authed', 'Aliases']);
-		$table->render();
 
+		$rows = [];
 		foreach ($instances as $instance) {
 			try {
 				$current = $this->remoteStreamService->retrieveRemoteInstance($instance->getInstance());
@@ -475,17 +475,18 @@ class CirclesRemote extends Base {
 				$currentUid = '<error>' . $e->getMessage() . '</error>';
 			}
 
-			$table->appendRow(
-				[
-					$instance->getInstance(),
-					$instance->getType(),
-					InterfaceService::$LIST_IFACE[$instance->getInterface()],
-					$instance->getUid(),
-					$currentUid,
-					json_encode($instance->getAliases())
-				]
-			);
+			$rows[] = [
+				$instance->getInstance(),
+				$instance->getType(),
+				InterfaceService::$LIST_IFACE[$instance->getInterface()],
+				$instance->getUid(),
+				$currentUid,
+				json_encode($instance->getAliases())
+			];
 		}
+
+		$table->setRows($rows);
+		$table->render();
 	}
 
 
