@@ -87,20 +87,21 @@ class MembersSearch extends Base {
 		$output = $output->section();
 		$table = new Table($output);
 		$table->setHeaders(['SingleId', 'UserId', 'UserType', 'Instance']);
-		$table->render();
 
+		$rows = [];
 		foreach ($result as $entry) {
 			if (!$result instanceof IFederatedUser) {
 				continue;
 			}
-			$table->appendRow(
-				[
-					$entry->getSingleId(),
-					$entry->getUserId(),
-					Member::$TYPE[$entry->getUserType()],
-					$this->configService->displayInstance($entry->getInstance())
-				]
-			);
+			$rows[] = [
+				$entry->getSingleId(),
+				$entry->getUserId(),
+				Member::$TYPE[$entry->getUserType()],
+				$this->configService->displayInstance($entry->getInstance())
+			];
 		}
+
+		$table->setRows($rows);
+		$table->render();
 	}
 }

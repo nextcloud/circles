@@ -223,25 +223,26 @@ class CirclesList extends Base {
 		$table->setHeaders(
 			['Single Id', 'Name', 'Config', 'Source', 'Owner', 'Instance', 'Population']
 		);
-		$table->render();
 
 		$displayName = $this->input->getOption('display-name');
 		$display = ($this->input->getOption('def') ? Circle::FLAGS_LONG : Circle::FLAGS_SHORT);
+		$rows = [];
 		foreach ($circles as $circle) {
 			$owner = $circle->getOwner();
-			$table->appendRow(
-				[
-					$circle->getSingleId(),
-					$this->cut(($displayName ? $circle->getDisplayName() : $circle->getName()), 40),
-					json_encode(Circle::getCircleFlags($circle, $display)),
-					Circle::$DEF_SOURCE[$circle->getSource()],
-					$this->cut($displayName ? $owner->getDisplayName() : $owner->getUserId(), 40),
-					$this->configService->displayInstance($owner->getInstance()),
-					$circle->getPopulation() . '/'
-					. $this->getInt('members_limit', $circle->getSettings(), -1)
-					. ' (' . $circle->getPopulationInherited() . ')'
-				]
-			);
+			$rows = [
+				$circle->getSingleId(),
+				$this->cut(($displayName ? $circle->getDisplayName() : $circle->getName()), 40),
+				json_encode(Circle::getCircleFlags($circle, $display)),
+				Circle::$DEF_SOURCE[$circle->getSource()],
+				$this->cut($displayName ? $owner->getDisplayName() : $owner->getUserId(), 40),
+				$this->configService->displayInstance($owner->getInstance()),
+				$circle->getPopulation() . '/'
+				. $this->getInt('members_limit', $circle->getSettings(), -1)
+				. ' (' . $circle->getPopulationInherited() . ')'
+			];
 		}
+
+		$table->setRows($rows);
+		$table->render();
 	}
 }
