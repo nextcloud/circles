@@ -118,7 +118,9 @@ class CoreRequestBuilder {
 			'token',
 			'parent',
 			'mountpoint',
-			'mountpoint_hash'
+			'mountpoint_hash',
+			'remote',
+			'remote_id',
 		],
 		self::TABLE_MOUNTPOINT => [],
 		self::TABLE_SHARE_LOCK => [],
