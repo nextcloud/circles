@@ -4,6 +4,7 @@ OC.L10N.register(
     "Teams" : "Timu",
     "You deleted {circle}" : "Umefuta {circle}",
     "Personal" : "Binafsi",
+    "Visible" : "Inayoonekana",
     "Open" : "Fungua",
     "Invite" : "Alika",
     "Hidden" : "Iliyofichwa",
