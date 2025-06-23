@@ -162,18 +162,18 @@ class CirclesTest extends Base {
 		$output = new ConsoleOutput();
 		$table = new Table($output->section());
 		$table->setHeaders(['SingleId', 'Circle Name', 'Type']);
-		$table->render();
 
+		$rows = [];
 		foreach ($circles as $entry) {
-			$table->appendRow(
-				[
-					$entry->getSingleId(),
-					$entry->getDisplayName(),
-					Circle::$DEF_SOURCE[$entry->getSource()]
-				]
-			);
+			$rows[] = [
+				$entry->getSingleId(),
+				$entry->getDisplayName(),
+				Circle::$DEF_SOURCE[$entry->getSource()]
+			];
 		}
 
+		$table->setRows($rows);
+		$table->render();
 
 		return 0;
 		$federatedUser = $circlesManager->getFederatedUser('test1', Member::TYPE_USER);
@@ -204,17 +204,18 @@ class CirclesTest extends Base {
 		$output = new ConsoleOutput();
 		$table = new Table($output->section());
 		$table->setHeaders(['SingleId', 'Circle Name', 'Type']);
-		$table->render();
 
+		$rows = [];
 		foreach ($circles as $entry) {
-			$table->appendRow(
-				[
-					$entry->getSingleId(),
-					$entry->getDisplayName(),
-					Circle::$DEF_SOURCE[$entry->getSource()]
-				]
-			);
+			$rows[] = [
+				$entry->getSingleId(),
+				$entry->getDisplayName(),
+				Circle::$DEF_SOURCE[$entry->getSource()]
+			];
 		}
+
+		$table->setRows($rows);
+		$table->render();
 
 
 		// exit
