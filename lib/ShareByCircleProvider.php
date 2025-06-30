@@ -37,6 +37,7 @@ use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\Probes\DataProbe;
 use OCA\Circles\Model\ShareWrapper;
 use OCA\Circles\Service\CircleService;
+use OCA\Circles\Service\CircleShareMailerService;
 use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\FederatedEventService;
 use OCA\Circles\Service\FederatedUserService;
@@ -84,6 +85,7 @@ class ShareByCircleProvider implements IShareProvider {
 		private FederatedEventService $federatedEventService,
 		private CircleService $circleService,
 		private EventService $eventService,
+		private CircleShareMailerService $circleShareMailerService,
 	) {
 	}
 
@@ -143,6 +145,11 @@ class ShareByCircleProvider implements IShareProvider {
 		$share->setToken($this->token(15));
 		$owner = $circle->getInitiator();
 		$this->shareWrapperService->save($share);
+		try {
+			$this->circleShareMailerService->sendShareNotification($share, $circle);
+		} catch (Exception $e) {
+			$this->logger->error('sending sharing email failed', [$e->getMessage()]);
+		}
 
 		try {
 			$wrappedShare = $this->shareWrapperService->getShareById((int)$share->getId());
