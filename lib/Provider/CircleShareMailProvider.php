@@ -2,49 +2,35 @@
 
 declare(strict_types=1);
 /**
- * SPDX-FileCopyrightText: 2016 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-FileCopyrightText: 2025 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-namespace OCA\Circles\Service;
+namespace OCA\Circles\Provider;
 
+use OC\Share20\DefaultShareProvider;
 use OCP\Defaults;
 use OCP\IConfig;
 use OCP\IL10N;
 use OCP\IURLGenerator;
 use OCP\IUser;
 use OCP\IUserManager;
-use OCP\L10N\IFactory as L10NFactory;
 use OCP\Mail\IMailer;
 use OCP\Share\IShare;
+use OCP\Share\IShareProviderWithNotification;
 use Psr\Log\LoggerInterface;
 
-class CircleShareMailerService {
+class CircleShareMailProvider extends DefaultShareProvider implements IShareProviderWithNotification {
 
-	private IMailer $mailer;
-	private LoggerInterface $logger;
-	private IURLGenerator $urlGenerator;
-	private IConfig $config;
-	private IUserManager $userManager;
-	private Defaults $defaults;
-	private IL10N $l;
 	public function __construct(
-		IMailer $mailer,
-		L10NFactory $l10nFactory,
-		LoggerInterface $logger,
-		IURLGenerator $urlGenerator,
-		IConfig $config,
-		IUserManager $userManager,
-		Defaults $defaults,
+		private IMailer $mailer,
+		private IL10N $l,
+		private LoggerInterface $logger,
+		private IURLGenerator $urlGenerator,
+		private IConfig $config,
+		private IUserManager $userManager,
+		private Defaults $defaults,
 	) {
-		$this->mailer = $mailer;
-		$this->l = $l10nFactory->get('circles');
-		$this->logger = $logger;
-		$this->urlGenerator = $urlGenerator;
-		$this->config = $config;
-		$this->userManager = $userManager;
-		$this->defaults = $defaults;
 	}
-
 	public function sendShareNotification(IShare $share, $circle): void {
 		if ($this->config->getSystemValueBool('sharing.enable_share_mail', true)) {
 			$circleMembers = $circle->getMembers();
@@ -58,6 +44,7 @@ class CircleShareMailerService {
 					$email = $user->getEMailAddress();
 					if ($email != '' && $this->mailer->validateMailAddress($email)) {
 						$this->sendUserShareMail(
+							$this->l,
 							$share->getNode()->getName(),
 							$link,
 							$share->getSharedBy(),
@@ -72,12 +59,14 @@ class CircleShareMailerService {
 	}
 
 	protected function sendUserShareMail(
+		IL10N $l,
 		$filename,
 		$link,
 		$initiator,
 		$shareWith,
 		?\DateTime $expiration = null,
-		$note = ''): void {
+		$note = '',
+	): void {
 		$initiatorUser = $this->userManager->get($initiator);
 		$initiatorDisplayName = ($initiatorUser instanceof IUser) ? $initiatorUser->getDisplayName() : $initiator;
 
@@ -90,7 +79,6 @@ class CircleShareMailerService {
 			'expiration' => $expiration,
 			'shareWith' => $shareWith,
 		]);
-		$l = $this->l;
 
 		$emailTemplate->setSubject($l->t('%1$s shared %2$s with you', [$initiatorDisplayName, $filename]));
 		$emailTemplate->addHeader();
