@@ -103,7 +103,7 @@ OC.L10N.register(
     "Nextcloud Initialization" : "Nextcloud başlatılıyor",
     "Circles App Initialization" : "Takımlar uygulaması başlatılıyor",
     "Fresh installation status" : "Yeni kurulum durumu",
-    "Building Local Database" : "Yerel veritabanı oluşturuluyor",
+    "Building Local Database" : "Yerel veri tabanı oluşturuluyor",
     "Testing Basic Circle Creation" : "Temel takım oluşturma sınanıyor",
     "Adding local users and moderators" : "Yerel kullanıcılar ve sorumlular ekleniyor",
     "Show all teams" : "Tüm takımları görüntüle",
