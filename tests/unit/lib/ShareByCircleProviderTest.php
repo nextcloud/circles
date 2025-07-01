@@ -5,8 +5,15 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-use OCA\Circles\Helpers\CircleShareMailHelper;
+use OCA\Circles\Service\CircleService;
+use OCA\Circles\Service\EventService;
+use OCA\Circles\Service\FederatedEventService;
+use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Service\ShareTokenService;
+use OCA\Circles\Service\ShareWrapperService;
+use OCA\Circles\ShareByCircleProvider;
 use OCP\Defaults;
+use OCP\Files\IRootFolder;
 use OCP\IConfig;
 use OCP\IL10N;
 use OCP\IURLGenerator;
@@ -17,7 +24,7 @@ use OCP\Share\IShare;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-class CircleShareMailHelperTest extends TestCase {
+class ShareByCircleProviderTest extends TestCase {
 	public function testSendShareNotificationCallsSendUserShareMail(): void {
 		$share = $this->createConfiguredMock(IShare::class, [
 			'getId' => 42,
@@ -52,7 +59,7 @@ class CircleShareMailHelperTest extends TestCase {
 		$l10n = $this->createMock(IL10N::class);
 		$l10n->method('t')->willReturnCallback(fn ($text, $args = []) => vsprintf($text, $args));
 
-		$provider = $this->buildHelper([
+		$provider = $this->buildProvider([
 			'userManager' => $userManager,
 			'mailer' => $mailer,
 			'urlGenerator' => $urlGenerator,
@@ -77,7 +84,7 @@ class CircleShareMailHelperTest extends TestCase {
 	public function testNoMailIsSentWhenSharingMailIsDisabled(): void {
 		$config = $this->createConfiguredMock(IConfig::class, ['getSystemValueBool' => false]);
 
-		$provider = $this->buildHelper(['config' => $config], ['sendUserShareMail']);
+		$provider = $this->buildProvider(['config' => $config], ['sendUserShareMail']);
 
 		$share = $this->createMock(IShare::class);
 		$circle = $this->createConfiguredMock(\OCA\Circles\Model\Circle::class, ['getMembers' => []]);
@@ -101,7 +108,7 @@ class CircleShareMailHelperTest extends TestCase {
 		$userManager = $this->createMock(IUserManager::class);
 		$userManager->method('get')->with('user123')->willReturn($user);
 
-		$provider = $this->buildHelper([
+		$provider = $this->buildProvider([
 			'userManager' => $userManager
 		], ['sendUserShareMail']);
 
@@ -118,7 +125,7 @@ class CircleShareMailHelperTest extends TestCase {
 		$userManager = $this->createMock(IUserManager::class);
 		$userManager->method('get')->with('user123')->willReturn(null);
 
-		$provider = $this->buildHelper([
+		$provider = $this->buildProvider([
 			'userManager' => $userManager
 		], ['sendUserShareMail']);
 
@@ -145,7 +152,7 @@ class CircleShareMailHelperTest extends TestCase {
 		$mailer = $this->createMock(IMailer::class);
 		$mailer->method('validateMailAddress')->willReturn(false);
 
-		$provider = $this->buildHelper([
+		$provider = $this->buildProvider([
 			'userManager' => $userManager,
 			'mailer' => $mailer
 		], ['sendUserShareMail']);
@@ -198,7 +205,7 @@ class CircleShareMailHelperTest extends TestCase {
 			'getNote' => ''
 		]);
 
-		$provider = $this->buildHelper([
+		$provider = $this->buildProvider([
 			'userManager' => $userManager,
 			'mailer' => $mailer,
 			'urlGenerator' => $urlGenerator
@@ -208,7 +215,7 @@ class CircleShareMailHelperTest extends TestCase {
 		$provider->sendShareNotification($share, $circle);
 	}
 
-	private function buildHelper(array $overrides = [], array $mockMethods = []): CircleShareMailHelper {
+	private function buildProvider(array $overrides = [], array $mockMethods = []) {
 		$mailer = $overrides['mailer'] ?? $this->createMock(IMailer::class);
 		$l10n = $overrides['l10n'] ?? $this->createMock(IL10N::class);
 		$logger = $overrides['logger'] ?? $this->createMock(LoggerInterface::class);
@@ -216,23 +223,37 @@ class CircleShareMailHelperTest extends TestCase {
 		$config = $overrides['config'] ?? $this->createConfiguredMock(IConfig::class, ['getSystemValueBool' => true]);
 		$userManager = $overrides['userManager'] ?? $this->createMock(IUserManager::class);
 		$defaults = $overrides['defaults'] ?? $this->createConfiguredMock(Defaults::class, ['getName' => 'Nextcloud']);
+		$rootFolder = $overrides['rootFolder'] ?? $this->createMock(IRootFolder::class);
+		$shareWrapperService = $overrides['shareWrapperService'] ?? $this->createMock(ShareWrapperService::class);
+		$shareTokenService = $overrides['shareTokenService'] ?? $this->createMock(ShareTokenService::class);
+		$federatedUserService = $overrides['federatedUserService'] ?? $this->createMock(FederatedUserService::class);
+		$federatedEventService = $overrides['federatedEventService'] ?? $this->createMock(FederatedEventService::class);
+		$circleService = $overrides['circleService'] ?? $this->createMock(CircleService::class);
+		$eventService = $overrides['eventService'] ?? $this->createMock(EventService::class);
 
-		$builder = $this->getMockBuilder(CircleShareMailHelper::class)
+		$provider = $this->getMockBuilder(ShareByCircleProvider::class)
 			->setConstructorArgs([
-				$mailer,
+				$userManager,
+				$rootFolder,
 				$l10n,
 				$logger,
 				$urlGenerator,
-				$config,
-				$userManager,
+				$shareWrapperService,
+				$shareTokenService,
+				$federatedUserService,
+				$federatedEventService,
+				$circleService,
+				$eventService,
 				$defaults,
+				$mailer,
+				$config,
 			]);
 
 		if (!empty($mockMethods)) {
-			$builder->onlyMethods($mockMethods);
+			$provider->onlyMethods($mockMethods);
 		}
 
-		return $builder->getMock();
+		return $provider->getMock();
 	}
 
 

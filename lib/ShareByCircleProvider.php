@@ -10,6 +10,8 @@ declare(strict_types=1);
 namespace OCA\Circles;
 
 use Exception;
+use OC\Config;
+use OC\Mail\Mailer;
 use OC\Share20\DefaultShareProvider;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\ContactAddressBookNotFoundException;
@@ -47,14 +49,18 @@ use OCA\Circles\Service\ShareWrapperService;
 use OCA\Circles\Tools\Traits\TArrayTools;
 use OCA\Circles\Tools\Traits\TNCLogger;
 use OCA\Circles\Tools\Traits\TStringTools;
+use OCP\Defaults;
 use OCP\Files\Folder;
 use OCP\Files\InvalidPathException;
 use OCP\Files\IRootFolder;
 use OCP\Files\Node;
 use OCP\Files\NotFoundException;
+use OCP\IConfig;
 use OCP\IL10N;
 use OCP\IURLGenerator;
+use OCP\IUser;
 use OCP\IUserManager;
+use OCP\Mail\IMailer;
 use OCP\Share\Exceptions\AlreadySharedException;
 use OCP\Share\Exceptions\IllegalIDChangeException;
 use OCP\Share\Exceptions\ShareNotFound;
@@ -86,7 +92,9 @@ class ShareByCircleProvider extends DefaultShareProvider implements IShareProvid
 		private FederatedEventService $federatedEventService,
 		private CircleService $circleService,
 		private EventService $eventService,
-		private CircleShareMailHelper $circleShareMailHelper,
+		private Defaults $defaults,
+		private IMailer $mailer,
+		private IConfig $config,
 	) {
 	}
 
@@ -176,7 +184,7 @@ class ShareByCircleProvider extends DefaultShareProvider implements IShareProvid
 
 		$circle = $this->circleService->probeCircle($share->getSharedWith(), $circleProbe, $dataProbe);
 		try {
-			$this->circleShareMailHelper->sendShareNotification($share, $circle);
+			$this->sendShareNotification($share, $circle);
 			return true;
 		} catch (Exception $e) {
 			//fail silently as share created already and mail sending alone failed
@@ -185,6 +193,107 @@ class ShareByCircleProvider extends DefaultShareProvider implements IShareProvid
 
 		return false;
 	}
+
+	public function sendShareNotification(IShare $share, $circle): void {
+		if ($this->config->getSystemValueBool('sharing.enable_share_mail', true)) {
+			$circleMembers = $circle->getMembers();
+			$link = $this->urlGenerator->linkToRouteAbsolute('files_sharing.sharecontroller.showShare', [
+				'token' => $share->getToken()
+			]);
+			foreach ($circleMembers as $member) {
+				if ($member->getUserType() != 1) {
+					continue;
+				}
+				$user = $this->userManager->get($member->getUserId());
+				if ($user !== null) {
+					$email = $user->getEMailAddress();
+					if ($email != '' && $this->mailer->validateMailAddress($email)) {
+						$this->sendUserShareMail(
+							$this->l10n,
+							$share->getNode()->getName(),
+							$link,
+							$share->getSharedBy(),
+							$email,
+							$share->getExpirationDate(),
+							$share->getNote()
+						);
+					}
+				}
+			}
+		}
+	}
+
+	protected function sendUserShareMail(
+		IL10N $l,
+			  $filename,
+			  $link,
+			  $initiator,
+			  $shareWith,
+		?\DateTime $expiration = null,
+		$note = '',
+	): void {
+		$initiatorUser = $this->userManager->get($initiator);
+		$initiatorDisplayName = ($initiatorUser instanceof IUser) ? $initiatorUser->getDisplayName() : $initiator;
+
+		$message = $this->mailer->createMessage();
+
+		$emailTemplate = $this->mailer->createEMailTemplate('files_sharing.RecipientNotification', [
+			'filename' => $filename,
+			'link' => $link,
+			'initiator' => $initiatorDisplayName,
+			'expiration' => $expiration,
+			'shareWith' => $shareWith,
+		]);
+
+		$emailTemplate->setSubject($l->t('%1$s shared %2$s with you', [$initiatorDisplayName, $filename]));
+		$emailTemplate->addHeader();
+		$emailTemplate->addHeading($l->t('%1$s shared %2$s with you', [$initiatorDisplayName, $filename]), false);
+
+		if ($note !== '') {
+			$emailTemplate->addBodyText(htmlspecialchars($note), $note);
+		}
+
+		$emailTemplate->addBodyButton(
+			$l->t('Open %s', [$filename]),
+			$link
+		);
+		$message->setTo([$shareWith]);
+
+		// The "From" contains the sharers name
+		$instanceName = $this->defaults->getName();
+		$senderName = $l->t(
+			'%1$s via %2$s',
+			[
+				$initiatorDisplayName,
+				$instanceName,
+			]
+		);
+		$message->setFrom([\OCP\Util::getDefaultEmailAddress('noreply') => $senderName]);
+
+		// The "Reply-To" is set to the sharer if an mail address is configured
+		// also the default footer contains a "Do not reply" which needs to be adjusted.
+		if ($initiatorUser) {
+			$initiatorEmail = $initiatorUser->getEMailAddress();
+			if ($initiatorEmail !== null) {
+				$message->setReplyTo([$initiatorEmail => $initiatorDisplayName]);
+				$emailTemplate->addFooter($instanceName . ($this->defaults->getSlogan() !== '' ? ' - ' . $this->defaults->getSlogan() : ''));
+			} else {
+				$emailTemplate->addFooter();
+			}
+		} else {
+			$emailTemplate->addFooter();
+		}
+
+		$message->useTemplate($emailTemplate);
+
+		$failedRecipients = $this->mailer->send($message);
+
+		if (!empty($failedRecipients)) {
+			$this->logger->error('Share notification mail could not be sent to: ' . implode(', ', $failedRecipients));
+			return;
+		}
+	}
+
 
 	/**
 	 * @param IShare $share
