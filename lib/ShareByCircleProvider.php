@@ -10,8 +10,6 @@ declare(strict_types=1);
 namespace OCA\Circles;
 
 use Exception;
-use OC\Config;
-use OC\Mail\Mailer;
 use OC\Share20\DefaultShareProvider;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\ContactAddressBookNotFoundException;
@@ -34,7 +32,6 @@ use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\FederatedItems\Files\FileShare;
 use OCA\Circles\FederatedItems\Files\FileUnshare;
-use OCA\Circles\Helpers\CircleShareMailHelper;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
@@ -225,10 +222,10 @@ class ShareByCircleProvider extends DefaultShareProvider implements IShareProvid
 
 	protected function sendUserShareMail(
 		IL10N $l,
-			  $filename,
-			  $link,
-			  $initiator,
-			  $shareWith,
+		$filename,
+		$link,
+		$initiator,
+		$shareWith,
 		?\DateTime $expiration = null,
 		$note = '',
 	): void {
