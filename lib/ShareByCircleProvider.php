@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OCA\Circles;
 
 use Exception;
+use OC\Share20\DefaultShareProvider;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\ContactAddressBookNotFoundException;
 use OCA\Circles\Exceptions\ContactFormatException;
@@ -31,12 +32,12 @@ use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\FederatedItems\Files\FileShare;
 use OCA\Circles\FederatedItems\Files\FileUnshare;
+use OCA\Circles\Helpers\CircleShareMailHelper;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\Probes\DataProbe;
 use OCA\Circles\Model\ShareWrapper;
-use OCA\Circles\Provider\CircleShareMailProvider;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\FederatedEventService;
@@ -58,7 +59,7 @@ use OCP\Share\Exceptions\AlreadySharedException;
 use OCP\Share\Exceptions\IllegalIDChangeException;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IShare;
-use OCP\Share\IShareProvider;
+use OCP\Share\IShareProviderWithNotification;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -66,7 +67,7 @@ use Psr\Log\LoggerInterface;
  *
  * @package OCA\Circles
  */
-class ShareByCircleProvider implements IShareProvider {
+class ShareByCircleProvider extends DefaultShareProvider implements IShareProviderWithNotification {
 	use TArrayTools;
 	use TStringTools;
 	use TNCLogger;
@@ -85,7 +86,7 @@ class ShareByCircleProvider implements IShareProvider {
 		private FederatedEventService $federatedEventService,
 		private CircleService $circleService,
 		private EventService $eventService,
-		private CircleShareMailProvider $circleShareMailProvider,
+		private CircleShareMailHelper $circleShareMailHelper,
 	) {
 	}
 
@@ -143,13 +144,9 @@ class ShareByCircleProvider implements IShareProvider {
 
 		$circle = $this->circleService->probeCircle($share->getSharedWith(), $circleProbe, $dataProbe);
 		$share->setToken($this->token(15));
+		$share->setMailSend(true);
 		$owner = $circle->getInitiator();
 		$this->shareWrapperService->save($share);
-		try {
-			$this->circleShareMailProvider->sendShareNotification($share, $circle);
-		} catch (Exception $e) {
-			$this->logger->error('sending sharing email failed', [$e->getMessage()]);
-		}
 
 		try {
 			$wrappedShare = $this->shareWrapperService->getShareById((int)$share->getId());
@@ -168,6 +165,26 @@ class ShareByCircleProvider implements IShareProvider {
 		return $wrappedShare->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function sendMailNotification(IShare $share): bool {
+		$circleProbe = new CircleProbe();
+		$dataProbe = new DataProbe();
+		$dataProbe->add(DataProbe::OWNER)
+			->add(DataProbe::INITIATOR, [DataProbe::BASED_ON]);
+
+		$circle = $this->circleService->probeCircle($share->getSharedWith(), $circleProbe, $dataProbe);
+		try {
+			$this->circleShareMailHelper->sendShareNotification($share, $circle);
+			return true;
+		} catch (Exception $e) {
+			//fail silently as share created already and mail sending alone failed
+			$this->logger->error('Circle share internal email sending failed', [$e->getMessage()]);
+		}
+
+		return false;
+	}
 
 	/**
 	 * @param IShare $share

@@ -5,7 +5,7 @@ declare(strict_types=1);
  * SPDX-FileCopyrightText: 2025 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-namespace OCA\Circles\Provider;
+namespace OCA\Circles\Helpers;
 
 use OC\Share20\DefaultShareProvider;
 use OCP\Defaults;
@@ -19,7 +19,7 @@ use OCP\Share\IShare;
 use OCP\Share\IShareProviderWithNotification;
 use Psr\Log\LoggerInterface;
 
-class CircleShareMailProvider extends DefaultShareProvider implements IShareProviderWithNotification {
+class CircleShareMailHelper extends DefaultShareProvider implements IShareProviderWithNotification {
 
 	public function __construct(
 		private IMailer $mailer,
@@ -34,7 +34,9 @@ class CircleShareMailProvider extends DefaultShareProvider implements IShareProv
 	public function sendShareNotification(IShare $share, $circle): void {
 		if ($this->config->getSystemValueBool('sharing.enable_share_mail', true)) {
 			$circleMembers = $circle->getMembers();
-			$link = $this->urlGenerator->linkToRouteAbsolute('files_sharing.Accept.accept', ['shareId' => 'ocinternal:' . $share->getId()]);
+			$link = $this->urlGenerator->linkToRouteAbsolute('files_sharing.sharecontroller.showShare', [
+				'token' => $share->getToken()
+			]);
 			foreach ($circleMembers as $member) {
 				if ($member->getUserType() != 1) {
 					continue;

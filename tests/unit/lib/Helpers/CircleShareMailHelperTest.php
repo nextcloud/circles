@@ -4,7 +4,8 @@
  * SPDX-FileCopyrightText: 2025 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-use OCA\Circles\Provider\CircleShareMailProvider;
+
+use OCA\Circles\Helpers\CircleShareMailHelper;
 use OCP\Defaults;
 use OCP\IConfig;
 use OCP\IL10N;
@@ -16,7 +17,7 @@ use OCP\Share\IShare;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-class CircleShareMailProviderTest extends TestCase {
+class CircleShareMailHelperTest extends TestCase {
 	public function testSendShareNotificationCallsSendUserShareMail(): void {
 		$share = $this->createConfiguredMock(IShare::class, [
 			'getId' => 42,
@@ -51,7 +52,7 @@ class CircleShareMailProviderTest extends TestCase {
 		$l10n = $this->createMock(IL10N::class);
 		$l10n->method('t')->willReturnCallback(fn ($text, $args = []) => vsprintf($text, $args));
 
-		$provider = $this->buildProvider([
+		$provider = $this->buildHelper([
 			'userManager' => $userManager,
 			'mailer' => $mailer,
 			'urlGenerator' => $urlGenerator,
@@ -76,7 +77,7 @@ class CircleShareMailProviderTest extends TestCase {
 	public function testNoMailIsSentWhenSharingMailIsDisabled(): void {
 		$config = $this->createConfiguredMock(IConfig::class, ['getSystemValueBool' => false]);
 
-		$provider = $this->buildProvider(['config' => $config], ['sendUserShareMail']);
+		$provider = $this->buildHelper(['config' => $config], ['sendUserShareMail']);
 
 		$share = $this->createMock(IShare::class);
 		$circle = $this->createConfiguredMock(\OCA\Circles\Model\Circle::class, ['getMembers' => []]);
@@ -100,7 +101,7 @@ class CircleShareMailProviderTest extends TestCase {
 		$userManager = $this->createMock(IUserManager::class);
 		$userManager->method('get')->with('user123')->willReturn($user);
 
-		$provider = $this->buildProvider([
+		$provider = $this->buildHelper([
 			'userManager' => $userManager
 		], ['sendUserShareMail']);
 
@@ -117,7 +118,7 @@ class CircleShareMailProviderTest extends TestCase {
 		$userManager = $this->createMock(IUserManager::class);
 		$userManager->method('get')->with('user123')->willReturn(null);
 
-		$provider = $this->buildProvider([
+		$provider = $this->buildHelper([
 			'userManager' => $userManager
 		], ['sendUserShareMail']);
 
@@ -144,7 +145,7 @@ class CircleShareMailProviderTest extends TestCase {
 		$mailer = $this->createMock(IMailer::class);
 		$mailer->method('validateMailAddress')->willReturn(false);
 
-		$provider = $this->buildProvider([
+		$provider = $this->buildHelper([
 			'userManager' => $userManager,
 			'mailer' => $mailer
 		], ['sendUserShareMail']);
@@ -197,7 +198,7 @@ class CircleShareMailProviderTest extends TestCase {
 			'getNote' => ''
 		]);
 
-		$provider = $this->buildProvider([
+		$provider = $this->buildHelper([
 			'userManager' => $userManager,
 			'mailer' => $mailer,
 			'urlGenerator' => $urlGenerator
@@ -207,7 +208,7 @@ class CircleShareMailProviderTest extends TestCase {
 		$provider->sendShareNotification($share, $circle);
 	}
 
-	private function buildProvider(array $overrides = [], array $mockMethods = []): CircleShareMailProvider {
+	private function buildHelper(array $overrides = [], array $mockMethods = []): CircleShareMailHelper {
 		$mailer = $overrides['mailer'] ?? $this->createMock(IMailer::class);
 		$l10n = $overrides['l10n'] ?? $this->createMock(IL10N::class);
 		$logger = $overrides['logger'] ?? $this->createMock(LoggerInterface::class);
@@ -216,7 +217,7 @@ class CircleShareMailProviderTest extends TestCase {
 		$userManager = $overrides['userManager'] ?? $this->createMock(IUserManager::class);
 		$defaults = $overrides['defaults'] ?? $this->createConfiguredMock(Defaults::class, ['getName' => 'Nextcloud']);
 
-		$builder = $this->getMockBuilder(CircleShareMailProvider::class)
+		$builder = $this->getMockBuilder(CircleShareMailHelper::class)
 			->setConstructorArgs([
 				$mailer,
 				$l10n,
