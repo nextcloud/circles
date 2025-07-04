@@ -11,6 +11,7 @@ OC.L10N.register(
     "Local" : "Kawaida",
     "Federated" : "Federated",
     "Email address" : "Anwani ya barua pepe",
+    "Contact" : "Mawasiliano",
     "Moderator" : "Msimamizi",
     "Admin" : "Msimamizi",
     "Owner" : "Mmiliki",
