@@ -357,27 +357,28 @@ class CirclesMemberships extends Base {
 		$output = $output->section();
 		$table = new Table($output);
 		$table->setHeaders(['Circle Id', 'Name', 'Source', 'Owner', 'Instance', 'Updated', 'Memberships']);
-		$table->render();
 
 		$count = 0;
+		$rows = [];
 		foreach ($circles as $circle) {
 			$owner = $circle->getOwner();
 
 			$updated = $this->membershipService->manageMemberships($circle->getSingleId());
 			$count += $updated;
 			$federatedUser = $this->circleRequest->getFederatedUserBySingleId($circle->getSingleId());
-			$table->appendRow(
-				[
-					$circle->getSingleId(),
-					$circle->getDisplayName(),
-					($circle->getSource() > 0) ? Circle::$DEF_SOURCE[$circle->getSource()] : '',
-					$owner->getUserId(),
-					$this->configService->displayInstance($owner->getInstance()),
-					$updated,
-					sizeof($federatedUser->getMemberships())
-				]
-			);
+			$rows[] = [
+				$circle->getSingleId(),
+				$circle->getDisplayName(),
+				($circle->getSource() > 0) ? Circle::$DEF_SOURCE[$circle->getSource()] : '',
+				$owner->getUserId(),
+				$this->configService->displayInstance($owner->getInstance()),
+				$updated,
+				sizeof($federatedUser->getMemberships())
+			];
 		}
+
+		$table->setRows($rows);
+		$table->render();
 
 		$output->writeln(((string)$count) . ' memberships updated');
 	}
