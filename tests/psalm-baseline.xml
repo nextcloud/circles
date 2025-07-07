@@ -240,12 +240,6 @@
       <code><![CDATA[is_null($object)]]></code>
     </RedundantCondition>
   </file>
-  <file src="lib/Service/SyncService.php">
-    <InvalidClass>
-      <code><![CDATA[federatedEventService]]></code>
-      <code><![CDATA[federatedEventService]]></code>
-    </InvalidClass>
-  </file>
   <file src="lib/Service/TimezoneService.php">
     <UndefinedClass>
       <code><![CDATA[TimeFactory]]></code>
