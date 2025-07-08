@@ -192,29 +192,27 @@ class ShareByCircleProvider extends DefaultShareProvider implements IShareProvid
 	}
 
 	public function sendShareNotification(IShare $share, $circle): void {
-		if ($this->config->getSystemValueBool('sharing.enable_share_mail', true)) {
-			$circleMembers = $circle->getMembers();
-			$link = $this->urlGenerator->linkToRouteAbsolute('files_sharing.sharecontroller.showShare', [
-				'token' => $share->getToken()
-			]);
-			foreach ($circleMembers as $member) {
-				if ($member->getUserType() != 1) {
-					continue;
-				}
-				$user = $this->userManager->get($member->getUserId());
-				if ($user !== null) {
-					$email = $user->getEMailAddress();
-					if ($email != '' && $this->mailer->validateMailAddress($email)) {
-						$this->sendUserShareMail(
-							$this->l10n,
-							$share->getNode()->getName(),
-							$link,
-							$share->getSharedBy(),
-							$email,
-							$share->getExpirationDate(),
-							$share->getNote()
-						);
-					}
+		$circleMembers = $circle->getMembers();
+		$link = $this->urlGenerator->linkToRouteAbsolute('files_sharing.sharecontroller.showShare', [
+			'token' => $share->getToken()
+		]);
+		foreach ($circleMembers as $member) {
+			if ($member->getUserType() != 1) {
+				continue;
+			}
+			$user = $this->userManager->get($member->getUserId());
+			if ($user !== null) {
+				$email = $user->getEMailAddress();
+				if ($email != '' && $this->mailer->validateMailAddress($email)) {
+					$this->sendUserShareMail(
+						$this->l10n,
+						$share->getNode()->getName(),
+						$link,
+						$share->getSharedBy(),
+						$email,
+						$share->getExpirationDate(),
+						$share->getNote()
+					);
 				}
 			}
 		}
