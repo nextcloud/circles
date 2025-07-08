@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace OCA\Circles;
 
 use Exception;
-use OC\Share20\DefaultShareProvider;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\ContactAddressBookNotFoundException;
 use OCA\Circles\Exceptions\ContactFormatException;
@@ -70,7 +69,7 @@ use Psr\Log\LoggerInterface;
  *
  * @package OCA\Circles
  */
-class ShareByCircleProvider extends DefaultShareProvider implements IShareProviderWithNotification {
+class ShareByCircleProvider implements IShareProviderWithNotification {
 	use TArrayTools;
 	use TStringTools;
 	use TNCLogger;
