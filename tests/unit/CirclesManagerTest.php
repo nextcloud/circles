@@ -29,6 +29,8 @@ class CirclesManagerTest extends TestCase {
 	public function setUp(): void {
 		parent::setUp();
 
+		$this->userId = sha1(uniqId(mt_rand(), true));
+		$this->groupId = sha1(uniqId(mt_rand(), true));
 		// Random circle name
 		$this->circleName = sha1(uniqId(mt_rand(), true));
 
