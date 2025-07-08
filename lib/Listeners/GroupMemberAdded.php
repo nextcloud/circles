@@ -36,6 +36,7 @@ class GroupMemberAdded implements IEventListener {
 		try {
 			$this->syncService->groupMemberAdded($group->getGID(), $user->getUID());
 		} catch (Exception $e) {
+			throw $e;
 		}
 	}
 }
