@@ -29,9 +29,6 @@
     "post-install-cmd": [
         "[ $COMPOSER_DEV_MODE -eq 0 ] || composer bin all install --ansi"
     ],
-    "post-update-cmd": [
-        "[ $COMPOSER_DEV_MODE -eq 0 ] || composer bin all update --ansi"
-    ],
     "cs:check": "php-cs-fixer fix --dry-run --diff",
     "cs:fix": "php-cs-fixer fix",
     "psalm": "psalm --threads=$(nproc) --no-cache",
