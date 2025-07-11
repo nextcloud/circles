@@ -215,8 +215,8 @@ class MembersList extends Base {
 				'Username', 'Level', 'Invited By'
 			]
 		);
-		$table->render();
 
+		$rows = [];
 		foreach ($members as $member) {
 			if ($member->getCircleId() === $circleId) {
 				$level = $member->getLevel();
@@ -224,27 +224,28 @@ class MembersList extends Base {
 				$level = $member->getInheritanceFrom()->getLevel();
 			}
 
-			$table->appendRow(
-				[
-					$member->getCircleId(),
-					$member->getCircle()->getDisplayName(),
-					$member->getId(),
-					$member->getSingleId(),
-					Member::$TYPE[$member->getUserType()],
-					$member->hasBasedOn() ? Circle::$DEF_SOURCE[$member->getBasedOn()->getSource()] : '',
-					$this->configService->displayFederatedUser(
-						$member,
-						$this->input->getOption('display-name')
-					),
-					($level > 0) ? Member::$DEF_LEVEL[$level] :
-						'(' . strtolower($member->getStatus()) . ')',
-					($member->hasInvitedBy()) ? $this->configService->displayFederatedUser(
-						$member->getInvitedBy(),
-						$this->input->getOption('display-name')
-					) : 'Unknown'
-				]
-			);
+			$rows[] = [
+				$member->getCircleId(),
+				$member->getCircle()->getDisplayName(),
+				$member->getId(),
+				$member->getSingleId(),
+				Member::$TYPE[$member->getUserType()],
+				$member->hasBasedOn() ? Circle::$DEF_SOURCE[$member->getBasedOn()->getSource()] : '',
+				$this->configService->displayFederatedUser(
+					$member,
+					$this->input->getOption('display-name')
+				),
+				($level > 0) ? Member::$DEF_LEVEL[$level] :
+					'(' . strtolower($member->getStatus()) . ')',
+				($member->hasInvitedBy()) ? $this->configService->displayFederatedUser(
+					$member->getInvitedBy(),
+					$this->input->getOption('display-name')
+				) : 'Unknown'
+			];
 		}
+
+		$table->setRows($rows);
+		$table->render();
 
 		return 0;
 	}

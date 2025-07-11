@@ -193,8 +193,8 @@ class SharesFiles extends Base {
 		}
 
 		$table->setHeaders($headers);
-		$table->render();
 
+		$rows = [];
 		foreach ($shareWrappers as $share) {
 			if (!$filterRecipient) {
 				$recipient = $share->getInitiator();
@@ -230,8 +230,11 @@ class SharesFiles extends Base {
 				);
 			}
 
-			$table->appendRow($row);
+			$rows[] = $row;
 		}
+
+		$table->setRows($rows);
+		$table->render();
 	}
 
 
