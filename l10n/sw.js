@@ -3,6 +3,9 @@ OC.L10N.register(
     {
     "Teams" : "Timu",
     "You deleted {circle}" : "Umefuta {circle}",
+    "You removed {member} from {circle}" : "Umeondoa {member} kutoka {circle}",
+    "{author} removed {member} from {circle}" : "{author} amemwondoa {member} kutoka {circle}",
+    "You removed {external} from {circle}" : "Umeondoa {external} kutoka {circle}",
     "Personal" : "Binafsi",
     "System" : "Mfumo",
     "Visible" : "Inayoonekana",
