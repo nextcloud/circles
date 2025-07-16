@@ -11,7 +11,7 @@ OC.L10N.register(
     "Local" : "Lokal",
     "Root" : "Root",
     "Federated" : "Federated",
-    "Email address" : "Alamat surel",
+    "Email address" : "Alamat email",
     "Contact" : "Kontak",
     "Admin" : "Admin",
     "Owner" : "Owner",
