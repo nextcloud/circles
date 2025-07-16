@@ -79,7 +79,7 @@ class SyncService {
 	/** @var FederatedUserService */
 	private $federatedUserService;
 
-	/** @var federatedEventService */
+	/** @var FederatedEventService */
 	private $federatedEventService;
 
 	/** @var CircleService */
@@ -103,7 +103,7 @@ class SyncService {
 	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
 	 * @param FederatedUserService $federatedUserService
-	 * @param federatedEventService $federatedEventService
+	 * @param FederatedEventService $federatedEventService
 	 * @param CircleService $circleService
 	 * @param MembershipService $membershipService
 	 * @param OutputService $outputService
@@ -115,7 +115,7 @@ class SyncService {
 		CircleRequest $circleRequest,
 		MemberRequest $memberRequest,
 		FederatedUserService $federatedUserService,
-		federatedEventService $federatedEventService,
+		FederatedEventService $federatedEventService,
 		CircleService $circleService,
 		MembershipService $membershipService,
 		OutputService $outputService,
