@@ -69,13 +69,9 @@ class ShareByCircleProviderTest extends TestCase {
 		$provider->expects($this->once())
 			->method('sendUserShareMail')
 			->with(
-				$l10n,
-				'testfile.txt',
 				'https://nextcloud.test/some/link',
-				'user123',
 				'user@example.com',
-				null,
-				''
+				$share
 			);
 
 		$provider->sendShareNotification($share, $circle);
@@ -95,22 +91,12 @@ class ShareByCircleProviderTest extends TestCase {
 
 	public function testNonUserTypeMembersAreSkipped(): void {
 		$member = $this->createConfiguredMock(\OCA\Circles\Model\Member::class, [
-			'getUserType' => 2,
+			'getUserType' => \OCA\Circles\Model\Member::TYPE_GROUP,
 		]);
 		$circle = $this->createConfiguredMock(\OCA\Circles\Model\Circle::class, ['getMembers' => [$member]]);
 		$share = $this->createMock(IShare::class);
 
-		$user = $this->createConfiguredMock(IUser::class, [
-			'getEMailAddress' => 'user@example.com',
-			'getDisplayName' => 'User 123',
-		]);
-
-		$userManager = $this->createMock(IUserManager::class);
-		$userManager->method('get')->with('user123')->willReturn($user);
-
-		$provider = $this->buildProvider([
-			'userManager' => $userManager
-		], ['sendUserShareMail']);
+		$provider = $this->buildProvider([], ['sendUserShareMail']);
 
 		$provider->expects($this->never())->method('sendUserShareMail');
 		$provider->sendShareNotification($share, $circle);
