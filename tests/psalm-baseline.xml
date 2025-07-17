@@ -63,16 +63,6 @@
       <code><![CDATA[hasInvitedBy]]></code>
     </UndefinedInterfaceMethod>
   </file>
-  <file src="lib/Controller/RemoteController.php">
-    <InvalidArgument>
-      <code><![CDATA[($e->getCode() > 0) ? $e->getCode() : $httpErrorCode]]></code>
-    </InvalidArgument>
-  </file>
-  <file src="lib/Db/CoreQueryBuilder.php">
-    <InaccessibleMethod>
-      <code><![CDATA[CoreQueryBuilder]]></code>
-    </InaccessibleMethod>
-  </file>
   <file src="lib/Db/CoreRequestBuilder.php">
     <UndefinedClass>
       <code><![CDATA[Connection]]></code>
@@ -371,11 +361,6 @@
     <RedundantCondition>
       <code><![CDATA[$varr[0] !== null]]></code>
     </RedundantCondition>
-  </file>
-  <file src="lib/Tools/Db/ExtendedQueryBuilder.php">
-    <InaccessibleMethod>
-      <code><![CDATA[ExtendedQueryBuilder]]></code>
-    </InaccessibleMethod>
   </file>
   <file src="lib/Tools/Model/NCRequestResult.php">
     <UndefinedClass>
