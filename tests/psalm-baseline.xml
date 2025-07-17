@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.26.1@d747f6500b38ac4f7dfc5edbcae6e4b637d7add0">
+<files psalm-version="5.22.1@e9dad66e11274315dac27e08349c628c7d6a1a43">
   <file src="lib/Activity/ProviderParser.php">
     <TypeDoesNotContainType>
       <code><![CDATA[str_starts_with($sK, '_')]]></code>
@@ -112,15 +112,6 @@
       <code><![CDATA[CircleEventService]]></code>
     </UndefinedDocblockClass>
   </file>
-  <file src="lib/Migration/ImportOwncloudCustomGroups.php">
-    <MissingDependency>
-      <code><![CDATA[Share]]></code>
-      <code><![CDATA[Share]]></code>
-    </MissingDependency>
-    <UndefinedConstant>
-      <code><![CDATA[Share::SHARE_TYPE_CIRCLE]]></code>
-    </UndefinedConstant>
-  </file>
   <file src="lib/Migration/Version0022Date20220526111723.php">
     <UndefinedClass>
       <code><![CDATA[Connection]]></code>
@@ -223,7 +214,6 @@
   </file>
   <file src="lib/Model/Mount.php">
     <MissingDependency>
-      <code><![CDATA[OCA\Files_Sharing\External\Manager]]></code>
       <code><![CDATA[CircleMountManager]]></code>
       <code><![CDATA[CircleMountManager]]></code>
     </MissingDependency>
@@ -236,7 +226,6 @@
   <file src="lib/Model/ShareWrapper.php">
     <InvalidArgument>
       <code><![CDATA[Cache::cacheEntryFromData($this->getFileCache()->toCache(), OC::$server->getMimeTypeLoader())]]></code>
-      <code><![CDATA[$this->setAttributes($attributes)]]></code>
     </InvalidArgument>
     <InvalidNullableReturnType>
       <code><![CDATA[Circle]]></code>
@@ -272,19 +261,10 @@
       <code><![CDATA[MoveableMount]]></code>
     </UndefinedClass>
   </file>
-  <file src="lib/MountManager/CircleMountManager.php">
-    <MissingDependency>
-      <code><![CDATA[OCA\Files_Sharing\External\Manager]]></code>
-    </MissingDependency>
-  </file>
   <file src="lib/MountManager/CircleMountProvider.php">
     <MissingDependency>
       <code><![CDATA[CircleMount]]></code>
-      <code><![CDATA[CircleMountManager]]></code>
     </MissingDependency>
-    <UndefinedClass>
-      <code><![CDATA[ExternalStorage]]></code>
-    </UndefinedClass>
   </file>
   <file src="lib/Service/ContactService.php">
     <UndefinedClass>
@@ -295,11 +275,6 @@
     <InvalidMethodCall>
       <code><![CDATA[gObj]]></code>
     </InvalidMethodCall>
-  </file>
-  <file src="lib/Service/FederatedUserService.php">
-    <InvalidReturnType occurrences="1">
-      <code>FederatedUser</code>
-    </InvalidReturnType>
   </file>
   <file src="lib/Service/GlobalScaleService.php">
     <UndefinedClass>
@@ -406,9 +381,7 @@
     <UndefinedClass>
       <code><![CDATA[HintException]]></code>
     </UndefinedClass>
-    <RedundantCondition>
-      <code><![CDATA[$this->logger]]></code>
-    </RedundantCondition>
+    <RedundantCondition/>
     <RedundantPropertyInitializationCheck>
       <code><![CDATA[isset($this->logger)]]></code>
     </RedundantPropertyInitializationCheck>
