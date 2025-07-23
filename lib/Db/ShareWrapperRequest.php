@@ -43,6 +43,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		$qb->setValue('attributes', $qb->createNamedParameter($this->formatShareAttributes($share->getAttributes())))
 			->setValue('share_type', $qb->createNamedParameter($share->getShareType()))
 			->setValue('mail_send', $qb->createNamedParameter($share->getMailSend()))
+			->setValue('note', $qb->createNamedParameter($share->getNote()))
 			->setValue('item_type', $qb->createNamedParameter($share->getNodeType()))
 			->setValue('item_source', $qb->createNamedParameter($share->getNodeId()))
 			->setValue('file_source', $qb->createNamedParameter($share->getNodeId()))
