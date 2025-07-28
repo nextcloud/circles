@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <psalm
-    errorLevel="4"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns="https://getpsalm.org/schema/config"
-    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
-    errorBaseline="tests/psalm-baseline.xml"
+	errorLevel="4"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="https://getpsalm.org/schema/config"
+	xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+	errorBaseline="tests/psalm-baseline.xml"
 	findUnusedCode="false"
 	ensureOverrideAttribute="false"
 	phpVersion="8.1"
@@ -56,6 +56,8 @@
 		<file name="tests/stubs/oc_user_manager.php" />
 		<file name="tests/stubs/oc_user_nouserexception.php" />
 		<file name="tests/stubs/oc_user_user.php" />
+		<file name="tests/stubs/oca_user_ldap_mapping_abstractmapping.php" />
+		<file name="tests/stubs/oca_user_ldap_mapping_usermapping.php" />
 		<file name="tests/stubs/oca_dav_carddav_contactsmanager.php" />
 		<file name="tests/stubs/oca_federatedfilesharing_notifications.php" />
 		<file name="tests/stubs/oca_files_sharing_external_manager.php" />
