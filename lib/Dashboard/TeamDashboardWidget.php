@@ -85,7 +85,7 @@ class TeamDashboardWidget implements IAPIWidgetV2, IIconWidget, IButtonWidget, I
 	 * @inheritDoc
 	 */
 	public function getTitle(): string {
-		return 'Teams';
+		return $this->l10n->t('Teams');
 	}
 
 	/**
