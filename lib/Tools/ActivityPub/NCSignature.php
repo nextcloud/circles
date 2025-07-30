@@ -197,7 +197,7 @@ class NCSignature {
 			throw new SignatureException('missing elements in \'headers\'');
 		}
 
-		$target = strtolower($request->getMethod()) . ' ' . $request->getRequestUri();
+		$target = strtolower($request->getMethod()) . ' ' . urldecode($request->getRequestUri());
 		$estimated = ['(request-target): ' . $target];
 
 		foreach ($headers as $key) {
