@@ -5,6 +5,7 @@ OC.L10N.register(
     "Open" : "Адкрыць",
     "Federated" : "Федэратыўны",
     "Email address" : "Адрас электроннай пошты",
+    "Admin" : "Адміністратар",
     "Owner" : "Уладальнік",
     "Files" : "Файлы",
     "Accept" : "Прыняць",
