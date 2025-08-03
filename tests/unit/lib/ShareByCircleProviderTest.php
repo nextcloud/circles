@@ -25,36 +25,86 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 class ShareByCircleProviderTest extends TestCase {
-	public function testSendShareNotificationCallsSendUserShareMail(): void {
+
+	public function testSendShareNotificationHandlesVariousCases(): void {
 		$share = $this->createConfiguredMock(IShare::class, [
 			'getId' => 42,
 			'getToken' => 'abc123',
-			'getSharedBy' => 'user123',
+			'getSharedBy' => 'initiatorUser',
 			'getExpirationDate' => null,
-			'getNote' => ''
+			'getNote' => 'test note'
 		]);
 		$node = $this->createConfiguredMock(\OCP\Files\File::class, ['getName' => 'testfile.txt']);
 		$share->method('getNode')->willReturn($node);
 
-		$member = $this->createConfiguredMock(\OCA\Circles\Model\Member::class, [
-			'getUserType' => 1,
-			'getUserId' => 'user123',
+		// Valid user
+		$validMember = $this->createConfiguredMock(\OCA\Circles\Model\Member::class, [
+			'getUserType' => \OCA\Circles\Model\Member::TYPE_USER,
+			'getUserId' => 'validUser',
 		]);
-		$circle = $this->createConfiguredMock(\OCA\Circles\Model\Circle::class, ['getMembers' => [$member]]);
 
-		$user = $this->createConfiguredMock(IUser::class, [
-			'getEMailAddress' => 'user@example.com',
-			'getDisplayName' => 'User 123',
+		// Non-user member
+		$groupMember = $this->createConfiguredMock(\OCA\Circles\Model\Member::class, [
+			'getUserType' => \OCA\Circles\Model\Member::TYPE_GROUP,
+			'getUserId' => 'group1',
+		]);
+
+		// Invalid email user
+		$invalidEmailMember = $this->createConfiguredMock(\OCA\Circles\Model\Member::class, [
+			'getUserType' => \OCA\Circles\Model\Member::TYPE_USER,
+			'getUserId' => 'invalidEmailUser',
+		]);
+
+		// Initiator user (sharedBy)
+		$initiatorMember = $this->createConfiguredMock(\OCA\Circles\Model\Member::class, [
+			'getUserType' => \OCA\Circles\Model\Member::TYPE_USER,
+			'getUserId' => 'initiatorUser',
+		]);
+
+
+		$circle = $this->createConfiguredMock(\OCA\Circles\Model\Circle::class, [
+			'getMembers' => [$validMember, $groupMember, $invalidEmailMember, $initiatorMember],
+		]);
+
+		$validUser = $this->createConfiguredMock(IUser::class, [
+			'getDisplayName' => 'Valid User',
+			'getEMailAddress' => 'valid@example.com',
+		]);
+
+		$invalidEmailUser = $this->createConfiguredMock(IUser::class, [
+			'getDisplayName' => 'Invalid Email',
+			'getEMailAddress' => 'bad-email',
+		]);
+
+		$initiatorUser = $this->createConfiguredMock(IUser::class, [
+			'getDisplayName' => 'Initiator Name',
+			'getEMailAddress' => 'initiator@example.com',
 		]);
 
 		$userManager = $this->createMock(IUserManager::class);
-		$userManager->method('get')->with('user123')->willReturn($user);
+		$userManager->method('get')->willReturnCallback(function ($uid) use (
+			$initiatorUser,
+			$validUser,
+			$invalidEmailUser,
+			$groupMember
+		) {
+			return match ($uid) {
+				'initiatorUser' => $initiatorUser,
+				'validUser' => $validUser,
+				'invalidEmailUser' => $invalidEmailUser,
+				'group1' => $groupMember
+			};
+		});
 
 		$mailer = $this->createMock(IMailer::class);
-		$mailer->method('validateMailAddress')->willReturn(true);
+		$mailer->method('validateMailAddress')->willReturnCallback(function ($email) {
+			return $email === 'valid@example.com';
+		});
 
 		$urlGenerator = $this->createMock(IURLGenerator::class);
-		$urlGenerator->method('linkToRouteAbsolute')->willReturn('https://nextcloud.test/some/link');
+		$urlGenerator->method('linkToRouteAbsolute')
+			->with('files_sharing.sharecontroller.showShare', ['token' => 'abc123'])
+			->willReturn('https://nextcloud.test/share/abc123');
 
 		$l10n = $this->createMock(IL10N::class);
 		$l10n->method('t')->willReturnCallback(fn ($text, $args = []) => vsprintf($text, $args));
@@ -66,16 +116,20 @@ class ShareByCircleProviderTest extends TestCase {
 			'l10n' => $l10n,
 		], ['sendUserShareMail']);
 
-		$provider->expects($this->once())
+		// only valid member receives email and initiator, group member and invalid email member don't receive it
+		$provider->expects($this->exactly(1))
 			->method('sendUserShareMail')
 			->with(
-				'https://nextcloud.test/some/link',
-				'user@example.com',
+				'https://nextcloud.test/share/abc123',
+				'valid@example.com',
+				'Initiator Name',
+				'initiator@example.com',
 				$share
 			);
 
 		$provider->sendShareNotification($share, $circle);
 	}
+
 
 	public function testNoMailIsSentWhenSharingMailIsDisabled(): void {
 		$config = $this->createConfiguredMock(IConfig::class, ['getSystemValueBool' => false]);
@@ -108,17 +162,48 @@ class ShareByCircleProviderTest extends TestCase {
 			'getUserId' => 'user123'
 		]);
 
+		// Share mock now returns an initiator ID
+		$share = $this->createConfiguredMock(IShare::class, [
+			'getSharedBy' => 'initiator',
+			'getToken' => 'abc123',
+		]);
+
+		$circle = $this->createConfiguredMock(\OCA\Circles\Model\Circle::class, [
+			'getMembers' => [$member]
+		]);
+
+		// UserManager mock returns null for 'user123' (member), and a dummy user for 'initiator'
+		$initiatorUser = $this->createConfiguredMock(IUser::class, [
+			'getDisplayName' => 'Initiator',
+			'getEMailAddress' => 'initiator@example.com',
+		]);
+
 		$userManager = $this->createMock(IUserManager::class);
-		$userManager->method('get')->with('user123')->willReturn(null);
+		$userManager->method('get')->willReturnCallback(function ($uid) use ($initiatorUser) {
+			if ($uid === 'initiator') {
+				return $initiatorUser;
+			}
+			return null;
+		});
+
+		$mailer = $this->createMock(IMailer::class);
+		$mailer->method('validateMailAddress')->willReturn(true);
+
+		$urlGenerator = $this->createMock(IURLGenerator::class);
+		$urlGenerator->method('linkToRouteAbsolute')->willReturn('https://nextcloud.test/share/abc123');
+
+		$l10n = $this->createMock(IL10N::class);
+		$l10n->method('t')->willReturnCallback(fn ($text, $args = []) => vsprintf($text, $args));
 
 		$provider = $this->buildProvider([
-			'userManager' => $userManager
+			'userManager' => $userManager,
+			'mailer' => $mailer,
+			'urlGenerator' => $urlGenerator,
+			'l10n' => $l10n,
 		], ['sendUserShareMail']);
 
-		$share = $this->createMock(IShare::class);
-		$circle = $this->createConfiguredMock(\OCA\Circles\Model\Circle::class, ['getMembers' => [$member]]);
-
 		$provider->expects($this->never())->method('sendUserShareMail');
+
 		$provider->sendShareNotification($share, $circle);
 	}
 
@@ -129,7 +214,7 @@ class ShareByCircleProviderTest extends TestCase {
 		]);
 
 		$user = $this->createConfiguredMock(IUser::class, [
-			'getEMailAddress' => ''
+			'getEMailAddress' => null
 		]);
 
 		$userManager = $this->createMock(IUserManager::class);
@@ -241,6 +326,4 @@ class ShareByCircleProviderTest extends TestCase {
 
 		return $provider->getMock();
 	}
-
-
 }

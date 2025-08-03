@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace OCA\Circles;
 
 use Exception;
-use OC\Share\Share;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\ContactAddressBookNotFoundException;
 use OCA\Circles\Exceptions\ContactFormatException;
@@ -193,19 +192,34 @@ class ShareByCircleProvider implements IShareProviderWithNotification {
 		$link = $this->urlGenerator->linkToRouteAbsolute('files_sharing.sharecontroller.showShare', [
 			'token' => $share->getToken()
 		]);
-		foreach ($circleMembers as $member) {
-			$user = $this->userManager->get($member->getUserId());
+		$initiator = $share->getSharedBy();
+		$initiatorUser = $this->userManager->get($initiator);
+		$initiatorDisplayName = ($initiatorUser instanceof IUser) ? $initiatorUser->getDisplayName() : $initiator;
+		$initiatorEmail = ($initiatorUser instanceof IUser) ? $initiatorUser->getEMailAddress() : null;
 
-			if ($member->getUserType() !== Member::TYPE_USER
-				|| $user === null
-				|| !$this->mailer->validateMailAddress($user->getEMailAddress())) {
+		foreach ($circleMembers as $member) {
+			if ($member->getUserType() !== Member::TYPE_USER) {
+				continue;
+			}
+
+			$user = $this->userManager->get($member->getUserId());
+			if ($user === null) {
+				continue;
+			}
+			$email = $user->getEMailAddress();
+			if ($email === null
+				|| !$this->mailer->validateMailAddress($email)
+				|| $email === $initiatorEmail
+			) {
 				continue;
 			}
 
 			$this->sendUserShareMail(
 				$link,
 				$user->getEMailAddress(),
-				$share
+				$initiatorDisplayName,
+				$initiatorEmail,
+				$share,
 			);
 		}
 	}
@@ -215,22 +229,23 @@ class ShareByCircleProvider implements IShareProviderWithNotification {
 	 *
 	 * @param string $link link to the file/folder
 	 * @param string $shareWith email address of share receiver
+	 * @param string $initiatorDisplayName name of the share creator
+	 * @param string|null $initiatorEmail email of the share creator
 	 * @param IShare $share
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	protected function sendUserShareMail(
 		string $link,
 		string $shareWith,
-		IShare $share): void {
+		string $initiatorDisplayName,
+		?string $initiatorEmail,
+		IShare $share,
+	): void {
 
 		$filename = $share->getNode()->getName();
-		$initiator = $share->getSharedBy();
 		$expiration = $share->getExpirationDate();
 		$note = $share->getNote();
 		$l = $this->l10n;
-
-		$initiatorUser = $this->userManager->get($initiator);
-		$initiatorDisplayName = ($initiatorUser instanceof IUser) ? $initiatorUser->getDisplayName() : $initiator;
 
 		$message = $this->mailer->createMessage();
 
@@ -270,14 +285,9 @@ class ShareByCircleProvider implements IShareProviderWithNotification {
 
 		// The "Reply-To" is set to the sharer if an mail address is configured
 		// also the default footer contains a "Do not reply" which needs to be adjusted.
-		if ($initiatorUser) {
-			$initiatorEmail = $initiatorUser->getEMailAddress();
-			if ($initiatorEmail !== null) {
-				$message->setReplyTo([$initiatorEmail => $initiatorDisplayName]);
-				$emailTemplate->addFooter($instanceName . ($this->defaults->getSlogan() !== '' ? ' - ' . $this->defaults->getSlogan() : ''));
-			} else {
-				$emailTemplate->addFooter();
-			}
+		if ($initiatorEmail !== null) {
+			$message->setReplyTo([$initiatorEmail => $initiatorDisplayName]);
+			$emailTemplate->addFooter($instanceName . ($this->defaults->getSlogan() !== '' ? ' - ' . $this->defaults->getSlogan() : ''));
 		} else {
 			$emailTemplate->addFooter();
 		}
