@@ -1,7 +1,12 @@
 OC.L10N.register(
     "circles",
     {
+    "You created the team {circle}" : "Tu izveidoji komandu {circle}",
     "You deleted {circle}" : "Tu izdzēsi {circle}",
+    "You removed {member} from {circle}" : "Tu noņēmi {member} no {circle}",
+    "You left {circle}" : "Tu pameti {circle}",
+    "{member} left {circle}" : "{member} pameta {circle}",
+    "You removed {external} from {circle}" : "Tu noņēmi {external} no {circle}",
     "Personal" : "Personīgs",
     "System" : "Sistēma",
     "Visible" : "Redzams",
