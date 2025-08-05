@@ -1,6 +1,7 @@
 OC.L10N.register(
     "circles",
     {
+    "Teams" : "Komandas",
     "You created the team {circle}" : "Tu izveidoji komandu {circle}",
     "You deleted {circle}" : "Tu izdzēsi {circle}",
     "You removed {member} from {circle}" : "Tu noņēmi {member} no {circle}",
@@ -18,11 +19,12 @@ OC.L10N.register(
     "Root" : "Root",
     "Federated" : "Federated",
     "Email address" : "E-pasta adrese",
-    "Contact" : "Kontakts",
+    "Contact" : "Kontaktpersona",
     "Circle" : "Loks",
     "Admin" : "Pārvaldītājs",
     "Owner" : "Īpašnieks",
     "Open »%s«" : "Atvērt »%s«",
+    "Show all teams" : "Rādīt visas komandas",
     "Files" : "Datnes",
     "Accept" : "Akceptēt",
     "%s" : "%s",
@@ -30,6 +32,8 @@ OC.L10N.register(
     "No entries found in this folder" : "Šajā mapē nekas nav atrasts",
     "Name" : "Vārds",
     "Size" : "Izmērs",
-    "Modified" : "Mainīts"
+    "Modified" : "Mainīts",
+    "Teams' files" : "Komandas datnes",
+    "No teams found" : "Netika atrasta neviena komanda"
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);");
