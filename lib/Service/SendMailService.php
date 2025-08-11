@@ -23,6 +23,7 @@ use OCP\Mail\IEMailTemplate;
 use OCP\Mail\IMailer;
 use OCP\Security\IHasher;
 use OCP\Share\IManager;
+use OCP\Share\IShare;
 use OCP\Util;
 
 class SendMailService {
@@ -199,6 +200,83 @@ class SendMailService {
 		$message->setTo([$recipient]);
 
 		$this->mailer->send($message);
+	}
+
+	/**
+	 * Send mail notifications for the user share type
+	 *
+	 * @param string $link link to the file/folder
+	 * @param string $shareWith email address of share receiver
+	 * @param string $initiatorDisplayName name of the share creator
+	 * @param string $circleName name of the circle shared with
+	 * @param string|null $initiatorEmail email of the share creator
+	 * @param IShare $share
+	 * @throws Exception
+	 */
+	public function sendUserShareMail(
+		string $link,
+		string $shareWith,
+		string $initiatorDisplayName,
+		string $circleName,
+		?string $initiatorEmail,
+		IShare $share,
+	): void {
+
+		$filename = $share->getNode()->getName();
+		$expiration = $share->getExpirationDate();
+		$note = $share->getNote();
+		$l = $this->l10n;
+
+		$message = $this->mailer->createMessage();
+
+		$emailTemplate = $this->mailer->createEMailTemplate('files_sharing.RecipientNotification', [
+			'filename' => $filename,
+			'link' => $link,
+			'initiator' => $initiatorDisplayName,
+			'expiration' => $expiration,
+			'shareWith' => $shareWith,
+		]);
+
+		$emailTemplate->setSubject($l->t('%1$s shared %2$s with %3$s', [$initiatorDisplayName, $filename, $circleName]));
+		$emailTemplate->addHeader();
+		$emailTemplate->addHeading($l->t('%1$s shared %2$s with "%3$s"', [$initiatorDisplayName, $filename, $circleName]), false);
+
+		if ($note !== '') {
+			$emailTemplate->addBodyText(htmlspecialchars($note), $note);
+		}
+
+		$emailTemplate->addBodyButton(
+			$l->t('Open %s', [$filename]),
+			$link
+		);
+
+		$message->setTo([$shareWith]);
+
+		// The "From" contains the sharers name
+		$instanceName = $this->defaults->getName();
+		$senderName = $l->t(
+			'%1$s via %2$s',
+			[
+				$initiatorDisplayName,
+				$instanceName,
+			]
+		);
+		$message->setFrom([\OCP\Util::getDefaultEmailAddress('noreply') => $senderName]);
+
+		// The "Reply-To" is set to the sharer if an mail address is configured
+		// also the default footer contains a "Do not reply" which needs to be adjusted.
+		if ($initiatorEmail !== null) {
+			$message->setReplyTo([$initiatorEmail => $initiatorDisplayName]);
+			$emailTemplate->addFooter($instanceName . ($this->defaults->getSlogan() !== '' ? ' - ' . $this->defaults->getSlogan() : ''));
+		} else {
+			$emailTemplate->addFooter();
+		}
+
+		$message->useTemplate($emailTemplate);
+		$failedRecipients = $this->mailer->send($message);
+		if (!empty($failedRecipients)) {
+			return;
+		}
 	}
 
 

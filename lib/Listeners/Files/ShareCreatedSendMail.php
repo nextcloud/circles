@@ -32,6 +32,9 @@ use OCA\Circles\Tools\Traits\TNCLogger;
 use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
+use OCP\Files\IRootFolder;
+use OCP\IURLGenerator;
+use OCP\IUser;
 use OCP\IUserManager;
 
 /** @template-implements IEventListener<FileShareCreatedEvent|Event> */
@@ -59,6 +62,10 @@ class ShareCreatedSendMail implements IEventListener {
 	private $contactService;
 	/** @var IUserManager */
 	private $userManager;
+	/** @var IURLGenerator */
+	private $urlGenerator;
+	/** @var IRootFolder */
+	private $rootFolder;
 
 	public function __construct(
 		ShareWrapperService $shareWrapperService,
@@ -68,6 +75,8 @@ class ShareCreatedSendMail implements IEventListener {
 		ContactService $contactService,
 		ConfigService $configService,
 		IUserManager $userManager,
+		IURLGenerator $urlGenerator,
+		IRootFolder $rootFolder,
 	) {
 		$this->shareWrapperService = $shareWrapperService;
 		$this->shareTokenService = $shareTokenService;
@@ -76,6 +85,8 @@ class ShareCreatedSendMail implements IEventListener {
 		$this->contactService = $contactService;
 		$this->configService = $configService;
 		$this->userManager = $userManager;
+		$this->urlGenerator = $urlGenerator;
+		$this->rootFolder = $rootFolder;
 
 		$this->setup('app', Application::APP_ID);
 	}
@@ -88,7 +99,8 @@ class ShareCreatedSendMail implements IEventListener {
 	 * @throws RequestBuilderException
 	 * @throws UnknownRemoteException
 	 */
-	public function handle(Event $event): void {
+	public function handle(Event $event): void
+	{
 		if (!$event instanceof FileShareCreatedEvent) {
 			return;
 		}
@@ -147,6 +159,43 @@ class ShareCreatedSendMail implements IEventListener {
 					$this->get($member->getSingleId(), $clearPasswords)
 				);
 			}
+		}
+
+		$circleMembers = $circle->getMembers();
+		$share = $share->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
+		$link = $this->urlGenerator->linkToRouteAbsolute('files_sharing.sharecontroller.showShare', [
+			'token' => $share->getToken()
+		]);
+		$initiator = $share->getSharedBy();
+		$initiatorUser = $this->userManager->get($initiator);
+		$initiatorDisplayName = ($initiatorUser instanceof IUser) ? $initiatorUser->getDisplayName() : $initiator;
+		$initiatorEmail = ($initiatorUser instanceof IUser) ? $initiatorUser->getEMailAddress() : null;
+
+		foreach ($circleMembers as $member) {
+			if ($member->getUserType() !== Member::TYPE_USER) {
+				continue;
+			}
+
+			$user = $this->userManager->get($member->getUserId());
+			if ($user === null) {
+				continue;
+			}
+			$email = $user->getEMailAddress();
+			if ($email === null
+				|| $email === $initiatorEmail
+			) {
+				continue;
+			}
+
+			$this->sendMailService->sendUserShareMail(
+				$link,
+				$user->getEMailAddress(),
+				$initiatorDisplayName,
+				$circle->getDisplayName(),
+				$initiatorEmail,
+				$share,
+			);
+
 		}
 	}
 }
