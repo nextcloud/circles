@@ -99,8 +99,7 @@ class ShareCreatedSendMail implements IEventListener {
 	 * @throws RequestBuilderException
 	 * @throws UnknownRemoteException
 	 */
-	public function handle(Event $event): void
-	{
+	public function handle(Event $event): void {
 		if (!$event instanceof FileShareCreatedEvent) {
 			return;
 		}
