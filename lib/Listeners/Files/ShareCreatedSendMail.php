@@ -106,8 +106,39 @@ class ShareCreatedSendMail implements IEventListener {
 
 		$circle = $event->getCircle();
 		$clearPasswords = $event->getFederatedEvent()->getInternal()->gArray('clearPasswords');
+		/** @var ShareWrapper $wrappedShare */
+		$wrappedShare = $event->getFederatedEvent()->getParams()->gObj('wrappedShare', ShareWrapper::class);
+		$iShare = $wrappedShare->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
+		$link = $this->urlGenerator->linkToRouteAbsolute('files_sharing.sharecontroller.showShare', [
+			'token' => $iShare->getToken()
+		]);
+		$initiator = $iShare->getSharedBy();
+		$initiatorUser = $this->userManager->get($initiator);
+		$initiatorDisplayName = ($initiatorUser instanceof IUser) ? $initiatorUser->getDisplayName() : $initiator;
+		$initiatorEmail = ($initiatorUser instanceof IUser) ? $initiatorUser->getEMailAddress() : null;
 
 		foreach ($circle->getInheritedMembers(false, true) as $member) {
+			if ($member->getUserType() == Member::TYPE_USER && $member->isLocal()) {
+				$user = $this->userManager->get($member->getUserId());
+				if ($user === null) {
+					continue;
+				}
+				$email = $user->getEMailAddress();
+				if ($email === null
+					|| $email === $initiatorEmail
+				) {
+					continue;
+				}
+				$this->sendMailService->sendUserShareMail(
+					$link,
+					$user->getEMailAddress(),
+					$initiatorDisplayName,
+					$circle->getDisplayName(),
+					$initiatorEmail,
+					$iShare,
+				);
+			}
+
 			if ($member->getUserType() !== Member::TYPE_MAIL
 				&& $member->getUserType() !== Member::TYPE_CONTACT) {
 				continue;
@@ -158,43 +189,6 @@ class ShareCreatedSendMail implements IEventListener {
 					$this->get($member->getSingleId(), $clearPasswords)
 				);
 			}
-		}
-
-		$circleMembers = $circle->getMembers();
-		$share = $share->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
-		$link = $this->urlGenerator->linkToRouteAbsolute('files_sharing.sharecontroller.showShare', [
-			'token' => $share->getToken()
-		]);
-		$initiator = $share->getSharedBy();
-		$initiatorUser = $this->userManager->get($initiator);
-		$initiatorDisplayName = ($initiatorUser instanceof IUser) ? $initiatorUser->getDisplayName() : $initiator;
-		$initiatorEmail = ($initiatorUser instanceof IUser) ? $initiatorUser->getEMailAddress() : null;
-
-		foreach ($circleMembers as $member) {
-			if ($member->getUserType() !== Member::TYPE_USER) {
-				continue;
-			}
-
-			$user = $this->userManager->get($member->getUserId());
-			if ($user === null) {
-				continue;
-			}
-			$email = $user->getEMailAddress();
-			if ($email === null
-				|| $email === $initiatorEmail
-			) {
-				continue;
-			}
-
-			$this->sendMailService->sendUserShareMail(
-				$link,
-				$user->getEMailAddress(),
-				$initiatorDisplayName,
-				$circle->getDisplayName(),
-				$initiatorEmail,
-				$share,
-			);
-
 		}
 	}
 }
