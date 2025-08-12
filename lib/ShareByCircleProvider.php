@@ -141,6 +141,7 @@ class ShareByCircleProvider implements IShareProvider {
 
 		$circle = $this->circleService->probeCircle($share->getSharedWith(), $circleProbe, $dataProbe);
 		$share->setToken($this->token(15));
+		$share->setMailSend(true);
 		$owner = $circle->getInitiator();
 		$this->shareWrapperService->save($share);
 
@@ -160,7 +161,6 @@ class ShareByCircleProvider implements IShareProvider {
 
 		return $wrappedShare->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
 	}
-
 
 	/**
 	 * @param IShare $share

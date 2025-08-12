@@ -70,6 +70,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 	private ?ShareToken $shareToken = null;
 	private ?IAttributes $attributes = null;
 	private bool $hideDownload = false;
+	private bool $mailSend = true;
 
 	public function __construct() {
 		$this->shareTime = new DateTime();
@@ -374,6 +375,16 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		return $this;
 	}
 
+	public function setMailSend(bool $mailSend): self {
+		$this->mailSend = $mailSend;
+
+		return $this;
+	}
+
+	public function getMailSend(): bool {
+		return $this->mailSend;
+	}
+
 
 	/**
 	 * @throws IllegalIDChangeException
@@ -396,6 +407,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		$share->setHideDownload($this->getHideDownload());
 		$share->setAttributes($this->getAttributes());
 		$share->setNote($this->getShareNote());
+		$share->setMailSend($this->getMailSend());
 		if ($this->hasShareToken()) {
 			$password = $this->getShareToken()->getPassword();
 			if ($password !== '') {
