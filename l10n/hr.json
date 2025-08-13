@@ -98,6 +98,7 @@
     "%s" : "%s",
     "%s owned by %s" : "%s u vlasništvu %s",
     "%s shared a file with you." : "%s dijeli datoteku s vama.",
+    "Open %s" : "Otvori %s",
     "Bring cloud-users closer together." : "Približite korisnike oblaka.",
     "No files in here" : "Nema datoteka",
     "No entries found in this folder" : "U ovoj mapi nisu pronađeni nikakvi zapisi",

@@ -134,6 +134,7 @@ OC.L10N.register(
     "You have no permission to create a new team" : "No teniu permís per a crear un equip nou",
     "%s shared a file with \"%s\"." : "%s ha compartit un fitxer amb «%s».",
     "%s shared a file with you." : "%s ha compartit un fitxer amb vós.",
+    "Open %s" : "Obre %s",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s ha compartit contingut amb vós.\nJa hauríeu d'haver rebut un altre correu electrònic amb un enllaç per a accedir-hi.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s ha compartit contingut amb vós. Ja hauríeu d'haver rebut un altre correu electrònic amb un enllaç per a accedir-hi.",
     "Password to access content shared with you by %1$s" : "Contrasenya per a accedir al contingut que %1$s ha compartit amb vós",

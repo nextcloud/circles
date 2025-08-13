@@ -132,6 +132,7 @@
     "You have no permission to create a new team" : "Vde. non ten permiso para crear un novo equipo",
     "%s shared a file with \"%s\"." : "%s compartiu un ficheiro con «%s».",
     "%s shared a file with you." : "%s compartiu un ficheiro con Vde.",
+    "Open %s" : "Abrir %s",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s compartiu algún contido con Vde.\nXa debería ter recibido un correo aparte cunha ligazón para acceder a el.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s compartiu algún contido con Vde. Xa debería ter recibido un correo aparte cunha ligazón para acceder a el.",
     "Password to access content shared with you by %1$s" : "Contrasinal para acceder ao contido compartido con Vde. por %1$s",

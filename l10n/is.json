@@ -132,6 +132,7 @@
     "You have no permission to create a new team" : "Þú hefur ekki leyfi til að búa til nýtt teymi",
     "%s shared a file with \"%s\"." : "%s deildi skrá með \"%s\".",
     "%s shared a file with you." : "%s deildi skrá með þér",
+    "Open %s" : "Opna %s",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s deildi einhverju efni með þér.\nÞú ættir að hafa fengið sérstakan tölvupóst með tengli sem vísar á gögnin.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s deildi einhverju efni með þér. Þú ættir að hafa fengið sérstakan tölvupóst með tengli sem vísar á gögnin.\n",
     "Password to access content shared with you by %1$s" : "Lykilorði fyrir aðgang að efni var deilt með þér af %1$s",

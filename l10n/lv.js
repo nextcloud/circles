@@ -28,6 +28,7 @@ OC.L10N.register(
     "Files" : "Datnes",
     "Accept" : "Akceptēt",
     "%s" : "%s",
+    "Open %s" : "Atvērt %s",
     "No files in here" : "Šeit nav datņu",
     "No entries found in this folder" : "Šajā mapē nekas nav atrasts",
     "Name" : "Vārds",

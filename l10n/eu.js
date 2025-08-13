@@ -134,6 +134,7 @@ OC.L10N.register(
     "You have no permission to create a new team" : "Ez duzu lantalde berri bat sortzeko baimenik",
     "%s shared a file with \"%s\"." : "%s fitxategi bat partekatu du \"%s\"(r)ekin.",
     "%s shared a file with you." : "%s zurekin fitxategi bat partekatu du.",
+    "Open %s" : "Ireki %s",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s(e)k eduki batzuk partekatu ditu zurekin.\nBertara iristeko esteka mezu batean eduki behar zenuke dagoeneko zure posta elektronikoan.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s(e)k eduki batzuk partekatu ditu zurekin. Bertara iristeko esteka mezu batean eduki behar zenuke dagoeneko zure posta elektronikoan.",
     "Password to access content shared with you by %1$s" : "%1$s-k zurekin partekatutako edukiera atzitzeko pasahitza",

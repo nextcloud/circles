@@ -52,6 +52,7 @@ OC.L10N.register(
     "You have been blocked from this circle" : "Ju jeni bllokuar nga ky rreth",
     "Accept" : "Prano",
     "%s" : "%s",
+    "Open %s" : "Hap %s",
     "No files in here" : "Jo dosje këtu",
     "No entries found in this folder" : "Në këtë dosje nuk gjëndet asnjë hyrje",
     "Name" : "Emër",

@@ -7,6 +7,7 @@ OC.L10N.register(
     "Owner" : "Owner",
     "Open »%s«" : "Buka %s",
     "Files" : "Fail-fail",
+    "Open %s" : "Buka%s",
     "Name" : "Nama",
     "Size" : "Saiz",
     "Modified" : "Dimodifikasi"

@@ -132,6 +132,7 @@
     "You have no permission to create a new team" : "У вас нет разрешений для создания новой группы",
     "%s shared a file with \"%s\"." : "%s поделился файлом с \"%s\".",
     "%s shared a file with you." : "%s поделился с вами файлом.",
+    "Open %s" : "Открыть %s",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s поделился с вами некоторыми материалами.\nВы уже должны были получить отдельное письмо со ссылкой для доступа к нему.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s поделился с вами некоторыми материалами. Вы уже должны были получить отдельное письмо со ссылкой для доступа к нему.",
     "Password to access content shared with you by %1$s" : "Пароль для доступа к содержимому, предоставленному вам %1$s",

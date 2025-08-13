@@ -132,6 +132,7 @@
     "You have no permission to create a new team" : "Níl aon chead agat foireann nua a chruthú",
     "%s shared a file with \"%s\"." : "Roinn %s comhad le \"%s\".",
     "%s shared a file with you." : "Roinn%s comhad leat.",
+    "Open %s" : "Oscailte %s",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "Roinn %1$s roinnt ábhair leat.\nBa cheart go mbeadh ríomhphost ar leith faighte agat cheana féin le nasc chun é a rochtain.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "Roinn %1$s roinnt ábhair leat. Ba cheart go mbeadh ríomhphost ar leith faighte agat cheana féin le nasc chun é a rochtain.",
     "Password to access content shared with you by %1$s" : "Pasfhocal chun rochtain a fháil ar ábhar atá roinnte leat faoi %1$s",

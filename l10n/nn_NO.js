@@ -12,6 +12,7 @@ OC.L10N.register(
     "Admin" : "Administrer",
     "Owner" : "Owner",
     "Open »%s«" : "Opna »%s«",
+    "Open %s" : "Opne{filnamn}",
     "No files in here" : "Ingen filer her",
     "No entries found in this folder" : "Ingen oppføringar funne i denne mappa",
     "Name" : "Namn",

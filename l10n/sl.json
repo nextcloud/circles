@@ -115,6 +115,7 @@
     "You have no permission to create a new team" : "Ni ustreznih dovoljenj za ustvarjanje skupin.",
     "%s shared a file with \"%s\"." : "%s omogoča souporabo datoteke z »%s«.",
     "%s shared a file with you." : "%s vam omogoča souporabo datoteke.",
+    "Open %s" : "Odpri %s",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s vam omogoča souporabo vsebine.\nMorali bi že prejeti ločeno sporočilo s povezavo za dostop po elektronski pošti.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s vam omogoča souporabo vsebine. Morali bi že prejeti ločeno sporočilo s povezavo za dostop po elektronski pošti.",
     "Password to access content shared with you by %1$s" : "%1$s vam pošilja geslo za dostop do vsebine v souporabi.",
