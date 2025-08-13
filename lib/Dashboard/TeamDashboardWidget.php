@@ -18,15 +18,17 @@ use OCP\Dashboard\IAPIWidgetV2;
 use OCP\Dashboard\IButtonWidget;
 use OCP\Dashboard\IConditionalWidget;
 use OCP\Dashboard\IIconWidget;
+use OCP\Dashboard\IOptionWidget;
 use OCP\Dashboard\Model\WidgetButton;
 use OCP\Dashboard\Model\WidgetItem;
 use OCP\Dashboard\Model\WidgetItems;
+use OCP\Dashboard\Model\WidgetOptions;
 use OCP\IL10N;
 use OCP\IURLGenerator;
 use OCP\IUserSession;
 use Psr\Log\LoggerInterface;
 
-class TeamDashboardWidget implements IAPIWidgetV2, IIconWidget, IButtonWidget, IConditionalWidget {
+class TeamDashboardWidget implements IAPIWidgetV2, IIconWidget, IButtonWidget, IConditionalWidget, IOptionWidget {
 	public function __construct(
 		private IURLGenerator $urlGenerator,
 		private IL10N $l10n,
@@ -143,5 +145,11 @@ class TeamDashboardWidget implements IAPIWidgetV2, IIconWidget, IButtonWidget, I
 	public function isEnabled(): bool {
 		return $this->appManager->isEnabledForUser('contacts') &&
 			$this->configService->getAppValueBool(ConfigService::FRONTEND_ENABLED);
+	}
+
+	public function getWidgetOptions(): WidgetOptions {
+		return new WidgetOptions(
+			roundItemIcons: true,
+		);
 	}
 }
