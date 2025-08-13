@@ -132,6 +132,7 @@
     "You have no permission to create a new team" : "Je hebt geen machtiging om een nieuw team aan te maken",
     "%s shared a file with \"%s\"." : "%s deelde een bestand met \"%s\".",
     "%s shared a file with you." : "%s heeft een bestand met u gedeeld",
+    "Open %s" : "%s openen",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s heeft enige informatie met je gedeeld.\nJe moet al een aparte e-mail hebben ontvangen met een link om er te komen.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s heeft enige informatie met je gedeeld.\nJe moet al een aparte e-mail hebben ontvangen met een link om er te komen.",
     "Password to access content shared with you by %1$s" : "Wachtwoord om toegang te krijgen tot inhoud gedeeld met u door %1$s",

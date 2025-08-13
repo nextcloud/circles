@@ -28,6 +28,7 @@ OC.L10N.register(
     "Files" : "Датотеки",
     "Accept" : "Прифати",
     "%s" : "%s",
+    "Open %s" : "Отвори %s",
     "No files in here" : "Тука нема датотеки",
     "No entries found in this folder" : "Нема ништо во оваа папка",
     "Name" : "Име",

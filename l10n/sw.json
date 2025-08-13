@@ -132,6 +132,7 @@
     "You have no permission to create a new team" : "Huna ruhusa ya kuunda timu mpya",
     "%s shared a file with \"%s\"." : "%s ameshiriki faili \"%s\".",
     "%s shared a file with you." : "%s ameshiriki faili na wewe.",
+    "Open %s" : "Fungua %s",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s alishiriki baadhi ya maudhui na wewe.\nUnapaswa kuwa tayari umepokea barua pepe tofauti iliyo na kiungo ili kuifikia.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s alishiriki baadhi ya maudhui na wewe. Unapaswa kuwa tayari umepokea barua pepe tofauti iliyo na kiungo ili kuifikia. ",
     "Password to access content shared with you by %1$s" : "Nenosiri la kufikia maudhui yaliyoshirikiwa nawe %1$s",

@@ -102,6 +102,7 @@
     "%s owned by %s" : "%s ανήκει στον %s",
     "%s shared a file with \"%s\"." : "%s διαμοιράστηκε ένα αρχείο με \"%s\".",
     "%s shared a file with you." : "%s διαμοιράστηκε ένα αρχεία με εσάς.",
+    "Open %s" : "Άνοιγμα %s",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s μοιράστηκε περιεχόμενο με εσάς.\nΘα πρέπει να έχετε ήδη λάβει ένα ξεχωριστό mail με έναν σύνδεσμο με πρόσβαση σε αυτό.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s μοιράστηκε περιεχόμενο με εσάς. Θα πρέπει να έχετε ήδη λάβει ένα ξεχωριστό mail με έναν σύνδεσμο με πρόσβαση σε αυτό.",
     "Password to access content shared with you by %1$s" : "Συνθηματικό για πρόσβαση στα αρχεία που διαμοιράστηκε μαζί σας ο/η  %1$s",

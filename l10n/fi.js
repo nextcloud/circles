@@ -97,6 +97,7 @@ OC.L10N.register(
     "Personal team" : "Henkilökohtainen tiimi",
     "You have no permission to create a new team" : "Sinulla ei ole oikeutta luoda uutta tiimiä",
     "%s shared a file with you." : "%s jakoi tiedoston kanssasi.",
+    "Open %s" : "Avaa %s",
     "Password to access content" : "Salasana sisällön käyttämiseksi",
     "Bring cloud-users closer together." : "Tuo pilvikäyttäjät lähemmäksi toisiaan.",
     "No files in here" : "Täällä ei ole tiedostoja",

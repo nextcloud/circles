@@ -97,6 +97,7 @@ OC.L10N.register(
     "%s owned by %s" : "%s이(가) 소유한 %s",
     "%s shared a file with \"%s\"." : "%s님이 \"%s\"에게 파일을 공유했습니다.",
     "%s shared a file with you." : "%s님이 파일을 공유했습니다.",
+    "Open %s" : "%s 열기",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s님이 공유한 것이 있습니다. \n함께 발송한 별도의 이메일에서 링크를 눌러 이 공유에 접근하십시오.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s님이 공유한 것이 있습니다.\n함께 발송한 별도의 이메일에서 링크를 눌로 이 공유에 접근하십시오.",
     "Password to access content shared with you by %1$s" : "%1$s님의 공유에 접근하기 위한 암호",

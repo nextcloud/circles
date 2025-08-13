@@ -132,6 +132,7 @@
     "You have no permission to create a new team" : "You have no permission to create a new team",
     "%s shared a file with \"%s\"." : "%s shared a file with \"%s\".",
     "%s shared a file with you." : "%s shared a file with you.",
+    "Open %s" : "Open %s",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s shared some content with you. You should have already received a separate email with a link to access it.",
     "Password to access content shared with you by %1$s" : "Password to access content shared with you by %1$s",

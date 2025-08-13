@@ -104,6 +104,7 @@
     "%s owned by %s" : "%s được sở hữu bởi %s",
     "%s shared a file with \"%s\"." : "%s đã chia sẻ một tệp tin với \"%s\".",
     "%s shared a file with you." : "%s đã chia sẻ một tệp tin với bạn.",
+    "Open %s" : "Mở trong %s",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s đã chia sẻ một vài nội dung với bạn.\nBạn sẽ nhận được một email riêng có liên kết để truy cập chúng.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s đã chia sẻ một vài nội dung với bạn. Bạn sẽ nhận được một email riêng có liên kết để truy cập chúng.",
     "Password to access content shared with you by %1$s" : "Mật khẩu để truy cập nội dung được chia sẻ với bạn bởi %1$s",

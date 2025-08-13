@@ -101,6 +101,7 @@
     "%s owned by %s" : "%s proprietatea lui %s",
     "%s shared a file with \"%s\"." : "%s a partajat un fișier cu \"%s\".",
     "%s shared a file with you." : "%s a partajat un fișier cu tine.",
+    "Open %s" : "Deschide %s",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s a partajat ceva cu tine.\nTrebuie să fi primit deja un email separat cu linkul de acces.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s a partajat ceva cu tine. Trebuie să fi primit un email separat cu linkul de acces.",
     "Password to access content shared with you by %1$s" : "Parola pentru accesarea conținutului partajat de %1$s",

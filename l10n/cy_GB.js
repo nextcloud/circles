@@ -105,6 +105,7 @@ OC.L10N.register(
     "%s owned by %s" : "%s sy'n eiddo i %s",
     "%s shared a file with \"%s\"." : "Mae %s wedi rhannu ffeil gyda \"%s\".",
     "%s shared a file with you." : "Mae %s wedi rhannu ffeil gyda chi.",
+    "Open %s" : "Agor %s",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "Mae %1$s wedi rhannu rhywfaint o gynnwys â chi.\nDylech fod wedi derbyn e-bost ar wahân yn barod gyda dolen i gael mynediad iddo.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "Mae %1$s wedi rhannu rhywfaint o gynnwys â chi. Dylech fod wedi derbyn e-bost ar wahân yn barod gyda dolen i gael mynediad iddo.",
     "Password to access content shared with you by %1$s" : "Cyfrinair i gael mynediad at gynnwys a rennir gyda chi gan %1$s",
