@@ -216,6 +216,7 @@
     <MissingDependency>
       <code><![CDATA[CircleMountManager]]></code>
       <code><![CDATA[CircleMountManager]]></code>
+      <code><![CDATA[CircleMountManager]]></code>
     </MissingDependency>
   </file>
   <file src="lib/Model/Probes/BasicProbe.php">
@@ -225,6 +226,7 @@
   </file>
   <file src="lib/Model/ShareWrapper.php">
     <InvalidArgument>
+      <code><![CDATA[$attributes]]></code>
       <code><![CDATA[Cache::cacheEntryFromData($this->getFileCache()->toCache(), OC::$server->getMimeTypeLoader())]]></code>
     </InvalidArgument>
     <InvalidNullableReturnType>
@@ -264,6 +266,7 @@
   <file src="lib/MountManager/CircleMountProvider.php">
     <MissingDependency>
       <code><![CDATA[CircleMount]]></code>
+      <code><![CDATA[private]]></code>
     </MissingDependency>
   </file>
   <file src="lib/Service/ContactService.php">
@@ -378,13 +381,15 @@
     </TooManyArguments>
   </file>
   <file src="lib/Tools/Traits/TNCLogger.php">
-    <UndefinedClass>
-      <code><![CDATA[HintException]]></code>
-    </UndefinedClass>
-    <RedundantCondition/>
+    <RedundantCondition>
+      <code><![CDATA[isset($this->logger)]]></code>
+    </RedundantCondition>
     <RedundantPropertyInitializationCheck>
       <code><![CDATA[isset($this->logger)]]></code>
     </RedundantPropertyInitializationCheck>
+    <UndefinedClass>
+      <code><![CDATA[HintException]]></code>
+    </UndefinedClass>
   </file>
   <file src="lib/Tools/Traits/TNCRequest.php">
     <InvalidArgument>
