@@ -8,12 +8,9 @@ declare(strict_types=1);
  */
 namespace OC;
 
-use OC\AppFramework\App;
 use OC\AppFramework\DependencyInjection\DIContainer;
 use OC\AppFramework\Utility\SimpleContainer;
 use OCP\AppFramework\QueryException;
-use function explode;
-use function strtolower;
 
 /**
  * Class ServerContainer
@@ -33,34 +30,30 @@ class ServerContainer extends SimpleContainer {
 	/**
 	 * ServerContainer constructor.
 	 */
-	public function __construct()
- {
- }
+	public function __construct() {
+	}
 
 	/**
 	 * @param string $appName
 	 * @param string $appNamespace
 	 */
-	public function registerNamespace(string $appName, string $appNamespace): void
- {
- }
+	public function registerNamespace(string $appName, string $appNamespace): void {
+	}
 
 	/**
 	 * @param string $appName
 	 * @param DIContainer $container
 	 */
-	public function registerAppContainer(string $appName, DIContainer $container): void
- {
- }
+	public function registerAppContainer(string $appName, DIContainer $container): void {
+	}
 
 	/**
 	 * @param string $appName
 	 * @return DIContainer
 	 * @throws QueryException
 	 */
-	public function getRegisteredAppContainer(string $appName): DIContainer
- {
- }
+	public function getRegisteredAppContainer(string $appName): DIContainer {
+	}
 
 	/**
 	 * @param string $namespace
@@ -68,13 +61,11 @@ class ServerContainer extends SimpleContainer {
 	 * @return DIContainer
 	 * @throws QueryException
 	 */
-	protected function getAppContainer(string $namespace, string $sensitiveNamespace): DIContainer
- {
- }
+	protected function getAppContainer(string $namespace, string $sensitiveNamespace): DIContainer {
+	}
 
-	public function has($id, bool $noRecursion = false): bool
- {
- }
+	public function has($id, bool $noRecursion = false): bool {
+	}
 
 	/**
 	 * @template T
@@ -86,16 +77,14 @@ class ServerContainer extends SimpleContainer {
 	 * @throws QueryException
 	 * @deprecated 20.0.0 use \Psr\Container\ContainerInterface::get
 	 */
-	public function query(string $name, bool $autoload = true)
- {
- }
+	public function query(string $name, bool $autoload = true) {
+	}
 
 	/**
 	 * @internal
 	 * @param string $id
 	 * @return DIContainer|null
 	 */
-	public function getAppContainerForService(string $id): ?DIContainer
- {
- }
+	public function getAppContainerForService(string $id): ?DIContainer {
+	}
 }
