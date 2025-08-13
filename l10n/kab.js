@@ -9,6 +9,7 @@ OC.L10N.register(
     "Moderator" : "Amaẓrag",
     "Admin" : "Anedbal",
     "Owner" : "Bab",
+    "Open %s" : "Ldi %s",
     "No entries found in this folder" : "Ulac inekcumen i yettwafen deg ukaram-a",
     "Name" : "Nom",
     "Size" : "Teɣzi",

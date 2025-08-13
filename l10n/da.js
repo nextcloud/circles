@@ -134,6 +134,7 @@ OC.L10N.register(
     "You have no permission to create a new team" : "Du har ikke tilladelse til at oprette et nyt team",
     "%s shared a file with \"%s\"." : "%s delte en fil med \"%s\".",
     "%s shared a file with you." : "%s delte en fil med dig.",
+    "Open %s" : "Åbn %s",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s delt indhold med dig.\nDu burde allerede have modtaget en separat e-mail med et link for at få adgang...\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s delt indhold med dig. Du burde allerede have modtaget en e-mail med et link for at få adgang...",
     "Password to access content shared with you by %1$s" : "Adgangskode for at få adgang til indhold, der deles med dig af %1$s",

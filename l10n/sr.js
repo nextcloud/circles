@@ -134,6 +134,7 @@ OC.L10N.register(
     "You have no permission to create a new team" : "Немате дозволу да креирате нови тим",
     "%s shared a file with \"%s\"." : "%s је поделио фајл са „%s.",
     "%s shared a file with you." : "%s је са вама поделио фајл.",
+    "Open %s" : "Отвори %s",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s је са вама поделио неки садржај.\nТребало би да сте већ примили посебан и-мејл са линком за приступ.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s је поделио са вама неки садржај. Требало би да сте већ примили посебан и-мејл са линком за приступ.",
     "Password to access content shared with you by %1$s" : "%1$s је са вама поделио лозинку за приступ садржају",

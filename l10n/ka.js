@@ -104,6 +104,7 @@ OC.L10N.register(
     "%s owned by %s" : "%s owned by %s",
     "%s shared a file with \"%s\"." : "%s shared a file with \"%s\".",
     "%s shared a file with you." : "%s shared a file with you.",
+    "Open %s" : "გახსნა %s",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s shared some content with you. You should have already received a separate email with a link to access it.",
     "Password to access content shared with you by %1$s" : "Password to access content shared with you by %1$s",

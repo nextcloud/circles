@@ -132,6 +132,7 @@
     "You have no permission to create a new team" : "يېڭى گۇرۇپپا قۇرۇش ھوقۇقىڭىز يوق",
     "%s shared a file with \"%s\"." : "% s ھۆججەتنى \"% s\" بىلەن ئورتاقلاشتى.",
     "%s shared a file with you." : "% s ھۆججەتنى سىز بىلەن ئورتاقلاشتى.",
+    "Open %s" : "% S نى ئېچىڭ",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1 $ s بەزى مەزمۇنلارنى سىز بىلەن ئورتاقلاشتى.\nئۇنى زىيارەت قىلىش ئۈچۈن ئۇلانمىسى بار ئايرىم ئېلېكترونلۇق خەت تاپشۇرۇۋالغان بولۇشىڭىز كېرەك.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1 $ s بەزى مەزمۇنلارنى سىز بىلەن ئورتاقلاشتى. ئۇنى زىيارەت قىلىش ئۈچۈن ئۇلانمىسى بار ئايرىم ئېلېكترونلۇق خەت تاپشۇرۇۋالغان بولۇشىڭىز كېرەك.",
     "Password to access content shared with you by %1$s" : "سىز بىلەن ئورتاقلاشقان مەزمۇننى زىيارەت قىلىش پارولى%1 $ s",

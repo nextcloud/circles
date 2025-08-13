@@ -71,6 +71,7 @@ OC.L10N.register(
     "You have been blocked from this circle" : "Vi estis barita el tiu ĉi rondo",
     "Accept" : "Akcepti",
     "%s" : "%s",
+    "Open %s" : "Malfermi %s",
     "Bring cloud-users closer together." : "Pliproksimigi uzantojn kune.",
     "No files in here" : "Neniu dosiero ĉi tie",
     "No entries found in this folder" : "Neniu elemento en tiu ĉi dosierujo",

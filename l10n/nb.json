@@ -128,6 +128,7 @@
     "You have no permission to create a new team" : "Du har ingen tillatelse til å opprette et nytt lag",
     "%s shared a file with \"%s\"." : "%s delte en fil med \"%s\".",
     "%s shared a file with you." : "%s delte en fil med deg.",
+    "Open %s" : "Åpne %s",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s delte innhold med deg.\nDu bør allerede ha mottatt en separat epist med en link for å få tilgang til det.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s delte innhold med deg. Du bør allerede ha mottatt en separat epost med en link for å få tilgang til det.",
     "Password to access content shared with you by %1$s" : "Passord for å få tilgang til innhold som deles med deg av %1$s",

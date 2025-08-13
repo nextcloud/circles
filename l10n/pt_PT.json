@@ -128,6 +128,7 @@
     "You have no permission to create a new team" : "Não tem permissão para criar um novo grupo",
     "%s shared a file with \"%s\"." : "%s partilhou um ficheiro com \"%s\".",
     "%s shared a file with you." : "%s partilhou um ficheiro consigo.",
+    "Open %s" : "Abrir %s",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s partilhou algum conteúdo consigo.\n Já deve ter recebido um email com uma hiperligação para lhe aceder.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s partilhou algum conteúdo consigo. Já deve ter recebido um email com uma hiperligação para lhe aceder.",
     "Password to access content shared with you by %1$s" : "Palavra passe para aceder ao conteúdo partilhado por %1$s",

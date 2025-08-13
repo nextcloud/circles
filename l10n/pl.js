@@ -134,6 +134,7 @@ OC.L10N.register(
     "You have no permission to create a new team" : "Nie masz uprawnień do tworzenia nowego zespołu",
     "%s shared a file with \"%s\"." : "%s udostępnił plik z \"%s\".",
     "%s shared a file with you." : "%s udostępnił Tobie plik.",
+    "Open %s" : "Otwórz %s",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s udostępnił Tobie niektóre treści.\nPowinieneś już otrzymać osobną wiadomość e-mail z linkiem, aby uzyskać do niego dostęp.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s udostępnił Tobie niektóre treści. Powinieneś już otrzymać osobną wiadomość e-mail z linkiem, aby uzyskać do niego dostęp.",
     "Password to access content shared with you by %1$s" : "Hasło dostępu do treści udostępnionej Tobie przez %1$s",

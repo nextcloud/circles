@@ -18,6 +18,7 @@ OC.L10N.register(
     "Open »%s«" : "Buka »%s«",
     "Accept" : "Terima",
     "%s" : "%s",
+    "Open %s" : "Buka %s",
     "Password to access content shared with you by %1$s" : "Kata sandi untuk mengakses konten yabg dibagikan dengan Anda oleh %1$s",
     "No files in here" : "Tidak ada berkas di sini",
     "No entries found in this folder" : "Tidak ada entri yang ditemukan dalam folder ini",

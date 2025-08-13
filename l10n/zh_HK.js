@@ -134,6 +134,7 @@ OC.L10N.register(
     "You have no permission to create a new team" : "您沒有權限來創建新團隊",
     "%s shared a file with \"%s\"." : "%s 與「%s」分享了一個檔案。",
     "%s shared a file with you." : "%s 與您分享了檔案。",
+    "Open %s" : "打開 %s",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s 和您分享了一些内容。\n您應已收到一封帶有訪問連結的電郵。\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s 和您分享了一些内容。您應已收到一封帶有訪問連結的電郵。",
     "Password to access content shared with you by %1$s" : "使用密碼訪問由 %1$s 與您分享的内容",
