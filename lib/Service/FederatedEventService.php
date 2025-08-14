@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
+use OC;
 use OCA\Circles\Db\EventWrapperRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\RemoteRequest;
@@ -161,7 +162,7 @@ class FederatedEventService extends NCSignature {
 				return $event->getOutcome();
 			}
 
-			if (!$event->isAsync()) {
+			if (OC::$CLI || !$event->isAsync()) {
 				$federatedItem->manage($event);
 			}
 
@@ -385,7 +386,8 @@ class FederatedEventService extends NCSignature {
 	 */
 	public function initBroadcast(FederatedEvent $event): bool {
 		$instances = $this->getInstances($event);
-		if (empty($instances) && !$event->isAsync()) {
+		// if empty instance and ran from CLI, any action as already been managed
+		if (empty($instances) && (!$event->isAsync() || OC::$CLI)) {
 			return false;
 		}
 
