@@ -10,6 +10,7 @@ OC.L10N.register(
     "Files" : "Файлы",
     "Accept" : "Прыняць",
     "%s" : "%s",
+    "Open %s" : "Адкрыць %s",
     "Name" : "Назва",
     "Size" : "Памер",
     "Modified" : "Зменены"
