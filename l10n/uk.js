@@ -134,6 +134,8 @@ OC.L10N.register(
     "You have no permission to create a new team" : "У вас відсутні дозволи створювати нові команди",
     "%s shared a file with \"%s\"." : "%s поділив(-ла-)ся файлом з \"%s\".",
     "%s shared a file with you." : "%s поділив(-ла-)ся з вами файлом.",
+    "%1$s shared %2$s with %3$s" : "%1$s спільний %2$s з %3$s",
+    "%1$s shared %2$s with \"%3$s\"" : "%1$s спільний %2$s з «%3$s»",
     "Open %s" : "Відкрити %s",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s поділив(-ла-)ся з вами деяким вмістом. \nНа вашу ел.скриньку було надіслано лист із посиланням для доступу до вмісту.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s поділив(-ла-)ся з вами деяким вмістом. На вашу ел.скриньку було надіслано лист із посиланням для доступу до вмісту.",
