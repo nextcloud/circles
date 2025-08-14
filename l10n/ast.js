@@ -128,6 +128,7 @@ OC.L10N.register(
     "You have no permission to create a new team" : "Nun tienes permisu pa crear un equipu",
     "%s shared a file with \"%s\"." : "%s compartió un ficheru con «%s».",
     "%s shared a file with you." : "%s compartió un ficheru contigo.",
+    "Open %s" : "Abrir «%s»",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s compartió conteníu contigo.\nHubiesti recibir un corréu electrónicu con un enllaz p'acceder a elli.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s compartió conteníu contigo. Hubiesti recibir un corréu electrónicu con un enllaz p'acceder a elli.",
     "Password to access content shared with you by %1$s" : "La contraseña p'acceder al conteníu que %1$s compartió contigo",

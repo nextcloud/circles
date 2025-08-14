@@ -134,6 +134,8 @@ OC.L10N.register(
     "You have no permission to create a new team" : "Sie haben nicht die Berechtigung, ein neues Team zu erstellen",
     "%s shared a file with \"%s\"." : "%s hat eine Datei mit \"%s\" geteilt.",
     "%s shared a file with you." : "%s hat eine Datei mit Ihnen geteilt.",
+    "%1$s shared %2$s with %3$s" : "%1$s hat %2$s mit %3$s geteilt",
+    "%1$s shared %2$s with \"%3$s\"" : "%1$s hat %2$s mit \"%3$s\" geteilt",
     "Open %s" : "%s öffnen",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s hat einigen Inhalt mit Ihnen geteilt.\nSie sollten bereits eine weitere E-Mail mit einem Link für den Zugriff erhalten haben.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s hat einigen Inhalt mit Ihnen geteilt. Sie sollten bereits eine weitere E-Mail mit einem Link für den Zugriff erhalten haben.",
