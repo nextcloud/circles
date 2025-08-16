@@ -41,6 +41,9 @@ return [
 		['name' => 'Local#editConfig', 'url' => '/circles/{circleId}/config', 'verb' => 'PUT'],
 		['name' => 'Local#link', 'url' => '/link/{circleId}/{singleId}', 'verb' => 'GET'],
 
+		// Teams Dashboard widget endpoint
+		['name' => 'TeamsDashboard#getCompleteTeamsData', 'url' => '/teams/dashboard/widget', 'verb' => 'GET'],
+
 		// AdminController
 		['name' => 'Admin#circles', 'url' => '/admin/{emulated}/circles', 'verb' => 'GET'],
 		['name' => 'Admin#create', 'url' => '/admin/{emulated}/circles', 'verb' => 'POST'],
