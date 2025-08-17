@@ -134,6 +134,8 @@ OC.L10N.register(
     "You have no permission to create a new team" : "Nincs jogosultsága új csapat létrehozásához",
     "%s shared a file with \"%s\"." : "%s megosztott egy fájlt a következővel: „%s”.",
     "%s shared a file with you." : "%s megosztott egy fájlt Önnel.",
+    "%1$s shared %2$s with %3$s" : "%1$s megosztotta ezt: %2$s, vele: %3$s",
+    "%1$s shared %2$s with \"%3$s\"" : "%1$s megosztotta ezt: %2$s, vele: „%3$s”",
     "Open %s" : "%s megnyitása",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s tartalmat osztott meg Önnel.\nMár meg kellett volna kapnia a különálló e-mailt, amely a hozzáféréshez szükséges hivatkozást tartalmazza.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s tartalmat osztott meg Önnel. Már meg kellett volna kapnia a különálló e-mailt, amely a hozzáféréshez szükséges hivatkozást tartalmazza.",
