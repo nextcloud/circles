@@ -134,6 +134,8 @@ OC.L10N.register(
     "You have no permission to create a new team" : "Sul pole õigusi uue tiimi loomiseks",
     "%s shared a file with \"%s\"." : "%s jagas faili „%s“ tiimiga.",
     "%s shared a file with you." : "%s jagas faili sinuga.",
+    "%1$s shared %2$s with %3$s" : "%1$s jagas „%3$s“ tiimiga: %2$s",
+    "%1$s shared %2$s with \"%3$s\"" : "%1$s jagas „%3$s“ tiimiga: %2$s",
     "Open %s" : "Ava %s ",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s jagas sinuga sisu.\nSa peaksid nüüd olema saanud e-kirja ligipääsuks vajaliku lingiga.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s jagas sinuga sisu. Sa peaksid nüüd olema saanud e-kirja ligipääsuks vajaliku lingiga.",
