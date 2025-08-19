@@ -1,12 +1,12 @@
-/**
+/*!
  * SPDX-FileCopyrightText: 2025 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
 import { translate, translatePlural } from '@nextcloud/l10n'
 import Vue from 'vue'
-import DashboardTeamsWidget from './components/DashboardTeamsWidget.vue'
-import logger from './logger.js'
+import DashboardTeamsWidget from './views/DashboardTeamsWidget.vue'
+import { logger } from './logger.ts'
 
 Vue.prototype.t = translate
 Vue.prototype.n = translatePlural
