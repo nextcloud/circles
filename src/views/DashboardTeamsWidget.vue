@@ -3,93 +3,6 @@
   - SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
-<template>
-	<div class="teams-dashboard-widget">
-		<NcLoadingIcon v-if="loading" :size="48" />
-		<NcEmptyContent
-			v-else-if="shownTeams.length === 0"
-			:name="t('circles', 'No teams found')"
-			:description="t('circles', 'Join or create teams to see them here.')">
-			<template #icon>
-				<NcIconSvgWrapper class="external-link-icon" :path="mdiAccountGroupOutline" />
-			</template>
-			<template #action>
-				<NcButton :href="createTeamHref">
-					{{ t('circles', 'Create your first team') }}
-				</NcButton>
-			</template>
-		</NcEmptyContent>
-		<template v-else>
-			<div class="teams-container">
-				<div ref="teamsList" class="teams-list">
-					<div v-for="team in shownTeams" :key="team.id" class="team-item">
-						<!-- Team Name with External Link Icon -->
-						<div class="team-header">
-							<a :href="team.url" class="team-name-link">
-								<h3 class="team-name">{{ team.displayName }}</h3>
-								<NcIconSvgWrapper class="external-link-icon" :path="mdiOpenInNew" />
-							</a>
-						</div>
-
-						<!-- Team Members -->
-						<div v-if="team.members && team.members.length > 0" class="team-members">
-							<div class="members-row">
-								<NcAvatar
-									v-for="member in team.members.slice(0, 5)"
-									:key="member.userId || member.singleId"
-									:user="member.isUser ? member.userId : undefined"
-									:display-name="member.displayName"
-									:is-no-user="!member.isUser"
-									:size="36"
-									class="member-avatar" />
-								<span v-if="team.members.length > 5" class="more-indicator">
-									+{{ team.members.length - 5 }}
-								</span>
-							</div>
-						</div>
-
-						<!-- Team Resources -->
-						<div v-if="team.resources && team.resources.length > 0" class="team-resources">
-							<div class="resources-row">
-								<div
-									v-for="resource in team.resources.slice(0, 5)"
-									:key="resource.id"
-									class="resource-box"
-									:title="resource.name"
-									:style="{ '--fallback-icon': `url('${resource.fallbackIcon}')` }">
-									<a :href="resource.url" class="resource-link">
-										<img
-											:src="resource.iconUrl"
-											class="resource-icon"
-											:alt="resource.name">
-									</a>
-								</div>
-								<a
-									v-if="team.resources.length > 5"
-									:href="team.url"
-									class="more-resources-box more-resources-link">
-									+{{ team.resources.length - 5 }}
-								</a>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<!-- Show More Button -->
-				<div v-if="hasMoreTeams" class="show-more-container">
-					<NcButton
-						:disabled="loading"
-						variant="secondary"
-						class="show-more-button"
-						@click="loadMoreTeams">
-						{{ loading ? t('circles', 'Loading…') : t('circles', 'Show more teams') }}
-					</NcButton>
-				</div>
-			</div>
-		</template>
-	</div>
-</template>
-
 <script setup lang="ts">
 import type { OCSResponse } from '@nextcloud/typings/ocs'
 
@@ -217,6 +130,93 @@ async function loadMoreTeams() {
 	await loadTeams(true)
 }
 </script>
+
+<template>
+	<div class="teams-dashboard-widget">
+		<NcLoadingIcon v-if="loading" :size="48" />
+		<NcEmptyContent
+			v-else-if="shownTeams.length === 0"
+			:name="t('circles', 'No teams found')"
+			:description="t('circles', 'Join or create teams to see them here.')">
+			<template #icon>
+				<NcIconSvgWrapper class="external-link-icon" :path="mdiAccountGroupOutline" />
+			</template>
+			<template #action>
+				<NcButton :href="createTeamHref">
+					{{ t('circles', 'Create your first team') }}
+				</NcButton>
+			</template>
+		</NcEmptyContent>
+		<template v-else>
+			<div class="teams-container">
+				<div ref="teamsList" class="teams-list">
+					<div v-for="team in shownTeams" :key="team.id" class="team-item">
+						<!-- Team Name with External Link Icon -->
+						<div class="team-header">
+							<a :href="team.url" class="team-name-link">
+								<h3 class="team-name">{{ team.displayName }}</h3>
+								<NcIconSvgWrapper class="external-link-icon" :path="mdiOpenInNew" />
+							</a>
+						</div>
+
+						<!-- Team Members -->
+						<div v-if="team.members && team.members.length > 0" class="team-members">
+							<div class="members-row">
+								<NcAvatar
+									v-for="member in team.members.slice(0, 5)"
+									:key="member.userId || member.singleId"
+									:user="member.isUser ? member.userId : undefined"
+									:display-name="member.displayName"
+									:is-no-user="!member.isUser"
+									:size="36"
+									class="member-avatar" />
+								<span v-if="team.members.length > 5" class="more-indicator">
+									+{{ team.members.length - 5 }}
+								</span>
+							</div>
+						</div>
+
+						<!-- Team Resources -->
+						<div v-if="team.resources && team.resources.length > 0" class="team-resources">
+							<div class="resources-row">
+								<div
+									v-for="resource in team.resources.slice(0, 5)"
+									:key="resource.id"
+									class="resource-box"
+									:title="resource.name"
+									:style="{ '--fallback-icon': `url('${resource.fallbackIcon}')` }">
+									<a :href="resource.url" class="resource-link">
+										<img
+											:src="resource.iconUrl"
+											class="resource-icon"
+											:alt="resource.name">
+									</a>
+								</div>
+								<a
+									v-if="team.resources.length > 5"
+									:href="team.url"
+									class="more-resources-box more-resources-link">
+									+{{ team.resources.length - 5 }}
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Show More Button -->
+				<div v-if="hasMoreTeams" class="show-more-container">
+					<NcButton
+						:disabled="loading"
+						variant="secondary"
+						class="show-more-button"
+						@click="loadMoreTeams">
+						{{ loading ? t('circles', 'Loading…') : t('circles', 'Show more teams') }}
+					</NcButton>
+				</div>
+			</div>
+		</template>
+	</div>
+</template>
 
 <style scoped>
 .teams-dashboard-widget {
