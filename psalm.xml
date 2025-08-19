@@ -8,6 +8,10 @@
 >
 	<stubs>
 		<file name="tests/stub.phpstub" preloadClasses="true"/>
+		<file name="tests/stubs/oc_server.php" />
+		<file name="tests/stubs/oc_servercontainer.php" />
+		<file name="tests/stubs/oca_user_ldap_mapping_abstractmapping.php" />
+		<file name="tests/stubs/oca_user_ldap_mapping_usermapping.php" />
 	</stubs>
 	<projectFiles>
 		<directory name="lib" />
