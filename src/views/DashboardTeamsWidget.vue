@@ -7,7 +7,7 @@
 	<div class="teams-dashboard-widget">
 		<NcLoadingIcon v-if="loading" :size="48" />
 		<NcEmptyContent
-			v-else-if="teams.length === 0"
+			v-else-if="shownTeams.length === 0"
 			:name="t('circles', 'No teams found')"
 			:description="t('circles', 'Join or create teams to see them here.')">
 			<template #icon>
@@ -22,7 +22,7 @@
 		<template v-else>
 			<div class="teams-container">
 				<div ref="teamsList" class="teams-list">
-					<div v-for="team in visibleTeams" :key="team.id" class="team-item">
+					<div v-for="team in shownTeams" :key="team.id" class="team-item">
 						<!-- Team Name with External Link Icon -->
 						<div class="team-header">
 							<a :href="team.url" class="team-name-link">
@@ -105,12 +105,39 @@ import NcEmptyContent from '@nextcloud/vue/components/NcEmptyContent'
 import NcLoadingIcon from '@nextcloud/vue/components/NcLoadingIcon'
 import { logger } from '../logger.ts'
 
+interface ATeamMember {
+	userId?: string
+	singleId?: string
+	displayName: string
+	type: number
+	isUser: boolean
+	url: string
+}
+
+type ITeamMember = (ATeamMember & { userId: string }) | (ATeamMember & { singleId: string })
+
+interface ITeamResource {
+	id: string
+	name: string
+	fallbackIcon: string
+	iconUrl: string
+	url: string
+}
+
+interface ITeam {
+	id: string
+	displayName: string
+	url: string
+	members: ITeamMember[]
+	resources: ITeamResource[]
+}
+
 const LOADING_LIMIT = 3
 const createTeamHref = generateUrl('/apps/contacts/#/circles')
 
 const teamsListElement = useTemplateRef('teamsList')
 
-const visibleTeams = ref([])
+const shownTeams = ref<ITeam[]>([])
 const loading = ref(false)
 const loadingError = ref()
 const currentApiOffset = ref(0)
@@ -135,10 +162,12 @@ async function loadTeams(isLoadMore: boolean = false) {
 		const teams = data.ocs.data || []
 
 		// Process teams data that already includes members and resources
-		const processedTeams = teams.map((team) => ({
+		// @ts-expect-error TODO: we should add types to the ocs response
+		const processedTeams: ITeam[] = teams.map((team) => ({
 			id: team.singleId,
 			displayName: team.displayName || team.name,
 			url: team.url,
+			// @ts-expect-error TODO: we should add types to the ocs response
 			members: (team.members || []).map((member) => ({
 				userId: member.userId || member.singleId,
 				displayName: member.displayName,
@@ -150,10 +179,10 @@ async function loadTeams(isLoadMore: boolean = false) {
 		}))
 
 		if (isLoadMore) {
-			visibleTeams.value.push(...processedTeams)
+			shownTeams.value.push(...processedTeams)
 			currentApiOffset.value += LOADING_LIMIT
 		} else {
-			visibleTeams.value = processedTeams
+			shownTeams.value = processedTeams
 			currentApiOffset.value = LOADING_LIMIT // Set offset for next load
 
 			nextTick(() => {
@@ -170,7 +199,7 @@ async function loadTeams(isLoadMore: boolean = false) {
 		logger.error('Failed to load teams', { error })
 		loadingError.value = error
 		if (!isLoadMore) {
-			visibleTeams.value = []
+			shownTeams.value = []
 		}
 	} finally {
 		loading.value = false
