@@ -1,10 +1,10 @@
 {
-  "private": true,
   "name": "teams",
   "version": "32.0.0",
-  "type": "module",
+  "private": true,
   "license": "AGPL-3.0-or-later",
   "author": "Nextcloud GmbH and Nextcloud contributors",
+  "type": "module",
   "scripts": {
     "build": "vite --mode production build",
     "lint": "eslint",

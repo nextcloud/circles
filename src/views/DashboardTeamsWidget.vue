@@ -30,7 +30,7 @@
 								<NcIconSvgWrapper class="external-link-icon" :path="mdiOpenInNew" />
 							</a>
 						</div>
-						
+
 						<!-- Team Members -->
 						<div v-if="team.members && team.members.length > 0" class="team-members">
 							<div class="members-row">
@@ -51,35 +51,38 @@
 						<!-- Team Resources -->
 						<div v-if="team.resources && team.resources.length > 0" class="team-resources">
 							<div class="resources-row">
-								<div v-for="resource in team.resources.slice(0, 5)"
+								<div
+									v-for="resource in team.resources.slice(0, 5)"
 									:key="resource.id"
 									class="resource-box"
 									:title="resource.name"
 									:style="{ '--fallback-icon': `url('${resource.fallbackIcon}')` }">
 									<a :href="resource.url" class="resource-link">
-										<img :src="resource.iconUrl"
+										<img
+											:src="resource.iconUrl"
 											class="resource-icon"
-											:alt="resource.name" />
+											:alt="resource.name">
 									</a>
 								</div>
-								<a v-if="team.resources.length > 5" 
-								   :href="team.url" 
-								   class="more-resources-box more-resources-link">
+								<a
+									v-if="team.resources.length > 5"
+									:href="team.url"
+									class="more-resources-box more-resources-link">
 									+{{ team.resources.length - 5 }}
 								</a>
 							</div>
 						</div>
 					</div>
 				</div>
-				
+
 				<!-- Show More Button -->
 				<div v-if="hasMoreTeams" class="show-more-container">
-					<NcButton 
-						@click="loadMoreTeams" 
+					<NcButton
 						:disabled="loading"
-						type="secondary"
-						class="show-more-button">
-						{{ loading ? t('circles', 'Loading...') : t('circles', 'Show more teams') }}
+						variant="secondary"
+						class="show-more-button"
+						@click="loadMoreTeams">
+						{{ loading ? t('circles', 'Loading…') : t('circles', 'Show more teams') }}
 					</NcButton>
 				</div>
 			</div>
@@ -90,18 +93,17 @@
 <script setup lang="ts">
 import type { OCSResponse } from '@nextcloud/typings/ocs'
 
-import { generateUrl, generateOcsUrl } from '@nextcloud/router'
-import { t } from '@nextcloud/l10n'
+import { mdiAccountGroupOutline, mdiOpenInNew } from '@mdi/js'
 import axios from '@nextcloud/axios'
+import { t } from '@nextcloud/l10n'
+import { generateOcsUrl, generateUrl } from '@nextcloud/router'
+import { NcIconSvgWrapper } from '@nextcloud/vue'
 import { nextTick, onMounted, ref, useTemplateRef } from 'vue'
-
 import NcAvatar from '@nextcloud/vue/components/NcAvatar'
 import NcButton from '@nextcloud/vue/components/NcButton'
 import NcEmptyContent from '@nextcloud/vue/components/NcEmptyContent'
 import NcLoadingIcon from '@nextcloud/vue/components/NcLoadingIcon'
 import { logger } from '../logger.ts'
-import { NcIconSvgWrapper } from '@nextcloud/vue'
-import { mdiAccountGroupOutline, mdiOpenInNew } from '@mdi/js'
 
 const LOADING_LIMIT = 3
 const createTeamHref = generateUrl('/apps/contacts/#/circles')
@@ -116,7 +118,10 @@ const hasMoreTeams = ref(true)
 
 onMounted(() => loadTeams())
 
-async function loadTeams(isLoadMore = false) {
+/**
+ * @param isLoadMore - If more teams should be appended or the content should be replaced
+ */
+async function loadTeams(isLoadMore: boolean = false) {
 	loading.value = true
 	loadingError.value = undefined
 
@@ -139,7 +144,7 @@ async function loadTeams(isLoadMore = false) {
 				displayName: member.displayName,
 				type: member.type,
 				isUser: member.type === 1, // TYPE_USER = 1
-				url: generateUrl(`/u/${member.userId || member.singleId}`)
+				url: generateUrl(`/u/${member.userId || member.singleId}`),
 			})),
 			resources: team.resources || [],
 		}))
@@ -172,6 +177,9 @@ async function loadTeams(isLoadMore = false) {
 	}
 }
 
+/**
+ * Trigger loading more teams
+ */
 async function loadMoreTeams() {
 	if (!hasMoreTeams.value || loading.value) {
 		return
@@ -391,17 +399,17 @@ async function loadMoreTeams() {
 	.members-row {
 		gap: 3px;
 	}
-	
+
 	.resources-row {
 		gap: 6px;
 	}
-	
+
 	.resource-box,
 	.more-resources-box {
 		width: 28px;
 		height: 28px;
 	}
-	
+
 	.resource-icon {
 		width: 16px;
 		height: 16px;
