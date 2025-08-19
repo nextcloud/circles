@@ -7,6 +7,7 @@
 
 namespace OCA\Circles\Dashboard;
 
+use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Service\ConfigService;
 use OCP\App\IAppManager;
 use OCP\Dashboard\IButtonWidget;
@@ -66,7 +67,8 @@ class TeamDashboardWidget implements IIconWidget, IButtonWidget, IConditionalWid
 	 * @inheritDoc
 	 */
 	public function load(): void {
-		Util::addScript('circles', 'teams-widget');
+		Util::addScript(Application::APP_ID, 'teams-dashboard');
+		Util::addStyle(Application::APP_ID, 'teams-dashboard');
 	}
 
 	public function getWidgetButtons(string $userId): array {

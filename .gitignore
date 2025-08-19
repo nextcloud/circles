@@ -1,13 +1,21 @@
-# SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
-# SPDX-License-Identifier: AGPL-3.0-or-later
-\.idea/
-.buildpath
-.project
-.settings/
-.php-cs-fixer.cache
-.php_cs.cache
-.phpdoc/
-.vscode/settings.json
-build/
+# SPDX-FileCopyrightText: 2025 Nextcloud GmbH and Nextcloud contributors
+# SPDX-License-Identifier: CC0-1.0
+
+# test coverage
+/tests/coverage*
+/tests/clover.xml
+
+# 3rdparty
+node_modules/
+/vendor
+/vendor-bin/*/vendor
+
+# cache
+/.php-cs-fixer.cache
+/tests/.phpunit.result.cache
+.DS_Store
+
+# Documentation intermediate results
+build/docs
 phpDocumentor.phar
-vendor/
+.phpdoc

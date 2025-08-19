@@ -6,9 +6,15 @@ SPDX-PackageSupplier = "Nextcloud <info@nextcloud.com>"
 SPDX-PackageDownloadLocation = "https://github.com/nextcloud/circles"
 
 [[annotations]]
-path = ["l10n/**.js", "l10n/**.json", "composer.json", "composer.lock"]
+path = ["l10n/**.js", "l10n/**.json", "composer.json", "composer.lock", "package.json", "package-lock.json", "tsconfig.json"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2017 Nextcloud GmbH and Nextcloud contributors"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = ["css/*.css"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2025 Nextcloud GmbH and Nextcloud contributors"
 SPDX-License-Identifier = "AGPL-3.0-or-later"
 
 [[annotations]]
