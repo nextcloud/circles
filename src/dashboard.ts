@@ -3,25 +3,25 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import { translate, translatePlural } from '@nextcloud/l10n'
-import Vue from 'vue'
+import { createApp } from 'vue'
 import DashboardTeamsWidget from './views/DashboardTeamsWidget.vue'
 import { logger } from './logger.ts'
 
-Vue.prototype.t = translate
-Vue.prototype.n = translatePlural
-
-logger.debug('Teams widget script loaded')
+const app = createApp(DashboardTeamsWidget)
+let mounted = false
 
 window.addEventListener('DOMContentLoaded', () => {
 	logger.debug('Registering teams widget with dashboard')
-	
+
 	window.OCA.Dashboard.register('circles', (el) => {
 		logger.debug('Mounting teams widget to element', { element: el })
-		
-		global.CirclesTeamsWidget = new Vue({
-			el,
-			render: (h) => h(DashboardTeamsWidget),
-		})
+
+		// Vue 3 does not replace the wrapper so we must enforce 100% height
+		el.style.height = '100%'
+		if (mounted) {
+			app.unmount()
+		}
+		app.mount(el)
+		mounted = true
 	})
 })

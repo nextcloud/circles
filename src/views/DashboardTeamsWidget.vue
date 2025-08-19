@@ -11,23 +11,23 @@
 			:name="t('circles', 'No teams found')"
 			:description="t('circles', 'Join or create teams to see them here.')">
 			<template #icon>
-				<AccountGroupIcon />
+				<NcIconSvgWrapper class="external-link-icon" :path="mdiAccountGroupOutline" />
 			</template>
 			<template #action>
-				<NcButton :href="teamsUrl">
+				<NcButton :href="createTeamHref">
 					{{ t('circles', 'Create your first team') }}
 				</NcButton>
 			</template>
 		</NcEmptyContent>
 		<template v-else>
 			<div class="teams-container">
-				<div class="teams-list">
+				<div ref="teamsList" class="teams-list">
 					<div v-for="team in visibleTeams" :key="team.id" class="team-item">
 						<!-- Team Name with External Link Icon -->
 						<div class="team-header">
 							<a :href="team.url" class="team-name-link">
 								<h3 class="team-name">{{ team.displayName }}</h3>
-								<OpenInNewIcon :size="16" class="external-link-icon" />
+								<NcIconSvgWrapper class="external-link-icon" :path="mdiOpenInNew" />
 							</a>
 						</div>
 						
@@ -87,116 +87,97 @@
 	</div>
 </template>
 
-<script>
+<script setup lang="ts">
+import type { OCSResponse } from '@nextcloud/typings/ocs'
+
 import { generateUrl, generateOcsUrl } from '@nextcloud/router'
 import { t } from '@nextcloud/l10n'
 import axios from '@nextcloud/axios'
+import { nextTick, onMounted, ref, useTemplateRef } from 'vue'
 
-import NcAvatar from '@nextcloud/vue/dist/Components/NcAvatar.js'
-import NcButton from '@nextcloud/vue/dist/Components/NcButton.js'
-import NcEmptyContent from '@nextcloud/vue/dist/Components/NcEmptyContent.js'
-import NcLoadingIcon from '@nextcloud/vue/dist/Components/NcLoadingIcon.js'
-import AccountGroupIcon from 'vue-material-design-icons/AccountGroup.vue'
-import OpenInNewIcon from 'vue-material-design-icons/OpenInNew.vue'
+import NcAvatar from '@nextcloud/vue/components/NcAvatar'
+import NcButton from '@nextcloud/vue/components/NcButton'
+import NcEmptyContent from '@nextcloud/vue/components/NcEmptyContent'
+import NcLoadingIcon from '@nextcloud/vue/components/NcLoadingIcon'
+import { logger } from '../logger.ts'
+import { NcIconSvgWrapper } from '@nextcloud/vue'
+import { mdiAccountGroupOutline, mdiOpenInNew } from '@mdi/js'
 
-export default {
-	name: 'DashboardTeamsWidget',
-	components: {
-		NcAvatar,
-		NcButton,
-		NcEmptyContent,
-		NcLoadingIcon,
-		AccountGroupIcon,
-		OpenInNewIcon,
-	},
+const LOADING_LIMIT = 3
+const createTeamHref = generateUrl('/apps/contacts/#/circles')
 
+const teamsListElement = useTemplateRef('teamsList')
 
-	data() {
-		return {
-			teams: [],
-			loading: true,
-			error: null,
-			teamsUrl: generateUrl('/apps/contacts/#/circles'),
-			offset: 0,
-			limit: 3,
-			hasMoreTeams: true,
+const visibleTeams = ref([])
+const loading = ref(false)
+const loadingError = ref()
+const currentApiOffset = ref(0)
+const hasMoreTeams = ref(true)
+
+onMounted(() => loadTeams())
+
+async function loadTeams(isLoadMore = false) {
+	loading.value = true
+	loadingError.value = undefined
+
+	try {
+		const params = new URLSearchParams({
+			limit: LOADING_LIMIT.toString(),
+			offset: currentApiOffset.value.toString(),
+		})
+
+		const { data } = await axios.get<OCSResponse>(generateOcsUrl(`apps/circles/teams/dashboard/widget?${params}`))
+		const teams = data.ocs.data || []
+
+		// Process teams data that already includes members and resources
+		const processedTeams = teams.map((team) => ({
+			id: team.singleId,
+			displayName: team.displayName || team.name,
+			url: team.url,
+			members: (team.members || []).map((member) => ({
+				userId: member.userId || member.singleId,
+				displayName: member.displayName,
+				type: member.type,
+				isUser: member.type === 1, // TYPE_USER = 1
+				url: generateUrl(`/u/${member.userId || member.singleId}`)
+			})),
+			resources: team.resources || [],
+		}))
+
+		if (isLoadMore) {
+			visibleTeams.value.push(...processedTeams)
+			currentApiOffset.value += LOADING_LIMIT
+		} else {
+			visibleTeams.value = processedTeams
+			currentApiOffset.value = LOADING_LIMIT // Set offset for next load
+
+			nextTick(() => {
+				// Scroll to top when loading initial teams
+				if (teamsListElement.value) {
+					teamsListElement.value.scrollTop = 0
+				}
+			})
 		}
-	},
 
-	computed: {
-		visibleTeams() {
-			return this.teams
-		},
-	},
+		// Check if there are more teams
+		hasMoreTeams.value = teams.length === LOADING_LIMIT
+	} catch (error) {
+		logger.error('Failed to load teams', { error })
+		loadingError.value = error
+		if (!isLoadMore) {
+			visibleTeams.value = []
+		}
+	} finally {
+		loading.value = false
+	}
+}
 
-	mounted() {
-		this.loadTeams()
-	},
+async function loadMoreTeams() {
+	if (!hasMoreTeams.value || loading.value) {
+		return
+	}
 
-	methods: {
-		t,
-		async loadTeams(isLoadMore = false) {
-			this.loading = true
-			this.error = null
-			
-			try {
-				const params = new URLSearchParams({
-					limit: this.limit.toString(),
-					offset: this.offset.toString()
-				})
-				
-				const response = await axios.get(generateOcsUrl(`apps/circles/teams/dashboard/widget?${params}`))
-				const teams = response.data?.ocs?.data || []
-				
-				// Process teams data that already includes members and resources
-				const processedTeams = teams.map((team) => ({
-					id: team.singleId,
-					displayName: team.displayName || team.name,
-					url: team.url,
-					members: (team.members || []).map(member => ({
-						userId: member.userId || member.singleId,
-						displayName: member.displayName,
-						type: member.type,
-						isUser: member.type === 1, // TYPE_USER = 1
-						url: generateUrl(`/u/${member.userId || member.singleId}`)
-					})),
-					resources: team.resources || [],
-				}))
-				
-				if (isLoadMore) {
-					this.teams.push(...processedTeams)
-					this.offset += this.limit
-				} else {
-					this.teams = processedTeams
-					this.offset = this.limit // Set offset for next load
-					// Scroll to top when loading initial teams
-					this.$nextTick(() => {
-						const teamsList = this.$el.querySelector('.teams-list')
-						if (teamsList) {
-							teamsList.scrollTop = 0
-						}
-					})
-				}
-				
-				// Check if there are more teams
-				this.hasMoreTeams = teams.length === this.limit
-			} catch (error) {
-				console.error('Failed to load teams:', error)
-				this.error = error
-				if (!isLoadMore) {
-					this.teams = []
-				}
-			} finally {
-				this.loading = false
-			}
-		},
-
-
-		async loadMoreTeams() {
-			if (!this.hasMoreTeams || this.loading) return
-			await this.loadTeams(true)
-		},
-	},
+	await loadTeams(true)
 }
 </script>
 
