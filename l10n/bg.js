@@ -106,6 +106,7 @@ OC.L10N.register(
     "%s owned by %s" : "%s притежаван от  %s",
     "%s shared a file with \"%s\"." : "%s сподели файл с „%s“.",
     "%s shared a file with you." : "%sсподели файл с вас. ",
+    "Open %s" : "Отваряне на %s",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s сподели някакво съдържание с вас.\nВече трябва да сте получили отделен имейл с връзка за достъп до него.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s сподели някакво съдържание с вас.\nВече трябва да сте получили отделен имейл с връзка за достъп до него.",
     "Password to access content shared with you by %1$s" : "Парола за достъп до съдържание, споделени с вас от %1$s",
