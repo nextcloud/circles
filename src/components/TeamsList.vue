@@ -6,6 +6,7 @@
 <script setup lang="ts">
 import type { ITeam } from '../types.ts'
 
+import { t } from '@nextcloud/l10n'
 import { useTemplateRef } from 'vue'
 import TeamsListItem from './TeamsListItem.vue'
 
@@ -28,21 +29,22 @@ function scrollTop() {
 </script>
 
 <template>
-	<div ref="teamsList" class="teams-list">
+	<ul ref="teamsList" :aria-label="t('circles', 'Teams')" class="teams-list">
 		<TeamsListItem
 			v-for="team of teams"
 			:key="team.id"
 			:team />
-	</div>
+	</ul>
 </template>
 
 <style scoped lang="scss">
 .teams-list {
 	display: flex;
 	flex-direction: column;
-	gap: 2px;
+	gap: calc(3 * var(--default-grid-baseline));
 	overflow-y: auto;
 	flex: 1;
 	scroll-behavior: smooth;
+	list-style: none;
 }
 </style>

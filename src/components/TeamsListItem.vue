@@ -17,7 +17,7 @@ defineProps<{
 </script>
 
 <template>
-	<div class="teams-list-item">
+	<li class="teams-list-item">
 		<!-- Team Name with External Link Icon -->
 		<div class="teams-list-item__header">
 			<a :href="team.url" class="teams-list-item__header-link">
@@ -32,17 +32,18 @@ defineProps<{
 			v-if="team.resources && team.resources.length > 0"
 			:resources="team.resources"
 			:team-url="team.url" />
-	</div>
+	</li>
 </template>
 
 <style scoped lang="scss">
 .teams-list-item {
-	padding-block: 2px 8px;
 	padding-inline: 2px; // ensure the focus visible outline works
+	padding-bottom: var(--default-grid-baseline); // ensure border looks not weird
 	border-bottom: 1px solid var(--color-border-dark);
 
 	&:last-child {
 		border-bottom: none;
+		padding-bottom: none;
 	}
 
 	&__spacer {
@@ -50,7 +51,7 @@ defineProps<{
 	}
 
 	&__header {
-		margin-bottom: 2px;
+		margin-bottom: var(--default-grid-baseline);
 
 		&-link {
 			display: flex;
@@ -68,7 +69,7 @@ defineProps<{
 
 		&-name {
 			color: var(--color-main-text);
-			font-size: 1.3em;
+			font-size: 1.1em;
 			margin: 0;
 		}
 
