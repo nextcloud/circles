@@ -32,6 +32,7 @@ use OCP\Server;
 use OCP\Share\Exceptions\IllegalIDChangeException;
 use OCP\Share\IAttributes;
 use OCP\Share\IShare;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class ShareWrapper
@@ -404,6 +405,9 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		$share->setProviderId($this->getProviderId());
 		$share->setStatus($this->getStatus());
 		$share->setToken($this->getToken());
+		if ($this->getExpirationDate() !== null) {
+			$share->setExpirationDate($this->getExpirationDate());
+		}
 		$share->setHideDownload($this->getHideDownload());
 		$share->setAttributes($this->getAttributes());
 		$share->setNote($this->getShareNote());
@@ -569,6 +573,15 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 			->setToken($this->get($prefix . 'token', $data))
 			->setShareTime($shareTime)
 			->setShareNote($this->get($prefix . 'note', $data));
+
+		try {
+			$expirationDate = $this->get('expiration', $data);
+			if ($expirationDate !== '') {
+				$this->setExpirationDate(new DateTime($expirationDate));
+			}
+		} catch (\Exception $e) {
+			Server::get(LoggerInterface::class)->warning('could not parse expiration date', ['exception' => $e]);
+		}
 
 		$this->importAttributesFromDatabase($this->get('attributes', $data));
 
