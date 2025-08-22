@@ -405,6 +405,8 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		$share->setProviderId($this->getProviderId());
 		$share->setStatus($this->getStatus());
 		$share->setToken($this->getToken());
+		\OCP\Server::get(LoggerInterface::class)->warning('getShare: ' . json_encode($this->getExpirationDate()) . ' ' . $this->getFileSource() . ' ' . $this->getFileTarget(), ['exception' => new \Exception()]);
+
 		if ($this->getExpirationDate() !== null) {
 			$share->setExpirationDate($this->getExpirationDate());
 		}
@@ -576,7 +578,9 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 
 		try {
 			$expirationDate = $this->get('expiration', $data);
+			\OCP\Server::get(LoggerInterface::class)->warning('import From Database ' . json_encode($expirationDate), ['exception' => new \Exception()]);
 			if ($expirationDate !== '') {
+				\OCP\Server::get(LoggerInterface::class)->warning('import From Database 2 ' . json_encode(new DateTime($expirationDate)));
 				$this->setExpirationDate(new DateTime($expirationDate));
 			}
 		} catch (\Exception $e) {
