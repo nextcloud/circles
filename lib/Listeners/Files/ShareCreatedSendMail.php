@@ -52,6 +52,7 @@ use OCA\Circles\Tools\Traits\TNCLogger;
 use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
+use OCP\IUserManager;
 
 /** @template-implements IEventListener<FileShareCreatedEvent|Event> */
 class ShareCreatedSendMail implements IEventListener {
@@ -76,6 +77,8 @@ class ShareCreatedSendMail implements IEventListener {
 
 	/** @var ContactService */
 	private $contactService;
+	/** @var IUserManager */
+	private $userManager;
 
 	public function __construct(
 		ShareWrapperService $shareWrapperService,
@@ -83,7 +86,8 @@ class ShareCreatedSendMail implements IEventListener {
 		RemoteStreamService $remoteStreamService,
 		SendMailService $sendMailService,
 		ContactService $contactService,
-		ConfigService $configService
+		ConfigService $configService,
+		IUserManager $userManager,
 	) {
 		$this->shareWrapperService = $shareWrapperService;
 		$this->shareTokenService = $shareTokenService;
@@ -91,6 +95,7 @@ class ShareCreatedSendMail implements IEventListener {
 		$this->sendMailService = $sendMailService;
 		$this->contactService = $contactService;
 		$this->configService = $configService;
+		$this->userManager = $userManager;
 
 		$this->setup('app', Application::APP_ID);
 	}
@@ -147,6 +152,8 @@ class ShareCreatedSendMail implements IEventListener {
 			if (!is_null($share)) {
 				if ($share->hasInitiator()) {
 					$author = $share->getInitiator()->getDisplayName();
+				} elseif ($user = $this->userManager->get($share->getSharedBy())) {
+					$author = $user->getDisplayName();
 				} else {
 					$author = 'someone';
 				}
