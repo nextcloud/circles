@@ -28,6 +28,7 @@ use OCP\Files\IRootFolder;
 use OCP\IURLGenerator;
 use OCP\IUserManager;
 use OCP\L10N\IFactory;
+use OCP\Server;
 use OCP\Share\Exceptions\IllegalIDChangeException;
 use OCP\Share\IAttributes;
 use OCP\Share\IShare;
@@ -451,7 +452,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 
 		$display = $circle->getDisplayName();
 		if ($circle->getSource() === Member::TYPE_CIRCLE) {
-			$l10n = \OCP\Server::get(IFactory::class)->get('circles');
+			$l10n = Server::get(IFactory::class)->get('circles');
 			$display = $l10n->t('%s (Team owned by %s)', [$display, $circle->getOwner()->getDisplayName()]);
 		} else {
 			$display .= ' (' . Circle::$DEF_SOURCE[$circle->getSource()] . ')';
@@ -499,7 +500,10 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		$this->importAttributesFromDatabase($this->get('attributes', $data));
 
 		try {
-			$this->setExpirationDate(new DateTime($this->get('expiration', $data)));
+			$expirationDate = $this->get('expiration', $data);
+			if ($expirationDate !== '') {
+				$this->setExpirationDate(new DateTime($expirationDate));
+			}
 		} catch (\Exception $e) {
 		}
 
