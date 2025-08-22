@@ -100,6 +100,8 @@ OC.L10N.register(
     "Open %s" : "Avaa %s",
     "Password to access content" : "Salasana sisällön käyttämiseksi",
     "Bring cloud-users closer together." : "Tuo pilvikäyttäjät lähemmäksi toisiaan.",
+    "No teams found" : "Tiimejä ei löytynyt",
+    "Loading…" : "Ladataan…",
     "No files in here" : "Täällä ei ole tiedostoja",
     "No entries found in this folder" : "Tästä kansiosta ei löytynyt tietueita",
     "Name" : "Nimi",
@@ -107,7 +109,6 @@ OC.L10N.register(
     "Modified" : "Muokattu",
     "Teams' files" : "Tiimin tiedostot",
     "Select team to filter by" : "Valitse tiimi, jonka perusteella suodatetaan",
-    "No teams found" : "Tiimejä ei löytynyt",
     "Please select teams to filter by" : "Valitse tiimit, joiden perusteella suodatetaan",
     "No files found for the selected teams" : "Valitulle tiimille ei löytynyt tiedostoja",
     "Shared to Circles" : "Jaettu piireille"

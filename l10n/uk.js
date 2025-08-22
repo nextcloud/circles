@@ -144,6 +144,9 @@ OC.L10N.register(
     "This item is already shared with this team" : "Цей ресурс вже у спільному доступі з цією командою",
     "Bring cloud-users closer together." : "Зближіть користувачів хмари.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Команди дозволяють користувачам створювати власні групи з друзів, колег, знайомих.\nЗ цими групами людей подалі можна буде обмінюватися даними в різних застосунках.",
+    "Try again" : "Спробуйте ще раз",
+    "No teams found" : "Жодної команди не знайдено",
+    "Loading…" : "Завантаження…",
     "No files in here" : "Тут немає файлів",
     "No entries found in this folder" : "У цьому каталозі нічого немає",
     "Name" : "Ім'я",
@@ -151,7 +154,6 @@ OC.L10N.register(
     "Modified" : "Змінено",
     "Teams' files" : "Файли команд",
     "Select team to filter by" : "Виберіть команду для відфільтрування",
-    "No teams found" : "Жодної команди не знайдено",
     "Please select teams to filter by" : "Виберіть команди для відфільтрування",
     "No files found for the selected teams" : "Жодних файлів не знайдено для вибраних команд",
     "Shared to Circles" : "Опубліковано в Колах"

@@ -46,11 +46,11 @@ OC.L10N.register(
     "%s" : "%s",
     "You have no permission to create a new team" : "У вас няма дазволу на стварэнне новай каманды",
     "Open %s" : "Адкрыць %s",
+    "No teams found" : "Каманд не знойдзена",
     "No files in here" : "Тут няма файлаў",
     "Name" : "Назва",
     "Size" : "Памер",
     "Modified" : "Зменены",
-    "Teams' files" : "Файлы каманд",
-    "No teams found" : "Каманд не знойдзена"
+    "Teams' files" : "Файлы каманд"
 },
 "nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);");

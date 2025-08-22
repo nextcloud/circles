@@ -142,6 +142,8 @@
     "This item is already shared with this team" : "Questo elemento è già condiviso con questo team",
     "Bring cloud-users closer together." : "Avvicina gli utenti del cloud",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Teams consente alle persone di creare i propri gruppi di persone/colleghi/amici. Questi gruppi di persone possono poi essere utilizzati da qualsiasi altra app per scopi di condivisione.",
+    "No teams found" : "Nessun  team trovato",
+    "Loading…" : "Caricamento…",
     "No files in here" : "Nessun file qui",
     "No entries found in this folder" : "Nessuna voce trovata in questa cartella",
     "Name" : "Nome",
@@ -149,7 +151,6 @@
     "Modified" : "Modificato",
     "Teams' files" : "File team",
     "Select team to filter by" : "Seleziona team per filtrare",
-    "No teams found" : "Nessun  team trovato",
     "Please select teams to filter by" : "Seleziona i team per filtrare ",
     "No files found for the selected teams" : "Nessun file trovato per i team selezionati",
     "Shared to Circles" : "Condivisi con cerchie"

@@ -142,6 +142,9 @@ OC.L10N.register(
     "This item is already shared with this team" : "Ова ставка је већ подељена овом тиму",
     "Bring cloud-users closer together." : "Приближимо клауд кориснике.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Тимови омогућава људима да креирају своје сопствене групе људи/колега/пријатеља.\nБило која друга апликација затим може за дељење да користи те групе људи.",
+    "Try again" : "Покушајте поново",
+    "No teams found" : "Није пронађен ниједан тим",
+    "Loading…" : "Учитавам…",
     "No files in here" : "Овде нема фајлова",
     "No entries found in this folder" : "Нема резултата у овој фасцикли",
     "Name" : "Назив",
@@ -149,7 +152,6 @@ OC.L10N.register(
     "Modified" : "Измењен",
     "Teams' files" : "Фајлови тимова",
     "Select team to filter by" : "Изаберите тим по којем се филтрира",
-    "No teams found" : "Није пронађен ниједан тим",
     "Please select teams to filter by" : "Молимо васд да изаберите тимове по којима се филтрира",
     "No files found for the selected teams" : "Није пронађен ниједан фајл за изабране тимове",
     "Shared to Circles" : "Дељено на Кругове"

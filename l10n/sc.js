@@ -105,6 +105,7 @@ OC.L10N.register(
     "%s shared a file with you." : "%s at cumpartzidu un'archìviu cun tegus.",
     "Open %s" : "Aberi %s",
     "Bring cloud-users closer together." : "Acosta impare a is utentes de sa nue.",
+    "Loading…" : "Carrighende…",
     "No files in here" : "Perunu archìviu",
     "No entries found in this folder" : "Perunu elementu agatadu in custa cartella",
     "Name" : "Nùmene",

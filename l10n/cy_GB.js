@@ -111,6 +111,7 @@ OC.L10N.register(
     "Password to access content shared with you by %1$s" : "Cyfrinair i gael mynediad at gynnwys a rennir gyda chi gan %1$s",
     "Password to access content" : "Cyfrinair i gyrchu cynnwys",
     "Bring cloud-users closer together." : "Dod â defnyddwyr cwmwl yn nes at ei gilydd.",
+    "Loading…" : "Yn llwytho…",
     "No files in here" : "Dim ffeiliau i mewn yma",
     "No entries found in this folder" : "Ni chanfuwyd unrhyw gofnodion yn y ffolder hwn",
     "Name" : "Enw",

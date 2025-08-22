@@ -144,6 +144,9 @@ OC.L10N.register(
     "This item is already shared with this team" : "See objekt on  juba selle tiimiga jagatud",
     "Bring cloud-users closer together." : "Liida pilvekasutajaid tihedamalt kokku.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Tiimide rakendus võimaldab kasutajatel luua kasutajatest, kolleegidest ja sõpradest omi gruppe\nNing neid gruppe saavad kõik muud rakendused kasutada sisu jagamisel.",
+    "Try again" : "Proovi uuesti",
+    "No teams found" : "Tiime ei leidu",
+    "Loading…" : "Andmed on laadimisel…",
     "No files in here" : "Siin ei ole faile",
     "No entries found in this folder" : "Selles kaustas ei leitud kirjeid",
     "Name" : "Nimi",
@@ -151,7 +154,6 @@ OC.L10N.register(
     "Modified" : "Muudetud",
     "Teams' files" : "Tiimi failid",
     "Select team to filter by" : "Vali tiim, mille alusel soovid filtreerida",
-    "No teams found" : "Tiime ei leidu",
     "Please select teams to filter by" : "Palun vali tiimid, mille järgi filtreerida",
     "No files found for the selected teams" : "Valitud tiimide jaoks ei leidu ühtegi faili",
     "Shared to Circles" : "Jagatud tiimidega"

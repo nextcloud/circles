@@ -16,6 +16,7 @@ OC.L10N.register(
     "Files" : "Fayllar",
     "Accept" : "Qabul qiling",
     "Open %s" : "Ochiq %s",
+    "Loading…" : "Yuklanmoqda...",
     "No files in here" : "No files in here",
     "No entries found in this folder" : "Ushbu papkada hech qanday yozuv topilmadi",
     "Name" : "Name",

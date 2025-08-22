@@ -140,6 +140,7 @@
     "This item is already shared with this team" : "هذا العنصر سبقت مشاركته سلفاً مع هذا الفريق",
     "Bring cloud-users closer together." : "تقريب مستخدمي السحابة من بعضهم البعض.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "تسمح الفرق للأشخاص بإنشاء مجموعاتهم الخاصة من الأشخاص/الزملاء/الأصدقاء. يمكن بعد ذلك استخدام هذه المجموعات من الأشخاص بواسطة أي تطبيق آخر لغرض المشاركة.",
+    "No teams found" : "لا يوجد أي فريق",
     "No files in here" : "لا توجد ملفات هنا",
     "No entries found in this folder" : "لا يوجد مدخلات في هذا المجلد ",
     "Name" : "الاسم",
@@ -147,7 +148,6 @@
     "Modified" : "آخر تعديل",
     "Teams' files" : "ملفات الفرق",
     "Select team to filter by" : "قم بتحديد فريق للتصفية بحسبه",
-    "No teams found" : "لا يوجد أي فريق",
     "Please select teams to filter by" : "رجاءً، قم تتحديد فرق للتصفية بحسبها",
     "No files found for the selected teams" : "لا توجد أي ملفات للفرق المحددة",
     "Shared to Circles" : "مُشتركٌ مع الدوائر"

@@ -142,6 +142,9 @@ OC.L10N.register(
     "This item is already shared with this team" : "Tato položka už je v tomto týmu sdílená",
     "Bring cloud-users closer together." : "Sblížit uživatele cloudu.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Týmy lidem umožňují vytvářet si své vlastní skupiny lidí/kolegů/přátel.\nTyto skupiny uživatelů (neboli „okruhy“) je možné používat v libovolné aplikaci pro účely sdílení.",
+    "Try again" : "Zkusit znovu",
+    "No teams found" : "Nenalezeny žádné týmy",
+    "Loading…" : "Načítání…",
     "No files in here" : "Nejsou zde žádné soubory",
     "No entries found in this folder" : "V této složce nebyly nalezeny žádné položky",
     "Name" : "Název",
@@ -149,7 +152,6 @@ OC.L10N.register(
     "Modified" : "Změněno",
     "Teams' files" : "Soubory týmu",
     "Select team to filter by" : "Vyberte tým podle kterého filtrovat",
-    "No teams found" : "Nenalezeny žádné týmy",
     "Please select teams to filter by" : "Vyberte týmy podle kterých filtrovat",
     "No files found for the selected teams" : "Pro vybrané týmy nebyly nalezeny žádné soubory",
     "Shared to Circles" : "Sdíleno do okruhů"

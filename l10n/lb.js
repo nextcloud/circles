@@ -9,6 +9,7 @@ OC.L10N.register(
     "Admin" : "Admin",
     "Owner" : "Owner",
     "Files" : "Dateien",
+    "Loading…" : "Et gëtt gelueden",
     "No files in here" : "Keng Dokumenter hei",
     "No entries found in this folder" : "Keng Elementer an dësem Dossier fonnt",
     "Name" : "Numm",

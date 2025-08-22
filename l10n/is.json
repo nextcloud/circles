@@ -140,6 +140,8 @@
     "This item is already shared with this team" : "Þessu atriði er þegar deilt með þessu teymi",
     "Bring cloud-users closer together." : "Færir notendur tölvuskýja nær hver öðrum.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Teymi/Teams gerir fólki kleift að búa til sína eigin hópa af fólki/samstarfsaðilum/vinum.\nÞessa hópa (eða \"hringi\") má síðan nota í deilingaskyni af allskyns öðrum forritum.",
+    "No teams found" : "Engin teymi fundust",
+    "Loading…" : "Hleð inn…",
     "No files in here" : "Engar skrár hér",
     "No entries found in this folder" : "Engar færslur fundust í þessari möppu",
     "Name" : "Nafn",
@@ -147,7 +149,6 @@
     "Modified" : "Breytt",
     "Teams' files" : "Skrár teymisins",
     "Select team to filter by" : "Veldu teymi til að sía eftir",
-    "No teams found" : "Engin teymi fundust",
     "Please select teams to filter by" : "Veldu teymi til að sía eftir",
     "No files found for the selected teams" : "Engar skrár fundust fyrir valin teymi",
     "Shared to Circles" : "Deilt til hringja"

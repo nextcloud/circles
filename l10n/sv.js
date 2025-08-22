@@ -142,6 +142,9 @@ OC.L10N.register(
     "This item is already shared with this team" : "Detta objektet delas redan med detta team",
     "Bring cloud-users closer together." : "För moln-användare närmare varandra.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Teams låter användare att skapa egna grupper av användare/kollegor/vänner.\nDessa grupper av användare kan sedan användas av alla andra appar vid delning.",
+    "Try again" : "Försök igen",
+    "No teams found" : "Inga team hittades",
+    "Loading…" : "Laddar...",
     "No files in here" : "Inga filer här",
     "No entries found in this folder" : "Inga objekt funna i denna mapp",
     "Name" : "Namn",
@@ -149,7 +152,6 @@ OC.L10N.register(
     "Modified" : "Ändrad",
     "Teams' files" : "Teams filer",
     "Select team to filter by" : "Välj team att filtrera efter",
-    "No teams found" : "Inga team hittades",
     "Please select teams to filter by" : "Välj team att filtrera efter",
     "No files found for the selected teams" : "Inga filer hittade för valda team",
     "Shared to Circles" : "Delad med Cirklar"

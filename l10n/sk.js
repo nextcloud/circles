@@ -142,6 +142,9 @@ OC.L10N.register(
     "This item is already shared with this team" : "Táto položka je už zdieľaná s týmto tímom",
     "Bring cloud-users closer together." : "Zblížte používateľov cloudu.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Tímy umožňujú vašim užívateľom vytvárať ich vlastné skupiny užívateľov/kolegov/priateľov.\nTieto skupiny užívateľov môžu byť potom používané akoukoľvek inou aplikáciou pre potreby zdieľania.",
+    "Try again" : "Skúste znovu",
+    "No teams found" : "Žiadne tímy sa nenašli",
+    "Loading…" : "Nahrávam...",
     "No files in here" : "Nie sú tu žiadne súbory",
     "No entries found in this folder" : "V tomto priečinku sa nič nenašlo",
     "Name" : "Názov",
@@ -149,7 +152,6 @@ OC.L10N.register(
     "Modified" : "Upravené",
     "Teams' files" : "Súbory tímov",
     "Select team to filter by" : "Vybrať tím pre filtrovanie",
-    "No teams found" : "Žiadne tímy sa nenašli",
     "Please select teams to filter by" : "Prosím, vyberte tímy pre filtrovanie",
     "No files found for the selected teams" : "Pre vybrané tímy neboli nájdené žiadne súbory",
     "Shared to Circles" : "Zdieľané v kruhoch"

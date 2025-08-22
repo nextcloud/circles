@@ -70,6 +70,7 @@ OC.L10N.register(
     "You have been blocked from this circle" : "Has sido bloqueado de este círculo",
     "Accept" : "Aceptar",
     "%s" : "%s",
+    "Try again" : "Reintentar",
     "No files in here" : "No hay archivos aquí",
     "No entries found in this folder" : "No se encontraron elementos en esta carpeta",
     "Name" : "Nombre",

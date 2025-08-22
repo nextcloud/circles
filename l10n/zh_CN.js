@@ -144,6 +144,9 @@ OC.L10N.register(
     "This item is already shared with this team" : "该项目已分享至该团队",
     "Bring cloud-users closer together." : "把云端用户连接到一起。",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "团队允许用户创建属于他们自己同事/朋友的群组。\n其他应用可以通过这些群组进行批量共享。",
+    "Try again" : "请重试",
+    "No teams found" : "未找到任何团队",
+    "Loading…" : "正在加载 ...",
     "No files in here" : "此处没有文件",
     "No entries found in this folder" : "此文件夹中无项目",
     "Name" : "名称",
@@ -151,7 +154,6 @@ OC.L10N.register(
     "Modified" : "修改日期",
     "Teams' files" : "团队文件",
     "Select team to filter by" : "选择要筛选的团队",
-    "No teams found" : "未找到任何团队",
     "Please select teams to filter by" : "请选择要筛选的团队",
     "No files found for the selected teams" : "没有找到所选团队的文件",
     "Shared to Circles" : "共享圈子的文件"

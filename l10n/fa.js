@@ -112,6 +112,8 @@ OC.L10N.register(
     "Password to access content shared with you by %1$s" : "Password to access content shared with you by %1$s",
     "Password to access content" : "Password to access content",
     "Bring cloud-users closer together." : "Bring cloud-users closer together.",
+    "Try again" : "تلاش دوباره",
+    "Loading…" : "درحال بارگیری…",
     "No files in here" : "هیچ فایلی اینجا وجود ندارد",
     "No entries found in this folder" : "هیچ ورودی‌ای در این پوشه وجود ندارد",
     "Name" : "نام",

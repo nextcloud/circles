@@ -7,6 +7,7 @@ OC.L10N.register(
     "Owner" : "ເຈົ້າຂອງ",
     "Files" : "ຟາຍ",
     "Open %s" : "ເປີດ {ຊື່ຟາຍ}",
+    "Loading…" : "ກຳລັງໂຫຼດ",
     "No files in here" : "ບໍ່ມີຟາຍໃນທີ່ນີ້",
     "Name" : "ຊື່",
     "Size" : "ຂະຫນາດ",

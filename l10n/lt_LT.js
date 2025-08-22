@@ -81,6 +81,8 @@ OC.L10N.register(
     "Refuse" : "Atsisakyti",
     "%s" : "%s",
     "Open %s" : "Atverti %s",
+    "Try again" : "Bandyti dar kartą",
+    "Loading…" : "Įkeliama…",
     "No files in here" : "Čia failų nėra",
     "No entries found in this folder" : "Šiame aplanke nerasta jokių įrašų",
     "Name" : "Vardas",
