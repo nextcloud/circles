@@ -69,6 +69,8 @@ OC.L10N.register(
     "Refuse" : "סירוב",
     "%s" : "%s",
     "Open %s" : "פתיחה (שם קובץ)",
+    "Try again" : "ניסיון חוזר",
+    "Loading…" : "בטעינה…",
     "No files in here" : "אין כאן קבצים",
     "No entries found in this folder" : "לא נמצאו רשומות בתיקייה הזאת",
     "Name" : "שם",

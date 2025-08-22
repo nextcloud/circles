@@ -29,12 +29,13 @@ OC.L10N.register(
     "Accept" : "Akceptēt",
     "%s" : "%s",
     "Open %s" : "Atvērt %s",
+    "No teams found" : "Netika atrasta neviena komanda",
+    "Loading…" : "Ielādē…",
     "No files in here" : "Šeit nav datņu",
     "No entries found in this folder" : "Šajā mapē nekas nav atrasts",
     "Name" : "Vārds",
     "Size" : "Izmērs",
     "Modified" : "Mainīts",
-    "Teams' files" : "Komandas datnes",
-    "No teams found" : "Netika atrasta neviena komanda"
+    "Teams' files" : "Komandas datnes"
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);");

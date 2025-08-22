@@ -22,6 +22,7 @@ OC.L10N.register(
     "You have been blocked from this circle" : "та энэ тойргоос хасагдсан ",
     "Accept" : "Хүлээн зөвшөөрөх",
     "Open %s" : "Нээх {Файлын нэр}",
+    "Loading…" : "уншиж байна",
     "No files in here" : "Энд файл алга",
     "No entries found in this folder" : "Энэ хавтаст юм олдсонгүй",
     "Name" : "Нэр",

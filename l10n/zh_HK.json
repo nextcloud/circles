@@ -142,6 +142,9 @@
     "This item is already shared with this team" : "已和這團隊分享了此項目",
     "Bring cloud-users closer together." : "把雲端用戶連接到一起。",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "團隊允許人們創建自己的人/同事/朋友群。\n然後，其他應用程式可以使用這些群組來進行共享。",
+    "Try again" : "重试",
+    "No teams found" : "找不到團隊",
+    "Loading…" : "加載中…",
     "No files in here" : "此處沒有任何檔案",
     "No entries found in this folder" : "此資料夾中無項目",
     "Name" : "名稱",
@@ -149,7 +152,6 @@
     "Modified" : "修改日期",
     "Teams' files" : "團隊檔案",
     "Select team to filter by" : "依照選擇的團隊篩選",
-    "No teams found" : "找不到團隊",
     "Please select teams to filter by" : "請選擇團隊以篩選",
     "No files found for the selected teams" : "沒有找到所選團隊的檔案",
     "Shared to Circles" : "分享到圈子"

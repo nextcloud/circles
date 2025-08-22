@@ -112,6 +112,8 @@ OC.L10N.register(
     "Password to access content shared with you by %1$s" : "Contraseña para acceder al contenido compartido contigo por %1$s",
     "Password to access content" : "Contraseña para acceder al contenido",
     "Bring cloud-users closer together." : "Acerca a los usuarios de la nube.",
+    "Try again" : "Reintentar",
+    "Loading…" : "Cargando",
     "No files in here" : "No hay archivos aquí",
     "No entries found in this folder" : "No se encontraron elementos en esta carpeta",
     "Name" : "Nombre",

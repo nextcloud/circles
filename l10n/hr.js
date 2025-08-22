@@ -102,6 +102,7 @@ OC.L10N.register(
     "%s shared a file with you." : "%s dijeli datoteku s vama.",
     "Open %s" : "Otvori %s",
     "Bring cloud-users closer together." : "Približite korisnike oblaka.",
+    "Loading…" : "Učitavanje…",
     "No files in here" : "Nema datoteka",
     "No entries found in this folder" : "U ovoj mapi nisu pronađeni nikakvi zapisi",
     "Name" : "Naziv",

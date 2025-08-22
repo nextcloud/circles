@@ -144,6 +144,9 @@ OC.L10N.register(
     "This item is already shared with this team" : "Tá an mhír seo roinnte leis an bhfoireann seo cheana féin",
     "Bring cloud-users closer together." : "Tabhair na scamall-úsáideoirí níos gaire dá chéile.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Ligeann foirne do dhaoine a ngrúpaí daoine/comhghleacaithe/cairde féin a chruthú.\nIs féidir leis na grúpaí daoine sin a úsáid ansin ag aon aip eile chun críche comhroinnte.",
+    "Try again" : "Déan iarracht arís",
+    "No teams found" : "Níor aimsíodh foirne",
+    "Loading…" : "Á lódáil…",
     "No files in here" : "Níl aon chomhaid istigh anseo",
     "No entries found in this folder" : "Níor aimsíodh aon iontrálacha san fhillteán seo",
     "Name" : "Ainm",
@@ -151,7 +154,6 @@ OC.L10N.register(
     "Modified" : "Athraithe",
     "Teams' files" : "Comhaid na bhfoirne",
     "Select team to filter by" : "Roghnaigh foireann le scagadh de réir",
-    "No teams found" : "Níor aimsíodh foirne",
     "Please select teams to filter by" : "Roghnaigh foirne lena scagadh le do thoil",
     "No files found for the selected teams" : "Níor aimsíodh aon chomhaid do na foirne roghnaithe",
     "Shared to Circles" : "Roinnte go Ciorcail"

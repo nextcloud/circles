@@ -13,6 +13,7 @@ OC.L10N.register(
     "Owner" : "Owner",
     "Open »%s«" : "Opna »%s«",
     "Open %s" : "Opne{filnamn}",
+    "Loading…" : "Lastar...",
     "No files in here" : "Ingen filer her",
     "No entries found in this folder" : "Ingen oppføringar funne i denne mappa",
     "Name" : "Namn",

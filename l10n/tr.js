@@ -142,6 +142,9 @@ OC.L10N.register(
     "This item is already shared with this team" : "Bu öge zaten bu takım ile paylaşılmış",
     "Bring cloud-users closer together." : "Bulut kullanıcılarını bir araya getirir.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Takımlar, kişilerin kendi kişi/iş arkadaşı/arkadaş gruplarını oluşturmasını sağlar.\nBu kişi grupları başka uygulamalar tarafından paylaşım amacıyla kullanılabilir.",
+    "Try again" : "Yeniden dene",
+    "No teams found" : "Herhangi bir takım bulunamadı",
+    "Loading…" : "Yükleniyor…",
     "No files in here" : "Burada herhangi bir dosya yok",
     "No entries found in this folder" : "Bu klasörde herhangi bir kayıt yok",
     "Name" : "Ad",
@@ -149,7 +152,6 @@ OC.L10N.register(
     "Modified" : "Değiştirilme",
     "Teams' files" : "Takımların dosyaları",
     "Select team to filter by" : "Süzülecek takımı seçin",
-    "No teams found" : "Herhangi bir takım bulunamadı",
     "Please select teams to filter by" : "Lütfen süzülecek takımları seçin",
     "No files found for the selected teams" : "Seçilmiş takımlara uyan bir dosya bulunamadı",
     "Shared to Circles" : "Takımlarla paylaşıldı"

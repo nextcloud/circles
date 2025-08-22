@@ -144,6 +144,9 @@ OC.L10N.register(
     "This item is already shared with this team" : "このアイテムは既にこのチームで共有されています",
     "Bring cloud-users closer together." : "クラウドユーザー同士を近づける。",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "チームを使って自分のグループ(同僚、友人)を作成することができます。\nこれらのグループは、他のアプリで共有先として使用することができます。",
+    "Try again" : "もう一度試してください",
+    "No teams found" : "チームは見つかりませんでした",
+    "Loading…" : "読み込み中…",
     "No files in here" : "ファイルがありません",
     "No entries found in this folder" : "このフォルダーにはエントリーがありません",
     "Name" : "名前",
@@ -151,7 +154,6 @@ OC.L10N.register(
     "Modified" : "更新日時",
     "Teams' files" : "チームのファイル",
     "Select team to filter by" : "フィルターするチームを選択",
-    "No teams found" : "チームは見つかりませんでした",
     "Please select teams to filter by" : "フィルターするチームを選択してください",
     "No files found for the selected teams" : "選択したチームに割りあてられているファイルはありません",
     "Shared to Circles" : "サークルと共有"

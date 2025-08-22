@@ -142,6 +142,9 @@ OC.L10N.register(
     "This item is already shared with this team" : "Dette element er allerede delt med dette team",
     "Bring cloud-users closer together." : "Bring cloud-brugere tættere på hinanden.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Teams tillader dine brugere at oprette deres egen grupper af brugere/kolleger/venner.\nDisse grupper af brugere kan derefter bruges af enhver anden app til delingsformål.",
+    "Try again" : "Prøv igen",
+    "No teams found" : "Ingen teams fundet",
+    "Loading…" : "Indlæser…",
     "No files in here" : "Ingen filer herinde",
     "No entries found in this folder" : "Intet fundet i denne mappe",
     "Name" : "Navn",
@@ -149,7 +152,6 @@ OC.L10N.register(
     "Modified" : "Ændret",
     "Teams' files" : "Teamets filer",
     "Select team to filter by" : "Vælg team at filtrere efter",
-    "No teams found" : "Ingen teams fundet",
     "Please select teams to filter by" : "Vælg venligst teams at filtrere efter",
     "No files found for the selected teams" : "Inge filer funder for det valgte team",
     "Shared to Circles" : "Delt til Cirkler"
