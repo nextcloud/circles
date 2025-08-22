@@ -53,6 +53,8 @@ OC.L10N.register(
     "Accept" : "Prano",
     "%s" : "%s",
     "Open %s" : "Hap %s",
+    "Try again" : "Provo përsëri",
+    "Loading…" : "Duke u ngarkuar…",
     "No files in here" : "Jo dosje këtu",
     "No entries found in this folder" : "Në këtë dosje nuk gjëndet asnjë hyrje",
     "Name" : "Emër",

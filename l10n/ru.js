@@ -142,6 +142,9 @@ OC.L10N.register(
     "This item is already shared with this team" : "Этот элемент уже открыт для общего доступа этой группой",
     "Bring cloud-users closer together." : "Объедините пользователей облачных технологий.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Команды позволяют людям создавать свои группы людей/коллег/друзей.\nЗатем эти группы людей могут быть использованы любым другим приложением для совместного использования.",
+    "Try again" : "Попытаться снова",
+    "No teams found" : "Группы не найдены",
+    "Loading…" : "Загрузка…",
     "No files in here" : "Здесь нет файлов",
     "No entries found in this folder" : "В этой папке ничего нет",
     "Name" : "Имя",
@@ -149,7 +152,6 @@ OC.L10N.register(
     "Modified" : "Изменён",
     "Teams' files" : "Файлы групп",
     "Select team to filter by" : "Выберите группу для фильтрации по",
-    "No teams found" : "Группы не найдены",
     "Please select teams to filter by" : "Пожалуйста, выберите группы для фильтрации по",
     "No files found for the selected teams" : "Для выбранных групп файлы не найдены",
     "Shared to Circles" : "Предоставленный кругам общий доступ"

@@ -140,6 +140,9 @@
     "This item is already shared with this team" : "Kipengee hiki tayari kimeshirikiwa na timu hii",
     "Bring cloud-users closer together." : "Walete watumiaji wa cloud karibu pamoja.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Timu huruhusu watu kuunda vikundi vyao vya watu/wenzake/marafiki.\nVikundi hivyo vya watu vinaweza kutumiwa na programu nyingine yoyote kwa madhumuni ya kushiriki.",
+    "Try again" : "Jaribu tena",
+    "No teams found" : "Hakuna timu zilizopatikana",
+    "Loading…" : "Inapakia",
     "No files in here" : "Hakuna faili hapa",
     "No entries found in this folder" : "Hakuna maingizo yaliyopatikana katika kasha hili",
     "Name" : "Jina",
@@ -147,7 +150,6 @@
     "Modified" : "Boresha",
     "Teams' files" : "Faili za timu",
     "Select team to filter by" : "Chagua timu ya kuchuja",
-    "No teams found" : "Hakuna timu zilizopatikana",
     "Please select teams to filter by" : "Tafadhali chagua timu za kuchuja",
     "No files found for the selected teams" : "Hakuna faili zilizopatikana za timu zilizochaguliwa",
     "Shared to Circles" : "Imeshirikiwa kwa Miduara"

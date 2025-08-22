@@ -12,6 +12,7 @@ OC.L10N.register(
     "Owner" : "Owner",
     "Accept" : "Acceptar",
     "%s" : "%s",
+    "Loading…" : "Cargante...",
     "No files in here" : "Nulle files ci",
     "No entries found in this folder" : "Nulle entratas trovate in iste dossier",
     "Name" : "Nomine",

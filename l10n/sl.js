@@ -124,6 +124,8 @@ OC.L10N.register(
     "Password to access content" : "Geslo za dostop do vsebine",
     "This item is already shared with this team" : "Ta predmet je v tej skupini že v souporabi",
     "Bring cloud-users closer together." : "Potegnite uporabnike oblakov bliže skupaj.",
+    "No teams found" : "Ni oblikovanih skupin",
+    "Loading…" : "Poteka nalaganje …",
     "No files in here" : "V mapi ni datotek",
     "No entries found in this folder" : "V tej mapi ni datotek in podmap.",
     "Name" : "Ime",
@@ -131,7 +133,6 @@ OC.L10N.register(
     "Modified" : "Spremenjeno",
     "Teams' files" : "Datoteke skupine",
     "Select team to filter by" : "Izbor skupine za filtriranje",
-    "No teams found" : "Ni oblikovanih skupin",
     "Please select teams to filter by" : "Izbrati je treba skupino za filtriranje",
     "No files found for the selected teams" : "Za izbrano skupino ni najdenih datotek",
     "Shared to Circles" : "Souporaba v krogu"

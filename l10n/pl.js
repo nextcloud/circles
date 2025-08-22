@@ -144,6 +144,9 @@ OC.L10N.register(
     "This item is already shared with this team" : "Ten element został już udostępniony temu zespołowi",
     "Bring cloud-users closer together." : "Integruje użytkowników chmury.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Zespoły umożliwiają tworzenie własnych grup osób/współpracowników/przyjaciół.\nTe grupy osób mogą być następnie wykorzystywane przez dowolną inną aplikację do celów udostępniania.",
+    "Try again" : "Spróbuj ponownie",
+    "No teams found" : "Nie znaleziono żadnych zespołów",
+    "Loading…" : "Wczytywanie…",
     "No files in here" : "Brak plików tutaj",
     "No entries found in this folder" : "Brak wpisów w tym katalogu",
     "Name" : "Nazwa",
@@ -151,7 +154,6 @@ OC.L10N.register(
     "Modified" : "Zmodyfikowano",
     "Teams' files" : "Pliki zespołów",
     "Select team to filter by" : "Wybierz zespół, według którego chcesz filtrować",
-    "No teams found" : "Nie znaleziono żadnych zespołów",
     "Please select teams to filter by" : "Wybierz zespoły, według których chcesz filtrować",
     "No files found for the selected teams" : "Nie znaleziono plików dla wybranych zespołów",
     "Shared to Circles" : "Udostępnione dla zespołów"

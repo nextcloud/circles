@@ -112,6 +112,8 @@ OC.L10N.register(
     "Password to access content shared with you by %1$s" : "Mật khẩu để truy cập nội dung được chia sẻ với bạn bởi %1$s",
     "Password to access content" : "Mật khẩu để truy cập nội dung",
     "Bring cloud-users closer together." : "Mang các người dùng-điện toán đám mây đến gần nhau hơn",
+    "Try again" : "Thử lại",
+    "Loading…" : "Đang tải…",
     "No files in here" : "Không có tệp ở đây",
     "No entries found in this folder" : "Chưa có mục nào trong thư mục",
     "Name" : "Tên",

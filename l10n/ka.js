@@ -110,6 +110,7 @@ OC.L10N.register(
     "Password to access content shared with you by %1$s" : "Password to access content shared with you by %1$s",
     "Password to access content" : "Password to access content",
     "Bring cloud-users closer together." : "Bring cloud-users closer together.",
+    "Loading…" : "Loading…",
     "No files in here" : "No files in here",
     "No entries found in this folder" : "No entries found in this folder",
     "Name" : "Name",

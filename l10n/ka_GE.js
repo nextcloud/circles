@@ -69,6 +69,7 @@ OC.L10N.register(
     "You have been blocked from this circle" : "ამ წრეში დაბლოკილი ხართ",
     "Accept" : "მიღება",
     "%s" : "%s",
+    "Try again" : "სცადეთ ახლიდან",
     "No files in here" : "აქ ფაილები არაა",
     "No entries found in this folder" : "ამ დირექტორიაში შენატანები ვერ იქნა ნაპოვნი",
     "Name" : "სახელი",

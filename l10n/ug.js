@@ -142,6 +142,9 @@ OC.L10N.register(
     "This item is already shared with this team" : "بۇ تۈر ئاللىقاچان بۇ گۇرۇپپا بىلەن ئورتاقلاشتى",
     "Bring cloud-users closer together." : "بۇلۇت ئىشلەتكۈچىلەرنى يېقىنلاشتۇرۇڭ.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "كوماندىلار كىشىلەرگە ئۆزىنىڭ كىشىلەر / خىزمەتداشلىرى / دوستلىرى توپىنى قۇرالايدۇ.\nئۇ گۇرۇپپىلارنى باشقا ھەرقانداق ئەپ ئارقىلىق ئورتاقلىشىش مەقسىتىدە ئىشلىتىشكە بولىدۇ.",
+    "Try again" : "قايتا سىناڭ",
+    "No teams found" : "ھېچقانداق كوماندا تېپىلمىدى",
+    "Loading…" : "Loading…",
     "No files in here" : "بۇ يەردە ھۆججەت يوق",
     "No entries found in this folder" : "بۇ ھۆججەت قىسقۇچتا ھېچقانداق مەزمۇن تېپىلمىدى",
     "Name" : "ئاتى",
@@ -149,7 +152,6 @@ OC.L10N.register(
     "Modified" : "ئۆزگەرتكەن",
     "Teams' files" : "كوماندىلارنىڭ ھۆججەتلىرى",
     "Select team to filter by" : "سۈزۈش ئۈچۈن گۇرۇپپا تاللاڭ",
-    "No teams found" : "ھېچقانداق كوماندا تېپىلمىدى",
     "Please select teams to filter by" : "سۈزۈش ئۈچۈن گۇرۇپپىلارنى تاللاڭ",
     "No files found for the selected teams" : "تاللانغان گۇرۇپپىلارغا ھۆججەت تېپىلمىدى",
     "Shared to Circles" : "چەمبىرەككە ئورتاقلاشتى"

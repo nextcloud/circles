@@ -138,6 +138,9 @@ OC.L10N.register(
     "This item is already shared with this team" : "Dette elementet er allerede delt med dette laget",
     "Bring cloud-users closer together." : "Bring sky-brukere nærmere hverandre.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Lag lar folk lage sine egne grupper av mennesker / kolleger / venner.\nDisse persongruppene kan deretter brukes av en hvilken som helst annen app til delingsformål.",
+    "Try again" : "Prøv igjen",
+    "No teams found" : "Ingen lag funnet",
+    "Loading…" : "Laster...",
     "No files in here" : "Ingen filer her",
     "No entries found in this folder" : "Ingen oppføringer funnet i denne mappen",
     "Name" : "Navn",
@@ -145,7 +148,6 @@ OC.L10N.register(
     "Modified" : "Endret",
     "Teams' files" : "Lags filer",
     "Select team to filter by" : "Velg lag å filtrere etter",
-    "No teams found" : "Ingen lag funnet",
     "Please select teams to filter by" : "Vennligst velg lag å filtrere etter",
     "No files found for the selected teams" : "Ingen filer funnet for valgte lag",
     "Shared to Circles" : "Delt til Sirkler"

@@ -71,6 +71,8 @@ OC.L10N.register(
     "Accept" : "Aceptar",
     "%s" : "%s",
     "Open %s" : "Abrir {Nombre_de_archivo}",
+    "Try again" : "Reintentar",
+    "Loading…" : "Cargando",
     "No files in here" : "No hay archivos aquí",
     "No entries found in this folder" : "No se encontraron elementos en esta carpeta",
     "Name" : "Nombre",

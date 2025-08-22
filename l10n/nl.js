@@ -142,6 +142,9 @@ OC.L10N.register(
     "This item is already shared with this team" : "Dit object is al gedeeld met dit team",
     "Bring cloud-users closer together." : "Breng cloudgebruikers dichter bij elkaar.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Teams stelt mensen in staat om hun eigen groepen van mensen/collega's/vrienden aan te maken. Deze groepen kunnen vervolgens door andere apps worden gebruikt om gegevens te delen.",
+    "Try again" : "Probeer opnieuw",
+    "No teams found" : "Geen teams gevonden",
+    "Loading…" : "Laden…",
     "No files in here" : "Hier geen bestanden",
     "No entries found in this folder" : "Niets in deze map gevonden",
     "Name" : "Naam",
@@ -149,7 +152,6 @@ OC.L10N.register(
     "Modified" : "Gewijzigd",
     "Teams' files" : "Teambestanden",
     "Select team to filter by" : "Selecteer team om te filteren",
-    "No teams found" : "Geen teams gevonden",
     "Please select teams to filter by" : "Selecteer teams om op te filteren",
     "No files found for the selected teams" : "Geen bestanden gevonden voor de geselecteerde teams",
     "Shared to Circles" : "Gedeeld met Kringen"
