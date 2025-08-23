@@ -14,6 +14,7 @@ OC.L10N.register(
     "Files" : "Lêer ",
     "Accept" : "Aanvaar",
     "Open %s" : "Open %s",
+    "Loading…" : "Laai…",
     "No files in here" : "Geen lêers hier nie",
     "No entries found in this folder" : "Geen inskrwyings in hierdie gids gevind",
     "Name" : "Naam",
