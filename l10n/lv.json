@@ -6,6 +6,8 @@
     "You left {circle}" : "Tu pameti {circle}",
     "{member} left {circle}" : "{member} pameta {circle}",
     "You removed {external} from {circle}" : "Tu noņēmi {external} no {circle}",
+    "You changed {member}'s level in {circle} to %1$s" : "Tu nomainīji {member} līmeni {circle} uz %1$s",
+    "{author} changed your level in {circle} to %1$s" : "{author} nomainīja Tavu līmeni {circle} uz %1$s",
     "Personal" : "Personīgs",
     "System" : "Sistēma",
     "Visible" : "Redzams",
