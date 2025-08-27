@@ -161,7 +161,7 @@ class FederatedEventService extends NCSignature {
 				return $event->getOutcome();
 			}
 
-			if (!$event->isAsync()) {
+			if (OC::$CLI || !$event->isAsync()) {
 				$federatedItem->manage($event);
 			}
 
@@ -385,7 +385,8 @@ class FederatedEventService extends NCSignature {
 	 */
 	public function initBroadcast(FederatedEvent $event): bool {
 		$instances = $this->getInstances($event);
-		if (empty($instances) && !$event->isAsync()) {
+		// if empty instance and ran from CLI, any action as already been managed
+		if (empty($instances) && (!$event->isAsync() || OC::$CLI)) {
 			return false;
 		}
 
