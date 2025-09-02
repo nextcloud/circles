@@ -562,7 +562,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 			 ->setShareNote($this->get($prefix . 'note', $data));
 
 		try {
-			$expirationDate = $this->get('expiration', $data);
+			$expirationDate = $this->get($prefix . 'expiration', $data);
 			if ($expirationDate !== '') {
 				$this->setExpirationDate(new DateTime($expirationDate));
 			}
@@ -627,6 +627,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 			'itemTarget' => $this->getItemTarget(),
 			'fileSource' => $this->getFileSource(),
 			'fileTarget' => $this->getFileTarget(),
+			'expiration' => $this->getExpirationDate()?->getTimestamp(),
 			'status' => $this->getStatus(),
 			'shareTime' => $this->getShareTime()->getTimestamp(),
 			'note' => $this->getShareNote(),
