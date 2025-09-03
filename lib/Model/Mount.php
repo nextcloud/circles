@@ -43,6 +43,8 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 	private ICloudIdManager $cloudIdManager;
 	private IClientService $httpClientService;
 	private CircleMountManager $mountManager;
+	private string $remote = '';
+	private int $remoteShareId = 0;
 
 
 	/**
@@ -323,26 +325,21 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 		return $this->mountManager;
 	}
 
+	public function setRemote(string $remote): void {
+		$this->remote = $remote;
+	}
 
-	//
-	//	/**
-	//	 * @param string $storage
-	//	 *
-	//	 * @return Mount
-	//	 */
-	//	public function setStorage(string $storage): self {
-	//		$this->storage = $storage;
-	//
-	//		return $this;
-	//	}
-	//
-	//	/**
-	//	 * @return string
-	//	 */
-	//	public function getStorage(): string {
-	//		return $this->storage;
-	//	}
+	public function getRemote(): string {
+		return $this->remote;
+	}
 
+	public function setRemoteShareId(int $remoteShareId): void {
+		$this->remoteShareId = $remoteShareId;
+	}
+
+	public function getRemoteShareId(): int {
+		return $this->remoteShareId;
+	}
 
 	/**
 	 * @return array
@@ -384,6 +381,8 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 		$this->setParent(-1);
 		$this->setOriginalMountPoint($wrappedShare->getFileTarget());
 		$this->setOriginalMountPointHash(md5($wrappedShare->getFileTarget()));
+		$this->setRemote($wrappedShare->getOwner()->getInstance());
+		$this->setRemoteShareId((int)$wrappedShare->getId());
 	}
 
 
@@ -411,6 +410,8 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 		$this->setOriginalMountPoint($this->get('mountpoint', $data));
 		$this->setOriginalMountPointHash($this->get('mountpoint_hash', $data));
 		$this->setMountId($this->get('mount_id', $data));
+		$this->setRemote($this->get('remote', $data));
+		$this->setRemoteShareId($this->getInt('remote_id', $data));
 
 		$this->getManager()->manageImportFromDatabase($this, $data, $prefix);
 
