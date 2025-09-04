@@ -43,7 +43,7 @@
     "rector": "rector && composer cs:fix"
   },
   "require-dev": {
-    "nextcloud/ocp": "dev-master",
+    "nextcloud/ocp": "dev-stable32",
     "bamarni/composer-bin-plugin": "^1.8"
   }
 }
