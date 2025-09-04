@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace OCA\Circles\AppInfo;
 
 use Closure;
+use OCA\Circles\ConfigLexicon;
 use OCA\Circles\Dashboard\TeamDashboardWidget;
 use OCA\Circles\Events\AddingCircleMemberEvent;
 use OCA\Circles\Events\CircleMemberAddedEvent;
@@ -122,6 +123,8 @@ class Application extends App implements IBootstrap {
 
 		$context->registerDashboardWidget(TeamDashboardWidget::class);
 		$context->registerTeamResourceProvider(FileSharingTeamResourceProvider::class);
+
+		$context->registerConfigLexicon(ConfigLexicon::class);
 	}
 
 
