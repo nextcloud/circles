@@ -244,6 +244,15 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		return $this->getItemFromRequest($qb);
 	}
 
+	/**
+	 * @return ShareWrapper[]
+	 */
+	public function getChildren(int $shareId): array {
+		$qb = $this->getShareSelectSql();
+		$qb->limitToShareParent($shareId);
+
+		return $this->getItemsFromRequest($qb);
+	}
 
 	/**
 	 * @param int $fileId
