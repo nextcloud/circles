@@ -341,7 +341,7 @@ class CirclesManager {
 	 * @throws RequestBuilderException
 	 */
 	public function getCircle(string $singleId, ?CircleProbe $probe = null): Circle {
-		return $this->circleService->getCircle($singleId, $probe);
+		return $this->circleService->probeCircle($singleId, $probe);
 	}
 
 
