@@ -292,6 +292,12 @@ class ShareWrapperService {
 		return $this->createChild($share, $federatedUser);
 	}
 
+	/**
+	 * @return ShareWrapper[]
+	 */
+	public function getChildren(IShare $parent): array {
+		return $this->shareWrapperRequest->getChildren((int)$parent->getId());
+	}
 
 	public function clearCache(string $singleId): void {
 		$this->cache->clear($singleId);
