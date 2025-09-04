@@ -811,4 +811,19 @@ class CircleService {
 			$dataProbe
 		);
 	}
+
+	/**
+	 * @return Circle[]
+	 */
+	public function probeCirclesByIds(array $ids, ?DataProbe $dataProbe = null): array {
+		if (empty($ids)) {
+			return [];
+		}
+		$this->federatedUserService->mustHaveCurrentUser();
+		return $this->circleRequest->probeCirclesByIds(
+			$this->federatedUserService->getCurrentUser(),
+			$ids,
+			$dataProbe ?? new DataProbe()
+		);
+	}
 }
