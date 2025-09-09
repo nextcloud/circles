@@ -757,19 +757,15 @@ class ShareByCircleProvider implements IShareProvider {
 		return $result;
 	}
 
-	/**
-	 * We don't return a thing about children.
-	 * The call to this function is deprecated and should be removed in next release of NC.
-	 * Also, we get the children in the delete() method.
-	 *
-	 * @param IShare $parent
-	 *
-	 * @return array
-	 */
 	public function getChildren(IShare $parent): array {
-		return [];
+		return array_filter(
+			array_map(
+				function (ShareWrapper $wrapper) {
+					return $wrapper->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
+				}, $this->shareWrapperService->getChildren($parent)
+			)
+		);
 	}
-
 
 	/**
 	 * @return iterable
