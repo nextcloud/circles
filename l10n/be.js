@@ -52,6 +52,7 @@ OC.L10N.register(
     "Create your first team" : "Стварыце сваю першую каманду",
     "Loading…" : "Загрузка…",
     "No files in here" : "Тут няма файлаў",
+    "No entries found in this folder" : "У гэтай папцы не знойдзена запісаў",
     "Name" : "Назва",
     "Size" : "Памер",
     "Modified" : "Зменены",
