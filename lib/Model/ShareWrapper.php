@@ -499,7 +499,10 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		$this->importAttributesFromDatabase($this->get('attributes', $data));
 
 		try {
-			$this->setExpirationDate(new DateTime($this->get('expiration', $data)));
+			$expirationDate = $this->get('expiration', $data);
+			if ($expirationDate !== '') {
+				$this->setExpirationDate(new DateTime($expirationDate));
+			}
 		} catch (\Exception $e) {
 		}
 
