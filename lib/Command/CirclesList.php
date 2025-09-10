@@ -229,7 +229,7 @@ class CirclesList extends Base {
 		$rows = [];
 		foreach ($circles as $circle) {
 			$owner = $circle->getOwner();
-			$rows = [
+			$rows[] = [
 				$circle->getSingleId(),
 				$this->cut(($displayName ? $circle->getDisplayName() : $circle->getName()), 40),
 				json_encode(Circle::getCircleFlags($circle, $display)),
