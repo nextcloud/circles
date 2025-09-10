@@ -100,6 +100,7 @@ OC.L10N.register(
     "Open %s" : "Avaa %s",
     "Password to access content" : "Salasana sisällön käyttämiseksi",
     "Bring cloud-users closer together." : "Tuo pilvikäyttäjät lähemmäksi toisiaan.",
+    "Try again" : "Yritä uudelleen",
     "No teams found" : "Tiimejä ei löytynyt",
     "Loading…" : "Ladataan…",
     "No files in here" : "Täällä ei ole tiedostoja",
