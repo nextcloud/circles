@@ -499,9 +499,9 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		$this->importAttributesFromDatabase($this->get('attributes', $data));
 
 		try {
-			$expirationDate = $this->get('expiration', $data);
-			if ($expirationDate !== '') {
-				$this->setExpirationDate(new DateTime($expirationDate));
+			$expirationDate = $this->getInt('expiration', $data);
+			if ($expirationDate > 0) {
+				$this->setExpirationDate((new DateTime())->setTimestamp($expirationDate));
 			}
 		} catch (\Exception $e) {
 		}
@@ -565,7 +565,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 			 ->setShareNote($this->get($prefix . 'note', $data));
 
 		try {
-			$expirationDate = $this->get('expiration', $data);
+			$expirationDate = $this->get($prefix . 'expiration', $data);
 			if ($expirationDate !== '') {
 				$this->setExpirationDate(new DateTime($expirationDate));
 			}
@@ -630,6 +630,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 			'itemTarget' => $this->getItemTarget(),
 			'fileSource' => $this->getFileSource(),
 			'fileTarget' => $this->getFileTarget(),
+			'expiration' => $this->getExpirationDate()?->getTimestamp(),
 			'status' => $this->getStatus(),
 			'shareTime' => $this->getShareTime()->getTimestamp(),
 			'note' => $this->getShareNote(),
