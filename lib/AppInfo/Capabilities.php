@@ -116,12 +116,12 @@ class Capabilities implements ICapability {
 						Member::TYPE_GROUP => $this->l10n->t('Nextcloud Group'),
 						Member::TYPE_MAIL => $this->l10n->t('Email address'),
 						Member::TYPE_CONTACT => $this->l10n->t('Contact'),
-						Member::TYPE_CIRCLE => $this->l10n->t('Circle'),
+						Member::TYPE_CIRCLE => $this->l10n->t('Team'),
 						Member::TYPE_APP => $this->l10n->t('Nextcloud App')
 					],
 					'extra' => [
-						Member::APP_CIRCLES => 'Circles App',
-						Member::APP_OCC => 'Admin Command Line'
+						Member::APP_CIRCLES => $this->l10n->t('Teams App'),
+						Member::APP_OCC => $this->l10n->t('Admin Command Line'),
 					]
 				]
 		];
