@@ -76,7 +76,7 @@ OC.L10N.register(
     "Nextcloud Group" : "Kundi la Nextcloud ",
     "Email address" : "Anwani ya barua pepe",
     "Contact" : "Mawasiliano",
-    "Circle" : "Mduara",
+    "Team" : "Timu",
     "Nextcloud App" : "Programu ya Nextcloud",
     "Member" : "Mwanachama",
     "Moderator" : "Msimamizi",
@@ -160,6 +160,7 @@ OC.L10N.register(
     "Select team to filter by" : "Chagua timu ya kuchuja",
     "Please select teams to filter by" : "Tafadhali chagua timu za kuchuja",
     "No files found for the selected teams" : "Hakuna faili zilizopatikana za timu zilizochaguliwa",
-    "Shared to Circles" : "Imeshirikiwa kwa Miduara"
+    "Shared to Circles" : "Imeshirikiwa kwa Miduara",
+    "Circle" : "Mduara"
 },
 "nplurals=2; plural=(n != 1);");

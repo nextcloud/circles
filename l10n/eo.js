@@ -52,7 +52,6 @@ OC.L10N.register(
     "Federated" : "Federated",
     "Email address" : "Retpoŝtadreso",
     "Contact" : "Kontakto",
-    "Circle" : "Rondo",
     "Member" : "Membro",
     "Moderator" : "Kontrolanto",
     "Admin" : "Administranto",
@@ -79,6 +78,7 @@ OC.L10N.register(
     "Name" : "Nomo",
     "Size" : "Grando",
     "Modified" : "Modifita",
-    "Shared to Circles" : "Kunhavigita kun rondoj"
+    "Shared to Circles" : "Kunhavigita kun rondoj",
+    "Circle" : "Rondo"
 },
 "nplurals=2; plural=(n != 1);");

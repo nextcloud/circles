@@ -13,7 +13,7 @@ OC.L10N.register(
     "Federated" : "Федерален",
     "Email address" : "Е-пошта адреса",
     "Contact" : "Контакт",
-    "Circle" : "Круг",
+    "Team" : "Тим",
     "Member" : "Член",
     "Moderator" : "Модератор",
     "Admin" : "Администратор",
@@ -36,6 +36,7 @@ OC.L10N.register(
     "Name" : "Име",
     "Size" : "Големина",
     "Modified" : "Изменето",
-    "Shared to Circles" : "Споделено со кругови"
+    "Shared to Circles" : "Споделено со кругови",
+    "Circle" : "Круг"
 },
 "nplurals=2; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : 1;");

@@ -76,7 +76,7 @@ OC.L10N.register(
     "Nextcloud Group" : "Skupina Nextcloud",
     "Email address" : "E-mailová adresa",
     "Contact" : "Kontakt",
-    "Circle" : "Kruh",
+    "Team" : "Tím",
     "Nextcloud App" : "Aplikácia Nextcloud",
     "Member" : "Člen",
     "Moderator" : "Moderátor",
@@ -154,6 +154,7 @@ OC.L10N.register(
     "Select team to filter by" : "Vybrať tím pre filtrovanie",
     "Please select teams to filter by" : "Prosím, vyberte tímy pre filtrovanie",
     "No files found for the selected teams" : "Pre vybrané tímy neboli nájdené žiadne súbory",
-    "Shared to Circles" : "Zdieľané v kruhoch"
+    "Shared to Circles" : "Zdieľané v kruhoch",
+    "Circle" : "Kruh"
 },
 "nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);");

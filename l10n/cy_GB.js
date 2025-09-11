@@ -60,7 +60,6 @@ OC.L10N.register(
     "Nextcloud Group" : "Grŵp Nextcloud",
     "Email address" : "Cyfeiriad e-bost",
     "Contact" : "Cysylltu",
-    "Circle" : "Cylch",
     "Nextcloud App" : "Ap Nextcloud",
     "Member" : "Aelod",
     "Moderator" : "Cymedrolwr",
@@ -117,6 +116,7 @@ OC.L10N.register(
     "Name" : "Enw",
     "Size" : "Maint",
     "Modified" : "Addaswyd",
-    "Shared to Circles" : "Wedi'i rannu i Gylchoedd"
+    "Shared to Circles" : "Wedi'i rannu i Gylchoedd",
+    "Circle" : "Cylch"
 },
 "nplurals=4; plural=(n==1) ? 0 : (n==2) ? 1 : (n != 8 && n != 11) ? 2 : 3;");

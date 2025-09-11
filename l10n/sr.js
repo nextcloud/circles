@@ -76,7 +76,7 @@ OC.L10N.register(
     "Nextcloud Group" : "Nextcloud група",
     "Email address" : "Адреса е-поште",
     "Contact" : "Контакт",
-    "Circle" : "Круг",
+    "Team" : "Тим",
     "Nextcloud App" : "Nextcloud апликација",
     "Member" : "Члан",
     "Moderator" : "Модератор",
@@ -160,6 +160,7 @@ OC.L10N.register(
     "Select team to filter by" : "Изаберите тим по којем се филтрира",
     "Please select teams to filter by" : "Молимо васд да изаберите тимове по којима се филтрира",
     "No files found for the selected teams" : "Није пронађен ниједан фајл за изабране тимове",
-    "Shared to Circles" : "Дељено на Кругове"
+    "Shared to Circles" : "Дељено на Кругове",
+    "Circle" : "Круг"
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");

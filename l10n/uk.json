@@ -74,7 +74,7 @@
     "Nextcloud Group" : "Група Nextcloud",
     "Email address" : "Адреса ел.пошти",
     "Contact" : "Контакт",
-    "Circle" : "Коло",
+    "Team" : "Команда",
     "Nextcloud App" : "Застосунок Nextcloud",
     "Member" : "Учасник",
     "Moderator" : "Модератор",
@@ -158,6 +158,7 @@
     "Select team to filter by" : "Виберіть команду для відфільтрування",
     "Please select teams to filter by" : "Виберіть команди для відфільтрування",
     "No files found for the selected teams" : "Жодних файлів не знайдено для вибраних команд",
-    "Shared to Circles" : "Опубліковано в Колах"
+    "Shared to Circles" : "Опубліковано в Колах",
+    "Circle" : "Коло"
 },"pluralForm" :"nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);"
 }

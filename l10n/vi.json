@@ -58,7 +58,6 @@
     "Nextcloud Group" : "Nhóm Nextcloud",
     "Email address" : "Địa chỉ thư điện tử",
     "Contact" : "Liên hệ",
-    "Circle" : "Vòng kết nối",
     "Nextcloud App" : "Ứng dụng Nextcloud",
     "Member" : "Thành viên",
     "Moderator" : "Kiểm duyệt",
@@ -117,6 +116,7 @@
     "Name" : "Tên",
     "Size" : "Kích cỡ",
     "Modified" : "Thay đổi",
-    "Shared to Circles" : "Đã được chia sẻ đến những Vòng kết nối"
+    "Shared to Circles" : "Đã được chia sẻ đến những Vòng kết nối",
+    "Circle" : "Vòng kết nối"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

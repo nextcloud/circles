@@ -76,7 +76,7 @@ OC.L10N.register(
     "Nextcloud Group" : "Nextcloud grubu",
     "Email address" : "E-posta adresi",
     "Contact" : "Kişi",
-    "Circle" : "Takım",
+    "Team" : "Takım",
     "Nextcloud App" : "Nextcloud uygulaması",
     "Member" : "Üye",
     "Moderator" : "Sorumlu",
@@ -160,6 +160,7 @@ OC.L10N.register(
     "Select team to filter by" : "Süzülecek takımı seçin",
     "Please select teams to filter by" : "Lütfen süzülecek takımları seçin",
     "No files found for the selected teams" : "Seçilmiş takımlara uyan bir dosya bulunamadı",
-    "Shared to Circles" : "Takımlarla paylaşıldı"
+    "Shared to Circles" : "Takımlarla paylaşıldı",
+    "Circle" : "Takım"
 },
 "nplurals=2; plural=(n > 1);");

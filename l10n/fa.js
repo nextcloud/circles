@@ -60,7 +60,7 @@ OC.L10N.register(
     "Nextcloud Group" : "Nextcloud Group",
     "Email address" : "نشانی رایانامه",
     "Contact" : "مخاطب",
-    "Circle" : "حلقه",
+    "Team" : "تیم",
     "Nextcloud App" : "Nextcloud App",
     "Member" : "عضو",
     "Moderator" : "مدیر",
@@ -119,6 +119,7 @@ OC.L10N.register(
     "Name" : "نام",
     "Size" : "اندازه",
     "Modified" : "تغییر یافته",
-    "Shared to Circles" : "Shared to Circles"
+    "Shared to Circles" : "Shared to Circles",
+    "Circle" : "حلقه"
 },
 "nplurals=2; plural=(n > 1);");

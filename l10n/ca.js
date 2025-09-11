@@ -76,7 +76,7 @@ OC.L10N.register(
     "Nextcloud Group" : "Grup del Nextcloud",
     "Email address" : "Adreça electrònica",
     "Contact" : "Contacte",
-    "Circle" : "Cercle",
+    "Team" : "Equip",
     "Nextcloud App" : "Aplicació del Nextcloud",
     "Member" : "Membre",
     "Moderator" : "Moderació",
@@ -142,7 +142,9 @@ OC.L10N.register(
     "This item is already shared with this team" : "Aquest element ja està compartit amb aquest equip",
     "Bring cloud-users closer together." : "Acosteu els usuaris del núvol.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Els equips permeten que les persones creïn els seus propis grups de persones, companys i amics.\nQualsevol altra aplicació pot utilitzar aquests grups de persones per a compartir contingut.",
+    "Try again" : "Torneu-ho a provar",
     "No teams found" : "No s'ha trobat cap equip",
+    "Loading…" : "S'està carregant…",
     "No files in here" : "No hi ha cap fitxer aquí",
     "No entries found in this folder" : "No s'ha trobat cap entrada en aquesta carpeta",
     "Name" : "Nom",
@@ -152,6 +154,7 @@ OC.L10N.register(
     "Select team to filter by" : "Seleccioneu l'equip que voleu filtrar",
     "Please select teams to filter by" : "Seleccioneu els equips que voleu filtrar",
     "No files found for the selected teams" : "No s'ha trobat cap fitxer per als equips seleccionats",
-    "Shared to Circles" : "Compartits en cercles"
+    "Shared to Circles" : "Compartits en cercles",
+    "Circle" : "Cercle"
 },
 "nplurals=2; plural=(n != 1);");
