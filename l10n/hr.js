@@ -59,7 +59,6 @@ OC.L10N.register(
     "Nextcloud Group" : "Nextcloud grupa",
     "Email address" : "Adresa e-pošte",
     "Contact" : "Kontakt",
-    "Circle" : "Krug",
     "Nextcloud App" : "Nextcloud aplikacija",
     "Member" : "Član",
     "Moderator" : "Moderator",
@@ -108,6 +107,7 @@ OC.L10N.register(
     "Name" : "Naziv",
     "Size" : "Veličina",
     "Modified" : "Promijenjeno",
-    "Shared to Circles" : "Dijeljeno u krugovima"
+    "Shared to Circles" : "Dijeljeno u krugovima",
+    "Circle" : "Krug"
 },
 "nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;");

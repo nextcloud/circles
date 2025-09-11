@@ -5,7 +5,6 @@ OC.L10N.register(
     "Open" : "Ldi",
     "Local" : "Adigan",
     "Email address" : "Tansa imayl",
-    "Circle" : "Tawinest",
     "Moderator" : "Amaẓrag",
     "Admin" : "Anedbal",
     "Owner" : "Bab",
@@ -15,6 +14,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Ulac inekcumen i yettwafen deg ukaram-a",
     "Name" : "Nom",
     "Size" : "Teɣzi",
-    "Modified" : "Yettwabeddel"
+    "Modified" : "Yettwabeddel",
+    "Circle" : "Tawinest"
 },
 "nplurals=2; plural=(n != 1);");

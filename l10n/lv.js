@@ -22,7 +22,6 @@ OC.L10N.register(
     "Federated" : "Federated",
     "Email address" : "E-pasta adrese",
     "Contact" : "Kontaktpersona",
-    "Circle" : "Loks",
     "Admin" : "Pārvaldītājs",
     "Owner" : "Īpašnieks",
     "Open »%s«" : "Atvērt »%s«",
@@ -38,6 +37,7 @@ OC.L10N.register(
     "Name" : "Vārds",
     "Size" : "Izmērs",
     "Modified" : "Mainīts",
-    "Teams' files" : "Komandas datnes"
+    "Teams' files" : "Komandas datnes",
+    "Circle" : "Loks"
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);");

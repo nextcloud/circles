@@ -76,7 +76,7 @@ OC.L10N.register(
     "Nextcloud Group" : "Nextcloud گۇرۇپپىسى",
     "Email address" : "ئېلخەت ئادرېسى",
     "Contact" : "ئالاقىلىشىڭ",
-    "Circle" : "Circle",
+    "Team" : "Team",
     "Nextcloud App" : "Nextcloud App",
     "Member" : "ئەزا",
     "Moderator" : "رىياسەتچى",
@@ -154,6 +154,7 @@ OC.L10N.register(
     "Select team to filter by" : "سۈزۈش ئۈچۈن گۇرۇپپا تاللاڭ",
     "Please select teams to filter by" : "سۈزۈش ئۈچۈن گۇرۇپپىلارنى تاللاڭ",
     "No files found for the selected teams" : "تاللانغان گۇرۇپپىلارغا ھۆججەت تېپىلمىدى",
-    "Shared to Circles" : "چەمبىرەككە ئورتاقلاشتى"
+    "Shared to Circles" : "چەمبىرەككە ئورتاقلاشتى",
+    "Circle" : "Circle"
 },
 "nplurals=2; plural=(n != 1);");

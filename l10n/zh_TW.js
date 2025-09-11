@@ -76,7 +76,7 @@ OC.L10N.register(
     "Nextcloud Group" : "Nextcloud 群組",
     "Email address" : "電子郵件地址",
     "Contact" : "聯絡人",
-    "Circle" : "小圈圈",
+    "Team" : "團隊",
     "Nextcloud App" : "Nextcloud 應用程式",
     "Member" : "成員",
     "Moderator" : "主持人",
@@ -160,6 +160,7 @@ OC.L10N.register(
     "Select team to filter by" : "選取要篩選的團隊",
     "Please select teams to filter by" : "請選取要篩選的團隊",
     "No files found for the selected teams" : "找不到選定團隊的檔案",
-    "Shared to Circles" : "分享到小圈圈"
+    "Shared to Circles" : "分享到小圈圈",
+    "Circle" : "小圈圈"
 },
 "nplurals=1; plural=0;");

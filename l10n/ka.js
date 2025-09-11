@@ -59,7 +59,6 @@ OC.L10N.register(
     "Nextcloud Group" : "Nextcloud Group",
     "Email address" : "Email address",
     "Contact" : "Contact",
-    "Circle" : "Circle",
     "Nextcloud App" : "Nextcloud App",
     "Member" : "Member",
     "Moderator" : "Moderator",
@@ -116,6 +115,7 @@ OC.L10N.register(
     "Name" : "Name",
     "Size" : "Size",
     "Modified" : "Modified",
-    "Shared to Circles" : "Shared to Circles"
+    "Shared to Circles" : "Shared to Circles",
+    "Circle" : "Circle"
 },
 "nplurals=2; plural=(n!=1);");

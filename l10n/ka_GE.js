@@ -50,7 +50,6 @@ OC.L10N.register(
     "Root" : "Root",
     "Federated" : "ფედერალური",
     "Contact" : "კონტაქტი",
-    "Circle" : "წრე",
     "Member" : "წევრი",
     "Moderator" : "მოდერატორი",
     "Admin" : "ადმინისტრატორი",
@@ -75,6 +74,7 @@ OC.L10N.register(
     "Name" : "სახელი",
     "Size" : "ზომა",
     "Modified" : "შეიცვალა",
-    "Shared to Circles" : "წრეებთან გაზიარებული"
+    "Shared to Circles" : "წრეებთან გაზიარებული",
+    "Circle" : "წრე"
 },
 "nplurals=2; plural=(n!=1);");

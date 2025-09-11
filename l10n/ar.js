@@ -76,7 +76,6 @@ OC.L10N.register(
     "Nextcloud Group" : "مجموعة نكست كلاود",
     "Email address" : "عنوان البريد الإلكتروني",
     "Contact" : "التواصل",
-    "Circle" : "دائرة",
     "Nextcloud App" : "تطبيق نكست كلاود",
     "Member" : "عضو",
     "Moderator" : "مشرف",
@@ -154,6 +153,7 @@ OC.L10N.register(
     "Select team to filter by" : "قم بتحديد فريق للتصفية بحسبه",
     "Please select teams to filter by" : "رجاءً، قم تتحديد فرق للتصفية بحسبها",
     "No files found for the selected teams" : "لا توجد أي ملفات للفرق المحددة",
-    "Shared to Circles" : "مُشتركٌ مع الدوائر"
+    "Shared to Circles" : "مُشتركٌ مع الدوائر",
+    "Circle" : "دائرة"
 },
 "nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;");

@@ -62,7 +62,7 @@ OC.L10N.register(
     "Nextcloud Group" : "Nextcloud 그룹",
     "Email address" : "이메일 주소",
     "Contact" : "연락처",
-    "Circle" : "서클",
+    "Team" : "팀",
     "Nextcloud App" : "Nextcloud 앱",
     "Member" : "회원",
     "Moderator" : "중재자",
@@ -109,6 +109,7 @@ OC.L10N.register(
     "Name" : "이름",
     "Size" : "크기",
     "Modified" : "수정한 날짜",
-    "Shared to Circles" : "서클에 공유됨"
+    "Shared to Circles" : "서클에 공유됨",
+    "Circle" : "서클"
 },
 "nplurals=1; plural=0;");

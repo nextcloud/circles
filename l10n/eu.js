@@ -76,7 +76,7 @@ OC.L10N.register(
     "Nextcloud Group" : "Nextcloud taldea",
     "Email address" : "Helbide elektronikoa",
     "Contact" : "Kontaktua",
-    "Circle" : "Zirkulua",
+    "Team" : "Lantaldea",
     "Nextcloud App" : "Nextcloud aplikazioa",
     "Member" : "Kidea",
     "Moderator" : "Moderatzailea",
@@ -160,6 +160,7 @@ OC.L10N.register(
     "Select team to filter by" : "Hautatu iragazteko lantaldea",
     "Please select teams to filter by" : "Hautatu lantaldeak iragazteko",
     "No files found for the selected teams" : "Ez da fitxategirik aurkitu hautatutako lantaldeetarako",
-    "Shared to Circles" : "Zirkuluetara partekatua"
+    "Shared to Circles" : "Zirkuluetara partekatua",
+    "Circle" : "Zirkulua"
 },
 "nplurals=2; plural=(n != 1);");

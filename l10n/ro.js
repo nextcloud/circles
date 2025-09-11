@@ -59,7 +59,7 @@ OC.L10N.register(
     "Nextcloud Group" : "Grup Nextcloud",
     "Email address" : "Email",
     "Contact" : "Contact",
-    "Circle" : "Cerc",
+    "Team" : "Echipă",
     "Nextcloud App" : "Aplicație Nextcloud",
     "Member" : "Membru",
     "Moderator" : "Moderator",
@@ -115,6 +115,7 @@ OC.L10N.register(
     "Name" : "Nume",
     "Size" : "Mărime",
     "Modified" : "Modificat",
-    "Shared to Circles" : "Distribuit în Cercuri"
+    "Shared to Circles" : "Distribuit în Cercuri",
+    "Circle" : "Cerc"
 },
 "nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));");
