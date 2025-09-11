@@ -76,7 +76,7 @@ OC.L10N.register(
     "Nextcloud Group" : "Nextcloud-hópur",
     "Email address" : "Tölvupóstfang",
     "Contact" : "Tengiliður",
-    "Circle" : "Hringur",
+    "Team" : "Teymi",
     "Nextcloud App" : "Nextcloud-forrit",
     "Member" : "Meðlimur",
     "Moderator" : "Umsjónarmaður",
@@ -153,6 +153,7 @@ OC.L10N.register(
     "Select team to filter by" : "Veldu teymi til að sía eftir",
     "Please select teams to filter by" : "Veldu teymi til að sía eftir",
     "No files found for the selected teams" : "Engar skrár fundust fyrir valin teymi",
-    "Shared to Circles" : "Deilt til hringja"
+    "Shared to Circles" : "Deilt til hringja",
+    "Circle" : "Hringur"
 },
 "nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);");

@@ -57,7 +57,6 @@
     "Nextcloud Group" : "Grupu de Nextcloud",
     "Email address" : "Indiritzu de posta eletrònica",
     "Contact" : "Cuntatu",
-    "Circle" : "Giru",
     "Nextcloud App" : "Aplicatzione de Nextcloud",
     "Member" : "Membru",
     "Moderator" : "Chie moderat",
@@ -109,6 +108,7 @@
     "Name" : "Nùmene",
     "Size" : "Mannària",
     "Modified" : "Modificadu",
-    "Shared to Circles" : "Cumpartzidu cun is giros\\"
+    "Shared to Circles" : "Cumpartzidu cun is giros\\",
+    "Circle" : "Giru"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

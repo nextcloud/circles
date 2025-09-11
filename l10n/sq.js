@@ -34,7 +34,6 @@ OC.L10N.register(
     "Root" : "Rrënjë",
     "Federated" : "Federated",
     "Contact" : "Kontakt",
-    "Circle" : "Rreth",
     "Member" : "Anëtar",
     "Moderator" : "Moderator",
     "Admin" : "Administratori",
@@ -59,6 +58,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Në këtë dosje nuk gjëndet asnjë hyrje",
     "Name" : "Emër",
     "Size" : "Madhësi",
-    "Modified" : "Modifikuar "
+    "Modified" : "Modifikuar ",
+    "Circle" : "Rreth"
 },
 "nplurals=2; plural=(n != 1);");

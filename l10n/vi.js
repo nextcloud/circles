@@ -60,7 +60,6 @@ OC.L10N.register(
     "Nextcloud Group" : "Nhóm Nextcloud",
     "Email address" : "Địa chỉ thư điện tử",
     "Contact" : "Liên hệ",
-    "Circle" : "Vòng kết nối",
     "Nextcloud App" : "Ứng dụng Nextcloud",
     "Member" : "Thành viên",
     "Moderator" : "Kiểm duyệt",
@@ -119,6 +118,7 @@ OC.L10N.register(
     "Name" : "Tên",
     "Size" : "Kích cỡ",
     "Modified" : "Thay đổi",
-    "Shared to Circles" : "Đã được chia sẻ đến những Vòng kết nối"
+    "Shared to Circles" : "Đã được chia sẻ đến những Vòng kết nối",
+    "Circle" : "Vòng kết nối"
 },
 "nplurals=1; plural=0;");

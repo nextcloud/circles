@@ -42,7 +42,6 @@ OC.L10N.register(
     "Nextcloud Group" : "קבוצת Nextcloud",
     "Email address" : "כתובת דוא״ל",
     "Contact" : "איש/אשת קשר",
-    "Circle" : "מעגל",
     "Nextcloud App" : "יישומון Nextcloud",
     "Member" : "חבר",
     "Moderator" : "פיקוח",
@@ -76,6 +75,7 @@ OC.L10N.register(
     "Name" : "שם",
     "Size" : "גודל",
     "Modified" : "מועד שינוי",
-    "Shared to Circles" : "שותף למעגלים"
+    "Shared to Circles" : "שותף למעגלים",
+    "Circle" : "מעגל"
 },
 "nplurals=3; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % 1 == 0) ? 1: 2;");

@@ -76,7 +76,7 @@ OC.L10N.register(
     "Nextcloud Group" : "Nextcloudグループ",
     "Email address" : "メールアドレス",
     "Contact" : "連絡先",
-    "Circle" : "サークル",
+    "Team" : "チーム",
     "Nextcloud App" : "Nextcloudアプリ",
     "Member" : "メンバー",
     "Moderator" : "モデレータ",
@@ -160,6 +160,7 @@ OC.L10N.register(
     "Select team to filter by" : "フィルターするチームを選択",
     "Please select teams to filter by" : "フィルターするチームを選択してください",
     "No files found for the selected teams" : "選択したチームに割りあてられているファイルはありません",
-    "Shared to Circles" : "サークルと共有"
+    "Shared to Circles" : "サークルと共有",
+    "Circle" : "サークル"
 },
 "nplurals=1; plural=0;");

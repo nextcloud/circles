@@ -7,7 +7,6 @@ OC.L10N.register(
     "Local" : "Lokal",
     "Federated" : "Federated",
     "Contact" : "Kontakt",
-    "Circle" : "Sirkel",
     "Moderator" : "Moderator",
     "Admin" : "Administrer",
     "Owner" : "Owner",
@@ -18,6 +17,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Ingen oppføringar funne i denne mappa",
     "Name" : "Namn",
     "Size" : "Storleik",
-    "Modified" : "Endra"
+    "Modified" : "Endra",
+    "Circle" : "Sirkel"
 },
 "nplurals=2; plural=(n != 1);");

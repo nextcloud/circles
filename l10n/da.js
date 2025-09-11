@@ -76,7 +76,7 @@ OC.L10N.register(
     "Nextcloud Group" : "Nextcloud gruppe",
     "Email address" : "Email adresse",
     "Contact" : "Kontakt",
-    "Circle" : "Cirkel",
+    "Team" : "Team",
     "Nextcloud App" : "Nextcloud app",
     "Member" : "Medlem",
     "Moderator" : "Modeator",
@@ -160,6 +160,7 @@ OC.L10N.register(
     "Select team to filter by" : "Vælg team at filtrere efter",
     "Please select teams to filter by" : "Vælg venligst teams at filtrere efter",
     "No files found for the selected teams" : "Inge filer funder for det valgte team",
-    "Shared to Circles" : "Delt til Cirkler"
+    "Shared to Circles" : "Delt til Cirkler",
+    "Circle" : "Cirkel"
 },
 "nplurals=2; plural=(n != 1);");
