@@ -61,7 +61,7 @@ OC.L10N.register(
     "Nextcloud Group" : "Nextcloud-ryhmä",
     "Email address" : "Sähköpostiosoite",
     "Contact" : "Yhteystieto",
-    "Circle" : "Piiri",
+    "Team" : "Tiimi",
     "Nextcloud App" : "Nextcloud-sovellus",
     "Member" : "Jäsen",
     "Moderator" : "Moderaattori",
@@ -112,6 +112,7 @@ OC.L10N.register(
     "Select team to filter by" : "Valitse tiimi, jonka perusteella suodatetaan",
     "Please select teams to filter by" : "Valitse tiimit, joiden perusteella suodatetaan",
     "No files found for the selected teams" : "Valitulle tiimille ei löytynyt tiedostoja",
-    "Shared to Circles" : "Jaettu piireille"
+    "Shared to Circles" : "Jaettu piireille",
+    "Circle" : "Piiri"
 },
 "nplurals=2; plural=(n != 1);");

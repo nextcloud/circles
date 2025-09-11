@@ -16,6 +16,7 @@ OC.L10N.register(
     "Accept" : "Kadarnaat",
     "%s" : "%s",
     "Open %s" : "Digeriñ %s",
+    "Loading…" : "O kargañ...",
     "No files in here" : "Restr ebet amañ",
     "No entries found in this folder" : "Disoc'h ebet en teuliad-mañ",
     "Name" : "Anv",

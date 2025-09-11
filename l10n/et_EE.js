@@ -76,7 +76,7 @@ OC.L10N.register(
     "Nextcloud Group" : "Nextcloudi Grupp",
     "Email address" : "E-posti aadress",
     "Contact" : "Kontakt",
-    "Circle" : "Tiimid",
+    "Team" : "Tiim",
     "Nextcloud App" : "Nextcloudi rakendus",
     "Member" : "Liige",
     "Moderator" : "Moderaator",
@@ -160,6 +160,7 @@ OC.L10N.register(
     "Select team to filter by" : "Vali tiim, mille alusel soovid filtreerida",
     "Please select teams to filter by" : "Palun vali tiimid, mille järgi filtreerida",
     "No files found for the selected teams" : "Valitud tiimide jaoks ei leidu ühtegi faili",
-    "Shared to Circles" : "Jagatud tiimidega"
+    "Shared to Circles" : "Jagatud tiimidega",
+    "Circle" : "Tiimid"
 },
 "nplurals=2; plural=(n != 1);");

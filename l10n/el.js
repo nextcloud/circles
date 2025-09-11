@@ -60,7 +60,6 @@ OC.L10N.register(
     "Nextcloud Group" : "Ομάδα Nextcloud",
     "Email address" : "Διεύθυνση αλληλογραφίας",
     "Contact" : "Επαφή",
-    "Circle" : "Κύκλος",
     "Nextcloud App" : "Nextcloud App",
     "Member" : "Μέλος",
     "Moderator" : "Συντονιστής",
@@ -117,6 +116,7 @@ OC.L10N.register(
     "Name" : "Όνομα",
     "Size" : "Μέγεθος",
     "Modified" : "Τροποποιήθηκε",
-    "Shared to Circles" : "Κοινόχρηστο στους Κύκλους"
+    "Shared to Circles" : "Κοινόχρηστο στους Κύκλους",
+    "Circle" : "Κύκλος"
 },
 "nplurals=2; plural=(n != 1);");

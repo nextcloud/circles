@@ -76,7 +76,7 @@ OC.L10N.register(
     "Nextcloud Group" : "Nextcloud csoport",
     "Email address" : "E-mail-cím",
     "Contact" : "Névjegy",
-    "Circle" : "Kör",
+    "Team" : "Csapat",
     "Nextcloud App" : "Nextcloud alkalmazás",
     "Member" : "Tag",
     "Moderator" : "Moderátor",
@@ -156,6 +156,7 @@ OC.L10N.register(
     "Select team to filter by" : "Válasszon csapatot a szűréshez:",
     "Please select teams to filter by" : "Válasszon csapatokat a szűréshez:",
     "No files found for the selected teams" : "Nem található fájl a kiválasztott csapatokhoz",
-    "Shared to Circles" : "Körökkel megosztva"
+    "Shared to Circles" : "Körökkel megosztva",
+    "Circle" : "Kör"
 },
 "nplurals=2; plural=(n != 1);");

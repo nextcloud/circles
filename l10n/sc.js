@@ -59,7 +59,6 @@ OC.L10N.register(
     "Nextcloud Group" : "Grupu de Nextcloud",
     "Email address" : "Indiritzu de posta eletrònica",
     "Contact" : "Cuntatu",
-    "Circle" : "Giru",
     "Nextcloud App" : "Aplicatzione de Nextcloud",
     "Member" : "Membru",
     "Moderator" : "Chie moderat",
@@ -111,6 +110,7 @@ OC.L10N.register(
     "Name" : "Nùmene",
     "Size" : "Mannària",
     "Modified" : "Modificadu",
-    "Shared to Circles" : "Cumpartzidu cun is giros\\"
+    "Shared to Circles" : "Cumpartzidu cun is giros\\",
+    "Circle" : "Giru"
 },
 "nplurals=2; plural=(n != 1);");

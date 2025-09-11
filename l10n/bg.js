@@ -60,7 +60,6 @@ OC.L10N.register(
     "Nextcloud Group" : "Nextcloud Група",
     "Email address" : "Имейл адрес",
     "Contact" : "Контакт",
-    "Circle" : "Кръг",
     "Nextcloud App" : "Приложение Nextcloud App",
     "Member" : "Член",
     "Moderator" : "Модератор",
@@ -112,11 +111,14 @@ OC.L10N.register(
     "Password to access content shared with you by %1$s" : "Парола за достъп до съдържание, споделени с вас от %1$s",
     "Password to access content" : "Парола за достъп до съдържание",
     "Bring cloud-users closer together." : "Доближете потребителите на облака по-близо.",
+    "Try again" : "Опитай отново",
+    "Loading…" : "Зареждане…",
     "No files in here" : "Няма файлове",
     "No entries found in this folder" : "Папката е празна",
     "Name" : "Име",
     "Size" : "Размер",
     "Modified" : "Променен на",
-    "Shared to Circles" : "Споделено с Кръгове"
+    "Shared to Circles" : "Споделено с Кръгове",
+    "Circle" : "Кръг"
 },
 "nplurals=2; plural=(n != 1);");

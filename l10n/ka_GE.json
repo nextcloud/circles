@@ -48,7 +48,6 @@
     "Root" : "Root",
     "Federated" : "ფედერალური",
     "Contact" : "კონტაქტი",
-    "Circle" : "წრე",
     "Member" : "წევრი",
     "Moderator" : "მოდერატორი",
     "Admin" : "ადმინისტრატორი",
@@ -73,6 +72,7 @@
     "Name" : "სახელი",
     "Size" : "ზომა",
     "Modified" : "შეიცვალა",
-    "Shared to Circles" : "წრეებთან გაზიარებული"
+    "Shared to Circles" : "წრეებთან გაზიარებული",
+    "Circle" : "წრე"
 },"pluralForm" :"nplurals=2; plural=(n!=1);"
 }

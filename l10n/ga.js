@@ -76,7 +76,7 @@ OC.L10N.register(
     "Nextcloud Group" : "Grúpa Nextcloud",
     "Email address" : "Seoladh ríomhphoist",
     "Contact" : "Teagmháil",
-    "Circle" : "Ciorcal",
+    "Team" : "Foireann",
     "Nextcloud App" : "Aip Nextcloud",
     "Member" : "Ball",
     "Moderator" : "Modhnóir",
@@ -160,6 +160,7 @@ OC.L10N.register(
     "Select team to filter by" : "Roghnaigh foireann le scagadh de réir",
     "Please select teams to filter by" : "Roghnaigh foirne lena scagadh le do thoil",
     "No files found for the selected teams" : "Níor aimsíodh aon chomhaid do na foirne roghnaithe",
-    "Shared to Circles" : "Roinnte go Ciorcail"
+    "Shared to Circles" : "Roinnte go Ciorcail",
+    "Circle" : "Ciorcal"
 },
 "nplurals=5; plural=(n==1 ? 0 : n==2 ? 1 : n<7 ? 2 : n<11 ? 3 : 4);");

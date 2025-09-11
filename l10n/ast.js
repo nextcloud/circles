@@ -74,7 +74,6 @@ OC.L10N.register(
     "Nextcloud Group" : "Grupu de Nextcloud",
     "Email address" : "Direición de corréu electrónicu",
     "Contact" : "Contautu",
-    "Circle" : "Círculu",
     "Nextcloud App" : "Aplicación Nextcloud",
     "Member" : "Miembru",
     "Moderator" : "Llendador",
@@ -148,6 +147,7 @@ OC.L10N.register(
     "Select team to filter by" : "Seleiciona los equipos polos que quies peñerar",
     "Please select teams to filter by" : "Seleiciona los equipos polos que quies peñerar",
     "No files found for the selected teams" : "Nun s'atopó nengún ficheru pa los equipos seleicionaos",
-    "Shared to Circles" : "Compartióse en Círculos"
+    "Shared to Circles" : "Compartióse en Círculos",
+    "Circle" : "Círculu"
 },
 "nplurals=2; plural=(n != 1);");

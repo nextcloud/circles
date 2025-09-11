@@ -9,7 +9,6 @@ OC.L10N.register(
     "Password protected" : "Нууц үгээх хамгаалагдсан",
     "Hidden" : "Далд",
     "Federated" : "Federated",
-    "Circle" : "Тойрог",
     "Member" : "Гишүүн",
     "Moderator" : "Шалгагч",
     "Admin" : "Админ",
@@ -27,6 +26,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Энэ хавтаст юм олдсонгүй",
     "Name" : "Нэр",
     "Size" : "Хэмжээ",
-    "Modified" : "Өөрчлөгдсөн"
+    "Modified" : "Өөрчлөгдсөн",
+    "Circle" : "Тойрог"
 },
 "nplurals=2; plural=(n != 1);");
