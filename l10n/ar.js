@@ -76,6 +76,7 @@ OC.L10N.register(
     "Nextcloud Group" : "مجموعة نكست كلاود",
     "Email address" : "عنوان البريد الإلكتروني",
     "Contact" : "التواصل",
+    "Team" : "الفريق",
     "Nextcloud App" : "تطبيق نكست كلاود",
     "Member" : "عضو",
     "Moderator" : "مشرف",

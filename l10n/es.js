@@ -78,6 +78,7 @@ OC.L10N.register(
     "Contact" : "Contacto",
     "Team" : "Equipo",
     "Nextcloud App" : "App Nextcloud",
+    "Teams App" : "App Equipos",
     "Member" : "Participante",
     "Moderator" : "Moderador",
     "Admin" : "Administrador",
