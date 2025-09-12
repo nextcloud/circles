@@ -78,6 +78,8 @@ OC.L10N.register(
     "Contact" : "Kontakt",
     "Team" : "Tiim",
     "Nextcloud App" : "Nextcloudi rakendus",
+    "Teams App" : "Tiimide rakendus",
+    "Admin Command Line" : "Haldus käsurealt",
     "Member" : "Liige",
     "Moderator" : "Moderaator",
     "Admin" : "Admin",

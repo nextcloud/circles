@@ -34,6 +34,8 @@ OC.L10N.register(
     "Contact" : "Кантакт",
     "Team" : "Каманда",
     "Nextcloud App" : "Праграма Nextcloud",
+    "Teams App" : "Праграма Каманды",
+    "Admin Command Line" : "Камандны радок адміністратара",
     "Member" : "Удзельнік",
     "Moderator" : "Мадэратар",
     "Admin" : "Адміністратар",

@@ -78,6 +78,8 @@ OC.L10N.register(
     "Contact" : "聯絡人",
     "Team" : "團隊",
     "Nextcloud App" : "Nextcloud 應用程式",
+    "Teams App" : "團隊應用程式",
+    "Admin Command Line" : "管理員命令列",
     "Member" : "成員",
     "Moderator" : "主持人",
     "Admin" : "管理員",

@@ -78,6 +78,8 @@ OC.L10N.register(
     "Contact" : "Контакт",
     "Team" : "Тим",
     "Nextcloud App" : "Nextcloud апликација",
+    "Teams App" : "Апликација Тимови",
+    "Admin Command Line" : "Админ Командна линија",
     "Member" : "Члан",
     "Moderator" : "Модератор",
     "Admin" : "Администратор",
