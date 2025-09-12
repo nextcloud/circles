@@ -74,6 +74,7 @@ OC.L10N.register(
     "Nextcloud Group" : "Grupu de Nextcloud",
     "Email address" : "Direición de corréu electrónicu",
     "Contact" : "Contautu",
+    "Team" : "Equipu",
     "Nextcloud App" : "Aplicación Nextcloud",
     "Member" : "Miembru",
     "Moderator" : "Llendador",

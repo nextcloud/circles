@@ -78,6 +78,8 @@ OC.L10N.register(
     "Contact" : "Contact",
     "Team" : "Team",
     "Nextcloud App" : "Nextcloud App",
+    "Teams App" : "Teams App",
+    "Admin Command Line" : "Admin Command Line",
     "Member" : "Member",
     "Moderator" : "Moderator",
     "Admin" : "Admin",
