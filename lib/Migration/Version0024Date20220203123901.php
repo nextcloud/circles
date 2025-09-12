@@ -45,7 +45,7 @@ class Version0024Date20220203123901 extends SimpleMigrationStep {
 
 		if ($schema->hasTable('circles_token')) {
 			$table = $schema->getTable('circles_token');
-			$table->changeColumn(
+			$table->modifyColumn(
 				'password', [
 					'length' => 127
 				]
@@ -54,7 +54,7 @@ class Version0024Date20220203123901 extends SimpleMigrationStep {
 
 		if ($schema->hasTable('circles_member')) {
 			$table = $schema->getTable('circles_member');
-			$table->changeColumn(
+			$table->modifyColumn(
 				'instance',
 				[
 					'default' => '',
@@ -66,7 +66,7 @@ class Version0024Date20220203123901 extends SimpleMigrationStep {
 
 		if ($schema->hasTable('circles_circle')) {
 			$table = $schema->getTable('circles_circle');
-			$table->changeColumn(
+			$table->modifyColumn(
 				'display_name',
 				[
 					'notnull' => false,
