@@ -79,6 +79,7 @@ OC.L10N.register(
     "Team" : "Equipo",
     "Nextcloud App" : "App Nextcloud",
     "Teams App" : "App Equipos",
+    "Admin Command Line" : "Línea de Comandos del Administrador",
     "Member" : "Participante",
     "Moderator" : "Moderador",
     "Admin" : "Administrador",

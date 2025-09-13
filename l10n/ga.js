@@ -78,6 +78,8 @@ OC.L10N.register(
     "Contact" : "Teagmháil",
     "Team" : "Foireann",
     "Nextcloud App" : "Aip Nextcloud",
+    "Teams App" : "Aip Foirne",
+    "Admin Command Line" : "Líne Ordaithe Riarthóra",
     "Member" : "Ball",
     "Moderator" : "Modhnóir",
     "Admin" : "Riarachán",
