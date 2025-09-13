@@ -1,6 +1,7 @@
 OC.L10N.register(
     "circles",
     {
+    "Teams" : "Jamoalar",
     "Personal" : "Personal",
     "System" : "System",
     "Open" : "Ochish",

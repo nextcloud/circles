@@ -78,6 +78,8 @@ OC.L10N.register(
     "Contact" : "Mawasiliano",
     "Team" : "Timu",
     "Nextcloud App" : "Programu ya Nextcloud",
+    "Teams App" : "Programu ya Timu",
+    "Admin Command Line" : "Mstari wa Amri ya Msimamizi",
     "Member" : "Mwanachama",
     "Moderator" : "Msimamizi",
     "Admin" : "Msimamizi",
