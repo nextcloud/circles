@@ -28,7 +28,7 @@
   "devDependencies": {
     "@nextcloud/browserslist-config": "^2.2.0",
     "@nextcloud/eslint-config": "^9.0.0-rc.4",
-    "@nextcloud/vite-config": "^2.4.0",
+    "@nextcloud/vite-config": "^2.5.0",
     "@vue/tsconfig": "^0.8.1",
     "eslint": "^9.33.0",
     "typescript": "^5.9.2",
