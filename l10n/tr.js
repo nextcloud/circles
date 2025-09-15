@@ -78,6 +78,8 @@ OC.L10N.register(
     "Contact" : "Kişi",
     "Team" : "Takım",
     "Nextcloud App" : "Nextcloud uygulaması",
+    "Teams App" : "Takımlar uygulaması",
+    "Admin Command Line" : "Yönetici komut satırı",
     "Member" : "Üye",
     "Moderator" : "Sorumlu",
     "Admin" : "Yönetici",
