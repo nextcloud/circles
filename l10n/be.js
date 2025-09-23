@@ -28,6 +28,7 @@ OC.L10N.register(
     "Open" : "Адкрыць",
     "Invite" : "Запрасіць",
     "Friends" : "Сябры",
+    "Local" : "Лакальна",
     "Federated" : "Федэратыўны",
     "Nextcloud Account" : "Уліковы запіс Nextcloud",
     "Nextcloud Group" : "Група Nextcloud",
