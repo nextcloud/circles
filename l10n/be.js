@@ -24,6 +24,7 @@ OC.L10N.register(
     "You left {circle}" : "Вы выйшлі з {circle}",
     "{member} left {circle}" : "{member} выйшаў(-ла) з {circle}",
     "You removed {external} from {circle}" : "Вы выдалілі {external} з {circle}",
+    "Personal" : "Асабістыя",
     "System" : "Сістэма",
     "Open" : "Адкрыць",
     "Invite" : "Запрасіць",
