@@ -17,6 +17,7 @@
     "Admin" : "Администратор",
     "Owner" : "Сопственик",
     "%s shared »%s« with you." : "%s сподели »%s« со вас.",
+    "%s on %s" : "%s на %s",
     "Password to access »%1$s« shared to you by %2$s" : "Лозинката за пристап до »%1$s« е споделена со вас од %2$s",
     "Password to access »%s«" : "Лозинка за пристап »%s«",
     "It is protected with the following password:" : "Заштитено е со следнава лозинка:",
