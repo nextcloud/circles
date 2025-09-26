@@ -764,7 +764,7 @@ class ShareByCircleProvider implements IShareProvider {
 	 *
 	 * @param IShare $parent
 	 *
-	 * @return array
+	 * @return IShare[]
 	 */
 	public function getChildren(IShare $parent): array {
 		return [];
