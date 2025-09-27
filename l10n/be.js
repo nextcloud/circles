@@ -30,6 +30,7 @@ OC.L10N.register(
     "Invite" : "Запрасіць",
     "Friends" : "Сябры",
     "Local" : "Лакальна",
+    "Root" : "Корань",
     "Federated" : "Федэратыўны",
     "Nextcloud Account" : "Уліковы запіс Nextcloud",
     "Nextcloud Group" : "Група Nextcloud",
