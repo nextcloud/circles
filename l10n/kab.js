@@ -1,6 +1,7 @@
 OC.L10N.register(
     "circles",
     {
+    "You deleted {circle}" : "Tekkseḍ {circle}",
     "Personal" : "Udmawan",
     "Open" : "Ldi",
     "Local" : "Adigan",
