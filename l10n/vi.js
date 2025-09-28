@@ -60,6 +60,7 @@ OC.L10N.register(
     "Nextcloud Group" : "Nhóm Nextcloud",
     "Email address" : "Địa chỉ thư điện tử",
     "Contact" : "Liên hệ",
+    "Team" : "Đội",
     "Nextcloud App" : "Ứng dụng Nextcloud",
     "Member" : "Thành viên",
     "Moderator" : "Kiểm duyệt",
