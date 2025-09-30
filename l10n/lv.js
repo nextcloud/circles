@@ -22,6 +22,7 @@ OC.L10N.register(
     "Federated" : "Federated",
     "Email address" : "E-pasta adrese",
     "Contact" : "Kontaktpersona",
+    "Team" : "Komanda",
     "Admin" : "Pārvaldītājs",
     "Owner" : "Īpašnieks",
     "Open »%s«" : "Atvērt »%s«",
