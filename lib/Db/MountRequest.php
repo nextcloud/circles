@@ -15,6 +15,7 @@ use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Mount;
 use OCA\Circles\Tools\Traits\TStringTools;
+use OCP\DB\QueryBuilder\IQueryBuilder;
 
 /**
  * Class MountRequest
@@ -36,7 +37,9 @@ class MountRequest extends MountRequestBuilder {
 			->setValue('token', $qb->createNamedParameter($mount->getToken()))
 			->setValue('parent', $qb->createNamedParameter($mount->getParent()))
 			->setValue('mountpoint', $qb->createNamedParameter($mount->getOriginalMountPoint()))
-			->setValue('mountpoint_hash', $qb->createNamedParameter(md5($mount->getOriginalMountPoint())));
+			->setValue('mountpoint_hash', $qb->createNamedParameter(md5($mount->getOriginalMountPoint())))
+			->setValue('remote', $qb->createNamedParameter($mount->getRemote()))
+			->setValue('remote_id', $qb->createNamedParameter($mount->getRemoteShareId(), IQueryBuilder::PARAM_INT));
 
 		$qb->execute();
 	}
