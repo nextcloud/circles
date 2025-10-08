@@ -71,21 +71,6 @@ class CircleMountManager extends Manager {
 		return true;
 	}
 
-
-	// TODO: implement !
-	public function getMountManager() {
-		return $this;
-	}
-
-	// TODO: implement !
-	public function removeShare($mountPoint): bool {
-	}
-
-	// TODO: implement !
-	public function removeMount($mountPoint) {
-	}
-
-
 	/**
 	 * @param int $gsShareId
 	 *
@@ -103,7 +88,7 @@ class CircleMountManager extends Manager {
 	 *
 	 * @return string
 	 */
-	protected function stripPath($path) {
+	protected function stripPath(string $path): string {
 		$prefix = '/' . $this->userId . '/files';
 
 		return rtrim(substr($path, strlen($prefix)), '/');
