@@ -344,6 +344,24 @@ class CirclesManager {
 		return $this->circleService->getCircle($singleId, $probe);
 	}
 
+	/**
+	 * better than using getCircle() if only interested in teams current user is member of
+	 *
+	 * @since 33.0.0
+	 */
+	public function probeCircle(string $singleId, ?CircleProbe $probe = null, ?DataProbe $dataProbe = null): Circle {
+		return $this->circleService->probeCircle($singleId, $probe, $dataProbe);
+	}
+
+	/**
+	 * get details from a list of circles the current user is a member of
+	 *
+	 * @since 33.0.0
+	 */
+	public function getCirclesByIds(array $ids, ?DataProbe $dataProbe = null): array {
+		return $this->circleService->probeCirclesByIds($ids, $dataProbe);
+	}
+
 
 	/**
 	 * @param Circle $circle
