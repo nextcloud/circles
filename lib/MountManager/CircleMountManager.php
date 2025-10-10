@@ -73,7 +73,7 @@ class CircleMountManager extends Manager {
 
 
 	// TODO: implement !
-	public function getMountManager() {
+	public function getMountManager(): \OC\Files\Mount\Manager {
 		return $this;
 	}
 
@@ -103,7 +103,7 @@ class CircleMountManager extends Manager {
 	 *
 	 * @return string
 	 */
-	protected function stripPath($path) {
+	protected function stripPath(string $path): string {
 		$prefix = '/' . $this->userId . '/files';
 
 		return rtrim(substr($path, strlen($prefix)), '/');
