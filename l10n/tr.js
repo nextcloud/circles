@@ -158,10 +158,6 @@ OC.L10N.register(
     "Name" : "Ad",
     "Size" : "Boyut",
     "Modified" : "Değiştirilme",
-    "Teams' files" : "Takımların dosyaları",
-    "Select team to filter by" : "Süzülecek takımı seçin",
-    "Please select teams to filter by" : "Lütfen süzülecek takımları seçin",
-    "No files found for the selected teams" : "Seçilmiş takımlara uyan bir dosya bulunamadı",
     "Shared to Circles" : "Takımlarla paylaşıldı",
     "Circle" : "Takım"
 },

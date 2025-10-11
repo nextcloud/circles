@@ -131,10 +131,6 @@ OC.L10N.register(
     "Name" : "Ime",
     "Size" : "Velikost",
     "Modified" : "Spremenjeno",
-    "Teams' files" : "Datoteke skupine",
-    "Select team to filter by" : "Izbor skupine za filtriranje",
-    "Please select teams to filter by" : "Izbrati je treba skupino za filtriranje",
-    "No files found for the selected teams" : "Za izbrano skupino ni najdenih datotek",
     "Shared to Circles" : "Souporaba v krogu",
     "Circle" : "Krog"
 },

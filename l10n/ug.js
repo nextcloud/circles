@@ -150,10 +150,6 @@ OC.L10N.register(
     "Name" : "ئاتى",
     "Size" : "چوڭلۇقى",
     "Modified" : "ئۆزگەرتكەن",
-    "Teams' files" : "كوماندىلارنىڭ ھۆججەتلىرى",
-    "Select team to filter by" : "سۈزۈش ئۈچۈن گۇرۇپپا تاللاڭ",
-    "Please select teams to filter by" : "سۈزۈش ئۈچۈن گۇرۇپپىلارنى تاللاڭ",
-    "No files found for the selected teams" : "تاللانغان گۇرۇپپىلارغا ھۆججەت تېپىلمىدى",
     "Shared to Circles" : "چەمبىرەككە ئورتاقلاشتى",
     "Circle" : "Circle"
 },

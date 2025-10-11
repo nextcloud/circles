@@ -158,10 +158,6 @@ OC.L10N.register(
     "Name" : "Név",
     "Size" : "Méret",
     "Modified" : "Módosítva",
-    "Teams' files" : "Csapatfájlok",
-    "Select team to filter by" : "Válasszon csapatot a szűréshez:",
-    "Please select teams to filter by" : "Válasszon csapatokat a szűréshez:",
-    "No files found for the selected teams" : "Nem található fájl a kiválasztott csapatokhoz",
     "Shared to Circles" : "Körökkel megosztva",
     "Circle" : "Kör"
 },

@@ -158,10 +158,6 @@ OC.L10N.register(
     "Name" : "名前",
     "Size" : "サイズ",
     "Modified" : "更新日時",
-    "Teams' files" : "チームのファイル",
-    "Select team to filter by" : "フィルターするチームを選択",
-    "Please select teams to filter by" : "フィルターするチームを選択してください",
-    "No files found for the selected teams" : "選択したチームに割りあてられているファイルはありません",
     "Shared to Circles" : "サークルと共有",
     "Circle" : "サークル"
 },

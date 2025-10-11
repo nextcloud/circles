@@ -158,10 +158,6 @@ OC.L10N.register(
     "Name" : "Назив",
     "Size" : "Величина",
     "Modified" : "Измењен",
-    "Teams' files" : "Фајлови тимова",
-    "Select team to filter by" : "Изаберите тим по којем се филтрира",
-    "Please select teams to filter by" : "Молимо васд да изаберите тимове по којима се филтрира",
-    "No files found for the selected teams" : "Није пронађен ниједан фајл за изабране тимове",
     "Shared to Circles" : "Дељено на Кругове",
     "Circle" : "Круг"
 },

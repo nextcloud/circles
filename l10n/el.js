@@ -158,10 +158,6 @@ OC.L10N.register(
     "Name" : "Όνομα",
     "Size" : "Μέγεθος",
     "Modified" : "Τροποποιήθηκε",
-    "Teams' files" : "Αρχεία ομάδων",
-    "Select team to filter by" : "Επιλέξτε ομάδα για φιλτράρισμα",
-    "Please select teams to filter by" : "Παρακαλώ επιλέξτε ομάδες για φιλτράρισμα",
-    "No files found for the selected teams" : "Δεν βρέθηκαν αρχεία για τις επιλεγμένες ομάδες",
     "Shared to Circles" : "Κοινόχρηστο στους Κύκλους",
     "Circle" : "Κύκλος"
 },
