@@ -150,10 +150,6 @@ OC.L10N.register(
     "Name" : "الاسم",
     "Size" : "الحجم",
     "Modified" : "آخر تعديل",
-    "Teams' files" : "ملفات الفرق",
-    "Select team to filter by" : "قم بتحديد فريق للتصفية بحسبه",
-    "Please select teams to filter by" : "رجاءً، قم تتحديد فرق للتصفية بحسبها",
-    "No files found for the selected teams" : "لا توجد أي ملفات للفرق المحددة",
     "Shared to Circles" : "مُشتركٌ مع الدوائر",
     "Circle" : "دائرة"
 },

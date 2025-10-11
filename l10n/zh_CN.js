@@ -158,10 +158,6 @@ OC.L10N.register(
     "Name" : "名称",
     "Size" : "大小",
     "Modified" : "修改日期",
-    "Teams' files" : "团队文件",
-    "Select team to filter by" : "选择要筛选的团队",
-    "Please select teams to filter by" : "请选择要筛选的团队",
-    "No files found for the selected teams" : "没有找到所选团队的文件",
     "Shared to Circles" : "共享圈子的文件",
     "Circle" : "圈子"
 },

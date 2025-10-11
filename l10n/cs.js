@@ -158,10 +158,6 @@ OC.L10N.register(
     "Name" : "Název",
     "Size" : "Velikost",
     "Modified" : "Změněno",
-    "Teams' files" : "Soubory týmu",
-    "Select team to filter by" : "Vyberte tým podle kterého filtrovat",
-    "Please select teams to filter by" : "Vyberte týmy podle kterých filtrovat",
-    "No files found for the selected teams" : "Pro vybrané týmy nebyly nalezeny žádné soubory",
     "Shared to Circles" : "Sdíleno do okruhů",
     "Circle" : "Okruh"
 },

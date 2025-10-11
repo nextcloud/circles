@@ -158,10 +158,6 @@ OC.L10N.register(
     "Name" : "Имя",
     "Size" : "Размер",
     "Modified" : "Изменён",
-    "Teams' files" : "Файлы групп",
-    "Select team to filter by" : "Выберите группу для фильтрации по",
-    "Please select teams to filter by" : "Пожалуйста, выберите группы для фильтрации по",
-    "No files found for the selected teams" : "Для выбранных групп файлы не найдены",
     "Shared to Circles" : "Предоставленный кругам общий доступ",
     "Circle" : "Круг"
 },

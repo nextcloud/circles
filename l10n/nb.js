@@ -153,10 +153,6 @@ OC.L10N.register(
     "Name" : "Navn",
     "Size" : "Størrelse",
     "Modified" : "Endret",
-    "Teams' files" : "Lags filer",
-    "Select team to filter by" : "Velg lag å filtrere etter",
-    "Please select teams to filter by" : "Vennligst velg lag å filtrere etter",
-    "No files found for the selected teams" : "Ingen filer funnet for valgte lag",
     "Shared to Circles" : "Delt til Sirkler",
     "Circle" : "Sirkel"
 },

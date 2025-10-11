@@ -158,10 +158,6 @@ OC.L10N.register(
     "Name" : "Jina",
     "Size" : "Ukubwa",
     "Modified" : "Boresha",
-    "Teams' files" : "Faili za timu",
-    "Select team to filter by" : "Chagua timu ya kuchuja",
-    "Please select teams to filter by" : "Tafadhali chagua timu za kuchuja",
-    "No files found for the selected teams" : "Hakuna faili zilizopatikana za timu zilizochaguliwa",
     "Shared to Circles" : "Imeshirikiwa kwa Miduara",
     "Circle" : "Mduara"
 },

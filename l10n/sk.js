@@ -150,10 +150,6 @@ OC.L10N.register(
     "Name" : "Názov",
     "Size" : "Veľkosť",
     "Modified" : "Upravené",
-    "Teams' files" : "Súbory tímov",
-    "Select team to filter by" : "Vybrať tím pre filtrovanie",
-    "Please select teams to filter by" : "Prosím, vyberte tímy pre filtrovanie",
-    "No files found for the selected teams" : "Pre vybrané tímy neboli nájdené žiadne súbory",
     "Shared to Circles" : "Zdieľané v kruhoch",
     "Circle" : "Kruh"
 },
