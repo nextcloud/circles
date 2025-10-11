@@ -156,10 +156,6 @@
     "Name" : "名稱",
     "Size" : "大小",
     "Modified" : "已修改",
-    "Teams' files" : "團隊檔案",
-    "Select team to filter by" : "選取要篩選的團隊",
-    "Please select teams to filter by" : "請選取要篩選的團隊",
-    "No files found for the selected teams" : "找不到選定團隊的檔案",
     "Shared to Circles" : "分享到小圈圈",
     "Circle" : "小圈圈"
 },"pluralForm" :"nplurals=1; plural=0;"

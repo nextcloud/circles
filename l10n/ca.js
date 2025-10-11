@@ -150,10 +150,6 @@ OC.L10N.register(
     "Name" : "Nom",
     "Size" : "Mida",
     "Modified" : "Data de modificació",
-    "Teams' files" : "Fitxers dels equips",
-    "Select team to filter by" : "Seleccioneu l'equip que voleu filtrar",
-    "Please select teams to filter by" : "Seleccioneu els equips que voleu filtrar",
-    "No files found for the selected teams" : "No s'ha trobat cap fitxer per als equips seleccionats",
     "Shared to Circles" : "Compartits en cercles",
     "Circle" : "Cercle"
 },

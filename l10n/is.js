@@ -158,10 +158,6 @@ OC.L10N.register(
     "Name" : "Nafn",
     "Size" : "Stærð",
     "Modified" : "Breytt",
-    "Teams' files" : "Skrár teymisins",
-    "Select team to filter by" : "Veldu teymi til að sía eftir",
-    "Please select teams to filter by" : "Veldu teymi til að sía eftir",
-    "No files found for the selected teams" : "Engar skrár fundust fyrir valin teymi",
     "Shared to Circles" : "Deilt til hringja",
     "Circle" : "Hringur"
 },

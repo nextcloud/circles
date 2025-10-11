@@ -158,10 +158,6 @@ OC.L10N.register(
     "Name" : "Ainm",
     "Size" : "Méid",
     "Modified" : "Athraithe",
-    "Teams' files" : "Comhaid na bhfoirne",
-    "Select team to filter by" : "Roghnaigh foireann le scagadh de réir",
-    "Please select teams to filter by" : "Roghnaigh foirne lena scagadh le do thoil",
-    "No files found for the selected teams" : "Níor aimsíodh aon chomhaid do na foirne roghnaithe",
     "Shared to Circles" : "Roinnte go Ciorcail",
     "Circle" : "Ciorcal"
 },

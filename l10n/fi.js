@@ -113,10 +113,6 @@ OC.L10N.register(
     "Name" : "Nimi",
     "Size" : "Koko",
     "Modified" : "Muokattu",
-    "Teams' files" : "Tiimin tiedostot",
-    "Select team to filter by" : "Valitse tiimi, jonka perusteella suodatetaan",
-    "Please select teams to filter by" : "Valitse tiimit, joiden perusteella suodatetaan",
-    "No files found for the selected teams" : "Valitulle tiimille ei löytynyt tiedostoja",
     "Shared to Circles" : "Jaettu piireille",
     "Circle" : "Piiri"
 },

@@ -156,10 +156,6 @@
     "Name" : "Název",
     "Size" : "Velikost",
     "Modified" : "Změněno",
-    "Teams' files" : "Soubory týmu",
-    "Select team to filter by" : "Vyberte tým podle kterého filtrovat",
-    "Please select teams to filter by" : "Vyberte týmy podle kterých filtrovat",
-    "No files found for the selected teams" : "Pro vybrané týmy nebyly nalezeny žádné soubory",
     "Shared to Circles" : "Sdíleno do okruhů",
     "Circle" : "Okruh"
 },"pluralForm" :"nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;"

@@ -158,10 +158,6 @@ OC.L10N.register(
     "Name" : "Nimi",
     "Size" : "Suurus",
     "Modified" : "Muudetud",
-    "Teams' files" : "Tiimi failid",
-    "Select team to filter by" : "Vali tiim, mille alusel soovid filtreerida",
-    "Please select teams to filter by" : "Palun vali tiimid, mille järgi filtreerida",
-    "No files found for the selected teams" : "Valitud tiimide jaoks ei leidu ühtegi faili",
     "Shared to Circles" : "Jagatud tiimidega",
     "Circle" : "Tiimid"
 },

@@ -156,10 +156,6 @@ OC.L10N.register(
     "Name" : "Nom",
     "Size" : "Taille",
     "Modified" : "Modifié",
-    "Teams' files" : "Fichiers de l'équipe",
-    "Select team to filter by" : "Sélectionner l'équipe à filtrer",
-    "Please select teams to filter by" : "Veuillez sélectionner les équipes à filtrer",
-    "No files found for the selected teams" : "Aucun fichier trouvé pour les équipes sélectionnées",
     "Shared to Circles" : "Partagé avec les cercles",
     "Circle" : "Cercle"
 },

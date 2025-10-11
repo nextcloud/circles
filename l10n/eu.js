@@ -156,10 +156,6 @@ OC.L10N.register(
     "Name" : "Izena",
     "Size" : "Tamaina",
     "Modified" : "Aldatua",
-    "Teams' files" : "Lantaldeen fitxategiak",
-    "Select team to filter by" : "Hautatu iragazteko lantaldea",
-    "Please select teams to filter by" : "Hautatu lantaldeak iragazteko",
-    "No files found for the selected teams" : "Ez da fitxategirik aurkitu hautatutako lantaldeetarako",
     "Shared to Circles" : "Zirkuluetara partekatua",
     "Circle" : "Zirkulua"
 },

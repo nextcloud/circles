@@ -156,10 +156,6 @@ OC.L10N.register(
     "Name" : "Ім'я",
     "Size" : "Розмір",
     "Modified" : "Змінено",
-    "Teams' files" : "Файли команд",
-    "Select team to filter by" : "Виберіть команду для відфільтрування",
-    "Please select teams to filter by" : "Виберіть команди для відфільтрування",
-    "No files found for the selected teams" : "Жодних файлів не знайдено для вибраних команд",
     "Shared to Circles" : "Опубліковано в Колах",
     "Circle" : "Коло"
 },
