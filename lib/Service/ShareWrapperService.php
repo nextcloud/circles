@@ -152,6 +152,13 @@ class ShareWrapperService {
 		);
 	}
 
+	/**
+	 * @return ShareWrapper[]
+	 */
+	public function getSharesToCircles(array $circleIds): array {
+		return $this->shareWrapperRequest->getSharesToCircles($circleIds);
+	}
+
 
 	/**
 	 * @param int $shareId
