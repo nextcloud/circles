@@ -36,7 +36,7 @@ class ShareTokenRequest extends ShareTokenRequestBuilder {
 			->setValue('password', $qb->createNamedParameter($token->getPassword()))
 			->setValue('accepted', $qb->createNamedParameter($token->getAccepted()));
 
-		$qb->execute();
+		$qb->executeStatement();
 		$id = $qb->getLastInsertId();
 		$token->setDbId($id);
 	}
@@ -95,7 +95,7 @@ class ShareTokenRequest extends ShareTokenRequestBuilder {
 		$qb->limitToSingleId($singleId);
 		$qb->limitToCircleId($circleId);
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 	/**

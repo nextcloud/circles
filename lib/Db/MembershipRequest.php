@@ -38,7 +38,7 @@ class MembershipRequest extends MembershipRequestBuilder {
 		);
 		$qb->setValue('inheritance_depth', $qb->createNamedParameter($membership->getInheritanceDepth()));
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -59,7 +59,7 @@ class MembershipRequest extends MembershipRequestBuilder {
 		$qb->limitToSingleId($membership->getSingleId());
 		$qb->limitToCircleId($membership->getCircleId());
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -127,7 +127,7 @@ class MembershipRequest extends MembershipRequestBuilder {
 			$qb->limitToSingleId($singleId);
 		}
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -139,7 +139,7 @@ class MembershipRequest extends MembershipRequestBuilder {
 		$qb->limitToSingleId($membership->getSingleId());
 		$qb->limitToCircleId($membership->getCircleId());
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -150,6 +150,6 @@ class MembershipRequest extends MembershipRequestBuilder {
 		$qb = $this->getMembershipDeleteSql();
 		$qb->limitToSingleId($federatedUser->getSingleId());
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 }

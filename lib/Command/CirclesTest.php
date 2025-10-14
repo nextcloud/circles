@@ -286,7 +286,7 @@ class CirclesTest extends Base {
 		//		$circlesQueryHelper->addCircleDetails('test', 'shared_to');
 		//
 		//		$items = [];
-		//		$cursor = $qb->execute();
+		//		$cursor = $qb->executeQuery();
 		//		while ($row = $cursor->fetch()) {
 		//			try {
 		//				$items[] = [

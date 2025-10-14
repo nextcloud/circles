@@ -53,7 +53,7 @@ class MemberRequest extends MemberRequestBuilder {
 			$qb->setValue('invited_by', $qb->createNamedParameter($member->getInvitedBy()->getSingleId()));
 		}
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -77,7 +77,7 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->limitToCircleId($member->getCircleId());
 		$qb->limitToSingleId($member->getSingleId());
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -112,7 +112,7 @@ class MemberRequest extends MemberRequestBuilder {
 			$qb->limitToCircleId($circleId);
 		}
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -124,7 +124,7 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->limitToCircleId($member->getCircleId());
 		$qb->limitToSingleId($member->getSingleId());
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -137,7 +137,7 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->limitToMemberId($federatedUser->getSingleId());
 		$qb->limitToCircleId($federatedUser->getSingleId());
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -150,7 +150,7 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->limitToSingleId($federatedUser->getSingleId());
 		$qb->limitToCircleId($circle->getSingleId());
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -167,7 +167,7 @@ class MemberRequest extends MemberRequestBuilder {
 			)
 		);
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -182,7 +182,7 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->limitToCircleId($member->getCircleId());
 		$qb->limitToSingleId($member->getSingleId());
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 

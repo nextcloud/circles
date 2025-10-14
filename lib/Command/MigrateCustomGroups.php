@@ -231,7 +231,7 @@ class MigrateCustomGroups extends Base {
 			->where($select->expr()->eq('share_type', $select->createNamedParameter(IShare::TYPE_GROUP)));
 
 		$shareIds = [];
-		$result = $select->execute();
+		$result = $select->executeQuery();
 		while ($row = $result->fetch()) {
 			$with = $row['share_with'];
 			if (!str_starts_with($with, 'customgroup_')
