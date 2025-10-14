@@ -40,7 +40,7 @@ class RemoteRequest extends RemoteRequestBuilder {
 			->setValue('interface', $qb->createNamedParameter($remote->getInterface()))
 			->setValue('item', $qb->createNamedParameter(json_encode($remote->getOrigData())));
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -59,7 +59,7 @@ class RemoteRequest extends RemoteRequestBuilder {
 
 		$qb->limitToInstance($remote->getInstance());
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -75,7 +75,7 @@ class RemoteRequest extends RemoteRequestBuilder {
 
 		$qb->limit('uid', $remote->getUid(true), '', false);
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -91,7 +91,7 @@ class RemoteRequest extends RemoteRequestBuilder {
 
 		$qb->limit('uid', $remote->getUid(true), '', false);
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -107,7 +107,7 @@ class RemoteRequest extends RemoteRequestBuilder {
 
 		$qb->limit('uid', $remote->getUid(true), '', false);
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -123,7 +123,7 @@ class RemoteRequest extends RemoteRequestBuilder {
 
 		$qb->limit('uid', $remote->getUid(true), '', false);
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -259,6 +259,6 @@ class RemoteRequest extends RemoteRequestBuilder {
 	public function deleteById(RemoteInstance $remoteInstance) {
 		$qb = $this->getRemoteDeleteSql();
 		$qb->limitToId($remoteInstance->getDbId());
-		$qb->execute();
+		$qb->executeStatement();
 	}
 }
