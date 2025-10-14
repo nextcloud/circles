@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use OC\DB\Exceptions\DbalException;
 use OCA\Circles\Model\Federated\EventWrapper;
 use Psr\Log\LoggerInterface;
 
@@ -41,8 +41,12 @@ class EventWrapperRequest extends EventWrapperRequestBuilder {
 			->setValue('creation', $qb->createNamedParameter($wrapper->getCreation()));
 
 		try {
-			$qb->execute();
-		} catch (UniqueConstraintViolationException $e) {
+			$qb->executeStatement();
+		} catch (DbalException $e) {
+			if ($e->getReason() !== DbalException::REASON_UNIQUE_CONSTRAINT_VIOLATION) {
+				throw $e;
+			}
+
 			$logger = \OCP\Server::get(LoggerInterface::class);
 			$logger->warning('issue while storing event', ['exception' => $e]);
 		}
@@ -60,7 +64,7 @@ class EventWrapperRequest extends EventWrapperRequestBuilder {
 		$qb->limitToInstance($wrapper->getInstance());
 		$qb->limitToToken($wrapper->getToken());
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -74,7 +78,7 @@ class EventWrapperRequest extends EventWrapperRequestBuilder {
 
 		$qb->limitToToken($token);
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 

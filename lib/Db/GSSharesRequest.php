@@ -38,7 +38,7 @@ class GSSharesRequest extends GSSharesRequestBuilder {
 			->setValue('parent', $qb->createNamedParameter($gsShare->getParent()))
 			->setValue('mountpoint', $qb->createNamedParameter($gsShare->getMountPoint()))
 			->setValue('mountpoint_hash', $qb->createNamedParameter($hash));
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -54,7 +54,7 @@ class GSSharesRequest extends GSSharesRequestBuilder {
 		$this->leftJoinMountPoint($qb, $userId);
 
 		$shares = [];
-		$cursor = $qb->execute();
+		$cursor = $qb->executeQuery();
 		while ($data = $cursor->fetch()) {
 			$shares[] = $this->parseGSSharesSelectSql($data);
 		}
@@ -73,7 +73,7 @@ class GSSharesRequest extends GSSharesRequestBuilder {
 		$this->limitToInstance($qb, $member->getInstance());
 		$this->limitToOwner($qb, $member->getUserId());
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -126,7 +126,7 @@ class GSSharesRequest extends GSSharesRequestBuilder {
 		$this->limitToMountpointHash($qb, $targetHash);
 
 		$shares = [];
-		$cursor = $qb->execute();
+		$cursor = $qb->executeQuery();
 		$data = $cursor->fetch();
 
 		if ($data === false) {
@@ -151,7 +151,7 @@ class GSSharesRequest extends GSSharesRequestBuilder {
 		$this->limitToUserId($qb, $userId);
 
 		$shares = [];
-		$cursor = $qb->execute();
+		$cursor = $qb->executeQuery();
 		$data = $cursor->fetch();
 		if ($data === false) {
 			throw new ShareNotFound();
@@ -173,7 +173,7 @@ class GSSharesRequest extends GSSharesRequestBuilder {
 			->setValue('share_id', $qb->createNamedParameter($mountpoint->getShareId()))
 			->setValue('mountpoint', $qb->createNamedParameter($mountpoint->getMountPoint()))
 			->setValue('mountpoint_hash', $qb->createNamedParameter($hash));
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -192,7 +192,7 @@ class GSSharesRequest extends GSSharesRequestBuilder {
 
 		$this->limitToShareId($qb, $mountpoint->getShareId());
 		$this->limitToUserId($qb, $mountpoint->getUserId());
-		$nb = $qb->execute();
+		$nb = $qb->executeStatement();
 
 		return ($nb === 1);
 	}

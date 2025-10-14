@@ -32,7 +32,7 @@ class FileSharesRequest extends FileSharesRequestBuilder {
 			$expr->eq('uid_initiator', $qb->createNamedParameter($member->getUserId())),
 		));
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -48,7 +48,7 @@ class FileSharesRequest extends FileSharesRequestBuilder {
 			$expr->eq('share_with', $qb->createNamedParameter($circleId)),
 		));
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -64,7 +64,7 @@ class FileSharesRequest extends FileSharesRequestBuilder {
 		$this->limitToShareType($qb, self::SHARE_TYPE);
 
 		$shares = [];
-		$cursor = $qb->execute();
+		$cursor = $qb->executeQuery();
 		while ($data = $cursor->fetch()) {
 			$shares[] = $data;
 		}
@@ -86,7 +86,7 @@ class FileSharesRequest extends FileSharesRequestBuilder {
 		$qb->andWhere($expr->isNull($this->default_select_alias . '.parent'));
 
 		$shares = [];
-		$cursor = $qb->execute();
+		$cursor = $qb->executeQuery();
 		while ($data = $cursor->fetch()) {
 			$shares[] = $data;
 		}

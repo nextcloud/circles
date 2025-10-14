@@ -995,7 +995,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	 * @throws RowNotFoundException
 	 */
 	public function getRow(callable $method, string $object = '', array $params = []): IQueryRow {
-		$cursor = $this->execute();
+		$cursor = $this->executeQuery();
 		$data = $cursor->fetch();
 		$cursor->closeCursor();
 
@@ -1016,7 +1016,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	 */
 	public function getRows(callable $method, string $object = '', array $params = []): array {
 		$rows = [];
-		$cursor = $this->execute();
+		$cursor = $this->executeQuery();
 		while ($data = $cursor->fetch()) {
 			try {
 				$rows[] = $method($data, $this, $object, $params);

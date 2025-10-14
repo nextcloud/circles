@@ -244,7 +244,7 @@ class CoreRequestBuilder {
 			$qb = $this->getQueryBuilder();
 			try {
 				$qb->delete($table);
-				$qb->execute();
+				$qb->executeStatement();
 			} catch (Exception $e) {
 			}
 		}
@@ -254,7 +254,7 @@ class CoreRequestBuilder {
 			$expr = $qb->expr();
 			$qb->delete(self::TABLE_SHARE);
 			$qb->where($expr->eq('share_type', $qb->createNamedParameter(IShare::TYPE_CIRCLE)));
-			$qb->execute();
+			$qb->executeStatement();
 		}
 	}
 
@@ -292,7 +292,7 @@ class CoreRequestBuilder {
 		$qb->limit('app', 'circles');
 		$qb->unlike('version', '001%');
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 	/**
@@ -302,6 +302,6 @@ class CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
 		//		$qb->delete('jobs');
 		//		$qb->where($this->exprLimitToDBField($qb, 'class', 'OCA\Circles\', true, true));
-		//		$qb->execute();
+		//		$qb->executeStatement();
 	}
 }

@@ -791,7 +791,7 @@ class ShareByCircleProvider implements IShareProvider {
 		//				  )
 		//		   );
 		//
-		//		$cursor = $qb->execute();
+		//		$cursor = $qb->executeQuery();
 		//		while ($data = $cursor->fetch()) {
 		//			try {
 		//				yield $this->createShareObject($data);

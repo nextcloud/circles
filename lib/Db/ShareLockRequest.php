@@ -34,7 +34,7 @@ class ShareLockRequest extends ShareLockRequestBuilder {
 			->setValue('circle_id', $qb->createNamedParameter($share->getCircleId()))
 			->setValue('instance', $qb->createNamedParameter($qb->getInstance($share)));
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 

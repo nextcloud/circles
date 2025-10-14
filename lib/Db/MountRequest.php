@@ -41,7 +41,7 @@ class MountRequest extends MountRequestBuilder {
 			->setValue('remote', $qb->createNamedParameter($mount->getRemote()))
 			->setValue('remote_id', $qb->createNamedParameter($mount->getRemoteShareId(), IQueryBuilder::PARAM_INT));
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -52,7 +52,7 @@ class MountRequest extends MountRequestBuilder {
 		$qb = $this->getMountDeleteSql();
 		$qb->limitToToken($token);
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -101,7 +101,7 @@ class MountRequest extends MountRequestBuilder {
 		//		$this->leftJoinMountPoint($qb, $userId);
 
 		//		$shares = [];
-		//		$cursor = $qb->execute();
+		//		$cursor = $qb->executeQuery();
 		//		while ($data = $cursor->fetch()) {
 		//			$shares[] = $this->parseGSSharesSelectSql($data);
 		//		}
@@ -122,7 +122,7 @@ class MountRequest extends MountRequestBuilder {
 	//		$this->leftJoinMountPoint($qb, $userId);
 	//
 	//		$shares = [];
-	//		$cursor = $qb->execute();
+	//		$cursor = $qb->executeQuery();
 	//		while ($data = $cursor->fetch()) {
 	//			$shares[] = $this->parseGSSharesSelectSql($data);
 	//		}
@@ -141,7 +141,7 @@ class MountRequest extends MountRequestBuilder {
 	//		$this->limitToInstance($qb, $member->getInstance());
 	//		$this->limitToOwner($qb, $member->getUserId());
 	//
-	//		$qb->execute();
+	//		$qb->executeStatement();
 	//	}
 	//
 	//
@@ -194,7 +194,7 @@ class MountRequest extends MountRequestBuilder {
 	//		$this->limitToMountpointHash($qb, $targetHash);
 	//
 	//		$shares = [];
-	//		$cursor = $qb->execute();
+	//		$cursor = $qb->executeQuery();
 	//		$data = $cursor->fetch();
 	//
 	//		if ($data === false) {
@@ -219,7 +219,7 @@ class MountRequest extends MountRequestBuilder {
 	//		$this->limitToUserId($qb, $userId);
 	//
 	//		$shares = [];
-	//		$cursor = $qb->execute();
+	//		$cursor = $qb->executeQuery();
 	//		$data = $cursor->fetch();
 	//		if ($data === false) {
 	//			throw new ShareNotFound();
@@ -241,7 +241,7 @@ class MountRequest extends MountRequestBuilder {
 	//		   ->setValue('share_id', $qb->createNamedParameter($mountpoint->getShareId()))
 	//		   ->setValue('mountpoint', $qb->createNamedParameter($mountpoint->getMountPoint()))
 	//		   ->setValue('mountpoint_hash', $qb->createNamedParameter($hash));
-	//		$qb->execute();
+	//		$qb->executeStatement();
 	//	}
 	//
 	//
@@ -260,7 +260,7 @@ class MountRequest extends MountRequestBuilder {
 	//
 	//		$this->limitToShareId($qb, $mountpoint->getShareId());
 	//		$this->limitToUserId($qb, $mountpoint->getUserId());
-	//		$nb = $qb->execute();
+	//		$nb = $qb->executeStatement();
 	//
 	//		return ($nb === 1);
 	//	}

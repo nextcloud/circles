@@ -51,7 +51,7 @@ class CircleRequest extends CircleRequestBuilder {
 			->setValue('settings', $qb->createNamedParameter(json_encode($circle->getSettings())))
 			->setValue('config', $qb->createNamedParameter($circle->getConfig()));
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -67,7 +67,7 @@ class CircleRequest extends CircleRequestBuilder {
 
 		$qb->limitToUniqueId($circle->getSingleId());
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 	/**
@@ -83,7 +83,7 @@ class CircleRequest extends CircleRequestBuilder {
 
 		$qb->limitToUniqueId($circle->getSingleId());
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -112,7 +112,7 @@ class CircleRequest extends CircleRequestBuilder {
 
 		$qb->limitToUniqueId($singleId);
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -125,7 +125,7 @@ class CircleRequest extends CircleRequestBuilder {
 
 		$qb->limitToUniqueId($circle->getSingleId());
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -137,7 +137,7 @@ class CircleRequest extends CircleRequestBuilder {
 		$qb->set('settings', $qb->createNamedParameter(json_encode($circle->getSettings())));
 		$qb->limitToUniqueId($circle->getSingleId());
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -513,7 +513,7 @@ class CircleRequest extends CircleRequestBuilder {
 		$qb = $this->getCircleDeleteSql();
 		$qb->limitToUniqueId($circle->getSingleId());
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -524,6 +524,6 @@ class CircleRequest extends CircleRequestBuilder {
 		$qb = $this->getCircleDeleteSql();
 		$qb->limitToUniqueId($federatedUser->getSingleId());
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 }

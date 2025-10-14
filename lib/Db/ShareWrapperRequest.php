@@ -62,7 +62,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 			$qb->setValue('parent', $qb->createNamedParameter($parentId));
 		}
 
-		$qb->execute();
+		$qb->executeStatement();
 		$id = $qb->getLastInsertId();
 		try {
 			$share->setId((string)$id);
@@ -92,7 +92,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 
 		$qb->limitToId((int)$shareWrapper->getId());
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 	/**
@@ -108,7 +108,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		$qb->limitToShareParent((int)$shareWrapper->getId());
 		$qb->gt('permissions', 0);
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -120,7 +120,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		$qb->limitToShareWith($membership->getCircleId());
 		$qb->limit('uid_initiator', $membership->getSingleId());
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
@@ -475,7 +475,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 			)
 		);
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 	/**
@@ -512,7 +512,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		$qb->limitNull('id', false, 'p');
 
 		$ids = [];
-		$cursor = $qb->execute();
+		$cursor = $qb->executeQuery();
 		while ($data = $cursor->fetch()) {
 			$ids[] = $data['id'];
 		}
@@ -534,7 +534,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 			)
 		);
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
