@@ -14,6 +14,7 @@ namespace OCA\Circles\Service;
 use Exception;
 use OC;
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\ConfigLexicon;
 use OCA\Circles\Db\AccountsRequest;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
@@ -54,6 +55,7 @@ use OCA\Circles\Tools\Traits\TArrayTools;
 use OCA\Circles\Tools\Traits\TDeserialize;
 use OCA\Circles\Tools\Traits\TNCLogger;
 use OCA\Circles\Tools\Traits\TStringTools;
+use OCP\Config\IUserConfig;
 use OCP\ICache;
 use OCP\ICacheFactory;
 use OCP\IGroupManager;
@@ -177,6 +179,7 @@ class FederatedUserService {
 		ContactService $contactService,
 		InterfaceService $interfaceService,
 		ConfigService $configService,
+		private readonly IUserConfig $userConfig,
 	) {
 		$this->userSession = $userSession;
 		$this->userManager = $userManager;
@@ -520,11 +523,44 @@ class FederatedUserService {
 
 		$federatedUser = new FederatedUser();
 		$federatedUser->set($userId, '', Member::TYPE_USER, $displayName);
-		$this->fillSingleCircleId($federatedUser, ($check || $generate));
+
+		$cached = $this->getCachedLocalFederatedUser($federatedUser);
+		if (!$cached) {
+			$this->fillSingleCircleId($federatedUser, ($check || $generate));
+			$this->userConfig->setValueString($userId, Application::APP_ID, ConfigLexicon::USER_SINGLE_ID, $federatedUser->getSingleId());
+		}
 
 		return $federatedUser;
 	}
 
+	/**
+	 * get singleId from UserConfig (already loaded from database)
+	 * and emulate FederatedUser for local accounts.
+	 */
+	private function getCachedLocalFederatedUser(IFederatedUser $federatedUser): bool {
+		if ($federatedUser->getUserType() !== Member::TYPE_USER || !$federatedUser->isLocal()) {
+			return false;
+		}
+
+		$userSingleId = $this->userConfig->getValueString($federatedUser->getUserId(), Application::APP_ID, ConfigLexicon::USER_SINGLE_ID);
+		if ($userSingleId === '') {
+			return false;
+		}
+
+		$federatedUser->setSingleId($userSingleId);
+		// setBasedOn() should be useless, but we want to keep backward compatibility
+		$federatedUser->setBasedOn(
+			(new Circle())->import([
+				'id' => $userSingleId,
+				'name' => 'user:' . $federatedUser->getUserId() . ':' . $userSingleId,
+				'displayName' => $federatedUser->getDisplayName(),
+				'source' => 1,
+				'config' => 1,
+			])
+		);
+
+		return true;
+	}
 
 	/**
 	 * Get the full FederatedUser for a local user.
