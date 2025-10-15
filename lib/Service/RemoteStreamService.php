@@ -38,6 +38,7 @@ use OCA\Circles\Tools\Traits\TNCLocalSignatory;
 use OCA\Circles\Tools\Traits\TNCWellKnown;
 use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\AppFramework\Http;
+use OCP\IConfig;
 use OCP\IURLGenerator;
 use ReflectionClass;
 use ReflectionException;
@@ -83,6 +84,7 @@ class RemoteStreamService extends NCSignature {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
+		private readonly IConfig $config,
 		IURLGenerator $urlGenerator,
 		RemoteRequest $remoteRequest,
 		InterfaceService $interfaceService,
@@ -364,6 +366,7 @@ class RemoteStreamService extends NCSignature {
 		$request = new NCRequest();
 		$this->configService->configureRequest($request);
 
+		$request->setLocalAddressAllowed($this->config->getSystemValueBool('allow_local_remote_servers'));
 		$this->downloadSignatory($remoteInstance, $keyId, ['auth' => $confirm], $request);
 		$remoteInstance->setUidFromKey();
 

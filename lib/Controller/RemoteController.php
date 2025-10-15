@@ -411,8 +411,13 @@ class RemoteController extends Controller {
 	 * @throws MalformedArrayException
 	 * @throws SignatoryException
 	 * @throws SignatureException
+	 * @throws UnknownInterfaceException
 	 */
 	private function extractEventFromRequest(): FederatedEvent {
+		// will throw exception if instance is not configured for this event.
+		$this->interfaceService->setCurrentInterfaceFromRequest($this->request);
+		$this->interfaceService->getCurrentInterface();
+
 		$signed = $this->remoteStreamService->incomingSignedRequest();
 		$this->confirmRemoteInstance($signed);
 
