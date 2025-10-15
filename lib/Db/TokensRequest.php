@@ -8,10 +8,10 @@
 
 namespace OCA\Circles\Db;
 
-use OC\DB\Exceptions\DbalException;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\SharesToken;
+use OCP\DB\Exception;
 use OCP\Security\IHasher;
 use OCP\Server;
 
@@ -116,8 +116,8 @@ class TokensRequest extends TokensRequestBuilder {
 
 			$qb->execute();
 			$qb->executeStatement();
-		} catch (DbalException $e) {
-			if ($e->getReason() !== DbalException::REASON_UNIQUE_CONSTRAINT_VIOLATION) {
+		} catch (Exception $e) {
+			if ($e->getReason() !== Exception::REASON_UNIQUE_CONSTRAINT_VIOLATION) {
 				throw $e;
 			}
 		}

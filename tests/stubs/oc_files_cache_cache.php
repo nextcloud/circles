@@ -8,7 +8,6 @@
 namespace OC\Files\Cache;
 
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
-use OC\DB\Exceptions\DbalException;
 use OC\DB\QueryBuilder\Sharded\ShardDefinition;
 use OC\Files\Search\SearchComparison;
 use OC\Files\Search\SearchQuery;

@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
-use OC\DB\Exceptions\DbalException;
 use OCA\Circles\Model\Federated\EventWrapper;
+use OCP\DB\Exception;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -42,8 +42,8 @@ class EventWrapperRequest extends EventWrapperRequestBuilder {
 
 		try {
 			$qb->executeStatement();
-		} catch (DbalException $e) {
-			if ($e->getReason() !== DbalException::REASON_UNIQUE_CONSTRAINT_VIOLATION) {
+		} catch (Exception $e) {
+			if ($e->getReason() !== Exception::REASON_UNIQUE_CONSTRAINT_VIOLATION) {
 				throw $e;
 			}
 
