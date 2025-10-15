@@ -93,4 +93,13 @@
 	<extraFiles>
 		<directory name="vendor" />
 	</extraFiles>
+	<issueHandlers>
+		<DeprecatedClass errorLevel="error"/>
+		<DeprecatedConstant errorLevel="error"/>
+		<DeprecatedFunction errorLevel="error"/>
+		<DeprecatedInterface errorLevel="error"/>
+		<DeprecatedMethod errorLevel="error"/>
+		<DeprecatedProperty errorLevel="error"/>
+		<DeprecatedTrait errorLevel="error"/>
+	</issueHandlers>
 </psalm>
