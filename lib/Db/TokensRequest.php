@@ -114,7 +114,6 @@ class TokensRequest extends TokensRequestBuilder {
 				->setValue('token', $qb->createNamedParameter($token))
 				->setValue('password', $qb->createNamedParameter($password));
 
-			$qb->execute();
 			$qb->executeStatement();
 		} catch (DbalException $e) {
 			if ($e->getReason() !== DbalException::REASON_UNIQUE_CONSTRAINT_VIOLATION) {
