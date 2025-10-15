@@ -516,15 +516,6 @@
       <code><![CDATA[getArray]]></code>
     </TooManyArguments>
   </file>
-  <file src="lib/Tools/Traits/TNCLocalSignatory.php">
-    <DeprecatedMethod>
-      <code><![CDATA[getAppValue]]></code>
-      <code><![CDATA[getAppValue]]></code>
-      <code><![CDATA[getAppValue]]></code>
-      <code><![CDATA[setAppValue]]></code>
-      <code><![CDATA[setAppValue]]></code>
-    </DeprecatedMethod>
-  </file>
   <file src="lib/Tools/Traits/TNCLogger.php">
     <RedundantCondition>
       <code><![CDATA[isset($this->logger)]]></code>
@@ -540,11 +531,6 @@
     <UndefinedClass>
       <code><![CDATA[ClientException]]></code>
     </UndefinedClass>
-  </file>
-  <file src="lib/Tools/Traits/TNCSetup.php">
-    <DeprecatedMethod>
-      <code><![CDATA[getAppValue]]></code>
-    </DeprecatedMethod>
   </file>
   <file src="lib/Tools/Traits/TNCSignatory.php">
     <UndefinedMethod>
