@@ -8,8 +8,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\MountManager;
 
-use Exception;
-use OC\DB\Exceptions\DbalException;
 use OCA\Circles\Db\MountPointRequest;
 use OCA\Circles\Db\MountRequest;
 use OCA\Circles\Exceptions\FederatedUserException;
@@ -28,6 +26,7 @@ use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Tools\Traits\TArrayTools;
 use OCA\Files_Sharing\External\Storage as ExternalStorage;
+use OCP\DB\Exception;
 use OCP\Federation\ICloudIdManager;
 use OCP\Files\Config\IMountProvider;
 use OCP\Files\Folder;
@@ -77,7 +76,7 @@ class CircleMountProvider implements IMountProvider {
 			try {
 				$this->fixDuplicateFile($user->getUID(), $item);
 				$mounts[] = $this->generateCircleMount($item, $loader);
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				$this->logger->warning('issue with teams\' mounts', ['exception' => $e]);
 			}
 		}
@@ -204,9 +203,9 @@ class CircleMountProvider implements IMountProvider {
 			try {
 				$this->mountPointRequest->insert($mountPoint);
 				return;
-			} catch (DbalException $e) {
+			} catch (Exception $e) {
 				// meaning a duplicate mountpoint already exists, we need to set a new filename
-				if ($e->getReason() !== DbalException::REASON_UNIQUE_CONSTRAINT_VIOLATION) {
+				if ($e->getReason() !== Exception::REASON_UNIQUE_CONSTRAINT_VIOLATION) {
 					throw $e;
 				}
 			}
@@ -237,9 +236,9 @@ class CircleMountProvider implements IMountProvider {
 						$this->mountPointRequest->insert($mountPoint);
 					}
 					return;
-				} catch (DbalException $e) {
+				} catch (Exception $e) {
 					// meaning path is already used by another share for this user, we keep incrementing
-					if ($e->getReason() !== DbalException::REASON_UNIQUE_CONSTRAINT_VIOLATION) {
+					if ($e->getReason() !== Exception::REASON_UNIQUE_CONSTRAINT_VIOLATION) {
 						throw $e;
 					}
 				}

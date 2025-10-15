@@ -40,7 +40,6 @@
 		<file name="tests/stubs/oc_core_command_base.php" />
 		<file name="tests/stubs/oc_db_connection.php" />
 		<file name="tests/stubs/oc_db_connectionadapter.php" />
-		<file name="tests/stubs/oc_db_exceptions_dbalexception.php" />
 		<file name="tests/stubs/oc_db_querybuilder_querybuilder.php" />
 		<file name="tests/stubs/oc_db_schemawrapper.php" />
 		<file name="tests/stubs/oc_files_cache_cache.php" />

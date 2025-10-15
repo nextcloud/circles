@@ -11,7 +11,6 @@ namespace OC\DB;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Schema\Schema;
-use OC\DB\Exceptions\DbalException;
 use OC\DB\QueryBuilder\Sharded\CrossShardMoveHelper;
 use OC\DB\QueryBuilder\Sharded\ShardDefinition;
 use OCP\DB\IPreparedStatement;

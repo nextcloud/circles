@@ -9,7 +9,6 @@ namespace OC\DB\QueryBuilder;
 
 use Doctrine\DBAL\Query\QueryException;
 use OC\DB\ConnectionAdapter;
-use OC\DB\Exceptions\DbalException;
 use OC\DB\QueryBuilder\ExpressionBuilder\MySqlExpressionBuilder;
 use OC\DB\QueryBuilder\ExpressionBuilder\OCIExpressionBuilder;
 use OC\DB\QueryBuilder\ExpressionBuilder\PgSqlExpressionBuilder;
