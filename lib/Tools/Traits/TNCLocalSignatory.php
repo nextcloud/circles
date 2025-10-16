@@ -13,7 +13,7 @@ namespace OCA\Circles\Tools\Traits;
 
 use OCA\Circles\Tools\Exceptions\SignatoryException;
 use OCA\Circles\Tools\Model\NCSignatory;
-use OCP\IConfig;
+use OCP\IAppConfig;
 use OCP\Server;
 
 trait TNCLocalSignatory {
@@ -30,10 +30,8 @@ trait TNCLocalSignatory {
 	 */
 	public function fillSimpleSignatory(NCSignatory $signatory, bool $generate = false): void {
 		$app = $this->setup('app', '', self::$SIGNATORIES_APP);
-		$signatories = json_decode(Server::get(IConfig::class)->getAppValue($app, 'key_pairs'), true);
-		if (!is_array($signatories)) {
-			$signatories = [];
-		}
+		$appConfig = Server::get(IAppConfig::class);
+		$signatories = $appConfig->getValueArray($app, 'key_pairs');
 
 		$sign = $this->getArray($signatory->getId(), $signatories);
 		if (!empty($sign)) {
@@ -62,8 +60,8 @@ trait TNCLocalSignatory {
 		$signatory->setKeyOwner($signatory->getId());
 		$this->generateKeys($signatory);
 
-		$signatories =
-			json_decode(Server::get(IConfig::class)->getAppValue($app, 'key_pairs', '[]'), true);
+		$appConfig = Server::get(IAppConfig::class);
+		$signatories = $appConfig->getValueArray($app, 'key_pairs');
 		$signatories[$signatory->getId()] = [
 			'keyId' => $signatory->getKeyId(),
 			'keyOwner' => $signatory->getKeyOwner(),
@@ -71,7 +69,7 @@ trait TNCLocalSignatory {
 			'privateKey' => $signatory->getPrivateKey()
 		];
 
-		Server::get(IConfig::class)->setAppValue($app, 'key_pairs', json_encode($signatories));
+		$appConfig->setValueArray($app, 'key_pairs', $signatories);
 	}
 
 
@@ -80,12 +78,10 @@ trait TNCLocalSignatory {
 	 */
 	public function removeSimpleSignatory(NCSignatory $signatory): void {
 		$app = $this->setup('app', '', self::$SIGNATORIES_APP);
-		$signatories = json_decode(Server::get(IConfig::class)->getAppValue($app, 'key_pairs'), true);
-		if (!is_array($signatories)) {
-			$signatories = [];
-		}
+		$appConfig = Server::get(IAppConfig::class);
+		$signatories = $appConfig->getValueArray($app, 'key_pairs');
 
 		unset($signatories[$signatory->getId()]);
-		Server::get(IConfig::class)->setAppValue($app, 'key_pairs', json_encode($signatories));
+		$appConfig->setValueArray($app, 'key_pairs', $signatories);
 	}
 }

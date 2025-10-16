@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Tools\Traits;
 
-use OCP\IConfig;
+use OCP\IAppConfig;
 use OCP\Server;
 
 trait TNCSetup {
@@ -79,8 +79,8 @@ trait TNCSetup {
 			return '';
 		}
 
-		$config = Server::get(IConfig::class);
+		$config = Server::get(IAppConfig::class);
 
-		return $config->getAppValue($app, $key, '');
+		return $config->getValueString($app, $key, '');
 	}
 }
