@@ -58,11 +58,11 @@ use OCP\Group\Events\GroupCreatedEvent;
 use OCP\Group\Events\GroupDeletedEvent;
 use OCP\Group\Events\UserAddedEvent;
 use OCP\Group\Events\UserRemovedEvent;
-use OCP\IServerContainer;
 use OCP\Share\IManager as IShareManager;
 use OCP\User\Events\UserChangedEvent;
 use OCP\User\Events\UserCreatedEvent;
 use OCP\User\Events\UserDeletedEvent;
+use Psr\Container\ContainerInterface;
 use Throwable;
 
 /**
@@ -129,25 +129,19 @@ class Application extends App implements IBootstrap {
 
 
 	/**
-	 * @param IBootContext $context
-	 *
 	 * @throws Throwable
 	 */
 	public function boot(IBootContext $context): void {
-		$serverContainer = $context->getServerContainer();
-
 		$context->injectFn(function (IShareManager $shareManager) {
 			$shareManager->registerShareProvider(ShareByCircleProvider::class);
 		});
-
-		$this->configService = $context->getAppContainer()
-			->get(ConfigService::class);
 
 		$context->injectFn(Closure::fromCallable([$this, 'registerMountProvider']));
 	}
 
 
-	public function registerMountProvider(IServerContainer $container) {
+	public function registerMountProvider(ContainerInterface $container) {
+		$this->configService = $container->get(ConfigService::class);
 		if (!$this->configService->isGSAvailable()) {
 			return;
 		}
