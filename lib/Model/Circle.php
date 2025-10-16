@@ -123,7 +123,7 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 
 
 	/**
-	 * Note: When editing those values, update lib/Application/Capabilities.php
+	 * Note: When editing those values, update lib/AppInfo/Capabilities.php
 	 *
 	 * @see Capabilities::getCapabilitiesCircleConstants()
 	 * @var array
@@ -133,9 +133,9 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		2 => 'Nextcloud Group',
 		4 => 'Email Address',
 		8 => 'Contact',
-		16 => 'Circle',
+		16 => 'Team',
 		10000 => 'Nextcloud App',
-		10001 => 'Circles App',
+		10001 => 'Teams App',
 		10002 => 'Admin Command Line',
 		11000 => '3rd party app',
 		11010 => 'Collectives App'
