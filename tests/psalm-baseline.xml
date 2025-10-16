@@ -5,13 +5,6 @@
       <code><![CDATA[str_starts_with($sK, '_')]]></code>
     </TypeDoesNotContainType>
   </file>
-  <file src="lib/AppInfo/Application.php">
-    <DeprecatedInterface>
-      <code><![CDATA[$context->getAppContainer()]]></code>
-      <code><![CDATA[$context->getServerContainer()]]></code>
-      <code><![CDATA[IServerContainer]]></code>
-    </DeprecatedInterface>
-  </file>
   <file src="lib/Circles/FileSharingBroadcaster.php">
     <DeprecatedClass>
       <code><![CDATA[FileSharesRequest]]></code>
@@ -28,8 +21,6 @@
       <code><![CDATA[MiscService::getContactData($contactId)]]></code>
       <code><![CDATA[MiscService::getContactData($contactId)]]></code>
       <code><![CDATA[MiscService::getContactData($member->getUserId())]]></code>
-      <code><![CDATA[getL10N]]></code>
-      <code><![CDATA[getL10N]]></code>
     </DeprecatedMethod>
     <InvalidScalarArgument>
       <code><![CDATA[$share->getId()]]></code>
@@ -155,15 +146,7 @@
       <code><![CDATA[Types]]></code>
     </UndefinedClass>
   </file>
-  <file src="lib/Migration/Version0024Date20220317190331.php">
-    <DeprecatedMethod>
-      <code><![CDATA[hasPrimaryKey]]></code>
-    </DeprecatedMethod>
-  </file>
   <file src="lib/Model/BaseCircle.php">
-    <DeprecatedMethod>
-      <code><![CDATA[getL10N]]></code>
-    </DeprecatedMethod>
     <FalsableReturnStatement>
       <code><![CDATA[json_encode($this->settings)]]></code>
     </FalsableReturnStatement>
@@ -178,9 +161,6 @@
     </RedundantCast>
   </file>
   <file src="lib/Model/BaseMember.php">
-    <DeprecatedMethod>
-      <code><![CDATA[getL10N]]></code>
-    </DeprecatedMethod>
     <InvalidNullableReturnType>
       <code><![CDATA[DeprecatedMember]]></code>
     </InvalidNullableReturnType>
@@ -347,15 +327,6 @@
   <file src="lib/Search/LocalUsers.php">
     <DeprecatedMethod>
       <code><![CDATA[search]]></code>
-    </DeprecatedMethod>
-  </file>
-  <file src="lib/Service/ConfigService.php">
-    <DeprecatedMethod>
-      <code><![CDATA[deleteAppValues]]></code>
-      <code><![CDATA[getAppValue]]></code>
-      <code><![CDATA[getAppValue]]></code>
-      <code><![CDATA[getAppValue]]></code>
-      <code><![CDATA[setAppValue]]></code>
     </DeprecatedMethod>
   </file>
   <file src="lib/Service/FederatedShareService.php">

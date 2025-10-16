@@ -9,7 +9,6 @@
 namespace OCA\Circles\Circles;
 
 use Exception;
-use OC;
 use OC\Share20\Share;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\FileSharesRequest;
@@ -23,7 +22,6 @@ use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
 use OCA\FederatedFileSharing\Notifications;
-use OCP\AppFramework\QueryException;
 use OCP\Defaults;
 use OCP\Federation\ICloudIdManager;
 use OCP\Files\IRootFolder;
@@ -32,12 +30,14 @@ use OCP\IL10N;
 use OCP\IURLGenerator;
 use OCP\IUser;
 use OCP\IUserManager;
+use OCP\L10N\IFactory;
 use OCP\Mail\IEMailTemplate;
 use OCP\Mail\IMailer;
 use OCP\Server;
 use OCP\Share\Exceptions\IllegalIDChangeException;
 use OCP\Share\IShare;
 use OCP\Util;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -49,8 +49,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 	/** @var bool */
 	private $initiated = false;
 
-	/** @var IL10N */
-	private $l10n = null;
+	private ?IL10N $l10n = null;
 
 	/** @var IMailer */
 	private $mailer;
@@ -101,7 +100,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 		}
 
 		$this->initiated = true;
-		$this->l10n = OC::$server->getL10N(Application::APP_ID);
+		$this->l10n = Server::get(IFactory::class)->get(Application::APP_ID);
 		$this->mailer = Server::get(IMailer::class);
 		$this->rootFolder = Server::get(IRootFolder::class);
 		$this->userManager = Server::get(IUserManager::class);
@@ -114,7 +113,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 			$this->tokensRequest = Server::get(TokensRequest::class);
 			$this->configService = Server::get(ConfigService::class);
 			$this->miscService = Server::get(MiscService::class);
-		} catch (QueryException $e) {
+		} catch (ContainerExceptionInterface $e) {
 			$this->logger->info('Circles: cannot init FileSharingBroadcaster - ' . $e->getMessage(), ['exception' => $e]);
 		}
 
@@ -122,7 +121,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 			$this->federationNotifications =
 				Server::get(Notifications::class);
 			$this->federatedEnabled = true;
-		} catch (QueryException $e) {
+		} catch (ContainerExceptionInterface $e) {
 		}
 	}
 
@@ -388,7 +387,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 		$lang = $this->configService->getCoreValueForUser($share->getSharedBy(), 'lang', '');
 		if ($lang !== '') {
-			$this->l10n = OC::$server->getL10N(Application::APP_ID, $lang);
+			$this->l10n = Server::get(IFactory::class)->get(Application::APP_ID, $lang);
 		}
 
 		$displayName = $this->miscService->getDisplayName($share->getSharedBy());
