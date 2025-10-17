@@ -130,7 +130,7 @@ class MigrateCustomGroups extends Base {
 					$this->output->writeln(' - new member <info>' . $userId . '</info>');
 
 					$member = $this->circlesManager->addMember($circle->getSingleId(), $fedUser);
-					if ($rowM['role'] === '1') {
+					if ((int)$rowM['role'] === 1) {
 						$this->circlesManager->levelMember($member->getId(), Member::LEVEL_ADMIN);
 					}
 				} catch (\Exception $e) {
