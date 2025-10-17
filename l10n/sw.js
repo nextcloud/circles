@@ -158,7 +158,6 @@ OC.L10N.register(
     "Name" : "Jina",
     "Size" : "Ukubwa",
     "Modified" : "Boresha",
-    "Shared to Circles" : "Imeshirikiwa kwa Miduara",
-    "Circle" : "Mduara"
+    "Shared to Circles" : "Imeshirikiwa kwa Miduara"
 },
 "nplurals=2; plural=(n != 1);");

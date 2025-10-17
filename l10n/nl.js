@@ -156,7 +156,6 @@ OC.L10N.register(
     "Name" : "Naam",
     "Size" : "Omvang",
     "Modified" : "Gewijzigd",
-    "Shared to Circles" : "Gedeeld met Kringen",
-    "Circle" : "Kring"
+    "Shared to Circles" : "Gedeeld met Kringen"
 },
 "nplurals=2; plural=(n != 1);");

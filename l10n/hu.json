@@ -156,7 +156,6 @@
     "Name" : "Név",
     "Size" : "Méret",
     "Modified" : "Módosítva",
-    "Shared to Circles" : "Körökkel megosztva",
-    "Circle" : "Kör"
+    "Shared to Circles" : "Körökkel megosztva"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

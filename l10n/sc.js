@@ -110,7 +110,6 @@ OC.L10N.register(
     "Name" : "Nùmene",
     "Size" : "Mannària",
     "Modified" : "Modificadu",
-    "Shared to Circles" : "Cumpartzidu cun is giros\\",
-    "Circle" : "Giru"
+    "Shared to Circles" : "Cumpartzidu cun is giros\\"
 },
 "nplurals=2; plural=(n != 1);");

@@ -150,7 +150,6 @@ OC.L10N.register(
     "Name" : "ئاتى",
     "Size" : "چوڭلۇقى",
     "Modified" : "ئۆزگەرتكەن",
-    "Shared to Circles" : "چەمبىرەككە ئورتاقلاشتى",
-    "Circle" : "Circle"
+    "Shared to Circles" : "چەمبىرەككە ئورتاقلاشتى"
 },
 "nplurals=2; plural=(n != 1);");

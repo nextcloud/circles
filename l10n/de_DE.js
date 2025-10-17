@@ -158,7 +158,6 @@ OC.L10N.register(
     "Name" : "Name",
     "Size" : "Größe",
     "Modified" : "Geändert",
-    "Shared to Circles" : "Geteilt mit Kreisen",
-    "Circle" : "Kreis"
+    "Shared to Circles" : "Geteilt mit Kreisen"
 },
 "nplurals=2; plural=(n != 1);");

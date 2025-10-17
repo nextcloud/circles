@@ -111,7 +111,6 @@
     "Name" : "Nimi",
     "Size" : "Koko",
     "Modified" : "Muokattu",
-    "Shared to Circles" : "Jaettu piireille",
-    "Circle" : "Piiri"
+    "Shared to Circles" : "Jaettu piireille"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

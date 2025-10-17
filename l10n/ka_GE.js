@@ -74,7 +74,6 @@ OC.L10N.register(
     "Name" : "სახელი",
     "Size" : "ზომა",
     "Modified" : "შეიცვალა",
-    "Shared to Circles" : "წრეებთან გაზიარებული",
-    "Circle" : "წრე"
+    "Shared to Circles" : "წრეებთან გაზიარებული"
 },
 "nplurals=2; plural=(n!=1);");

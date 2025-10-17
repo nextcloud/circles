@@ -156,7 +156,6 @@ OC.L10N.register(
     "Name" : "Izena",
     "Size" : "Tamaina",
     "Modified" : "Aldatua",
-    "Shared to Circles" : "Zirkuluetara partekatua",
-    "Circle" : "Zirkulua"
+    "Shared to Circles" : "Zirkuluetara partekatua"
 },
 "nplurals=2; plural=(n != 1);");

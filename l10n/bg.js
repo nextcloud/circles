@@ -118,7 +118,6 @@ OC.L10N.register(
     "Name" : "Име",
     "Size" : "Размер",
     "Modified" : "Променен на",
-    "Shared to Circles" : "Споделено с Кръгове",
-    "Circle" : "Кръг"
+    "Shared to Circles" : "Споделено с Кръгове"
 },
 "nplurals=2; plural=(n != 1);");

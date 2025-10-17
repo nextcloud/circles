@@ -150,7 +150,6 @@ OC.L10N.register(
     "Name" : "Nom",
     "Size" : "Mida",
     "Modified" : "Data de modificació",
-    "Shared to Circles" : "Compartits en cercles",
-    "Circle" : "Cercle"
+    "Shared to Circles" : "Compartits en cercles"
 },
 "nplurals=2; plural=(n != 1);");

@@ -153,7 +153,6 @@ OC.L10N.register(
     "Name" : "Navn",
     "Size" : "Størrelse",
     "Modified" : "Endret",
-    "Shared to Circles" : "Delt til Sirkler",
-    "Circle" : "Sirkel"
+    "Shared to Circles" : "Delt til Sirkler"
 },
 "nplurals=2; plural=(n != 1);");

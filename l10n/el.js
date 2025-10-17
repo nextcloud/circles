@@ -158,7 +158,6 @@ OC.L10N.register(
     "Name" : "Όνομα",
     "Size" : "Μέγεθος",
     "Modified" : "Τροποποιήθηκε",
-    "Shared to Circles" : "Κοινόχρηστο στους Κύκλους",
-    "Circle" : "Κύκλος"
+    "Shared to Circles" : "Κοινόχρηστο στους Κύκλους"
 },
 "nplurals=2; plural=(n != 1);");

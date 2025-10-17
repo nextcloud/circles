@@ -113,7 +113,6 @@ OC.L10N.register(
     "Name" : "Nimi",
     "Size" : "Koko",
     "Modified" : "Muokattu",
-    "Shared to Circles" : "Jaettu piireille",
-    "Circle" : "Piiri"
+    "Shared to Circles" : "Jaettu piireille"
 },
 "nplurals=2; plural=(n != 1);");

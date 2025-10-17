@@ -158,7 +158,6 @@ OC.L10N.register(
     "Name" : "Ad",
     "Size" : "Boyut",
     "Modified" : "Değiştirilme",
-    "Shared to Circles" : "Takımlarla paylaşıldı",
-    "Circle" : "Takım"
+    "Shared to Circles" : "Takımlarla paylaşıldı"
 },
 "nplurals=2; plural=(n > 1);");

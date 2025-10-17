@@ -18,7 +18,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Ulac inekcumen i yettwafen deg ukaram-a",
     "Name" : "Nom",
     "Size" : "Teɣzi",
-    "Modified" : "Yettwabeddel",
-    "Circle" : "Tawinest"
+    "Modified" : "Yettwabeddel"
 },
 "nplurals=2; plural=(n != 1);");

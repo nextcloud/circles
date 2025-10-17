@@ -78,7 +78,6 @@ OC.L10N.register(
     "Name" : "Nomo",
     "Size" : "Grando",
     "Modified" : "Modifita",
-    "Shared to Circles" : "Kunhavigita kun rondoj",
-    "Circle" : "Rondo"
+    "Shared to Circles" : "Kunhavigita kun rondoj"
 },
 "nplurals=2; plural=(n != 1);");

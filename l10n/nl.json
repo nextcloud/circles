@@ -154,7 +154,6 @@
     "Name" : "Naam",
     "Size" : "Omvang",
     "Modified" : "Gewijzigd",
-    "Shared to Circles" : "Gedeeld met Kringen",
-    "Circle" : "Kring"
+    "Shared to Circles" : "Gedeeld met Kringen"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

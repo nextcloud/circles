@@ -158,7 +158,6 @@ OC.L10N.register(
     "Name" : "Név",
     "Size" : "Méret",
     "Modified" : "Módosítva",
-    "Shared to Circles" : "Körökkel megosztva",
-    "Circle" : "Kör"
+    "Shared to Circles" : "Körökkel megosztva"
 },
 "nplurals=2; plural=(n != 1);");
