@@ -7,9 +7,10 @@
 
 namespace OCA\Circles\Model;
 
-use OC;
 use OCA\Circles\AppInfo\Application;
 use OCP\IL10N;
+use OCP\L10N\IFactory;
+use OCP\Server;
 
 /**
  * @deprecated
@@ -88,7 +89,7 @@ class BaseCircle {
 	private $links;
 
 	public function __construct($type = -1, $name = '') {
-		$this->l10n = OC::$server->getL10N(Application::APP_ID);
+		$this->l10n = Server::get(IFactory::class)->get(Application::APP_ID);
 
 		if ($type > -1) {
 			$this->type = $type;

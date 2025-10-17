@@ -8,10 +8,11 @@
 namespace OCA\Circles\Model;
 
 use JsonSerializable;
-use OC;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Service\MiscService;
 use OCP\IL10N;
+use OCP\L10N\IFactory;
+use OCP\Server;
 
 /**
  * @deprecated
@@ -91,7 +92,7 @@ class BaseMember implements JsonSerializable {
 	 * @param int $type
 	 */
 	public function __construct($userId = '', $type = 0, $circleUniqueId = '') {
-		$this->l10n = OC::$server->getL10N(Application::APP_ID);
+		$this->l10n = Server::get(IFactory::class)->get(Application::APP_ID);
 
 		$this->setType($type);
 		$this->setUserId($userId);
