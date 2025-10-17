@@ -156,7 +156,6 @@
     "Name" : "Navn",
     "Size" : "Størrelse",
     "Modified" : "Ændret",
-    "Shared to Circles" : "Delt til Cirkler",
-    "Circle" : "Cirkel"
+    "Shared to Circles" : "Delt til Cirkler"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

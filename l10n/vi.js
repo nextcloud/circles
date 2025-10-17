@@ -119,7 +119,6 @@ OC.L10N.register(
     "Name" : "Tên",
     "Size" : "Kích cỡ",
     "Modified" : "Thay đổi",
-    "Shared to Circles" : "Đã được chia sẻ đến những Vòng kết nối",
-    "Circle" : "Vòng kết nối"
+    "Shared to Circles" : "Đã được chia sẻ đến những Vòng kết nối"
 },
 "nplurals=1; plural=0;");

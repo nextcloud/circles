@@ -109,7 +109,6 @@ OC.L10N.register(
     "Name" : "이름",
     "Size" : "크기",
     "Modified" : "수정한 날짜",
-    "Shared to Circles" : "서클에 공유됨",
-    "Circle" : "서클"
+    "Shared to Circles" : "서클에 공유됨"
 },
 "nplurals=1; plural=0;");

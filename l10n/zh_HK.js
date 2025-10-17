@@ -158,7 +158,6 @@ OC.L10N.register(
     "Name" : "名稱",
     "Size" : "大小",
     "Modified" : "修改日期",
-    "Shared to Circles" : "分享到圈子",
-    "Circle" : "社交圈子"
+    "Shared to Circles" : "分享到圈子"
 },
 "nplurals=1; plural=0;");

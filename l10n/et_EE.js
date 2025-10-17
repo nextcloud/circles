@@ -158,7 +158,6 @@ OC.L10N.register(
     "Name" : "Nimi",
     "Size" : "Suurus",
     "Modified" : "Muudetud",
-    "Shared to Circles" : "Jagatud tiimidega",
-    "Circle" : "Tiimid"
+    "Shared to Circles" : "Jagatud tiimidega"
 },
 "nplurals=2; plural=(n != 1);");

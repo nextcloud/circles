@@ -89,7 +89,7 @@
     "%1$s shared »%2$s« with you. You should have already received a separate email with a link to access it." : "%1$s hat »%2$s« mit dir geteilt. Du solltest bereits eine weitere E-Mail mit einem Link für den Zugriff erhalten haben. ",
     "Password to access »%1$s« shared to you by %2$s" : "Das Passwort zum Zugriff auf %1$s wurde dir von  %2$s mitgetelt.",
     "Password to access »%s«" : "Passwort um auf »%s« zu zugreifen",
-    "It is protected with the following password:" : "Dies ist mit dem folgendem Passwort geschützt:",
+    "It is protected with the following password:" : "Dies ist mit folgendem Passwort geschützt:",
     "%1$s via %2$s" : "%1$s über %2$s",
     "Click the button below to open it." : "Zum Öffnen auf die untenstehende Schaltfläche klicken.",
     "Open »%s«" : "Öffne »%s«",
@@ -152,11 +152,10 @@
     "Loading…" : "Lade …",
     "More teams" : "Weitere Teams",
     "No files in here" : "Keine Dateien vorhanden",
-    "No entries found in this folder" : " Keine Einträge in diesem Ordner gefunden ",
+    "No entries found in this folder" : "Keine Einträge in diesem Ordner gefunden ",
     "Name" : "Name",
     "Size" : "Größe",
     "Modified" : "Geändert",
-    "Shared to Circles" : "Geteilt mit Kreisen",
-    "Circle" : "Kreis"
+    "Shared to Circles" : "Geteilt mit Kreisen"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

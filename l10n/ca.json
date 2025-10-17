@@ -148,7 +148,6 @@
     "Name" : "Nom",
     "Size" : "Mida",
     "Modified" : "Data de modificació",
-    "Shared to Circles" : "Compartits en cercles",
-    "Circle" : "Cercle"
+    "Shared to Circles" : "Compartits en cercles"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

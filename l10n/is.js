@@ -158,7 +158,6 @@ OC.L10N.register(
     "Name" : "Nafn",
     "Size" : "Stærð",
     "Modified" : "Breytt",
-    "Shared to Circles" : "Deilt til hringja",
-    "Circle" : "Hringur"
+    "Shared to Circles" : "Deilt til hringja"
 },
 "nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);");

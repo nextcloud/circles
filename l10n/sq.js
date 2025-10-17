@@ -58,7 +58,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Në këtë dosje nuk gjëndet asnjë hyrje",
     "Name" : "Emër",
     "Size" : "Madhësi",
-    "Modified" : "Modifikuar ",
-    "Circle" : "Rreth"
+    "Modified" : "Modifikuar "
 },
 "nplurals=2; plural=(n != 1);");
