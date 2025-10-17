@@ -158,7 +158,6 @@ OC.L10N.register(
     "Name" : "名前",
     "Size" : "サイズ",
     "Modified" : "更新日時",
-    "Shared to Circles" : "サークルと共有",
-    "Circle" : "サークル"
+    "Shared to Circles" : "サークルと共有"
 },
 "nplurals=1; plural=0;");

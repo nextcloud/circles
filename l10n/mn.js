@@ -26,7 +26,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Энэ хавтаст юм олдсонгүй",
     "Name" : "Нэр",
     "Size" : "Хэмжээ",
-    "Modified" : "Өөрчлөгдсөн",
-    "Circle" : "Тойрог"
+    "Modified" : "Өөрчлөгдсөн"
 },
 "nplurals=2; plural=(n != 1);");

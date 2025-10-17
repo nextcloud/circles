@@ -156,7 +156,6 @@
     "Name" : "Nafn",
     "Size" : "Stærð",
     "Modified" : "Breytt",
-    "Shared to Circles" : "Deilt til hringja",
-    "Circle" : "Hringur"
+    "Shared to Circles" : "Deilt til hringja"
 },"pluralForm" :"nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);"
 }

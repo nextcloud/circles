@@ -119,7 +119,6 @@ OC.L10N.register(
     "Name" : "نام",
     "Size" : "اندازه",
     "Modified" : "تغییر یافته",
-    "Shared to Circles" : "Shared to Circles",
-    "Circle" : "حلقه"
+    "Shared to Circles" : "Shared to Circles"
 },
 "nplurals=2; plural=(n > 1);");

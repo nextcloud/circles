@@ -115,7 +115,6 @@ OC.L10N.register(
     "Name" : "Name",
     "Size" : "Size",
     "Modified" : "Modified",
-    "Shared to Circles" : "Shared to Circles",
-    "Circle" : "Circle"
+    "Shared to Circles" : "Shared to Circles"
 },
 "nplurals=2; plural=(n!=1);");

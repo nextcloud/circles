@@ -156,7 +156,6 @@
     "Name" : "Namn",
     "Size" : "Storlek",
     "Modified" : "Ändrad",
-    "Shared to Circles" : "Delad med Cirklar",
-    "Circle" : "Cirkel"
+    "Shared to Circles" : "Delad med Cirklar"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

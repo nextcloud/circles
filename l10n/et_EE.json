@@ -156,7 +156,6 @@
     "Name" : "Nimi",
     "Size" : "Suurus",
     "Modified" : "Muudetud",
-    "Shared to Circles" : "Jagatud tiimidega",
-    "Circle" : "Tiimid"
+    "Shared to Circles" : "Jagatud tiimidega"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

@@ -158,7 +158,6 @@ OC.L10N.register(
     "Name" : "Namn",
     "Size" : "Storlek",
     "Modified" : "Ändrad",
-    "Shared to Circles" : "Delad med Cirklar",
-    "Circle" : "Cirkel"
+    "Shared to Circles" : "Delad med Cirklar"
 },
 "nplurals=2; plural=(n != 1);");

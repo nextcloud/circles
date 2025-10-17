@@ -158,7 +158,6 @@ OC.L10N.register(
     "Name" : "Název",
     "Size" : "Velikost",
     "Modified" : "Změněno",
-    "Shared to Circles" : "Sdíleno do okruhů",
-    "Circle" : "Okruh"
+    "Shared to Circles" : "Sdíleno do okruhů"
 },
 "nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;");

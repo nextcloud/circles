@@ -144,7 +144,6 @@ OC.L10N.register(
     "Name" : "Nome",
     "Size" : "Tamañu",
     "Modified" : "Modificóse",
-    "Shared to Circles" : "Compartióse en Círculos",
-    "Circle" : "Círculu"
+    "Shared to Circles" : "Compartióse en Círculos"
 },
 "nplurals=2; plural=(n != 1);");
