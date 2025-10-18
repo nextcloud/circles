@@ -30,7 +30,7 @@
     "@nextcloud/eslint-config": "^9.0.0-rc.4",
     "@nextcloud/vite-config": "^2.5.1",
     "@vue/tsconfig": "^0.8.1",
-    "eslint": "^9.37.0",
+    "eslint": "^9.38.0",
     "typescript": "^5.9.3",
     "vite": "^7.1.7",
     "vue-tsc": "^3.1.1"
