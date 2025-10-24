@@ -325,13 +325,6 @@
       <code><![CDATA[GSSharesRequest]]></code>
       <code><![CDATA[GSSharesRequest]]></code>
     </DeprecatedClass>
-    <InvalidReturnStatement>
-      <code><![CDATA[$this]]></code>
-    </InvalidReturnStatement>
-    <InvalidReturnType>
-      <code><![CDATA[bool]]></code>
-      <code><![CDATA[getMountManager]]></code>
-    </InvalidReturnType>
   </file>
   <file src="lib/MountManager/CircleMountProvider.php">
     <DeprecatedClass>
