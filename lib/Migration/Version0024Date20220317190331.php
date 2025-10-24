@@ -32,7 +32,7 @@ class Version0024Date20220317190331 extends SimpleMigrationStep {
 
 		if ($schema->hasTable('circles_membership')) {
 			$table = $schema->getTable('circles_membership');
-			if (!$table->hasPrimaryKey()) {
+			if ($table->getPrimaryKey() === null) {
 				$indexes = $table->getIndexes();
 				// conflict in Oracle with existing unique index, duplicate of primaryKey.
 				foreach ($indexes as $index) {
