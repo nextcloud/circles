@@ -77,6 +77,7 @@ class ActivityService {
 		Member $member,
 		int $eventType,
 	): void {
+		return;
 		if ($circle->isConfig(Circle::CFG_PERSONAL)) {
 			return;
 		}
@@ -223,6 +224,8 @@ class ActivityService {
 	 * @param int $eventType
 	 */
 	public function onMemberRemove(Circle $circle, Member $member, int $eventType): void {
+		return;
+
 		if ($circle->isConfig(Circle::CFG_PERSONAL)) {
 			return;
 		}
@@ -319,6 +322,8 @@ class ActivityService {
 		Member $member,
 		int $level,
 	): void {
+		return;
+
 		if ($member->getLevel() === Member::LEVEL_OWNER) {
 			$this->onMemberOwner($circle, $member);
 
@@ -344,6 +349,8 @@ class ActivityService {
 	 * @param Member $member
 	 */
 	public function onMemberOwner(Circle $circle, Member $member): void {
+		return;
+
 		$event = $this->generateEvent('circles_as_moderator');
 		$event->setSubject(
 			'member_owner',
