@@ -17,7 +17,7 @@ OC.L10N.register(
     "You joined {circle}" : "Vous avez rejoint {circle}",
     "{member} joined {circle}" : "{member} a rejoint {circle}",
     "You accepted the invitation to join {circle}" : "Vous avez accepté l'invitation pour rejoindre {circle}",
-    "{member} accepted the invitation to join {circle}" : "[member] a accepté l'invitation pour rejoindre [circle}",
+    "{member} accepted the invitation to join {circle}" : "{member}a accepté l'invitation pour rejoindre {circle}",
     "You added {member} as member to {circle}" : "Vous avez ajouté {member} comme membre de {circle}",
     "You have been added as member to {circle} by {author}" : "Vous avez été ajouté·e comme membre de {circle} par {author}",
     "{member} has been added as member to {circle} by {author}" : "{member} a été ajouté comme membre de {circle} par {author}",
