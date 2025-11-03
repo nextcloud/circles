@@ -41,7 +41,14 @@ class ActivityService {
 		}
 
 		$event = $this->generateEvent('circles_as_non_member');
-		$event->setSubject('circle_create', ['circle' => json_encode($circle)]);
+		$event->setSubject(
+			'circle_create',
+			[
+				'ver' => 2,
+				'circle' => $this->shortenCircleData($circle),
+				'initiator' => ($circle->hasInitiator() ? $this->shortenMemberData($circle->getInitiator()) : null),
+			]
+		);
 
 		$this->userManager->callForSeenUsers(
 			function ($user) use ($event) {
@@ -60,7 +67,14 @@ class ActivityService {
 		}
 
 		$event = $this->generateEvent('circles_as_member');
-		$event->setSubject('circle_delete', ['circle' => json_encode($circle)]);
+		$event->setSubject(
+			'circle_delete',
+			[
+				'ver' => 2,
+				'circle' => $this->shortenCircleData($circle),
+				'initiator' => ($circle->hasInitiator() ? $this->shortenMemberData($circle->getInitiator()) : null),
+			]
+		);
 		$this->publishEvent(
 			$event,
 			$this->memberRequest->getInheritedMembers($circle->getSingleId(), false, Member::LEVEL_MEMBER)
@@ -122,8 +136,10 @@ class ActivityService {
 					CircleGenericEvent::JOINED => 'member_join'
 				},
 				[
-					'circle' => json_encode($circle),
-					'member' => json_encode($member)
+					'ver' => 2,
+					'circle' => $this->shortenCircleData($circle),
+					'initiator' => ($circle->hasInitiator() ? $this->shortenMemberData($circle->getInitiator()) : null),
+					'member' => $this->shortenMemberData($member),
 				]
 			);
 		} catch (UnhandledMatchError $e) {
@@ -161,8 +177,10 @@ class ActivityService {
 					CircleGenericEvent::JOINED => 'member_circle_joined'
 				},
 				[
-					'circle' => json_encode($circle),
-					'member' => json_encode($member)
+					'ver' => 2,
+					'circle' => $this->shortenCircleData($circle),
+					'initiator' => ($circle->hasInitiator() ? $this->shortenMemberData($circle->getInitiator()) : null),
+					'member' => $this->shortenMemberData($member),
 				]
 			);
 		} catch (UnhandledMatchError $e) {
@@ -200,8 +218,10 @@ class ActivityService {
 					CircleGenericEvent::REQUESTED => 'member_request_invitation'
 				},
 				[
-					'circle' => json_encode($circle),
-					'member' => json_encode($member)
+					'ver' => 2,
+					'circle' => $this->shortenCircleData($circle),
+					'initiator' => ($circle->hasInitiator() ? $this->shortenMemberData($circle->getInitiator()) : null),
+					'member' => $this->shortenMemberData($member),
 				]
 			);
 		} catch (UnhandledMatchError $e) {
@@ -244,7 +264,6 @@ class ActivityService {
 		}
 	}
 
-
 	private function onMemberRemoveAccount(
 		Circle $circle,
 		Member $member,
@@ -259,8 +278,10 @@ class ActivityService {
 					CircleGenericEvent::REMOVED => 'member_remove'
 				},
 				[
-					'circle' => json_encode($circle),
-					'member' => json_encode($member)
+					'ver' => 2,
+					'circle' => $this->shortenCircleData($circle),
+					'initiator' => ($circle->hasInitiator() ? $this->shortenMemberData($circle->getInitiator()) : null),
+					'member' => $this->shortenMemberData($member),
 				]
 			);
 		} catch (UnhandledMatchError $e) {
@@ -293,8 +314,10 @@ class ActivityService {
 					CircleGenericEvent::REMOVED => 'member_circle_removed'
 				},
 				[
-					'circle' => json_encode($circle),
-					'member' => json_encode($member)
+					'ver' => 2,
+					'circle' => $this->shortenCircleData($circle),
+					'initiator' => ($circle->hasInitiator() ? $this->shortenMemberData($circle->getInitiator()) : null),
+					'member' => $this->shortenMemberData($member),
 				]
 			);
 		} catch (UnhandledMatchError $e) {
@@ -328,16 +351,22 @@ class ActivityService {
 		$event = $this->generateEvent('circles_as_moderator');
 		$event->setSubject(
 			'member_level',
-			['circle' => json_encode($circle), 'member' => json_encode($member), 'level' => $level]
+			[
+				'ver' => 2,
+				'circle' => $this->shortenCircleData($circle),
+				'initiator' => ($circle->hasInitiator() ? $this->shortenMemberData($circle->getInitiator()) : null),
+				'member' => $this->shortenMemberData($member),
+				'level' => $level
+			]
 		);
 
 		$this->publishEvent(
 			$event, array_merge(
 				[$member],
-				$this->memberRequest->getInheritedMembers($circle->getSingleId(), false, Member::LEVEL_MODERATOR))
+				$this->memberRequest->getInheritedMembers($circle->getSingleId(), false, Member::LEVEL_MODERATOR)
+			)
 		);
 	}
-
 
 	/**
 	 * @param Circle $circle
@@ -347,7 +376,12 @@ class ActivityService {
 		$event = $this->generateEvent('circles_as_moderator');
 		$event->setSubject(
 			'member_owner',
-			['circle' => json_encode($circle), 'member' => json_encode($member)]
+			[
+				'ver' => 2,
+				'circle' => $this->shortenCircleData($circle),
+				'initiator' => ($circle->hasInitiator() ? $this->shortenMemberData($circle->getInitiator()) : null),
+				'member' => $this->shortenMemberData($member),
+			]
 		);
 
 		$this->publishEvent(
@@ -356,10 +390,8 @@ class ActivityService {
 		);
 	}
 
-
 	public function onShareNew(Circle $getCircle, FederatedEvent $federatedEvent): void {
 	}
-
 
 	/**
 	 * generateEvent()
@@ -376,7 +408,6 @@ class ActivityService {
 
 		return $event;
 	}
-
 
 	/**
 	 * Publish the event to the users.
@@ -395,8 +426,8 @@ class ActivityService {
 				$userId = $user->getUID();
 			} elseif ($user instanceof IFederatedUser) {
 				$singleId = $user->getSingleId();
-				if ($user->getUserType() !== Member::TYPE_USER ||
-					in_array($singleId, $knownSingleIds)) {
+				if ($user->getUserType() !== Member::TYPE_USER
+					|| in_array($singleId, $knownSingleIds)) {
 					continue; // we ignore non-local account and already known single ids
 				}
 
@@ -409,5 +440,24 @@ class ActivityService {
 			$event->setAffectedUser($userId);
 			$this->activityManager->publish($event);
 		}
+	}
+
+	private function shortenCircleData(Circle $circle): array {
+		return [
+			'singleId' => $circle->getSingleId(),
+			'name' => $circle->getName(),
+			'config' => $circle->getConfig(),
+			'url' => $circle->getUrl(),
+		];
+	}
+
+	private function shortenMemberData(Member $member): array {
+		return [
+			'userId' => $member->getUserId(),
+			'displayName' => $member->getDisplayName(),
+			'type' => $member->getUserType(),
+			'level' => $member->getLevel(),
+			'status' => $member->getStatus(),
+		];
 	}
 }
