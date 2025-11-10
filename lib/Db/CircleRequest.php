@@ -23,6 +23,7 @@ use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\Probes\DataProbe;
+use OCP\DB\QueryBuilder\IQueryBuilder;
 
 /**
  * Class CircleRequest
@@ -230,6 +231,36 @@ class CircleRequest extends CircleRequestBuilder {
 	): array {
 		$qb = $this->buildProbeCircle($initiator, $circleProbe, $dataProbe);
 		$qb->chunk($circleProbe->getItemsOffset(), $circleProbe->getItemsLimit());
+
+		return $this->getItemsFromRequest($qb);
+	}
+
+	/**
+	 * returns details about circles using a list of ids.
+	 * initiator permissions are respected
+	 */
+	public function probeCirclesByIds(
+		IFederatedUser $initiator,
+		array $ids,
+		DataProbe $dataProbe,
+	): array {
+		$qb = $this->getCircleSelectSql();
+		if (!$dataProbe->has(DataProbe::MEMBERSHIPS)) {
+			$dataProbe->add(DataProbe::MEMBERSHIPS);
+		}
+
+		$qb->setSqlPath(CoreQueryBuilder::CIRCLE, $dataProbe->getPath());
+		$qb->leftJoinOwner(CoreQueryBuilder::CIRCLE);
+		$qb->innerJoinMembership(null, CoreQueryBuilder::CIRCLE);
+
+		$aliasMembership = $qb->generateAlias(CoreQueryBuilder::CIRCLE, CoreQueryBuilder::MEMBERSHIPS);
+		$limit = $qb->exprLimit('single_id', $initiator->getSingleId(), $aliasMembership);
+		$qb->completeProbeWithInitiator(CoreQueryBuilder::CIRCLE, 'single_id', $aliasMembership);
+		$qb->andWhere(
+			$limit,
+			$qb->expr()->in(CoreQueryBuilder::CIRCLE . '.unique_id', $qb->createNamedParameter($ids, IQueryBuilder::PARAM_STR_ARRAY))
+		);
+		$qb->resetSqlPath();
 
 		return $this->getItemsFromRequest($qb);
 	}

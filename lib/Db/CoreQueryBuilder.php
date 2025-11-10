@@ -861,7 +861,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 	 * @param string $field
 	 */
 	public function innerJoinMembership(
-		CircleProbe $probe,
+		?CircleProbe $probe,
 		string $alias,
 		string $field = 'unique_id',
 	): void {
@@ -880,7 +880,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$on = $expr->andX($expr->eq($aliasMembership . '.circle_id', $alias . '.' . $field));
 
 		// limit on membership level if requested
-		$minLevel = $probe->getMinimumLevel();
+		$minLevel = $probe?->getMinimumLevel() ?? 0;
 		if ($minLevel > Member::LEVEL_MEMBER) {
 			$on->add($this->exprGt('level', $minLevel, true, $aliasMembership));
 		}
