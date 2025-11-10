@@ -258,6 +258,7 @@ class CirclesCheck extends Base {
 			return false;
 		}
 
+		$this->appConfig->setValueInt(Application::APP_ID, 'test_dummy_token', time() + 10);
 		if (!$this->testRequest(
 			$output, 'POST', 'circles.EventWrapper.asyncBroadcast',
 			['token' => 'test-dummy-token']
