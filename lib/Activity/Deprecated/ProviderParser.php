@@ -7,8 +7,10 @@ declare(strict_types=1);
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-namespace OCA\Circles\Activity;
+namespace OCA\Circles\Activity\Deprecated;
 
+use OCA\Circles\IFederatedUser;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCP\Activity\IEvent;
 use OCP\Activity\IManager;
@@ -23,18 +25,24 @@ class ProviderParser {
 	) {
 	}
 
+	/**
+	 * @param IEvent $event
+	 * @param Circle $circle
+	 * @param string $ownEvent
+	 * @param string $othersEvent
+	 */
 	protected function parseCircleEvent(
 		IEvent $event,
-		array $params,
+		Circle $circle,
 		string $ownEvent,
 		string $othersEvent,
 	): void {
 		$data = [
-			'author' => $this->generateUserParameter($params['initiator'] ?? []),
-			'circle' => $this->generateCircleParameter($params['circle'])
+			'author' => $this->generateViewerParameter($circle),
+			'circle' => $this->generateCircleParameter($circle)
 		];
 
-		if ($this->isViewerTheAuthor($params['initiator'] ?? [], $this->activityManager->getCurrentUserId())) {
+		if ($this->isViewerTheAuthor($circle, $this->activityManager->getCurrentUserId())) {
 			$this->setSubject($event, $ownEvent, $data);
 
 			return;
@@ -46,7 +54,7 @@ class ProviderParser {
 	/**
 	 * @param IEvent $event
 	 * @param string $line
-	 * @param array $data
+	 * @param array<string, array<string, mixed>> $data
 	 */
 	protected function setSubject(
 		IEvent $event,
@@ -60,7 +68,7 @@ class ProviderParser {
 	/**
 	 * @param IEvent $event
 	 * @param string $line
-	 * @param array $data
+	 * @param array<string, array<string, mixed>> $data
 	 */
 	protected function setRichSubject(
 		IEvent $event,
@@ -105,22 +113,25 @@ class ProviderParser {
 
 	/**
 	 * @param IEvent $event
-	 * @param array $params
+	 * @param Circle $circle
+	 * @param Member $member
 	 * @param string $ownEvent
 	 * @param string $othersEvent
 	 */
 	protected function parseMemberEvent(
 		IEvent $event,
-		array $params,
+		Circle $circle,
+		Member $member,
 		string $ownEvent,
 		string $othersEvent,
 	): void {
 		$data = [
-			'circle' => $this->generateCircleParameter($params['circle']),
-			'member' => $this->generateUserParameter($params['member'] ?? [])
+			'circle' => $this->generateCircleParameter($circle),
+			'member' => $this->generateUserParameter($member)
 		];
 
-		if ($this->isViewerTheAuthor($params['member'] ?? [], $this->activityManager->getCurrentUserId())) {
+		if ($member->getUserId() === $this->activityManager->getCurrentUserId()
+		) {
 			$this->setSubject($event, $ownEvent, $data);
 
 			return;
@@ -131,25 +142,27 @@ class ProviderParser {
 
 	/**
 	 * @param IEvent $event
-	 * @param array $params
+	 * @param Circle $circle
+	 * @param Member $member
 	 * @param string $ownEvent
 	 * @param string $othersEvent
 	 */
 	protected function parseCircleMemberEvent(
 		IEvent $event,
-		array $params,
+		Circle $circle,
+		Member $member,
 		string $ownEvent,
 		string $othersEvent,
 	): void {
 		$data = [
-			'author' => $this->generateUserParameter($params['initiator'] ?? []),
-			'circle' => $this->generateCircleParameter($params['circle']),
-			'member' => $this->generateUserParameter($params['member'] ?? []),
-			'external' => $this->generateExternalMemberParameter($params['member'] ?? []),
-			'group' => $this->generateGroupParameter($params['member'] ?? []),
+			'author' => $this->generateViewerParameter($circle),
+			'circle' => $this->generateCircleParameter($circle),
+			'member' => $this->generateUserParameter($member),
+			'external' => $this->generateExternalMemberParameter($member),
+			'group' => $this->generateGroupParameter($member),
 		];
 
-		if ($this->isViewerTheAuthor($params['initiator'] ?? [], $this->activityManager->getCurrentUserId())) {
+		if ($this->isViewerTheAuthor($circle, $this->activityManager->getCurrentUserId())) {
 			$this->setSubject($event, $ownEvent, $data);
 
 			return;
@@ -162,31 +175,33 @@ class ProviderParser {
 	 * general function to generate Circle+Member advanced event.
 	 *
 	 * @param IEvent $event
-	 * @param array $params
+	 * @param Circle $circle
+	 * @param Member $member
 	 * @param string $ownEvent
 	 * @param string $targetEvent
 	 * @param string $othersEvent
 	 */
 	protected function parseCircleMemberAdvancedEvent(
 		IEvent $event,
-		array $params,
+		Circle $circle,
+		Member $member,
 		string $ownEvent,
 		string $targetEvent,
 		string $othersEvent,
 	): void {
 		$data = [
-			'author' => $this->generateUserParameter($params['initiator'] ?? []),
-			'circle' => $this->generateCircleParameter($params['circle']),
-			'member' => $this->generateUserParameter($params['member'] ?? [])
+			'author' => $this->generateViewerParameter($circle),
+			'circle' => $this->generateCircleParameter($circle),
+			'member' => $this->generateUserParameter($member)
 		];
 
-		if ($this->isViewerTheAuthor($params['initiator'] ?? [], $this->activityManager->getCurrentUserId())) {
+		if ($this->isViewerTheAuthor($circle, $this->activityManager->getCurrentUserId())) {
 			$this->setSubject($event, $ownEvent, $data);
 
 			return;
 		}
 
-		if ($this->isViewerTheAuthor($params['member'] ?? [], $this->activityManager->getCurrentUserId())) {
+		if ($member->getUserId() === $this->activityManager->getCurrentUserId()) {
 			$this->setSubject($event, $targetEvent, $data);
 
 			return;
@@ -196,74 +211,91 @@ class ProviderParser {
 	}
 
 	/**
-	 * @param array $params
+	 * @param Circle $circle
 	 * @param string $userId
 	 *
 	 * @return bool
 	 */
-	protected function isViewerTheAuthor(array $initiator, string $userId): bool {
-		return (($initiator['type'] ?? 0) === Member::TYPE_USER && ($initiator['userId'] ?? '') === $userId);
+	protected function isViewerTheAuthor(Circle $circle, string $userId): bool {
+		if (!$circle->hasInitiator()) {
+			return false;
+		}
+
+		$initiator = $circle->getInitiator();
+
+		return ($initiator->getUserType() === Member::TYPE_USER
+			&& $initiator->getUserId() === $userId);
 	}
 
-
 	/**
-	 * @param array $member
+	 * @param Circle $circle
 	 *
 	 * @return array <string,string|integer>
 	 */
-	protected function generateExternalMemberParameter(array $member): array {
-		$data = $this->generateUserParameter($member);
-		if (!empty($data)) {
-			$data['link'] = '';
+	protected function generateViewerParameter(Circle $circle): array {
+		if (!$circle->hasInitiator()) {
+			return [];
 		}
 
-		return $data;
+		return $this->generateUserParameter($circle->getInitiator());
 	}
 
 	/**
-	 * @param array $circle
+	 * @param Member $member
+	 *
+	 * @return array <string,string|integer>
+	 */
+	protected function generateExternalMemberParameter(Member $member): array {
+		return [
+			'type' => 'email',
+			'id' => $member->getUserId(),
+			'link' => '',
+			'name' => $member->getDisplayName(),
+			'_parsed' => $member->getDisplayName()
+		];
+	}
+
+	/**
+	 * @param Circle $circle
 	 *
 	 * @return array<string,string|integer>
 	 */
-	protected function generateCircleParameter(array $circle): array {
+	protected function generateCircleParameter(Circle $circle): array {
 		return [
 			'type' => 'circle',
-			'id' => $circle['singleId'],
-			'name' => $circle['name'],
-			'_parsed' => $circle['name'],
-			'link' => $this->url->getAbsoluteURL($circle['url']),
+			'id' => $circle->getSingleId(),
+			'name' => $circle->getName(),
+			'_parsed' => $circle->getName(),
+			'link' => $this->url->getAbsoluteURL($circle->getUrl()),
 		];
 	}
 
 	/**
 	 * @return array <string,string|integer>
 	 */
-	protected function generateUserParameter(array $member): array {
-		if (!array_key_exists('userId', $member)) {
-			return [];
+	protected function generateUserParameter(IFederatedUser $member): array {
+		$display = $member->getDisplayName();
+		if ($display === '') {
+			$display = $member->getUserId();
 		}
 
 		return [
 			'type' => 'user',
-			'id' => $member['userId'],
-			'name' => $member['displayName'] ?? $member['userId'],
-			'_parsed' => $member['displayName'] ?? $member['userId'],
+			'id' => $member->getUserId(),
+			'name' => $display,
+			'_parsed' => $display
 		];
 	}
 
 	/**
 	 * @return array <string,string|integer>
 	 */
-	protected function generateGroupParameter(array $group): array {
-		if (!array_key_exists('userId', $group)) {
-			return [];
-		}
-
+	protected function generateGroupParameter(Member $group): array {
 		return [
 			'type' => 'user-group',
-			'id' => $group['userId'],
-			'name' => $group['userId'],
-			'_parsed' => $group['userId']
+			'id' => $group->getUserId(),
+			'name' => $group->getUserId(),
+			'_parsed' => $group->getUserId()
 		];
 	}
 }
