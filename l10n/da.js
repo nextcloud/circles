@@ -1,7 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Teams" : "Teams",
     "You created the team {circle}" : "Du oprettede teamet {circle}",
     "{author} created the team {circle}" : "{author} oprettede team {circle}",
     "You deleted {circle}" : "Du slettede {circle}",
@@ -52,6 +51,7 @@ OC.L10N.register(
     "{member} sent a request to join {circle}" : "{member} sendte en anmodning om at deltage i {circle}",
     "You are the new owner of {circle}" : "Du er den nye ejer af {circle}",
     "{member} is the new owner of {circle}" : "{member} er den nye ejer af {circle}",
+    "Teams" : "Teams",
     "On events happening in a <strong>team</strong> of which you are a member" : "Om begivenheder, der finder sted i et <strong>team</strong>, som du er medlem af ",
     "Any important event in a <strong>team</strong> you are moderating" : "Enhver vigtig begivenhed i et <strong>team</strong>, du modererer",
     "On global events happening in any <strong>team</strong>" : "På globale begivenheder, der sker i ethvert <strong>team</strong>",

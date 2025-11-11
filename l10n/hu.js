@@ -1,7 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Teams" : "Csapatok",
     "You created the team {circle}" : "Létrehozta a(z) {circle} csapatot",
     "{author} created the team {circle}" : "{author} létrehozta a(z) {circle} csapatot",
     "You deleted {circle}" : "Törölte ezt: {circle}",
@@ -52,6 +51,7 @@ OC.L10N.register(
     "{member} sent a request to join {circle}" : "{member} kérte, hogy csatlakozhasson a(z) {circle} csapathoz",
     "You are the new owner of {circle}" : "Ön a(z) {circle} csapat új tulajdonosa",
     "{member} is the new owner of {circle}" : "{member} a(z) {circle} csapat új tulajdonosa",
+    "Teams" : "Csapatok",
     "On events happening in a <strong>team</strong> of which you are a member" : "Olyan eseményekről, amelyek olyan <strong>csapatban</strong> zajlanak, amelynek tagja",
     "Any important event in a <strong>team</strong> you are moderating" : "Bármely fontos eseményről, amely olyan <strong>csapatban</strong> történt, melyeket moderál",
     "On global events happening in any <strong>team</strong>" : "Bármely <strong>csapatban</strong> zajló globális eseményekről",

@@ -1,7 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Teams" : "Tiimid",
     "You created the team {circle}" : "Lõid tiimi {circle}",
     "{author} created the team {circle}" : "{author} lõi tiimi {circle} ",
     "You deleted {circle}" : "Kustutasid {circle}",
@@ -52,6 +51,7 @@ OC.L10N.register(
     "{member} sent a request to join {circle}" : "{member} saatis soovi liituda {circle}-ga",
     "You are the new owner of {circle}" : "Oled {circle} uus omanik",
     "{member} is the new owner of {circle}" : "{member} on {circle} uus omanik",
+    "Teams" : "Tiimid",
     "On events happening in a <strong>team</strong> of which you are a member" : "Sündmuste kohta, mis toimuvad <strong>tiimis</strong>, mille liige te olete",
     "Any important event in a <strong>team</strong> you are moderating" : "Iga oluline sündmus <strong>tiimis</strong>, mida modereerite",
     "On global events happening in any <strong>team</strong>" : "Mis tahes <strong>tiimis</strong> toimuvate globaalsete sündmuste kohta",

@@ -1,7 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Teams" : "Каманды",
     "You created the team {circle}" : "Вы стварылі каманду {circle}",
     "{author} created the team {circle}" : "{author} стварыў(-ла) каманду {circle}",
     "You deleted {circle}" : "Вы выдалілі {circle}",
@@ -24,6 +23,7 @@ OC.L10N.register(
     "You left {circle}" : "Вы выйшлі з {circle}",
     "{member} left {circle}" : "{member} выйшаў(-ла) з {circle}",
     "You removed {external} from {circle}" : "Вы выдалілі {external} з {circle}",
+    "Teams" : "Каманды",
     "Personal" : "Асабістыя",
     "System" : "Сістэма",
     "Open" : "Адкрыць",

@@ -1,7 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Teams" : "Komandas",
     "You created the team {circle}" : "Tu izveidoji komandu {circle}",
     "You deleted {circle}" : "Tu izdzēsi {circle}",
     "You removed {member} from {circle}" : "Tu noņēmi {member} no {circle}",
@@ -10,6 +9,7 @@ OC.L10N.register(
     "You removed {external} from {circle}" : "Tu noņēmi {external} no {circle}",
     "You changed {member}'s level in {circle} to %1$s" : "Tu nomainīji {member} līmeni {circle} uz %1$s",
     "{author} changed your level in {circle} to %1$s" : "{author} nomainīja Tavu līmeni {circle} uz %1$s",
+    "Teams" : "Komandas",
     "Personal" : "Personīgs",
     "System" : "Sistēma",
     "Visible" : "Redzams",

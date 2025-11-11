@@ -1,5 +1,4 @@
 { "translations": {
-    "Teams" : "كوماندىلار",
     "You created the team {circle}" : "سىز گۇرۇپپا {circle} قۇردىڭىز",
     "{author} created the team {circle}" : "{author} ئەترەت {circle} قۇردى",
     "You deleted {circle}" : "سىز {circle} ئۆچۈردىڭىز",
@@ -50,6 +49,7 @@
     "{member} sent a request to join {circle}" : "{member} {circle} قاتنىشىش ئىلتىماسى ئەۋەتتى",
     "You are the new owner of {circle}" : "سىز {circle} يېڭى ئىگىسى",
     "{member} is the new owner of {circle}" : "{member} {circle} يېڭى ئىگىسى",
+    "Teams" : "كوماندىلار",
     "On events happening in a <strong>team</strong> of which you are a member" : "سىز ئەزا بولغان <strong> گۇرۇپپا </ strong> دا يۈز بەرگەن ۋەقەلەر توغرىسىدا",
     "Any important event in a <strong>team</strong> you are moderating" : "سىز رىياسەتچىلىك قىلىۋاتقان <strong> گۇرۇپپا </ strong> دىكى ھەر قانداق مۇھىم پائالىيەت",
     "On global events happening in any <strong>team</strong>" : "ھەر قانداق <strong> گۇرۇپپا </ strong> دا يۈز بېرىۋاتقان دۇنياۋى ئىشلار توغرىسىدا",

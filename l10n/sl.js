@@ -1,7 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Teams" : "Skupine",
     "You created the team {circle}" : "Ustvarite skupino {circle}",
     "{author} created the team {circle}" : "{author} ustvari skupino {circle}",
     "You deleted {circle}" : "Izbrišete krog {circle}",
@@ -44,6 +43,7 @@ OC.L10N.register(
     "{member} sent a request to join {circle}" : "{member} pošlje prošnjo za pristop v krog {circle}",
     "You are the new owner of {circle}" : "Postanete novi lastnik kroga {circle}",
     "{member} is the new owner of {circle}" : "{member} postane novi lastnik kroga {circle}",
+    "Teams" : "Skupine",
     "Single" : "Enojni",
     "Personal" : "Osebni",
     "System" : "Sistem",

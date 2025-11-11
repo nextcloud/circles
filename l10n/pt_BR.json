@@ -1,5 +1,4 @@
 { "translations": {
-    "Teams" : "Equipes",
     "You created the team {circle}" : "Você criou a equipe {circle}",
     "{author} created the team {circle}" : "{author} criou a equipe {circle}",
     "You deleted {circle}" : "Você excluiu {circle}",
@@ -50,6 +49,7 @@
     "{member} sent a request to join {circle}" : "{member} solicitou juntar-se à {circle}",
     "You are the new owner of {circle}" : "Você é o novo proprietário de {circle}",
     "{member} is the new owner of {circle}" : "{member} é o novo proprietário de {circle}",
+    "Teams" : "Equipes",
     "On events happening in a <strong>team</strong> of which you are a member" : "Em eventos que acontecem em uma <strong>equipe</strong> da qual você é membro",
     "Any important event in a <strong>team</strong> you are moderating" : "Qualquer evento importante em uma <strong>equipe</strong> que você está moderando",
     "On global events happening in any <strong>team</strong>" : "Em eventos globais que acontecem em qualquer <strong>equipe</strong>",

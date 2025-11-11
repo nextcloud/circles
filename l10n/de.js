@@ -1,7 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Teams" : "Teams",
     "You created the team {circle}" : "Du hast das Team {circle} erstellt",
     "{author} created the team {circle}" : "{author} hat das Team {circle} erstellt",
     "You deleted {circle}" : "Du hast {circle} gelöscht",
@@ -52,6 +51,7 @@ OC.L10N.register(
     "{member} sent a request to join {circle}" : "{member} hat eine Anfrage gestellt in {circle} aufgenommen zu werden",
     "You are the new owner of {circle}" : "Du bist der neue Eigentümer von {circle}",
     "{member} is the new owner of {circle}" : "{member} ist der neue Eigentümer von {circle}",
+    "Teams" : "Teams",
     "On events happening in a <strong>team</strong> of which you are a member" : "Bei Ereignissen in einem <strong>Team</strong>, in dem du Mitglied bist",
     "Any important event in a <strong>team</strong> you are moderating" : "Jeder wichtige Termin in einem <strong>Team</strong>, das du moderierst",
     "On global events happening in any <strong>team</strong>" : "Bei globalen Ereignissen, in einem beliebigen <strong>Team</strong>",
