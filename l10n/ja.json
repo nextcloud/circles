@@ -1,5 +1,4 @@
 { "translations": {
-    "Teams" : "チーム",
     "You created the team {circle}" : "あなたはチーム {circle} を作成しました",
     "{author} created the team {circle}" : "{author} がチーム {circle} を作成しました",
     "You deleted {circle}" : "あなたは {circle} を削除しました",
@@ -50,6 +49,7 @@
     "{member} sent a request to join {circle}" : "{member}が{circle}への参加リクエストを送信しました",
     "You are the new owner of {circle}" : "あなたは {circle} の新しいオーナーです",
     "{member} is the new owner of {circle}" : "{member} は {circle} の新しいオーナーです",
+    "Teams" : "チーム",
     "On events happening in a <strong>team</strong> of which you are a member" : "あなたが所属する<strong>チーム</strong> で起きた出来事について",
     "Any important event in a <strong>team</strong> you are moderating" : "あなたがモデレーターを務める <strong>チーム</strong> の重要なイベント",
     "On global events happening in any <strong>team</strong>" : "どの<strong>チーム</strong>でも起きているグローバルな出来事について",

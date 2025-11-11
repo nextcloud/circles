@@ -1,5 +1,4 @@
 { "translations": {
-    "Teams" : "Equips",
     "You created the team {circle}" : "Heu creat l'equip {circle}",
     "{author} created the team {circle}" : "{author} ha creat l'equip {circle}",
     "You deleted {circle}" : "Heu suprimit {circle}",
@@ -50,6 +49,7 @@
     "{member} sent a request to join {circle}" : "{member} ha enviat una sol·licitud per a unir-se a {circle}",
     "You are the new owner of {circle}" : "Ara teniu la propietat del cercle {circle}",
     "{member} is the new owner of {circle}" : "{member} ara té la propietat del cercle {circle}",
+    "Teams" : "Equips",
     "On events happening in a <strong>team</strong> of which you are a member" : "Quan es produeixin esdeveniments en un <strong>equip</strong> del qual sigueu membre",
     "Any important event in a <strong>team</strong> you are moderating" : "Quan es produeixi qualsevol esdeveniment important en un <strong>equip</strong> que modereu",
     "On global events happening in any <strong>team</strong>" : "Quan es produeixin esdeveniments globals en qualsevol <strong>equip</strong>",

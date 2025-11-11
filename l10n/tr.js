@@ -1,7 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Teams" : "Takımlar",
     "You created the team {circle}" : "{circle} takımını eklediniz",
     "{author} created the team {circle}" : "{author}, {circle} takımını ekledi",
     "You deleted {circle}" : "{circle} takımını sildiniz",
@@ -52,6 +51,7 @@ OC.L10N.register(
     "{member} sent a request to join {circle}" : "{member} üyesi {circle} takımına katılma isteği gönderdi",
     "You are the new owner of {circle}" : "Artık {circle} takımının sahibisiniz",
     "{member} is the new owner of {circle}" : "{member}, artık {circle} takımının sahibi",
+    "Teams" : "Takımlar",
     "On events happening in a <strong>team</strong> of which you are a member" : "Üyesi olduğunuz bir <strong>takımdaki</strong> olaylarda",
     "Any important event in a <strong>team</strong> you are moderating" : "Sorumlusu olduğunuz bir <strong>takımdaki</strong> önemli olaylarda",
     "On global events happening in any <strong>team</strong>" : "Herhangi bir <strong>takımdaki</strong> genel olaylarda",

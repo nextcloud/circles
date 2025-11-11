@@ -1,7 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Teams" : "Команды",
     "You created the team {circle}" : "Вы создали группу {circle}",
     "{author} created the team {circle}" : "{author} создал круг {circle}",
     "You deleted {circle}" : "Вы удалили круг «{circle}»",
@@ -52,6 +51,7 @@ OC.L10N.register(
     "{member} sent a request to join {circle}" : "{member} отправил(а) запрос на вступление в «{circle}»",
     "You are the new owner of {circle}" : "Вы стали владельцем «{circle}»",
     "{member} is the new owner of {circle}" : "{member} новый владелец «{circle}»",
+    "Teams" : "Команды",
     "On events happening in a <strong>team</strong> of which you are a member" : "О событиях, происходящих в <strong>группе</strong>, членом которой вы являетесь",
     "Any important event in a <strong>team</strong> you are moderating" : "Любое важное событие в <strong>группе</strong>, которую вы модерируете",
     "On global events happening in any <strong>team</strong>" : "О глобальных событиях, происходящих в любой <strong>группе</strong>",

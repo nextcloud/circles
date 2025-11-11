@@ -1,5 +1,4 @@
 { "translations": {
-    "Teams" : "Тимови",
     "You created the team {circle}" : "Креиравте тим {circle}",
     "{author} created the team {circle}" : "{author} креираше тим {circle}",
     "You deleted {circle}" : "Избришавте {circle}",
@@ -50,6 +49,7 @@
     "{member} sent a request to join {circle}" : "{member} испрати барање за приклучување кон тимот {circle}",
     "You are the new owner of {circle}" : "Вие не сте нов сопственик на тимот {circle}",
     "{member} is the new owner of {circle}" : "{member} е нов сопственик на тимот {circle}",
+    "Teams" : "Тимови",
     "On events happening in a <strong>team</strong> of which you are a member" : "За настани што се случуваат во <strong>тим</strong> на кој си член",
     "Any important event in a <strong>team</strong> you are moderating" : "За важни настани во <strong>тим</strong> кој го модерираш",
     "On global events happening in any <strong>team</strong>" : "За глобални настани што се случуваат во било кој <strong>тим</strong>",
