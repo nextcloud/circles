@@ -1,5 +1,4 @@
 { "translations": {
-    "Teams" : "Teymi",
     "You created the team {circle}" : "Þú bjóst til teymið {circle}",
     "{author} created the team {circle}" : "{author} bjó til teymið {circle}",
     "You deleted {circle}" : "Þú eyddir {circle}",
@@ -50,6 +49,7 @@
     "{member} sent a request to join {circle}" : "{member} sendi beiðni um að taka þátt í {circle}",
     "You are the new owner of {circle}" : "Þú ert nýr eigandi {circle}",
     "{member} is the new owner of {circle}" : "{member} er nýr eigandi {circle}",
+    "Teams" : "Teymi",
     "On events happening in a <strong>team</strong> of which you are a member" : "Við atburði sem gerast í <strong>teymi</strong> sem þú tilheyrir",
     "Any important event in a <strong>team</strong> you are moderating" : "Hvaða mikilvægi atburður sem er í <strong>teymi</strong> sem þú hefur umsjón með",
     "On global events happening in any <strong>team</strong>" : "Við almenna atburði sem gerast í hvaða <strong>teymi</strong> sem er",

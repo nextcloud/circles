@@ -1,7 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Teams" : "团队",
     "You created the team {circle}" : "你创建了团队 {circle}",
     "{author} created the team {circle}" : "{author} 创建了团队 {circle}",
     "You deleted {circle}" : "您删除了 {circle}",
@@ -52,6 +51,7 @@ OC.L10N.register(
     "{member} sent a request to join {circle}" : "{member} 发送了加入 {circle} 的请求",
     "You are the new owner of {circle}" : "你是 {circle} 的新所有者",
     "{member} is the new owner of {circle}" : "{member} 是 {circle} 的新所有者",
+    "Teams" : "团队",
     "On events happening in a <strong>team</strong> of which you are a member" : "当你所属的<strong>团队</strong>产生事件时",
     "Any important event in a <strong>team</strong> you are moderating" : "当你所管理的<strong>团队</strong>产生重要事件时",
     "On global events happening in any <strong>team</strong>" : "当所有<strong>团队</strong>产生事件时",

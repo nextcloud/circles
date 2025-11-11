@@ -1,7 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Teams" : "Ομάδες",
     "You created the team {circle}" : "Δημιουργήσατε την ομάδα {circle}",
     "{author} created the team {circle}" : "Ο/Η {author} δημιούργησε την ομάδα {circle}",
     "You deleted {circle}" : "Διαγράψατε τον {circle}",
@@ -52,6 +51,7 @@ OC.L10N.register(
     "{member} sent a request to join {circle}" : "Ο {member} έστειλε αίτημα συμμετοχής στο {circle}",
     "You are the new owner of {circle}" : "Είστε ο νέος κάτοχος του {circle}",
     "{member} is the new owner of {circle}" : "Ο/η {member} είναι ο νέος κάτοχος του {circle}",
+    "Teams" : "Ομάδες",
     "On events happening in a <strong>team</strong> of which you are a member" : "Για συμβάντα που συμβαίνουν σε μια <strong>ομάδα</strong> της οποίας είστε μέλος",
     "Any important event in a <strong>team</strong> you are moderating" : "Οποιοδήποτε σημαντικό συμβάν σε μια <strong>ομάδα</strong> που διαχειρίζεστε",
     "On global events happening in any <strong>team</strong>" : "Για καθολικά συμβάντα που συμβαίνουν σε οποιαδήποτε <strong>ομάδα</strong>",

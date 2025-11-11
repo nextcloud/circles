@@ -1,7 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Teams" : "Foirne",
     "You created the team {circle}" : "Chruthaigh tú an fhoireann {circle}",
     "{author} created the team {circle}" : "Chruthaigh {author} an fhoireann {circle}",
     "You deleted {circle}" : "Scrios tú {circle}",
@@ -52,6 +51,7 @@ OC.L10N.register(
     "{member} sent a request to join {circle}" : "Sheol {member} iarratas chun páirt a ghlacadh i {circle}",
     "You are the new owner of {circle}" : "Is úinéir nua thú ar {circle}",
     "{member} is the new owner of {circle}" : "Is é {member} úinéir nua {circle}",
+    "Teams" : "Foirne",
     "On events happening in a <strong>team</strong> of which you are a member" : "Ar imeachtaí atá ar siúl i  <strong>bhfoireann</strong>a bhfuil tú i do bhall di",
     "Any important event in a <strong>team</strong> you are moderating" : "Imeacht thábhachtach ar bith i <strong>bhfoireann</strong> a bhfuil tú ag modhnú ",
     "On global events happening in any <strong>team</strong>" : "Ar imeachtaí domhanda ag tarlú in aon <strong>1fhoireann</strong>",

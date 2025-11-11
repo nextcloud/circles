@@ -1,7 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Teams" : "Timu",
     "You created the team {circle}" : "Umetengeneza timu {circle}",
     "{author} created the team {circle}" : "{author} ametengeneza timu {circle}",
     "You deleted {circle}" : "Umefuta {circle}",
@@ -52,6 +51,7 @@ OC.L10N.register(
     "{member} sent a request to join {circle}" : "{member} alituma ombi la kujiunga {circle}",
     "You are the new owner of {circle}" : "Wewe ndiye mmiliki mpya wa {circle}",
     "{member} is the new owner of {circle}" : "{member}ndiye mmiliki mpya wa {circle}",
+    "Teams" : "Timu",
     "On events happening in a <strong>team</strong> of which you are a member" : " Juu ya matukio yanayotokea katika <strong>timu</strong> ambayo wewe ni mwanachama",
     "Any important event in a <strong>team</strong> you are moderating" : "Tukio lolote muhimu katika <strong>timu</strong> unasimamia",
     "On global events happening in any <strong>team</strong>" : "Juu ya matukio ya kimataifa yanayotokea katika yoyote <strong>timu</strong>",

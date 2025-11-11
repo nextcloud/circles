@@ -1,5 +1,4 @@
 { "translations": {
-    "Teams" : "Lantaldeak",
     "You created the team {circle}" : "{circle} lantaldea zuk sortu duzu",
     "{author} created the team {circle}" : "{author}(e)k {circle} lantaldea sortu du",
     "You deleted {circle}" : "{circle} ezabatu duzu",
@@ -50,6 +49,7 @@
     "{member} sent a request to join {circle}" : "{member} kideak {circle} zirkuluan sartzeko eskaera egin du",
     "You are the new owner of {circle}" : "{circle} zirkuluaren jabe zara orain",
     "{member} is the new owner of {circle}" : "{member} kidea {circle} zirkuluaren jabe da orain",
+    "Teams" : "Lantaldeak",
     "On events happening in a <strong>team</strong> of which you are a member" : "Kide zaren <strong>lantalde</strong> bateko gertaeretan",
     "Any important event in a <strong>team</strong> you are moderating" : "Moderatzen ari zaren <strong>lantalde</strong> bateko edozein gertaera garrantzitsu",
     "On global events happening in any <strong>team</strong>" : "<strong>Lantalde</strong> batean gertatzen diren gertaera orokorretan",

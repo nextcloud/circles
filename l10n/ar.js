@@ -1,7 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Teams" : "الفرق",
     "You created the team {circle}" : "لقد قُمت بإنشاء الفريق {circle}",
     "{author} created the team {circle}" : "{author} قام بإنشاء الفريق {circle}",
     "You deleted {circle}" : "أنت حذفت الدائرة {circle}",
@@ -52,6 +51,7 @@ OC.L10N.register(
     "{member} sent a request to join {circle}" : "{member} أرسل طلباً للانضمام إلى {circle}",
     "You are the new owner of {circle}" : "أنت المالك الجديد للدائرة {circle}",
     "{member} is the new owner of {circle}" : "{member} هو المالك الجديد للدائرة {circle}",
+    "Teams" : "الفرق",
     "On events happening in a <strong>team</strong> of which you are a member" : "تبعاً للأحداث التي تحدث في الفريق <strong></strong> الذي أنت عضو فيه",
     "Any important event in a <strong>team</strong> you are moderating" : "حدث هام في الفريق <strong></strong> الذي تتولى أنت التنسيق له",
     "On global events happening in any <strong>team</strong>" : "الأحداث العامة التي تحدث في أي فريق <strong></strong>",

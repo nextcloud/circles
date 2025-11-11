@@ -1,7 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Teams" : "Komandos",
     "You deleted {circle}" : "Jūs ištrynėte {circle}",
     "{author} deleted {circle}" : "{author} ištrynė {circle}",
     "You removed {member} from {circle}" : "Jūs pašalinote {member} iš {circle}",
@@ -42,6 +41,7 @@ OC.L10N.register(
     "{member} sent a request to join {circle}" : "{member} išsiuntė užklausą prisijungti prie {circle}",
     "You are the new owner of {circle}" : "Jūs esate rato {circle} savininkas",
     "{member} is the new owner of {circle}" : "{member} yra naujas rato {circle} savininkas",
+    "Teams" : "Komandos",
     "Personal" : "Asmeniniai",
     "System" : "Sistema",
     "Visible" : "Matoma",

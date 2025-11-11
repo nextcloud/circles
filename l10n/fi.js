@@ -1,7 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Teams" : "Tiimit",
     "You created the team {circle}" : "Loit tiimin {circle}",
     "{author} created the team {circle}" : "{author} loi tiimin {circle}",
     "You deleted {circle}" : "Poistit piirin {circle}",
@@ -42,6 +41,7 @@ OC.L10N.register(
     "{member} sent a request to join {circle}" : "{member} lähetti pyynnön liittyä piiriin {circle}",
     "You are the new owner of {circle}" : "Olet piirin {circle} uusi omistaja",
     "{member} is the new owner of {circle}" : "{member} on piirin {circle} uusi omistaja",
+    "Teams" : "Tiimit",
     "Personal" : "Henkilökohtainen",
     "System" : "Järjestelmä",
     "Visible" : "Näkyvissä",
