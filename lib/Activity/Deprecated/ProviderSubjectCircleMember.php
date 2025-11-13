@@ -7,33 +7,38 @@ declare(strict_types=1);
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-namespace OCA\Circles\Activity;
+namespace OCA\Circles\Activity\Deprecated;
 
 use OCA\Circles\Exceptions\FakeException;
+use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Member;
 use OCP\Activity\IEvent;
 
 class ProviderSubjectCircleMember extends ProviderParser {
 	/**
 	 * @param IEvent $event
-	 * @param array $params
+	 * @param Circle $circle
+	 * @param Member $member
 	 * @param string $ownEvent
 	 * @param string $othersEvent
+	 * @return void
 	 */
 	protected function parseMemberCircleEvent(
 		IEvent $event,
-		array $params,
+		Circle $circle,
+		Member $member,
 		string $ownEvent,
-		string $othersEvent
+		string $othersEvent,
 	): void {
 		$data = [
-			'author' => $this->generateUserParameter($params['initiator'] ?? []),
-			'circle' => $this->generateCircleParameter($params['circle']),
-			'member' => $this->generateUserParameter($params['member'] ?? []),
-			'external' => $this->generateExternalMemberParameter($params['member'] ?? []),
-			'group' => $this->generateGroupParameter($params['member'] ?? []),
+			'author' => $this->generateViewerParameter($circle),
+			'circle' => $this->generateCircleParameter($circle),
+			'member' => $this->generateUserParameter($member),
+			'external' => $this->generateExternalMemberParameter($member),
+			'group' => $this->generateGroupParameter($member),
 		];
 
-		if ($this->isViewerTheAuthor($params['initiator'] ?? [], $this->activityManager->getCurrentUserId())) {
+		if ($this->isViewerTheAuthor($circle, $this->activityManager->getCurrentUserId())) {
 			$this->setSubject($event, $ownEvent, $data);
 
 			return;
@@ -44,20 +49,21 @@ class ProviderSubjectCircleMember extends ProviderParser {
 
 	/**
 	 * @param IEvent $event
-	 * @param array $params
-	 *
+	 * @param Circle $circle
+	 * @param Member $member
 	 * @throws FakeException
 	 */
 	public function parseSubjectCircleMemberJoin(
 		IEvent $event,
-		array $params,
+		Circle $circle,
+		Member $member,
 	): void {
 		if ($event->getSubject() !== 'member_circle_joined') {
 			return;
 		}
 
 		$this->parseMemberCircleEvent(
-			$event, $params,
+			$event, $circle, $member,
 			$this->l10n->t('You made {member} join {circle}'),
 			$this->l10n->t('{author} made {member} join {circle}')
 		);
@@ -67,20 +73,22 @@ class ProviderSubjectCircleMember extends ProviderParser {
 
 	/**
 	 * @param IEvent $event
-	 * @param array $params
-	 *
+	 * @param Circle $circle
+	 * @param Member $member
+	 * @return void
 	 * @throws FakeException
 	 */
 	public function parseSubjectCircleMemberAdd(
 		IEvent $event,
-		array $params,
+		Circle $circle,
+		Member $member,
 	): void {
 		if ($event->getSubject() !== 'member_circle_added') {
 			return;
 		}
 
 		$this->parseMemberCircleEvent(
-			$event, $params,
+			$event, $circle, $member,
 			$this->l10n->t('You added team {member} as member to {circle}'),
 			$this->l10n->t('{author} added team {member} as member to {circle}')
 		);
@@ -90,20 +98,22 @@ class ProviderSubjectCircleMember extends ProviderParser {
 
 	/**
 	 * @param IEvent $event
-	 * @param array $params
-	 *
+	 * @param Circle $circle
+	 * @param Member $member
+	 * @return void
 	 * @throws FakeException
 	 */
 	public function parseSubjectCircleMemberLeft(
 		IEvent $event,
-		array $params,
+		Circle $circle,
+		Member $member,
 	): void {
 		if ($event->getSubject() !== 'member_circle_left') {
 			return;
 		}
 
 		$this->parseCircleMemberEvent(
-			$event, $params,
+			$event, $circle, $member,
 			$this->l10n->t('You made {member} leave {circle}'),
 			$this->l10n->t('{author} made {member} leave {circle}')
 		);
@@ -113,20 +123,22 @@ class ProviderSubjectCircleMember extends ProviderParser {
 
 	/**
 	 * @param IEvent $event
-	 * @param array $params
-	 *
+	 * @param Circle $circle
+	 * @param Member $member
+	 * @return void
 	 * @throws FakeException
 	 */
 	public function parseSubjectCircleMemberRemove(
 		IEvent $event,
-		array $params,
+		Circle $circle,
+		Member $member,
 	): void {
 		if ($event->getSubject() !== 'member_circle_removed') {
 			return;
 		}
 
 		$this->parseCircleMemberEvent(
-			$event, $params,
+			$event, $circle, $member,
 			$this->l10n->t('You removed {member} from {circle}'),
 			$this->l10n->t('{author} removed {member} from {circle}')
 		);
