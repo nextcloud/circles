@@ -59,6 +59,7 @@ use OCA\Circles\Tools\Traits\TArrayTools;
 use OCA\Circles\Tools\Traits\TNCRequest;
 use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\IAppConfig;
+use OCP\IConfig;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -86,6 +87,7 @@ class CirclesCheck extends Base {
 	public function __construct(
 		private Capabilities $capabilities,
 		private IAppConfig $appConfig,
+		private IConfig $config,
 		private InterfaceService $interfaceService,
 		private FederatedEventService $federatedEventService,
 		private RemoteService $remoteService,
@@ -278,6 +280,7 @@ class CirclesCheck extends Base {
 			return false;
 		}
 
+		$this->config->setAppValue(Application::APP_ID, 'test_dummy_token', (string)(time() + 10));
 		if (!$this->testRequest(
 			$output, 'POST', 'circles.EventWrapper.asyncBroadcast',
 			['token' => 'test-dummy-token']
