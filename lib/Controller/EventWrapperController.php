@@ -42,6 +42,7 @@ use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
+use OCP\IConfig;
 use OCP\IRequest;
 
 /**
@@ -68,7 +69,8 @@ class EventWrapperController extends Controller {
 
 	/** @var ConfigService */
 	private $configService;
-
+	/** @var IConfig */
+	private $config;
 
 	/**
 	 * EventWrapperController constructor.
@@ -84,6 +86,7 @@ class EventWrapperController extends Controller {
 	public function __construct(
 		string $appName,
 		IRequest $request,
+		IConfig $config,
 		EventWrapperService $eventWrapperService,
 		FederatedEventService $federatedEventService,
 		RemoteUpstreamService $remoteUpstreamService,
@@ -91,6 +94,7 @@ class EventWrapperController extends Controller {
 		ConfigService $configService
 	) {
 		parent::__construct($appName, $request);
+		$this->config = $config;
 		$this->eventWrapperService = $eventWrapperService;
 		$this->federatedEventService = $federatedEventService;
 		$this->remoteUpstreamService = $remoteUpstreamService;
@@ -119,6 +123,10 @@ class EventWrapperController extends Controller {
 		$wrappers = $this->remoteUpstreamService->getEventsByToken($token);
 		if (empty($wrappers) && $token !== 'test-dummy-token') {
 			return new DataResponse(null, Http::STATUS_OK);
+		}
+
+		if ($token === 'test-dummy-token' && ((int)$this->config->getAppValue(Application::APP_ID, 'test_dummy_token', '0')) < time()) {
+			return new DataResponse([], Http::STATUS_UNAUTHORIZED);
 		}
 
 		// closing socket, keep current process running.
