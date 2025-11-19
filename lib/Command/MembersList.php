@@ -117,9 +117,9 @@ class MembersList extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:members:list')
-			->setDescription('listing Members from a Circle')
-			->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
-			->addOption('instance', '', InputOption::VALUE_REQUIRED, 'Instance of the circle', '')
+			->setDescription('listing Members from a Team')
+			->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the team')
+			->addOption('instance', '', InputOption::VALUE_REQUIRED, 'Instance of the team', '')
 			->addOption('inherited', '', InputOption::VALUE_NONE, 'Display all inherited members')
 			->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
 			->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')

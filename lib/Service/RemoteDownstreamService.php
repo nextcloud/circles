@@ -127,7 +127,7 @@ class RemoteDownstreamService {
 		if ($event->isLimitedToInstanceWithMember()) {
 			$instances = $this->memberRequest->getMemberInstances($event->getCircle()->getSingleId());
 			if (!in_array($event->getSender(), $instances)) {
-				throw new FederatedEventException('Instance have no members in this Circle');
+				throw new FederatedEventException('Instance have no members in this Team');
 			}
 		}
 
@@ -202,7 +202,7 @@ class RemoteDownstreamService {
 			return;
 		}
 
-		throw new FederatedEventDSyncException('Could not verify Circle');
+		throw new FederatedEventDSyncException('Could not verify Team');
 	}
 
 	/**
