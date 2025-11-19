@@ -73,8 +73,8 @@ class CirclesJoin extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:manage:join')
-			->setDescription('emulate a user joining a Circle')
-			->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
+			->setDescription('emulate a user joining a Team')
+			->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the team')
 			->addArgument('initiator', InputArgument::REQUIRED, 'initiator to the request')
 			->addOption('type', '', InputOption::VALUE_REQUIRED, 'type of the initiator', '0')
 			->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');

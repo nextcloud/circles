@@ -43,8 +43,8 @@ class CirclesEdit extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:manage:edit')
-			->setDescription('edit displayName or description of a Circle')
-			->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
+			->setDescription('edit displayName or description of a  Team')
+			->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the team')
 			->addArgument('edit', InputArgument::REQUIRED, 'displayName or description')
 			->addArgument('value', InputArgument::REQUIRED, 'new value')
 			->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
