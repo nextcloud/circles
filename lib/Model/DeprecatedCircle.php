@@ -221,7 +221,7 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 	public function cantBePersonal() {
 		if ($this->getType() === self::CIRCLES_PERSONAL) {
 			throw new CircleTypeNotValidException(
-				$this->l10n->t('This feature is not available for personal circles')
+				$this->l10n->t('This feature is not available for personal teams')
 			);
 		}
 	}

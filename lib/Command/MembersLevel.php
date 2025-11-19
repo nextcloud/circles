@@ -76,9 +76,9 @@ class MembersLevel extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:members:level')
-			->setDescription('Change the level of a member from a Circle')
-			->addArgument('member_id', InputArgument::REQUIRED, 'ID of the member from the Circle')
-			->addOption('circle', '', InputOption::VALUE_REQUIRED, 'ID of the circle', '')
+			->setDescription('Change the level of a member from a Team')
+			->addArgument('member_id', InputArgument::REQUIRED, 'ID of the member from the Team')
+			->addOption('circle', '', InputOption::VALUE_REQUIRED, 'ID of the team', '')
 			->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
 			->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
 			->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception')
