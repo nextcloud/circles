@@ -47,11 +47,11 @@ class CirclesConfig extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:manage:config')
-			->setDescription('edit config/type of a Circle')
-			->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
+			->setDescription('edit config/type of a Team')
+			->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the team')
 			->addArgument(
 				'config', InputArgument::IS_ARRAY,
-				'list of value to change in the configuration of the Circle'
+				'list of value to change in the configuration of the Team'
 			)
 			->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
 			->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
