@@ -104,12 +104,10 @@
     "Circles App Initialization" : "چەمبەر ئەپلىرىنى قوزغىتىش",
     "Fresh installation status" : "يېڭى ئورنىتىش ھالىتى",
     "Building Local Database" : "يەرلىك ساندان قۇرۇش",
-    "Testing Basic Circle Creation" : "ئاساسىي چەمبىرەك قۇرۇشنى سىناق قىلىش",
     "Adding local users and moderators" : "يەرلىك ئىشلەتكۈچىلەر ۋە رىياسەتچىلەر قوشۇلىدۇ",
     "Show all teams" : "بارلىق كوماندىلارنى كۆرسەت",
     "Create a new team" : "يېڭى گۇرۇپپا قۇرۇڭ",
     "Files" : "ھۆججەتلەر",
-    "This feature is not available for personal circles" : "بۇ ئىقتىدار شەخسىي چەمبىرەكلەردە ئىشلىتىلمەيدۇ",
     "The team is not federated" : "بۇ كوماندا فېدېراتسىيە ئەمەس",
     "You cannot join this team" : "سىز بۇ كوماندىغا قوشۇلالمايسىز",
     "This member is not a moderator" : "بۇ ئەزا رىياسەتچى ئەمەس",
@@ -117,10 +115,6 @@
     "This member does not exist" : "بۇ ئەزا مەۋجۇت ئەمەس",
     "This member is the owner of the team" : "بۇ ئەزا كوماندىنىڭ ئىگىسى",
     "Level cannot be changed for this type of member" : "بۇ تۈردىكى ئەزالارنىڭ دەرىجىسىنى ئۆزگەرتىشكە بولمايدۇ",
-    "You are already a member of this circle" : "سىز ئاللىبۇرۇن بۇ چەمبىرەكنىڭ ئەزاسى",
-    "You have been blocked from this circle" : "سىز بۇ چەمبىرەكتىن توسۇۋېلىندىڭىز",
-    "The account is already a member of this circle" : "ھېسابات ئاللىقاچان بۇ چەمبىرەكنىڭ ئەزاسى",
-    "The account has already been invited into this circle" : "بۇ ھېسابات ئاللىبۇرۇن بۇ چەمبىرەككە تەكلىپ قىلىنغان",
     "%s (Team owned by %s)" : "%s (%s ئىگىدارچىلىقىدىكى گۇرۇپپا)",
     "You are now a member of the Team \"%2$s\"" : "سىز ھازىر «%2$s» گۇرۇپپىسىنىڭ ئەزاسى.",
     "You have been invited by %1$s into the Team \"%2$s\"" : "سىز %1$s تەرىپىدىن «%2$s» گۇرۇپپىسىغا تەكلىپ قىلىندىڭىز",
@@ -156,6 +150,12 @@
     "Name" : "ئاتى",
     "Size" : "چوڭلۇقى",
     "Modified" : "ئۆزگەرتكەن",
-    "Shared to Circles" : "چەمبىرەككە ئورتاقلاشتى"
+    "Shared to Circles" : "چەمبىرەككە ئورتاقلاشتى",
+    "Testing Basic Circle Creation" : "ئاساسىي چەمبىرەك قۇرۇشنى سىناق قىلىش",
+    "This feature is not available for personal circles" : "بۇ ئىقتىدار شەخسىي چەمبىرەكلەردە ئىشلىتىلمەيدۇ",
+    "You are already a member of this circle" : "سىز ئاللىبۇرۇن بۇ چەمبىرەكنىڭ ئەزاسى",
+    "You have been blocked from this circle" : "سىز بۇ چەمبىرەكتىن توسۇۋېلىندىڭىز",
+    "The account is already a member of this circle" : "ھېسابات ئاللىقاچان بۇ چەمبىرەكنىڭ ئەزاسى",
+    "The account has already been invited into this circle" : "بۇ ھېسابات ئاللىبۇرۇن بۇ چەمبىرەككە تەكلىپ قىلىنغان"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

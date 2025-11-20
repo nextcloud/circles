@@ -61,13 +61,10 @@ OC.L10N.register(
     "%1$s via %2$s" : "%1$s pere de %2$s",
     "Click the button below to open it." : "Alklaku la butonon ĉi-sube por malfermi ĝin.",
     "Open »%s«" : "Malfermi „%s“",
-    "This feature is not available for personal circles" : "Tiu funkcio ne disponeblas por persona rondo",
     "This member is not a moderator" : "Tiu ĉi membro ne estas kontrolanto",
     "Insufficient privileges" : "Nesufiĉaj rajtoj",
     "This member does not exist" : "Tiu ĉi membro ne ekzistas",
     "Level cannot be changed for this type of member" : "Nivelo ne ŝanĝeblas por tiu tipo de membro",
-    "You are already a member of this circle" : "Vi jam estas membro de tiu ĉi rondo",
-    "You have been blocked from this circle" : "Vi estis barita el tiu ĉi rondo",
     "Accept" : "Akcepti",
     "%s" : "%s",
     "Open %s" : "Malfermi %s",
@@ -78,6 +75,9 @@ OC.L10N.register(
     "Name" : "Nomo",
     "Size" : "Grando",
     "Modified" : "Modifita",
-    "Shared to Circles" : "Kunhavigita kun rondoj"
+    "Shared to Circles" : "Kunhavigita kun rondoj",
+    "This feature is not available for personal circles" : "Tiu funkcio ne disponeblas por persona rondo",
+    "You are already a member of this circle" : "Vi jam estas membro de tiu ĉi rondo",
+    "You have been blocked from this circle" : "Vi estis barita el tiu ĉi rondo"
 },
 "nplurals=2; plural=(n != 1);");

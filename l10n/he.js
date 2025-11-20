@@ -56,14 +56,10 @@ OC.L10N.register(
     "Password to access files" : "ססמה לגשת לקבצים",
     "Fresh installation status" : "מצב ההתקנה החדשה",
     "Building Local Database" : "מסד הנתונים המקומי נבנה",
-    "Testing Basic Circle Creation" : "נבדקת יצירת מעגל בסיסי",
     "Adding local users and moderators" : "הוספת משתמשים ומפקחים מקומיים",
     "Files" : "קבצים",
-    "This feature is not available for personal circles" : "תכונה זו אינה זמינה למעגלים אישיים",
     "Insufficient privileges" : "אין מספיק הרשאות",
     "This member does not exist" : "חבר זה אינו קיים",
-    "You are already a member of this circle" : "כבר יש לך חברות במעגל זה",
-    "You have been blocked from this circle" : "גישתך למעגל הזה נחסמה",
     "Accept" : "אשר",
     "Refuse" : "סירוב",
     "%s" : "%s",
@@ -75,6 +71,10 @@ OC.L10N.register(
     "Name" : "שם",
     "Size" : "גודל",
     "Modified" : "מועד שינוי",
-    "Shared to Circles" : "שותף למעגלים"
+    "Shared to Circles" : "שותף למעגלים",
+    "Testing Basic Circle Creation" : "נבדקת יצירת מעגל בסיסי",
+    "This feature is not available for personal circles" : "תכונה זו אינה זמינה למעגלים אישיים",
+    "You are already a member of this circle" : "כבר יש לך חברות במעגל זה",
+    "You have been blocked from this circle" : "גישתך למעגל הזה נחסמה"
 },
 "nplurals=3; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % 1 == 0) ? 1: 2;");

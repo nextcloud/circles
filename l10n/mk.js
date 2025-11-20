@@ -106,12 +106,10 @@ OC.L10N.register(
     "Circles App Initialization" : "Иницијализација на апликацијата Circles",
     "Fresh installation status" : "Статус на нова инсталација",
     "Building Local Database" : "Градење на локална база на податоци",
-    "Testing Basic Circle Creation" : "Тестирање на основно создавање круг (Circle)",
     "Adding local users and moderators" : "Додавање локални корисници и модератори",
     "Show all teams" : "Прикажи ги сите тимови",
     "Create a new team" : "Креирај нов тим",
     "Files" : "Датотеки",
-    "This feature is not available for personal circles" : "Оваа функција не е достапна за лични кругови",
     "The team is not federated" : "Тимот не е федеративен",
     "You cannot join this team" : "Не можеш да се приклучиш на овој тим",
     "This member is not a moderator" : "Овој член не е модератор",
@@ -154,6 +152,8 @@ OC.L10N.register(
     "Name" : "Име",
     "Size" : "Големина",
     "Modified" : "Изменето",
-    "Shared to Circles" : "Споделено со кругови"
+    "Shared to Circles" : "Споделено со кругови",
+    "Testing Basic Circle Creation" : "Тестирање на основно создавање круг (Circle)",
+    "This feature is not available for personal circles" : "Оваа функција не е достапна за лични кругови"
 },
 "nplurals=2; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : 1;");

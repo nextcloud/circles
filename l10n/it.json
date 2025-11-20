@@ -104,12 +104,10 @@
     "Circles App Initialization" : "Inizializzazione app Cerchie",
     "Fresh installation status" : "Stato nuova installazione",
     "Building Local Database" : "Costruzione database locale",
-    "Testing Basic Circle Creation" : "Test creazione cerchia di base",
     "Adding local users and moderators" : "Aggiunta di utenti locali e moderatori",
     "Show all teams" : "Mostra tutti i team",
     "Create a new team" : "Crea un nuovo team",
     "Files" : "File",
-    "This feature is not available for personal circles" : "Questa funzionalità non è disponibile nelle cerchie personali",
     "The team is not federated" : "Il team non è federato",
     "You cannot join this team" : "Non puoi unirti a questo team",
     "This member is not a moderator" : "Questo membro non è un moderatore",
@@ -117,10 +115,6 @@
     "This member does not exist" : "Questo membro non esiste",
     "This member is the owner of the team" : "Questo membro è il proprietario del team",
     "Level cannot be changed for this type of member" : "Il livello non può essere modificato per questo tipo di membro",
-    "You are already a member of this circle" : "Sei già un membro di questa cerchia",
-    "You have been blocked from this circle" : "Sei stato bloccato da questa cerchia",
-    "The account is already a member of this circle" : "L'account è già membro di questa cerchia",
-    "The account has already been invited into this circle" : "L'account è già stato invitato in questa cerchia",
     "%s (Team owned by %s)" : "%s (Team di proprietà di %s)",
     "You are now a member of the Team \"%2$s\"" : "Ora sei un membro del Team \"%2$s\"",
     "You have been invited by %1$s into the Team \"%2$s\"" : "Sei stato invitato da %1$s dentro al Team \"%2$s\"",
@@ -156,6 +150,12 @@
     "Name" : "Nome",
     "Size" : "Dimensione",
     "Modified" : "Modificato",
-    "Shared to Circles" : "Condivisi con cerchie"
+    "Shared to Circles" : "Condivisi con cerchie",
+    "Testing Basic Circle Creation" : "Test creazione cerchia di base",
+    "This feature is not available for personal circles" : "Questa funzionalità non è disponibile nelle cerchie personali",
+    "You are already a member of this circle" : "Sei già un membro di questa cerchia",
+    "You have been blocked from this circle" : "Sei stato bloccato da questa cerchia",
+    "The account is already a member of this circle" : "L'account è già membro di questa cerchia",
+    "The account has already been invited into this circle" : "L'account è già stato invitato in questa cerchia"
 },"pluralForm" :"nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }

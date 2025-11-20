@@ -102,12 +102,10 @@
     "Circles App Initialization" : "Circles App Initialisatie",
     "Fresh installation status" : "Nieuwe installatiestatus",
     "Building Local Database" : "Aanmaken lokale database",
-    "Testing Basic Circle Creation" : "Testen basis kringcreatie",
     "Adding local users and moderators" : "Toevoegen lokale gebruikers en moderatoren",
     "Show all teams" : "Geef alle teams weer",
     "Create a new team" : "Nieuw team aanmaken",
     "Files" : "Bestanden",
-    "This feature is not available for personal circles" : "Deze functie is niet beschikbaar voor persoonlijke kringen",
     "The team is not federated" : "Het team is niet gefedereerd",
     "You cannot join this team" : "Je kunt niet lid worden van dit team",
     "This member is not a moderator" : "Dit lid is geen moderator",
@@ -115,10 +113,6 @@
     "This member does not exist" : "Dit lid bestaat niet",
     "This member is the owner of the team" : "Dit lid is eigenaar van dit team",
     "Level cannot be changed for this type of member" : "Het niveau van dit type lid kan niet veranderd worden.",
-    "You are already a member of this circle" : "Je bent al lid van deze kring",
-    "You have been blocked from this circle" : "Je bent geblokkeerd van deze kring",
-    "The account is already a member of this circle" : "Dit account is al lid van deze cirkel",
-    "The account has already been invited into this circle" : "Dit account is al uitgenodigt voor deze cirkel",
     "%s (Team owned by %s)" : "%s (Team met eigenaar %s)",
     "You are now a member of the Team \"%2$s\"" : "Je bent nu lid van team \"%2$s\"",
     "You have been invited by %1$s into the Team \"%2$s\"" : "Je bent door %1$s uitgenodigd bij het Team \"%2$s\".",
@@ -154,6 +148,12 @@
     "Name" : "Naam",
     "Size" : "Omvang",
     "Modified" : "Gewijzigd",
-    "Shared to Circles" : "Gedeeld met Kringen"
+    "Shared to Circles" : "Gedeeld met Kringen",
+    "Testing Basic Circle Creation" : "Testen basis kringcreatie",
+    "This feature is not available for personal circles" : "Deze functie is niet beschikbaar voor persoonlijke kringen",
+    "You are already a member of this circle" : "Je bent al lid van deze kring",
+    "You have been blocked from this circle" : "Je bent geblokkeerd van deze kring",
+    "The account is already a member of this circle" : "Dit account is al lid van deze cirkel",
+    "The account has already been invited into this circle" : "Dit account is al uitgenodigt voor deze cirkel"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

@@ -104,12 +104,10 @@
     "Circles App Initialization" : "Kreise-App-Initialisierung",
     "Fresh installation status" : "Aktueller Initialisierungsstatus",
     "Building Local Database" : "Lokale Datenbank wird erstellt",
-    "Testing Basic Circle Creation" : "Testen der grundlegenden Kreiserstellung",
     "Adding local users and moderators" : "Lokale Benutzer und Moderatoren werden hinzugefügt",
     "Show all teams" : "Alle Teams anzeigen",
     "Create a new team" : "Ein neues Team erstellen",
     "Files" : "Dateien",
-    "This feature is not available for personal circles" : "Diese Funktion steht für persönliche Kreise nicht zur Verfügung",
     "The team is not federated" : "Das Team ist nicht federiert",
     "You cannot join this team" : "Du kannst diesem Team nicht beitreten",
     "This member is not a moderator" : "Dieses Mitglied ist kein Moderator",
@@ -117,10 +115,6 @@
     "This member does not exist" : "Dieses Mitglied existiert nicht",
     "This member is the owner of the team" : "Dieses Mitglied besitzt das Team",
     "Level cannot be changed for this type of member" : "Berechtigungsstufe kann für diesen Mitgliedstyp nicht geändert werden",
-    "You are already a member of this circle" : "Du bist bereits Mitglied dieses Kreises",
-    "You have been blocked from this circle" : "Du wurdest für diesen Kreis blockiert",
-    "The account is already a member of this circle" : "Dieses Konto ist bereits Mitglied dieses Kreises",
-    "The account has already been invited into this circle" : "Dieser Benutzer wurde bereits zu diesem Kreis eingeladen.",
     "%s (Team owned by %s)" : "%s (Team im Besitz von %s)",
     "You are now a member of the Team \"%2$s\"" : "Du bist jetzt Mitglied des Teams \"%2$s\"",
     "You have been invited by %1$s into the Team \"%2$s\"" : "Du wurdest von %1$s zum Team \"%2$s\" eingeladen",
@@ -156,6 +150,12 @@
     "Name" : "Name",
     "Size" : "Größe",
     "Modified" : "Geändert",
-    "Shared to Circles" : "Geteilt mit Kreisen"
+    "Shared to Circles" : "Geteilt mit Kreisen",
+    "Testing Basic Circle Creation" : "Testen der grundlegenden Kreiserstellung",
+    "This feature is not available for personal circles" : "Diese Funktion steht für persönliche Kreise nicht zur Verfügung",
+    "You are already a member of this circle" : "Du bist bereits Mitglied dieses Kreises",
+    "You have been blocked from this circle" : "Du wurdest für diesen Kreis blockiert",
+    "The account is already a member of this circle" : "Dieses Konto ist bereits Mitglied dieses Kreises",
+    "The account has already been invited into this circle" : "Dieser Benutzer wurde bereits zu diesem Kreis eingeladen."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

@@ -85,17 +85,11 @@
     "Circles App Initialization" : "Cychwyn Ap Cylchoedd",
     "Fresh installation status" : "Statws gosodiad newydd",
     "Building Local Database" : "Adeiladu Cronfa Ddata Lleol",
-    "Testing Basic Circle Creation" : "Profi Creu Cylch Sylfaenol",
     "Adding local users and moderators" : "Ychwanegu defnyddwyr a chymedrolwyr lleol",
-    "This feature is not available for personal circles" : "Nid yw'r nodwedd hon ar gael ar gyfer cylchoedd personol",
     "This member is not a moderator" : "Nid yw'r aelod hwn yn gymedrolwr",
     "Insufficient privileges" : "Breintiau annigonol",
     "This member does not exist" : "Nid yw'r aelod hwn yn bodoli",
     "Level cannot be changed for this type of member" : "Ni ellir newid lefel ar gyfer y math hwn o aelod",
-    "You are already a member of this circle" : "Rydych chi eisoes yn aelod o'r cylch hwn",
-    "You have been blocked from this circle" : "Rydych chi wedi cael eich rhwystro o'r cylch hwn",
-    "The account is already a member of this circle" : "Mae'r cyfrif eisoes yn aelod o'r cylch hwn",
-    "The account has already been invited into this circle" : "Mae'r cyfrif eisoes wedi'i wahodd i'r cylch hwn",
     "Accept" : "Derbyn",
     "Refuse" : "Gwrthod",
     "%s" : "%s",
@@ -114,6 +108,12 @@
     "Name" : "Enw",
     "Size" : "Maint",
     "Modified" : "Addaswyd",
-    "Shared to Circles" : "Wedi'i rannu i Gylchoedd"
+    "Shared to Circles" : "Wedi'i rannu i Gylchoedd",
+    "Testing Basic Circle Creation" : "Profi Creu Cylch Sylfaenol",
+    "This feature is not available for personal circles" : "Nid yw'r nodwedd hon ar gael ar gyfer cylchoedd personol",
+    "You are already a member of this circle" : "Rydych chi eisoes yn aelod o'r cylch hwn",
+    "You have been blocked from this circle" : "Rydych chi wedi cael eich rhwystro o'r cylch hwn",
+    "The account is already a member of this circle" : "Mae'r cyfrif eisoes yn aelod o'r cylch hwn",
+    "The account has already been invited into this circle" : "Mae'r cyfrif eisoes wedi'i wahodd i'r cylch hwn"
 },"pluralForm" :"nplurals=4; plural=(n==1) ? 0 : (n==2) ? 1 : (n != 8 && n != 11) ? 2 : 3;"
 }
