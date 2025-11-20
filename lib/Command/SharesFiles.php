@@ -235,10 +235,10 @@ class SharesFiles extends Base {
 			];
 
 			if (!$filterRecipient) {
+				$def = ($recipient->hasBasedOn()) ? Circle::$DEF_SOURCE[$recipient->getBasedOn()->getSource()] : 'undef';
 				$row = array_merge(
 					$row, [
-						$sharedTo . ' (' . $recipient->getSingleId() . ', '
-						. Circle::$DEF_SOURCE[$recipient->getBasedOn()->getSource()] . ')',
+						$sharedTo . ' (' . $recipient->getSingleId() . ', ' . $def . ')',
 						(($share->getChildId() > 0) ? $share->getChildFileTarget(
 						) : $share->getFileTarget()),
 					]
