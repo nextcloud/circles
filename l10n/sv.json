@@ -104,12 +104,10 @@
     "Circles App Initialization" : "Cirklar appinitiering",
     "Fresh installation status" : "Nyinstallationsstatus",
     "Building Local Database" : "Bygger lokal databas",
-    "Testing Basic Circle Creation" : "Testar grundläggande Cirkel-skapande",
     "Adding local users and moderators" : "Lägger till lokala användare och moderatorer ",
     "Show all teams" : "Visa alla team",
     "Create a new team" : "Skapa ett nytt team",
     "Files" : "Filer",
-    "This feature is not available for personal circles" : "Funktionen är inte tillgänglig för personliga cirklar",
     "The team is not federated" : "Detta team är inte federerat",
     "You cannot join this team" : "Du kan inte gå med i detta team",
     "This member is not a moderator" : "Medlemmen är inte en moderator",
@@ -117,10 +115,6 @@
     "This member does not exist" : "Medlemmen finns inte",
     "This member is the owner of the team" : "Denna medlem är ägaren av teamet",
     "Level cannot be changed for this type of member" : "Nivå kan inte ändras för medlemstypen",
-    "You are already a member of this circle" : "Du är redan medlem i denna cirkel",
-    "You have been blocked from this circle" : "Du har blockerats från denna cirkel",
-    "The account is already a member of this circle" : "Kontot är redan medlem av denna cirkel",
-    "The account has already been invited into this circle" : "Kontot har redan bjudits in till denna cirkel",
     "%s (Team owned by %s)" : "%s (Team ägs av %s)",
     "You are now a member of the Team \"%2$s\"" : "Du är nu medlem i Team \"%2$s\"",
     "You have been invited by %1$s into the Team \"%2$s\"" : "Du har blivit inbjuden av %1$s till Team \"%2$s\"",
@@ -156,6 +150,12 @@
     "Name" : "Namn",
     "Size" : "Storlek",
     "Modified" : "Ändrad",
-    "Shared to Circles" : "Delad med Cirklar"
+    "Shared to Circles" : "Delad med Cirklar",
+    "Testing Basic Circle Creation" : "Testar grundläggande Cirkel-skapande",
+    "This feature is not available for personal circles" : "Funktionen är inte tillgänglig för personliga cirklar",
+    "You are already a member of this circle" : "Du är redan medlem i denna cirkel",
+    "You have been blocked from this circle" : "Du har blockerats från denna cirkel",
+    "The account is already a member of this circle" : "Kontot är redan medlem av denna cirkel",
+    "The account has already been invited into this circle" : "Kontot har redan bjudits in till denna cirkel"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

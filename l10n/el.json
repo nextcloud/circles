@@ -104,12 +104,10 @@
     "Circles App Initialization" : "Προετοιμασία Εφαρμογής Circles",
     "Fresh installation status" : "Κατάσταση νέας εγκατάστασης",
     "Building Local Database" : "Δημιουργία Τοπικής Βάσης Δεδομένων",
-    "Testing Basic Circle Creation" : "Δοκιμή Βασικής Δημιουργίας Κύκλου",
     "Adding local users and moderators" : "Προσθήκη τοπικών χρηστών και συντονιστών",
     "Show all teams" : "Εμφάνιση όλων των ομάδων",
     "Create a new team" : "Δημιουργία νέας ομάδας",
     "Files" : "Αρχεία",
-    "This feature is not available for personal circles" : "Αυτή η επιλογή δεν είναι διαθέσιμη για προσωπικούς κύκλους",
     "The team is not federated" : "Η ομάδα δεν είναι federated",
     "You cannot join this team" : "Δεν μπορείτε να συμμετάσχετε σε αυτήν την ομάδα",
     "This member is not a moderator" : "Αυτό το μέλος δεν είναι επιμελητής",
@@ -117,10 +115,6 @@
     "This member does not exist" : "Αυτό το μέλος δεν υπάρχει",
     "This member is the owner of the team" : "Αυτό το μέλος είναι ο ιδιοκτήτης της ομάδας",
     "Level cannot be changed for this type of member" : "Το επίπεδο δεν μπορεί να αλλάξει για αυτόν τον τύπο χρηστών",
-    "You are already a member of this circle" : "Είστε ήδη μέλος αυτού του κύκλου",
-    "You have been blocked from this circle" : "Έχετε αποκλειστεί από αυτόν τον κύκλο",
-    "The account is already a member of this circle" : "Ο λογαριασμός είναι ήδη μέλος του κύκλου",
-    "The account has already been invited into this circle" : "Ο λογαριασμός έχει ήδη προσκληθεί για συμμετοχή στον κύκλο",
     "%s (Team owned by %s)" : "%s (Ομάδα που ανήκει στον %s)",
     "You are now a member of the Team \"%2$s\"" : "Είστε πλέον μέλος της Ομάδας \"%2$s\"",
     "You have been invited by %1$s into the Team \"%2$s\"" : "Έχετε προσκληθεί από τον/την %1$s στην Ομάδα \"%2$s\"",
@@ -156,6 +150,12 @@
     "Name" : "Όνομα",
     "Size" : "Μέγεθος",
     "Modified" : "Τροποποιήθηκε",
-    "Shared to Circles" : "Κοινόχρηστο στους Κύκλους"
+    "Shared to Circles" : "Κοινόχρηστο στους Κύκλους",
+    "Testing Basic Circle Creation" : "Δοκιμή Βασικής Δημιουργίας Κύκλου",
+    "This feature is not available for personal circles" : "Αυτή η επιλογή δεν είναι διαθέσιμη για προσωπικούς κύκλους",
+    "You are already a member of this circle" : "Είστε ήδη μέλος αυτού του κύκλου",
+    "You have been blocked from this circle" : "Έχετε αποκλειστεί από αυτόν τον κύκλο",
+    "The account is already a member of this circle" : "Ο λογαριασμός είναι ήδη μέλος του κύκλου",
+    "The account has already been invited into this circle" : "Ο λογαριασμός έχει ήδη προσκληθεί για συμμετοχή στον κύκλο"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

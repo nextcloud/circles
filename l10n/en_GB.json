@@ -104,12 +104,10 @@
     "Circles App Initialization" : "Circles App Initialisation",
     "Fresh installation status" : "Fresh installation status",
     "Building Local Database" : "Building Local Database",
-    "Testing Basic Circle Creation" : "Testing Basic Circle Creation",
     "Adding local users and moderators" : "Adding local users and moderators",
     "Show all teams" : "Show all teams",
     "Create a new team" : "Create a new team",
     "Files" : "Files",
-    "This feature is not available for personal circles" : "This feature is not available for personal circles",
     "The team is not federated" : "The team is not federated",
     "You cannot join this team" : "You cannot join this team",
     "This member is not a moderator" : "This member is not a moderator",
@@ -117,10 +115,6 @@
     "This member does not exist" : "This member does not exist",
     "This member is the owner of the team" : "This member is the owner of the team",
     "Level cannot be changed for this type of member" : "Level cannot be changed for this type of member",
-    "You are already a member of this circle" : "You are already a member of this circle",
-    "You have been blocked from this circle" : "You have been blocked from this circle",
-    "The account is already a member of this circle" : "The account is already a member of this circle",
-    "The account has already been invited into this circle" : "The account has already been invited into this circle",
     "%s (Team owned by %s)" : "%s (Team owned by %s)",
     "You are now a member of the Team \"%2$s\"" : "You are now a member of the Team \"%2$s\"",
     "You have been invited by %1$s into the Team \"%2$s\"" : "You have been invited by %1$s into the Team \"%2$s\"",
@@ -156,6 +150,12 @@
     "Name" : "Name",
     "Size" : "Size",
     "Modified" : "Modified",
-    "Shared to Circles" : "Shared to Circles"
+    "Shared to Circles" : "Shared to Circles",
+    "Testing Basic Circle Creation" : "Testing Basic Circle Creation",
+    "This feature is not available for personal circles" : "This feature is not available for personal circles",
+    "You are already a member of this circle" : "You are already a member of this circle",
+    "You have been blocked from this circle" : "You have been blocked from this circle",
+    "The account is already a member of this circle" : "The account is already a member of this circle",
+    "The account has already been invited into this circle" : "The account has already been invited into this circle"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

@@ -101,12 +101,10 @@
     "Circles App Initialization" : "Inicialização da App Circles",
     "Fresh installation status" : "Estado da instalação",
     "Building Local Database" : "Construção da Base de Dados Local",
-    "Testing Basic Circle Creation" : "Teste de Criação de um Basic Circle",
     "Adding local users and moderators" : "Adicionando utilizadores e moderadores locais",
     "Show all teams" : "Mostrar todos os grupos",
     "Create a new team" : "Criar um novo grupo",
     "Files" : "Ficheiros",
-    "This feature is not available for personal circles" : "Esta funcionalidade não está disponível para uso pessoal",
     "The team is not federated" : "Este grupo não está federado",
     "You cannot join this team" : "Não tem forma de aderir a este grupo",
     "This member is not a moderator" : "Este membro não é um moderador",
@@ -114,10 +112,6 @@
     "This member does not exist" : "Este membro não existe",
     "This member is the owner of the team" : "Este membro é responsável pelo grupo",
     "Level cannot be changed for this type of member" : "O estatuto não pode ser mudado para este tipo de membro",
-    "You are already a member of this circle" : "Já é um membro deste círculo",
-    "You have been blocked from this circle" : "Foi bloqueado neste círculo",
-    "The account is already a member of this circle" : "Esta conta já pertence a este circle",
-    "The account has already been invited into this circle" : "Esta já foi convidada para se juntar a este circle",
     "%s (Team owned by %s)" : "%s (Grupo gerido por %s)",
     "Accept" : "Aceitar",
     "Refuse" : "Recusar",
@@ -142,6 +136,12 @@
     "Name" : "Nome",
     "Size" : "Tamanho",
     "Modified" : "Modificado",
-    "Shared to Circles" : "Partilhado com Círculos"
+    "Shared to Circles" : "Partilhado com Círculos",
+    "Testing Basic Circle Creation" : "Teste de Criação de um Basic Circle",
+    "This feature is not available for personal circles" : "Esta funcionalidade não está disponível para uso pessoal",
+    "You are already a member of this circle" : "Já é um membro deste círculo",
+    "You have been blocked from this circle" : "Foi bloqueado neste círculo",
+    "The account is already a member of this circle" : "Esta conta já pertence a este circle",
+    "The account has already been invited into this circle" : "Esta já foi convidada para se juntar a este circle"
 },"pluralForm" :"nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }

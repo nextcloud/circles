@@ -77,17 +77,12 @@
     "Show all teams" : "Näytä kaikki tiimit",
     "Create a new team" : "Luo uusi tiimi",
     "Files" : "Tiedostot",
-    "This feature is not available for personal circles" : "Tämä ominaisuus ei ole henkilökohtaisten piirien käytössä",
     "The team is not federated" : "Tiimi ei ole federoitu",
     "You cannot join this team" : "Et voi liittyä tähän tiimiin",
     "This member is not a moderator" : "Tämä jäsen ei ole moderaattori",
     "Insufficient privileges" : "Riittämättömät oikeudet",
     "This member does not exist" : "Tämä jäsen ei ole olemassa",
     "This member is the owner of the team" : "Tämä jäsen on tiimin omistaja",
-    "You are already a member of this circle" : "Olet jo jäsenenä tässä piirissä",
-    "You have been blocked from this circle" : "Sinut on estetty tästä piiristä",
-    "The account is already a member of this circle" : "Tämä tili on jo jäsen tässä piirissä",
-    "The account has already been invited into this circle" : "Tämä tili on jo kutsuttu tähän piiriin",
     "%s (Team owned by %s)" : "%s (Tiimin omistaa %s)",
     "Accept" : "Hyväksy",
     "Refuse" : "Hylkää",
@@ -111,6 +106,11 @@
     "Name" : "Nimi",
     "Size" : "Koko",
     "Modified" : "Muokattu",
-    "Shared to Circles" : "Jaettu piireille"
+    "Shared to Circles" : "Jaettu piireille",
+    "This feature is not available for personal circles" : "Tämä ominaisuus ei ole henkilökohtaisten piirien käytössä",
+    "You are already a member of this circle" : "Olet jo jäsenenä tässä piirissä",
+    "You have been blocked from this circle" : "Sinut on estetty tästä piiristä",
+    "The account is already a member of this circle" : "Tämä tili on jo jäsen tässä piirissä",
+    "The account has already been invited into this circle" : "Tämä tili on jo kutsuttu tähän piiriin"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
