@@ -104,12 +104,10 @@
     "Circles App Initialization" : "Инициализация приложения \"Круги\"",
     "Fresh installation status" : "Статус новой установки",
     "Building Local Database" : "Создание локальной базы данных",
-    "Testing Basic Circle Creation" : "Тестирование базового созданного Круга",
     "Adding local users and moderators" : "Добавление локальных пользователей и модераторов",
     "Show all teams" : "Показать все группы",
     "Create a new team" : "Создать новую группу",
     "Files" : "Файлы",
-    "This feature is not available for personal circles" : "Эта возможность недоступна для личных кругов",
     "The team is not federated" : "Не федеративная группа",
     "You cannot join this team" : "Вы не можете вступить в эту группу",
     "This member is not a moderator" : "Это участник — не модератор",
@@ -117,10 +115,6 @@
     "This member does not exist" : "Этот участник не существует",
     "This member is the owner of the team" : "Этот участник является владельцем группы",
     "Level cannot be changed for this type of member" : "Невозможно изменить уровень участника такого типа",
-    "You are already a member of this circle" : "Вы уже участник этого круга",
-    "You have been blocked from this circle" : "Вы заблокированы от участия в этом круге",
-    "The account is already a member of this circle" : "Эта учётная запись уже участник этого круга",
-    "The account has already been invited into this circle" : "Эта учётная запись уже приглашена в этот круг",
     "%s (Team owned by %s)" : "%s (Группа принадлежит %s)",
     "You are now a member of the Team \"%2$s\"" : "Вы теперь участник Группы \"%2$s\"",
     "You have been invited by %1$s into the Team \"%2$s\"" : "Вы были приглашены %1$s s в Группу \"%2$s\"",
@@ -156,6 +150,12 @@
     "Name" : "Имя",
     "Size" : "Размер",
     "Modified" : "Изменён",
-    "Shared to Circles" : "Предоставленный кругам общий доступ"
+    "Shared to Circles" : "Предоставленный кругам общий доступ",
+    "Testing Basic Circle Creation" : "Тестирование базового созданного Круга",
+    "This feature is not available for personal circles" : "Эта возможность недоступна для личных кругов",
+    "You are already a member of this circle" : "Вы уже участник этого круга",
+    "You have been blocked from this circle" : "Вы заблокированы от участия в этом круге",
+    "The account is already a member of this circle" : "Эта учётная запись уже участник этого круга",
+    "The account has already been invited into this circle" : "Эта учётная запись уже приглашена в этот круг"
 },"pluralForm" :"nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);"
 }

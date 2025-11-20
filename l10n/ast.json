@@ -100,12 +100,10 @@
     "Circles App Initialization" : "Aniciu de l'aplicación Círculos",
     "Fresh installation status" : "Estáu de la instalación nueva",
     "Building Local Database" : "Creando la base de datos llocal",
-    "Testing Basic Circle Creation" : "Probando la creación d'un círculu básicu",
     "Adding local users and moderators" : "Amestando usuarios y moderadores llocales",
     "Show all teams" : "Amosar tolos equipos",
     "Create a new team" : "Crear un equipu",
     "Files" : "Ficheros",
-    "This feature is not available for personal circles" : "Esta función nun ta disponible pa los círculos personales",
     "The team is not federated" : "L'equipu nun ta federáu",
     "You cannot join this team" : "Nun pues xunite a esti equipu",
     "This member is not a moderator" : "Esti miembru nun ye llendador",
@@ -113,10 +111,6 @@
     "This member does not exist" : "Esti miembru nun esiste",
     "This member is the owner of the team" : "Esti miembru ye propietariu del equipu",
     "Level cannot be changed for this type of member" : "Nun se pue camudar el nivel d'esti tipu de miembru",
-    "You are already a member of this circle" : "Yá yes miembru d'esti círculu",
-    "You have been blocked from this circle" : "Bloquiáronte nesti círculu",
-    "The account is already a member of this circle" : "La cuenta yá ye miembru d'esti círculu",
-    "The account has already been invited into this circle" : "La cuenta yá recibió una invitación d'esti círculu",
     "%s (Team owned by %s)" : "%s (equipu propiedá de: %s)",
     "Accept" : "Aceptar",
     "Refuse" : "Refugar",
@@ -142,6 +136,12 @@
     "Name" : "Nome",
     "Size" : "Tamañu",
     "Modified" : "Modificóse",
-    "Shared to Circles" : "Compartióse en Círculos"
+    "Shared to Circles" : "Compartióse en Círculos",
+    "Testing Basic Circle Creation" : "Probando la creación d'un círculu básicu",
+    "This feature is not available for personal circles" : "Esta función nun ta disponible pa los círculos personales",
+    "You are already a member of this circle" : "Yá yes miembru d'esti círculu",
+    "You have been blocked from this circle" : "Bloquiáronte nesti círculu",
+    "The account is already a member of this circle" : "La cuenta yá ye miembru d'esti círculu",
+    "The account has already been invited into this circle" : "La cuenta yá recibió una invitación d'esti círculu"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

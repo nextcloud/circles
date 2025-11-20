@@ -102,12 +102,10 @@
     "Circles App Initialization" : "Initialisering av Circles App",
     "Fresh installation status" : "Status på fersk installasjon",
     "Building Local Database" : "Bygger lokal database",
-    "Testing Basic Circle Creation" : "Tester opprettelse av grunnleggende sirkel",
     "Adding local users and moderators" : "Legger til lokale brukere og moderatorer",
     "Show all teams" : "Vis alle lag",
     "Create a new team" : "Opprett et nytt lag",
     "Files" : "Filer",
-    "This feature is not available for personal circles" : "Funksjonen er ikke tilgjengelig for personlige sirkler",
     "The team is not federated" : "Laget er ikke sammenknyttet",
     "You cannot join this team" : "Du kan ikke bli med i dette laget",
     "This member is not a moderator" : "Dette medlemmet er ikke en moderator",
@@ -115,10 +113,6 @@
     "This member does not exist" : "Dette medlemmet finnes ikke",
     "This member is the owner of the team" : "Medlemmet er eieren av laget",
     "Level cannot be changed for this type of member" : "Nivået kan ikke endres for den typen medlem",
-    "You are already a member of this circle" : "Du er allerede medlem av denne sirkelen",
-    "You have been blocked from this circle" : "Du har blitt blokkert fra denne sirkelen",
-    "The account is already a member of this circle" : "Denne kontoren er allerede medlem av sirkelen",
-    "The account has already been invited into this circle" : "Denne kontoen har allerede blitt invitert til denne sirkelen",
     "%s (Team owned by %s)" : "%s (Lag eiet av %s)",
     "You are now a member of the Team \"%2$s\"" : "Du er nå medlem av laget \"%2$s\"",
     "You have been invited by %1$s into the Team \"%2$s\"" : "Du har blitt invitert av %1$s til laget \"%2$s\"",
@@ -151,6 +145,12 @@
     "Name" : "Navn",
     "Size" : "Størrelse",
     "Modified" : "Endret",
-    "Shared to Circles" : "Delt til Sirkler"
+    "Shared to Circles" : "Delt til Sirkler",
+    "Testing Basic Circle Creation" : "Tester opprettelse av grunnleggende sirkel",
+    "This feature is not available for personal circles" : "Funksjonen er ikke tilgjengelig for personlige sirkler",
+    "You are already a member of this circle" : "Du er allerede medlem av denne sirkelen",
+    "You have been blocked from this circle" : "Du har blitt blokkert fra denne sirkelen",
+    "The account is already a member of this circle" : "Denne kontoren er allerede medlem av sirkelen",
+    "The account has already been invited into this circle" : "Denne kontoen har allerede blitt invitert til denne sirkelen"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

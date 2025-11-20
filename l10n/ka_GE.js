@@ -59,13 +59,10 @@ OC.L10N.register(
     "Password to access »%s«" : "პაროლი წვდომისთვის »%s«",
     "Click the button below to open it." : "გასახსნელად დააჭირეთ ქვემოთ მყოფ ღილაკს.",
     "Open »%s«" : "გახსენით »%s«",
-    "This feature is not available for personal circles" : "ეს ფუნქცია პირადი წრეებისთვის არაა ძალაში მყოფი",
     "This member is not a moderator" : "ეს წევრი არაა მოდერატორი",
     "Insufficient privileges" : "პრივილეგიების უკმარისობა",
     "This member does not exist" : "ეს წევრი არ არსებობს",
     "Level cannot be changed for this type of member" : "დონე ამ ტიპის წევრზე ვერ შეიცვლება",
-    "You are already a member of this circle" : "ამ წრის წევრი უკვე ხართ",
-    "You have been blocked from this circle" : "ამ წრეში დაბლოკილი ხართ",
     "Accept" : "მიღება",
     "%s" : "%s",
     "Try again" : "სცადეთ ახლიდან",
@@ -74,6 +71,9 @@ OC.L10N.register(
     "Name" : "სახელი",
     "Size" : "ზომა",
     "Modified" : "შეიცვალა",
-    "Shared to Circles" : "წრეებთან გაზიარებული"
+    "Shared to Circles" : "წრეებთან გაზიარებული",
+    "This feature is not available for personal circles" : "ეს ფუნქცია პირადი წრეებისთვის არაა ძალაში მყოფი",
+    "You are already a member of this circle" : "ამ წრის წევრი უკვე ხართ",
+    "You have been blocked from this circle" : "ამ წრეში დაბლოკილი ხართ"
 },
 "nplurals=2; plural=(n!=1);");

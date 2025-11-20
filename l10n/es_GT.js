@@ -61,13 +61,10 @@ OC.L10N.register(
     "Click the button below to open it." : "Haz click en el botón para abrirlo.",
     "Open »%s«" : "Abrir »%s«",
     "Files" : "Archivo",
-    "This feature is not available for personal circles" : "Esta característica no está disponible para círculos personales",
     "This member is not a moderator" : "Este miembro no es un moderador",
     "Insufficient privileges" : "Privilegios insuficientes",
     "This member does not exist" : "Este miembro no existe",
     "Level cannot be changed for this type of member" : "El nivel no puede ser cambiado para este tipo de miembro",
-    "You are already a member of this circle" : "Ya eres un miembro de este círculo",
-    "You have been blocked from this circle" : "Has sido bloqueado de este círculo",
     "Accept" : "Aceptar",
     "%s" : "%s",
     "Open %s" : "Abierto %s",
@@ -78,6 +75,9 @@ OC.L10N.register(
     "Name" : "Nombre",
     "Size" : "Tamaño",
     "Modified" : "Modificado",
-    "Shared to Circles" : "Compartido a Círculos"
+    "Shared to Circles" : "Compartido a Círculos",
+    "This feature is not available for personal circles" : "Esta característica no está disponible para círculos personales",
+    "You are already a member of this circle" : "Ya eres un miembro de este círculo",
+    "You have been blocked from this circle" : "Has sido bloqueado de este círculo"
 },
 "nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");

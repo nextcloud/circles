@@ -82,16 +82,12 @@
     "Boot up" : "Pokreni",
     "Fresh installation status" : "Status svježe instalacije",
     "Building Local Database" : "Izgradnja lokalne baze podataka",
-    "Testing Basic Circle Creation" : "Ispitivanje stvaranja osnovnog kruga",
     "Adding local users and moderators" : "Dodavanje lokalnih korisnika i moderatora",
     "Files" : "Datoteke",
-    "This feature is not available for personal circles" : "Ova značajka nije dostupna za osobne krugove",
     "This member is not a moderator" : "Ovaj član nije moderator",
     "Insufficient privileges" : "Nedovoljne ovlasti",
     "This member does not exist" : "Ovaj član ne postoji",
     "Level cannot be changed for this type of member" : "Razina se ne može promijeniti za ovu vrstu člana",
-    "You are already a member of this circle" : "Već ste član ovog kruga",
-    "You have been blocked from this circle" : "Blokirani ste iz ovog kruga",
     "Accept" : "Prihvati",
     "Refuse" : "Odbij",
     "%s" : "%s",
@@ -105,6 +101,10 @@
     "Name" : "Naziv",
     "Size" : "Veličina",
     "Modified" : "Promijenjeno",
-    "Shared to Circles" : "Dijeljeno u krugovima"
+    "Shared to Circles" : "Dijeljeno u krugovima",
+    "Testing Basic Circle Creation" : "Ispitivanje stvaranja osnovnog kruga",
+    "This feature is not available for personal circles" : "Ova značajka nije dostupna za osobne krugove",
+    "You are already a member of this circle" : "Već ste član ovog kruga",
+    "You have been blocked from this circle" : "Blokirani ste iz ovog kruga"
 },"pluralForm" :"nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;"
 }

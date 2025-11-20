@@ -104,12 +104,10 @@
     "Circles App Initialization" : "Uanzishaji wa Programu ya Miduara",
     "Fresh installation status" : "Hali mpya ya ufungaji",
     "Building Local Database" : "Kujenga Hifadhidata ya Mitaa",
-    "Testing Basic Circle Creation" : "Kujaribu Uundaji wa Mduara wa Msingi",
     "Adding local users and moderators" : "Kuongeza watumiaji wa ndani na wasimamizi",
     "Show all teams" : "Onesha timu zote",
     "Create a new team" : "Unda timu mpya",
     "Files" : "Mafaili",
-    "This feature is not available for personal circles" : "Kipengele hiki hakipatikani kwa miduara ya kibinafsi",
     "The team is not federated" : "Timu haijashirikishwa",
     "You cannot join this team" : "Huwezi kujiunga na timu hii",
     "This member is not a moderator" : "Mwanachama huyu si msimamizi",
@@ -117,10 +115,6 @@
     "This member does not exist" : "Mwanachama huyu hayupo",
     "This member is the owner of the team" : "Mwanachama huyu ndiye mmiliki wa timu",
     "Level cannot be changed for this type of member" : "Kiwango hakiwezi kubadilishwa kwa aina hii ya mwanachama",
-    "You are already a member of this circle" : "Tayari wewe ni mwanachama wa mduara huu",
-    "You have been blocked from this circle" : "Umezuiwa kutoka kwa mduara huu",
-    "The account is already a member of this circle" : "Akaunti tayari ni mwanachama wa mduara huu",
-    "The account has already been invited into this circle" : "Akaunti tayari imealikwa kwenye mduara huu",
     "%s (Team owned by %s)" : "%s (Timu inayomilikiwa na %s)",
     "You are now a member of the Team \"%2$s\"" : "Sasa wewe ni mwanachama wa Timu \"%2$s\"",
     "You have been invited by %1$s into the Team \"%2$s\"" : "Umealikwa na %1$s kwenye Timu \"%2$s\"",
@@ -156,6 +150,12 @@
     "Name" : "Jina",
     "Size" : "Ukubwa",
     "Modified" : "Boresha",
-    "Shared to Circles" : "Imeshirikiwa kwa Miduara"
+    "Shared to Circles" : "Imeshirikiwa kwa Miduara",
+    "Testing Basic Circle Creation" : "Kujaribu Uundaji wa Mduara wa Msingi",
+    "This feature is not available for personal circles" : "Kipengele hiki hakipatikani kwa miduara ya kibinafsi",
+    "You are already a member of this circle" : "Tayari wewe ni mwanachama wa mduara huu",
+    "You have been blocked from this circle" : "Umezuiwa kutoka kwa mduara huu",
+    "The account is already a member of this circle" : "Akaunti tayari ni mwanachama wa mduara huu",
+    "The account has already been invited into this circle" : "Akaunti tayari imealikwa kwenye mduara huu"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
