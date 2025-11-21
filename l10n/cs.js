@@ -106,6 +106,7 @@ OC.L10N.register(
     "Circles App Initialization" : "Inicializace aplikace okruhy",
     "Fresh installation status" : "Stav čisté instalace",
     "Building Local Database" : "Vytváří se místní databáze",
+    "Testing Basic Team Creation" : "Zkouší se vytvoření základního týmu",
     "Adding local users and moderators" : "Přidávají se místní uživatelé a moderátoři",
     "Show all teams" : "Zobrazit veškeré týmy",
     "Create a new team" : "Vytvořit nový tým",
