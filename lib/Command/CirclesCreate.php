@@ -61,11 +61,11 @@ class CirclesCreate extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:manage:create')
-			->setDescription('create a new circle')
-			->addArgument('owner', InputArgument::REQUIRED, 'owner of the circle')
-			->addArgument('name', InputArgument::REQUIRED, 'name of the circle')
-			->addOption('personal', '', InputOption::VALUE_NONE, 'create a personal circle')
-			->addOption('local', '', InputOption::VALUE_NONE, 'create a local circle')
+			->setDescription('create a new team')
+			->addArgument('owner', InputArgument::REQUIRED, 'owner of the team')
+			->addArgument('name', InputArgument::REQUIRED, 'name of the team')
+			->addOption('personal', '', InputOption::VALUE_NONE, 'create a personal team')
+			->addOption('local', '', InputOption::VALUE_NONE, 'create a local team')
 			->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception')
 			->addOption(
 				'type', '', InputOption::VALUE_REQUIRED, 'type of the owner',
