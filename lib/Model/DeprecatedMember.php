@@ -204,13 +204,13 @@ class DeprecatedMember extends BaseMember {
 	public function hasToBeAbleToJoinTheCircle() {
 		if ($this->getLevel() > 0) {
 			throw new MemberAlreadyExistsException(
-				$this->l10n->t('You are already a member of this circle')
+				$this->l10n->t('You are already a member of this team')
 			);
 		}
 
 		if ($this->getStatus() === DeprecatedMember::STATUS_BLOCKED) {
 			throw new MemberIsBlockedException(
-				$this->l10n->t('You have been blocked from this circle')
+				$this->l10n->t('You have been blocked from this team')
 			);
 		}
 	}
@@ -222,13 +222,13 @@ class DeprecatedMember extends BaseMember {
 	public function hasToBeInviteAble() {
 		if ($this->getLevel() > 0) {
 			throw new MemberAlreadyExistsException(
-				$this->l10n->t('The account is already a member of this circle')
+				$this->l10n->t('The account is already a member of this team')
 			);
 		}
 
 		if ($this->getStatus() === DeprecatedMember::STATUS_INVITED) {
 			throw new MemberAlreadyExistsException(
-				$this->l10n->t('The account has already been invited into this circle')
+				$this->l10n->t('The account has already been invited into this team')
 			);
 		}
 	}

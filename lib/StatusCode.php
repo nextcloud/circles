@@ -26,10 +26,10 @@ class StatusCode {
 	];
 
 	public static $CIRCLE_JOIN = [
-		121 => 'Circle is full',
+		121 => 'Team is full',
 		122 => 'You are already a member',
-		123 => 'Already requesting to join the circle',
-		124 => 'Circle is closed'
+		123 => 'Already requesting to join the team',
+		124 => 'Team is closed'
 	];
 
 	public static $CIRCLE_LEAVE = [
@@ -39,22 +39,22 @@ class StatusCode {
 
 	public static $MEMBER_ADD = [
 		120 => 'Unknown entity',
-		121 => 'Circle is full',
-		122 => 'Already member of the circle',
-		123 => 'Already invited into the circle',
+		121 => 'Team is full',
+		122 => 'Already member of the team',
+		123 => 'Already invited into the team',
 		124 => 'Member is blocked',
-		125 => 'The designed circle cannot be added',
-		126 => 'Circle only accepts local users',
-		127 => 'Remote Users are not accepted in a non-federated Circle',
-		128 => 'Cannot add Circle as its own Member',
+		125 => 'The designed team cannot be added',
+		126 => 'Team only accepts local users',
+		127 => 'Remote Users are not accepted in a non-federated Team',
+		128 => 'Cannot add Team as its own Member',
 		129 => 'Member does not contains a patron',
 		130 => 'Member is invited by an entity that does not belongs to the instance at the origin of the request',
-		131 => 'Member is a non-local Circle',
+		131 => 'Member is a non-local Team',
 		132 => 'Member type not allowed'
 	];
 
 	public static $CIRCLE_DESTROY = [
-		120 => 'Circle is managed from an other app'
+		120 => 'Team is managed from an other app'
 	];
 
 	public static $MEMBER_LEVEL = [

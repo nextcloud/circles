@@ -224,7 +224,7 @@ class FederatedEventService extends NCSignature {
 
 		if (!$event->canBypass(FederatedEvent::BYPASS_INITIATORMEMBERSHIP)
 			&& $circle->getInitiator()->getLevel() < Member::LEVEL_MEMBER) {
-			throw new InitiatorNotConfirmedException('Initiator must be a member of the Circle');
+			throw new InitiatorNotConfirmedException('Initiator must be a member of the Team');
 		}
 	}
 

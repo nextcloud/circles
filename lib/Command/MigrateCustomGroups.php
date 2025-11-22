@@ -96,7 +96,7 @@ class MigrateCustomGroups extends Base {
 				$circle = $this->circlesManager->createCircle($name);
 			} catch (\Exception $e) {
 				$this->output->writeln('<error>' . get_class($e) . ' ' . $e->getMessage() . '</error> with data ' . json_encode($rowCG));
-				$this->logger->log(2, 'error while creating circle', ['exception' => $e]);
+				$this->logger->log(2, 'error while creating team', ['exception' => $e]);
 				$this->circlesManager->stopSession();
 				continue;
 			}
