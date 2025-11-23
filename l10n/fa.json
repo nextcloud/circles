@@ -2,6 +2,7 @@
     "You deleted {circle}" : "شما حذف شدید {circle}",
     "{author} deleted {circle}" : "{author} حذف شد {circle}",
     "You removed {member} from {circle}" : "You removed {member} from {circle}",
+    "{author} removed {member} from {circle}" : "{author} کاربر {member} را از {circle} حذف کرد.",
     "You joined {circle}" : "You joined {circle}",
     "{member} joined {circle}" : "{member} joined {circle}",
     "You accepted the invitation to join {circle}" : "You accepted the invitation to join {circle}",

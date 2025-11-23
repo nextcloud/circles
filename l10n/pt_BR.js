@@ -120,7 +120,7 @@ OC.L10N.register(
     "This member is the owner of the team" : "Este membro é o proprietário da equipe",
     "Level cannot be changed for this type of member" : "O nível não pode ser mudado para este tipo de usuário",
     "You are already a member of this team" : "Você já é membro desta equipe",
-    "You have been blocked from this team" : "Você foi bloqueado nesta equipe",
+    "You have been blocked from this team" : "Você foi bloqueado desta equipe",
     "The account is already a member of this team" : "A conta já é membro desta equipe",
     "The account has already been invited into this team" : "A conta já foi convidada para esta equipe",
     "%s (Team owned by %s)" : "%s (Equipe de propriedade de %s)",
