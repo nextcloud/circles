@@ -53,7 +53,7 @@ class MembersSearch extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:members:search')
-			->setDescription('Change the level of a member from a Circle')
+			->setDescription('Change the level of a member from a Team')
 			->addArgument('term', InputArgument::REQUIRED, 'term to search')
 			->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
 			->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
