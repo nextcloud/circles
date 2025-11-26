@@ -23,6 +23,7 @@ OC.L10N.register(
     "Email address" : "E-pasta adrese",
     "Contact" : "Kontaktpersona",
     "Team" : "Komanda",
+    "Moderator" : "Satura pārraudzītājs",
     "Admin" : "Pārvaldītājs",
     "Owner" : "Īpašnieks",
     "Open »%s«" : "Atvērt »%s«",
