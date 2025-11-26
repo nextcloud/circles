@@ -52,8 +52,8 @@ class CirclesSetting extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:manage:setting')
-			->setDescription('edit setting for a Circle')
-			->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
+			->setDescription('edit setting for a Team')
+			->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the team')
 			->addArgument('setting', InputArgument::OPTIONAL, 'setting to edit', '')
 			->addArgument('value', InputArgument::OPTIONAL, 'value', '')
 			->addOption('unset', '', InputOption::VALUE_NONE, 'unset the setting')

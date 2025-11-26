@@ -74,8 +74,8 @@ class MembersRemove extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:members:remove')
-			->setDescription('remove a member from a circle')
-			->addArgument('member_id', InputArgument::REQUIRED, 'ID of the member from the Circle')
+			->setDescription('remove a member from a team')
+			->addArgument('member_id', InputArgument::REQUIRED, 'ID of the member from the Team')
 			->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
 			->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0');
 	}

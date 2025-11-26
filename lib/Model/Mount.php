@@ -374,7 +374,7 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 	 */
 	public function fromShare(ShareWrapper $wrappedShare) {
 		if (!$wrappedShare->hasCircle()) {
-			throw new CircleNotFoundException('ShareWrapper has no Circle');
+			throw new CircleNotFoundException('ShareWrapper has no Team');
 		}
 
 		$circle = $wrappedShare->getCircle();

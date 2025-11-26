@@ -70,8 +70,8 @@ class MembersAdd extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:members:add')
-			->setDescription('Add a member to a Circle')
-			->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
+			->setDescription('Add a member to a Team')
+			->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the team')
 			->addArgument('user', InputArgument::REQUIRED, 'username of the member')
 			->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
 			->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')

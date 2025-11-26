@@ -373,7 +373,7 @@ class CirclesTest extends Base {
 		$this->t('Building Local Database');
 		$this->buildingLocalDatabase();
 
-		$this->t('Testing Basic Circle Creation');
+		$this->t('Testing Basic Team Creation');
 		$this->circleCreation001();
 
 		$this->t('Adding local users and moderators');
@@ -714,7 +714,7 @@ class CirclesTest extends Base {
 	 * @throws ItemNotFoundException
 	 */
 	private function circleCreation001() {
-		$this->p('Creating basic circle');
+		$this->p('Creating basic team');
 
 		$localInstanceId = 'global-scale-1';
 		$name = self::$TEST_CIRCLES[0];
@@ -1085,7 +1085,7 @@ class CirclesTest extends Base {
 			}
 		}
 
-		throw new CircleNotFoundException('cannot find ' . $userId . ' in the list of Single Circle');
+		throw new CircleNotFoundException('cannot find ' . $userId . ' in the list of Single Team');
 	}
 
 
