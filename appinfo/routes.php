@@ -38,6 +38,8 @@ return [
 		['name' => 'Local#editName', 'url' => '/circles/{circleId}/name', 'verb' => 'PUT'],
 		['name' => 'Local#editDescription', 'url' => '/circles/{circleId}/description', 'verb' => 'PUT'],
 		['name' => 'Local#editSetting', 'url' => '/circles/{circleId}/setting', 'verb' => 'PUT'],
+		['name' => 'Local#createInvitation', 'url' => '/circles/{circleId}/invitation', 'verb' => 'PUT'],
+		['name' => 'Local#revokeInvitation', 'url' => '/circles/{circleId}/invitation', 'verb' => 'DELETE'],
 		['name' => 'Local#editConfig', 'url' => '/circles/{circleId}/config', 'verb' => 'PUT'],
 		['name' => 'Local#link', 'url' => '/link/{circleId}/{singleId}', 'verb' => 'GET'],
 
