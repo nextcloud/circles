@@ -59,7 +59,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 	public const TOKEN = 'u';
 	public const OPTIONS = 'v';
 	public const HELPER = 'w';
-
+	public const INVITATION = 'x';
 
 	public static $SQL_PATH = [
 		self::SINGLE => [
@@ -69,6 +69,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			self::OPTIONS => [
 			],
 			self::MEMBER,
+			self::INVITATION,
 			self::OWNER => [
 				self::BASED_ON
 			],
@@ -839,6 +840,31 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$this->leftJoinBasedOn($aliasMember);
 	}
 
+	/**
+	 * @param string $alias
+	 * @param string $field
+	 *
+	 * @throws RequestBuilderException
+	 */
+	public function leftJoinCircleInvitation(string $alias, string $field = 'unique_id'): void {
+		if ($this->getType() !== QueryBuilder::SELECT) {
+			return;
+		}
+
+		try {
+			$aliasInvitation = $this->generateAlias($alias, self::INVITATION, $options);
+			$getData = $this->getBool('getData', $options, false);
+		} catch (RequestBuilderException $e) {
+			return;
+		}
+
+		$expr = $this->expr();
+		$this->generateCircleInvitationSelectAlias($aliasInvitation)
+			->leftJoin(
+				$alias, CoreRequestBuilder::TABLE_INVITATIONS, $aliasInvitation,
+				$expr->eq($aliasInvitation . '.circle_id', $alias . '.' . $field),
+			);
+	}
 
 	/**
 	 * @param CircleProbe $probe
@@ -1576,6 +1602,23 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 	private function generateMemberSelectAlias(string $alias, array $default = []): self {
 		$this->generateSelectAlias(
 			CoreRequestBuilder::$tables[CoreRequestBuilder::TABLE_MEMBER],
+			$alias,
+			$alias,
+			$default
+		);
+
+		return $this;
+	}
+
+	/**
+	 * @param string $alias
+	 * @param array $default
+	 *
+	 * @return $this
+	 */
+	private function generateCircleInvitationSelectAlias(string $alias, array $default = []): self {
+		$this->generateSelectAlias(
+			CoreRequestBuilder::$tables[CoreRequestBuilder::TABLE_INVITATIONS],
 			$alias,
 			$alias,
 			$default

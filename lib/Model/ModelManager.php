@@ -16,6 +16,7 @@ use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\CoreQueryBuilder;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\MembershipRequest;
+use OCA\Circles\Exceptions\CircleInvitationNotFoundException;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
@@ -207,6 +208,12 @@ class ModelManager {
 			}
 		}
 
+		if ($model instanceof CircleInvitation) {
+			if ($base === '') {
+				$base = CoreQueryBuilder::INVITATION;
+			}
+		}
+
 		if ($model instanceof Member) {
 			if ($base === '') {
 				$base = CoreQueryBuilder::MEMBER;
@@ -286,6 +293,14 @@ class ModelManager {
 					$directInitiator->importFromDatabase($data, $prefix);
 					$circle->setDirectInitiator($directInitiator);
 				} catch (MemberNotFoundException $e) {
+				}
+				break;
+			case CoreQueryBuilder::INVITATION:
+				try {
+					$circleInvitation = new CircleInvitation();
+					$circleInvitation->importFromDatabase($data, $prefix);
+					$circle->setCircleInvitation($circleInvitation);
+				} catch (CircleInvitationNotFoundException $e) {
 				}
 				break;
 		}

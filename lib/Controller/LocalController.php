@@ -590,6 +590,47 @@ class LocalController extends OCSController {
 		}
 	}
 
+	/**
+	 * @NoAdminRequired
+	 *
+	 * @param string $circleId
+	 *
+	 * @return DataResponse
+	 * @throws OCSException
+	 */
+	public function createInvitation(string $circleId): DataResponse {
+		try {
+			$this->setCurrentFederatedUser();
+
+			$outcome = $this->circleService->createInvitation($circleId);
+
+			return new DataResponse($this->serializeArray($outcome));
+		} catch (\Exception $e) {
+			$this->e($e, ['circleId' => $circleId]);
+			throw new OCSException($e->getMessage(), (int)$e->getCode(), $e);
+		}
+	}
+
+	/**
+	 * @NoAdminRequired
+	 *
+	 * @param string $circleId
+	 *
+	 * @return DataResponse
+	 * @throws OCSException
+	 */
+	public function revokeInvitation(string $circleId): DataResponse {
+		try {
+			$this->setCurrentFederatedUser();
+
+			$outcome = $this->circleService->revokeInvitation($circleId);
+
+			return new DataResponse($this->serializeArray($outcome));
+		} catch (\Exception $e) {
+			$this->e($e, ['circleId' => $circleId]);
+			throw new OCSException($e->getMessage(), (int)$e->getCode(), $e);
+		}
+	}
 
 	/**
 	 * @return void
