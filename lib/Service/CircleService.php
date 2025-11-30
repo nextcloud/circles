@@ -479,7 +479,8 @@ class CircleService {
 	 * @throws UnknownRemoteException
 	 * @throws RequestBuilderException
 	 */
-	public function circleJoin(string $circleId): array {
+	public function circleJoin(string $circleId, ?string $invitationCode = null): array {
+		$invitationCode = $invitationCode ? str_replace('-', '', $invitationCode) : null;
 		$this->federatedUserService->mustHaveCurrentUser();
 		/** @var FederatedUser $currentUser */
 		$currentUser = $this->federatedUserService->getCurrentUser();
@@ -487,6 +488,11 @@ class CircleService {
 		$probe = new CircleProbe();
 		$probe->includeNonVisibleCircles()
 			->emulateVisitor();
+
+		if ($invitationCode) {
+			$probe->includeHiddenCircles()
+				->filterByInvitationCode($invitationCode);
+		}
 
 		$circle = $this->circleRequest->getCircle(
 			$circleId,
@@ -499,6 +505,7 @@ class CircleService {
 		}
 
 		$event = new FederatedEvent(CircleJoin::class);
+		$event->setParams(new SimpleDataStore(['invitationCode' => $invitationCode]));
 		$event->setCircle($circle);
 
 		$this->federatedEventService->newEvent($event);
@@ -507,49 +514,6 @@ class CircleService {
 
 		return $event->getOutcome();
 	}
-
-	/**
-	 * @param string $circleId
-	 *
-	 * @return array
-	 * @throws CircleNotFoundException
-	 * @throws FederatedEventException
-	 * @throws FederatedItemException
-	 * @throws InitiatorNotConfirmedException
-	 * @throws InitiatorNotFoundException
-	 * @throws OwnerNotFoundException
-	 * @throws RemoteInstanceException
-	 * @throws RemoteNotFoundException
-	 * @throws RemoteResourceNotFoundException
-	 * @throws UnknownRemoteException
-	 * @throws RequestBuilderException
-	 */
-	public function circleJoinByInvitationCode(string $circleId, string $invitationCode): array {
-		// fixme: implement
-		$this->federatedUserService->mustHaveCurrentUser();
-
-		$probe = new CircleProbe();
-		$probe->includeNonVisibleCircles()
-			->emulateVisitor();
-
-		$circle = $this->circleRequest->getCircle(
-			$circleId,
-			$this->federatedUserService->getCurrentUser(),
-			$probe
-		);
-
-		if (!$circle->getInitiator()->hasInvitedBy()) {
-			$this->federatedUserService->setMemberPatron($circle->getInitiator());
-		}
-
-		$event = new FederatedEvent(CircleJoin::class);
-		$event->setCircle($circle);
-
-		$this->federatedEventService->newEvent($event);
-
-		return $event->getOutcome();
-	}
-
 
 	/**
 	 * @param string $circleId

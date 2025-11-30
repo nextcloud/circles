@@ -874,7 +874,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 
 		try {
 			$aliasInvitation = $this->generateAlias($alias, self::INVITATION, $options);
-			$getData = $this->getBool('getData', $options, false);
 		} catch (RequestBuilderException $e) {
 			return;
 		}
@@ -1355,6 +1354,12 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$aliasMembershipCircle = $this->generateAlias($aliasMembership, self::CONFIG, $options);
 		$levelCheck = [$aliasMembership];
 
+		// no need to check anything, we are filtering by invitation code
+		$invitationCode = $this->get('filterInvitationCode', $options, '');
+		if ($invitationCode) {
+			return $this->expr()->andX($this->expr()->eq('1', '1'));
+		}
+
 		$directMember = '';
 		if ($this->getBool('initiatorDirectMember', $options, false)) {
 			$directMember = $this->generateAlias($alias, self::DIRECT_INITIATOR, $options);
@@ -1572,6 +1577,27 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		}
 	}
 
+	/**
+	 * filter circle by invitation code
+	 *
+	 * @param string $invitationCode
+	 */
+	public function filterInvitationCode(string $alias, string $invitationCode): void {
+		if ($this->getType() !== QueryBuilder::SELECT) {
+			return;
+		}
+
+		try {
+			$aliasInvitation = $this->generateAlias($alias, self::INVITATION, $options);
+		} catch (RequestBuilderException $e) {
+			return;
+		}
+
+		$expr = $this->expr();
+		$this->andWhere(
+			$expr->eq($aliasInvitation . '.invitation_code', $this->createNamedParameter($invitationCode))
+		);
+	}
 
 	/**
 	 * @param string $aliasMount
