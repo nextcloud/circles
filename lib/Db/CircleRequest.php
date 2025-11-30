@@ -175,6 +175,9 @@ class CircleRequest extends CircleRequestBuilder {
 		if ($probe->hasFilterCircle()) {
 			$qb->filterCircleDetails($probe->getFilterCircle());
 		}
+		if ($probe->hasInvitationCode()) {
+			$qb->filterInvitationCode(CoreQueryBuilder::CIRCLE, $probe->getInvitationCode());
+		}
 		if ($probe->hasFilterRemoteInstance()) {
 			$qb->limitToRemoteInstance(CoreQueryBuilder::CIRCLE, $probe->getFilterRemoteInstance(), false);
 		}
