@@ -59,7 +59,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 	public const TOKEN = 'u';
 	public const OPTIONS = 'v';
 	public const HELPER = 'w';
-
+	public const INVITATION = 'x';
 
 	public static $SQL_PATH = [
 		self::SINGLE => [
@@ -69,6 +69,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			self::OPTIONS => [
 			],
 			self::MEMBER,
+			self::INVITATION,
 			self::OWNER => [
 				self::BASED_ON
 			],
@@ -836,6 +837,30 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$this->leftJoinBasedOn($aliasMember);
 	}
 
+	/**
+	 * @param string $alias
+	 * @param string $field
+	 *
+	 * @throws RequestBuilderException
+	 */
+	public function leftJoinCircleInvitation(string $alias, string $field = 'unique_id'): void {
+		if ($this->getType() !== QueryBuilder::SELECT) {
+			return;
+		}
+
+		try {
+			$aliasInvitation = $this->generateAlias($alias, self::INVITATION, $options);
+		} catch (RequestBuilderException $e) {
+			return;
+		}
+
+		$expr = $this->expr();
+		$this->generateCircleInvitationSelectAlias($aliasInvitation)
+			->leftJoin(
+				$alias, CoreRequestBuilder::TABLE_INVITATIONS, $aliasInvitation,
+				$expr->eq($aliasInvitation . '.circle_id', $alias . '.' . $field),
+			);
+	}
 
 	/**
 	 * @param CircleProbe $probe
@@ -1101,7 +1126,21 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		string $helperAlias = '',
 	): ICompositeExpression {
 		$this->leftJoinInitiator($alias, $user, $field, $helperAlias);
-		$where = $this->limitInitiatorVisibility($alias);
+//		var_dump('options', $this->options);
+//		var_dump('alias', $alias);
+//		var_dump('$field', $field);
+//		var_dump('$helperAlias', $helperAlias);
+//		var_dump('result', $this->get($alias.'.invitationCode', $this->options, ''));
+//		exit;
+//		var_dump('options', $this->options[$alias][self::OPTIONS]);
+//		var_dump('value', $this->get('filterInvitationCode', $this->options[$alias][self::OPTIONS], ''));
+//		exit;
+//		if ($this->get('filterInvitationCode', $this->options[$alias][self::OPTIONS], '')) {
+//			// for an invitation code request we don't need filter visibility
+//			$where = $this->expr()->andX($this->expr()->eq('1', '1'));
+//		} else {
+			$where = $this->limitInitiatorVisibility($alias);
+//		}
 
 		$aliasInitiator = $this->generateAlias($alias, self::INITIATOR, $options);
 		if ($this->getBool('getData', $options, false)) {
@@ -1304,6 +1343,12 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$aliasMembership = $this->generateAlias($alias, self::MEMBERSHIPS, $options);
 		$aliasMembershipCircle = $this->generateAlias($aliasMembership, self::CONFIG, $options);
 		$levelCheck = [$aliasMembership];
+
+		// no need to check anything, we are filtering by invitation code
+		$invitationCode = $this->get('filterInvitationCode', $options, '');
+		if ($invitationCode) {
+			return $this->expr()->andX($this->expr()->eq('1', '1'));
+		}
 
 		$directMember = '';
 		if ($this->getBool('initiatorDirectMember', $options, false)) {
@@ -1519,6 +1564,27 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		}
 	}
 
+	/**
+	 * filter circle by invitation code
+	 *
+	 * @param string $invitationCode
+	 */
+	public function filterInvitationCode(string $alias, string $invitationCode): void {
+		if ($this->getType() !== QueryBuilder::SELECT) {
+			return;
+		}
+
+		try {
+			$aliasInvitation = $this->generateAlias($alias, self::INVITATION, $options);
+		} catch (RequestBuilderException $e) {
+			return;
+		}
+
+		$expr = $this->expr();
+		$this->andWhere(
+			$expr->eq($aliasInvitation . '.invitation_code', $this->createNamedParameter($invitationCode))
+		);
+	}
 
 	/**
 	 * @param string $aliasMount
@@ -1573,6 +1639,23 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 	private function generateMemberSelectAlias(string $alias, array $default = []): self {
 		$this->generateSelectAlias(
 			CoreRequestBuilder::$tables[CoreRequestBuilder::TABLE_MEMBER],
+			$alias,
+			$alias,
+			$default
+		);
+
+		return $this;
+	}
+
+	/**
+	 * @param string $alias
+	 * @param array $default
+	 *
+	 * @return $this
+	 */
+	private function generateCircleInvitationSelectAlias(string $alias, array $default = []): self {
+		$this->generateSelectAlias(
+			CoreRequestBuilder::$tables[CoreRequestBuilder::TABLE_INVITATIONS],
 			$alias,
 			$alias,
 			$default
