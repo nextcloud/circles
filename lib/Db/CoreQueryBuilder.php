@@ -816,6 +816,9 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		if (!is_null($initiator)) {
 			$this->leftJoinInitiator($aliasBasedOn, $initiator);
 			$this->leftJoinOwner($aliasBasedOn);
+
+			$aliasInitiatorMemberships = $this->generateAlias($aliasBasedOn, self::MEMBERSHIPS);
+			$this->andWhere($expr->gt($aliasInitiatorMemberships . '.level', $this->createNamedParameter(0, self::PARAM_INT)));
 		}
 	}
 
