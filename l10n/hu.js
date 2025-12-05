@@ -152,12 +152,6 @@ OC.L10N.register(
     "Name" : "Név",
     "Size" : "Méret",
     "Modified" : "Módosítva",
-    "Shared to Circles" : "Körökkel megosztva",
-    "Testing Basic Circle Creation" : "Alapvető körlétrehozás tesztelése",
-    "This feature is not available for personal circles" : "Ez a szolgáltatás nem elérhető a személyes köröknél",
-    "You are already a member of this circle" : "Ön már tagja ennek a körnek",
-    "You have been blocked from this circle" : "Kizárták ebből a körből",
-    "The account is already a member of this circle" : "A fiók már tagja e körnek",
-    "The account has already been invited into this circle" : "A fiók már meg lett hívva a körbe"
+    "Shared to Circles" : "Körökkel megosztva"
 },
 "nplurals=2; plural=(n != 1);");

@@ -85,9 +85,6 @@ OC.L10N.register(
     "Name" : "Vardas",
     "Size" : "Dydis",
     "Modified" : "Pakeistas",
-    "Shared to Circles" : "Bendrinama su  bendrystės ratu",
-    "This feature is not available for personal circles" : "Ši ypatybė nėra prieinama asmeniniams ratams",
-    "You are already a member of this circle" : "Jūs jau esate šio rato narys",
-    "You have been blocked from this circle" : "Jūs buvote blokuotas šiame bendrinimo rate"
+    "Shared to Circles" : "Bendrinama su  bendrystės ratu"
 },
 "nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);");

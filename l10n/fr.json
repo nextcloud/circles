@@ -150,12 +150,6 @@
     "Name" : "Nom",
     "Size" : "Taille",
     "Modified" : "Modifié",
-    "Shared to Circles" : "Partagé avec les cercles",
-    "Testing Basic Circle Creation" : "Test de création d'un cercle basique",
-    "This feature is not available for personal circles" : "Cette fonctionnalité n'est pas disponible pour les cercles personnels",
-    "You are already a member of this circle" : "Vous êtes déjà membre du cercle",
-    "You have been blocked from this circle" : "Vous avez été bloqué·e de ce cercle",
-    "The account is already a member of this circle" : "Le compte est déjà membre de ce cercle",
-    "The account has already been invited into this circle" : "Le compte a déjà été invité à participer à ce cercle"
+    "Shared to Circles" : "Partagé avec les cercles"
 },"pluralForm" :"nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }

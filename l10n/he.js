@@ -71,10 +71,6 @@ OC.L10N.register(
     "Name" : "שם",
     "Size" : "גודל",
     "Modified" : "מועד שינוי",
-    "Shared to Circles" : "שותף למעגלים",
-    "Testing Basic Circle Creation" : "נבדקת יצירת מעגל בסיסי",
-    "This feature is not available for personal circles" : "תכונה זו אינה זמינה למעגלים אישיים",
-    "You are already a member of this circle" : "כבר יש לך חברות במעגל זה",
-    "You have been blocked from this circle" : "גישתך למעגל הזה נחסמה"
+    "Shared to Circles" : "שותף למעגלים"
 },
 "nplurals=3; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % 1 == 0) ? 1: 2;");

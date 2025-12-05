@@ -101,12 +101,6 @@
     "Name" : "이름",
     "Size" : "크기",
     "Modified" : "수정한 날짜",
-    "Shared to Circles" : "서클에 공유됨",
-    "Testing Basic Circle Creation" : "기본 서클 생성 테스트 중",
-    "This feature is not available for personal circles" : "이 기능은 개인 서클에서 사용할 수 없음",
-    "You are already a member of this circle" : "이미 서클 회원임",
-    "You have been blocked from this circle" : "이 서클에서 차단됨",
-    "The account is already a member of this circle" : "이 계정은 이미 이 서클의 회원임",
-    "The account has already been invited into this circle" : "이 계정을 이미 이 서클에 초대함"
+    "Shared to Circles" : "서클에 공유됨"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

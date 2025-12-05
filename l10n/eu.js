@@ -150,12 +150,6 @@ OC.L10N.register(
     "Name" : "Izena",
     "Size" : "Tamaina",
     "Modified" : "Aldatua",
-    "Shared to Circles" : "Zirkuluetara partekatua",
-    "Testing Basic Circle Creation" : "Oinarrizko zirkulu sorrera probatzen",
-    "This feature is not available for personal circles" : "Ezaugarri hau ez da existitzen zirkulu pertsonaletarako",
-    "You are already a member of this circle" : "Zirkulu honetako kide zara dagoeneko",
-    "You have been blocked from this circle" : "Zirkulu honetan blokeatu egin zaituzte",
-    "The account is already a member of this circle" : "Kontu hau zirkulu honetako kidea da dagoeneko",
-    "The account has already been invited into this circle" : "Kontua zirkulu honetara gonbidatua izan da dagoeneko"
+    "Shared to Circles" : "Zirkuluetara partekatua"
 },
 "nplurals=2; plural=(n != 1);");

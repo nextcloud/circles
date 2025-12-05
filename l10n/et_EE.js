@@ -158,12 +158,6 @@ OC.L10N.register(
     "Name" : "Nimi",
     "Size" : "Suurus",
     "Modified" : "Muudetud",
-    "Shared to Circles" : "Jagatud tiimidega",
-    "Testing Basic Circle Creation" : "Testin lihtsa tiimi loomist",
-    "This feature is not available for personal circles" : "See funktsionaalus pole saadaval isiklike tiimide jaoks",
-    "You are already a member of this circle" : "Sa juba oled selle tiimi liige",
-    "You have been blocked from this circle" : "Sul on keeld selle tiimiga liitumiseks",
-    "The account is already a member of this circle" : "See kasutajakonto juba on selle tiimi liige",
-    "The account has already been invited into this circle" : "See kasutajakonto juba on saanud kutse siia tiimi"
+    "Shared to Circles" : "Jagatud tiimidega"
 },
 "nplurals=2; plural=(n != 1);");

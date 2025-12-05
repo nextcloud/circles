@@ -71,9 +71,6 @@ OC.L10N.register(
     "Name" : "სახელი",
     "Size" : "ზომა",
     "Modified" : "შეიცვალა",
-    "Shared to Circles" : "წრეებთან გაზიარებული",
-    "This feature is not available for personal circles" : "ეს ფუნქცია პირადი წრეებისთვის არაა ძალაში მყოფი",
-    "You are already a member of this circle" : "ამ წრის წევრი უკვე ხართ",
-    "You have been blocked from this circle" : "ამ წრეში დაბლოკილი ხართ"
+    "Shared to Circles" : "წრეებთან გაზიარებული"
 },
 "nplurals=2; plural=(n!=1);");

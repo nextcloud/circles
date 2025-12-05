@@ -150,12 +150,6 @@ OC.L10N.register(
     "Name" : "Naam",
     "Size" : "Omvang",
     "Modified" : "Gewijzigd",
-    "Shared to Circles" : "Gedeeld met Kringen",
-    "Testing Basic Circle Creation" : "Testen basis kringcreatie",
-    "This feature is not available for personal circles" : "Deze functie is niet beschikbaar voor persoonlijke kringen",
-    "You are already a member of this circle" : "Je bent al lid van deze kring",
-    "You have been blocked from this circle" : "Je bent geblokkeerd van deze kring",
-    "The account is already a member of this circle" : "Dit account is al lid van deze cirkel",
-    "The account has already been invited into this circle" : "Dit account is al uitgenodigt voor deze cirkel"
+    "Shared to Circles" : "Gedeeld met Kringen"
 },
 "nplurals=2; plural=(n != 1);");

@@ -156,12 +156,6 @@
     "Name" : "Name",
     "Size" : "Größe",
     "Modified" : "Geändert",
-    "Shared to Circles" : "Geteilt mit Kreisen",
-    "Testing Basic Circle Creation" : "Testen der grundlegenden Kreiserstellung",
-    "This feature is not available for personal circles" : "Diese Funktion steht für persönliche Kreise nicht zur Verfügung",
-    "You are already a member of this circle" : "Du bist bereits Mitglied dieses Kreises",
-    "You have been blocked from this circle" : "Du wurdest für diesen Kreis blockiert",
-    "The account is already a member of this circle" : "Dieses Konto ist bereits Mitglied dieses Kreises",
-    "The account has already been invited into this circle" : "Dieser Benutzer wurde bereits zu diesem Kreis eingeladen."
+    "Shared to Circles" : "Geteilt mit Kreisen"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

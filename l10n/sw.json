@@ -156,12 +156,6 @@
     "Name" : "Jina",
     "Size" : "Ukubwa",
     "Modified" : "Boresha",
-    "Shared to Circles" : "Imeshirikiwa kwa Miduara",
-    "Testing Basic Circle Creation" : "Kujaribu Uundaji wa Mduara wa Msingi",
-    "This feature is not available for personal circles" : "Kipengele hiki hakipatikani kwa miduara ya kibinafsi",
-    "You are already a member of this circle" : "Tayari wewe ni mwanachama wa mduara huu",
-    "You have been blocked from this circle" : "Umezuiwa kutoka kwa mduara huu",
-    "The account is already a member of this circle" : "Akaunti tayari ni mwanachama wa mduara huu",
-    "The account has already been invited into this circle" : "Akaunti tayari imealikwa kwenye mduara huu"
+    "Shared to Circles" : "Imeshirikiwa kwa Miduara"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

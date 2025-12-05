@@ -154,8 +154,6 @@ OC.L10N.register(
     "Name" : "Име",
     "Size" : "Големина",
     "Modified" : "Изменето",
-    "Shared to Circles" : "Споделено со кругови",
-    "Testing Basic Circle Creation" : "Тестирање на основно создавање круг (Circle)",
-    "This feature is not available for personal circles" : "Оваа функција не е достапна за лични кругови"
+    "Shared to Circles" : "Споделено со кругови"
 },
 "nplurals=2; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : 1;");

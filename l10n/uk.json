@@ -148,12 +148,6 @@
     "Name" : "Ім'я",
     "Size" : "Розмір",
     "Modified" : "Змінено",
-    "Shared to Circles" : "Опубліковано в Колах",
-    "Testing Basic Circle Creation" : "Тестування створення базового кола",
-    "This feature is not available for personal circles" : "Ця функція недоступна для особистих кіл",
-    "You are already a member of this circle" : "Ви вже є учасником цього кола",
-    "You have been blocked from this circle" : "Вас заблоковано в цьому колі",
-    "The account is already a member of this circle" : "Обліковий запис уже є учасником цього кола",
-    "The account has already been invited into this circle" : "Обліковий запис уже запрошено до цього кола"
+    "Shared to Circles" : "Опубліковано в Колах"
 },"pluralForm" :"nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);"
 }

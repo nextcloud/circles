@@ -158,12 +158,6 @@ OC.L10N.register(
     "Name" : "Namn",
     "Size" : "Storlek",
     "Modified" : "Ändrad",
-    "Shared to Circles" : "Delad med Cirklar",
-    "Testing Basic Circle Creation" : "Testar grundläggande Cirkel-skapande",
-    "This feature is not available for personal circles" : "Funktionen är inte tillgänglig för personliga cirklar",
-    "You are already a member of this circle" : "Du är redan medlem i denna cirkel",
-    "You have been blocked from this circle" : "Du har blockerats från denna cirkel",
-    "The account is already a member of this circle" : "Kontot är redan medlem av denna cirkel",
-    "The account has already been invited into this circle" : "Kontot har redan bjudits in till denna cirkel"
+    "Shared to Circles" : "Delad med Cirklar"
 },
 "nplurals=2; plural=(n != 1);");
