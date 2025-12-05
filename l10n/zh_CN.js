@@ -152,12 +152,6 @@ OC.L10N.register(
     "Name" : "名称",
     "Size" : "大小",
     "Modified" : "修改日期",
-    "Shared to Circles" : "共享圈子的文件",
-    "Testing Basic Circle Creation" : "正在测试基础 Circle 创建",
-    "This feature is not available for personal circles" : "此功能不适用于个人圈子",
-    "You are already a member of this circle" : "您已经是此圈子的成员",
-    "You have been blocked from this circle" : "您被限制加入此圈子",
-    "The account is already a member of this circle" : "账号已经是这个圈子的成员了",
-    "The account has already been invited into this circle" : "账号已经被邀请进入这个圈子了"
+    "Shared to Circles" : "共享圈子的文件"
 },
 "nplurals=1; plural=0;");

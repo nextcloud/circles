@@ -107,12 +107,6 @@
     "Name" : "Nume",
     "Size" : "Mărime",
     "Modified" : "Modificat",
-    "Shared to Circles" : "Distribuit în Cercuri",
-    "Testing Basic Circle Creation" : "Se testează crearea Cercului de bază",
-    "This feature is not available for personal circles" : "Această caracteristică nu este disponibilă pentru cercurile personale",
-    "You are already a member of this circle" : "Ești deja membru în acest cerc",
-    "You have been blocked from this circle" : "Ai fost blocat din acest cerc",
-    "The account is already a member of this circle" : "Contul este deja membru al acestui cerc",
-    "The account has already been invited into this circle" : "Contul a fost deja invitat la acest cerc"
+    "Shared to Circles" : "Distribuit în Cercuri"
 },"pluralForm" :"nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));"
 }

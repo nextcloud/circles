@@ -111,12 +111,6 @@
     "Name" : "Tên",
     "Size" : "Kích cỡ",
     "Modified" : "Thay đổi",
-    "Shared to Circles" : "Đã được chia sẻ đến những Vòng kết nối",
-    "Testing Basic Circle Creation" : "Đang kiểm tra Tạo vòng kết nối cơ bản",
-    "This feature is not available for personal circles" : "Tính năng này không khả dụng cho các vòng kết nối cá nhân",
-    "You are already a member of this circle" : "Bạn đã là thành viên của vòng kết nối này",
-    "You have been blocked from this circle" : "Bạn đã bị chặn khỏi vòng kết nối này",
-    "The account is already a member of this circle" : "Tài khoản này đã là thành viên của Vòng kết nối này",
-    "The account has already been invited into this circle" : "Tài khoản này đã được mời vào Vòng kết nối này"
+    "Shared to Circles" : "Đã được chia sẻ đến những Vòng kết nối"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

@@ -158,12 +158,6 @@ OC.L10N.register(
     "Name" : "Nome",
     "Size" : "Tamanho",
     "Modified" : "Modificado",
-    "Shared to Circles" : "Compartilhado com Círculos",
-    "Testing Basic Circle Creation" : "Teste básico de criação de círculo",
-    "This feature is not available for personal circles" : "Este recurso não está disponível para círculos pessoais",
-    "You are already a member of this circle" : "Você já é membro deste círculo",
-    "You have been blocked from this circle" : "Você foi bloqueado neste círculo",
-    "The account is already a member of this circle" : "A conta já é membro deste círculo",
-    "The account has already been invited into this circle" : "A conta já foi convidada para este círculo"
+    "Shared to Circles" : "Compartilhado com Círculos"
 },
 "nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");

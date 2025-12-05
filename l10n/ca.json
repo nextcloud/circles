@@ -142,12 +142,6 @@
     "Name" : "Nom",
     "Size" : "Mida",
     "Modified" : "Data de modificació",
-    "Shared to Circles" : "Compartits en cercles",
-    "Testing Basic Circle Creation" : "S'està provant la creació d'un cercle bàsic",
-    "This feature is not available for personal circles" : "Aquesta característica no està disponible per als cercles personals",
-    "You are already a member of this circle" : "Ja sou membre d'aquest cercle",
-    "You have been blocked from this circle" : "Se us ha blocat d'aquest cercle",
-    "The account is already a member of this circle" : "El compte ja és membre d'aquest cercle",
-    "The account has already been invited into this circle" : "El compte ja ha rebut una invitació per a aquest cercle"
+    "Shared to Circles" : "Compartits en cercles"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

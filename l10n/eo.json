@@ -73,9 +73,6 @@
     "Name" : "Nomo",
     "Size" : "Grando",
     "Modified" : "Modifita",
-    "Shared to Circles" : "Kunhavigita kun rondoj",
-    "This feature is not available for personal circles" : "Tiu funkcio ne disponeblas por persona rondo",
-    "You are already a member of this circle" : "Vi jam estas membro de tiu ĉi rondo",
-    "You have been blocked from this circle" : "Vi estis barita el tiu ĉi rondo"
+    "Shared to Circles" : "Kunhavigita kun rondoj"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

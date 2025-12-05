@@ -136,12 +136,6 @@
     "Name" : "Nome",
     "Size" : "Tamañu",
     "Modified" : "Modificóse",
-    "Shared to Circles" : "Compartióse en Círculos",
-    "Testing Basic Circle Creation" : "Probando la creación d'un círculu básicu",
-    "This feature is not available for personal circles" : "Esta función nun ta disponible pa los círculos personales",
-    "You are already a member of this circle" : "Yá yes miembru d'esti círculu",
-    "You have been blocked from this circle" : "Bloquiáronte nesti círculu",
-    "The account is already a member of this circle" : "La cuenta yá ye miembru d'esti círculu",
-    "The account has already been invited into this circle" : "La cuenta yá recibió una invitación d'esti círculu"
+    "Shared to Circles" : "Compartióse en Círculos"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

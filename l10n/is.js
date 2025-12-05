@@ -152,12 +152,6 @@ OC.L10N.register(
     "Name" : "Nafn",
     "Size" : "Stærð",
     "Modified" : "Breytt",
-    "Shared to Circles" : "Deilt til hringja",
-    "Testing Basic Circle Creation" : "Prófa einfalda gerð hrings",
-    "This feature is not available for personal circles" : "Þessi eiginleiki er ekki tiltækur fyrir persónulega hringi",
-    "You are already a member of this circle" : "Þú ert nú þegar meðlimur í þessum hring",
-    "You have been blocked from this circle" : "Þú hefur verið útilokaður frá þessum hring",
-    "The account is already a member of this circle" : "Notandaaðgangurinn er nú þegar meðlimur í þessum hring",
-    "The account has already been invited into this circle" : "Notandaaðgangnum hefur þegar verið boðið að taka þátt í þessum hring"
+    "Shared to Circles" : "Deilt til hringja"
 },
 "nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);");

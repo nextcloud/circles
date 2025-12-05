@@ -152,12 +152,6 @@ OC.L10N.register(
     "Name" : "名前",
     "Size" : "サイズ",
     "Modified" : "更新日時",
-    "Shared to Circles" : "サークルと共有",
-    "Testing Basic Circle Creation" : "基本的なサークル作成のテスト",
-    "This feature is not available for personal circles" : "この機能は個人のサークルでは使用できません",
-    "You are already a member of this circle" : "あなたはすでにこのサークルのメンバーです",
-    "You have been blocked from this circle" : "あなたはこのサークルからブロックされています",
-    "The account is already a member of this circle" : "そのアカウントはすでにこのサークルのメンバーです",
-    "The account has already been invited into this circle" : "アカウントはすでにこのサークルに招待されています"
+    "Shared to Circles" : "サークルと共有"
 },
 "nplurals=1; plural=0;");

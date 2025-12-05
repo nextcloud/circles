@@ -113,12 +113,6 @@ OC.L10N.register(
     "Name" : "Име",
     "Size" : "Размер",
     "Modified" : "Променен на",
-    "Shared to Circles" : "Споделено с Кръгове",
-    "Testing Basic Circle Creation" : "Тестване на създаването на основен кръг",
-    "This feature is not available for personal circles" : "Тази функция не е налична за лични кръгове",
-    "You are already a member of this circle" : "Вече сте член на този кръг",
-    "You have been blocked from this circle" : "Бяхте блокиран от този кръг",
-    "The account is already a member of this circle" : "Този профил вече е член на този кръг",
-    "The account has already been invited into this circle" : "Този профил вече е бил поканен в този кръг"
+    "Shared to Circles" : "Споделено с Кръгове"
 },
 "nplurals=2; plural=(n != 1);");

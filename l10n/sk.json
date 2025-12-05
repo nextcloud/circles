@@ -142,12 +142,6 @@
     "Name" : "Názov",
     "Size" : "Veľkosť",
     "Modified" : "Upravené",
-    "Shared to Circles" : "Zdieľané v kruhoch",
-    "Testing Basic Circle Creation" : "Testujem základné pridávanie Kruhov",
-    "This feature is not available for personal circles" : "Táto funkcia nie je k dispozícii pre osobné kruhy",
-    "You are already a member of this circle" : "Už ste členom tohto kruhu",
-    "You have been blocked from this circle" : "V tomto kruhu ste boli zablokovaný",
-    "The account is already a member of this circle" : "Tento užívateľ už je členom kruhu",
-    "The account has already been invited into this circle" : "Užívateľ už bol pozvaný do tohto kruhu"
+    "Shared to Circles" : "Zdieľané v kruhoch"
 },"pluralForm" :"nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);"
 }

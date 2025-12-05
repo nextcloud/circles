@@ -150,12 +150,6 @@
     "Name" : "Назив",
     "Size" : "Величина",
     "Modified" : "Измењен",
-    "Shared to Circles" : "Дељено на Кругове",
-    "Testing Basic Circle Creation" : "Тестирање креирања основног круга",
-    "This feature is not available for personal circles" : "Ова функционалност није доступна за личне кругове",
-    "You are already a member of this circle" : "Већ сте члан овог круга",
-    "You have been blocked from this circle" : "Блокирани сте у овом кругу",
-    "The account is already a member of this circle" : "Овај налог је већ члан овог круга",
-    "The account has already been invited into this circle" : "Налог је већ раније позван у овај круг"
+    "Shared to Circles" : "Дељено на Кругове"
 },"pluralForm" :"nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);"
 }

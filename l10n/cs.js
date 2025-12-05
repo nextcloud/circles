@@ -158,12 +158,6 @@ OC.L10N.register(
     "Name" : "Název",
     "Size" : "Velikost",
     "Modified" : "Změněno",
-    "Shared to Circles" : "Sdíleno do okruhů",
-    "Testing Basic Circle Creation" : "Zkouší se vytvoření základního okruhu",
-    "This feature is not available for personal circles" : "Tato funkce není pro osobní okruhy dostupná",
-    "You are already a member of this circle" : "Už jste členem tohoto okruhu",
-    "You have been blocked from this circle" : "Tento okruh vás zablokoval",
-    "The account is already a member of this circle" : "Účet už je členem tohoto okruhu",
-    "The account has already been invited into this circle" : "Účet už byl pozván do tohoto okruhu"
+    "Shared to Circles" : "Sdíleno do okruhů"
 },
 "nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;");
