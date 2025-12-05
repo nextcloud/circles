@@ -152,12 +152,6 @@ OC.L10N.register(
     "Name" : "Όνομα",
     "Size" : "Μέγεθος",
     "Modified" : "Τροποποιήθηκε",
-    "Shared to Circles" : "Κοινόχρηστο στους Κύκλους",
-    "Testing Basic Circle Creation" : "Δοκιμή Βασικής Δημιουργίας Κύκλου",
-    "This feature is not available for personal circles" : "Αυτή η επιλογή δεν είναι διαθέσιμη για προσωπικούς κύκλους",
-    "You are already a member of this circle" : "Είστε ήδη μέλος αυτού του κύκλου",
-    "You have been blocked from this circle" : "Έχετε αποκλειστεί από αυτόν τον κύκλο",
-    "The account is already a member of this circle" : "Ο λογαριασμός είναι ήδη μέλος του κύκλου",
-    "The account has already been invited into this circle" : "Ο λογαριασμός έχει ήδη προσκληθεί για συμμετοχή στον κύκλο"
+    "Shared to Circles" : "Κοινόχρηστο στους Κύκλους"
 },
 "nplurals=2; plural=(n != 1);");

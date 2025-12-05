@@ -144,12 +144,6 @@ OC.L10N.register(
     "Name" : "الاسم",
     "Size" : "الحجم",
     "Modified" : "آخر تعديل",
-    "Shared to Circles" : "مُشتركٌ مع الدوائر",
-    "Testing Basic Circle Creation" : "اختبار إنشاء دائرة أساسية basic circle",
-    "This feature is not available for personal circles" : "هذه الميزة غير مُتاحة في الدوائر الشخصية",
-    "You are already a member of this circle" : "أنت عضو في هذه الدائرة من قبل",
-    "You have been blocked from this circle" : "أنت محظور من هذه الدائرة ",
-    "The account is already a member of this circle" : "هذا الحساب عضوٌ في هذه الدائرة من قبل",
-    "The account has already been invited into this circle" : "هذا الحساب تمّت دعوته لهذه الدائرة مُسبقاً"
+    "Shared to Circles" : "مُشتركٌ مع الدوائر"
 },
 "nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;");

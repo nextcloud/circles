@@ -156,12 +156,6 @@
     "Name" : "ئاتى",
     "Size" : "چوڭلۇقى",
     "Modified" : "ئۆزگەرتكەن",
-    "Shared to Circles" : "چەمبىرەككە ئورتاقلاشتى",
-    "Testing Basic Circle Creation" : "ئاساسىي چەمبىرەك قۇرۇشنى سىناق قىلىش",
-    "This feature is not available for personal circles" : "بۇ ئىقتىدار شەخسىي چەمبىرەكلەردە ئىشلىتىلمەيدۇ",
-    "You are already a member of this circle" : "سىز ئاللىبۇرۇن بۇ چەمبىرەكنىڭ ئەزاسى",
-    "You have been blocked from this circle" : "سىز بۇ چەمبىرەكتىن توسۇۋېلىندىڭىز",
-    "The account is already a member of this circle" : "ھېسابات ئاللىقاچان بۇ چەمبىرەكنىڭ ئەزاسى",
-    "The account has already been invited into this circle" : "بۇ ھېسابات ئاللىبۇرۇن بۇ چەمبىرەككە تەكلىپ قىلىنغان"
+    "Shared to Circles" : "چەمبىرەككە ئورتاقلاشتى"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

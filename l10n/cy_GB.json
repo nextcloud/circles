@@ -108,12 +108,6 @@
     "Name" : "Enw",
     "Size" : "Maint",
     "Modified" : "Addaswyd",
-    "Shared to Circles" : "Wedi'i rannu i Gylchoedd",
-    "Testing Basic Circle Creation" : "Profi Creu Cylch Sylfaenol",
-    "This feature is not available for personal circles" : "Nid yw'r nodwedd hon ar gael ar gyfer cylchoedd personol",
-    "You are already a member of this circle" : "Rydych chi eisoes yn aelod o'r cylch hwn",
-    "You have been blocked from this circle" : "Rydych chi wedi cael eich rhwystro o'r cylch hwn",
-    "The account is already a member of this circle" : "Mae'r cyfrif eisoes yn aelod o'r cylch hwn",
-    "The account has already been invited into this circle" : "Mae'r cyfrif eisoes wedi'i wahodd i'r cylch hwn"
+    "Shared to Circles" : "Wedi'i rannu i Gylchoedd"
 },"pluralForm" :"nplurals=4; plural=(n==1) ? 0 : (n==2) ? 1 : (n != 8 && n != 11) ? 2 : 3;"
 }

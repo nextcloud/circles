@@ -125,12 +125,6 @@ OC.L10N.register(
     "Name" : "Ime",
     "Size" : "Velikost",
     "Modified" : "Spremenjeno",
-    "Shared to Circles" : "Souporaba v krogu",
-    "Testing Basic Circle Creation" : "Preizkušanje ustvarjanja osnovnega kroga",
-    "This feature is not available for personal circles" : "Ta zmožnost za osebne kroge ni na voljo",
-    "You are already a member of this circle" : "Ste že član tega kroga.",
-    "You have been blocked from this circle" : "Iz tega kroga ste bili izločeni",
-    "The account is already a member of this circle" : "Račun ima že potrjeno članstvo v krogu.",
-    "The account has already been invited into this circle" : "Račun je že prejel vabilo za članstvo v krogu."
+    "Shared to Circles" : "Souporaba v krogu"
 },
 "nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);");

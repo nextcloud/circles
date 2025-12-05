@@ -24,8 +24,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Энэ хавтаст юм олдсонгүй",
     "Name" : "Нэр",
     "Size" : "Хэмжээ",
-    "Modified" : "Өөрчлөгдсөн",
-    "You are already a member of this circle" : "та аль хэдийн энэ тойргийн гишүүн болсон",
-    "You have been blocked from this circle" : "та энэ тойргоос хасагдсан "
+    "Modified" : "Өөрчлөгдсөн"
 },
 "nplurals=2; plural=(n != 1);");

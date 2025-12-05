@@ -108,11 +108,6 @@ OC.L10N.register(
     "Name" : "Nimi",
     "Size" : "Koko",
     "Modified" : "Muokattu",
-    "Shared to Circles" : "Jaettu piireille",
-    "This feature is not available for personal circles" : "Tämä ominaisuus ei ole henkilökohtaisten piirien käytössä",
-    "You are already a member of this circle" : "Olet jo jäsenenä tässä piirissä",
-    "You have been blocked from this circle" : "Sinut on estetty tästä piiristä",
-    "The account is already a member of this circle" : "Tämä tili on jo jäsen tässä piirissä",
-    "The account has already been invited into this circle" : "Tämä tili on jo kutsuttu tähän piiriin"
+    "Shared to Circles" : "Jaettu piireille"
 },
 "nplurals=2; plural=(n != 1);");

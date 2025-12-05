@@ -34,8 +34,6 @@ OC.L10N.register(
     "No entries found in this folder" : "No se encontraron elementos en esta carpeta",
     "Name" : "Nombre",
     "Size" : "Tamaño",
-    "Modified" : "Modificado",
-    "You are already a member of this circle" : "Usted ya es un miembro de este círculo",
-    "You have been blocked from this circle" : "Usted ha sido bloqueado de este círculo"
+    "Modified" : "Modificado"
 },
 "nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");

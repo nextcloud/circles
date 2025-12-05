@@ -150,12 +150,6 @@
     "Name" : "Ad",
     "Size" : "Boyut",
     "Modified" : "Değiştirilme",
-    "Shared to Circles" : "Takımlarla paylaşıldı",
-    "Testing Basic Circle Creation" : "Temel takım oluşturma sınanıyor",
-    "This feature is not available for personal circles" : "Bu özellik kişisel takımlarda kullanılamaz",
-    "You are already a member of this circle" : "Zaten bu takımın bir üyesisiniz",
-    "You have been blocked from this circle" : "Bu takımda engellenmişsiniz",
-    "The account is already a member of this circle" : "Hesap zaten bu takımın bir üyesi",
-    "The account has already been invited into this circle" : "Hesap zaten bu takıma katılması için davet edilmiş"
+    "Shared to Circles" : "Takımlarla paylaşıldı"
 },"pluralForm" :"nplurals=2; plural=(n > 1);"
 }

@@ -150,12 +150,6 @@
     "Name" : "Имя",
     "Size" : "Размер",
     "Modified" : "Изменён",
-    "Shared to Circles" : "Предоставленный кругам общий доступ",
-    "Testing Basic Circle Creation" : "Тестирование базового созданного Круга",
-    "This feature is not available for personal circles" : "Эта возможность недоступна для личных кругов",
-    "You are already a member of this circle" : "Вы уже участник этого круга",
-    "You have been blocked from this circle" : "Вы заблокированы от участия в этом круге",
-    "The account is already a member of this circle" : "Эта учётная запись уже участник этого круга",
-    "The account has already been invited into this circle" : "Эта учётная запись уже приглашена в этот круг"
+    "Shared to Circles" : "Предоставленный кругам общий доступ"
 },"pluralForm" :"nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);"
 }

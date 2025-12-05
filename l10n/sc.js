@@ -106,10 +106,6 @@ OC.L10N.register(
     "Name" : "Nùmene",
     "Size" : "Mannària",
     "Modified" : "Modificadu",
-    "Shared to Circles" : "Cumpartzidu cun is giros\\",
-    "Testing Basic Circle Creation" : " Proa de creatzione de giru de base",
-    "This feature is not available for personal circles" : "Sa funtzionalidade no est a disponimentu pro giros personales",
-    "You are already a member of this circle" : "Ses giai cumponente de custu giru",
-    "You have been blocked from this circle" : "T'ant blocadu dae custu giru"
+    "Shared to Circles" : "Cumpartzidu cun is giros\\"
 },
 "nplurals=2; plural=(n != 1);");
