@@ -75,7 +75,7 @@ class CircleEdit implements IFederatedItem {
 		$circle = $event->getCircle();
 
 		$initiatorHelper = new MemberHelper($circle->getInitiator());
-		$initiatorHelper->mustBeOwner();
+		$initiatorHelper->mustBeAdmin();
 
 		$data = $event->getParams();
 		$new = clone $circle;
