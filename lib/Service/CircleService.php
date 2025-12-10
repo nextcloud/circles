@@ -29,10 +29,12 @@ use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\FederatedItems\CircleConfig;
 use OCA\Circles\FederatedItems\CircleCreate;
+use OCA\Circles\FederatedItems\CircleCreateInvitation;
 use OCA\Circles\FederatedItems\CircleDestroy;
 use OCA\Circles\FederatedItems\CircleEdit;
 use OCA\Circles\FederatedItems\CircleJoin;
 use OCA\Circles\FederatedItems\CircleLeave;
+use OCA\Circles\FederatedItems\CircleRevokeInvitation;
 use OCA\Circles\FederatedItems\CircleSetting;
 use OCA\Circles\IEntity;
 use OCA\Circles\IFederatedUser;
@@ -336,6 +338,60 @@ class CircleService {
 
 	/**
 	 * @param string $circleId
+	 *
+	 * @return array
+	 * @throws CircleNotFoundException
+	 * @throws FederatedEventException
+	 * @throws FederatedItemException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws InitiatorNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws UnknownRemoteException
+	 */
+	public function createInvitation(string $circleId): array {
+		$circle = $this->getCircle($circleId);
+
+		$event = new FederatedEvent(CircleCreateInvitation::class);
+		$event->setCircle($circle);
+
+		$this->federatedEventService->newEvent($event);
+
+		return $event->getOutcome();
+	}
+
+	/**
+	 * @param string $circleId
+	 *
+	 * @return array
+	 * @throws CircleNotFoundException
+	 * @throws FederatedEventException
+	 * @throws FederatedItemException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws InitiatorNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws UnknownRemoteException
+	 */
+	public function revokeInvitation(string $circleId): array {
+		$circle = $this->getCircle($circleId);
+
+		$event = new FederatedEvent(CircleRevokeInvitation::class);
+		$event->setCircle($circle);
+
+		$this->federatedEventService->newEvent($event);
+
+		return $event->getOutcome();
+	}
+
+	/**
+	 * @param string $circleId
 	 * @param string $name
 	 *
 	 * @return array
@@ -420,12 +476,18 @@ class CircleService {
 	 * @throws UnknownRemoteException
 	 * @throws RequestBuilderException
 	 */
-	public function circleJoin(string $circleId): array {
+	public function circleJoin(string $circleId, ?string $invitationCode = null): array {
+		$invitationCode = $invitationCode ? str_replace('-', '', $invitationCode) : null;
 		$this->federatedUserService->mustHaveCurrentUser();
 
 		$probe = new CircleProbe();
 		$probe->includeNonVisibleCircles()
 			->emulateVisitor();
+
+		if ($invitationCode) {
+			$probe->includeHiddenCircles()
+				->filterByInvitationCode($invitationCode);
+		}
 
 		$circle = $this->circleRequest->getCircle(
 			$circleId,
@@ -438,13 +500,13 @@ class CircleService {
 		}
 
 		$event = new FederatedEvent(CircleJoin::class);
+		$event->setParams(new SimpleDataStore(['invitationCode' => $invitationCode]));
 		$event->setCircle($circle);
 
 		$this->federatedEventService->newEvent($event);
 
 		return $event->getOutcome();
 	}
-
 
 	/**
 	 * @param string $circleId
