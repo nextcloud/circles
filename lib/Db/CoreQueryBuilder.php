@@ -798,9 +798,10 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		if (!is_null($initiator)) {
 			$this->leftJoinInitiator($aliasBasedOn, $initiator);
 			$this->leftJoinOwner($aliasBasedOn);
-
-			$aliasInitiatorMemberships = $this->generateAlias($aliasBasedOn, self::MEMBERSHIPS);
-			$this->andWhere($expr->gt($aliasInitiatorMemberships . '.level', $this->createNamedParameter(0, self::PARAM_INT)));
+            /** this needs to be refactored as it does not show all team members anymore see https://github.com/nextcloud/circles/issues/2261 
+			* $aliasInitiatorMemberships = $this->generateAlias($aliasBasedOn, self::MEMBERSHIPS);
+			* $this->andWhere($expr->gt($aliasInitiatorMemberships . '.level', $this->createNamedParameter(0, self::PARAM_INT)));
+			*/
 		}
 	}
 
