@@ -222,6 +222,16 @@ class MemberRequest extends MemberRequestBuilder {
 		if ($fullDetails) {
 			$qb->leftJoinCircle(CoreQueryBuilder::MEMBER, $initiator);
 			$qb->leftJoinInvitedBy(CoreQueryBuilder::MEMBER);
+		} elseif (!is_null($initiator)) {
+			// still need to confirm initiator level in relation to the circle
+			$aliasCircle = $qb->generateAlias(CoreQueryBuilder::MEMBER, CoreQueryBuilder::CIRCLE, $options);
+			$qb->leftJoin(
+				CoreQueryBuilder::MEMBER,
+				CoreRequestBuilder::TABLE_CIRCLE,
+				$aliasCircle,
+				$qb->expr()->eq($aliasCircle . '.unique_id', CoreQueryBuilder::MEMBER . '.circle_id')
+			);
+			$qb->limitToInitiator($aliasCircle, $initiator);
 		}
 
 		if ($probe->hasFilterRemoteInstance()) {
