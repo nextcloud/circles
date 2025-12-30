@@ -359,6 +359,40 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		return $this->getItemsFromRequest($qb);
 	}
 
+	public function getSharedWithByPath(
+		FederatedUser $federatedUser,
+		string $path,
+		bool $forChildren,
+		CircleProbe $probe,
+	): array {
+		$qb = $this->getShareSelectSql();
+		$qb->setOptions(
+			[CoreQueryBuilder::SHARE],
+			array_merge(
+				$probe->getAsOptions(),
+				['getData' => true]
+			)
+		);
+
+		$qb->leftJoinCircle(CoreQueryBuilder::SHARE, null, 'share_with');
+
+		$aliasCircle = $qb->generateAlias(CoreQueryBuilder::SHARE, CoreQueryBuilder::CIRCLE);
+		$qb->limitToFederatedUserMemberships(CoreQueryBuilder::SHARE, $aliasCircle, $federatedUser);
+
+		$qb->leftJoinFileCache(CoreQueryBuilder::SHARE);
+		$qb->limitNull('parent', false);
+		$childAlias = $qb->leftJoinShareChild(CoreQueryBuilder::SHARE);
+
+		if ($forChildren) {
+			$qb->limitToFileTargetLike($path . '_%', $childAlias);
+		} else {
+			$qb->limitToFileTarget($path, $childAlias);
+		}
+
+		$qb->chunk($probe->getItemsOffset(), $probe->getItemsLimit());
+
+		return $this->getItemsFromRequest($qb);
+	}
 
 	/**
 	 * @param FederatedUser $federatedUser
