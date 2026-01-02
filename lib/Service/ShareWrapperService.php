@@ -239,6 +239,29 @@ class ShareWrapperService {
 		return $shares;
 	}
 
+	public function getSharedWithByPath(
+		FederatedUser $federatedUser,
+		string $path,
+		bool $forChildren,
+		?CircleProbe $probe,
+	): array {
+		$key = $this->generateSharedWithByPathCacheKey($federatedUser, $path, $forChildren, $probe?->getChecksum());
+
+		$cachedData = $this->cache->get($key);
+		try {
+			if (!is_string($cachedData)) {
+				throw new InvalidItemException();
+			}
+
+			return $this->deserializeList($cachedData, ShareWrapper::class);
+		} catch (InvalidItemException $e) {
+		}
+
+		$shares = $this->shareWrapperRequest->getSharedWithByPath($federatedUser, $path, $forChildren, $probe);
+		$this->cache->set($key, json_encode($shares), self::CACHE_SHARED_WITH_TTL);
+
+		return $shares;
+	}
 
 	/**
 	 * @param FederatedUser $federatedUser
@@ -322,6 +345,18 @@ class ShareWrapperService {
 		return $this->getShareById($childId, $federatedUser);
 	}
 
+	private function generateSharedWithByPathCacheKey(
+		FederatedUser $federatedUser,
+		string $path,
+		bool $forChildren,
+		?string $probeSum,
+	): string {
+		$pathHash = \md5($path);
+		return $federatedUser->getSingleId() . '#'
+			. $pathHash . '#'
+			. $forChildren . '#'
+			. $probeSum;
+	}
 
 	/**
 	 * @param FederatedUser $federatedUser

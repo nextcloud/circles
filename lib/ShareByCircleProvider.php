@@ -56,6 +56,7 @@ use OCP\IUserManager;
 use OCP\Share\Exceptions\AlreadySharedException;
 use OCP\Share\Exceptions\IllegalIDChangeException;
 use OCP\Share\Exceptions\ShareNotFound;
+use OCP\Share\IPartialShareProvider;
 use OCP\Share\IShare;
 use OCP\Share\IShareProvider;
 use Psr\Log\LoggerInterface;
@@ -65,7 +66,7 @@ use Psr\Log\LoggerInterface;
  *
  * @package OCA\Circles
  */
-class ShareByCircleProvider implements IShareProvider {
+class ShareByCircleProvider implements IShareProvider, IPartialShareProvider {
 	use TArrayTools;
 	use TStringTools;
 	use TNCLogger;
@@ -522,6 +523,48 @@ class ShareByCircleProvider implements IShareProvider {
 		);
 	}
 
+	/**
+	 * @param bool $forChildren
+	 * @inheritDoc
+	 */
+	public function getSharedWithByPath(
+		string $userId,
+		int $shareType,
+		string $path,
+		bool $forChildren,
+		int $limit,
+		int $offset,
+	): iterable {
+		if ($shareType !== IShare::TYPE_CIRCLE) {
+			return [];
+		}
+
+		$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId);
+		$probe = new CircleProbe();
+		$probe->includePersonalCircles()
+			->includeSystemCircles()
+			->mustBeMember()
+			->setItemsLimit((int)$limit)
+			->setItemsOffset((int)$offset);
+
+		$wrappedShares = $this->shareWrapperService->getSharedWithByPath(
+			$federatedUser,
+			$path,
+			$forChildren,
+			$probe,
+			$probe,
+		);
+
+		return array_filter(
+			array_map(
+				function (ShareWrapper $wrapper) {
+					return $wrapper->getShare(
+						$this->rootFolder, $this->userManager, $this->urlGenerator, true
+					);
+				}, $wrappedShares
+			)
+		);
+	}
 
 	/**
 	 * @param string $token
