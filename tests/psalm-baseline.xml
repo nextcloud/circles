@@ -374,9 +374,6 @@
     </UndefinedDocblockClass>
   </file>
   <file src="lib/ShareByCircleProvider.php">
-    <ImplementedParamTypeMismatch>
-      <code><![CDATA[$shareId]]></code>
-    </ImplementedParamTypeMismatch>
     <InvalidNullableReturnType>
       <code><![CDATA[IShare]]></code>
       <code><![CDATA[IShare]]></code>
@@ -386,6 +383,7 @@
     </InvalidNullableReturnType>
     <LessSpecificImplementedReturnType>
       <code><![CDATA[array]]></code>
+      <code><![CDATA[iterable]]></code>
     </LessSpecificImplementedReturnType>
     <NullableReturnStatement>
       <code><![CDATA[$wrappedShare->getShare($this->rootFolder, $this->userManager, $this->urlGenerator)]]></code>
