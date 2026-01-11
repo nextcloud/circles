@@ -154,7 +154,7 @@ OC.L10N.register(
     "Loading…" : "Cargando…",
     "More teams" : "Máis equipos",
     "No files in here" : "Aquí non hai ficheiros",
-    "No entries found in this folder" : "Non se atopou ningunha entrada neste cartafol",
+    "No entries found in this folder" : "Non foi atopada ningunha entrada neste cartafol",
     "Name" : "Nome",
     "Size" : "Tamaño",
     "Modified" : "Modificado",

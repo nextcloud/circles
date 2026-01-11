@@ -10,6 +10,7 @@ OC.L10N.register(
     "Local" : "Local",
     "Email address" : "E-pochta manzili",
     "Contact" : "Aloqa",
+    "Team" : "Jamoa",
     "Member" : "Member",
     "Admin" : "Admin",
     "Owner" : "Owner",
