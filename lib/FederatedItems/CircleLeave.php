@@ -26,7 +26,6 @@ use OCA\Circles\IFederatedItemMemberOptional;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\FederatedUser;
-use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Service\ConfigService;
@@ -103,10 +102,7 @@ class CircleLeave implements
 		$circle = $event->getCircle();
 		$member = $circle->getInitiator();
 
-		if (!$event->getParams()->gBool('force')) {
-			$memberHelper = new MemberHelper($member);
-			$memberHelper->cannotBeOwner();
-		} elseif ($this->configService->isLocalInstance($event->getOrigin())) {
+		if ($this->configService->isLocalInstance($event->getOrigin())) {
 			if ($member->getLevel() === Member::LEVEL_OWNER) {
 				try {
 					$newOwner = $this->selectNewOwner($circle);
