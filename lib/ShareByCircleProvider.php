@@ -498,7 +498,12 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider {
 			return [];
 		}
 
-		$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId);
+		try {
+			$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId);
+		} catch (FederatedUserNotFoundException) {
+			return [];
+		}
+
 		$probe = new CircleProbe();
 		$probe->includePersonalCircles()
 			->includeSystemCircles()
