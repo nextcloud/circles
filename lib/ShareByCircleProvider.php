@@ -52,6 +52,7 @@ use OCP\Files\Node;
 use OCP\Files\NotFoundException;
 use OCP\IL10N;
 use OCP\IURLGenerator;
+use OCP\IUser;
 use OCP\IUserManager;
 use OCP\Share\Exceptions\AlreadySharedException;
 use OCP\Share\Exceptions\IllegalIDChangeException;
@@ -59,6 +60,7 @@ use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IPartialShareProvider;
 use OCP\Share\IShare;
 use OCP\Share\IShareProvider;
+use OCP\Share\IShareProviderGetUsers;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -66,7 +68,7 @@ use Psr\Log\LoggerInterface;
  *
  * @package OCA\Circles
  */
-class ShareByCircleProvider implements IShareProvider, IPartialShareProvider {
+class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IShareProviderGetUsers {
 	use TArrayTools;
 	use TStringTools;
 	use TNCLogger;
@@ -844,5 +846,16 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider {
 		//		}
 		//		$cursor->closeCursor();
 		return [];
+	}
+
+	public function getUsersForShare(IShare $share): iterable {
+		$members = $this->shareWrapperService->getShareById((int)$share->getId())->getCircle()->getInheritedMembers();
+		foreach ($members as $member) {
+			if ($member->getUserType() === Member::TYPE_USER) {
+				/** @var IUser $user */
+				$user = $this->userManager->get($member->getUserId());
+				yield $user;
+			}
+		}
 	}
 }
