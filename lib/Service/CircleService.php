@@ -51,6 +51,8 @@ use OCA\Circles\Tools\Traits\TArrayTools;
 use OCA\Circles\Tools\Traits\TDeserialize;
 use OCA\Circles\Tools\Traits\TNCLogger;
 use OCA\Circles\Tools\Traits\TStringTools;
+use OCA\Files_Sharing\Event\UserShareAccessUpdatedEvent;
+use OCP\EventDispatcher\IEventDispatcher;
 use OCP\ICache;
 use OCP\ICacheFactory;
 use OCP\IL10N;
@@ -124,6 +126,7 @@ class CircleService {
 		MemberService $memberService,
 		PermissionService $permissionService,
 		ConfigService $configService,
+		private readonly IEventDispatcher $eventDispatcher,
 	) {
 		$this->l10n = $l10n;
 		$this->hasher = $hasher;
@@ -422,6 +425,8 @@ class CircleService {
 	 */
 	public function circleJoin(string $circleId): array {
 		$this->federatedUserService->mustHaveCurrentUser();
+		/** @var FederatedUser $currentUser */
+		$currentUser = $this->federatedUserService->getCurrentUser();
 
 		$probe = new CircleProbe();
 		$probe->includeNonVisibleCircles()
@@ -429,7 +434,7 @@ class CircleService {
 
 		$circle = $this->circleRequest->getCircle(
 			$circleId,
-			$this->federatedUserService->getCurrentUser(),
+			$currentUser,
 			$probe
 		);
 
@@ -441,6 +446,8 @@ class CircleService {
 		$event->setCircle($circle);
 
 		$this->federatedEventService->newEvent($event);
+
+		$this->eventDispatcher->dispatchTyped(new UserShareAccessUpdatedEvent($this->memberService->collectShareAccessUpdateUsers($currentUser)));
 
 		return $event->getOutcome();
 	}
@@ -465,6 +472,8 @@ class CircleService {
 	 */
 	public function circleLeave(string $circleId, bool $force = false): array {
 		$this->federatedUserService->mustHaveCurrentUser();
+		/** @var FederatedUser $currentUser */
+		$currentUser = $this->federatedUserService->getCurrentUser();
 
 		$probe = new CircleProbe();
 		$probe->includeNonVisibleCircles()
@@ -472,7 +481,7 @@ class CircleService {
 
 		$circle = $this->circleRequest->getCircle(
 			$circleId,
-			$this->federatedUserService->getCurrentUser(),
+			$currentUser,
 			$probe
 		);
 
@@ -482,9 +491,10 @@ class CircleService {
 
 		$this->federatedEventService->newEvent($event);
 
+		$this->eventDispatcher->dispatchTyped(new UserShareAccessUpdatedEvent($this->memberService->collectShareAccessUpdateUsers($currentUser)));
+
 		return $event->getOutcome();
 	}
-
 
 	/**
 	 * @param string $circleId
