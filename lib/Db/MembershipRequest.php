@@ -13,6 +13,7 @@ namespace OCA\Circles\Db;
 
 use OCA\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Model\FederatedUser;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Membership;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 
@@ -113,6 +114,36 @@ class MembershipRequest extends MembershipRequestBuilder {
 		return $this->getItemsFromRequest($qb);
 	}
 
+	/**
+	 * @param string $singleId
+	 * @param int $level
+	 *
+	 * @return list<Membership>
+	 */
+	public function getInheritedExcludingCircles(string $singleId, int $level = 0): array {
+		$qb = $this->getMembershipSelectSql();
+		$qb->limitToCircleId($singleId);
+
+		$expr = $qb->expr();
+		if ($level > 1) {
+			$qb->andWhere($expr->gte('level', $qb->createNamedParameter($level, IQueryBuilder::PARAM_INT)));
+		}
+		$qb->leftJoin(
+			CoreQueryBuilder::MEMBERSHIPS,
+			CoreRequestBuilder::TABLE_MEMBER,
+			CoreQueryBuilder::MEMBER,
+			$expr->andX(
+				$expr->eq(CoreQueryBuilder::MEMBERSHIPS . '.single_id', CoreQueryBuilder::MEMBER . '.single_id'),
+				$expr->eq(
+					CoreQueryBuilder::MEMBER . '.user_type',
+					$qb->createNamedParameter(Member::TYPE_CIRCLE, IQueryBuilder::PARAM_INT)
+				)
+			)
+		);
+		$qb->andWhere($expr->isNull(CoreQueryBuilder::MEMBER . '.single_id'));
+
+		return $this->getItemsFromRequest($qb);
+	}
 
 	/**
 	 * @param string $singleId
