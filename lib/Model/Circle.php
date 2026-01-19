@@ -828,6 +828,7 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 			'sanitizedName' => $this->getSanitizedName(),
 			'source' => $this->getSource(),
 			'population' => $this->getPopulation(),
+			'populationInherited' => $this->getPopulationInherited(),
 			'config' => $this->getConfig(),
 			'description' => $this->getDescription(),
 			'url' => $this->getUrl(),

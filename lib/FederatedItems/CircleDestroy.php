@@ -107,9 +107,15 @@ class CircleDestroy implements
 
 		$this->eventService->circleDestroying($event);
 
+		$parentCirlces = $this->membershipService->getParentCircles($circle);
+
 		$this->circleRequest->delete($circle);
 		$this->memberRequest->deleteAllFromCircle($circle);
 		$this->membershipService->onUpdate($circle->getSingleId());
+
+		foreach ($parentCirlces as $parentCircle) {
+			$this->membershipService->updatePopulation($parentCircle);
+		}
 	}
 
 
