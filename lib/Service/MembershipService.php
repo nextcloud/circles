@@ -388,23 +388,62 @@ class MembershipService {
 		throw new ItemNotFoundException();
 	}
 
+	/**
+	 * Get all circles that contain a given circle as a member
+	 *
+	 * @param Circle $circle
+	 *
+	 * @return list<Circle>
+	 */
+	public function getParentCircles(Circle $circle): array {
+		$memberships = $this->membershipRequest->getMemberships($circle->getSingleId());
+		$parentCircles = [];
+		foreach ($memberships as $membership) {
+			$parentCircles[] = $this->circleRequest->getCircle($membership->getCircleId());
+		}
+
+		return $parentCircles;
+	}
 
 	/**
+	 * Update population counts for a given circle and all circles that contain it as a member
+	 *
 	 * @param Circle $circle
 	 */
 	public function updatePopulation(Circle $circle): void {
-		$local = $inherited = 0;
-		$memberships = $this->membershipRequest->getInherited($circle->getSingleId(), Member::LEVEL_MEMBER);
+		$this->calculateAndSavePopulation($circle);
+
+		$parentCircles = $this->getParentCircles($circle);
+		foreach ($parentCircles as $parentCircle) {
+			$this->calculateAndSavePopulation($parentCircle);
+		}
+	}
+
+	/**
+	 * Calculate and save population counts for a given circle
+	 *
+	 * population: direct member count (excluding nested circles)
+	 * populationInherited: total member count (direct + inherited from nested circles)
+	 *
+	 * @param Circle $circle
+	 */
+	private function calculateAndSavePopulation(Circle $circle): void {
+		$population = $populationInherited = 0;
+
+		$memberships = $this->membershipRequest->getInheritedExcludingCircles(
+			$circle->getSingleId(),
+			Member::LEVEL_MEMBER
+		);
 		foreach ($memberships as $membership) {
-			$inherited++;
-			if ($membership->getCircleId() === $circle->getSingleId()) {
-				$local++;
+			$populationInherited++;
+			if ($membership->getInheritanceDepth() === 1) {
+				$population++;
 			}
 		}
 
 		$settings = $circle->getSettings();
-		$settings['population'] = $local;
-		$settings['populationInherited'] = $inherited;
+		$settings['population'] = $population;
+		$settings['populationInherited'] = $populationInherited;
 		$this->circleRequest->updateSettings($circle->setSettings($settings));
 	}
 }
