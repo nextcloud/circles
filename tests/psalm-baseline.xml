@@ -109,6 +109,7 @@
       <code><![CDATA[SharesToken]]></code>
       <code><![CDATA[SharesToken]]></code>
       <code><![CDATA[SharesToken]]></code>
+      <code><![CDATA[SharesToken[]]]></code>
       <code><![CDATA[TokensRequestBuilder]]></code>
     </DeprecatedClass>
     <InvalidScalarArgument>
