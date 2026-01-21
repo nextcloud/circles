@@ -16,6 +16,7 @@ use Doctrine\DBAL\Driver;
 use Doctrine\DBAL\Driver\ServerInfoAwareConnection;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Exception\ConnectionLost;
+use Doctrine\DBAL\Platforms\MariaDBPlatform;
 use Doctrine\DBAL\Platforms\MySQLPlatform;
 use Doctrine\DBAL\Platforms\OraclePlatform;
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
@@ -231,7 +232,7 @@ class Connection extends PrimaryReadReplicaConnection {
  {
  }
 
-	protected function logQueryToFile(string $sql): void
+	protected function logQueryToFile(string $sql, array $params): void
  {
  }
 
@@ -349,6 +350,18 @@ class Connection extends PrimaryReadReplicaConnection {
  }
 
 	/**
+	 * Truncate a table data if it exists
+	 *
+	 * @param string $table table name without the prefix
+	 * @param bool $cascade whether to truncate cascading
+	 *
+	 * @throws Exception
+	 */
+	public function truncateTable(string $table, bool $cascade)
+ {
+ }
+
+	/**
 	 * Check if a table exists
 	 *
 	 * @param string $table table name without the prefix
@@ -441,9 +454,9 @@ class Connection extends PrimaryReadReplicaConnection {
  }
 
 	/**
-	 * @return IDBConnection::PLATFORM_MYSQL|IDBConnection::PLATFORM_ORACLE|IDBConnection::PLATFORM_POSTGRES|IDBConnection::PLATFORM_SQLITE
+	 * @return IDBConnection::PLATFORM_MYSQL|IDBConnection::PLATFORM_ORACLE|IDBConnection::PLATFORM_POSTGRES|IDBConnection::PLATFORM_SQLITE|IDBConnection::PLATFORM_MARIADB
 	 */
-	public function getDatabaseProvider(): string
+	public function getDatabaseProvider(bool $strict = false): string
  {
  }
 

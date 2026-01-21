@@ -136,14 +136,11 @@ class Process implements \IteratorAggregate
     {
     }
 
-    public function __sleep(): array
+    public function __serialize(): array
     {
     }
 
-    /**
-     * @return void
-     */
-    public function __wakeup()
+    public function __unserialize(array $data): void
     {
     }
 

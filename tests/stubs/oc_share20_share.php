@@ -14,8 +14,10 @@ use OCP\Files\IRootFolder;
 use OCP\Files\Node;
 use OCP\Files\NotFoundException;
 use OCP\IUserManager;
+use OCP\Server;
 use OCP\Share\Exceptions\IllegalIDChangeException;
 use OCP\Share\IAttributes;
+use OCP\Share\IManager;
 use OCP\Share\IShare;
 
 class Share implements IShare {
@@ -347,24 +349,11 @@ class Share implements IShare {
  {
  }
 
-	/**
-	 * Set the parent of this share
-	 *
-	 * @param int $parent
-	 * @return IShare
-	 * @deprecated 12.0.0 The new shares do not have parents. This is just here for legacy reasons.
-	 */
-	public function setParent($parent)
+	public function setParent(int $parent): self
  {
  }
 
-	/**
-	 * Get the parent of this share.
-	 *
-	 * @return int
-	 * @deprecated 12.0.0 The new shares do not have parents. This is just here for legacy reasons.
-	 */
-	public function getParent()
+	public function getParent(): ?int
  {
  }
 
@@ -437,6 +426,10 @@ class Share implements IShare {
  }
 
 	public function getReminderSent(): bool
+ {
+ }
+
+	public function canSeeContent(): bool
  {
  }
 }

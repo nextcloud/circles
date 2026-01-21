@@ -6,18 +6,29 @@ declare(strict_types=1);
  * SPDX-FileCopyrightText: 2013-2016 ownCloud, Inc.
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-use OC\Encryption\HookManager;
+
+use OC\Profiler\BuiltInProfiler;
+use OC\Share20\GroupDeletedListener;
 use OC\Share20\Hooks;
+use OC\Share20\UserDeletedListener;
+use OC\Share20\UserRemovedListener;
+use OC\User\DisabledUserException;
 use OCP\EventDispatcher\IEventDispatcher;
+use OCP\Files\Events\BeforeFileSystemSetupEvent;
+use OCP\Group\Events\GroupDeletedEvent;
 use OCP\Group\Events\UserRemovedEvent;
+use OCP\IAppConfig;
+use OCP\IConfig;
+use OCP\IInitialStateService;
 use OCP\ILogger;
 use OCP\IRequest;
 use OCP\IURLGenerator;
 use OCP\IUserSession;
 use OCP\Security\Bruteforce\IThrottler;
 use OCP\Server;
-use OCP\Share;
+use OCP\Template\ITemplateManager;
 use OCP\User\Events\UserChangedEvent;
+use OCP\User\Events\UserDeletedEvent;
 use OCP\Util;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
@@ -29,10 +40,6 @@ use function OCP\Log\logger;
  * OC_autoload!
  */
 class OC {
-	/**
-	 * Associative array for autoloading. classname => filename
-	 */
-	public static array $CLASSPATH = [];
 	/**
 	 * The installation path for Nextcloud  on the server (e.g. /srv/http/nextcloud)
 	 */
@@ -58,8 +65,6 @@ class OC {
 	 * check if Nextcloud runs in cli mode
 	 */
 	public static bool $CLI = false;
-
-	public static \OC\Autoloader $loader;
 
 	public static \Composer\Autoload\ClassLoader $composerAutoloader;
 
@@ -118,10 +123,6 @@ class OC {
 	 * register hooks for sharing
 	 */
 	public static function registerShareHooks(\OC\SystemConfig $systemConfig): void
- {
- }
-
-	protected static function registerAutoloaderCache(\OC\SystemConfig $systemConfig): void
  {
  }
 

@@ -121,18 +121,6 @@ class QueryBuilder implements IQueryBuilder {
  {
  }
 
-	/**
-	 * Executes this query using the bound parameters and their types.
-	 *
-	 * Uses {@see Connection::executeQuery} for select statements and {@see Connection::executeUpdate}
-	 * for insert, update and delete statements.
-	 *
-	 * @return IResult|int
-	 */
-	public function execute(?IDBConnection $connection = null)
- {
- }
-
 	public function executeQuery(?IDBConnection $connection = null): IResult
  {
  }
@@ -950,6 +938,8 @@ class QueryBuilder implements IQueryBuilder {
 
 	/**
 	 * Returns the table name with database prefix as needed by the implementation
+	 *
+	 * Was protected until version 30.
 	 *
 	 * @param string $table
 	 * @return string

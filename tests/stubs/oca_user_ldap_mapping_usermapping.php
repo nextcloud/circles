@@ -8,7 +8,11 @@
 namespace OCA\User_LDAP\Mapping;
 
 use OCP\HintException;
+use OCP\IAppConfig;
+use OCP\ICacheFactory;
 use OCP\IDBConnection;
+use OCP\IRequest;
+use OCP\Server;
 use OCP\Support\Subscription\IAssertion;
 
 /**
@@ -18,23 +22,24 @@ use OCP\Support\Subscription\IAssertion;
  */
 class UserMapping extends AbstractMapping {
 
-	public function __construct(
-		IDBConnection $dbc,
-		private IAssertion $assertion,
-	) {
-		parent::__construct($dbc);
-	}
+	protected const PROV_API_REGEX = '/\/ocs\/v[1-9].php\/cloud\/(groups|users)/';
+
+	public function __construct(IDBConnection $dbc, ICacheFactory $cacheFactory, IAppConfig $config, bool $isCLI, private IAssertion $assertion)
+ {
+ }
 
 	/**
 	 * @throws HintException
 	 */
-	public function map($fdn, $name, $uuid): bool {
-	}
+	public function map($fdn, $name, $uuid): bool
+ {
+ }
 
 	/**
 	 * returns the DB table name which holds the mappings
 	 * @return string
 	 */
-	protected function getTableName(bool $includePrefix = true) {
-	}
+	protected function getTableName(bool $includePrefix = true)
+ {
+ }
 }

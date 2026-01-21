@@ -11,7 +11,6 @@ use InvalidArgumentException;
 use OC\Accounts\AccountManager;
 use OC\Avatar\AvatarManager;
 use OC\Hooks\Emitter;
-use OC_Helper;
 use OCP\Accounts\IAccountManager;
 use OCP\Comments\ICommentsManager;
 use OCP\EventDispatcher\IEventDispatcher;
@@ -206,6 +205,10 @@ class User implements IUser {
  {
  }
 
+	public function canChangeEmail(): bool
+ {
+ }
+
 	/**
 	 * check if the user is enabled
 	 *
@@ -255,6 +258,10 @@ class User implements IUser {
 	 * @since 9.0.0
 	 */
 	public function getQuota()
+ {
+ }
+
+	public function getQuotaBytes(): int|float
  {
  }
 
