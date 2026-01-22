@@ -12,7 +12,7 @@
 Those groups of people can then be used by any other app for sharing purpose.
 		]]>
 	</description>
-	<version>33.0.0-dev.0</version>
+	<version>34.0.0-dev.0</version>
 	<licence>agpl</licence>
 	<author>Maxence Lange</author>
 	<types>
@@ -31,7 +31,7 @@ Those groups of people can then be used by any other app for sharing purpose.
 	<repository>https://github.com/nextcloud/circles.git</repository>
 	<screenshot>https://raw.githubusercontent.com/nextcloud/circles/master/screenshots/0.12.0.png</screenshot>
 	<dependencies>
-		<nextcloud min-version="33" max-version="33"/>
+		<nextcloud min-version="34" max-version="34"/>
 	</dependencies>
 	<default_enable/>
 	<background-jobs>
