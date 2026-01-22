@@ -282,10 +282,6 @@ class SyncService {
 		}, $this->memberRequest->getMembers($circle->getSingleId()));
 
 		$group = $this->groupManager->get($groupId);
-		if ($group->count() <= count($members)) {
-			return $circle;
-		}
-
 		foreach ($group->getUsers() as $user) {
 			$member = $this->generateGroupMember($circle, $user->getUID());
 			if (in_array($member->getSingleId(), $members)) {
