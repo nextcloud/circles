@@ -41,6 +41,7 @@ Those groups of people can then be used by any other app for sharing purpose.
 	<repair-steps>
 		<post-migration>
 			<step>OCA\Circles\Migration\Migration</step>
+			<step>OCA\Circles\Migration\SyncGroupCircles</step>
 		</post-migration>
 	</repair-steps>
 
