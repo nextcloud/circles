@@ -57,14 +57,13 @@ class Manager implements IMountManager {
 	/**
 	 * Find all mounts in $path
 	 *
-	 * @param string $path
 	 * @return IMountPoint[]
 	 */
 	public function findIn(string $path): array
  {
  }
 
-	public function clear()
+	public function clear(): void
  {
  }
 

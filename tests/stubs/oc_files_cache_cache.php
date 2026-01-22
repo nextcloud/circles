@@ -7,12 +7,15 @@
  */
 namespace OC\Files\Cache;
 
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use OC\DB\Exceptions\DbalException;
 use OC\DB\QueryBuilder\Sharded\ShardDefinition;
+use OC\Files\Cache\Wrapper\CacheJail;
+use OC\Files\Cache\Wrapper\CacheWrapper;
 use OC\Files\Search\SearchComparison;
 use OC\Files\Search\SearchQuery;
 use OC\Files\Storage\Wrapper\Encryption;
 use OC\SystemConfig;
+use OCP\DB\Exception;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\EventDispatcher\IEventDispatcher;
 use OCP\Files\Cache\CacheEntryInsertedEvent;
@@ -100,12 +103,8 @@ class Cache implements ICache {
 
 	/**
 	 * Create a CacheEntry from database row
-	 *
-	 * @param array $data
-	 * @param IMimeTypeLoader $mimetypeLoader
-	 * @return CacheEntry
 	 */
-	public static function cacheEntryFromData($data, IMimeTypeLoader $mimetypeLoader)
+	public static function cacheEntryFromData(array $data, IMimeTypeLoader $mimetypeLoader): CacheEntry
  {
  }
 
@@ -149,7 +148,7 @@ class Cache implements ICache {
 	 * @param array $data
 	 *
 	 * @return int file id
-	 * @throws \RuntimeException
+	 * @throws \RuntimeException|Exception
 	 */
 	public function insert($file, array $data)
  {
@@ -241,6 +240,10 @@ class Cache implements ICache {
  }
 
 	protected function hasEncryptionWrapper(): bool
+ {
+ }
+
+	protected function shouldEncrypt(string $targetPath): bool
  {
  }
 

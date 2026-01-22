@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SPDX-FileCopyrightText: 2016-2024 Nextcloud GmbH and Nextcloud contributors
  * SPDX-FileCopyrightText: 2016 ownCloud, Inc.
@@ -7,191 +8,150 @@
 
 namespace OCA\Files_Sharing\External;
 
-use Doctrine\DBAL\Driver\Exception;
 use OC\Files\Filesystem;
+use OC\Files\SetupManager;
+use OC\User\NoUserException;
 use OCA\FederatedFileSharing\Events\FederatedShareAddedEvent;
 use OCA\Files_Sharing\Helper;
-use OCA\Files_Sharing\ResponseDefinitions;
-use OCP\DB\QueryBuilder\IQueryBuilder;
+use OCP\AppFramework\Db\DoesNotExistException;
+use OCP\DB\Exception;
 use OCP\EventDispatcher\IEventDispatcher;
 use OCP\Federation\ICloudFederationFactory;
 use OCP\Federation\ICloudFederationProviderManager;
-use OCP\Files;
 use OCP\Files\Events\InvalidateMountCacheEvent;
+use OCP\Files\Folder;
+use OCP\Files\IRootFolder;
 use OCP\Files\NotFoundException;
+use OCP\Files\NotPermittedException;
 use OCP\Files\Storage\IStorageFactory;
 use OCP\Http\Client\IClientService;
+use OCP\ICertificateManager;
 use OCP\IDBConnection;
+use OCP\IGroup;
 use OCP\IGroupManager;
-use OCP\IUserManager;
+use OCP\IUser;
 use OCP\IUserSession;
 use OCP\Notification\IManager;
 use OCP\OCS\IDiscoveryService;
-use OCP\Share;
 use OCP\Share\IShare;
 use Psr\Log\LoggerInterface;
 
-/**
- * @psalm-import-type Files_SharingRemoteShare from ResponseDefinitions
- */
 class Manager {
-	public const STORAGE = '\OCA\Files_Sharing\External\Storage';
-
-	public function __construct(private IDBConnection $connection, \OC\Files\Mount\Manager $mountManager, private IStorageFactory $storageLoader, private IClientService $clientService, private IManager $notificationManager, private IDiscoveryService $discoveryService, private ICloudFederationProviderManager $cloudFederationProviderManager, private ICloudFederationFactory $cloudFederationFactory, private IGroupManager $groupManager, private IUserManager $userManager, IUserSession $userSession, private IEventDispatcher $eventDispatcher, private LoggerInterface $logger)
+	public function __construct(private IDBConnection $connection, private \OC\Files\Mount\Manager $mountManager, private IStorageFactory $storageLoader, private IClientService $clientService, private IManager $notificationManager, private IDiscoveryService $discoveryService, private ICloudFederationProviderManager $cloudFederationProviderManager, private ICloudFederationFactory $cloudFederationFactory, private IGroupManager $groupManager, IUserSession $userSession, private IEventDispatcher $eventDispatcher, private LoggerInterface $logger, private IRootFolder $rootFolder, private SetupManager $setupManager, private ICertificateManager $certificateManager, private ExternalShareMapper $externalShareMapper)
  {
  }
 
 	/**
-	 * add new server-to-server share
+	 * Add new server-to-server share.
 	 *
-	 * @param string $remote
-	 * @param string $token
-	 * @param string $password
-	 * @param string $name
-	 * @param string $owner
-	 * @param int $shareType
-	 * @param boolean $accepted
-	 * @param string $user
-	 * @param string $remoteId
-	 * @param int $parent
-	 * @return Mount|null
-	 * @throws \Doctrine\DBAL\Exception
+	 * @throws Exception
+	 * @throws NotPermittedException
+	 * @throws NoUserException
 	 */
-	public function addShare($remote, $token, $password, $name, $owner, $shareType, $accepted = false, $user = null, $remoteId = '', $parent = -1)
+	public function addShare(ExternalShare $externalShare, IUser|IGroup|null $shareWith = null): ?Mount
  {
  }
 
-	public function getShare(int $id, ?string $user = null): array|false
+	public function getShare(string $id, ?IUser $user = null): ExternalShare|false
  {
  }
 
-	/**
-	 * Get share by token
-	 *
-	 * @param string $token
-	 * @return array|false
-	 */
-	public function getShareByToken(string $token): array|false
+	public function getShareByToken(string $token): ExternalShare|false
  {
  }
 
 	/**
-	 * accept server-to-server share
+	 * Accept server-to-server share.
 	 *
-	 * @param int $id
 	 * @return bool True if the share could be accepted, false otherwise
 	 */
-	public function acceptShare(int $id, ?string $user = null)
+	public function acceptShare(ExternalShare $externalShare, ?IUser $user = null): bool
  {
  }
 
 	/**
-	 * decline server-to-server share
+	 * Decline server-to-server share
 	 *
-	 * @param int $id
 	 * @return bool True if the share could be declined, false otherwise
 	 */
-	public function declineShare(int $id, ?string $user = null)
+	public function declineShare(ExternalShare $externalShare, ?Iuser $user = null): bool
  {
  }
 
-	public function processNotification(int $remoteShare, ?string $user = null): void
+	public function processNotification(ExternalShare $remoteShare, ?IUser $user = null): void
  {
  }
 
 	/**
-	 * try send accept message to ocm end-point
+	 * Try to send accept message to ocm end-point
 	 *
-	 * @param string $remoteDomain
-	 * @param string $token
-	 * @param string $remoteId id of the share
-	 * @param string $feedback
+	 * @param 'accept'|'decline' $feedback
 	 * @return array|false
 	 */
-	protected function tryOCMEndPoint($remoteDomain, $token, $remoteId, $feedback)
+	protected function tryOCMEndPoint(ExternalShare $externalShare, string $feedback)
  {
  }
-
 
 	/**
 	 * remove '/user/files' from the path and trailing slashes
+	 */
+	protected function stripPath(string $path): string
+ {
+ }
+
+	public function getMount(array $data, ?IUser $user = null): Mount
+ {
+ }
+
+	protected function mountShare(array $data, ?IUser $user = null): Mount
+ {
+ }
+
+	public function getMountManager(): \OC\Files\Mount\Manager
+ {
+ }
+
+	public function setMountPoint(string $source, string $target): bool
+ {
+ }
+
+	public function removeShare(string $mountPoint): bool
+ {
+ }
+
+	/**
+	 * Remove re-shares from share table and mapping in the federated_reshares table
+	 */
+	protected function removeReShares(string $mountPointId): void
+ {
+ }
+
+	/**
+	 * Remove all shares for user $uid if the user was deleted.
+	 */
+	public function removeUserShares(IUser $user): bool
+ {
+ }
+
+	public function removeGroupShares(IGroup $group): bool
+ {
+ }
+
+	/**
+	 * Return a list of shares which are not yet accepted by the user.
 	 *
-	 * @param string $path
-	 * @return string
+	 * @return list<ExternalShare> list of open server-to-server shares
 	 */
-	protected function stripPath($path)
- {
- }
-
-	public function getMount($data, ?string $user = null)
+	public function getOpenShares(): array
  {
  }
 
 	/**
-	 * @param array $data
-	 * @return Mount
-	 */
-	protected function mountShare($data, ?string $user = null)
- {
- }
-
-	/**
-	 * @return \OC\Files\Mount\Manager
-	 */
-	public function getMountManager()
- {
- }
-
-	/**
-	 * @param string $source
-	 * @param string $target
-	 * @return bool
-	 */
-	public function setMountPoint($source, $target)
- {
- }
-
-	public function removeShare($mountPoint): bool
- {
- }
-
-	/**
-	 * remove re-shares from share table and mapping in the federated_reshares table
+	 * Return a list of shares which are accepted by the user.
 	 *
-	 * @param $mountPointId
+	 * @return list<ExternalShare> list of accepted server-to-server shares
 	 */
-	protected function removeReShares($mountPointId)
- {
- }
-
-	/**
-	 * remove all shares for user $uid if the user was deleted
-	 *
-	 * @param string $uid
-	 */
-	public function removeUserShares($uid): bool
- {
- }
-
-	public function removeGroupShares($gid): bool
- {
- }
-
-	/**
-	 * return a list of shares which are not yet accepted by the user
-	 *
-	 * @return list<Files_SharingRemoteShare> list of open server-to-server shares
-	 */
-	public function getOpenShares()
- {
- }
-
-	/**
-	 * return a list of shares which are accepted by the user
-	 *
-	 * @return list<Files_SharingRemoteShare> list of accepted server-to-server shares
-	 */
-	public function getAcceptedShares()
+	public function getAcceptedShares(): array
  {
  }
 }

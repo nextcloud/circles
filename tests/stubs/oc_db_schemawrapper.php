@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
@@ -7,8 +8,11 @@ namespace OC\DB;
 
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Platforms\OraclePlatform;
 use Doctrine\DBAL\Schema\Schema;
 use OCP\DB\ISchemaWrapper;
+use OCP\Server;
+use Psr\Log\LoggerInterface;
 
 class SchemaWrapper implements ISchemaWrapper {
 	/** @var Connection */
@@ -108,6 +112,10 @@ class SchemaWrapper implements ISchemaWrapper {
 	 * @throws Exception
 	 */
 	public function getDatabasePlatform()
+ {
+ }
+
+	public function dropAutoincrementColumn(string $table, string $column): void
  {
  }
 }

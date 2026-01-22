@@ -136,7 +136,7 @@ class QueryBuilder
      * @deprecated The builder state is an internal concern.
      *
      * @return int Either QueryBuilder::STATE_DIRTY or QueryBuilder::STATE_CLEAN.
-     * @psalm-return self::STATE_*
+     * @phpstan-return self::STATE_*
      */
     public function getState()
     {

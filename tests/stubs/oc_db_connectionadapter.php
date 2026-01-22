@@ -11,6 +11,7 @@ namespace OC\DB;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Schema\Schema;
+use OC\DB\Exceptions\DbalException;
 use OC\DB\QueryBuilder\Sharded\CrossShardMoveHelper;
 use OC\DB\QueryBuilder\Sharded\ShardDefinition;
 use OCP\DB\IPreparedStatement;
@@ -121,6 +122,10 @@ class ConnectionAdapter implements IDBConnection {
  {
  }
 
+	public function truncateTable(string $table, bool $cascade): void
+ {
+ }
+
 	public function tableExists(string $table): bool
  {
  }
@@ -149,9 +154,9 @@ class ConnectionAdapter implements IDBConnection {
  }
 
 	/**
-	 * @return self::PLATFORM_MYSQL|self::PLATFORM_ORACLE|self::PLATFORM_POSTGRES|self::PLATFORM_SQLITE
+	 * @return self::PLATFORM_MYSQL|self::PLATFORM_ORACLE|self::PLATFORM_POSTGRES|self::PLATFORM_SQLITE|self::PLATFORM_MARIADB
 	 */
-	public function getDatabaseProvider(): string
+	public function getDatabaseProvider(bool $strict = false): string
  {
  }
 
