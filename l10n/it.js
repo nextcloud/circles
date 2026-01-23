@@ -30,7 +30,7 @@ OC.L10N.register(
     "You declined the invitation to join {circle}" : "Hai rifiutato l'invito per unirti a {circle}",
     "{member} declined an invitation to join {circle}" : "{member} ha rifiutato un invito per unirsi a {circle}",
     "You cancelled your request to join {circle}" : "Hai annullato la tua richiesta di unirti a {circle}",
-    "{member} cancelled a request to join {circle}" : "{member} ha cancellato la richiesta di ingresso a {circle}",
+    "{member} cancelled a request to join {circle}" : "{member} ha annullato la richiesta di ingresso a {circle}",
     "You have been removed from {circle} by {author}" : "Sei stato rimosso da {circle} da {author}",
     "{member} has been removed from {circle} by {author}" : "{member} è stato rimosso da {circle} da {author}",
     "You removed {external} from {circle}" : "Hai rimosso {external} da {circle}",
