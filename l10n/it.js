@@ -103,7 +103,7 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s ha condiviso più file con te.",
     "Boot up" : "Avvia",
     "Nextcloud Initialization" : "Inizializzazione Nextcloud",
-    "Circles App Initialization" : "Inizializzazione app Cerchie",
+    "Circles App Initialization" : "Inizializzazione applicazione Cerchie",
     "Fresh installation status" : "Stato nuova installazione",
     "Building Local Database" : "Costruzione database locale",
     "Testing Basic Team Creation" : "Test creazione team di base",
