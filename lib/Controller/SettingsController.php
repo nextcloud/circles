@@ -34,12 +34,18 @@ class SettingsController extends OCSController {
 			return new DataResponse(['data' => ['message' => 'wrongly formated value']], Http::STATUS_BAD_REQUEST);
 		}
 
+		if ($key === 'federated_teams_enabled') {
+			$this->appConfig->setAppValueBool('federated_teams_enabled', $value);
+			return $this->getValues();
+		}
+
 		return new DataResponse(['data' => ['message' => 'unsupported key']], Http::STATUS_BAD_REQUEST);
 	}
 
 	public function getValues(): DataResponse {
 		return new DataResponse([
 			'frontal_cloud' => $this->getFrontalValue() ?? '',
+			'federated_teams_enabled' => $this->appConfig->getAppValueBool('federated_teams_enabled'),
 		]);
 	}
 
