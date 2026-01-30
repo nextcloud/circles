@@ -79,7 +79,10 @@ return [
 		['name' => 'Admin#editDescription', 'url' => '/admin/{emulated}/circles/{circleId}/description', 'verb' => 'PUT'],
 		['name' => 'Admin#editSetting', 'url' => '/admin/{emulated}/circles/{circleId}/setting', 'verb' => 'PUT'],
 		['name' => 'Admin#editConfig', 'url' => '/admin/{emulated}/circles/{circleId}/config', 'verb' => 'PUT'],
-		['name' => 'Admin#link', 'url' => '/admin/{emulated}/link/{circleId}/{singleId}', 'verb' => 'GET']
+		['name' => 'Admin#link', 'url' => '/admin/{emulated}/link/{circleId}/{singleId}', 'verb' => 'GET'],
+
+		['name' => 'Settings#getValues', 'url' => '/settings/', 'verb' => 'GET'],
+		['name' => 'Settings#setValue', 'url' => '/settings/{key}/', 'verb' => 'POST'],
 	],
 
 	'routes' => [
