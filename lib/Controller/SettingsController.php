@@ -35,7 +35,7 @@ class SettingsController extends OCSController {
 		}
 
 		if ($key === 'federated_teams_enabled') {
-			$this->appConfig->setAppValueBool('federated_teams_enabled', $value);
+			$this->appConfig->setAppValueBool('federated_teams_enabled', $value === 'yes');
 			return $this->getValues();
 		}
 
