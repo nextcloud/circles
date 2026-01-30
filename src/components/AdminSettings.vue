@@ -94,12 +94,6 @@ function onToggleFederatedTeams() {
 }
 
 watchDebounced(federatedTeamsFrontal, async (value) => {
-	if (!value) {
-		await updateAppConfig('federated_teams_frontal', '')
-		showSuccess(t('circles', 'Cleared frontal cloud URL'))
-		return
-	}
-
 	// Frontend validation to avoid unnecessary requests (actual validation happens in backend)
 	const { scheme, cloudId } = parseFederatedTeamsFrontal(value)
 	if (scheme === null || cloudId === null) {
