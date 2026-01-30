@@ -22,6 +22,11 @@ import { logger } from '../logger.ts'
 const federatedTeamsEnabled = ref(Boolean(loadState('circles', 'federatedTeamsEnabled', false)))
 const federatedTeamsFrontal = ref(loadState<string>('circles', 'federatedTeamsFrontal', ''))
 
+/**
+ * Parse and validate federated teams frontal URL
+ *
+ * @param url - The URL to parse
+ */
 function parseFederatedTeamsFrontal(url: string) {
 	try {
 		const parsed = new URL(url)
@@ -48,6 +53,12 @@ function parseFederatedTeamsFrontal(url: string) {
 	}
 }
 
+/**
+ * Update app configuration
+ *
+ * @param key - The config key
+ * @param value - The config value
+ */
 async function updateAppConfig(key: string, value: string) {
 	await confirmPassword()
 
@@ -58,7 +69,7 @@ async function updateAppConfig(key: string, value: string) {
 
 	try {
 		const { data } = await axios.post<OCSResponse>(url, {
-			value: value,
+			value,
 		})
 		if (data.ocs.meta.status !== 'ok') {
 			if (data.ocs.meta.message) {
@@ -74,6 +85,9 @@ async function updateAppConfig(key: string, value: string) {
 	}
 }
 
+/**
+ * Toggle federated teams enabled state
+ */
 function onToggleFederatedTeams() {
 	const value = federatedTeamsEnabled.value ? 'yes' : 'no'
 	updateAppConfig('federated_teams_enabled', value)
@@ -87,7 +101,7 @@ watchDebounced(federatedTeamsFrontal, async (value) => {
 	}
 
 	// Frontend validation to avoid unnecessary requests (actual validation happens in backend)
-	const { scheme, cloudId, path } = parseFederatedTeamsFrontal(value)
+	const { scheme, cloudId } = parseFederatedTeamsFrontal(value)
 	if (scheme === null || cloudId === null) {
 		showError(t('circles', 'Invalid URL format. Please provide a valid URL.'))
 		return
@@ -99,17 +113,25 @@ watchDebounced(federatedTeamsFrontal, async (value) => {
 </script>
 
 <template>
-	<NcSettingsSection :name="t('circles', 'Federated Teams')"
+	<NcSettingsSection
+		:name="t('circles', 'Federated Teams')"
 		:description="t('circles', 'Federation allows you to share teams with other trusted servers and make them discoverable across instances.')">
-
-		<NcCheckboxRadioSwitch v-model="federatedTeamsEnabled" type="switch"
-			@update:modelValue="onToggleFederatedTeams">
+		<NcCheckboxRadioSwitch
+			v-model="federatedTeamsEnabled"
+			type="switch"
+			@update:model-value="onToggleFederatedTeams">
 			{{ t('circles', 'Enable federated teams') }}
 		</NcCheckboxRadioSwitch>
 
-		<div v-show="federatedTeamsEnabled" class="federated-teams__sub-section">
-			<NcTextField v-model="federatedTeamsFrontal" :label="t('circles', 'Frontal URL')"
-				:placeholder="t('circles', 'https://...')" type="url" class="federated-teams__input" />
+		<div
+			v-show="federatedTeamsEnabled"
+			class="federated-teams__sub-section">
+			<NcTextField
+				v-model="federatedTeamsFrontal"
+				:label="t('circles', 'Frontal URL')"
+				:placeholder="t('circles', 'https://…')"
+				type="url"
+				class="federated-teams__input" />
 
 			<p class="federated-teams__hint">
 				{{ t('circles', 'The public URL used by other instances to discover and connect to your teams.') }}
