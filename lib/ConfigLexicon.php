@@ -21,6 +21,8 @@ use OCP\Config\ValueType;
  */
 class ConfigLexicon implements ILexicon {
 	public const USER_SINGLE_ID = 'userSingleId';
+	public const FEDERATED_TEAMS_ENABLED = 'federated_teams_enabled';
+	public const FEDERATED_TEAMS_FRONTAL = 'federated_teams_frontal';
 
 	public function getStrictness(): Strictness {
 		return Strictness::IGNORE;
@@ -28,6 +30,8 @@ class ConfigLexicon implements ILexicon {
 
 	public function getAppConfigs(): array {
 		return [
+			new Entry(key: self::FEDERATED_TEAMS_ENABLED, type: ValueType::BOOL, defaultRaw: false, definition: 'disable/enable Federated Teams', lazy: true),
+			new Entry(key: self::FEDERATED_TEAMS_FRONTAL, type: ValueType::STRING, defaultRaw: '', definition: 'domain name used to auth public request', lazy: true),
 		];
 	}
 

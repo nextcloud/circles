@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Controller;
 
+use OCA\Circles\ConfigLexicon;
 use OCA\Circles\Service\ConfigService;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
@@ -26,7 +27,7 @@ class SettingsController extends OCSController {
 	}
 
 	public function setValue(string $key, string $value): DataResponse {
-		if ($key === 'frontal_cloud') {
+		if ($key === ConfigLexicon::FEDERATED_TEAMS_FRONTAL) {
 			if ($this->setFrontalValue($value)) {
 				return $this->getValues();
 			}
@@ -34,8 +35,8 @@ class SettingsController extends OCSController {
 			return new DataResponse(['data' => ['message' => 'wrongly formated value']], Http::STATUS_BAD_REQUEST);
 		}
 
-		if ($key === 'federated_teams_enabled') {
-			$this->appConfig->setAppValueBool('federated_teams_enabled', $value === 'yes');
+		if ($key === ConfigLexicon::FEDERATED_TEAMS_ENABLED) {
+			$this->appConfig->setAppValueBool(ConfigLexicon::FEDERATED_TEAMS_ENABLED, $value === 'yes');
 			return $this->getValues();
 		}
 
@@ -44,8 +45,8 @@ class SettingsController extends OCSController {
 
 	public function getValues(): DataResponse {
 		return new DataResponse([
-			'frontal_cloud' => $this->getFrontalValue() ?? '',
-			'federated_teams_enabled' => $this->appConfig->getAppValueBool('federated_teams_enabled'),
+			ConfigLexicon::FEDERATED_TEAMS_FRONTAL => $this->getFrontalValue() ?? '',
+			ConfigLexicon::FEDERATED_TEAMS_ENABLED => $this->appConfig->getAppValueBool(ConfigLexicon::FEDERATED_TEAMS_ENABLED),
 		]);
 	}
 
@@ -55,6 +56,7 @@ class SettingsController extends OCSController {
 			return false;
 		}
 
+		$this->appConfig->setAppValueString(ConfigLexicon::FEDERATED_TEAMS_FRONTAL, $url);
 		$this->appConfig->setAppValueString(ConfigService::FRONTAL_CLOUD_SCHEME, $scheme);
 		$this->appConfig->setAppValueString(ConfigService::FRONTAL_CLOUD_ID, $cloudId);
 		$this->appConfig->setAppValueString(ConfigService::FRONTAL_CLOUD_PATH, $path);
@@ -63,6 +65,10 @@ class SettingsController extends OCSController {
 	}
 
 	private function getFrontalValue(): ?string {
+		if ($this->appConfig->hasAppKey(ConfigLexicon::FEDERATED_TEAMS_FRONTAL)) {
+			return $this->appConfig->getAppValueString(ConfigLExicon::FEDERATED_TEAMS_FRONTAL);
+		}
+
 		if (!$this->appConfig->hasAppKey(ConfigService::FRONTAL_CLOUD_SCHEME)
 			|| !$this->appConfig->hasAppKey(ConfigService::FRONTAL_CLOUD_ID)
 			|| !$this->appConfig->hasAppKey(ConfigService::FRONTAL_CLOUD_PATH)) {
