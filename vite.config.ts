@@ -8,6 +8,7 @@ import { join } from 'node:path'
 
 export default (env) => createAppConfig({
 	dashboard: join(import.meta.dirname, 'src/dashboard.ts'),
+	'settings-admin': join(import.meta.dirname, 'src/settings-admin.ts'),
 }, {
 	appName: 'teams',
 	emptyOutputDirectory: { additionalDirectories: ['css'] },
