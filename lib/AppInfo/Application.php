@@ -39,6 +39,7 @@ use OCA\Circles\Listeners\GroupCreated;
 use OCA\Circles\Listeners\GroupDeleted;
 use OCA\Circles\Listeners\GroupMemberAdded;
 use OCA\Circles\Listeners\GroupMemberRemoved;
+use OCA\Circles\Listeners\NodeEventListener;
 use OCA\Circles\Listeners\Notifications\RequestingMember as ListenerNotificationsRequestingMember;
 use OCA\Circles\Listeners\UserCreated;
 use OCA\Circles\Listeners\UserDeleted;
@@ -53,6 +54,10 @@ use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\Files\Config\IMountProviderCollection;
+use OCP\Files\Events\Node\NodeCreatedEvent;
+use OCP\Files\Events\Node\NodeDeletedEvent;
+use OCP\Files\Events\Node\NodeRenamedEvent;
+use OCP\Files\Events\Node\NodeWrittenEvent;
 use OCP\Group\Events\GroupChangedEvent;
 use OCP\Group\Events\GroupCreatedEvent;
 use OCP\Group\Events\GroupDeletedEvent;
@@ -118,6 +123,12 @@ class Application extends App implements IBootstrap {
 		$context->registerEventListener(RequestingCircleMemberEvent::class, ListenerNotificationsRequestingMember::class);
 		$context->registerEventListener(DestroyingCircleEvent::class, ListenerFilesDestroyingCircle::class);
 
+		// Node events
+		$context->registerEventListener(NodeCreatedEvent::class, NodeEventListener::class);
+		$context->registerEventListener(NodeDeletedEvent::class, NodeEventListener::class);
+		$context->registerEventListener(NodeRenamedEvent::class, NodeEventListener::class);
+		$context->registerEventListener(NodeWrittenEvent::class, NodeEventListener::class);
+
 		$context->registerSearchProvider(UnifiedSearchProvider::class);
 		$context->registerWellKnownHandler(WebfingerHandler::class);
 
@@ -126,7 +137,6 @@ class Application extends App implements IBootstrap {
 
 		$context->registerConfigLexicon(ConfigLexicon::class);
 	}
-
 
 	/**
 	 * @param IBootContext $context
