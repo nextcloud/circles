@@ -68,6 +68,7 @@ class MaintenanceService {
 		private EventWrapperService $eventWrapperService,
 		private CircleService $circleService,
 		private ConfigService $configService,
+		private RemoteSyncService $remoteSyncService,
 		private LoggerInterface $logger,
 	) {
 	}
@@ -158,6 +159,12 @@ class MaintenanceService {
 		try {
 			$this->output('Retry failed FederatedEvents (asap)');
 			$this->eventWrapperService->retry(EventWrapperService::RETRY_ASAP);
+		} catch (Exception $e) {
+		}
+
+		try {
+			$this->output('Sync unknown trusted server');
+			$this->remoteSyncService->syncTrustedServers();
 		} catch (Exception $e) {
 		}
 	}
