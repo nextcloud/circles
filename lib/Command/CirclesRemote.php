@@ -18,10 +18,10 @@ use OCA\Circles\Db\RemoteRequest;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteUidException;
 use OCA\Circles\Model\Federated\RemoteInstance;
-use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\GlobalScaleService;
 use OCA\Circles\Service\InterfaceService;
 use OCA\Circles\Service\RemoteStreamService;
+use OCA\Circles\Service\RemoteSyncService;
 use OCA\Circles\Tools\Exceptions\RequestNetworkException;
 use OCA\Circles\Tools\Exceptions\SignatoryException;
 use OCA\Circles\Tools\Exceptions\SignatureException;
@@ -47,54 +47,17 @@ class CirclesRemote extends Base {
 	use TNCWellKnown;
 	use TStringTools;
 
+	private InputInterface $input;
+	private OutputInterface $output;
 
-	/** @var RemoteRequest */
-	private $remoteRequest;
-
-	/** @var GlobalScaleService */
-	private $globalScaleService;
-
-	/** @var RemoteStreamService */
-	private $remoteStreamService;
-
-	/** @var InterfaceService */
-	private $interfaceService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
-	/** @var InputInterface */
-	private $input;
-
-	/** @var OutputInterface */
-	private $output;
-
-
-	/**
-	 * CirclesRemote constructor.
-	 *
-	 * @param RemoteRequest $remoteRequest
-	 * @param GlobalScaleService $globalScaleService
-	 * @param RemoteStreamService $remoteStreamService
-	 * @param InterfaceService $interfaceService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
-		RemoteRequest $remoteRequest,
-		GlobalScaleService $globalScaleService,
-		RemoteStreamService $remoteStreamService,
-		InterfaceService $interfaceService,
-		ConfigService $configService,
+		private readonly RemoteRequest $remoteRequest,
+		private GlobalScaleService $globalScaleService,
+		private RemoteStreamService $remoteStreamService,
+		private InterfaceService $interfaceService,
+		private RemoteSyncService $remoteSyncService,
 	) {
 		parent::__construct();
-
-		$this->remoteRequest = $remoteRequest;
-		$this->globalScaleService = $globalScaleService;
-		$this->remoteStreamService = $remoteStreamService;
-		$this->interfaceService = $interfaceService;
-		$this->configService = $configService;
-
 		$this->setup('app', 'circles');
 	}
 
@@ -401,15 +364,11 @@ class CirclesRemote extends Base {
 		return $signedRequest;
 	}
 
-
-	/**
-	 *
-	 */
 	private function checkKnownInstance(): void {
 		$this->verifyGSInstances();
+		$this->remoteSyncService->syncTrustedServers();
 		$this->checkRemoteInstances();
 	}
-
 
 	/**
 	 *
@@ -424,34 +383,10 @@ class CirclesRemote extends Base {
 
 		$missing = array_diff($instances, $known);
 		foreach ($missing as $instance) {
-			$this->syncGSInstance($instance);
+			$this->remoteSyncService->syncRemoteInstance($instance, RemoteInstance::TYPE_GLOBALSCALE, InterfaceService::IFACE_INTERNAL);
 		}
 	}
 
-
-	/**
-	 * @param string $instance
-	 */
-	private function syncGSInstance(string $instance): void {
-		$this->output->write('Adding <comment>' . $instance . '</comment>: ');
-		if ($this->configService->isLocalInstance($instance)) {
-			$this->output->writeln('<comment>instance is local</comment>');
-			return;
-		}
-
-		try {
-			$this->remoteStreamService->addRemoteInstance(
-				$instance,
-				RemoteInstance::TYPE_GLOBALSCALE,
-				InterfaceService::IFACE_INTERNAL,
-				true
-			);
-			$this->output->writeln('<info>ok</info>');
-		} catch (Exception $e) {
-			$msg = ($e->getMessage() === '') ? '' : ' (' . $e->getMessage() . ')';
-			$this->output->writeln('<error>' . get_class($e) . $msg . '</error>');
-		}
-	}
 
 
 	private function checkRemoteInstances(): void {
