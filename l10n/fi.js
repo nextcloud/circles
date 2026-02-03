@@ -96,6 +96,7 @@ OC.L10N.register(
     "Open %s" : "Avaa %s",
     "Password to access content" : "Salasana sisällön käyttämiseksi",
     "Bring cloud-users closer together." : "Tuo pilvikäyttäjät lähemmäksi toisiaan.",
+    "https://…" : "https://…",
     "Failed to load teams" : "Tiimien lataaminen epäonnistui",
     "Try again" : "Yritä uudelleen",
     "No teams found" : "Tiimejä ei löytynyt",

@@ -64,6 +64,7 @@ OC.L10N.register(
     "Refuse" : "סירוב",
     "%s" : "%s",
     "Open %s" : "פתיחה (שם קובץ)",
+    "https://…" : "https://…‎",
     "Try again" : "ניסיון חוזר",
     "Loading…" : "בטעינה…",
     "No files in here" : "אין כאן קבצים",

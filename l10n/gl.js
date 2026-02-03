@@ -146,6 +146,7 @@ OC.L10N.register(
     "This item is already shared with this team" : "Este elemento xa está compartido con este equipo",
     "Bring cloud-users closer together." : "Acercar aos usuarios da nube.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Os equipos permítelle ás persoas crear os seus propios grupos de persoas/colegas/amigos.\nEses grupos de persoas (ou «círculos») poden ser usados por calquera outra aplicación para compartir.",
+    "https://…" : "https://…",
     "Failed to load teams" : "Produciuse un fallo ao cargar os equipos",
     "Try again" : "Ténteo de novo",
     "No teams found" : "Non se atopou ningún equipo",

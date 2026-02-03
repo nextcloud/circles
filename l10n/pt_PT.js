@@ -131,6 +131,7 @@ OC.L10N.register(
     "This item is already shared with this team" : "Este item já foi partilhado com este grupo",
     "Bring cloud-users closer together." : "Aproximar os utilizadores Nextcloud",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Equipas permite que os utilizadores possam criar os seus próprios grupos de pessoas/colegas/amigos.\nEsses grupos de pessoas podem ser usados por qualquer outra APP para que possa partilhar conteúdo.",
+    "https://…" : "https://…",
     "No teams found" : "Nenhum grupo encontrado",
     "Loading…" : "A carregar…",
     "No files in here" : "Sem ficheiros aqui",
