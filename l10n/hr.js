@@ -146,6 +146,7 @@ OC.L10N.register(
     "This item is already shared with this team" : "Ova se stavka već dijeli s ovim timom",
     "Bring cloud-users closer together." : "Približite korisnike oblaka.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Timovi omogućuju korisnicima stvaranje vlastite grupe korisnika/kolega/prijatelja.\nTe grupe korisnika tada možete upotrebljavati za dijeljenje unutar bilo koje druge aplikacije.",
+    "https://…" : "https://…",
     "Failed to load teams" : "Učitavanje timova nije uspjelo",
     "Try again" : "Pokušajte ponovno",
     "No teams found" : "Nema pronađenih timova",

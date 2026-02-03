@@ -96,6 +96,7 @@ OC.L10N.register(
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s님이 공유한 것이 있습니다.\n함께 발송한 별도의 이메일에서 링크를 눌로 이 공유에 접근하십시오.",
     "Password to access content shared with you by %1$s" : "%1$s님의 공유에 접근하기 위한 암호",
     "Bring cloud-users closer together." : "클라우드 사용자를 더 가깝게 연결합니다.",
+    "https://…" : "https://…",
     "Try again" : "다시 시도",
     "Loading…" : "불러오는 중…",
     "No files in here" : "여기에 파일 없음",

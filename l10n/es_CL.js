@@ -67,6 +67,7 @@ OC.L10N.register(
     "Accept" : "Aceptar",
     "%s" : "%s",
     "Open %s" : "Abrir %s",
+    "https://…" : "https://…",
     "Try again" : "Reintentar",
     "Loading…" : "Cargando...",
     "No files in here" : "No hay archivos aquí",

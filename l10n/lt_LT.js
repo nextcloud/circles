@@ -78,6 +78,7 @@ OC.L10N.register(
     "Refuse" : "Atsisakyti",
     "%s" : "%s",
     "Open %s" : "Atverti %s",
+    "https://…" : "https://…",
     "Try again" : "Bandyti dar kartą",
     "Loading…" : "Įkeliama…",
     "No files in here" : "Čia failų nėra",
