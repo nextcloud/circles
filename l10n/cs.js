@@ -146,6 +146,7 @@ OC.L10N.register(
     "This item is already shared with this team" : "Tato položka už je v tomto týmu sdílená",
     "Bring cloud-users closer together." : "Sblížit uživatele cloudu.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Týmy lidem umožňují vytvářet si své vlastní skupiny lidí/kolegů/přátel.\nTyto skupiny uživatelů (neboli „okruhy“) je možné používat v libovolné aplikaci pro účely sdílení.",
+    "https://…" : "https://…",
     "Failed to load teams" : "Týmy se nepodařilo načíst",
     "Try again" : "Zkusit znovu",
     "No teams found" : "Nenalezeny žádné týmy",

@@ -140,6 +140,7 @@ OC.L10N.register(
     "This item is already shared with this team" : "Dette element er allerede delt med dette team",
     "Bring cloud-users closer together." : "Bring cloud-brugere tættere på hinanden.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Teams tillader dine brugere at oprette deres egen grupper af brugere/kolleger/venner.\nDisse grupper af brugere kan derefter bruges af enhver anden app til delingsformål.",
+    "https://…" : "https://…",
     "Failed to load teams" : "Kunne ikke indlæse teams",
     "Try again" : "Prøv igen",
     "No teams found" : "Ingen teams fundet",

@@ -146,6 +146,7 @@ OC.L10N.register(
     "This item is already shared with this team" : "Цей ресурс вже у спільному доступі з цією командою",
     "Bring cloud-users closer together." : "Зближіть користувачів хмари.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Команди дозволяють користувачам створювати власні групи з друзів, колег, знайомих.\nЗ цими групами людей подалі можна буде обмінюватися даними в різних застосунках.",
+    "https://…" : "https://…",
     "Failed to load teams" : "Не вдалося завантажити команди",
     "Try again" : "Спробуйте ще раз",
     "No teams found" : "Жодної команди не знайдено",

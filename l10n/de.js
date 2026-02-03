@@ -146,6 +146,7 @@ OC.L10N.register(
     "This item is already shared with this team" : "Dieses Element wurde bereits mit diesem Team geteilt",
     "Bring cloud-users closer together." : "Bringe Cloudnutzer näher zueinander.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Mittels Teams können Personen ihre eigenen Gruppen mit Personen/Kollegen/Freunden erstellen.\nDiese Personengruppen können dann von jeder anderen App zum Teilen verwendet werden.",
+    "https://…" : "https://…",
     "Failed to load teams" : "Teams konnten nicht geladen werden",
     "Try again" : "Nochmals versuchen",
     "No teams found" : "Keine Teams gefunden",
