@@ -140,6 +140,7 @@ OC.L10N.register(
     "This item is already shared with this team" : "Этот элемент уже открыт для общего доступа этой группой",
     "Bring cloud-users closer together." : "Объедините пользователей облачных технологий.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Команды позволяют людям создавать свои группы людей/коллег/друзей.\nЗатем эти группы людей могут быть использованы любым другим приложением для совместного использования.",
+    "https://…" : "https://",
     "Failed to load teams" : "Не удалось загрузить команды",
     "Try again" : "Попытаться снова",
     "No teams found" : "Группы не найдены",

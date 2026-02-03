@@ -145,6 +145,7 @@ OC.L10N.register(
     "This item is already shared with this team" : "Elementu hau dagoeneko partekatu da lantalde honekin",
     "Bring cloud-users closer together." : "Elkartu gehiago hodei erabiltzaileak.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Lantaldeak jendeak erabiltzaile/lankide/lagun taldeak sortzen ahalbidetzen die.\nPertsona talde hauek beste aplikazio batzuetan erabili daitezke partekatzeko xedearekin.",
+    "https://…" : "https://…",
     "Failed to load teams" : "Lantaldeak kargatzeak huts egin du",
     "Try again" : "Saiatu berriz",
     "No teams found" : "Ez da lantalderik aurkitu",

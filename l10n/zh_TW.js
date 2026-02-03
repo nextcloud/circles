@@ -146,6 +146,7 @@ OC.L10N.register(
     "This item is already shared with this team" : "此項目已與此團隊分享",
     "Bring cloud-users closer together." : "讓雲端使用者緊密連結。",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "團隊讓您的夥伴可以建立他們自己的夥伴／同事／朋友群組。\n然後，其他任何的應用程式都可以將那些夥伴群組用於分享目的。",
+    "https://…" : "https://…",
     "Failed to load teams" : "載入團隊失敗",
     "Try again" : "再試試",
     "No teams found" : "找不到團隊",
