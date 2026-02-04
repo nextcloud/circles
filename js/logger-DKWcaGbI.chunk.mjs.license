@@ -156,7 +156,7 @@ This file is generated from multiple sources. Included packages:
 	- version: 6.3.0
 	- license: MIT
 - teams
-	- version: 34.0.0-dev.0
+	- version: 33.0.0-dev.0
 	- license: AGPL-3.0-or-later
 - toastify-js
 	- version: 1.12.0

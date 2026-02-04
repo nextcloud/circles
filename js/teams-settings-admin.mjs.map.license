@@ -11,7 +11,7 @@ This file is generated from multiple sources. Included packages:
 	- version: 9.1.0
 	- license: AGPL-3.0-or-later
 - teams
-	- version: 34.0.0-dev.0
+	- version: 33.0.0-dev.0
 	- license: AGPL-3.0-or-later
 - vite
 	- version: 7.1.11
