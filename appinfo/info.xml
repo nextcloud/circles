@@ -94,4 +94,7 @@ Those groups of people can then be used by any other app for sharing purpose.
 		</plugins>
 	</collaboration>
 
+	<settings>
+		<admin>OCA\Circles\Settings\Admin</admin>
+	</settings>
 </info>
