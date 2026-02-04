@@ -53,6 +53,7 @@ OC.L10N.register(
     "%s" : "%s",
     "You have no permission to create a new team" : "У вас няма дазволу на стварэнне новай каманды",
     "Open %s" : "Адкрыць %s",
+    "https://…" : "https://…",
     "Failed to load teams" : "Не ўдалося загрузіць каманды",
     "Try again" : "Паспрабаваць яшчэ раз",
     "No teams found" : "Каманд не знойдзена",

@@ -136,6 +136,7 @@ OC.L10N.register(
     "This item is already shared with this team" : "هذا العنصر سبقت مشاركته سلفاً مع هذا الفريق",
     "Bring cloud-users closer together." : "تقريب مستخدمي السحابة من بعضهم البعض.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "تسمح الفرق للأشخاص بإنشاء مجموعاتهم الخاصة من الأشخاص/الزملاء/الأصدقاء. يمكن بعد ذلك استخدام هذه المجموعات من الأشخاص بواسطة أي تطبيق آخر لغرض المشاركة.",
+    "https://…" : "https://…",
     "Try again" : "عاود المحاولة",
     "No teams found" : "لا يوجد أي فريق",
     "Loading…" : "التحميل جارٍ ...",
