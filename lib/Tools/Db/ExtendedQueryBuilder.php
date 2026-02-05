@@ -909,7 +909,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	 * @param string $object
 	 * @param array $params
 	 *
-	 * @return IQueryRow[]
+	 * @return list<IQueryRow>
 	 */
 	public function asItems(string $object, array $params = []): array {
 		return $this->getRows([$this, 'parseSimpleSelectSql'], $object, $params);
@@ -1012,7 +1012,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	 * @param string $object
 	 * @param array $params
 	 *
-	 * @return IQueryRow[]
+	 * @return list<IQueryRow>
 	 */
 	public function getRows(callable $method, string $object = '', array $params = []): array {
 		$rows = [];
