@@ -101,10 +101,10 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * @param CoreQueryBuilder $qb
 	 *
-	 * @return Circle[]
+	 * @return list<Circle>
 	 */
 	public function getItemsFromRequest(CoreQueryBuilder $qb): array {
-		/** @var Circle[] $result */
+		/** @var list<Circle> $result */
 		return $qb->asItems(Circle::class);
 	}
 }

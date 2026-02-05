@@ -221,7 +221,7 @@ class CircleRequest extends CircleRequestBuilder {
 	 * @param CircleProbe $circleProbe
 	 * @param DataProbe $dataProbe
 	 *
-	 * @return Circle[]
+	 * @return list<Circle>
 	 * @throws RequestBuilderException
 	 */
 	public function probeCircles(
