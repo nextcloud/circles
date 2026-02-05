@@ -33,6 +33,16 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 		return $qb;
 	}
 
+	/**
+	 * @return CoreQueryBuilder&IQueryBuilder
+	 */
+	protected function getCircleInvitationInsertSql(): CoreQueryBuilder {
+		$qb = $this->getQueryBuilder();
+		$qb->insert(self::TABLE_INVITATIONS)
+			->setValue('created', $qb->createNamedParameter($this->timezoneService->getUTCDate()));
+
+		return $qb;
+	}
 
 	/**
 	 * @return CoreQueryBuilder&IQueryBuilder
@@ -43,7 +53,6 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 
 		return $qb;
 	}
-
 
 	/**
 	 * @param string $alias
@@ -65,7 +74,6 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 		return $qb;
 	}
 
-
 	/**
 	 * Base of the Sql Delete request
 	 *
@@ -78,6 +86,17 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 		return $qb;
 	}
 
+	/**
+	 * Base of the Sql Delete request
+	 *
+	 * @return CoreQueryBuilder&IQueryBuilder
+	 */
+	protected function getCircleInvitationDeleteSql(): CoreQueryBuilder {
+		$qb = $this->getQueryBuilder();
+		$qb->delete(self::TABLE_INVITATIONS);
+
+		return $qb;
+	}
 
 	/**
 	 * @param CoreQueryBuilder&IQueryBuilder $qb
