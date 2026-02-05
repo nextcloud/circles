@@ -13,6 +13,7 @@ namespace OCA\Circles\Service;
 
 use OC;
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\ConfigLexicon;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Circle;
@@ -770,5 +771,10 @@ class ConfigService {
 		$config |= $this->getAppValueInt(ConfigService::CIRCLE_TYPES_FORCE);
 		$config &= ~$this->getAppValueInt(ConfigService::CIRCLE_TYPES_BLOCK);
 		$circle->setConfig($config);
+	}
+
+	public function isFederatedTeamsEnabled(): bool {
+		return $this->appConfig->getAppValueBool(ConfigLexicon::FEDERATED_TEAMS_ENABLED) &&
+			$this->appConfig->hasAppKey(ConfigLexicon::FEDERATED_TEAMS_FRONTAL, true);
 	}
 }
