@@ -153,7 +153,7 @@ OC.L10N.register(
     "Federation allows you to share teams with other trusted servers and make them discoverable across instances." : "A federação permite que você compartilhe equipes com outros servidores confiáveis e as torne detectáveis em todas as instâncias.",
     "Enable federated teams" : "Ativar equipes federadas",
     "Frontal URL" : "URL frontal",
-    "https://…" : "https://...",
+    "https://…" : "https://…",
     "The public URL used by other instances to discover and connect to your teams." : "O URL público usado por outras instâncias para descobrir e se conectar às suas equipes.",
     "Failed to load teams" : "Falha ao carregar equipes",
     "Try again" : "Tentar novamente",
