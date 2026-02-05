@@ -24,7 +24,7 @@
     "@nextcloud/password-confirmation": "^6.0.2",
     "@nextcloud/router": "^3.0.1",
     "@nextcloud/typings": "^1.10.0",
-    "@nextcloud/vue": "^9.1.0"
+    "@nextcloud/vue": "^9.3.3"
   },
   "devDependencies": {
     "@nextcloud/browserslist-config": "^3.1.2",

@@ -1,15 +1,24 @@
 SPDX-License-Identifier: AGPL-3.0-or-later
+SPDX-License-Identifier: GPL-3.0-or-later
 SPDX-License-Identifier: MIT
+SPDX-FileCopyrightText: Anthony Fu <https://github.com/antfu>
+SPDX-FileCopyrightText: Christoph Wurst
 SPDX-FileCopyrightText: Evan You
 SPDX-FileCopyrightText: Nextcloud GmbH and Nextcloud contributors
 
 This file is generated from multiple sources. Included packages:
+- @nextcloud/initial-state
+	- version: 2.2.0
+	- license: GPL-3.0-or-later
 - @nextcloud/password-confirmation
 	- version: 6.0.2
 	- license: MIT
 - @nextcloud/vue
-	- version: 9.1.0
+	- version: 9.3.3
 	- license: AGPL-3.0-or-later
+- @vueuse/shared
+	- version: 13.9.0
+	- license: MIT
 - teams
 	- version: 34.0.0-dev.0
 	- license: AGPL-3.0-or-later
