@@ -60,7 +60,7 @@ class CircleMountProvider implements IMountProvider {
 	 * @param IUser $user
 	 * @param IStorageFactory $loader
 	 *
-	 * @return IMountPoint[]
+	 * @return list<IMountPoint>
 	 * @throws RequestBuilderException
 	 * @throws FederatedUserException
 	 * @throws FederatedUserNotFoundException
