@@ -346,11 +346,27 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 	}
 
 	public function limitToFileTarget(string $target, string $alias): void {
-		$this->exprLimit('file_target', $target, $alias);
+		$this->andWhere(
+			$this->expr()->orX(
+				$this->exprLimit('file_target', $target, $alias),
+				$this->expr()->andX(
+					$this->exprLimitNull('file_target', false, $alias),
+					$this->exprLimit('file_target', $target),
+				),
+			),
+		);
 	}
 
 	public function limitToFileTargetLike(string $target, string $alias): void {
-		$this->exprLike('file_target', $target, $alias);
+		$this->andWhere(
+			$this->expr()->orX(
+				$this->exprLike('file_target', $target, $alias),
+				$this->expr()->andX(
+					$this->exprLimitNull('file_target', false, $alias),
+					$this->exprLike('file_target', $target),
+				),
+			),
+		);
 	}
 
 	/**
