@@ -384,6 +384,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		$childAlias = $qb->leftJoinShareChild(CoreQueryBuilder::SHARE);
 
 		if ($forChildren) {
+			$userId = $federatedUser->getUserId();
 			$path = str_replace('/' . $userId . '/files', '', $path);
 			$path = rtrim($path, '/');
 			$childPathTemplate = $this->getQueryBuilder()->getConnection()->escapeLikeParameter($path) . '/_%';
