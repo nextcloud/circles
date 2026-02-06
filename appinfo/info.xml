@@ -12,7 +12,7 @@
 Those groups of people can then be used by any other app for sharing purpose.
 		]]>
 	</description>
-	<version>33.0.0-dev.0</version>
+	<version>33.0.0</version>
 	<licence>agpl</licence>
 	<author>Maxence Lange</author>
 	<types>
