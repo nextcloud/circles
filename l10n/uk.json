@@ -147,6 +147,7 @@
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Команди дозволяють користувачам створювати власні групи з друзів, колег, знайомих.\nЗ цими групами людей подалі можна буде обмінюватися даними в різних застосунках.",
     "Unable to update federated teams config" : "Не вдалося оновити налаштування команд об'єднаних хмар",
     "Invalid URL format. Please provide a valid URL." : "Недійсний формат URL. Надайте посилання у правильному форматі.",
+    "Changed frontal cloud URL" : "Змінено фронтальне посилання на хмару",
     "Federation allows you to share teams with other trusted servers and make them discoverable across instances." : "Об'єднані хмари дозволяють надавати у спільний доступ ресурси команд іншим довіреним хмарним сервісам, робити так, щоб їх можна було виявити користувачами інших примірників хмар Nextcloud.",
     "Enable federated teams" : "Увімкнути команди об'єднаних хмар",
     "Frontal URL" : "Посилання спільного доступу до хмари",
