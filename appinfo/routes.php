@@ -15,6 +15,7 @@ return [
 		['name' => 'Local#probeCircles', 'url' => '/probecircles', 'verb' => 'GET'],
 		['name' => 'Local#create', 'url' => '/circles', 'verb' => 'POST'],
 		['name' => 'Local#destroy', 'url' => '/circles/{circleId}', 'verb' => 'DELETE'],
+		['name' => 'Local#leaveParentCircles', 'url' => '/circles/{circleId}/leave-parent-circles', 'verb' => 'PUT'],
 		['name' => 'Local#search', 'url' => '/search', 'verb' => 'GET'],
 		['name' => 'Local#circleDetails', 'url' => '/circles/{circleId}', 'verb' => 'GET'],
 		['name' => 'Local#members', 'url' => '/circles/{circleId}/members', 'verb' => 'GET'],

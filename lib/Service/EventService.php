@@ -26,6 +26,8 @@ use OCA\Circles\Events\EditingCircleMemberEvent;
 use OCA\Circles\Events\Files\CreatingFileShareEvent;
 use OCA\Circles\Events\Files\FileShareCreatedEvent;
 use OCA\Circles\Events\Files\PreparingFileShareEvent;
+use OCA\Circles\Events\LeavingParentCirclesEvent;
+use OCA\Circles\Events\LeftParentCirclesEvent;
 use OCA\Circles\Events\MembershipsCreatedEvent;
 use OCA\Circles\Events\MembershipsRemovedEvent;
 use OCA\Circles\Events\PreparingCircleMemberEvent;
@@ -100,6 +102,23 @@ class EventService {
 		$this->eventDispatcher->dispatchTyped($event);
 	}
 
+	/**
+	 * @param FederatedEvent $federatedEvent
+	 */
+	public function circleLeavingParentCircles(FederatedEvent $federatedEvent): void {
+		$event = new LeavingParentCirclesEvent($federatedEvent);
+		$this->eventDispatcher->dispatchTyped($event);
+		$this->activityService->onCircleLeavingParentCircles($event->getCircle());
+	}
+
+	/**
+	 * @param FederatedEvent $federatedEvent
+	 * @param array $results
+	 */
+	public function circleLeftParentCircles(FederatedEvent $federatedEvent, array $results): void {
+		$event = new LeftParentCirclesEvent($federatedEvent, $results);
+		$this->eventDispatcher->dispatchTyped($event);
+	}
 
 	/**
 	 * @param FederatedEvent $federatedEvent

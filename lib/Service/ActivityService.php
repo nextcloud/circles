@@ -83,6 +83,30 @@ class ActivityService {
 
 	/**
 	 * @param Circle $circle
+	 */
+	public function onCircleLeavingParentCircles(Circle $circle): void {
+		if ($circle->isConfig(Circle::CFG_PERSONAL)) {
+			return;
+		}
+
+		$event = $this->generateEvent('circles_as_member');
+		$event->setSubject(
+			'circle_leaving_parent_circles',
+			[
+				'ver' => 2,
+				'circle' => $this->shortenCircleData($circle),
+				'initiator' => ($circle->hasInitiator() ? $this->shortenMemberData($circle->getInitiator()) : null),
+			]
+		);
+
+		$this->publishEvent(
+			$event,
+			$this->memberRequest->getInheritedMembers($circle->getSingleId(), false, Member::LEVEL_MODERATOR)
+		);
+	}
+
+	/**
+	 * @param Circle $circle
 	 * @param Member $member
 	 * @param int $eventType
 	 */

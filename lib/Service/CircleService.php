@@ -33,6 +33,7 @@ use OCA\Circles\FederatedItems\CircleDestroy;
 use OCA\Circles\FederatedItems\CircleEdit;
 use OCA\Circles\FederatedItems\CircleJoin;
 use OCA\Circles\FederatedItems\CircleLeave;
+use OCA\Circles\FederatedItems\CircleLeaveParentCircles;
 use OCA\Circles\FederatedItems\CircleSetting;
 use OCA\Circles\IEntity;
 use OCA\Circles\IFederatedUser;
@@ -245,6 +246,37 @@ class CircleService {
 		$circle = $this->getCircle($circleId);
 
 		$event = new FederatedEvent(CircleDestroy::class);
+		$event->setCircle($circle);
+		$event->forceSync($forceSync);
+		$this->federatedEventService->newEvent($event);
+
+		return $event->getOutcome();
+	}
+
+
+	/**
+	 * @param string $circleId
+	 * @param bool $forceSync
+	 *
+	 * @return array
+	 * @throws CircleNotFoundException
+	 * @throws FederatedEventException
+	 * @throws FederatedItemException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws InitiatorNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws UnknownRemoteException
+	 */
+	public function leaveParentCircles(string $circleId, bool $forceSync = false): array {
+		$this->federatedUserService->mustHaveCurrentUser();
+
+		$circle = $this->getCircle($circleId);
+		
+		$event = new FederatedEvent(CircleLeaveParentCircles::class);
 		$event->setCircle($circle);
 		$event->forceSync($forceSync);
 		$this->federatedEventService->newEvent($event);

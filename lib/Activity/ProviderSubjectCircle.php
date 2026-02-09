@@ -46,4 +46,24 @@ class ProviderSubjectCircle extends ProviderParser {
 
 		throw new FakeException();
 	}
+
+	/**
+	 * @param IEvent $event
+	 * @param array $params
+	 *
+	 * @throws FakeException
+	 */
+	public function parseSubjectCircleLeavingParentCircles(IEvent $event, array $params): void {
+		if ($event->getSubject() !== 'circle_leaving_parent_circles') {
+			return;
+		}
+
+		$this->parseCircleEvent(
+			$event, $params,
+			$this->l10n->t('You removed {circle} from all teams it belonged to'),
+			$this->l10n->t('{author} removed {circle} from all teams it belonged to')
+		);
+
+		throw new FakeException();
+	}
 }

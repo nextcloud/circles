@@ -163,6 +163,28 @@ class LocalController extends OCSController {
 	/**
 	 * @NoAdminRequired
 	 *
+	 * @param string $circleId
+	 *
+	 * @return DataResponse
+	 * @throws OCSException
+	 */
+	public function leaveParentCircles(string $circleId): DataResponse {
+		try {
+			$this->setCurrentFederatedUser();
+
+			$circle = $this->circleService->leaveParentCircles($circleId);
+
+			return new DataResponse($this->serializeArray($circle));
+		} catch (Exception $e) {
+			$this->e($e, ['circleId' => $circleId]);
+			throw new OCSException($e->getMessage(), (int)$e->getCode());
+		}
+	}
+
+
+	/**
+	 * @NoAdminRequired
+	 *
 	 * @param string $term
 	 *
 	 * @return DataResponse
