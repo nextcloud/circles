@@ -13,7 +13,9 @@ namespace OCA\Circles\Controller;
 
 use Exception;
 use OC\AppFramework\Middleware\Security\Exceptions\NotLoggedInException;
+use OCA\Circles\ConfigLexicon;
 use OCA\Circles\Db\CircleRequest;
+use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
@@ -48,6 +50,7 @@ use OCA\Circles\Tools\Traits\TNCLocalSignatory;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
+use OCP\AppFramework\Services\IAppConfig;
 use OCP\IRequest;
 use OCP\IUserSession;
 
@@ -60,77 +63,22 @@ class RemoteController extends Controller {
 	use TNCLocalSignatory;
 	use TDeserialize;
 
-
-	/** @var CircleRequest */
-	private $circleRequest;
-
-	/** @var RemoteStreamService */
-	private $remoteStreamService;
-
-	/** @var RemoteDownstreamService */
-	private $remoteDownstreamService;
-
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var CircleService */
-	private $circleService;
-
-	/** @var MemberService */
-	private $memberService;
-
-	/** @var MembershipService */
-	private $membershipService;
-
-	/** @var InterfaceService */
-	private $interfaceService;
-
-	/** @var ConfigService */
-	private $configService;
-
-	/** @var IUserSession */
-	private $userSession;
-
-	/**
-	 * RemoteController constructor.
-	 *
-	 * @param string $appName
-	 * @param IRequest $request
-	 * @param CircleRequest $circleRequest
-	 * @param RemoteStreamService $remoteStreamService
-	 * @param RemoteDownstreamService $remoteDownstreamService
-	 * @param FederatedUserService $federatedUserService
-	 * @param CircleService $circleService
-	 * @param MemberService $memberService
-	 * @param MembershipService $membershipService
-	 * @param InterfaceService $interfaceService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
 		string $appName,
 		IRequest $request,
-		CircleRequest $circleRequest,
-		RemoteStreamService $remoteStreamService,
-		RemoteDownstreamService $remoteDownstreamService,
-		FederatedUserService $federatedUserService,
-		CircleService $circleService,
-		MemberService $memberService,
-		MembershipService $membershipService,
-		InterfaceService $interfaceService,
-		ConfigService $configService,
-		IUserSession $userSession,
+		private readonly CircleRequest $circleRequest,
+		private readonly IAppConfig $appConfig,
+		private readonly RemoteStreamService $remoteStreamService,
+		private readonly RemoteDownstreamService $remoteDownstreamService,
+		private readonly FederatedUserService $federatedUserService,
+		private readonly CircleService $circleService,
+		private readonly MemberService $memberService,
+		private readonly MembershipService $membershipService,
+		private readonly InterfaceService $interfaceService,
+		private readonly ConfigService $configService,
+		private readonly IUserSession $userSession,
 	) {
 		parent::__construct($appName, $request);
-		$this->circleRequest = $circleRequest;
-		$this->remoteStreamService = $remoteStreamService;
-		$this->remoteDownstreamService = $remoteDownstreamService;
-		$this->federatedUserService = $federatedUserService;
-		$this->circleService = $circleService;
-		$this->memberService = $memberService;
-		$this->membershipService = $membershipService;
-		$this->interfaceService = $interfaceService;
-		$this->configService = $configService;
-		$this->userSession = $userSession;
 
 		$this->setup('app', 'circles');
 		$this->setupArray('enforceSignatureHeaders', ['digest', 'content-length']);
@@ -412,11 +360,16 @@ class RemoteController extends Controller {
 	 * @throws SignatoryException
 	 * @throws SignatureException
 	 * @throws UnknownInterfaceException
+	 * @throws FederatedEventException
 	 */
 	private function extractEventFromRequest(): FederatedEvent {
 		// will throw exception if instance is not configured for this event.
 		$this->interfaceService->setCurrentInterfaceFromRequest($this->request);
-		$this->interfaceService->getCurrentInterface();
+		$iface = $this->interfaceService->getCurrentInterface();
+		if ($iface === InterfaceService::IFACE_FRONTAL &&
+			!$this->appConfig->getAppValueBool(ConfigLexicon::FEDERATED_TEAMS_ENABLED)) {
+			throw new FederatedEventException('frontal interface is not enabled');
+		}
 
 		$signed = $this->remoteStreamService->incomingSignedRequest();
 		$this->confirmRemoteInstance($signed);
