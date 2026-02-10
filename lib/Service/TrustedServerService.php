@@ -16,7 +16,7 @@ use Psr\Log\LoggerInterface;
  */
 class TrustedServerService {
 	public function __construct(
-		private readonly TrustedServers $trustedServers,
+		private readonly ?TrustedServers $trustedServers,
 		private readonly LoggerInterface $logger,
 	) {
 	}
@@ -25,6 +25,10 @@ class TrustedServerService {
 	 * @return list<array{id: int, url: string, url_hash: string, shared_secret: ?string, status: int, sync_token: ?string, address: string}>
 	 */
 	public function getTrustedServers(): array {
+		if ($this->trustedServers === null) {
+			return [];
+		}
+
 		$trustedServers = [];
 		try {
 			foreach ($this->trustedServers->getServers() as $server) {
