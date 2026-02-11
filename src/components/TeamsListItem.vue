@@ -31,7 +31,7 @@ defineProps<{
 		<TeamResources
 			v-if="team.resources && team.resources.length > 0"
 			:resources="team.resources"
-			:team-url="team.url" />
+			:teamUrl="team.url" />
 	</li>
 </template>
 
