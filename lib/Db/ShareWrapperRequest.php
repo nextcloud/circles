@@ -384,9 +384,15 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		$childAlias = $qb->leftJoinShareChild(CoreQueryBuilder::SHARE);
 
 		if ($forChildren) {
-			$qb->limitToFileTargetLike($path . '_%', $childAlias);
+			$userId = $federatedUser->getUserId();
+			$path = str_replace('/' . $userId . '/files', '', $path);
+			$path = rtrim($path, '/');
+			$childPathTemplate = $this->getQueryBuilder()->getConnection()->escapeLikeParameter($path) . '/_%';
+
+			$qb->limitToFileTargetLike($childPathTemplate, $childAlias);
 		} else {
-			$qb->limitToFileTarget($path, $childAlias);
+			$nonChildPath = $path === '' ? '/' : $path;
+			$qb->limitToFileTarget($nonChildPath, $childAlias);
 		}
 
 		$qb->chunk($probe->getItemsOffset(), $probe->getItemsLimit());
