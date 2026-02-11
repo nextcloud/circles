@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace OCA\Circles\FederatedItems;
 
 use OC\User\NoUserException;
+use OCA\Circles\ConfigLexicon;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedItemBadRequestException;
@@ -47,6 +48,7 @@ use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Service\InterfaceService;
 use OCA\Circles\Service\MaintenanceService;
 use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\MembershipService;
@@ -55,6 +57,7 @@ use OCA\Circles\StatusCode;
 use OCA\Circles\Tools\Traits\TDeserialize;
 use OCA\Circles\Tools\Traits\TNCLogger;
 use OCA\Circles\Tools\Traits\TStringTools;
+use OCP\AppFramework\Services\IAppConfig;
 use OCP\IUserManager;
 
 /**
@@ -74,6 +77,7 @@ class SingleMemberAdd implements
 
 	public function __construct(
 		protected IUserManager $userManager,
+		protected IAppConfig $appConfig,
 		protected MemberRequest $memberRequest,
 		protected FederatedUserService $federatedUserService,
 		protected RemoteStreamService $remoteStreamService,
@@ -222,6 +226,12 @@ class SingleMemberAdd implements
 				if ($remoteInstance->getType() !== RemoteInstance::TYPE_GLOBALSCALE) {
 					throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[127], 127);
 				}
+			}
+
+			$remoteInstance = $this->remoteStreamService->getCachedRemoteInstance($member->getInstance());
+			if (($remoteInstance->getInterface() === InterfaceService::IFACE_FRONTAL) &&
+				!$this->appConfig->getAppValueBool(ConfigLexicon::FEDERATED_TEAMS_ENABLED)) {
+				throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[133], 133);
 			}
 		}
 

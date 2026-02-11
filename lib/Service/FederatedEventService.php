@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 use OC;
+use OCA\Circles\ConfigLexicon;
 use OCA\Circles\Db\EventWrapperRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\RemoteRequest;
@@ -53,6 +54,7 @@ use OCA\Circles\Tools\Model\NCRequest;
 use OCA\Circles\Tools\Model\Request;
 use OCA\Circles\Tools\Traits\TNCRequest;
 use OCA\Circles\Tools\Traits\TStringTools;
+use OCP\AppFramework\Services\IAppConfig;
 use OCP\Server;
 use ReflectionClass;
 use ReflectionException;
@@ -66,63 +68,18 @@ class FederatedEventService extends NCSignature {
 	use TNCRequest;
 	use TStringTools;
 
-
-	/** @var EventWrapperRequest */
-	private $eventWrapperRequest;
-
-	/** @var RemoteRequest */
-	private $remoteRequest;
-
-	/** @var ShareLockRequest */
-	private $shareLockRequest;
-
-	/** @var MemberRequest */
-	private $memberRequest;
-
-	/** @var RemoteUpstreamService */
-	private $remoteUpstreamService;
-
-	/** @var EventService */
-	private $eventService;
-
-	/** @var InterfaceService */
-	private $interfaceService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
-	/**
-	 * FederatedEventService constructor.
-	 *
-	 * @param EventWrapperRequest $eventWrapperRequest
-	 * @param RemoteRequest $remoteRequest
-	 * @param MemberRequest $memberRequest
-	 * @param ShareLockRequest $shareLockRequest
-	 * @param RemoteUpstreamService $remoteUpstreamService
-	 * @param InterfaceService $interfaceService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
-		EventWrapperRequest $eventWrapperRequest,
-		RemoteRequest $remoteRequest,
-		MemberRequest $memberRequest,
-		ShareLockRequest $shareLockRequest,
-		RemoteUpstreamService $remoteUpstreamService,
-		EventService $eventService,
-		InterfaceService $interfaceService,
-		ConfigService $configService,
+		private readonly IAppConfig $appConfig,
+		private readonly EventWrapperRequest $eventWrapperRequest,
+		private readonly RemoteRequest $remoteRequest,
+		private readonly MemberRequest $memberRequest,
+		private readonly ShareLockRequest $shareLockRequest,
+		private readonly RemoteUpstreamService $remoteUpstreamService,
+		private readonly EventService $eventService,
+		private readonly InterfaceService $interfaceService,
+		private readonly ConfigService $configService,
 	) {
-		$this->eventWrapperRequest = $eventWrapperRequest;
-		$this->remoteRequest = $remoteRequest;
-		$this->shareLockRequest = $shareLockRequest;
-		$this->memberRequest = $memberRequest;
-		$this->remoteUpstreamService = $remoteUpstreamService;
-		$this->eventService = $eventService;
-		$this->interfaceService = $interfaceService;
-		$this->configService = $configService;
 	}
-
 
 	/**
 	 * Called when creating a new Event.
@@ -406,6 +363,11 @@ class FederatedEventService extends NCSignature {
 
 		foreach ($instances as $instance) {
 			if ($event->getCircle()->isConfig(Circle::CFG_LOCAL)) {
+				break;
+			}
+
+			if ($instance->getInterface() === InterfaceService::IFACE_FRONTAL &&
+				!$this->appConfig->getAppValueBool(ConfigLexicon::FEDERATED_TEAMS_ENABLED)) {
 				break;
 			}
 

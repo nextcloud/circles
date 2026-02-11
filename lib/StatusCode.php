@@ -50,7 +50,8 @@ class StatusCode {
 		129 => 'Member does not contains a patron',
 		130 => 'Member is invited by an entity that does not belongs to the instance at the origin of the request',
 		131 => 'Member is a non-local Team',
-		132 => 'Member type not allowed'
+		132 => 'Member type not allowed',
+		133 => 'Federated Teams are disabled'
 	];
 
 	public static $CIRCLE_DESTROY = [
