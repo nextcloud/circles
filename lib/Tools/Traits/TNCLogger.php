@@ -30,7 +30,6 @@ trait TNCLogger {
 	public static $INFO = 1;
 	public static $DEBUG = 0;
 
-
 	/**
 	 * @param Throwable $t
 	 * @param array $serializable
@@ -172,7 +171,8 @@ trait TNCLogger {
 	 * @return LoggerInterface
 	 */
 	public function logger(): LoggerInterface {
-		if (isset($this->logger)) {
+		/** @psalm-suppress UndefinedThisPropertyFetch Ugly but works */
+		if (isset($this->logger) && $this->logger instanceof LoggerInterface) {
 			return $this->logger;
 		} else {
 			return Server::get(LoggerInterface::class);
