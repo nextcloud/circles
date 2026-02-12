@@ -354,7 +354,7 @@ class ShareWrapperService {
 		$pathHash = \md5($path);
 		return $federatedUser->getSingleId() . '#'
 			. $pathHash . '#'
-			. $forChildren . '#'
+			. (int)$forChildren . '#'
 			. $probeSum;
 	}
 

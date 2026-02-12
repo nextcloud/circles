@@ -27,6 +27,17 @@ use OCP\DB\QueryBuilder\IQueryFunction;
 use OCP\IDBConnection;
 use Psr\Log\LoggerInterface;
 
+enum ConflictResolutionMode {
+	/**
+	 * Wait for the row to be unlocked.
+	 */
+	case Ordinary;
+	/**
+	 * Skip the row if it is locked.
+	 */
+	case SkipLocked;
+}
+
 class QueryBuilder implements IQueryBuilder {
 	/** @var string */
 	protected $lastInsertedTable;
@@ -981,4 +992,6 @@ class QueryBuilder implements IQueryBuilder {
  {
  }
 
+
+public function forUpdate(ConflictResolutionMode $conflictResolutionMode = ConflictResolutionMode::Ordinary): self {}
 }
