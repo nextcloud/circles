@@ -21,9 +21,10 @@
     "@nextcloud/dialogs": "^7.1.0",
     "@nextcloud/l10n": "^3.4.0",
     "@nextcloud/logger": "^3.0.2",
+    "@nextcloud/password-confirmation": "^6.0.2",
     "@nextcloud/router": "^3.0.1",
     "@nextcloud/typings": "^1.10.0",
-    "@nextcloud/vue": "^9.1.0"
+    "@nextcloud/vue": "^9.5.0"
   },
   "devDependencies": {
     "@nextcloud/browserslist-config": "^3.1.2",

@@ -106,6 +106,7 @@ OC.L10N.register(
     "Password to access content shared with you by %1$s" : "Парола за достъп до съдържание, споделени с вас от %1$s",
     "Password to access content" : "Парола за достъп до съдържание",
     "Bring cloud-users closer together." : "Доближете потребителите на облака по-близо.",
+    "https://…" : "https://…",
     "Try again" : "Опитай отново",
     "Loading…" : "Зареждане…",
     "No files in here" : "Няма файлове",

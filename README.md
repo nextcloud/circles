@@ -7,8 +7,8 @@
 
 ### Bring cloud-users closer together
 
-Nextcloud Teams allow people to create their own groups of people/colleagues/friends.
-Those groups of people can then be used by any other app for sharing purpose.
+Nextcloud Teams allows people to create their own groups of people/colleagues/friends.
+Those groups can then be used by any other app for sharing purposes.
 
 The app was formerly named circles which is still used as internal identifier a lot.
 
@@ -17,4 +17,4 @@ The app was formerly named circles which is still used as internal identifier a 
 The *Teams* app is installed and enabled by default.
 
 # Documentation
-You can use the `\Psr\Container\ContainerInterface`, see [dependency injection](https://docs.nextcloud.com/server/stable/developer_manual/basics/dependency_injection.html), to get the `\OCA\Circles\CireclesManager` class, see our [API documentation](https://nextcloud.github.io/circles/) for its interface.
+You can use the `\Psr\Container\ContainerInterface`, see [dependency injection](https://docs.nextcloud.com/server/stable/developer_manual/basics/dependency_injection.html), to get the `\OCA\Circles\CirclesManager` class, see our [API documentation](https://nextcloud.github.io/circles/) for its interface.

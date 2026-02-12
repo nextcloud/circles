@@ -143,9 +143,18 @@ OC.L10N.register(
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s je podijelio neki sadržaj s vama.\nTrebali ste već primiti zasebnu e-poruku s poveznicom za pristupanje.",
     "Password to access content shared with you by %1$s" : "Zaporka za pristupanje sadržaju koju s vama dijeli %1$s",
     "Password to access content" : "Zaporka za pristupanje sadržaju",
+    "Federated Teams" : "Udruženi timovi",
     "This item is already shared with this team" : "Ova se stavka već dijeli s ovim timom",
     "Bring cloud-users closer together." : "Približite korisnike oblaka.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Timovi omogućuju korisnicima stvaranje vlastite grupe korisnika/kolega/prijatelja.\nTe grupe korisnika tada možete upotrebljavati za dijeljenje unutar bilo koje druge aplikacije.",
+    "Unable to update federated teams config" : "Nije moguće ažurirati konfiguraciju udruženih timova",
+    "Invalid URL format. Please provide a valid URL." : "Nevažeći format URL-a. Unesite valjani URL.",
+    "Changed frontal cloud URL" : "Promijenjen frontalni URL oblaka",
+    "Federation allows you to share teams with other trusted servers and make them discoverable across instances." : "Udruženje vam omogućuje dijeljenje timova s drugim pouzdanim poslužiteljima i njihovo otkrivanje među instancama.",
+    "Enable federated teams" : "Omogući udružene timove",
+    "Frontal URL" : "Frontalni URL",
+    "https://…" : "https://…",
+    "The public URL used by other instances to discover and connect to your teams." : "Javni URL koji druge instance koriste za otkrivanje i povezivanje s vašim timovima.",
     "Failed to load teams" : "Učitavanje timova nije uspjelo",
     "Try again" : "Pokušajte ponovno",
     "No teams found" : "Nema pronađenih timova",
@@ -158,6 +167,6 @@ OC.L10N.register(
     "Name" : "Naziv",
     "Size" : "Veličina",
     "Modified" : "Promijenjeno",
-    "Shared to Circles" : "Dijeljeno u krugovima"
+    "Shared to Circles" : "Dijeljeno krugovima"
 },
 "nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;");

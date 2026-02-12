@@ -320,8 +320,8 @@ class ShareWrapperService {
 		$pathHash = md5($path);
 		return $federatedUser->getSingleId() . '#'
 			. $pathHash . '#'
-			. ($forChildren ? '1' : '0') . '#'
-			. ($probeSum ?? '');
+			. (int)$forChildren . '#'
+			. $probeSum;
 	}
 
 	private function generateSharedWithCacheKey(
