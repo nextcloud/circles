@@ -24,6 +24,7 @@ use OCP\Files\NotFoundException;
 use OCP\Share\Exceptions\IllegalIDChangeException;
 use OCP\Share\IAttributes;
 use OCP\Share\IShare;
+use function strlen;
 
 /**
  * Class ShareWrapperRequest
@@ -383,10 +384,14 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		$qb->limitNull('parent', false);
 		$childAlias = $qb->leftJoinShareChild(CoreQueryBuilder::SHARE);
 
+		$userId = $federatedUser->getUserId();
+		$prefix = '/' . $userId . '/files';
+		if (str_starts_with($path, $prefix)) {
+			$path = substr($path, strlen($prefix));
+		}
+		$path = rtrim($path, '/');
+
 		if ($forChildren) {
-			$userId = $federatedUser->getUserId();
-			$path = str_replace('/' . $userId . '/files', '', $path);
-			$path = rtrim($path, '/');
 			$childPathTemplate = $this->getQueryBuilder()->getConnection()->escapeLikeParameter($path) . '/_%';
 
 			$qb->limitToFileTargetLike($childPathTemplate, $childAlias);
