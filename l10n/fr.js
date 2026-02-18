@@ -148,6 +148,7 @@ OC.L10N.register(
     "Bring cloud-users closer together." : "Permet de rapprocher les utilisateur du cloud ensemble ",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "L'application « Équipes » permet aux personnes de créer leurs propres groupes de personnes / collègues / amis.\nCes groupes de personnes peuvent alors être utilisés par toutes les autres applications à des fins de partage.",
     "Unable to update federated teams config" : "Impossible de mettre à jour la configuration des équipes fédérées",
+    "Invalid URL format. Please provide a valid URL." : "Format d'URL invalide. Veuillez fournir une URL valide.",
     "Federation allows you to share teams with other trusted servers and make them discoverable across instances." : "La fédération vous permet de partager des équipes avec d'autres serveurs de confiance et de les rendre visibles sur toutes les instances.",
     "Enable federated teams" : "Activer les équipes fédérées",
     "https://…" : "https://…",
