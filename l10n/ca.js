@@ -144,7 +144,6 @@ OC.L10N.register(
     "No entries found in this folder" : "No s'ha trobat cap entrada en aquesta carpeta",
     "Name" : "Nom",
     "Size" : "Mida",
-    "Modified" : "Data de modificació",
-    "Shared to Circles" : "Compartits en cercles"
+    "Modified" : "Data de modificació"
 },
 "nplurals=2; plural=(n != 1);");

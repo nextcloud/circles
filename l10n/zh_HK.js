@@ -166,7 +166,6 @@ OC.L10N.register(
     "No entries found in this folder" : "此資料夾中無項目",
     "Name" : "名稱",
     "Size" : "大小",
-    "Modified" : "修改日期",
-    "Shared to Circles" : "分享到圈子"
+    "Modified" : "修改日期"
 },
 "nplurals=1; plural=0;");

@@ -106,7 +106,6 @@
     "No entries found in this folder" : "Tästä kansiosta ei löytynyt tietueita",
     "Name" : "Nimi",
     "Size" : "Koko",
-    "Modified" : "Muokattu",
-    "Shared to Circles" : "Jaettu piireille"
+    "Modified" : "Muokattu"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

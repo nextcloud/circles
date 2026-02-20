@@ -152,7 +152,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Δεν βρέθηκε καταχώρηση σε αυτόν τον φάκελο",
     "Name" : "Όνομα",
     "Size" : "Μέγεθος",
-    "Modified" : "Τροποποιήθηκε",
-    "Shared to Circles" : "Κοινόχρηστο στους Κύκλους"
+    "Modified" : "Τροποποιήθηκε"
 },
 "nplurals=2; plural=(n != 1);");

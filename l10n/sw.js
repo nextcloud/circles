@@ -166,7 +166,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Hakuna maingizo yaliyopatikana katika kasha hili",
     "Name" : "Jina",
     "Size" : "Ukubwa",
-    "Modified" : "Boresha",
-    "Shared to Circles" : "Imeshirikiwa kwa Miduara"
+    "Modified" : "Boresha"
 },
 "nplurals=2; plural=(n != 1);");

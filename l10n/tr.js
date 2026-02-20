@@ -158,7 +158,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Bu klasörde herhangi bir kayıt yok",
     "Name" : "Ad",
     "Size" : "Boyut",
-    "Modified" : "Değiştirilme",
-    "Shared to Circles" : "Takımlarla paylaşıldı"
+    "Modified" : "Değiştirilme"
 },
 "nplurals=2; plural=(n > 1);");

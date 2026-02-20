@@ -150,7 +150,6 @@
     "No entries found in this folder" : "Engar færslur fundust í þessari möppu",
     "Name" : "Nafn",
     "Size" : "Stærð",
-    "Modified" : "Breytt",
-    "Shared to Circles" : "Deilt til hringja"
+    "Modified" : "Breytt"
 },"pluralForm" :"nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);"
 }

@@ -106,7 +106,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Perunu elementu agatadu in custa cartella",
     "Name" : "Nùmene",
     "Size" : "Mannària",
-    "Modified" : "Modificadu",
-    "Shared to Circles" : "Cumpartzidu cun is giros\\"
+    "Modified" : "Modificadu"
 },
 "nplurals=2; plural=(n != 1);");

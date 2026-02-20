@@ -152,7 +152,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Нема резултата у овој фасцикли",
     "Name" : "Назив",
     "Size" : "Величина",
-    "Modified" : "Измењен",
-    "Shared to Circles" : "Дељено на Кругове"
+    "Modified" : "Измењен"
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");

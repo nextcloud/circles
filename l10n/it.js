@@ -158,7 +158,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Nessuna voce trovata in questa cartella",
     "Name" : "Nome",
     "Size" : "Dimensione",
-    "Modified" : "Modificato",
-    "Shared to Circles" : "Condivisi con cerchie"
+    "Modified" : "Modificato"
 },
 "nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");

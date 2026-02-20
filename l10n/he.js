@@ -71,7 +71,6 @@ OC.L10N.register(
     "No entries found in this folder" : "לא נמצאו רשומות בתיקייה הזאת",
     "Name" : "שם",
     "Size" : "גודל",
-    "Modified" : "מועד שינוי",
-    "Shared to Circles" : "שותף למעגלים"
+    "Modified" : "מועד שינוי"
 },
 "nplurals=3; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % 1 == 0) ? 1: 2;");
