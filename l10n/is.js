@@ -152,7 +152,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Engar færslur fundust í þessari möppu",
     "Name" : "Nafn",
     "Size" : "Stærð",
-    "Modified" : "Breytt",
-    "Shared to Circles" : "Deilt til hringja"
+    "Modified" : "Breytt"
 },
 "nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);");

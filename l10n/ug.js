@@ -157,7 +157,6 @@ OC.L10N.register(
     "No entries found in this folder" : "بۇ ھۆججەت قىسقۇچتا ھېچقانداق مەزمۇن تېپىلمىدى",
     "Name" : "ئاتى",
     "Size" : "چوڭلۇقى",
-    "Modified" : "ئۆزگەرتكەن",
-    "Shared to Circles" : "چەمبىرەككە ئورتاقلاشتى"
+    "Modified" : "ئۆزگەرتكەن"
 },
 "nplurals=2; plural=(n != 1);");

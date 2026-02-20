@@ -166,7 +166,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Non foi atopada ningunha entrada neste cartafol",
     "Name" : "Nome",
     "Size" : "Tamaño",
-    "Modified" : "Modificado",
-    "Shared to Circles" : "Compartido con Círculos"
+    "Modified" : "Modificado"
 },
 "nplurals=2; plural=(n != 1);");

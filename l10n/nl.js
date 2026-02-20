@@ -166,7 +166,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Niets in deze map gevonden",
     "Name" : "Naam",
     "Size" : "Omvang",
-    "Modified" : "Gewijzigd",
-    "Shared to Circles" : "Gedeeld met Kringen"
+    "Modified" : "Gewijzigd"
 },
 "nplurals=2; plural=(n != 1);");

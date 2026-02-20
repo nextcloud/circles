@@ -158,7 +158,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Inga objekt funna i denna mapp",
     "Name" : "Namn",
     "Size" : "Storlek",
-    "Modified" : "Ändrad",
-    "Shared to Circles" : "Delad med Cirklar"
+    "Modified" : "Ändrad"
 },
 "nplurals=2; plural=(n != 1);");

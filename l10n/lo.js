@@ -151,7 +151,6 @@ OC.L10N.register(
     "No entries found in this folder" : "No entries found in this folder",
     "Name" : "ຊື່",
     "Size" : "ຂະຫນາດ",
-    "Modified" : "\"{name}\" ແມ່ນຊື່ໄຟລ໌ທີ່ບໍ່ຖືກຕ້ອງ.",
-    "Shared to Circles" : "Shared to Circles"
+    "Modified" : "\"{name}\" ແມ່ນຊື່ໄຟລ໌ທີ່ບໍ່ຖືກຕ້ອງ."
 },
 "nplurals=1; plural=0;");

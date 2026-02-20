@@ -147,7 +147,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Ingen oppføringer funnet i denne mappen",
     "Name" : "Navn",
     "Size" : "Størrelse",
-    "Modified" : "Endret",
-    "Shared to Circles" : "Delt til Sirkler"
+    "Modified" : "Endret"
 },
 "nplurals=2; plural=(n != 1);");

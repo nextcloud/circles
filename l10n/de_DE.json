@@ -164,7 +164,6 @@
     "No entries found in this folder" : "Keine Einträge in diesem Ordner gefunden ",
     "Name" : "Name",
     "Size" : "Größe",
-    "Modified" : "Geändert",
-    "Shared to Circles" : "Geteilt mit Kreisen"
+    "Modified" : "Geändert"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

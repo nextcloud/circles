@@ -109,7 +109,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Ni chanfuwyd unrhyw gofnodion yn y ffolder hwn",
     "Name" : "Enw",
     "Size" : "Maint",
-    "Modified" : "Addaswyd",
-    "Shared to Circles" : "Wedi'i rannu i Gylchoedd"
+    "Modified" : "Addaswyd"
 },
 "nplurals=4; plural=(n==1) ? 0 : (n==2) ? 1 : (n != 8 && n != 11) ? 2 : 3;");

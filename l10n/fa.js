@@ -158,7 +158,6 @@ OC.L10N.register(
     "No entries found in this folder" : "هیچ ورودی‌ای در این پوشه وجود ندارد",
     "Name" : "نام",
     "Size" : "اندازه",
-    "Modified" : "تغییر یافته",
-    "Shared to Circles" : "Shared to Circles"
+    "Modified" : "تغییر یافته"
 },
 "nplurals=2; plural=(n > 1);");

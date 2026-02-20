@@ -166,7 +166,6 @@ OC.L10N.register(
     "No entries found in this folder" : "V tomto priečinku sa nič nenašlo",
     "Name" : "Názov",
     "Size" : "Veľkosť",
-    "Modified" : "Upravené",
-    "Shared to Circles" : "Zdieľané v kruhoch"
+    "Modified" : "Upravené"
 },
 "nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);");

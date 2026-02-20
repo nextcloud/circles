@@ -70,7 +70,6 @@ OC.L10N.register(
     "No entries found in this folder" : "ამ დირექტორიაში შენატანები ვერ იქნა ნაპოვნი",
     "Name" : "სახელი",
     "Size" : "ზომა",
-    "Modified" : "შეიცვალა",
-    "Shared to Circles" : "წრეებთან გაზიარებული"
+    "Modified" : "შეიცვალა"
 },
 "nplurals=2; plural=(n!=1);");
