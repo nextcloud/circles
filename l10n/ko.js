@@ -103,7 +103,6 @@ OC.L10N.register(
     "No entries found in this folder" : "이 폴더에서 항목을 찾을 수 없음",
     "Name" : "이름",
     "Size" : "크기",
-    "Modified" : "수정한 날짜",
-    "Shared to Circles" : "서클에 공유됨"
+    "Modified" : "수정한 날짜"
 },
 "nplurals=1; plural=0;");

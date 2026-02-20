@@ -157,7 +157,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Tidak ada entri yang ditemukan dalam folder ini",
     "Name" : "Nama",
     "Size" : "Ukuran",
-    "Modified" : "Dimodifikasi",
-    "Shared to Circles" : "Dibagikan ke Circles"
+    "Modified" : "Dimodifikasi"
 },
 "nplurals=1; plural=0;");

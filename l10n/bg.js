@@ -113,7 +113,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Папката е празна",
     "Name" : "Име",
     "Size" : "Размер",
-    "Modified" : "Променен на",
-    "Shared to Circles" : "Споделено с Кръгове"
+    "Modified" : "Променен на"
 },
 "nplurals=2; plural=(n != 1);");

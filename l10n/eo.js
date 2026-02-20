@@ -75,7 +75,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Neniu elemento en tiu ĉi dosierujo",
     "Name" : "Nomo",
     "Size" : "Grando",
-    "Modified" : "Modifita",
-    "Shared to Circles" : "Kunhavigita kun rondoj"
+    "Modified" : "Modifita"
 },
 "nplurals=2; plural=(n != 1);");

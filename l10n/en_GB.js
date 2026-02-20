@@ -166,7 +166,6 @@ OC.L10N.register(
     "No entries found in this folder" : "No entries found in this folder",
     "Name" : "Name",
     "Size" : "Size",
-    "Modified" : "Modified",
-    "Shared to Circles" : "Shared to Circles"
+    "Modified" : "Modified"
 },
 "nplurals=2; plural=(n != 1);");

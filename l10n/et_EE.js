@@ -166,7 +166,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Selles kaustas ei leitud kirjeid",
     "Name" : "Nimi",
     "Size" : "Suurus",
-    "Modified" : "Muudetud",
-    "Shared to Circles" : "Jagatud tiimidega"
+    "Modified" : "Muudetud"
 },
 "nplurals=2; plural=(n != 1);");

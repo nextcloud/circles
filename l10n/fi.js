@@ -108,7 +108,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Tästä kansiosta ei löytynyt tietueita",
     "Name" : "Nimi",
     "Size" : "Koko",
-    "Modified" : "Muokattu",
-    "Shared to Circles" : "Jaettu piireille"
+    "Modified" : "Muokattu"
 },
 "nplurals=2; plural=(n != 1);");

@@ -113,7 +113,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Chưa có mục nào trong thư mục",
     "Name" : "Tên",
     "Size" : "Kích cỡ",
-    "Modified" : "Thay đổi",
-    "Shared to Circles" : "Đã được chia sẻ đến những Vòng kết nối"
+    "Modified" : "Thay đổi"
 },
 "nplurals=1; plural=0;");

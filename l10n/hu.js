@@ -152,7 +152,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Nincsenek bejegyzések ebben a mappában",
     "Name" : "Név",
     "Size" : "Méret",
-    "Modified" : "Módosítva",
-    "Shared to Circles" : "Körökkel megosztva"
+    "Modified" : "Módosítva"
 },
 "nplurals=2; plural=(n != 1);");

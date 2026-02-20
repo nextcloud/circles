@@ -166,7 +166,6 @@ OC.L10N.register(
     "No entries found in this folder" : "このフォルダーにはエントリーがありません",
     "Name" : "名前",
     "Size" : "サイズ",
-    "Modified" : "更新日時",
-    "Shared to Circles" : "サークルと共有"
+    "Modified" : "更新日時"
 },
 "nplurals=1; plural=0;");
