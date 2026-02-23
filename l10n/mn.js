@@ -52,6 +52,7 @@ OC.L10N.register(
     "You are the new owner of {circle}" : "Та {circle}-н шинэ эзэмшигч боллоо",
     "{member} is the new owner of {circle}" : "{member} {circle}-н шинэ эзэмшигч боллоо",
     "Teams" : "Багууд",
+    "On events happening in a <strong>team</strong> of which you are a member" : "Таны гишүүнчлэлтэй <strong>баг</strong>-д болж буй үйл явдлуудын тухай",
     "Any important event in a <strong>team</strong> you are moderating" : "Таны удирдаж буй <strong>баг</strong>-т болж буй аливаа чухал үйл явдал",
     "On global events happening in any <strong>team</strong>" : "Аливаа <strong>баг</strong>-т болж буй глобал үйл явдлуудын талаар",
     "Single" : "Ганц",
