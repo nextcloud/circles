@@ -152,12 +152,15 @@ class MemberService {
 
 	/**
 	 * @param string $circleId
+	 * @param bool $fullDetails
+	 * @param int $limit
+	 * @param string $search
 	 *
 	 * @return Member[]
 	 * @throws InitiatorNotFoundException
 	 * @throws RequestBuilderException
 	 */
-	public function getMembers(string $circleId, bool $fullDetails = false): array {
+	public function getMembers(string $circleId, bool $fullDetails = false, int $limit = 0, string $search = ''): array {
 		$this->federatedUserService->mustHaveCurrentUser();
 
 		$probe = new MemberProbe();
@@ -171,7 +174,9 @@ class MemberService {
 			$circleId,
 			$this->federatedUserService->getCurrentUser(),
 			$probe,
-			fullDetails: $fullDetails
+			$limit,
+			$fullDetails,
+			$search
 		);
 	}
 
