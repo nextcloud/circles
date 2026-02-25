@@ -23,6 +23,7 @@ class CircleProbe extends MemberProbe {
 	private int $filter = Circle::CFG_SINGLE;
 	private bool $includeNonVisible = false;
 	private bool $visitSingleCircles = false;
+	private ?string $invitationCode = null;
 	private int $limitConfig = 0;
 
 	/**
@@ -331,6 +332,32 @@ class CircleProbe extends MemberProbe {
 		return (($this->filtered() & $config) !== 0);
 	}
 
+	/**
+	 * Apply a filter on the invitation code
+	 *
+	 * @param string $invitationCode
+	 *
+	 * @return $this
+	 */
+	public function filterByInvitationCode(string $invitationCode): self {
+		$this->invitationCode = str_replace('-', '', $invitationCode);
+
+		return $this;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasInvitationCode(): bool {
+		return ($this->invitationCode !== null);
+	}
+
+	/**
+	 * @return string|null
+	 */
+	public function getInvitationCode(): ?string {
+		return $this->invitationCode;
+	}
 
 	/**
 	 * Return an array with includes as options
@@ -355,6 +382,7 @@ class CircleProbe extends MemberProbe {
 				'filterBackendCircles' => $this->isIncluded(Circle::CFG_BACKEND),
 				'filterSystemCircles' => $this->isIncluded(Circle::CFG_SYSTEM),
 				'filterPersonalCircles' => $this->isIncluded(Circle::CFG_PERSONAL),
+				'filterInvitationCode' => $this->invitationCode,
 			],
 			parent::getAsOptions()
 		);
