@@ -1575,6 +1575,26 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 
 
 	/**
+	 * @param string $aliasMount
+	 * @param string $path
+	 * @param bool $forChildren
+	 *
+	 * @throws RequestBuilderException
+	 */
+	public function limitToMountpoint(string $aliasMount, string $path, bool $forChildren = false): void {
+		if ($forChildren) {
+			$this->andWhere(
+				$this->expr()->like($aliasMount . '.mountpoint', $this->createNamedParameter($path . '/%'))
+			);
+		} else {
+			$this->andWhere(
+				$this->expr()->eq($aliasMount . '.mountpoint', $this->createNamedParameter($path))
+			);
+		}
+	}
+
+
+	/**
 	 * @param string $alias
 	 * @param array $default
 	 *
