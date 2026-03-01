@@ -113,7 +113,7 @@ watchDebounced(federatedTeamsFrontal, async (value) => {
 		<NcCheckboxRadioSwitch
 			v-model="federatedTeamsEnabled"
 			type="switch"
-			@update:model-value="onToggleFederatedTeams">
+			@update:modelValue="onToggleFederatedTeams">
 			{{ t('circles', 'Enable federated teams') }}
 		</NcCheckboxRadioSwitch>
 
