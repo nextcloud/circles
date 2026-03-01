@@ -29,6 +29,8 @@ use OCA\Files_Sharing\External\Storage as ExternalStorage;
 use OCP\DB\Exception;
 use OCP\Federation\ICloudIdManager;
 use OCP\Files\Config\IMountProvider;
+use OCP\Files\Config\IPartialMountProvider;
+use OCP\Files\Config\MountProviderArgs;
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
 use OCP\Files\Mount\IMountPoint;
@@ -36,9 +38,10 @@ use OCP\Files\NotFoundException;
 use OCP\Files\Storage\IStorageFactory;
 use OCP\Http\Client\IClientService;
 use OCP\IUser;
+use Override;
 use Psr\Log\LoggerInterface;
 
-class CircleMountProvider implements IMountProvider {
+class CircleMountProvider implements IMountProvider, IPartialMountProvider {
 	use TArrayTools;
 
 	public const EXTERNAL_STORAGE = ExternalStorage::class;
@@ -246,5 +249,49 @@ class CircleMountProvider implements IMountProvider {
 
 			$n++;
 		}
+	}
+
+	#[Override]
+	public function getMountsForPath(string $setupPathHint, bool $forChildren, array $mountProviderArgs, IStorageFactory $loader): array {
+		/** @var array<string, Mount[]> $userItems */
+		$userItems = [];
+		/** @var array<string, IMountPoint> $mounts */
+		$mounts = [];
+
+		/** @var MountProviderArgs $mountProviderArg */
+		foreach ($mountProviderArgs as $mountProviderArg) {
+			$user = $mountProviderArg->mountInfo->getUser();
+
+			$parts = explode('/', $mountProviderArg->mountInfo->getMountPoint());
+			if ($parts[1] !== $user->getUID() || $parts[2] !== 'files') {
+				continue;
+			}
+
+			if (!isset($userItems[$user->getUID()])) {
+				$federatedUser = $this->federatedUserService->getLocalFederatedUser($user->getUID());
+				$path = '/' . implode('/', array_slice($parts, 3));
+				$userItems[$user->getUID()] = $this->mountRequest->getForUser(
+					$federatedUser,
+					$path,
+					$forChildren
+				);
+			}
+
+			foreach ($userItems[$user->getUID()] as $item) {
+				$mountPoint = '/' . $user->getUID() . '/files' . $item->getMountPoint();
+				if (isset($mounts[$mountPoint])) {
+					continue;
+				}
+
+				try {
+					$this->fixDuplicateFile($user->getUID(), $item);
+					$mounts[$mountPoint] = $this->generateCircleMount($item, $loader);
+				} catch (\Exception $e) {
+					$this->logger->warning('issue with teams\' partial mounts', ['exception' => $e]);
+				}
+			}
+		}
+
+		return $mounts;
 	}
 }
