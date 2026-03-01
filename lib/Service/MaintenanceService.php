@@ -209,7 +209,7 @@ class MaintenanceService {
 
 		try {
 			$this->output('Delete old and terminated FederatedEvents');
-			$this->eventWrapperRequest->deleteOldEntries(false);
+			$this->eventWrapperRequest->deleteOldEntries();
 		} catch (Exception $e) {
 			$this->logger->warning('issue while deleting old events', ['exception' => $e]);
 		}
