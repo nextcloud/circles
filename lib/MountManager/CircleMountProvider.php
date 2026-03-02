@@ -253,8 +253,8 @@ class CircleMountProvider implements IMountProvider, IPartialMountProvider {
 
 	#[Override]
 	public function getMountsForPath(string $setupPathHint, bool $forChildren, array $mountProviderArgs, IStorageFactory $loader): array {
-		/** @var array<string, Mount[]> $userItems */
-		$userItems = [];
+		/** @var array<string, array{federatedUser: IFederatedUser, paths: string[]}> $userMountRequests */
+		$userMountRequests = [];
 		/** @var array<string, IMountPoint> $mounts */
 		$mounts = [];
 
@@ -267,24 +267,31 @@ class CircleMountProvider implements IMountProvider, IPartialMountProvider {
 				continue;
 			}
 
-			if (!isset($userItems[$user->getUID()])) {
+			if (!isset($userMountRequests[$user->getUID()])) {
 				$federatedUser = $this->federatedUserService->getLocalFederatedUser($user->getUID());
-				$path = '/' . implode('/', array_slice($parts, 3));
-				$userItems[$user->getUID()] = $this->mountRequest->getForUser(
-					$federatedUser,
-					$path,
-					$forChildren
-				);
+				$userMountRequests[$user->getUID()] = [
+					'federatedUser' => $federatedUser,
+					'paths' => [],
+				];
 			}
 
-			foreach ($userItems[$user->getUID()] as $item) {
-				$mountPoint = '/' . $user->getUID() . '/files' . $item->getMountPoint();
+			$userMountRequests[$user->getUID()]['paths'][] = '/' . implode('/', array_slice($parts, 3));
+		}
+
+		foreach ($userMountRequests as $uid => $userMountRequest) {
+			$userItems = $this->mountRequest->getForUser(
+				$userMountRequest['federatedUser'],
+				$userMountRequest['paths'],
+				$forChildren
+			);
+
+			foreach ($userItems as $item) {
+				$mountPoint = '/' . $uid . '/files' . $item->getMountPoint();
 				if (isset($mounts[$mountPoint])) {
 					continue;
 				}
-
 				try {
-					$this->fixDuplicateFile($user->getUID(), $item);
+					$this->fixDuplicateFile($uid, $item);
 					$mounts[$mountPoint] = $this->generateCircleMount($item, $loader);
 				} catch (\Exception $e) {
 					$this->logger->warning('issue with teams\' partial mounts', ['exception' => $e]);
