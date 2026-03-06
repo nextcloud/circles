@@ -256,11 +256,12 @@ class CirclesCheck extends Base {
 	 * @throws UnknownRemoteException
 	 */
 	private function testLoopback(InputInterface $input, OutputInterface $output): bool {
+		$this->appConfig->setValueInt(Application::APP_ID, 'test_dummy_token', time() + 10);
+
 		if (!$this->testRequest($output, 'GET', 'core.CSRFToken.index')) {
 			return false;
 		}
 
-		$this->appConfig->setValueInt(Application::APP_ID, 'test_dummy_token', time() + 10);
 		if (!$this->testRequest(
 			$output, 'POST', 'circles.EventWrapper.asyncBroadcast',
 			['token' => 'test-dummy-token']
