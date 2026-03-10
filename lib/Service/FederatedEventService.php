@@ -387,7 +387,9 @@ class FederatedEventService extends NCSignature {
 	public function initBroadcast(FederatedEvent $event): bool {
 		$instances = $this->getInstances($event);
 		// if empty instance and ran from CLI, any action as already been managed
-		if (empty($instances) && (!$event->isAsync() || OC::$CLI)) {
+		// except for loopback tests which need async verification even from CLI
+		$isLoopbackTest = is_a($event->getClass(), IFederatedItemLoopbackTest::class, true);
+		if (empty($instances) && (!$event->isAsync() || (OC::$CLI && !$isLoopbackTest))) {
 			return false;
 		}
 
