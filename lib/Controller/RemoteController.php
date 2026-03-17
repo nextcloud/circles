@@ -36,6 +36,7 @@ use OCA\Circles\Service\RemoteDownstreamService;
 use OCA\Circles\Service\RemoteStreamService;
 use OCA\Circles\Tools\Exceptions\InvalidItemException;
 use OCA\Circles\Tools\Exceptions\InvalidOriginException;
+use OCA\Circles\Tools\Exceptions\InvalidRemoteInstanceException;
 use OCA\Circles\Tools\Exceptions\ItemNotFoundException;
 use OCA\Circles\Tools\Exceptions\MalformedArrayException;
 use OCA\Circles\Tools\Exceptions\SignatoryException;
@@ -437,6 +438,7 @@ class RemoteController extends Controller {
 	 * @throws SignatoryException
 	 * @throws SignatureException
 	 * @throws UnknownTypeException
+	 * @throws InvalidRemoteInstanceException
 	 */
 	private function extractDataFromFromRequest(): SimpleDataStore {
 		$signed = $this->remoteStreamService->incomingSignedRequest();
@@ -453,6 +455,9 @@ class RemoteController extends Controller {
 		try {
 			/** @var FederatedUser $initiator */
 			$initiator = $store->gObj('initiator', FederatedUser::class);
+			if ($initiator->getInstance() !== $remoteInstance->getInstance() && !in_array($initiator->getInstance(), $remoteInstance->getAliases(), true)) {
+				throw new InvalidRemoteInstanceException('Initiator instance does not match remote instance');
+			}
 			$this->federatedUserService->setCurrentUser($initiator);
 		} catch (InvalidItemException | ItemNotFoundException $e) {
 		}
