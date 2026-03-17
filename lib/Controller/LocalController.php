@@ -247,6 +247,10 @@ class LocalController extends OCSController {
 				$userId = $currentUser->getUserId() . '/' . $userId;
 			}
 
+			if ($type === Member::TYPE_CIRCLE) {
+				$this->circleService->getCircle($userId);
+			}
+
 			$federatedUser = $this->federatedUserService->generateFederatedUser($userId, $type);
 			$result = $this->memberService->addMember($circleId, $federatedUser);
 
@@ -273,11 +277,18 @@ class LocalController extends OCSController {
 
 			$federatedUsers = [];
 			foreach ($members as $member) {
+				$userId = $this->get('id', $member);
+				$type = $this->getInt('type', $member);
+
+				if ($type === Member::TYPE_CIRCLE) {
+					$this->circleService->getCircle($userId);
+				}
+
 				// TODO: generate Multiple FederatedUsers using a single SQL request
 				try {
 					$federatedUsers[] = $this->federatedUserService->generateFederatedUser(
-						$this->get('id', $member),
-						$this->getInt('type', $member)
+						$userId,
+						$type,
 					);
 				} catch (MemberNotFoundException) {
 				}
