@@ -167,7 +167,12 @@ class MigrateCustomGroups extends Base {
 		$update->update('share')
 			->set('share_type', $update->createNamedParameter(IShare::TYPE_CIRCLE))
 			->set('share_with', $update->createNamedParameter($circleId))
-			->where($update->expr()->in('id', $update->createNamedParameter($shareIds, IQueryBuilder::PARAM_INT_ARRAY)));
+			->where(
+                $update->expr()->orX(
+                    $update->expr()->in('id', $update->createNamedParameter($shareIds, IQueryBuilder::PARAM_INT_ARRAY)),
+                    $update->expr()->in('parent', $update->createNamedParameter($shareIds, IQueryBuilder::PARAM_INT_ARRAY))
+                )
+            );
 
 		$count = $update->executeStatement();
 		$this->output->writeln('> ' . ((string)$count) . ' shares updated');
