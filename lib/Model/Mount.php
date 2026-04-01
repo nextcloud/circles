@@ -13,7 +13,6 @@ namespace OCA\Circles\Model;
 
 use JsonSerializable;
 use OCA\Circles\Exceptions\CircleNotFoundException;
-use OCA\Circles\MountManager\CircleMountManager;
 use OCA\Circles\Tools\Db\IQueryRow;
 use OCA\Circles\Tools\IDeserializable;
 use OCA\Circles\Tools\Traits\TArrayTools;
@@ -42,7 +41,6 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 	private string $storage;
 	private ICloudIdManager $cloudIdManager;
 	private IClientService $httpClientService;
-	private CircleMountManager $mountManager;
 	private string $remote = '';
 	private int $remoteShareId = 0;
 
@@ -306,25 +304,6 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 		return $this->httpClientService;
 	}
 
-
-	/**
-	 * @param CircleMountManager $mountManager
-	 *
-	 * @return Mount
-	 */
-	public function setMountManager(CircleMountManager $mountManager): self {
-		$this->mountManager = $mountManager;
-
-		return $this;
-	}
-
-	/**
-	 * @return CircleMountManager
-	 */
-	public function getMountManager(): CircleMountManager {
-		return $this->mountManager;
-	}
-
 	public function setRemote(string $remote): void {
 		$this->remote = $remote;
 	}
@@ -353,9 +332,7 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 			'token' => $this->getToken(),
 			'password' => $this->getPassword(),
 			'mountpoint' => $this->getMountPoint(false),
-			//			'manager'           => $this->getMountManager(),
 			'HttpClientService' => $this->getHttpClientService(),
-			'manager' => $this->getMountManager(),
 			'cloudId' => $this->getCloudIdManager()->getCloudId(
 				$member->getUserId(),
 				$member->getRemoteInstance()->getRoot()

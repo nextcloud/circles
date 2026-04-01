@@ -14,40 +14,32 @@ namespace OCA\Circles\MountManager;
 use Exception;
 use JsonSerializable;
 use OC\Files\Mount\MountPoint;
-use OC\Files\Mount\MoveableMount;
 use OCA\Circles\Exceptions\MountPointConstructionException;
 use OCA\Circles\Model\Mount;
 use OCA\Circles\Tools\Traits\TArrayTools;
+use OCP\Files\Storage\IStorage;
 use OCP\Files\Storage\IStorageFactory;
+use Override;
 
 /**
  * Class CircleMount
  *
  * @package OCA\Circles\MountManager
  */
-class CircleMount extends MountPoint implements MoveableMount, JsonSerializable {
+class CircleMount extends MountPoint implements JsonSerializable {
 	use TArrayTools;
 
-
-	/** @var Mount */
-	private $mount;
-
-	/** @var string */
-	private $storageClass;
-
+	/** @var class-string<IStorage> */
+	private string $storageClass;
 
 	/**
-	 * CircleMount constructor.
-	 *
-	 * @param Mount $mount
-	 * @param string $storage
-	 * @param IStorageFactory|null $loader
+	 * @param IStorage|class-string<IStorage> $storage
 	 *
 	 * @throws MountPointConstructionException
 	 */
 	public function __construct(
-		Mount $mount,
-		string $storage,
+		private Mount $mount,
+		IStorage|string $storage,
 		?IStorageFactory $loader = null,
 	) {
 		try {
@@ -57,53 +49,17 @@ class CircleMount extends MountPoint implements MoveableMount, JsonSerializable 
 				$mount->toMount(),
 				$loader
 			);
-		} catch (Exception $e) {
+		} catch (Exception) {
 			throw new MountPointConstructionException();
 		}
 
-		$this->mount = $mount;
-		$this->storageClass = $storage;
+		$this->storageClass = $storage instanceof IStorage ? get_class($storage) : $storage;
 	}
 
-
-	/**
-	 * Move the mount point to $target
-	 *
-	 * @param string $target the target mount point
-	 *
-	 * @return bool
-	 */
-	public function moveMount($target) {
-		$result = $this->mount->getMountManager()->renameShare($this->gsShareId, $target);
-		$this->setMountPoint($target);
-
-		return $result;
-	}
-
-	/**
-	 * Remove the mount points
-	 *
-	 * @return mixed
-	 * @return bool
-	 */
-	public function removeMount() {
-		return $this->mount->getMountManager()->unshare($this->gsShareId);
-	}
-
-
-	/**
-	 * Get the type of mount point, used to distinguish things like shares and external storages
-	 * in the web interface
-	 *
-	 * @return string
-	 */
-	public function getMountType() {
+	#[Override]
+	public function getMountType(): string {
 		return 'shared';
 	}
-
-	public function getInitiator() {
-	}
-
 
 	/**
 	 * @return array

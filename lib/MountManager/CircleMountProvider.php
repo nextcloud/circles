@@ -41,12 +41,12 @@ use Psr\Log\LoggerInterface;
 class CircleMountProvider implements IMountProvider {
 	use TArrayTools;
 
+	/** @var class-string<ExternalStorage> */
 	public const EXTERNAL_STORAGE = ExternalStorage::class;
 
 	public function __construct(
 		private IClientService $clientService,
 		private IRootFolder $rootFolder,
-		private CircleMountManager $circleMountManager,
 		private ICloudIdManager $cloudIdManager,
 		private MountRequest $mountRequest,
 		private MountPointRequest $mountPointRequest,
@@ -57,9 +57,6 @@ class CircleMountProvider implements IMountProvider {
 	}
 
 	/**
-	 * @param IUser $user
-	 * @param IStorageFactory $loader
-	 *
 	 * @return list<IMountPoint>
 	 * @throws RequestBuilderException
 	 * @throws FederatedUserException
@@ -86,10 +83,6 @@ class CircleMountProvider implements IMountProvider {
 
 
 	/**
-	 * @param Mount $mount
-	 * @param IStorageFactory $storageFactory
-	 *
-	 * @return CircleMount
 	 * @throws InitiatorNotFoundException
 	 * @throws MountPointConstructionException
 	 */
@@ -103,9 +96,7 @@ class CircleMountProvider implements IMountProvider {
 		}
 
 		$mount->setCloudIdManager($this->cloudIdManager)
-			->setHttpClientService($this->clientService)
-//		->setStorage(self::EXTERNAL_STORAGE)
-			->setMountManager($this->circleMountManager);
+			->setHttpClientService($this->clientService);
 
 		return new CircleMount(
 			$mount,
@@ -113,75 +104,6 @@ class CircleMountProvider implements IMountProvider {
 			$storageFactory
 		);
 	}
-
-
-	/**
-	 * @param int $gsShareId
-	 * @param string $target
-	 *
-	 * @return bool
-	 */
-	public function renameShare(int $gsShareId, string $target) {
-		//		try {
-		//			if ($target !== '-') {
-		//				$target = $this->stripPath($target);
-		//				$this->gsSharesRequest->getShareMountPointByPath($this->userId, $target);
-		//
-		//				return false;
-		//			}
-		//		} catch (ShareNotFound $e) {
-		//		}
-		//
-		//		$mountPoint = new GSShareMountpoint($gsShareId, $this->userId, $target);
-		//		try {
-		//			$this->gsSharesRequest->getShareMountPointById($gsShareId, $this->userId);
-		//			$this->gsSharesRequest->updateShareMountPoint($mountPoint);
-		//		} catch (ShareNotFound $e) {
-		//			$this->gsSharesRequest->generateShareMountPoint($mountPoint);
-		//		}
-
-		return true;
-	}
-
-
-	// TODO: implement !
-	public function getMountManager() {
-		return $this;
-	}
-
-	// TODO: implement !
-	public function removeShare($mountPoint) {
-	}
-
-	// TODO: implement !
-	public function removeMount($mountPoint) {
-	}
-
-
-	/**
-	 * @param int $gsShareId
-	 *
-	 * @return bool
-	 */
-	public function unshare(int $gsShareId) {
-		return $this->renameShare($gsShareId, '-');
-	}
-
-
-	/**
-	 * remove '/user/files' from the path and trailing slashes
-	 *
-	 * @param string $path
-	 *
-	 * @return string
-	 */
-	protected function stripPath($path) {
-		return $path;
-		//		$prefix = '/' . $this->userId . '/files';
-		//
-		//		return rtrim(substr($path, strlen($prefix)), '/');
-	}
-
 
 	private function fixDuplicateFile(string $userId, Mount $mount): void {
 		if ($mount->getOriginalMountPoint() === '-') {
