@@ -189,13 +189,10 @@ class CircleMountProvider implements IMountProvider, IPartialMountProvider {
 				continue;
 			}
 
-			if (!isset($userMountRequests[$user->getUID()])) {
-				$federatedUser = $this->federatedUserService->getLocalFederatedUser($user->getUID());
-				$userMountRequests[$user->getUID()] = [
-					'federatedUser' => $federatedUser,
-					'paths' => [],
-				];
-			}
+			$userMountRequests[$user->getUID()] ??= [
+				'federatedUser' => $this->federatedUserService->getLocalFederatedUser($user->getUID()),
+				'paths' => [],
+			];
 
 			$userMountRequests[$user->getUID()]['paths'][] = '/' . implode('/', array_slice($parts, 3));
 		}
@@ -216,7 +213,7 @@ class CircleMountProvider implements IMountProvider, IPartialMountProvider {
 					$this->fixDuplicateFile($uid, $item);
 					$mounts[$mountPoint] = $this->generateCircleMount($item, $loader);
 				} catch (\Exception $e) {
-					$this->logger->warning('issue with teams\' partial mounts', ['exception' => $e]);
+					$this->logger->error('Failed to create Teams mount', ['exception' => $e]);
 				}
 			}
 		}

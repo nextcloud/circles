@@ -57,9 +57,7 @@ class MountRequest extends MountRequestBuilder {
 
 
 	/**
-	 * @param IFederatedUser $federatedUser
-	 * @param string[] $paths
-	 * @param bool $forChildren
+	 * @param list<string> $paths
 	 *
 	 * @return Mount[]
 	 * @throws RequestBuilderException
