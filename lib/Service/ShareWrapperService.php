@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Service;
 
@@ -39,31 +37,16 @@ class ShareWrapperService {
 	public const CACHE_SHARED_WITH = 'circles/getSharedWith';
 	public const CACHE_SHARED_WITH_TTL = 900;
 
-
-	/** @var ShareWrapperRequest */
-	private $shareWrapperRequest;
-
 	private ICache $cache;
 
-
-	/**
-	 * ShareWrapperService constructor.
-	 *
-	 * @param ICacheFactory $cacheFactory
-	 * @param ShareWrapperRequest $shareWrapperRequest
-	 */
-	public function __construct(ICacheFactory $cacheFactory, ShareWrapperRequest $shareWrapperRequest) {
+	public function __construct(
+		ICacheFactory $cacheFactory,
+		private ShareWrapperRequest $shareWrapperRequest,
+	) {
 		$this->cache = $cacheFactory->createDistributed(self::CACHE_SHARED_WITH);
-
-		$this->shareWrapperRequest = $shareWrapperRequest;
 	}
 
-
 	/**
-	 * @param string $singleId
-	 * @param int $nodeId
-	 *
-	 * @return ShareWrapper
 	 * @throws RequestBuilderException
 	 * @throws ShareWrapperNotFoundException
 	 */
@@ -71,43 +54,30 @@ class ShareWrapperService {
 		return $this->shareWrapperRequest->searchShare($singleId, $nodeId);
 	}
 
-
 	/**
-	 * @param IShare $share
-	 *
 	 * @throws NotFoundException
 	 */
 	public function save(IShare $share): void {
-		$this->cache->clear('');
+		$this->clearCache($share->getSharedWith());
 		$this->shareWrapperRequest->save($share);
 	}
 
-
-	/**
-	 * @param ShareWrapper $shareWrapper
-	 */
 	public function update(ShareWrapper $shareWrapper): void {
-		$this->cache->clear('');
+		$this->clearCache($shareWrapper->getSharedWith());
 		$this->shareWrapperRequest->update($shareWrapper);
 	}
 
 	public function updateChildPermissions(ShareWrapper $shareWrapper): void {
-		$this->cache->clear('');
+		$this->clearCache($shareWrapper->getSharedWith());
 		$this->shareWrapperRequest->updateChildPermissions($shareWrapper);
 	}
 
-	/**
-	 * @param ShareWrapper $shareWrapper
-	 */
 	public function delete(ShareWrapper $shareWrapper): void {
-		$this->cache->clear('');
+		$this->clearCache($shareWrapper->getSharedWith());
 		$this->shareWrapperRequest->delete((int)$shareWrapper->getId());
 	}
 
 	/**
-	 * @param string $circleId
-	 * @param string $userId
-	 *
 	 * @throws Exception
 	 */
 	public function deleteUserSharesToCircle(string $circleId, string $userId): void {
@@ -115,26 +85,17 @@ class ShareWrapperService {
 			throw new Exception('$initiator cannot be empty');
 		}
 
-		$this->cache->clear('');
+		// Clear cache for the entire circle as we don't know all affected users
+		$this->clearCacheForCircle($circleId);
 		$this->shareWrapperRequest->deleteSharesToCircle($circleId, $userId);
 	}
 
-
-	/**
-	 * @param string $circleId
-	 */
 	public function deleteAllSharesToCircle(string $circleId): void {
-		$this->cache->clear('');
+		$this->clearCacheForCircle($circleId);
 		$this->shareWrapperRequest->deleteSharesToCircle($circleId, '');
 	}
 
-
 	/**
-	 * @param string $circleId
-	 * @param FederatedUser|null $shareRecipient
-	 * @param FederatedUser|null $shareInitiator
-	 * @param bool $completeDetails
-	 *
 	 * @return ShareWrapper[]
 	 * @throws RequestBuilderException
 	 */
@@ -159,12 +120,7 @@ class ShareWrapperService {
 		return $this->shareWrapperRequest->getSharesToCircles($circleIds);
 	}
 
-
 	/**
-	 * @param int $shareId
-	 * @param FederatedUser|null $federatedUser
-	 *
-	 * @return ShareWrapper
 	 * @throws ShareWrapperNotFoundException
 	 * @throws RequestBuilderException
 	 */
@@ -172,11 +128,7 @@ class ShareWrapperService {
 		return $this->shareWrapperRequest->getShareById($shareId, $federatedUser);
 	}
 
-
 	/**
-	 * @param int $fileId
-	 * @param bool $getData
-	 *
 	 * @return ShareWrapper[]
 	 * @throws RequestBuilderException
 	 */
@@ -185,21 +137,14 @@ class ShareWrapperService {
 	}
 
 	/**
-	 * @param array $fileIds
-	 * @param bool $getData
-	 *
 	 * @return ShareWrapper[]
 	 * @throws RequestBuilderException
 	 */
 	public function getSharesByFileIds(array $fileIds, bool $getData = false, bool $getChild = false): array {
-		return ($fileIds === []) ? [] : $this->shareWrapperRequest->getSharesByFileIds($fileIds, $getData, $getChild);
+		return $fileIds === [] ? [] : $this->shareWrapperRequest->getSharesByFileIds($fileIds, $getData, $getChild);
 	}
 
 	/**
-	 * @param string $token
-	 * @param FederatedUser|null $federatedUser
-	 *
-	 * @return ShareWrapper
 	 * @throws RequestBuilderException
 	 * @throws ShareWrapperNotFoundException
 	 */
@@ -207,12 +152,7 @@ class ShareWrapperService {
 		return $this->shareWrapperRequest->getShareByToken($token, $federatedUser);
 	}
 
-
 	/**
-	 * @param FederatedUser $federatedUser
-	 * @param int $nodeId
-	 * @param CircleProbe|null $probe
-	 *
 	 * @return ShareWrapper[]
 	 * @throws RequestBuilderException
 	 */
@@ -230,7 +170,8 @@ class ShareWrapperService {
 			}
 
 			return $this->deserializeList($cachedData, ShareWrapper::class);
-		} catch (InvalidItemException $e) {
+		} catch (InvalidItemException) {
+			// Cache miss, continue to fetch from database
 		}
 
 		$shares = $this->shareWrapperRequest->getSharedWith($federatedUser, $nodeId, $probe);
@@ -241,14 +182,6 @@ class ShareWrapperService {
 
 
 	/**
-	 * @param FederatedUser $federatedUser
-	 * @param int $nodeId
-	 * @param bool $reshares
-	 * @param int $offset
-	 * @param int $limit
-	 * @param bool $getData
-	 * @param bool $completeDetails
-	 *
 	 * @return ShareWrapper[]
 	 * @throws RequestBuilderException
 	 */
@@ -262,30 +195,30 @@ class ShareWrapperService {
 		bool $completeDetails = false,
 	): array {
 		return $this->shareWrapperRequest->getSharesBy(
-			$federatedUser, $nodeId, $reshares, $limit, $offset, $getData, $completeDetails
+			$federatedUser,
+			$nodeId,
+			$reshares,
+			$limit,
+			$offset,
+			$getData,
+			$completeDetails
 		);
 	}
 
-
 	/**
-	 * @param FederatedUser $federatedUser
-	 * @param Folder $node
-	 * @param bool $reshares
-	 * @param bool $shallow Whether the method should stop at the first level, or look into sub-folders.
-	 *
 	 * @return ShareWrapper[]
 	 * @throws RequestBuilderException
 	 */
-	public function getSharesInFolder(FederatedUser $federatedUser, Folder $node, bool $reshares, bool $shallow = true): array {
+	public function getSharesInFolder(
+		FederatedUser $federatedUser,
+		Folder $node,
+		bool $reshares,
+		bool $shallow = true,
+	): array {
 		return $this->shareWrapperRequest->getSharesInFolder($federatedUser, $node, $reshares, $shallow);
 	}
 
-
 	/**
-	 * @param FederatedUser $federatedUser
-	 * @param IShare $share
-	 *
-	 * @return ShareWrapper
 	 * @throws NotFoundException
 	 * @throws ShareWrapperNotFoundException
 	 * @throws RequestBuilderException
@@ -293,29 +226,58 @@ class ShareWrapperService {
 	public function getChild(IShare $share, FederatedUser $federatedUser): ShareWrapper {
 		try {
 			return $this->shareWrapperRequest->getChild($federatedUser, (int)$share->getId());
-		} catch (ShareWrapperNotFoundException $e) {
+		} catch (ShareWrapperNotFoundException) {
+			// Child doesn't exist, create it
 		}
 
 		return $this->createChild($share, $federatedUser);
 	}
 
-
+	/**
+	 * Clear cache entries for a specific singleId
+	 * If singleId is empty, clears the entire cache
+	 */
 	public function clearCache(string $singleId): void {
-		$this->cache->clear($singleId);
+		if ($singleId === '') {
+			$this->cache->clear('');
+			return;
+		}
+
+		// Clear all cache entries for this singleId by using it as a prefix
+		// Cache keys format: singleId#nodeId#probeSum or singleId#pathHash#forChildren#probeSum
+		$this->cache->clear($singleId . '#');
 	}
 
+	/**
+	 * Clear cache for all members of a circle
+	 * This is a fallback when we can't determine specific affected users
+	 */
+	public function clearCacheForCircle(string $circleId): void {
+		// Since we can't easily determine all singleIds affected by a circle,
+		// we clear the entire cache. This is inefficient but ensures consistency.
+		// A better approach would be to iterate over all circle members,
+		// but that would require circular dependency with MembershipService.
+		$this->cache->clear('');
+	}
 
 	/**
-	 * @param FederatedUser $federatedUser
-	 * @param IShare $share
-	 *
-	 * @return ShareWrapper
+	 * Clear cache for a specific node across all users
+	 * Should be called when a file/folder is modified, deleted, or renamed
+	 */
+	public function clearCacheForNode(int $nodeId): void {
+		// Since cache keys include nodeId but we can't use it as a prefix,
+		// we need to clear the entire cache.
+		// TODO: Implement a reverse index (nodeId -> singleIds) for efficient invalidation
+		$this->cache->clear('');
+	}
+
+	/**
 	 * @throws ShareWrapperNotFoundException
 	 * @throws NotFoundException
 	 * @throws RequestBuilderException
 	 */
 	private function createChild(IShare $share, FederatedUser $federatedUser): ShareWrapper {
-		$this->cache->clear('');
+		$this->clearCache($federatedUser->getSingleId());
 		$share->setSharedWith($federatedUser->getSingleId());
 		$childId = $this->shareWrapperRequest->save($share, (int)$share->getId());
 
@@ -323,20 +285,13 @@ class ShareWrapperService {
 	}
 
 
-	/**
-	 * @param FederatedUser $federatedUser
-	 * @param int $nodeId
-	 * @param string $probeSum
-	 *
-	 * @return string
-	 */
 	private function generateSharedWithCacheKey(
 		FederatedUser $federatedUser,
 		int $nodeId,
 		string $probeSum,
 	): string {
 		return $federatedUser->getSingleId() . '#'
-			   . $nodeId . '#'
-			   . $probeSum;
+			. $nodeId . '#'
+			. $probeSum;
 	}
 }
