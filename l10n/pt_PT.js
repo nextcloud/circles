@@ -76,6 +76,7 @@ OC.L10N.register(
     "Nextcloud Group" : "Grupo Nextcloud",
     "Email address" : "Endereço de email",
     "Contact" : "Contacto",
+    "Team" : "Grupo",
     "Nextcloud App" : "Aplicação Nextcloud",
     "Member" : "membro",
     "Moderator" : "Moderador",
