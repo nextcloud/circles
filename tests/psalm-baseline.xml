@@ -292,6 +292,11 @@
       <code><![CDATA[search]]></code>
     </DeprecatedMethod>
   </file>
+  <file src="lib/Service/AvatarService.php">
+    <MissingDependency>
+      <code><![CDATA[\OCP\Image]]></code>
+    </MissingDependency>
+  </file>
   <file src="lib/Service/FederatedShareService.php">
     <InvalidMethodCall>
       <code><![CDATA[gObj]]></code>
