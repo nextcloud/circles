@@ -189,6 +189,9 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	/** @var string */
 	private $description = '';
 
+	/** @var string */
+	private $avatar = '';
+
 	/** @var int */
 	private $contactAddressBook = 0;
 
@@ -686,6 +689,25 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 
 
 	/**
+	 * @param string $avatar
+	 *
+	 * @return self
+	 */
+	public function setAvatar(string $avatar): self {
+		$this->avatar = $avatar;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getAvatar(): string {
+		return $this->avatar;
+	}
+
+
+	/**
 	 * @param string $description
 	 *
 	 * @return self
@@ -791,6 +813,7 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 //			 ->setContactAddressBook($this->get('contact_addressbook', $data))
 //			 ->setContactGroupName($this->get('contact_groupname', $data))
 			->setDescription($this->get('description', $data))
+			->setAvatar($this->get('avatar', $data))
 			->setCreation($this->getInt('creation', $data));
 
 		try {
@@ -831,6 +854,7 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 			'populationInherited' => $this->getPopulationInherited(),
 			'config' => $this->getConfig(),
 			'description' => $this->getDescription(),
+			'avatar' => $this->getAvatar(),
 			'url' => $this->getUrl(),
 			'creation' => $this->getCreation(),
 			'initiator' => ($this->hasInitiator()) ? $this->getInitiator() : null
@@ -888,7 +912,8 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 			->setSettings($this->getArray($prefix . 'settings', $data))
 			->setContactAddressBook($this->getInt($prefix . 'contact_addressbook', $data))
 			->setContactGroupName($this->get($prefix . 'contact_groupname', $data))
-			->setDescription($this->get($prefix . 'description', $data));
+			->setDescription($this->get($prefix . 'description', $data))
+			->setAvatar($this->get($prefix . 'avatar', $data));
 
 		$creation = $this->get($prefix . 'creation', $data);
 		$dateTime = DateTime::createFromFormat('Y-m-d H:i:s', $creation);

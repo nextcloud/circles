@@ -62,7 +62,8 @@ class CoreRequestBuilder {
 			'config',
 			'contact_addressbook',
 			'contact_groupname',
-			'creation'
+			'creation',
+			'avatar'
 		],
 		self::TABLE_MEMBER => [
 			'circle_id',

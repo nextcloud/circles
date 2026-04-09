@@ -12,6 +12,7 @@ use OCA\Circles\Controller\LocalController;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Probes\BasicProbe;
 use OCA\Circles\Model\Probes\CircleProbe;
+use OCA\Circles\Service\AvatarService;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
@@ -54,6 +55,9 @@ class LocalControllerTest extends TestCase {
 	/** @var SearchService|MockObject */
 	private $searchService;
 
+	/** @var AvatarService */
+	private $avatarService;
+
 	/** @var PermissionService|MockObject */
 	private $permissionService;
 
@@ -72,6 +76,7 @@ class LocalControllerTest extends TestCase {
 		$this->memberService = $this->createMock(MemberService::class);
 		$this->membershipService = $this->createMock(MembershipService::class);
 		$this->searchService = $this->createMock(SearchService::class);
+		$this->avatarService = $this->createMock(AvatarService::class);
 		$this->permissionService = $this->createMock(PermissionService::class);
 		$this->configService = $this->createMock(ConfigService::class);
 		$this->configService->expects($this->any())->method('getAppValueBool')->with(ConfigService::FRONTEND_ENABLED)->willReturn(true);
@@ -84,6 +89,7 @@ class LocalControllerTest extends TestCase {
 			$this->membershipService,
 			$this->permissionService,
 			$this->searchService,
+			$this->avatarService,
 			$this->configService);
 	}
 

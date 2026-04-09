@@ -63,7 +63,8 @@ class CircleRequest extends CircleRequestBuilder {
 		$qb->set('name', $qb->createNamedParameter($circle->getName()))
 			->set('display_name', $qb->createNamedParameter($circle->getDisplayName()))
 			->set('sanitized_name', $qb->createNamedParameter($circle->getSanitizedName()))
-			->set('description', $qb->createNamedParameter($circle->getDescription()));
+			->set('description', $qb->createNamedParameter($circle->getDescription()))
+			->set('avatar', $qb->createNamedParameter($circle->getAvatar()));
 
 		$qb->limitToUniqueId($circle->getSingleId());
 
