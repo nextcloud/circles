@@ -109,9 +109,12 @@ class ShareCreatedSendMail implements IEventListener {
 		/** @var ShareWrapper $wrappedShare */
 		$wrappedShare = $event->getFederatedEvent()->getParams()->gObj('wrappedShare', ShareWrapper::class);
 		$iShare = $wrappedShare->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
-		$link = $this->urlGenerator->linkToRouteAbsolute('files_sharing.sharecontroller.showShare', [
-			'token' => $iShare->getToken()
-		]);
+
+		$link = $this->urlGenerator->linkToRouteAbsolute(
+			'files.View.showFile',
+			['fileid' => $iShare->getNodeId()]
+		);
+
 		$initiator = $iShare->getSharedBy();
 		$initiatorUser = $this->userManager->get($initiator);
 		$initiatorDisplayName = ($initiatorUser instanceof IUser) ? $initiatorUser->getDisplayName() : $initiator;
