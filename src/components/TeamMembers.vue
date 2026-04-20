@@ -19,8 +19,8 @@ defineProps<{
 			<li v-for="member in members.slice(0, 5)" :key="member.userId || member.singleId" class="team-members__item">
 				<NcAvatar
 					:user="member.isUser ? member.userId : undefined"
-					:display-name="member.displayName"
-					:is-no-user="!member.isUser"
+					:displayName="member.displayName"
+					:isNoUser="!member.isUser"
 					:size="36"
 					class="team-members__avatar" />
 				<span v-if="members.length > 5" class="team-members__more">
