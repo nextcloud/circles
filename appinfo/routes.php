@@ -81,6 +81,24 @@ return [
 		['name' => 'Admin#editConfig', 'url' => '/admin/{emulated}/circles/{circleId}/config', 'verb' => 'PUT'],
 		['name' => 'Admin#link', 'url' => '/admin/{emulated}/link/{circleId}/{singleId}', 'verb' => 'GET'],
 
+		// AdminManageController - simplified admin controller (no user emulation)
+		['name' => 'AdminManage#index', 'url' => '/admin/manage/circles', 'verb' => 'GET'],
+		['name' => 'AdminManage#show', 'url' => '/admin/manage/circles/{circleId}', 'verb' => 'GET'],
+		['name' => 'AdminManage#create', 'url' => '/admin/manage/circles', 'verb' => 'POST'],
+		['name' => 'AdminManage#update', 'url' => '/admin/manage/circles/{circleId}', 'verb' => 'PUT'],
+		['name' => 'AdminManage#destroy', 'url' => '/admin/manage/circles/{circleId}', 'verb' => 'DELETE'],
+		['name' => 'AdminManage#members', 'url' => '/admin/manage/circles/{circleId}/members', 'verb' => 'GET'],
+		['name' => 'AdminManage#addMember', 'url' => '/admin/manage/circles/{circleId}/members', 'verb' => 'POST'],
+		[
+			'name' => 'AdminManage#removeMember', 'url' => '/admin/manage/circles/{circleId}/members/{memberId}',
+			'verb' => 'DELETE'
+		],
+		[
+			'name' => 'AdminManage#setMemberLevel',
+			'url' => '/admin/manage/circles/{circleId}/members/{memberId}/level',
+			'verb' => 'PUT'
+		],
+
 		['name' => 'Settings#getValues', 'url' => '/settings/', 'verb' => 'GET'],
 		['name' => 'Settings#setValue', 'url' => '/settings/{key}/', 'verb' => 'POST'],
 	],
