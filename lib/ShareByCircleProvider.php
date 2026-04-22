@@ -569,30 +569,18 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 	}
 
 	/**
+	 * Team shares are reached through the membership-based mount, never via the
+	 * public /s/<token> route. Refusing to resolve the token here keeps the
+	 * share out of the public share controller even though a token is still
+	 * stored on the share row (it is reused as a mount-row key elsewhere).
+	 *
 	 * @param string $token
 	 *
 	 * @return IShare
-	 * @throws IllegalIDChangeException
-	 * @throws RequestBuilderException
 	 * @throws ShareNotFound
 	 */
 	public function getShareByToken($token): IShare {
-		if (is_null($token)) {
-			throw new ShareNotFound();
-		}
-
-		try {
-			$wrappedShare = $this->shareWrapperService->getShareByToken($token);
-		} catch (ShareWrapperNotFoundException $e) {
-			throw new ShareNotFound();
-		}
-
-		$share = $wrappedShare->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
-		if ($share->getPassword() !== '') {
-			$this->logger->notice('share is protected by a password, hash: ' . $share->getPassword());
-		}
-
-		return $share;
+		throw new ShareNotFound();
 	}
 
 
