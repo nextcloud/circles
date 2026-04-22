@@ -321,7 +321,7 @@ class QueryBuilder implements IQueryBuilder {
 	 *
 	 * @return $this This QueryBuilder instance.
 	 */
-	public function selectAlias($select, $alias)
+	public function selectAlias($select, $alias): self
  {
  }
 
