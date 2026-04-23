@@ -21,6 +21,7 @@ use OCP\Config\ValueType;
  */
 class ConfigLexicon implements ILexicon {
 	public const USER_SINGLE_ID = 'userSingleId';
+	public const REMOVE_SHARE_TOKENS_DONE = 'remove_share_tokens_done';
 
 	public function getStrictness(): Strictness {
 		return Strictness::IGNORE;
@@ -34,6 +35,7 @@ class ConfigLexicon implements ILexicon {
 	public function getUserConfigs(): array {
 		return [
 			new Entry(key: self::USER_SINGLE_ID, type: ValueType::STRING, defaultRaw: '', definition: 'caching singleId for each local account', lazy: false, flags: IUserConfig::FLAG_INDEXED),
+			new Entry(key: self::REMOVE_SHARE_TOKENS_DONE, type: ValueType::BOOL, defaultRaw: false, definition: 'whether the remove share tokens repair step has already been executed', lazy: true),
 		];
 	}
 }
