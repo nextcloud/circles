@@ -43,6 +43,9 @@ Those groups of people can then be used by any other app for sharing purpose.
 			<step>OCA\Circles\Migration\Migration</step>
 			<step>OCA\Circles\Migration\SyncGroupCircles</step>
 		</post-migration>
+		<live-migration>
+			<step>OCA\Circles\Migration\RemoveShareTokens</step>
+		</live-migration>
 	</repair-steps>
 
 	<commands>
