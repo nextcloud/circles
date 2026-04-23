@@ -26,10 +26,7 @@ interface ConsoleOutputInterface extends OutputInterface
     {
     }
 
-    /**
-     * @return void
-     */
-    public function setErrorOutput(OutputInterface $error)
+    public function setErrorOutput(OutputInterface $error): void
     {
     }
 

@@ -29,61 +29,45 @@ class SimpleContainer implements ArrayAccess, ContainerInterface, IContainer {
 	public static bool $useLazyObjects = false;
 
 	public function __construct()
- {
- }
+    {
+    }
 
 	/**
 	 * @template T
 	 * @param class-string<T>|string $id
-	 * @return T|mixed
-	 * @psalm-template S as class-string<T>|string
-	 * @psalm-param S $id
-	 * @psalm-return (S is class-string<T> ? T : mixed)
+	 * @return ($id is class-string<T> ? T : mixed)
 	 */
 	public function get(string $id): mixed
- {
- }
+    {
+    }
 
 	public function has(string $id): bool
- {
- }
+    {
+    }
 
 	/**
 	 * @inheritDoc
 	 * @param list<class-string> $chain
 	 */
-	public function resolve($name, array $chain = [])
- {
- }
+	public function resolve(string $name, array $chain = []): mixed
+    {
+    }
 
 	/**
 	 * @inheritDoc
 	 * @param list<class-string> $chain
 	 */
-	public function query(string $name, bool $autoload = true, array $chain = [])
- {
- }
+	public function query(string $name, bool $autoload = true, array $chain = []): mixed
+    {
+    }
 
-	/**
-	 * @param string $name
-	 * @param mixed $value
-	 */
-	public function registerParameter($name, $value)
- {
- }
+	public function registerParameter(string $name, mixed $value): void
+    {
+    }
 
-	/**
-	 * The given closure is call the first time the given service is queried.
-	 * The closure has to return the instance for the given service.
-	 * Created instance will be cached in case $shared is true.
-	 *
-	 * @param string $name name of the service to register another backend for
-	 * @param Closure $closure the closure to be called on service creation
-	 * @param bool $shared
-	 */
-	public function registerService($name, Closure $closure, $shared = true)
- {
- }
+	public function registerService(string $name, Closure $closure, bool $shared = true): void
+    {
+    }
 
 	/**
 	 * Shortcut for returning a service from a service under a different key,
@@ -92,49 +76,49 @@ class SimpleContainer implements ArrayAccess, ContainerInterface, IContainer {
 	 * @param string $alias the alias that should be registered
 	 * @param string $target the target that should be resolved instead
 	 */
-	public function registerAlias($alias, $target): void
- {
- }
+	public function registerAlias(string $alias, string $target): void
+    {
+    }
 
 	protected function registerDeprecatedAlias(string $alias, string $target): void
- {
- }
+    {
+    }
 
 	/**
 	 * @param string $name
 	 * @return string
 	 */
 	protected function sanitizeName($name)
- {
- }
+    {
+    }
 
 	/**
 	 * @deprecated 20.0.0 use \Psr\Container\ContainerInterface::has
 	 */
 	public function offsetExists($id): bool
- {
- }
+    {
+    }
 
 	/**
 	 * @deprecated 20.0.0 use \Psr\Container\ContainerInterface::get
 	 * @return mixed
 	 */
 	#[\ReturnTypeWillChange]
- public function offsetGet($id)
- {
- }
+    public function offsetGet($id)
+    {
+    }
 
 	/**
 	 * @deprecated 20.0.0 use \OCP\IContainer::registerService
 	 */
 	public function offsetSet($offset, $value): void
- {
- }
+    {
+    }
 
 	/**
 	 * @deprecated 20.0.0
 	 */
 	public function offsetUnset($offset): void
- {
- }
+    {
+    }
 }

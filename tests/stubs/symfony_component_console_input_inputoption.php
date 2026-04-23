@@ -46,19 +46,19 @@ class InputOption
     public const VALUE_IS_ARRAY = 8;
 
     /**
-     * The option may have either positive or negative value (e.g. --ansi or --no-ansi).
+     * The option allows passing a negated variant (e.g. --ansi or --no-ansi).
      */
     public const VALUE_NEGATABLE = 16;
 
     /**
      * @param string|array|null                                                             $shortcut        The shortcuts, can be null, a string of shortcuts delimited by | or an array of shortcuts
-     * @param int|null                                                                      $mode            The option mode: One of the VALUE_* constants
+     * @param int-mask-of<InputOption::*>|null                                              $mode            The option mode: One of the VALUE_* constants
      * @param string|bool|int|float|array|null                                              $default         The default value (must be null for self::VALUE_NONE)
      * @param array|\Closure(CompletionInput,CompletionSuggestions):list<string|Suggestion> $suggestedValues The values used for input completion
      *
      * @throws InvalidArgumentException If option mode is invalid or incompatible
      */
-    public function __construct(string $name, string|array|null $shortcut = null, ?int $mode = null, string $description = '', string|bool|int|float|array|null $default = null, array|\Closure $suggestedValues = [])
+    public function __construct(string $name, string|array|null $shortcut = null, ?int $mode = null, private string $description = '', string|bool|int|float|array|null $default = null, private array|\Closure $suggestedValues = [])
     {
     }
 
@@ -112,14 +112,19 @@ class InputOption
     {
     }
 
+    /**
+     * Returns true if the option allows passing a negated variant.
+     *
+     * @return bool true if mode is self::VALUE_NEGATABLE, false otherwise
+     */
     public function isNegatable(): bool
     {
     }
 
     /**
-     * @return void
+     * Sets the default value.
      */
-    public function setDefault(string|bool|int|float|array|null $default = null)
+    public function setDefault(string|bool|int|float|array|null $default): void
     {
     }
 
@@ -137,12 +142,15 @@ class InputOption
     {
     }
 
+    /**
+     * Returns true if the option has values for input completion.
+     */
     public function hasCompletion(): bool
     {
     }
 
     /**
-     * Adds suggestions to $suggestions for the current completion input.
+     * Supplies suggestions when command resolves possible completion options for input.
      *
      * @see Command::complete()
      */

@@ -7,6 +7,7 @@
  */
 namespace OC\Files\Cache;
 
+use OC\DatabaseException;
 use OC\DB\Exceptions\DbalException;
 use OC\DB\QueryBuilder\Sharded\ShardDefinition;
 use OC\Files\Cache\Wrapper\CacheJail;
@@ -15,9 +16,11 @@ use OC\Files\Search\SearchComparison;
 use OC\Files\Search\SearchQuery;
 use OC\Files\Storage\Wrapper\Encryption;
 use OC\SystemConfig;
+use OCP\Constants;
 use OCP\DB\Exception;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\EventDispatcher\IEventDispatcher;
+use OCP\Files\Cache\CacheEntriesRemovedEvent;
 use OCP\Files\Cache\CacheEntryInsertedEvent;
 use OCP\Files\Cache\CacheEntryRemovedEvent;
 use OCP\Files\Cache\CacheEntryUpdatedEvent;
@@ -25,6 +28,7 @@ use OCP\Files\Cache\CacheInsertEvent;
 use OCP\Files\Cache\CacheUpdateEvent;
 use OCP\Files\Cache\ICache;
 use OCP\Files\Cache\ICacheEntry;
+use OCP\Files\Config\IUserMountCache;
 use OCP\Files\FileInfo;
 use OCP\Files\IMimeTypeLoader;
 use OCP\Files\Search\ISearchComparison;
@@ -33,7 +37,9 @@ use OCP\Files\Search\ISearchQuery;
 use OCP\Files\Storage\IStorage;
 use OCP\FilesMetadata\IFilesMetadataManager;
 use OCP\IDBConnection;
+use OCP\Server;
 use OCP\Util;
+use Override;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -66,21 +72,21 @@ class Cache implements ICache {
 	protected IFilesMetadataManager $metadataManager;
 
 	public function __construct(
-     private IStorage $storage,
-     // this constructor is used in to many pleases to easily do proper di
-     // so instead we group it all together
-     ?CacheDependencies $dependencies = null
- )
- {
- }
+        private IStorage $storage,
+        // this constructor is used in to many pleases to easily do proper di
+        // so instead we group it all together
+        ?CacheDependencies $dependencies = null
+    )
+    {
+    }
 
 	protected function getQueryBuilder()
- {
- }
+    {
+    }
 
 	public function getStorageCache(): Storage
- {
- }
+    {
+    }
 
 	/**
 	 * Get the numeric storage id for this cache's storage
@@ -88,8 +94,8 @@ class Cache implements ICache {
 	 * @return int
 	 */
 	public function getNumericStorageId()
- {
- }
+    {
+    }
 
 	/**
 	 * get the stored metadata of a file or folder
@@ -98,35 +104,25 @@ class Cache implements ICache {
 	 * @return ICacheEntry|false the cache entry as array or false if the file is not found in the cache
 	 */
 	public function get($file)
- {
- }
+    {
+    }
 
 	/**
 	 * Create a CacheEntry from database row
 	 */
 	public static function cacheEntryFromData(array $data, IMimeTypeLoader $mimetypeLoader): CacheEntry
- {
- }
+    {
+    }
 
-	/**
-	 * get the metadata of all files stored in $folder
-	 *
-	 * @param string $folder
-	 * @return ICacheEntry[]
-	 */
-	public function getFolderContents($folder)
- {
- }
+	#[Override]
+    public function getFolderContents(string $folder, ?string $mimeTypeFilter = null)
+    {
+    }
 
-	/**
-	 * get the metadata of all files stored in $folder
-	 *
-	 * @param int $fileId the file id of the folder
-	 * @return ICacheEntry[]
-	 */
-	public function getFolderContentsById($fileId)
- {
- }
+	#[Override]
+    public function getFolderContentsById(int $fileId, ?string $mimeTypeFilter = null)
+    {
+    }
 
 	/**
 	 * insert or update meta data for a file or folder
@@ -138,8 +134,8 @@ class Cache implements ICache {
 	 * @throws \RuntimeException
 	 */
 	public function put($file, array $data)
- {
- }
+    {
+    }
 
 	/**
 	 * insert meta data for a new file or folder
@@ -151,8 +147,8 @@ class Cache implements ICache {
 	 * @throws \RuntimeException|Exception
 	 */
 	public function insert($file, array $data)
- {
- }
+    {
+    }
 
 	/**
 	 * update the metadata of an existing file or folder in the cache
@@ -161,8 +157,8 @@ class Cache implements ICache {
 	 * @param array $data [$key => $value] the metadata to update, only the fields provided in the array will be updated, non-provided values will remain unchanged
 	 */
 	public function update($id, array $data)
- {
- }
+    {
+    }
 
 	/**
 	 * extract query parts and params array from data array
@@ -171,8 +167,8 @@ class Cache implements ICache {
 	 * @return array
 	 */
 	protected function normalizeData(array $data): array
- {
- }
+    {
+    }
 
 	/**
 	 * get the file id for a file
@@ -185,8 +181,8 @@ class Cache implements ICache {
 	 * @return int
 	 */
 	public function getId($file)
- {
- }
+    {
+    }
 
 	/**
 	 * get the id of the parent folder of a file
@@ -195,8 +191,8 @@ class Cache implements ICache {
 	 * @return int
 	 */
 	public function getParentId($file)
- {
- }
+    {
+    }
 
 	/**
 	 * check if a file is available in the cache
@@ -205,8 +201,8 @@ class Cache implements ICache {
 	 * @return bool
 	 */
 	public function inCache($file)
- {
- }
+    {
+    }
 
 	/**
 	 * remove a file or folder from the cache
@@ -216,8 +212,8 @@ class Cache implements ICache {
 	 * @param string $file
 	 */
 	public function remove($file)
- {
- }
+    {
+    }
 
 	/**
 	 * Move a file or folder in the cache
@@ -226,8 +222,8 @@ class Cache implements ICache {
 	 * @param string $target
 	 */
 	public function move($source, $target)
- {
- }
+    {
+    }
 
 	/**
 	 * Get the storage id and path needed for a move
@@ -236,16 +232,16 @@ class Cache implements ICache {
 	 * @return array [$storageId, $internalPath]
 	 */
 	protected function getMoveInfo($path)
- {
- }
+    {
+    }
 
 	protected function hasEncryptionWrapper(): bool
- {
- }
+    {
+    }
 
 	protected function shouldEncrypt(string $targetPath): bool
- {
- }
+    {
+    }
 
 	/**
 	 * Move a file or folder in the cache
@@ -253,19 +249,19 @@ class Cache implements ICache {
 	 * @param ICache $sourceCache
 	 * @param string $sourcePath
 	 * @param string $targetPath
-	 * @throws \OC\DatabaseException
+	 * @throws DatabaseException
 	 * @throws \Exception if the given storages have an invalid id
 	 */
 	public function moveFromCache(ICache $sourceCache, $sourcePath, $targetPath)
- {
- }
+    {
+    }
 
 	/**
 	 * remove all entries for files that are stored on the storage from the cache
 	 */
 	public function clear()
- {
- }
+    {
+    }
 
 	/**
 	 * Get the scan status of a file
@@ -280,8 +276,8 @@ class Cache implements ICache {
 	 * @return int Cache::NOT_FOUND, Cache::PARTIAL, Cache::SHALLOW or Cache::COMPLETE
 	 */
 	public function getStatus($file)
- {
- }
+    {
+    }
 
 	/**
 	 * search for files matching $pattern
@@ -290,8 +286,8 @@ class Cache implements ICache {
 	 * @return ICacheEntry[] an array of cache entries where the name matches the search pattern
 	 */
 	public function search($pattern)
- {
- }
+    {
+    }
 
 	/**
 	 * search for files by mimetype
@@ -301,12 +297,12 @@ class Cache implements ICache {
 	 * @return ICacheEntry[] an array of cache entries where the mimetype matches the search
 	 */
 	public function searchByMime($mimetype)
- {
- }
+    {
+    }
 
 	public function searchQuery(ISearchQuery $query)
- {
- }
+    {
+    }
 
 	/**
 	 * Re-calculate the folder size and the size of all parent folders
@@ -314,8 +310,8 @@ class Cache implements ICache {
 	 * @param array|ICacheEntry|null $data (optional) meta data of the folder
 	 */
 	public function correctFolderSize(string $path, $data = null, bool $isBackgroundScan = false): void
- {
- }
+    {
+    }
 
 	/**
 	 * get the incomplete count that shares parent $folder
@@ -324,8 +320,8 @@ class Cache implements ICache {
 	 * @return int
 	 */
 	public function getIncompleteChildrenCount($fileId)
- {
- }
+    {
+    }
 
 	/**
 	 * calculate the size of a folder and set it in the cache
@@ -335,8 +331,8 @@ class Cache implements ICache {
 	 * @return int|float
 	 */
 	public function calculateFolderSize($path, $entry = null)
- {
- }
+    {
+    }
 
 
 	/**
@@ -348,8 +344,8 @@ class Cache implements ICache {
 	 * @return int|float
 	 */
 	protected function calculateFolderSizeInner(string $path, $entry = null, bool $ignoreUnknown = false)
- {
- }
+    {
+    }
 
 	/**
 	 * get all file ids on the files on the storage
@@ -357,8 +353,8 @@ class Cache implements ICache {
 	 * @return int[]
 	 */
 	public function getAll()
- {
- }
+    {
+    }
 
 	/**
 	 * find a folder in the cache which has not been fully scanned
@@ -370,8 +366,8 @@ class Cache implements ICache {
 	 * @return string|false the path of the folder or false when no folder matched
 	 */
 	public function getIncomplete()
- {
- }
+    {
+    }
 
 	/**
 	 * get the path of a file on this storage by it's file id
@@ -380,8 +376,8 @@ class Cache implements ICache {
 	 * @return string|null the path of the file (relative to the storage) or null if a file with the given id does not exists within this cache
 	 */
 	public function getPathById($id)
- {
- }
+    {
+    }
 
 	/**
 	 * get the storage id of the storage for a file and the internal path of the file
@@ -393,8 +389,8 @@ class Cache implements ICache {
 	 * @deprecated 17.0.0 use getPathById() instead
 	 */
 	public static function getById($id)
- {
- }
+    {
+    }
 
 	/**
 	 * normalize the given path
@@ -403,8 +399,8 @@ class Cache implements ICache {
 	 * @return string
 	 */
 	public function normalize($path)
- {
- }
+    {
+    }
 
 	/**
 	 * Copy a file or folder in the cache
@@ -415,14 +411,14 @@ class Cache implements ICache {
 	 * @return int fileId of copied entry
 	 */
 	public function copyFromCache(ICache $sourceCache, ICacheEntry $sourceEntry, string $targetPath): int
- {
- }
+    {
+    }
 
 	public function getQueryFilterForStorage(): ISearchOperator
- {
- }
+    {
+    }
 
 	public function getCacheEntryFromSearchResult(ICacheEntry $rawEntry): ?ICacheEntry
- {
- }
+    {
+    }
 }

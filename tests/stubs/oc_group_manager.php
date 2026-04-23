@@ -9,6 +9,8 @@ namespace OC\Group;
 
 use OC\Hooks\PublicEmitter;
 use OC\Settings\AuthorizedGroupMapper;
+use OC\SubAdmin;
+use OCA\Settings\Settings\Admin\Users;
 use OCP\EventDispatcher\IEventDispatcher;
 use OCP\Group\Backend\IBatchMethodsBackend;
 use OCP\Group\Backend\ICreateNamedGroupBackend;
@@ -17,10 +19,12 @@ use OCP\Group\Events\BeforeGroupCreatedEvent;
 use OCP\Group\Events\GroupCreatedEvent;
 use OCP\GroupInterface;
 use OCP\ICacheFactory;
+use OCP\IDBConnection;
 use OCP\IGroup;
 use OCP\IGroupManager;
 use OCP\IUser;
 use OCP\Security\Ip\IRemoteAddress;
+use OCP\Server;
 use Psr\Log\LoggerInterface;
 use function is_string;
 
@@ -43,8 +47,8 @@ class Manager extends PublicEmitter implements IGroupManager {
 	private const MAX_GROUP_LENGTH = 255;
 
 	public function __construct(private \OC\User\Manager $userManager, private IEventDispatcher $dispatcher, private LoggerInterface $logger, ICacheFactory $cacheFactory, private IRemoteAddress $remoteAddress)
- {
- }
+    {
+    }
 
 	/**
 	 * Checks whether a given backend is used
@@ -53,50 +57,50 @@ class Manager extends PublicEmitter implements IGroupManager {
 	 * @return bool
 	 */
 	public function isBackendUsed($backendClass)
- {
- }
+    {
+    }
 
 	/**
-	 * @param \OCP\GroupInterface $backend
+	 * @param GroupInterface $backend
 	 */
 	public function addBackend($backend)
- {
- }
+    {
+    }
 
 	public function clearBackends()
- {
- }
+    {
+    }
 
 	/**
 	 * Get the active backends
 	 *
-	 * @return \OCP\GroupInterface[]
+	 * @return GroupInterface[]
 	 */
 	public function getBackends()
- {
- }
+    {
+    }
 
 
 	protected function clearCaches()
- {
- }
+    {
+    }
 
 	/**
 	 * @param string $gid
 	 * @return IGroup|null
 	 */
 	public function get($gid)
- {
- }
+    {
+    }
 
 	/**
 	 * @param string $gid
 	 * @param string $displayName
-	 * @return \OCP\IGroup|null
+	 * @return IGroup|null
 	 */
 	protected function getGroupObject($gid, $displayName = null)
- {
- }
+    {
+    }
 
 	/**
 	 * @brief Batch method to create group objects
@@ -106,44 +110,44 @@ class Manager extends PublicEmitter implements IGroupManager {
 	 * @return array<string, IGroup>
 	 */
 	protected function getGroupsObjects(array $gids, array $displayNames = []): array
- {
- }
+    {
+    }
 
 	/**
 	 * @param string $gid
 	 * @return bool
 	 */
 	public function groupExists($gid)
- {
- }
+    {
+    }
 
 	/**
 	 * @param string $gid
 	 * @return IGroup|null
 	 */
 	public function createGroup($gid)
- {
- }
+    {
+    }
 
 	public function search(string $search, ?int $limit = null, ?int $offset = 0)
- {
- }
+    {
+    }
 
 	/**
 	 * @param IUser|null $user
-	 * @return \OC\Group\Group[]
+	 * @return array<string, IGroup>
 	 */
-	public function getUserGroups(?IUser $user = null)
- {
- }
+	public function getUserGroups(?IUser $user = null): array
+    {
+    }
 
 	/**
 	 * @param string $uid the user id
-	 * @return \OC\Group\Group[]
+	 * @return array<string, IGroup>
 	 */
 	public function getUserIdGroups(string $uid): array
- {
- }
+    {
+    }
 
 	/**
 	 * Checks if a userId is in the admin group
@@ -152,12 +156,12 @@ class Manager extends PublicEmitter implements IGroupManager {
 	 * @return bool if admin
 	 */
 	public function isAdmin($userId)
- {
- }
+    {
+    }
 
 	public function isDelegatedAdmin(string $userId): bool
- {
- }
+    {
+    }
 
 	/**
 	 * Checks if a userId is in a group
@@ -167,20 +171,20 @@ class Manager extends PublicEmitter implements IGroupManager {
 	 * @return bool if in group
 	 */
 	public function isInGroup($userId, $group)
- {
- }
+    {
+    }
 
 	public function getUserGroupIds(IUser $user): array
- {
- }
+    {
+    }
 
 	/**
 	 * @param string $groupId
 	 * @return ?string
 	 */
 	public function getDisplayName(string $groupId): ?string
- {
- }
+    {
+    }
 
 	/**
 	 * get an array of groupid and displayName for a user
@@ -189,26 +193,17 @@ class Manager extends PublicEmitter implements IGroupManager {
 	 * @return array ['displayName' => displayname]
 	 */
 	public function getUserGroupNames(IUser $user)
- {
- }
+    {
+    }
 
-	/**
-	 * get a list of all display names in a group
-	 *
-	 * @param string $gid
-	 * @param string $search
-	 * @param int $limit
-	 * @param int $offset
-	 * @return array an array of display names (value) and user ids (key)
-	 */
 	public function displayNamesInGroup($gid, $search = '', $limit = -1, $offset = 0)
- {
- }
+    {
+    }
 
 	/**
-	 * @return \OC\SubAdmin
+	 * @return SubAdmin
 	 */
 	public function getSubAdmin()
- {
- }
+    {
+    }
 }

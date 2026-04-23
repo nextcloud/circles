@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * SPDX-FileCopyrightText: 2016-2024 Nextcloud GmbH and Nextcloud contributors
  * SPDX-FileCopyrightText: 2016 ownCloud, Inc.
@@ -17,6 +19,6 @@ use OCP\AppFramework\Http;
  */
 class NotLoggedInException extends SecurityException {
 	public function __construct()
- {
- }
+    {
+    }
 }

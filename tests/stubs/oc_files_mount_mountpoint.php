@@ -11,53 +11,43 @@ use OC\Files\Filesystem;
 use OC\Files\Storage\Storage;
 use OC\Files\Storage\StorageFactory;
 use OCP\Files\Mount\IMountPoint;
+use OCP\Files\Storage\IStorage;
 use OCP\Files\Storage\IStorageFactory;
+use OCP\Server;
 use Psr\Log\LoggerInterface;
 
 class MountPoint implements IMountPoint {
-	/**
-	 * @var \OC\Files\Storage\Storage|null $storage
-	 */
+	/** @var IStorage|null $storage */
 	protected $storage = null;
-	protected $class;
-	protected $storageId;
-	protected $numericStorageId = null;
-	protected $rootId = null;
+	/** @var class-string<IStorage> */
+	protected string $class;
+	protected ?string $storageId = null;
+	protected ?int $numericStorageId = null;
+	protected ?int $rootId = null;
 
 	/**
 	 * Configuration options for the storage backend
-	 *
-	 * @var array
 	 */
-	protected $arguments = [];
-	protected $mountPoint;
+	protected array $arguments = [];
+	protected string $mountPoint;
 
 	/**
 	 * Mount specific options
-	 *
-	 * @var array
 	 */
-	protected $mountOptions = [];
-
-	/** @var int|null */
-	protected $mountId;
-
-	/** @var string */
-	protected $mountProvider;
+	protected array $mountOptions = [];
+	protected string $mountProvider;
 
 	/**
-	 * @param string|\OC\Files\Storage\Storage $storage
-	 * @param string $mountpoint
+	 * @param IStorage|class-string<IStorage> $storage
 	 * @param array $arguments (optional) configuration for the storage backend
-	 * @param \OCP\Files\Storage\IStorageFactory $loader
-	 * @param array $mountOptions mount specific options
-	 * @param int|null $mountId
-	 * @param string|null $mountProvider
+	 * @param ?array $mountOptions mount specific options
+	 * @param ?int $mountId
+	 * @param ?string $mountProvider
 	 * @throws \Exception
 	 */
-	public function __construct($storage, string $mountpoint, ?array $arguments = null, ?IStorageFactory $loader = null, ?array $mountOptions = null, ?int $mountId = null, ?string $mountProvider = null)
- {
- }
+	public function __construct(string|IStorage $storage, string $mountpoint, ?array $arguments = null, ?IStorageFactory $loader = null, ?array $mountOptions = null, protected ?int $mountId = null, ?string $mountProvider = null)
+    {
+    }
 
 	/**
 	 * get complete path to the mount point, relative to data/
@@ -65,8 +55,8 @@ class MountPoint implements IMountPoint {
 	 * @return string
 	 */
 	public function getMountPoint()
- {
- }
+    {
+    }
 
 	/**
 	 * Sets the mount point path, relative to data/
@@ -74,44 +64,44 @@ class MountPoint implements IMountPoint {
 	 * @param string $mountPoint new mount point
 	 */
 	public function setMountPoint($mountPoint)
- {
- }
+    {
+    }
 
 	/**
-	 * @return \OC\Files\Storage\Storage|null
+	 * @return IStorage|null
 	 */
 	public function getStorage()
- {
- }
+    {
+    }
 
 	/**
 	 * @return string|null
 	 */
 	public function getStorageId()
- {
- }
+    {
+    }
 
 	/**
 	 * @return int
 	 */
 	public function getNumericStorageId()
- {
- }
+    {
+    }
 
 	/**
 	 * @param string $path
 	 * @return string
 	 */
 	public function getInternalPath($path)
- {
- }
+    {
+    }
 
 	/**
 	 * @param callable $wrapper
 	 */
 	public function wrapStorage($wrapper)
- {
- }
+    {
+    }
 
 	/**
 	 * Get a mount option
@@ -121,8 +111,8 @@ class MountPoint implements IMountPoint {
 	 * @return mixed
 	 */
 	public function getOption($name, $default)
- {
- }
+    {
+    }
 
 	/**
 	 * Get all options for the mount
@@ -130,8 +120,8 @@ class MountPoint implements IMountPoint {
 	 * @return array
 	 */
 	public function getOptions()
- {
- }
+    {
+    }
 
 	/**
 	 * Get the file id of the root of the storage
@@ -139,18 +129,18 @@ class MountPoint implements IMountPoint {
 	 * @return int
 	 */
 	public function getStorageRootId()
- {
- }
+    {
+    }
 
 	public function getMountId()
- {
- }
+    {
+    }
 
 	public function getMountType()
- {
- }
+    {
+    }
 
 	public function getMountProvider(): string
- {
- }
+    {
+    }
 }

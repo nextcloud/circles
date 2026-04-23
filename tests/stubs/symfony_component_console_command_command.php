@@ -32,7 +32,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class Command
+class Command implements SignalableCommandInterface
 {
     // see https://tldp.org/LDP/abs/html/exitcodes.html
     public const SUCCESS = 0;
@@ -40,23 +40,15 @@ class Command
     public const INVALID = 2;
 
     /**
-     * @var string|null The default command name
-     *
-     * @deprecated since Symfony 6.1, use the AsCommand attribute instead
+     * @deprecated since Symfony 7.3, use the #[AsCommand] attribute instead
      */
-    protected static $defaultName;
-
-    /**
-     * @var string|null The default command description
-     *
-     * @deprecated since Symfony 6.1, use the AsCommand attribute instead
-     */
-    protected static $defaultDescription;
-
     public static function getDefaultName(): ?string
     {
     }
 
+    /**
+     * @deprecated since Symfony 7.3, use the #[AsCommand] attribute instead
+     */
     public static function getDefaultDescription(): ?string
     {
     }
@@ -66,7 +58,7 @@ class Command
      *
      * @throws LogicException When the command name is empty
      */
-    public function __construct(?string $name = null)
+    public function __construct(?string $name = null, ?callable $code = null)
     {
     }
 
@@ -74,24 +66,16 @@ class Command
      * Ignores validation errors.
      *
      * This is mainly useful for the help command.
-     *
-     * @return void
      */
-    public function ignoreValidationErrors()
+    public function ignoreValidationErrors(): void
     {
     }
 
-    /**
-     * @return void
-     */
-    public function setApplication(?Application $application = null)
+    public function setApplication(?Application $application): void
     {
     }
 
-    /**
-     * @return void
-     */
-    public function setHelperSet(HelperSet $helperSet)
+    public function setHelperSet(HelperSet $helperSet): void
     {
     }
 
@@ -114,10 +98,8 @@ class Command
      *
      * Override this to check for x or y and return false if the command cannot
      * run properly under the current conditions.
-     *
-     * @return bool
      */
-    public function isEnabled()
+    public function isEnabled(): bool
     {
     }
 
@@ -144,7 +126,7 @@ class Command
      *
      * @see setCode()
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
     }
 
@@ -196,9 +178,18 @@ class Command
     }
 
     /**
-     * Adds suggestions to $suggestions for the current completion input (e.g. option or argument).
+     * Supplies suggestions when resolving possible completion options for input (e.g. option or argument).
      */
     public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
+    {
+    }
+
+    /**
+     * Gets the code that is executed by the command.
+     *
+     * @return ?callable null if the code has not been set with setCode()
+     */
+    public function getCode(): ?callable
     {
     }
 
@@ -264,31 +255,31 @@ class Command
     /**
      * Adds an argument.
      *
-     * @param $mode    The argument mode: InputArgument::REQUIRED or InputArgument::OPTIONAL
-     * @param $default The default value (for InputArgument::OPTIONAL mode only)
+     * @param                                                                               $mode            The argument mode: InputArgument::REQUIRED or InputArgument::OPTIONAL
+     * @param                                                                               $default         The default value (for InputArgument::OPTIONAL mode only)
      * @param array|\Closure(CompletionInput,CompletionSuggestions):list<string|Suggestion> $suggestedValues The values used for input completion
      *
      * @return $this
      *
      * @throws InvalidArgumentException When argument mode is not valid
      */
-    public function addArgument(string $name, ?int $mode = null, string $description = '', mixed $default = null): static
+    public function addArgument(string $name, ?int $mode = null, string $description = '', mixed $default = null, array|\Closure $suggestedValues = []): static
     {
     }
 
     /**
      * Adds an option.
      *
-     * @param $shortcut The shortcuts, can be null, a string of shortcuts delimited by | or an array of shortcuts
-     * @param $mode     The option mode: One of the InputOption::VALUE_* constants
-     * @param $default  The default value (must be null for InputOption::VALUE_NONE)
+     * @param                                                                               $shortcut        The shortcuts, can be null, a string of shortcuts delimited by | or an array of shortcuts
+     * @param                                                                               $mode            The option mode: One of the InputOption::VALUE_* constants
+     * @param                                                                               $default         The default value (must be null for InputOption::VALUE_NONE)
      * @param array|\Closure(CompletionInput,CompletionSuggestions):list<string|Suggestion> $suggestedValues The values used for input completion
      *
      * @return $this
      *
      * @throws InvalidArgumentException If option mode is invalid or incompatible
      */
-    public function addOption(string $name, string|array|null $shortcut = null, ?int $mode = null, string $description = '', mixed $default = null): static
+    public function addOption(string $name, string|array|null $shortcut = null, ?int $mode = null, string $description = '', mixed $default = null, array|\Closure $suggestedValues = []): static
     {
     }
 
@@ -431,12 +422,18 @@ class Command
     /**
      * Gets a helper instance by name.
      *
-     * @return HelperInterface
-     *
      * @throws LogicException           if no HelperSet is defined
      * @throws InvalidArgumentException if the helper is not defined
      */
-    public function getHelper(string $name): mixed
+    public function getHelper(string $name): HelperInterface
+    {
+    }
+
+    public function getSubscribedSignals(): array
+    {
+    }
+
+    public function handleSignal(int $signal, int|false $previousExitCode = 0): int|false
     {
     }
 }
