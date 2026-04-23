@@ -149,15 +149,13 @@ class ShareWrapperService {
 	 * @throws ShareWrapperNotFoundException
 	 */
 	public function getShareByToken(string $token, ?FederatedUser $federatedUser = null): ShareWrapper {
-        // First try using the standard oc_share.token lookup
-        try {
-            return $this->shareWrapperRequest->getShareByToken($token);
-        } catch (ShareWrapperNotFoundException $e) {
-            // Fallback: search using oc_circles_token.token
-            // This is necessary when oc_share.token is empty or does not match,
-            // but the circles token does exist.
-            return $this->shareWrapperRequest->getShareByCirclesToken($token);
-        }
+		// First try the standard lookup via oc_share.token
+		try {
+			return $this->shareWrapperRequest->getShareByToken($token);
+		} catch (ShareWrapperNotFoundException $e) {
+			// oc_share.token is empty — fall back to oc_circles_token.token
+			return $this->shareWrapperRequest->getShareByCirclesToken($token);
+		}
 	}
 
     /**
