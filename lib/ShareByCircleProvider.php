@@ -142,7 +142,6 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 			->add(DataProbe::INITIATOR, [DataProbe::BASED_ON]);
 
 		$circle = $this->circleService->probeCircle($share->getSharedWith(), $circleProbe, $dataProbe);
-		$share->setToken('');
 		$share->setMailSend(true);
 		$owner = $circle->getInitiator();
 		$this->shareWrapperService->save($share);
@@ -581,32 +580,21 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 			throw new ShareNotFound();
 		}
 
-        $shareWrapper = null;
-
-        try {
-            $shareWrapper = $this->shareWrapperService->getShareByToken($token);
-        } catch (ShareWrapperNotFoundException $e) {
-            // Not found via oc_share.token — try oc_circles_token.token
-            try {
-                $shareWrapper = $this->shareWrapperService->getShareByCirclesToken($token);
-            } catch (ShareWrapperNotFoundException $e2) {
-                throw new ShareNotFound(
-                    'Share not found for token (tried both oc_share and oc_circles_token): ' . $token
-                );
-            }
-        }
-
-        if ($shareWrapper === null) {
+		try {
+			$shareWrapper = $this->shareWrapperService->getShareByToken($token);
+		} catch (ShareWrapperNotFoundException $e) {
             throw new ShareNotFound('Share not found for token: ' . $token);
         }
 
-        // Ensure that the share object has the correct token for UI routing
-        // If oc_share.token is empty, use the provided circles token
-        if ($shareWrapper->getToken() === '' || $shareWrapper->getToken() === null) {
-            $shareWrapper->setToken($token);
-        }
-
 		$share = $shareWrapper->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
+
+		// When oc_share.token is intentionally left empty (to prevent unauthenticated public link access),
+		// the IShare object is built from raw DB data and will have an empty token.
+		// Set the circles token directly on the IShare object so the router receives a valid non-empty token.
+		if ($share->getToken() === '' || $share->getToken() === null) {
+			$share->setToken($token);
+		}
+
 		if ($share->getPassword() !== '') {
 			$this->logger->notice('share is protected by a password, hash: ' . $share->getPassword());
 		}

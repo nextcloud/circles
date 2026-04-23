@@ -608,36 +608,38 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		}
 	}
 
-    /**
-     * Look up a ShareWrapper using the token in oc_circles_token
-     * (instead of oc_share.token).
-     *
-     * This makes it possible to leave oc_share.token empty whilst
-     * the circles-share remains accessible via the circles-token.
-     *
-     * @throws ShareWrapperNotFoundException
-     */
-    public function getShareByCirclesToken(string $token): ShareWrapper {
-        $qb = $this->getShareWrapperSelectSql();
 
-        // JOIN met oc_circles_token op share_id
-        $qb->innerJoin(
-            'sw',
-            'circles_token',
-            'ct',
-            $qb->expr()->eq('ct.share_id', 'sw.id')
-        );
+	/**
+	 * Look up a ShareWrapper using the token in oc_circles_token instead of oc_share.token.
+	 * Used as a fallback when oc_share.token is empty.
+	 *
+	 * @throws ShareWrapperNotFoundException
+	 */
+	public function getShareByCirclesToken(string $token): ShareWrapper {
+		$qb = $this->getShareSelectSql();
 
-        $qb->andWhere(
-            $qb->expr()->eq('ct.token', $qb->createNamedParameter($token))
-        );
+		$qb->setOptions([CoreQueryBuilder::SHARE], ['getData' => true]);
+		$qb->leftJoinCircle(CoreQueryBuilder::SHARE, null, 'share_with');
 
-        try {
-            return $this->getItemFromRequest($qb);
-        } catch (\Exception $e) {
-            throw new ShareWrapperNotFoundException(
-                'Share not found for circles token: ' . $token
-            );
-        }
-    }
+		$qb->innerJoin(
+			CoreQueryBuilder::SHARE,
+			'circles_token',
+			'ct',
+			$qb->expr()->eq('ct.share_id', CoreQueryBuilder::SHARE . '.id')
+		);
+
+		$qb->andWhere(
+			$qb->expr()->eq('ct.token', $qb->createNamedParameter($token))
+		);
+
+		try {
+			$shareWrapper = $this->getItemFromRequest($qb);
+			$shareWrapper->setToken($token);
+			return $shareWrapper;
+		} catch (\Exception $e) {
+			throw new ShareWrapperNotFoundException(
+				'Share not found for circles token: ' . $token
+			);
+		}
+	}
 }
