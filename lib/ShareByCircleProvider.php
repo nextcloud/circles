@@ -142,7 +142,6 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 			->add(DataProbe::INITIATOR, [DataProbe::BASED_ON]);
 
 		$circle = $this->circleService->probeCircle($share->getSharedWith(), $circleProbe, $dataProbe);
-		$share->setToken($this->token(15));
 		$share->setMailSend(true);
 		$owner = $circle->getInitiator();
 		$this->shareWrapperService->save($share);
