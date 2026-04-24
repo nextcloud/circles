@@ -20,7 +20,7 @@ class FileSharingTeamResourceProvider implements ITeamResourceProvider {
 	public function __construct(
 		private IL10N $l10n,
 		private ?CirclesManager $circlesManager,
-		private ShareWrapperService $shareByCircleProvider,
+		private ShareWrapperService $shareWrapperService,
 		private IURLGenerator $urlGenerator,
 	) {
 	}
@@ -42,24 +42,20 @@ class FileSharingTeamResourceProvider implements ITeamResourceProvider {
 			return [];
 		}
 
-		$shares = $this->shareByCircleProvider->getSharesToCircle($teamId);
+		$shares = $this->shareWrapperService->getSharesToCircle($teamId);
 		return $this->convertWrappedShareToResource($shares);
 	}
 
 	/**
 	 * @return array<string, TeamResource[]>
 	 */
-	public function getSharedWithList(array $teams): array {
-		$data = $shares = [];
-		foreach ($this->shareByCircleProvider->getSharesToCircles($teams) as $share) {
-			if (!array_key_exists($share->getId(), $shares)) {
-				$shares[$share->getSharedWith()] = [];
-			}
+	public function getSharedWithList(array $teams, string $resourceId): array {
+		$shares = $data = [];
+		foreach ($this->shareWrapperService->getSharesToCircles($teams, $resourceId) as $share) {
 			$shares[$share->getSharedWith()][] = $share;
 		}
-
 		foreach ($teams as $teamId) {
-			$data[$teamId] = $this->convertWrappedShareToResource($shares[$teamId]);
+			$data[$teamId] = $this->convertWrappedShareToResource($shares[$teamId] ?? []);
 		}
 
 		return $data;
@@ -105,7 +101,7 @@ class FileSharingTeamResourceProvider implements ITeamResourceProvider {
 			return [];
 		}
 
-		$shares = $this->shareByCircleProvider->getSharesByFileId((int)$resourceId);
+		$shares = $this->shareWrapperService->getSharesByFileId((int)$resourceId);
 
 		return array_map(function ($share) {
 			return $share->getSharedWith();
