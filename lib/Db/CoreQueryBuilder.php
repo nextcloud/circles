@@ -1590,7 +1590,10 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 				$orX->add($expr->like($aliasMount . '.mountpoint', $this->createNamedParameter($path . '/_%')));
 			}
 		} else {
-			$orX->add($expr->in($aliasMount . '.mountpoint', $this->createNamedParameter($paths, IQueryBuilder::PARAM_STR_ARRAY)));
+			$pathChunks = array_chunk($paths, 1000);
+			foreach ($pathChunks as $pathChunk) {
+				$orX->add($expr->in($aliasMount . '.mountpoint', $this->createNamedParameter($pathChunk, IQueryBuilder::PARAM_STR_ARRAY)));
+			}
 		}
 
 		$this->andWhere($orX);

@@ -68,9 +68,7 @@ class MountRequest extends MountRequestBuilder {
 		$qb->leftJoinMember(CoreQueryBuilder::MOUNT);
 		$qb->leftJoinMountpoint(CoreQueryBuilder::MOUNT, $federatedUser);
 		$qb->limitToInitiator(CoreQueryBuilder::MOUNT, $federatedUser, 'circle_id');
-		if (count($paths) !== 0) {
-			$qb->limitToMountpoints(CoreQueryBuilder::MOUNT, $paths, $forChildren);
-		}
+		$qb->limitToMountpoints(CoreQueryBuilder::MOUNT, $paths, $forChildren);
 
 		return $this->getItemsFromRequest($qb);
 
