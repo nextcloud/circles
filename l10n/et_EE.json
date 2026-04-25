@@ -145,7 +145,7 @@
     "This item is already shared with this team" : "See objekt on  juba selle tiimiga jagatud",
     "Bring cloud-users closer together." : "Liida pilvekasutajaid tihedamalt kokku.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Tiimide rakendus võimaldab kasutajatel luua kasutajatest, kolleegidest ja sõpradest omi gruppe\nNing neid gruppe saavad kõik muud rakendused kasutada sisu jagamisel.",
-    "Unable to update federated teams config" : "Tiimide seadistuse liitpilve jsoks ei saa uuendada",
+    "Unable to update federated teams config" : "Tiimide seadistust liitpilve jaoks ei saa uuendada",
     "Invalid URL format. Please provide a valid URL." : "Võrguaadressi vorming on vigane. Palun sisesta korrektne võrguaadress.",
     "Changed frontal cloud URL" : "Muuda esiplaani võrguaadressi",
     "Federation allows you to share teams with other trusted servers and make them discoverable across instances." : "Suhtlus liitpilves võimaldab sul teiste usaldatud serveritega ühenduda ja jagada tiimide andmeid.",

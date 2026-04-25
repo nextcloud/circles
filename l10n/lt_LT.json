@@ -149,7 +149,7 @@
     "Invalid URL format. Please provide a valid URL." : "Neteisingas URL formatas. Pateikite galiojantį URL.",
     "Changed frontal cloud URL" : "Pakeistas debesies priekinis URL",
     "Federation allows you to share teams with other trusted servers and make them discoverable across instances." : "Federacinis nustatymas leidžia bendrinti komandas su kitais patikimais serveriais ir padaryti jas aptinkamas skirtinguose atvejuose.",
-    "Enable federated teams" : "Įgalinti \"federacines\" komandas",
+    "Enable federated teams" : "Įjungti \"federacines\" komandas",
     "Frontal URL" : "Priekinis URL",
     "https://…" : "https://…",
     "The public URL used by other instances to discover and connect to your teams." : "Viešas URL, kurį kitais atvejais naudoja jūsų komandoms aptikti ir prie jų prisijungti.",
