@@ -183,18 +183,16 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 
 
 	/**
-	 * @param string $circleId
-	 * @param FederatedUser|null $shareRecipient
-	 * @param FederatedUser|null $shareInitiator
-	 * @param bool $completeDetails
-	 *
 	 * @return ShareWrapper[]
 	 * @throws RequestBuilderException
 	 */
-	public function getSharesToCircles(array $circleIds): array {
+	public function getSharesToCircles(array $circleIds, ?string $fileId = null): array {
 		$qb = $this->getShareSelectSql();
 		$qb->limitNull('parent', false);
-		$qb->expr()->in('share_with', $qb->createNamedParameter($circleIds, IQueryBuilder::PARAM_STR_ARRAY));
+		$qb->andWhere($qb->expr()->in('share_with', $qb->createNamedParameter($circleIds, IQueryBuilder::PARAM_STR_ARRAY)));
+		if ($fileId !== null) {
+			$qb->limitToFileSource((int)$fileId);
+		}
 		return $this->getItemsFromRequest($qb);
 	}
 
