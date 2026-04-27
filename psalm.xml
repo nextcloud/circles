@@ -63,7 +63,7 @@
 		<file name="tests/stubs/oca_dav_carddav_contactsmanager.php" />
 		<file name="tests/stubs/oca_federatedfilesharing_notifications.php" />
 		<file name="tests/stubs/oca_files_sharing_event_usershareaccessupdatedevent.php" />
-		<file name="tests/stubs/oca_files_sharing_external_manager.php" />
+		<file name="tests/stubs/oca_files_sharing_external_storage.php" />
 		<file name="tests/stubs/oca_user_ldap_mapping_abstractmapping.php" />
 		<file name="tests/stubs/oca_user_ldap_mapping_usermapping.php" />
 		<file name="tests/stubs/stecman_component_symfony_console_bashcompletion_completion_completionawareinterface.php" />
