@@ -17,13 +17,14 @@ use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 /**
  * Base class for output classes.
  *
- * There are five levels of verbosity:
+ * There are six levels of verbosity:
  *
  *  * normal: no option passed (normal output)
  *  * verbose: -v (more output)
  *  * very verbose: -vv (highly extended output)
  *  * debug: -vvv (all debug output)
- *  * quiet: -q (no output)
+ *  * quiet: -q (only output errors)
+ *  * silent: --silent (no output)
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
@@ -38,10 +39,7 @@ abstract class Output implements OutputInterface
     {
     }
 
-    /**
-     * @return void
-     */
-    public function setFormatter(OutputFormatterInterface $formatter)
+    public function setFormatter(OutputFormatterInterface $formatter): void
     {
     }
 
@@ -49,10 +47,7 @@ abstract class Output implements OutputInterface
     {
     }
 
-    /**
-     * @return void
-     */
-    public function setDecorated(bool $decorated)
+    public function setDecorated(bool $decorated): void
     {
     }
 
@@ -60,14 +55,15 @@ abstract class Output implements OutputInterface
     {
     }
 
-    /**
-     * @return void
-     */
-    public function setVerbosity(int $level)
+    public function setVerbosity(int $level): void
     {
     }
 
     public function getVerbosity(): int
+    {
+    }
+
+    public function isSilent(): bool
     {
     }
 
@@ -87,26 +83,18 @@ abstract class Output implements OutputInterface
     {
     }
 
-    /**
-     * @return void
-     */
-    public function writeln(string|iterable $messages, int $options = self::OUTPUT_NORMAL)
+    public function writeln(string|iterable $messages, int $options = self::OUTPUT_NORMAL): void
     {
     }
 
-    /**
-     * @return void
-     */
-    public function write(string|iterable $messages, bool $newline = false, int $options = self::OUTPUT_NORMAL)
+    public function write(string|iterable $messages, bool $newline = false, int $options = self::OUTPUT_NORMAL): void
     {
     }
 
     /**
      * Writes a message to the output.
-     *
-     * @return void
      */
-    abstract protected function doWrite(string $message, bool $newline)
+    abstract protected function doWrite(string $message, bool $newline): void
     {
     }
 }

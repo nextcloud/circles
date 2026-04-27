@@ -26,13 +26,13 @@ class UserShareAccessUpdatedEvent extends Event {
 	 * @param IUser|list<IUser> $users
 	 */
 	public function __construct(IUser|array $users)
- {
- }
+    {
+    }
 
 	/**
 	 * @return list<IUser>
 	 */
 	public function getUsers(): array
- {
- }
+    {
+    }
 }
