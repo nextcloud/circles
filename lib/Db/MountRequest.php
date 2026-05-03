@@ -57,17 +57,18 @@ class MountRequest extends MountRequestBuilder {
 
 
 	/**
-	 * @param IFederatedUser $federatedUser
+	 * @param list<string> $paths
 	 *
 	 * @return Mount[]
 	 * @throws RequestBuilderException
 	 */
-	public function getForUser(IFederatedUser $federatedUser): array {
+	public function getForUser(IFederatedUser $federatedUser, array $paths = [], bool $forChildren = false): array {
 		$qb = $this->getMountSelectSql();
 		$qb->setOptions([CoreQueryBuilder::MOUNT], ['getData' => true]);
 		$qb->leftJoinMember(CoreQueryBuilder::MOUNT);
 		$qb->leftJoinMountpoint(CoreQueryBuilder::MOUNT, $federatedUser);
 		$qb->limitToInitiator(CoreQueryBuilder::MOUNT, $federatedUser, 'circle_id');
+		$qb->limitToMountpoints(CoreQueryBuilder::MOUNT, $paths, $forChildren);
 
 		return $this->getItemsFromRequest($qb);
 
