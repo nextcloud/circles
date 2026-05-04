@@ -23,6 +23,7 @@ use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\BasicProbe;
 use OCA\Circles\Model\Probes\CircleProbe;
+use OCA\Circles\Service\AvatarService;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
@@ -32,7 +33,9 @@ use OCA\Circles\Service\PermissionService;
 use OCA\Circles\Service\SearchService;
 use OCA\Circles\Tools\Traits\TDeserialize;
 use OCA\Circles\Tools\Traits\TNCLogger;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
+use OCP\AppFramework\Http\FileDisplayResponse;
 use OCP\AppFramework\OCS\OCSException;
 use OCP\AppFramework\OCSController;
 use OCP\IRequest;
@@ -69,6 +72,9 @@ class LocalController extends OCSController {
 	/** @var SearchService */
 	private $searchService;
 
+	/** @var AvatarService */
+	private $avatarService;
+
 	/** @var ConfigService */
 	protected $configService;
 
@@ -84,6 +90,7 @@ class LocalController extends OCSController {
 	 * @param MemberService $memberService
 	 * @param MembershipService $membershipService
 	 * @param SearchService $searchService
+	 * @param AvatarService $avatarService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
@@ -96,6 +103,7 @@ class LocalController extends OCSController {
 		MembershipService $membershipService,
 		PermissionService $permissionService,
 		SearchService $searchService,
+		AvatarService $avatarService,
 		ConfigService $configService,
 	) {
 		parent::__construct($appName, $request);
@@ -107,6 +115,7 @@ class LocalController extends OCSController {
 		$this->membershipService = $membershipService;
 		$this->permissionService = $permissionService;
 		$this->searchService = $searchService;
+		$this->avatarService = $avatarService;
 		$this->configService = $configService;
 
 		$this->setup('app', 'circles');
@@ -577,6 +586,69 @@ class LocalController extends OCSController {
 			return new DataResponse($this->serializeArray($outcome));
 		} catch (Exception $e) {
 			$this->e($e, ['circleId' => $circleId, 'value' => $value]);
+			throw new OCSException($e->getMessage(), (int)$e->getCode());
+		}
+	}
+
+
+	/**
+	 * @NoAdminRequired
+	 *
+	 * @throws OCSException
+	 */
+	public function circleAvatar(string $circleId): FileDisplayResponse|DataResponse {
+		try {
+			$this->setCurrentFederatedUser();
+
+			$file = $this->avatarService->getAvatar($circleId);
+			if ($file === null) {
+				return new DataResponse([], Http::STATUS_NOT_FOUND);
+			}
+
+			$response = new FileDisplayResponse($file, Http::STATUS_OK, ['Content-Type' => $file->getMimeType()]);
+			$response->cacheFor(60 * 60 * 24, false, true);
+
+			return $response;
+		} catch (Exception $e) {
+			$this->e($e, ['circleId' => $circleId]);
+			throw new OCSException($e->getMessage(), (int)$e->getCode());
+		}
+	}
+
+
+	/**
+	 * @NoAdminRequired
+	 *
+	 * @throws OCSException
+	 */
+	public function uploadAvatar(string $circleId): DataResponse {
+		try {
+			$this->setCurrentFederatedUser();
+
+			$outcome = $this->avatarService->updateAvatar($circleId, $this->request->getUploadedFile('file'));
+
+			return new DataResponse($this->serializeArray($outcome));
+		} catch (Exception $e) {
+			$this->e($e, ['circleId' => $circleId]);
+			throw new OCSException($e->getMessage(), (int)$e->getCode());
+		}
+	}
+
+
+	/**
+	 * @NoAdminRequired
+	 *
+	 * @throws OCSException
+	 */
+	public function removeAvatar(string $circleId): DataResponse {
+		try {
+			$this->setCurrentFederatedUser();
+
+			$outcome = $this->avatarService->removeAvatar($circleId);
+
+			return new DataResponse($this->serializeArray($outcome));
+		} catch (Exception $e) {
+			$this->e($e, ['circleId' => $circleId]);
 			throw new OCSException($e->getMessage(), (int)$e->getCode());
 		}
 	}

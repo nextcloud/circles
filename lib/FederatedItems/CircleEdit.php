@@ -98,6 +98,11 @@ class CircleEdit implements IFederatedItem {
 			$event->getData()->s('description', $new->getDescription());
 		}
 
+		if ($data->hasKey('avatar')) {
+			$new->setAvatar($data->g('avatar'));
+			$event->getData()->s('avatar', $new->getAvatar());
+		}
+
 		$this->circleService->confirmName($new);
 
 		$event->setOutcome($this->serialize($new));
@@ -127,6 +132,10 @@ class CircleEdit implements IFederatedItem {
 
 		if ($data->hasKey('description')) {
 			$circle->setDescription($data->g('description'));
+		}
+
+		if ($data->hasKey('avatar')) {
+			$circle->setAvatar($data->g('avatar'));
 		}
 
 		$this->circleRequest->edit($circle);
