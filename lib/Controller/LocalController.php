@@ -133,6 +133,9 @@ class LocalController extends OCSController {
 	 */
 	public function create(string $name, bool $personal = false, bool $local = false): DataResponse {
 		try {
+			if (!$this->configService->isGSAvailable() && $local === true) {
+				throw new OCSException('circle configuration not supported', 400);
+			}
 			$this->setCurrentFederatedUser();
 			$this->permissionService->confirmCircleCreation();
 
