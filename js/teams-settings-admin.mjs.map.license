@@ -20,7 +20,7 @@ This file is generated from multiple sources. Included packages:
 	- version: 13.9.0
 	- license: MIT
 - teams
-	- version: 34.0.0-dev.0
+	- version: 35.0.0-dev.0
 	- license: AGPL-3.0-or-later
 - vite
 	- version: 7.1.11
