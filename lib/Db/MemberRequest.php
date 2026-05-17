@@ -204,6 +204,7 @@ class MemberRequest extends MemberRequestBuilder {
 		int $limit = 0,
 		bool $fullDetails = false,
 		string $search = '',
+		?int $role = null,
 	): array {
 		if (is_null($probe)) {
 			$probe = new MemberProbe();
@@ -255,6 +256,10 @@ class MemberRequest extends MemberRequestBuilder {
 
 		if ($probe->hasFilterMember()) {
 			$qb->filterDirectMembership(CoreQueryBuilder::MEMBER, $probe->getFilterMember());
+		}
+
+		if ($role !== null) {
+			$qb->andWhere($qb->expr()->eq($qb->getDefaultSelectAlias() . '.level', $qb->createNamedParameter($role)));
 		}
 
 		$qb->orderBy($qb->getDefaultSelectAlias() . '.level', 'desc');
