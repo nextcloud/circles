@@ -1575,6 +1575,32 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 
 
 	/**
+	 * @param list<string> $paths
+	 */
+	public function limitToMountpoints(string $aliasMount, array $paths, bool $forChildren = false): void {
+		if (count($paths) === 0) {
+			return;
+		}
+
+		$expr = $this->expr();
+		$orX = $expr->orX();
+
+		if ($forChildren) {
+			foreach ($paths as $path) {
+				$orX->add($expr->like($aliasMount . '.mountpoint', $this->createNamedParameter($path . '/_%')));
+			}
+		} else {
+			$pathChunks = array_chunk($paths, 1000);
+			foreach ($pathChunks as $pathChunk) {
+				$orX->add($expr->in($aliasMount . '.mountpoint', $this->createNamedParameter($pathChunk, IQueryBuilder::PARAM_STR_ARRAY)));
+			}
+		}
+
+		$this->andWhere($orX);
+	}
+
+
+	/**
 	 * @param string $alias
 	 * @param array $default
 	 *
