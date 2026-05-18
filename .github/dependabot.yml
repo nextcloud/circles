@@ -9,6 +9,8 @@ updates:
     day: saturday
     time: "03:00"
     timezone: Europe/Paris
+  cooldown:
+    default-days: 10
   labels:
     - "3. to review"
     - "dependencies"
@@ -22,6 +24,8 @@ updates:
     day: saturday
     time: "03:00"
     timezone: Europe/Paris
+  cooldown:
+    default-days: 10
   open-pull-requests-limit: 10
   labels:
     - "3. to review"
