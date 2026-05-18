@@ -204,6 +204,9 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	/** @var int */
 	private $populationInherited = 0;
 
+	/** @var CircleInvitation|null */
+	private $circleInvitation = null;
+
 	//	/** @var bool */
 	//	private $hidden = false;
 
@@ -666,6 +669,23 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		return $this->populationInherited;
 	}
 
+	/**
+	 * @param CircleInvitation|null $circleInvitation
+	 *
+	 * @return Circle
+	 */
+	public function setCircleInvitation(?CircleInvitation $circleInvitation): self {
+		$this->circleInvitation = $circleInvitation;
+
+		return $this;
+	}
+
+	/**
+	 * @return CircleInvitation|null
+	 */
+	public function getCircleInvitation(): ?CircleInvitation {
+		return $this->circleInvitation;
+	}
 
 	/**
 	 * @param array $settings
@@ -808,6 +828,13 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		} catch (InvalidItemException $e) {
 		}
 
+		try {
+			/** @var CircleInvitation $circleInvitation */
+			$circleInvitation = $this->deserialize($this->getArray('invitation', $data), CircleInvitation::class);
+			$this->setCircleInvitation($circleInvitation);
+		} catch (InvalidItemException $e) {
+		}
+
 		return $this;
 	}
 
@@ -859,6 +886,7 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 			try {
 				$initiatorHelper->mustBeAdmin();
 				$arr['settings'] = $this->getSettings();
+				$arr['invitationCode'] = $this->getCircleInvitation()?->getInvitationCode();
 			} catch (MemberHelperException|MemberLevelException $e) {
 			}
 		}
@@ -900,7 +928,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		$this->setPopulationInherited($this->getInt('populationInherited', $this->getSettings()));
 
 		$this->getManager()->manageImportFromDatabase($this, $data, $prefix);
-
 
 		// TODO: deprecated in NC27, remove those (17) lines that was needed to finalise migration to 24
 		// if password is not hashed (pre-22), hash it and update new settings in DB
