@@ -22,7 +22,7 @@ class AccountsRequest extends AccountsRequestBuilder {
 		$this->limitToDBField($qb, 'uid', $userId);
 
 		$cursor = $qb->executeQuery();
-		$data = $cursor->fetch();
+		$data = $cursor->fetchAssociative();
 		$cursor->closeCursor();
 
 		if ($data === false) {
@@ -47,7 +47,7 @@ class AccountsRequest extends AccountsRequestBuilder {
 		$this->limitToDBField($qb, 'uid', $userId);
 
 		$cursor = $qb->executeQuery();
-		$data = $cursor->fetch();
+		$data = $cursor->fetchAssociative();
 		$cursor->closeCursor();
 
 		if ($data === false) {
@@ -67,7 +67,7 @@ class AccountsRequest extends AccountsRequestBuilder {
 
 		$accounts = [];
 		$cursor = $qb->executeQuery();
-		while ($data = $cursor->fetch()) {
+		while ($data = $cursor->fetchAssociative()) {
 			$account = $this->parseAccountsSelectSql($data);
 			$accounts[$account['userId']] = $account;
 		}

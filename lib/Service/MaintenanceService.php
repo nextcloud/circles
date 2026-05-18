@@ -153,7 +153,7 @@ class MaintenanceService {
 		try {
 			$this->output('Remove members with no circles');
 			$this->removeMembersWithNoCircles();
-		} catch (Exception $e) {
+		} catch (Exception) {
 		}
 
 		try {
@@ -228,7 +228,7 @@ class MaintenanceService {
 		try {
 			$this->output('refresh members\' display name');
 			$this->refreshDisplayName($forceRefresh);
-		} catch (Exception $e) {
+		} catch (Exception) {
 		}
 
 		try {

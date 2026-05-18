@@ -996,7 +996,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	 */
 	public function getRow(callable $method, string $object = '', array $params = []): IQueryRow {
 		$cursor = $this->executeQuery();
-		$data = $cursor->fetch();
+		$data = $cursor->fetchAssociative();
 		$cursor->closeCursor();
 
 		if ($data === false) {
@@ -1017,7 +1017,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	public function getRows(callable $method, string $object = '', array $params = []): array {
 		$rows = [];
 		$cursor = $this->executeQuery();
-		while ($data = $cursor->fetch()) {
+		while ($data = $cursor->fetchAssociative()) {
 			try {
 				$rows[] = $method($data, $this, $object, $params);
 			} catch (Exception) {

@@ -18,6 +18,7 @@ use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\TeamResourceService;
+use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\OCS\OCSException;
 use OCP\AppFramework\OCSController;
@@ -45,7 +46,6 @@ class TeamsDashboardController extends OCSController {
 	}
 
 	/**
-	 * @NoAdminRequired
 	 *
 	 * @param int $limit
 	 * @param int $offset
@@ -53,6 +53,7 @@ class TeamsDashboardController extends OCSController {
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
+	#[NoAdminRequired]
 	public function getCompleteTeamsData(int $limit = 3, int $offset = 0): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();

@@ -32,6 +32,7 @@ use OCA\Circles\Service\PermissionService;
 use OCA\Circles\Service\SearchService;
 use OCA\Circles\Tools\Traits\TDeserialize;
 use OCA\Circles\Tools\Traits\TNCLogger;
+use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\OCS\OCSException;
 use OCP\AppFramework\OCSController;
@@ -84,7 +85,6 @@ class LocalController extends OCSController {
 
 
 	/**
-	 * @NoAdminRequired
 	 *
 	 * @param string $name
 	 * @param bool $personal
@@ -93,6 +93,7 @@ class LocalController extends OCSController {
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
+	#[NoAdminRequired]
 	public function create(string $name, bool $personal = false, bool $local = false): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
@@ -109,13 +110,13 @@ class LocalController extends OCSController {
 
 
 	/**
-	 * @NoAdminRequired
 	 *
 	 * @param string $circleId
 	 *
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
+	#[NoAdminRequired]
 	public function destroy(string $circleId): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
@@ -131,13 +132,13 @@ class LocalController extends OCSController {
 
 
 	/**
-	 * @NoAdminRequired
 	 *
 	 * @param string $term
 	 *
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
+	#[NoAdminRequired]
 	public function search(string $term): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
@@ -151,13 +152,13 @@ class LocalController extends OCSController {
 
 
 	/**
-	 * @NoAdminRequired
 	 *
 	 * @param string $circleId
 	 *
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
+	#[NoAdminRequired]
 	public function circleDetails(string $circleId): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
@@ -174,7 +175,6 @@ class LocalController extends OCSController {
 
 
 	/**
-	 * @NoAdminRequired
 	 *
 	 * @param string $circleId
 	 * @param string $userId
@@ -183,6 +183,7 @@ class LocalController extends OCSController {
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
+	#[NoAdminRequired]
 	public function memberAdd(string $circleId, string $userId, int $type): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
@@ -213,7 +214,6 @@ class LocalController extends OCSController {
 
 
 	/**
-	 * @NoAdminRequired
 	 *
 	 * @param string $circleId
 	 * @param array $members
@@ -221,6 +221,7 @@ class LocalController extends OCSController {
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
+	#[NoAdminRequired]
 	public function membersAdd(string $circleId, array $members): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
@@ -255,13 +256,13 @@ class LocalController extends OCSController {
 
 
 	/**
-	 * @NoAdminRequired
 	 *
 	 * @param string $circleId
 	 *
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
+	#[NoAdminRequired]
 	public function circleJoin(string $circleId): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
@@ -277,13 +278,13 @@ class LocalController extends OCSController {
 
 
 	/**
-	 * @NoAdminRequired
 	 *
 	 * @param string $circleId
 	 *
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
+	#[NoAdminRequired]
 	public function circleLeave(string $circleId): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
@@ -299,7 +300,6 @@ class LocalController extends OCSController {
 
 
 	/**
-	 * @NoAdminRequired
 	 *
 	 * @param string $circleId
 	 * @param string $memberId
@@ -308,6 +308,7 @@ class LocalController extends OCSController {
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
+	#[NoAdminRequired]
 	public function memberLevel(string $circleId, string $memberId, $level): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
@@ -330,7 +331,6 @@ class LocalController extends OCSController {
 
 
 	/**
-	 * @NoAdminRequired
 	 *
 	 * @param string $circleId
 	 * @param string $memberId
@@ -338,6 +338,7 @@ class LocalController extends OCSController {
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
+	#[NoAdminRequired]
 	public function memberConfirm(string $circleId, string $memberId): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
@@ -357,7 +358,6 @@ class LocalController extends OCSController {
 
 
 	/**
-	 * @NoAdminRequired
 	 *
 	 * @param string $circleId
 	 * @param string $memberId
@@ -365,6 +365,7 @@ class LocalController extends OCSController {
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
+	#[NoAdminRequired]
 	public function memberRemove(string $circleId, string $memberId): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
@@ -381,7 +382,6 @@ class LocalController extends OCSController {
 
 
 	/**
-	 * @NoAdminRequired
 	 *
 	 * @param int $limit
 	 * @param int $offset
@@ -389,6 +389,7 @@ class LocalController extends OCSController {
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
+	#[NoAdminRequired]
 	public function circles(int $limit = -1, int $offset = 0): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
@@ -409,7 +410,6 @@ class LocalController extends OCSController {
 
 
 	/**
-	 * @NoAdminRequired
 	 *
 	 * @param int $limit
 	 * @param int $offset
@@ -417,6 +417,7 @@ class LocalController extends OCSController {
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
+	#[NoAdminRequired]
 	public function probeCircles(int $limit = -1, int $offset = 0): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
@@ -437,7 +438,6 @@ class LocalController extends OCSController {
 
 
 	/**
-	 * @NoAdminRequired
 	 *
 	 * @param string $circleId
 	 * @param bool $fullDetails
@@ -447,6 +447,7 @@ class LocalController extends OCSController {
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
+	#[NoAdminRequired]
 	public function members(string $circleId, bool $fullDetails = false, int $limit = 0, string $search = ''): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
@@ -460,7 +461,6 @@ class LocalController extends OCSController {
 
 
 	/**
-	 * @NoAdminRequired
 	 *
 	 * @param string $circleId
 	 * @param string $value
@@ -468,6 +468,7 @@ class LocalController extends OCSController {
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
+	#[NoAdminRequired]
 	public function editName(string $circleId, string $value): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
@@ -483,7 +484,6 @@ class LocalController extends OCSController {
 
 
 	/**
-	 * @NoAdminRequired
 	 *
 	 * @param string $circleId
 	 * @param string $value
@@ -491,6 +491,7 @@ class LocalController extends OCSController {
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
+	#[NoAdminRequired]
 	public function editDescription(string $circleId, string $value): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
@@ -506,7 +507,6 @@ class LocalController extends OCSController {
 
 
 	/**
-	 * @NoAdminRequired
 	 *
 	 * @param string $circleId
 	 * @param string $setting
@@ -515,6 +515,7 @@ class LocalController extends OCSController {
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
+	#[NoAdminRequired]
 	public function editSetting(string $circleId, string $setting, ?string $value = null): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
@@ -530,7 +531,6 @@ class LocalController extends OCSController {
 
 
 	/**
-	 * @NoAdminRequired
 	 *
 	 * @param string $circleId
 	 * @param int $value
@@ -538,6 +538,7 @@ class LocalController extends OCSController {
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
+	#[NoAdminRequired]
 	public function editConfig(string $circleId, int $value): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
@@ -553,7 +554,6 @@ class LocalController extends OCSController {
 
 
 	/**
-	 * @NoAdminRequired
 	 *
 	 * @param string $circleId
 	 * @param string $singleId
@@ -561,6 +561,7 @@ class LocalController extends OCSController {
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
+	#[NoAdminRequired]
 	public function link(string $circleId, string $singleId): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();

@@ -19,5 +19,5 @@ return RectorConfig::configure()
 	->withImportNames(importShortClasses: false)
 	->withPhpSets(php82: true)
 	->withSets([
-		NextcloudSets::NEXTCLOUD_25,
+		NextcloudSets::NEXTCLOUD_34,
 	]);

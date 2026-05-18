@@ -15,6 +15,7 @@ use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCP\DB\Exception;
 use OCP\DB\QueryBuilder\IQueryBuilder;
+use OCP\IAppConfig;
 use OCP\IConfig;
 use OCP\IDBConnection;
 use OCP\Share\IShare;
@@ -32,6 +33,7 @@ class MigrateCustomGroups extends Base {
 		protected IDBConnection $connection,
 		protected IConfig $config,
 		private readonly LoggerInterface $logger,
+		private readonly IAppConfig $appConfig,
 	) {
 		parent::__construct();
 	}
@@ -49,7 +51,7 @@ class MigrateCustomGroups extends Base {
 		}
 
 		$this->migrateTeams();
-		$this->config->setAppValue('circles', 'imported_custom_groups', 'true');
+		$this->appConfig->setValue('circles', 'imported_custom_groups', 'true');
 
 		return 0;
 	}
@@ -68,7 +70,7 @@ class MigrateCustomGroups extends Base {
 		$resultCustomGroups = $queryCustomGroups->executeQuery();
 
 		// we cycle for each custom group
-		while ($rowCG = $resultCustomGroups->fetch()) {
+		while ($rowCG = $resultCustomGroups->fetchAssociative()) {
 			$groupId = $rowCG['group_id'] ?? 0;
 			$groupUri = $rowCG['uri'] ?? '';
 			$ownerId = $owners[$groupId] ?? '';
@@ -109,7 +111,7 @@ class MigrateCustomGroups extends Base {
 
 			$members = [$ownerId];
 			$resultMembers = $queryMembers->executeQuery();
-			while ($rowM = $resultMembers->fetch()) {
+			while ($rowM = $resultMembers->fetchAssociative()) {
 				$userId = $rowM['user_id'];
 				// if admin, ignore
 				if ($userId === '') {
@@ -232,7 +234,7 @@ class MigrateCustomGroups extends Base {
 
 		$shareIds = [];
 		$result = $select->executeQuery();
-		while ($row = $result->fetch()) {
+		while ($row = $result->fetchAssociative()) {
 			$with = $row['share_with'];
 			if (!str_starts_with((string)$with, 'customgroup_')
 				|| substr((string)$with, strlen('customgroup_')) !== $groupUri) {
@@ -247,7 +249,7 @@ class MigrateCustomGroups extends Base {
 	}
 
 	protected function shouldRun(): bool {
-		$alreadyImported = $this->config->getAppValue('circles', 'imported_custom_groups', 'false');
+		$alreadyImported = $this->appConfig->getValue('circles', 'imported_custom_groups', 'false');
 		return $alreadyImported === 'false' && $this->connection->tableExists('custom_group') && $this->connection->tableExists('custom_group_member');
 	}
 
@@ -265,7 +267,7 @@ class MigrateCustomGroups extends Base {
 
 		$resultOwners = $queryOwners->executeQuery();
 		$owners = [];
-		while ($rowO = $resultOwners->fetch()) {
+		while ($rowO = $resultOwners->fetchAssociative()) {
 			// no idea if custom groups in owncloud can hold multiple 'owner'
 			$owners[$rowO['group_id']] ??= $rowO['user_id'];
 		}

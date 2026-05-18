@@ -184,7 +184,7 @@ class CirclesMaintenance extends Base {
 		$qb->select('uid')->from('user_saml_users');
 
 		$cursor = $qb->executeQuery();
-		while ($row = $cursor->fetch()) {
+		while ($row = $cursor->fetchAssociative()) {
 			try {
 				$this->refreshSingleDisplayName($row['uid'], $output);
 			} catch (Exception $e) {

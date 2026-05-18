@@ -554,7 +554,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 
 		$ids = [];
 		$cursor = $qb->executeQuery();
-		while ($data = $cursor->fetch()) {
+		while ($data = $cursor->fetchAssociative()) {
 			$ids[] = $data['id'];
 		}
 		$cursor->closeCursor();

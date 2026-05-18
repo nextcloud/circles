@@ -21,6 +21,8 @@ use OCA\Circles\Tools\Traits\TAsync;
 use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
+use OCP\AppFramework\Http\Attribute\PublicPage;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\IAppConfig;
 use OCP\IRequest;
@@ -69,13 +71,13 @@ class EventWrapperController extends Controller {
 	 * Async process and broadcast the event to every instances of GS
 	 * This should be initiated by the instance that owns the Circles.
 	 *
-	 * @PublicPage
-	 * @NoCSRFRequired
 	 *
 	 * @param string $token
 	 *
 	 * @return DataResponse
 	 */
+	#[PublicPage]
+	#[NoCSRFRequired]
 	public function asyncBroadcast(string $token): DataResponse {
 		$wrappers = $this->remoteUpstreamService->getEventsByToken($token);
 		if (empty($wrappers) && $token !== 'test-dummy-token') {

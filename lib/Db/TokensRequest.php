@@ -33,7 +33,7 @@ class TokensRequest extends TokensRequestBuilder {
 		$this->limitToToken($qb, $token);
 
 		$cursor = $qb->executeQuery();
-		$data = $cursor->fetch();
+		$data = $cursor->fetchAssociative();
 		$cursor->closeCursor();
 		if ($data === false) {
 			throw new TokenDoesNotExistException('Unknown share token');
@@ -58,7 +58,7 @@ class TokensRequest extends TokensRequestBuilder {
 		$this->limitToCircleId($qb, $circleId);
 
 		$cursor = $qb->executeQuery();
-		$data = $cursor->fetch();
+		$data = $cursor->fetchAssociative();
 		$cursor->closeCursor();
 		if ($data === false) {
 			throw new TokenDoesNotExistException('Unknown share token');
@@ -80,7 +80,7 @@ class TokensRequest extends TokensRequestBuilder {
 
 		$shares = [];
 		$cursor = $qb->executeQuery();
-		while ($data = $cursor->fetch()) {
+		while ($data = $cursor->fetchAssociative()) {
 			$shares[] = $this->parseTokensSelectSql($data);
 		}
 		$cursor->closeCursor();

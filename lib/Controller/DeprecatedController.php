@@ -13,6 +13,7 @@ use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\FederatedUserService;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\IRequest;
 
@@ -32,13 +33,12 @@ class DeprecatedController extends Controller {
 
 
 	/**
-	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
 	 * @param string $term
-	 *
 	 * @return DataResponse
 	 */
+	#[NoAdminRequired]
 	public function listing(string $term = ''): DataResponse {
 		try {
 			$this->federatedUserService->initCurrentUser();

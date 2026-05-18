@@ -235,7 +235,7 @@ class MigrationService {
 			$cursor = $qb->executeQuery();
 			$this->outputService->startMigrationProgress($cursor->rowCount());
 
-			while ($row = $cursor->fetch()) {
+			while ($row = $cursor->fetchAssociative()) {
 				try {
 					$data = new SimpleDataStore($row);
 					$this->outputService->output(
@@ -339,7 +339,7 @@ class MigrationService {
 			$cursor = $qb->executeQuery();
 			$this->outputService->startMigrationProgress($cursor->rowCount());
 
-			while ($row = $cursor->fetch()) {
+			while ($row = $cursor->fetchAssociative()) {
 				try {
 					$data = new SimpleDataStore($row);
 					$this->outputService->output(
@@ -447,7 +447,7 @@ class MigrationService {
 			$cursor = $qb->executeQuery();
 			$this->outputService->startMigrationProgress($cursor->rowCount());
 
-			while ($row = $cursor->fetch()) {
+			while ($row = $cursor->fetchAssociative()) {
 				try {
 					$data = new SimpleDataStore($row);
 					$federatedUser =
@@ -555,7 +555,7 @@ class MigrationService {
 			$cursor = $qb->executeQuery();
 			$this->outputService->startMigrationProgress($cursor->rowCount());
 
-			while ($row = $cursor->fetch()) {
+			while ($row = $cursor->fetchAssociative()) {
 				try {
 					$data = new SimpleDataStore($row);
 					$this->outputService->output(

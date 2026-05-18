@@ -50,6 +50,8 @@ use OCA\Circles\Tools\Traits\TDeserialize;
 use OCA\Circles\Tools\Traits\TNCLocalSignatory;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
+use OCP\AppFramework\Http\Attribute\PublicPage;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Services\IAppConfig;
 use OCP\IRequest;
@@ -87,8 +89,6 @@ class RemoteController extends Controller {
 
 
 	/**
-	 * @PublicPage
-	 * @NoCSRFRequired
 	 *
 	 * @param string $test
 	 *
@@ -97,6 +97,8 @@ class RemoteController extends Controller {
 	 * @throws SignatoryException
 	 * @throws UnknownInterfaceException
 	 */
+	#[PublicPage]
+	#[NoCSRFRequired]
 	public function appService(string $test = ''): DataResponse {
 		try {
 			$this->publicPageJsonLimited();
@@ -112,11 +114,11 @@ class RemoteController extends Controller {
 
 
 	/**
-	 * @PublicPage
-	 * @NoCSRFRequired
 	 *
 	 * @return DataResponse
 	 */
+	#[PublicPage]
+	#[NoCSRFRequired]
 	public function event(): DataResponse {
 		try {
 			$event = $this->extractEventFromRequest();
@@ -137,11 +139,11 @@ class RemoteController extends Controller {
 
 
 	/**
-	 * @PublicPage
-	 * @NoCSRFRequired
 	 *
 	 * @return DataResponse
 	 */
+	#[PublicPage]
+	#[NoCSRFRequired]
 	public function incoming(): DataResponse {
 		try {
 			$event = $this->extractEventFromRequest();
@@ -162,11 +164,11 @@ class RemoteController extends Controller {
 
 
 	/**
-	 * @PublicPage
-	 * @NoCSRFRequired
 	 *
 	 * @return DataResponse
 	 */
+	#[PublicPage]
+	#[NoCSRFRequired]
 	public function test(): DataResponse {
 		try {
 			$this->interfaceService->setCurrentInterfaceFromRequest($this->request);
@@ -182,11 +184,11 @@ class RemoteController extends Controller {
 
 
 	/**
-	 * @PublicPage
-	 * @NoCSRFRequired
 	 *
 	 * @return DataResponse
 	 */
+	#[PublicPage]
+	#[NoCSRFRequired]
 	public function circles(): DataResponse {
 		try {
 			$data = $this->extractDataFromFromRequest();
@@ -215,13 +217,13 @@ class RemoteController extends Controller {
 
 
 	/**
-	 * @PublicPage
-	 * @NoCSRFRequired
 	 *
 	 * @param string $circleId
 	 *
 	 * @return DataResponse
 	 */
+	#[PublicPage]
+	#[NoCSRFRequired]
 	public function circle(string $circleId): DataResponse {
 		try {
 			$this->extractDataFromFromRequest();
@@ -240,13 +242,13 @@ class RemoteController extends Controller {
 
 
 	/**
-	 * @PublicPage
-	 * @NoCSRFRequired
 	 *
 	 * @param string $circleId
 	 *
 	 * @return DataResponse
 	 */
+	#[PublicPage]
+	#[NoCSRFRequired]
 	public function members(string $circleId): DataResponse {
 		try {
 			$this->extractDataFromFromRequest();
@@ -267,14 +269,14 @@ class RemoteController extends Controller {
 	/**
 	 * ?? TODO: rename /member/ to /federatedUser/ ou /federated/  ?
 	 *
-	 * @PublicPage
-	 * @NoCSRFRequired
 	 *
 	 * @param string $type
 	 * @param string $userId
 	 *
 	 * @return DataResponse
 	 */
+	#[PublicPage]
+	#[NoCSRFRequired]
 	public function member(string $type, string $userId): DataResponse {
 		try {
 			$this->extractDataFromFromRequest();
@@ -304,13 +306,13 @@ class RemoteController extends Controller {
 
 
 	/**
-	 * @PublicPage
-	 * @NoCSRFRequired
 	 *
 	 * @param string $circleId
 	 *
 	 * @return DataResponse
 	 */
+	#[PublicPage]
+	#[NoCSRFRequired]
 	public function inherited(string $circleId): DataResponse {
 		try {
 			$this->extractDataFromFromRequest();
@@ -329,13 +331,13 @@ class RemoteController extends Controller {
 
 
 	/**
-	 * @PublicPage
-	 * @NoCSRFRequired
 	 *
 	 * @param string $circleId
 	 *
 	 * @return DataResponse
 	 */
+	#[PublicPage]
+	#[NoCSRFRequired]
 	public function memberships(string $circleId): DataResponse {
 		try {
 			$this->extractDataFromFromRequest();
@@ -412,7 +414,7 @@ class RemoteController extends Controller {
 				throw new InvalidRemoteInstanceException('Initiator instance does not match remote instance');
 			}
 			$this->federatedUserService->setCurrentUser($initiator);
-		} catch (InvalidItemException|ItemNotFoundException $e) {
+		} catch (InvalidItemException|ItemNotFoundException) {
 		}
 
 		try {
