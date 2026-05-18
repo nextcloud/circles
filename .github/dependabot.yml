@@ -3,7 +3,12 @@
 version: 2
 updates:
 - package-ecosystem: composer
-  directory: "/"
+  directories:
+  - /
+  - /vendor-bin/cs-fixer
+  - /vendor-bin/phpunit
+  - /vendor-bin/psalm
+  - /vendor-bin/rector
   schedule:
     interval: weekly
     day: saturday
@@ -16,6 +21,7 @@ updates:
     - "dependencies"
   reviewers:
     - "ArtificialOwl"
+    - "cristianscheid"
 
 - package-ecosystem: npm
   directory: "/"
@@ -32,3 +38,4 @@ updates:
     - "dependencies"
   reviewers:
     - "ArtificialOwl"
+    - "cristianscheid"
