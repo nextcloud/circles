@@ -64,31 +64,6 @@ class CirclesMemberships extends Base {
 	use TConsoleTree;
 
 
-	/** @var IUserManager */
-	private $userManager;
-
-	/** @var MembershipRequest */
-	private $membershipRequest;
-
-	/** @var MemberRequest */
-	private $memberRequest;
-
-	/** @var CircleRequest */
-	private $circleRequest;
-
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var CircleService */
-	private $circleService;
-
-	/** @var MembershipService */
-	private $membershipService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	/** @var InputInterface */
 	private $input;
 
@@ -110,24 +85,16 @@ class CirclesMemberships extends Base {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IUserManager $userManager,
-		MembershipRequest $membershipRequest,
-		MemberRequest $memberRequest,
-		CircleRequest $circleRequest,
-		FederatedUserService $federatedUserService,
-		CircleService $circleService,
-		MembershipService $membershipService,
-		ConfigService $configService,
+		private IUserManager $userManager,
+		private MembershipRequest $membershipRequest,
+		private MemberRequest $memberRequest,
+		private CircleRequest $circleRequest,
+		private FederatedUserService $federatedUserService,
+		private CircleService $circleService,
+		private MembershipService $membershipService,
+		private ConfigService $configService,
 	) {
 		parent::__construct();
-		$this->userManager = $userManager;
-		$this->memberRequest = $memberRequest;
-		$this->membershipRequest = $membershipRequest;
-		$this->circleRequest = $circleRequest;
-		$this->federatedUserService = $federatedUserService;
-		$this->circleService = $circleService;
-		$this->membershipService = $membershipService;
-		$this->configService = $configService;
 	}
 
 
@@ -221,7 +188,7 @@ class CirclesMemberships extends Base {
 		$this->generateTree($federatedUser->getSingleId(), $tree);
 
 		$this->drawTree(
-			$tree, [$this, 'displayLeaf'],
+			$tree, $this->displayLeaf(...),
 			[
 				'height' => 3,
 				'node-spacing' => 0,
@@ -325,7 +292,7 @@ class CirclesMemberships extends Base {
 
 				return $line;
 			}
-		} catch (InvalidItemException|ItemNotFoundException|UnknownTypeException $e) {
+		} catch (InvalidItemException|ItemNotFoundException|UnknownTypeException) {
 		}
 
 		return '';

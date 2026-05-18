@@ -28,10 +28,10 @@ class MigrateCustomGroups extends Base {
 	private array $fedList = [];
 
 	public function __construct(
-		private CirclesManager $circlesManager,
+		private readonly CirclesManager $circlesManager,
 		protected IDBConnection $connection,
 		protected IConfig $config,
-		private LoggerInterface $logger,
+		private readonly LoggerInterface $logger,
 	) {
 		parent::__construct();
 	}
@@ -77,7 +77,7 @@ class MigrateCustomGroups extends Base {
 			}
 
 			$name = $rowCG['display_name'];
-			while (strlen($name) < 3) {
+			while (strlen((string)$name) < 3) {
 				$name = '_' . $name;
 			}
 
@@ -95,7 +95,7 @@ class MigrateCustomGroups extends Base {
 			try {
 				$circle = $this->circlesManager->createCircle($name);
 			} catch (\Exception $e) {
-				$this->output->writeln('<error>' . get_class($e) . ' ' . $e->getMessage() . '</error> with data ' . json_encode($rowCG));
+				$this->output->writeln('<error>' . $e::class . ' ' . $e->getMessage() . '</error> with data ' . json_encode($rowCG));
 				$this->logger->log(2, 'error while creating team', ['exception' => $e]);
 				$this->circlesManager->stopSession();
 				continue;
@@ -134,7 +134,7 @@ class MigrateCustomGroups extends Base {
 						$this->circlesManager->levelMember($member->getId(), Member::LEVEL_ADMIN);
 					}
 				} catch (\Exception $e) {
-					$this->output->writeln('<error>' . get_class($e) . ' ' . $e->getMessage() . '</error>');
+					$this->output->writeln('<error>' . $e::class . ' ' . $e->getMessage() . '</error>');
 					$this->logger->log(2, 'error while migrating custom group member', ['exception' => $e]);
 				}
 			}
@@ -234,8 +234,8 @@ class MigrateCustomGroups extends Base {
 		$result = $select->executeQuery();
 		while ($row = $result->fetch()) {
 			$with = $row['share_with'];
-			if (!str_starts_with($with, 'customgroup_')
-				|| substr($with, strlen('customgroup_')) !== $groupUri) {
+			if (!str_starts_with((string)$with, 'customgroup_')
+				|| substr((string)$with, strlen('customgroup_')) !== $groupUri) {
 				// not a custom group, or not the one we're looking for
 				continue;
 			}
@@ -267,7 +267,7 @@ class MigrateCustomGroups extends Base {
 		$owners = [];
 		while ($rowO = $resultOwners->fetch()) {
 			// no idea if custom groups in owncloud can hold multiple 'owner'
-			$owners[$rowO['group_id']] = $owners[$rowO['group_id']] ?? $rowO['user_id'];
+			$owners[$rowO['group_id']] ??= $rowO['user_id'];
 		}
 		$resultOwners->closeCursor();
 

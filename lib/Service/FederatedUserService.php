@@ -85,46 +85,6 @@ class FederatedUserService {
 	public const CONFLICT_005 = 5;
 
 
-	/** @var IUserSession */
-	private $userSession;
-
-	/** @var IUserManager */
-	private $userManager;
-
-	/** @var AccountsRequest */
-	private $accountRequest;
-
-	/** @var IGroupManager */
-	private $groupManager;
-
-	/** @var FederatedEventService */
-	private $federatedEventService;
-
-	/** @var MembershipService */
-	private $membershipService;
-
-	/** @var CircleRequest */
-	private $circleRequest;
-
-	/** @var MemberRequest */
-	private $memberRequest;
-
-	/** @var RemoteService */
-	private $remoteService;
-
-	/** @var RemoteStreamService */
-	private $remoteStreamService;
-
-	/** @var ContactService */
-	private $contactService;
-
-	/** @var InterfaceService */
-	private $interfaceService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	/** @var ICache */
 	private $cache;
 
@@ -165,36 +125,22 @@ class FederatedUserService {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IUserSession $userSession,
-		IUserManager $userManager,
-		IGroupManager $groupManager,
+		private IUserSession $userSession,
+		private IUserManager $userManager,
+		private IGroupManager $groupManager,
 		ICacheFactory $cacheFactory,
-		FederatedEventService $federatedEventService,
-		MembershipService $membershipService,
-		AccountsRequest $accountRequest,
-		CircleRequest $circleRequest,
-		MemberRequest $memberRequest,
-		RemoteService $remoteService,
-		RemoteStreamService $remoteStreamService,
-		ContactService $contactService,
-		InterfaceService $interfaceService,
-		ConfigService $configService,
+		private FederatedEventService $federatedEventService,
+		private MembershipService $membershipService,
+		private AccountsRequest $accountRequest,
+		private CircleRequest $circleRequest,
+		private MemberRequest $memberRequest,
+		private RemoteService $remoteService,
+		private RemoteStreamService $remoteStreamService,
+		private ContactService $contactService,
+		private InterfaceService $interfaceService,
+		private ConfigService $configService,
 		private readonly IUserConfig $userConfig,
 	) {
-		$this->userSession = $userSession;
-		$this->userManager = $userManager;
-		$this->groupManager = $groupManager;
-		$this->federatedEventService = $federatedEventService;
-		$this->membershipService = $membershipService;
-		$this->accountRequest = $accountRequest;
-		$this->circleRequest = $circleRequest;
-		$this->memberRequest = $memberRequest;
-		$this->remoteService = $remoteService;
-		$this->remoteStreamService = $remoteStreamService;
-		$this->contactService = $contactService;
-		$this->interfaceService = $interfaceService;
-		$this->configService = $configService;
-
 		$this->cache = $cacheFactory->createDistributed(self::CACHE_SINGLE_CIRCLE);
 
 		if (OC::$CLI) {
@@ -645,7 +591,7 @@ class FederatedUserService {
 				$this->setOwnerAsCurrentUser($circleId);
 
 				return;
-			} catch (RemoteCircleException $e) {
+			} catch (RemoteCircleException) {
 			}
 		}
 
@@ -709,7 +655,7 @@ class FederatedUserService {
 	 */
 	public function getFederatedMember(string $userId, int $level = Member::LEVEL_MEMBER): Member {
 		$userId = trim($userId, ',');
-		if (strpos($userId, ',') !== false) {
+		if (str_contains($userId, ',')) {
 			[$userId, $level] = explode(',', $userId);
 		}
 
@@ -759,23 +705,17 @@ class FederatedUserService {
 				case Member::TYPE_CONTACT:
 					return $this->getFederatedUser_Contact($federatedId);
 			}
-		} catch (Exception $e) {
+		} catch (Exception) {
 		}
 
 		// then if nothing found, extract remote instance from string
 		[$singleId, $instance] = $this->extractIdAndInstance($federatedId);
-
-		switch ($type) {
-			case Member::TYPE_SINGLE:
-			case Member::TYPE_CIRCLE:
-				return $this->getFederatedUser_SingleId($singleId, $instance);
-			case Member::TYPE_USER:
-				return $this->getFederatedUser_User($singleId, $instance);
-			case Member::TYPE_GROUP:
-				return $this->getFederatedUser_Group($singleId, $instance);
-		}
-
-		throw new UserTypeNotFoundException();
+		return match ($type) {
+			Member::TYPE_SINGLE, Member::TYPE_CIRCLE => $this->getFederatedUser_SingleId($singleId, $instance),
+			Member::TYPE_USER => $this->getFederatedUser_User($singleId, $instance),
+			Member::TYPE_GROUP => $this->getFederatedUser_Group($singleId, $instance),
+			default => throw new UserTypeNotFoundException(),
+		};
 	}
 
 
@@ -804,7 +744,7 @@ class FederatedUserService {
 
 		try {
 			return $this->getFederatedUser($federatedId, $type);
-		} catch (Exception $e) {
+		} catch (Exception) {
 		}
 
 		[$userId, $instance] = $this->extractIdAndInstance($federatedId);
@@ -1043,12 +983,12 @@ class FederatedUserService {
 
 		try {
 			return $this->getCachedSingleCircle($federatedUser);
-		} catch (SingleCircleNotFoundException $e) {
+		} catch (SingleCircleNotFoundException) {
 		}
 
 		try {
 			$singleCircle = $this->circleRequest->getSingleCircle($federatedUser);
-		} catch (SingleCircleNotFoundException $e) {
+		} catch (SingleCircleNotFoundException) {
 			if (!$generate) {
 				throw new SingleCircleNotFoundException();
 			}
@@ -1208,26 +1148,14 @@ class FederatedUserService {
 	 * @throws FederatedUserException
 	 */
 	private function markConflict(IFederatedUser $federatedUser, Member $knownMember, int $conflict): void {
-		switch ($conflict) {
-			case self::CONFLICT_001:
-				$message = 'duplicate singleId from another instance';
-				break;
-			case self::CONFLICT_002:
-				$message = 'duplicate singleId has no known source';
-				break;
-			case self::CONFLICT_003:
-				$message = 'federatedUser is not an alias from duplicate singleId';
-				break;
-			case self::CONFLICT_004:
-				$message = 'federatedUser has no known source';
-				break;
-			case self::CONFLICT_005:
-				$message = 'duplicate singleId is not an alias of federatedUser';
-				break;
-
-			default:
-				$message = 'uniqueness of SingleId could not be confirmed';
-		}
+		$message = match ($conflict) {
+			self::CONFLICT_001 => 'duplicate singleId from another instance',
+			self::CONFLICT_002 => 'duplicate singleId has no known source',
+			self::CONFLICT_003 => 'federatedUser is not an alias from duplicate singleId',
+			self::CONFLICT_004 => 'federatedUser has no known source',
+			self::CONFLICT_005 => 'duplicate singleId is not an alias of federatedUser',
+			default => 'uniqueness of SingleId could not be confirmed',
+		};
 
 		// TODO: log conflict into database
 		$this->log(
@@ -1285,7 +1213,7 @@ class FederatedUserService {
 
 		try {
 			return $this->circleRequest->searchCircle($circle, $owner);
-		} catch (CircleNotFoundException $e) {
+		} catch (CircleNotFoundException) {
 		}
 
 		$circle->setDisplayName($groupId);
@@ -1315,7 +1243,7 @@ class FederatedUserService {
 		try {
 			/** @var Circle $singleCircle */
 			$singleCircle = $this->deserializeJson($cachedData, Circle::class);
-		} catch (InvalidItemException $e) {
+		} catch (InvalidItemException) {
 			throw new SingleCircleNotFoundException();
 		}
 

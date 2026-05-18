@@ -21,13 +21,6 @@ class LocalUsers implements ISearch {
 	use TArrayTools;
 
 
-	/** @var ICollaboratorSearch */
-	private $search;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	/**
 	 * LocalUsers constructor.
 	 *
@@ -35,11 +28,9 @@ class LocalUsers implements ISearch {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		ICollaboratorSearch $search,
-		ConfigService $configService,
+		private ICollaboratorSearch $search,
+		private ConfigService $configService
 	) {
-		$this->search = $search;
-		$this->configService = $configService;
 	}
 
 

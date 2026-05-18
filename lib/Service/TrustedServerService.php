@@ -33,8 +33,8 @@ class TrustedServerService {
 		try {
 			foreach ($this->trustedServers->getServers() as $server) {
 				if (($server['status'] ?? 0) === TrustedServers::STATUS_OK &&
-					str_starts_with($server['url'], 'https://')) {
-					$server['address'] = substr($server['url'], 8);
+					str_starts_with((string)$server['url'], 'https://')) {
+					$server['address'] = substr((string)$server['url'], 8);
 					$trustedServers[] = $server;
 				}
 			}

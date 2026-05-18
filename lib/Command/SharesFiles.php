@@ -41,16 +41,6 @@ class SharesFiles extends Base {
 	use TArrayTools;
 
 
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var ShareWrapperService */
-	private $shareWrapperService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	/** @var int */
 	private $fileId = 0;
 
@@ -63,13 +53,11 @@ class SharesFiles extends Base {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		FederatedUserService $federatedUserService, ShareWrapperService $shareWrapperService,
-		ConfigService $configService,
+		private FederatedUserService $federatedUserService,
+		private ShareWrapperService $shareWrapperService,
+		private ConfigService $configService,
 	) {
 		parent::__construct();
-		$this->federatedUserService = $federatedUserService;
-		$this->shareWrapperService = $shareWrapperService;
-		$this->configService = $configService;
 	}
 
 
@@ -101,7 +89,7 @@ class SharesFiles extends Base {
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$this->fileId = (int)$input->getArgument('file_id');
-		$json = (strtolower($input->getOption('output')) === 'json');
+		$json = (strtolower((string)$input->getOption('output')) === 'json');
 
 		$this->displayShares(
 			(int)$input->getArgument('file_id'),

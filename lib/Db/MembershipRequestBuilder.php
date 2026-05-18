@@ -82,7 +82,7 @@ class MembershipRequestBuilder extends CoreRequestBuilder {
 		/** @var Membership $membership */
 		try {
 			$membership = $qb->asItem(Membership::class);
-		} catch (RowNotFoundException $e) {
+		} catch (RowNotFoundException) {
 			throw new MembershipNotFoundException();
 		}
 

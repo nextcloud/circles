@@ -67,7 +67,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		$id = $qb->getLastInsertId();
 		try {
 			$share->setId((string)$id);
-		} catch (IllegalIDChangeException $e) {
+		} catch (IllegalIDChangeException) {
 		}
 
 		return $id;
@@ -533,9 +533,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		}
 
 		$ids = array_map(
-			function (ShareWrapper $share): string {
-				return $share->getId();
-			},
+			fn (ShareWrapper $share): string => $share->getId(),
 			$this->getItemsFromRequest($qb)
 		);
 
@@ -601,7 +599,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 
 		try {
 			return json_encode($compressedAttributes, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
-		} catch (JsonException $e) {
+		} catch (JsonException) {
 			return null;
 		}
 	}

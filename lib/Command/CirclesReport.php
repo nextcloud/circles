@@ -44,22 +44,6 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 	use TArrayTools;
 
 
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var CircleService */
-	private $circleService;
-
-	/** @var MemberService */
-	private $memberService;
-
-	/** @var InterfaceService */
-	private $interfaceService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	/** @var OutputInterface */
 	private $output;
 
@@ -76,19 +60,13 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		FederatedUserService $federatedUserService,
-		CircleService $circleService,
-		MemberService $memberService,
-		InterfaceService $interfaceService,
-		ConfigService $configService,
+		private FederatedUserService $federatedUserService,
+		private CircleService $circleService,
+		private MemberService $memberService,
+		private InterfaceService $interfaceService,
+		private ConfigService $configService,
 	) {
 		parent::__construct();
-
-		$this->federatedUserService = $federatedUserService;
-		$this->circleService = $circleService;
-		$this->memberService = $memberService;
-		$this->interfaceService = $interfaceService;
-		$this->configService = $configService;
 	}
 
 

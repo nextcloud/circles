@@ -902,7 +902,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	 * @throws InvalidItemException
 	 */
 	public function asItem(string $object, array $params = []): IQueryRow {
-		return $this->getRow([$this, 'parseSimpleSelectSql'], $object, $params);
+		return $this->getRow($this->parseSimpleSelectSql(...), $object, $params);
 	}
 
 	/**
@@ -912,7 +912,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	 * @return list<IQueryRow>
 	 */
 	public function asItems(string $object, array $params = []): array {
-		return $this->getRows([$this, 'parseSimpleSelectSql'], $object, $params);
+		return $this->getRows($this->parseSimpleSelectSql(...), $object, $params);
 	}
 
 
@@ -927,7 +927,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	public function asItemFromField(string $field, array $params = []): IQueryRow {
 		$param['modelFromField'] = $field;
 
-		return $this->getRow([$this, 'parseSimpleSelectSql'], '', $params);
+		return $this->getRow($this->parseSimpleSelectSql(...), '', $params);
 	}
 
 	/**
@@ -939,7 +939,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	public function asItemsFromField(string $field, array $params = []): array {
 		$param['modelFromField'] = $field;
 
-		return $this->getRows([$this, 'parseSimpleSelectSql'], $field, $params);
+		return $this->getRows($this->parseSimpleSelectSql(...), $field, $params);
 	}
 
 
@@ -1020,7 +1020,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 		while ($data = $cursor->fetch()) {
 			try {
 				$rows[] = $method($data, $this, $object, $params);
-			} catch (Exception $e) {
+			} catch (Exception) {
 			}
 		}
 		$cursor->closeCursor();

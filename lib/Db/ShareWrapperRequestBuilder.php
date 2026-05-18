@@ -83,7 +83,7 @@ class ShareWrapperRequestBuilder extends CoreRequestBuilder {
 		/** @var ShareWrapper $shareWrapper */
 		try {
 			$shareWrapper = $qb->asItem(ShareWrapper::class);
-		} catch (RowNotFoundException $e) {
+		} catch (RowNotFoundException) {
 			throw new ShareWrapperNotFoundException();
 		}
 

@@ -435,7 +435,7 @@ class BaseCircle {
 	 *
 	 * @param string $type
 	 *
-	 * @return \OCA\Circles\Model\BaseCircle
+	 * @return BaseCircle
 	 */
 	public function setType($type) {
 		$this->type = self::typeInt($type);
@@ -453,7 +453,7 @@ class BaseCircle {
 	/**
 	 * @param string $creation
 	 *
-	 * @return \OCA\Circles\Model\BaseCircle
+	 * @return BaseCircle
 	 */
 	public function setCreation($creation) {
 		$this->creation = $creation;
@@ -560,18 +560,12 @@ class BaseCircle {
 		if (is_numeric($type)) {
 			return (int)$type;
 		}
-
-		switch ($type) {
-			case 'Personal':
-				return self::CIRCLES_PERSONAL;
-			case 'Closed':
-				return self::CIRCLES_CLOSED;
-			case 'Secret':
-				return self::CIRCLES_SECRET;
-			case 'Public':
-				return self::CIRCLES_PUBLIC;
-		}
-
-		return 0;
+		return match ($type) {
+			'Personal' => self::CIRCLES_PERSONAL,
+			'Closed' => self::CIRCLES_CLOSED,
+			'Secret' => self::CIRCLES_SECRET,
+			'Public' => self::CIRCLES_PUBLIC,
+			default => 0,
+		};
 	}
 }

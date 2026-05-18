@@ -45,16 +45,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Command
  */
 class MembersLevel extends Base {
-	/** @var MemberRequest */
-	private $memberRequest;
-
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var MemberService */
-	private $memberService;
-
-
 	/**
 	 * MembersLevel constructor.
 	 *
@@ -63,13 +53,11 @@ class MembersLevel extends Base {
 	 * @param MemberService $memberService
 	 */
 	public function __construct(
-		MemberRequest $memberRequest, FederatedUserService $federatedUserService, MemberService $memberService,
+		private readonly MemberRequest $memberRequest,
+		private readonly FederatedUserService $federatedUserService,
+		private readonly MemberService $memberService,
 	) {
 		parent::__construct();
-
-		$this->memberRequest = $memberRequest;
-		$this->federatedUserService = $federatedUserService;
-		$this->memberService = $memberService;
 	}
 
 
@@ -133,14 +121,14 @@ class MembersLevel extends Base {
 		} catch (FederatedItemException $e) {
 			if ($input->getOption('status-code')) {
 				throw new FederatedItemException(
-					' [' . get_class($e) . ', ' . ((string)$e->getStatus()) . ']' . "\n" . $e->getMessage()
+					' [' . $e::class . ', ' . ((string)$e->getStatus()) . ']' . "\n" . $e->getMessage()
 				);
 			}
 
 			throw $e;
 		}
 
-		if (strtolower($input->getOption('output')) === 'json') {
+		if (strtolower((string)$input->getOption('output')) === 'json') {
 			$output->writeln(json_encode($outcome, JSON_PRETTY_PRINT));
 		}
 

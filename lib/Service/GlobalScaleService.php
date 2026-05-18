@@ -32,27 +32,8 @@ class GlobalScaleService {
 	use TNCRequest;
 	use TStringTools;
 
-
-	/** @var IURLGenerator */
-	private $urlGenerator;
-
-	/** @var IUserManager */
-	private $userManager;
-
-	/** @var IUserSession */
-	private $userSession;
-
 	/** @var Signer */
 	private $signer;
-
-	/** @var EventWrapperRequest */
-	private $eventWrapperRequest;
-
-	/** @var ConfigService */
-	private $configService;
-
-	/** @var MiscService */
-	private $miscService;
 
 
 	/**
@@ -67,21 +48,15 @@ class GlobalScaleService {
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		IURLGenerator $urlGenerator,
-		IUserManager $userManager,
-		IUserSession $userSession,
+		private IURLGenerator $urlGenerator,
+		private IUserManager $userManager,
+		private IUserSession $userSession,
 		Signer $signer,
-		EventWrapperRequest $eventWrapperRequest,
-		ConfigService $configService,
-		MiscService $miscService,
+		private EventWrapperRequest $eventWrapperRequest,
+		private ConfigService $configService,
+		private MiscService $miscService,
 	) {
-		$this->urlGenerator = $urlGenerator;
-		$this->userManager = $userManager;
-		$this->userSession = $userSession;
 		$this->signer = $signer;
-		$this->eventWrapperRequest = $eventWrapperRequest;
-		$this->configService = $configService;
-		$this->miscService = $miscService;
 	}
 
 
@@ -106,7 +81,7 @@ class GlobalScaleService {
 			} catch (RequestNetworkException $e) {
 				$this->e($e);
 			}
-		} catch (GSStatusException $e) {
+		} catch (GSStatusException) {
 		}
 
 		return [];

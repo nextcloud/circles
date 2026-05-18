@@ -51,24 +51,6 @@ use OCA\Circles\Tools\Exceptions\InvalidItemException;
  * @package OCA\Circles
  */
 class CirclesManager {
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var CircleService */
-	private $circleService;
-
-	/** @var MemberService */
-	private $memberService;
-
-	/** @var MembershipService */
-	private $membershipService;
-
-	/** @var ConfigService */
-	private $configService;
-
-	/** @var CirclesQueryHelper */
-	private $circlesQueryHelper;
-
 	private bool $forceSync = false;
 
 	/**
@@ -82,19 +64,13 @@ class CirclesManager {
 	 * @param CirclesQueryHelper $circlesQueryHelper
 	 */
 	public function __construct(
-		FederatedUserService $federatedUserService,
-		CircleService $circleService,
-		MemberService $memberService,
-		MembershipService $membershipService,
-		ConfigService $configService,
-		CirclesQueryHelper $circlesQueryHelper,
+		private readonly FederatedUserService $federatedUserService,
+		private readonly CircleService $circleService,
+		private readonly MemberService $memberService,
+		private readonly MembershipService $membershipService,
+		private readonly ConfigService $configService,
+		private readonly CirclesQueryHelper $circlesQueryHelper
 	) {
-		$this->federatedUserService = $federatedUserService;
-		$this->circleService = $circleService;
-		$this->memberService = $memberService;
-		$this->membershipService = $membershipService;
-		$this->configService = $configService;
-		$this->circlesQueryHelper = $circlesQueryHelper;
 	}
 
 

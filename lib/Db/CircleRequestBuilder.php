@@ -89,9 +89,9 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 		/** @var Circle $circle */
 		try {
 			$circle = $qb->asItem(Circle::class);
-		} catch (RowNotFoundException $e) {
+		} catch (RowNotFoundException) {
 			throw new CircleNotFoundException('Circle not found');
-		} catch (\Exception $e) {
+		} catch (\Exception) {
 			throw new \Exception($qb->getSQL());
 		}
 

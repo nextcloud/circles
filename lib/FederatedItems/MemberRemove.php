@@ -33,16 +33,6 @@ class MemberRemove implements
 	IFederatedItemAsyncProcess,
 	IFederatedItemHighSeverity,
 	IFederatedItemMemberRequired {
-	/** @var MemberRequest */
-	private $memberRequest;
-
-	/** @var MembershipService */
-	private $membershipService;
-
-	/** @var EventService */
-	private $eventService;
-
-
 	/**
 	 * MemberAdd constructor.
 	 *
@@ -51,13 +41,10 @@ class MemberRemove implements
 	 * @param EventService $eventService
 	 */
 	public function __construct(
-		MemberRequest $memberRequest,
-		MembershipService $membershipService,
-		EventService $eventService,
+		private readonly MemberRequest $memberRequest,
+		private readonly MembershipService $membershipService,
+		private readonly EventService $eventService
 	) {
-		$this->memberRequest = $memberRequest;
-		$this->membershipService = $membershipService;
-		$this->eventService = $eventService;
 	}
 
 

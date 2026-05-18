@@ -79,7 +79,7 @@ class ShareLockRequestBuilder extends CoreRequestBuilder {
 		/** @var FederatedShare $circle */
 		try {
 			$circle = $qb->asItem(FederatedShare::class);
-		} catch (RowNotFoundException $e) {
+		} catch (RowNotFoundException) {
 			throw new FederatedShareNotFoundException();
 		}
 

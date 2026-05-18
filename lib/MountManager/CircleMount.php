@@ -53,7 +53,7 @@ class CircleMount extends MountPoint implements JsonSerializable {
 			throw new MountPointConstructionException();
 		}
 
-		$this->storageClass = $storage instanceof IStorage ? get_class($storage) : $storage;
+		$this->storageClass = $storage instanceof IStorage ? $storage::class : $storage;
 	}
 
 	#[Override]

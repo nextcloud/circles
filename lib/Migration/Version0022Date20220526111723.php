@@ -23,15 +23,12 @@ use OCP\Migration\SimpleMigrationStep;
  * @package OCA\Circles\Migration
  */
 class Version0022Date20220526111723 extends SimpleMigrationStep {
-	/** @var Connection */
-	private $connection;
-
-
 	/**
 	 * @param Connection $connection
 	 */
-	public function __construct(Connection $connection) {
-		$this->connection = $connection;
+	public function __construct(
+		private readonly Connection $connection
+	) {
 	}
 
 

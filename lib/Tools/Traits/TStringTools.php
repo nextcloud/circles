@@ -31,7 +31,7 @@ trait TStringTools {
 		for ($i = 0; $i < $length; $i++) {
 			try {
 				$str .= $chars[random_int(0, $max - 2)];
-			} catch (Exception $e) {
+			} catch (Exception) {
 			}
 		}
 
@@ -142,7 +142,7 @@ trait TStringTools {
 	public function generateRandomSentence(int $words = 5): string {
 		$sentence = [];
 		for ($i = 0; $i < $words; $i++) {
-			$sentence[] = $this->generateRandomWord(rand(2, 12));
+			$sentence[] = $this->generateRandomWord(random_int(2, 12));
 		}
 
 		return implode(' ', $sentence);
@@ -181,7 +181,7 @@ trait TStringTools {
 		$s = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
 		$e = floor(log($bytes, 1024));
 
-		return (string)round((float)$bytes / pow(1024, $e), 2) . ' ' . $s[$e];
+		return (string)round((float)$bytes / 1024 ** $e, 2) . ' ' . $s[$e];
 	}
 
 

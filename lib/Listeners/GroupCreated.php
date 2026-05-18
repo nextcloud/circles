@@ -19,11 +19,9 @@ use OCP\Group\Events\GroupCreatedEvent;
 
 /** @template-implements IEventListener<GroupCreatedEvent|Event> */
 class GroupCreated implements IEventListener {
-	/** @var SyncService */
-	private $syncService;
-
-	public function __construct(SyncService $syncService) {
-		$this->syncService = $syncService;
+	public function __construct(
+		private readonly SyncService $syncService
+	) {
 	}
 
 	public function handle(Event $event): void {
@@ -34,7 +32,7 @@ class GroupCreated implements IEventListener {
 		$group = $event->getGroup();
 		try {
 			$this->syncService->syncNextcloudGroup($group->getGID());
-		} catch (Exception $e) {
+		} catch (Exception) {
 		}
 	}
 }

@@ -39,23 +39,11 @@ use OCP\EventDispatcher\IEventListener;
 class MembershipsRemoved implements IEventListener {
 	use TStringTools;
 
-
-	/** @var CirclesManager */
-	private $circlesManager;
-
-	private ShareWrapperService $shareWrapperService;
-
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
 	public function __construct(
-		CirclesManager $circlesManager,
-		ShareWrapperService $shareWrapperService,
-		FederatedUserService $federatedUserService,
+		private CirclesManager $circlesManager,
+		private ShareWrapperService $shareWrapperService,
+		private FederatedUserService $federatedUserService
 	) {
-		$this->circlesManager = $circlesManager;
-		$this->shareWrapperService = $shareWrapperService;
-		$this->federatedUserService = $federatedUserService;
 	}
 
 

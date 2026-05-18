@@ -30,30 +30,12 @@ class AddingMemberSendMail implements IEventListener {
 	use TStringTools;
 	use TNCLogger;
 
-
-	/** @var ShareWrapperService */
-	private $shareWrapperService;
-
-	/** @var ShareTokenService */
-	private $shareTokenService;
-
-	/** @var ConfigService */
-	private $configService;
-
-	/** @var ContactService */
-	private $contactService;
-
 	public function __construct(
-		ShareWrapperService $shareWrapperService,
-		ShareTokenService $shareTokenService,
-		ContactService $contactService,
-		ConfigService $configService,
+		private ShareWrapperService $shareWrapperService,
+		private ShareTokenService $shareTokenService,
+		private ContactService $contactService,
+		private ConfigService $configService,
 	) {
-		$this->shareWrapperService = $shareWrapperService;
-		$this->shareTokenService = $shareTokenService;
-		$this->contactService = $contactService;
-		$this->configService = $configService;
-
 		$this->setup('app', Application::APP_ID);
 	}
 
@@ -94,7 +76,7 @@ class AddingMemberSendMail implements IEventListener {
 						$member,
 						$this->get($member->getSingleId(), $hashedPasswords)
 					);
-				} catch (Exception $e) {
+				} catch (Exception) {
 					continue;
 				}
 

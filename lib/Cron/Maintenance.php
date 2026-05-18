@@ -17,20 +17,18 @@ use OCP\BackgroundJob\IJob;
 use OCP\BackgroundJob\TimedJob;
 
 class Maintenance extends TimedJob {
-	private MaintenanceService $maintenanceService;
-
-
 	/**
 	 * @param ITimeFactory $time
 	 * @param MaintenanceService $maintenanceService
 	 */
-	public function __construct(ITimeFactory $time, MaintenanceService $maintenanceService) {
+	public function __construct(
+		ITimeFactory $time,
+		private readonly MaintenanceService $maintenanceService
+	) {
 		parent::__construct($time);
 
 		$this->setInterval(10);
 		$this->setTimeSensitivity(IJob::TIME_SENSITIVE);
-
-		$this->maintenanceService = $maintenanceService;
 	}
 
 

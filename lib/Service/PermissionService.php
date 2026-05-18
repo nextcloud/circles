@@ -19,29 +19,16 @@ use OCA\Circles\Model\Circle;
 use OCP\IL10N;
 
 class PermissionService {
-	/** @var IL10N */
-	private $l10n;
-
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	/**
 	 * @param IL10N $l10n
 	 * @param FederatedUserService $federatedUserService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IL10N $l10n,
-		FederatedUserService $federatedUserService,
-		ConfigService $configService,
+		private readonly IL10N $l10n,
+		private readonly FederatedUserService $federatedUserService,
+		private readonly ConfigService $configService
 	) {
-		$this->l10n = $l10n;
-		$this->federatedUserService = $federatedUserService;
-		$this->configService = $configService;
 	}
 
 
@@ -53,7 +40,7 @@ class PermissionService {
 	public function confirmCircleCreation(): void {
 		try {
 			$this->confirm(ConfigService::LIMIT_CIRCLE_CREATION);
-		} catch (InsufficientPermissionException $e) {
+		} catch (InsufficientPermissionException) {
 			throw new InsufficientPermissionException(
 				$this->l10n->t('You have no permission to create a new team')
 			);
@@ -78,7 +65,7 @@ class PermissionService {
 		$federatedUser = $this->federatedUserService->getCurrentUser();
 		try {
 			$federatedUser->getLink($singleId);
-		} catch (MembershipNotFoundException $e) {
+		} catch (MembershipNotFoundException) {
 			throw new InsufficientPermissionException();
 		}
 	}
@@ -101,7 +88,7 @@ class PermissionService {
 			);
 
 			return true;
-		} catch (MembershipNotFoundException $e) {
+		} catch (MembershipNotFoundException) {
 		}
 
 		return false;

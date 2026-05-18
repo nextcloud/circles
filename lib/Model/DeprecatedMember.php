@@ -37,16 +37,11 @@ class DeprecatedMember extends BaseMember {
 	 * @throws MemberCantJoinCircleException
 	 */
 	public function joinCircle($circleType) {
-		switch ($circleType) {
-			case DeprecatedCircle::CIRCLES_SECRET:
-			case DeprecatedCircle::CIRCLES_PUBLIC:
-				return $this->addMemberToCircle();
-
-			case DeprecatedCircle::CIRCLES_CLOSED:
-				return $this->joinClosedCircle();
-		}
-
-		throw new MemberCantJoinCircleException($this->l10n->t('You cannot join this team'));
+		return match ($circleType) {
+			DeprecatedCircle::CIRCLES_SECRET, DeprecatedCircle::CIRCLES_PUBLIC => $this->addMemberToCircle(),
+			DeprecatedCircle::CIRCLES_CLOSED => $this->joinClosedCircle(),
+			default => throw new MemberCantJoinCircleException($this->l10n->t('You cannot join this team')),
+		};
 	}
 
 

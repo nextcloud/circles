@@ -31,15 +31,15 @@ class TeamsDashboardController extends OCSController {
 	public function __construct(
 		string $appName,
 		IRequest $request,
-		private CircleService $circleService,
-		private MemberService $memberService,
-		private FederatedUserService $federatedUserService,
-		private ConfigService $configService,
-		private IUserSession $userSession,
-		private FileSharingTeamResourceProvider $resourceProvider,
-		private IURLGenerator $urlGenerator,
-		private ModelManager $modelManager,
-		private LoggerInterface $logger,
+		private readonly CircleService $circleService,
+		private readonly MemberService $memberService,
+		private readonly FederatedUserService $federatedUserService,
+		private readonly ConfigService $configService,
+		private readonly IUserSession $userSession,
+		private readonly FileSharingTeamResourceProvider $resourceProvider,
+		private readonly IURLGenerator $urlGenerator,
+		private readonly ModelManager $modelManager,
+		private readonly LoggerInterface $logger,
 	) {
 		parent::__construct($appName, $request);
 	}

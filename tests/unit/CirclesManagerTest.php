@@ -74,12 +74,12 @@ class CirclesManagerTest extends TestCase {
 
 		// Created circle returned by probeCircle()
 		$circles = $this->circlesManager->probeCircles();
-		$this->assertCount(1, array_filter($circles, function (Circle $c) { return $c->getName() === $this->circleName; }));
+		$this->assertCount(1, array_filter($circles, fn (Circle $c) => $c->getName() === $this->circleName));
 
 		// Destroyed circle not returned by probeCircle()
 		$this->circlesManager->destroyCircle($circle->getSingleId());
 		$circles = $this->circlesManager->probeCircles();
-		$this->assertCount(0, array_filter($circles, function (Circle $c) { return $c->getName() === $this->circleName; }));
+		$this->assertCount(0, array_filter($circles, fn (Circle $c) => $c->getName() === $this->circleName));
 	}
 
 	public function testGetCirclesWithInitiator(): void {

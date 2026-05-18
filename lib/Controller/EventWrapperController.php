@@ -35,22 +35,6 @@ class EventWrapperController extends Controller {
 	use TAsync;
 
 
-	/** @var EventWrapperService */
-	private $eventWrapperService;
-
-	/** @var FederatedEventService */
-	private $federatedEventService;
-
-	/** @var RemoteUpstreamService */
-	private $remoteUpstreamService;
-
-	/** @var RemoteDownstreamService */
-	private $remoteDownstreamService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	/**
 	 * EventWrapperController constructor.
 	 *
@@ -66,18 +50,13 @@ class EventWrapperController extends Controller {
 		string $appName,
 		IRequest $request,
 		private readonly IAppConfig $appConfig,
-		EventWrapperService $eventWrapperService,
-		FederatedEventService $federatedEventService,
-		RemoteUpstreamService $remoteUpstreamService,
-		RemoteDownstreamService $remoteDownstreamService,
-		ConfigService $configService,
+		private EventWrapperService $eventWrapperService,
+		private FederatedEventService $federatedEventService,
+		private RemoteUpstreamService $remoteUpstreamService,
+		private RemoteDownstreamService $remoteDownstreamService,
+		private ConfigService $configService,
 	) {
 		parent::__construct($appName, $request);
-		$this->eventWrapperService = $eventWrapperService;
-		$this->federatedEventService = $federatedEventService;
-		$this->remoteUpstreamService = $remoteUpstreamService;
-		$this->remoteDownstreamService = $remoteDownstreamService;
-		$this->configService = $configService;
 
 		$this->setup('app', Application::APP_ID);
 		$this->setupInt(self::$SETUP_TIME_LIMIT, 900);

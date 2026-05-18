@@ -81,7 +81,7 @@ class AccountsRequestBuilder extends DeprecatedRequestBuilder {
 	 * @return array
 	 */
 	protected function parseAccountsSelectSql(array $entry): array {
-		$data = json_decode($entry['data'], true);
+		$data = json_decode((string)$entry['data'], true);
 		if (!is_array($data)) {
 			$data = [];
 		}

@@ -48,7 +48,7 @@ class Provider implements IProvider {
 			$this->parseAsNonMember($event, $circle);
 			$this->parseAsMember($event, $circle, $params);
 			$this->parseAsModerator($event, $circle, $params);
-		} catch (FakeException|InvalidItemException $e) {
+		} catch (FakeException|InvalidItemException) {
 			/** clean exit */
 		}
 

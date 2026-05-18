@@ -22,7 +22,7 @@ use OCP\Migration\IRepairStep;
 class SyncGroupCircles implements IRepairStep {
 
 	public function __construct(
-		private IJobList $jobList,
+		private readonly IJobList $jobList,
 	) {
 	}
 

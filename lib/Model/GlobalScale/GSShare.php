@@ -27,9 +27,6 @@ class GSShare implements JsonSerializable {
 	private $id = 0;
 
 	/** @var string */
-	private $circleId = '';
-
-	/** @var string */
 	private $defaultMountPoint = '';
 
 	/** @var string */
@@ -45,9 +42,6 @@ class GSShare implements JsonSerializable {
 	private $instance = '';
 
 	/** @var string */
-	private $token = '';
-
-	/** @var string */
 	private $password = '';
 
 
@@ -57,9 +51,10 @@ class GSShare implements JsonSerializable {
 	 * @param string $circleId
 	 * @param string $token
 	 */
-	public function __construct(string $circleId = '', string $token = '') {
-		$this->circleId = $circleId;
-		$this->token = $token;
+	public function __construct(
+		private string $circleId = '',
+		private string $token = ''
+	) {
 	}
 
 

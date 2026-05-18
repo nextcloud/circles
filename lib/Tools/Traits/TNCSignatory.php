@@ -100,7 +100,7 @@ trait TNCSignatory {
 				$this->debug('invalid format', ['signatory' => $signatory, 'keyId' => $keyId]);
 				throw new SignatoryException('invalid format');
 			}
-		} catch (InvalidOriginException $e) {
+		} catch (InvalidOriginException) {
 			throw new SignatoryException('invalid origin');
 		}
 	}
@@ -165,7 +165,7 @@ trait TNCSignatory {
 
 		openssl_sign($clear, $signed, $privateKey, $this->getOpenSSLAlgo($signatory));
 
-		return base64_encode($signed);
+		return base64_encode((string)$signed);
 	}
 
 

@@ -36,17 +36,14 @@ class ItemLock implements
 	public const STATUS_INSTANCE_LOCKED = 'instance_locked';
 
 
-	/** @var ShareLockRequest */
-	private $shareLockRequest;
-
-
 	/**
 	 * ItemLock constructor.
 	 *
 	 * @param ShareLockRequest $shareLockRequest
 	 */
-	public function __construct(ShareLockRequest $shareLockRequest) {
-		$this->shareLockRequest = $shareLockRequest;
+	public function __construct(
+		private ShareLockRequest $shareLockRequest
+	) {
 	}
 
 
@@ -73,7 +70,7 @@ class ItemLock implements
 			} else {
 				$status = self::STATUS_INSTANCE_LOCKED;
 			}
-		} catch (FederatedShareNotFoundException $e) {
+		} catch (FederatedShareNotFoundException) {
 			$share = new FederatedShare();
 			$share->setItemId($itemId);
 			$share->setCircleId($event->getCircle()->getSingleId());

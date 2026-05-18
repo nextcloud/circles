@@ -83,7 +83,7 @@ class RemoteRequestBuilder extends CoreRequestBuilder {
 		/** @var RemoteInstance $appService */
 		try {
 			$appService = $qb->asItem(RemoteInstance::class);
-		} catch (RowNotFoundException $e) {
+		} catch (RowNotFoundException) {
 			throw new RemoteNotFoundException('Unknown remote instance');
 		}
 

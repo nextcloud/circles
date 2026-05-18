@@ -25,7 +25,7 @@ use OCP\Share\IShare;
 class RemoveShareTokens implements IRepairStep {
 
 	public function __construct(
-		private IDBConnection $dbConnection,
+		private readonly IDBConnection $dbConnection,
 		private readonly IAppConfig $appConfig,
 	) {
 	}

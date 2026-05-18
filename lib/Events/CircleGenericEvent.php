@@ -25,10 +25,10 @@ class CircleGenericEvent extends Event {
 	public const NAME = 7;
 	public const REQUESTED = 8;
 
-	private Circle $circle;
+	private readonly Circle $circle;
 
 	public function __construct(
-		private FederatedEvent $federatedEvent,
+		private readonly FederatedEvent $federatedEvent,
 	) {
 		parent::__construct();
 		$this->circle = $federatedEvent->getCircle();

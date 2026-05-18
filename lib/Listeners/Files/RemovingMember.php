@@ -27,21 +27,12 @@ use Psr\Log\LoggerInterface;
 class RemovingMember implements IEventListener {
 	use TStringTools;
 
-	private LoggerInterface $logger;
-	private MemberService $memberService;
-	private ShareTokenService $shareTokenService;
-	private ShareWrapperService $shareWrapperService;
-
 	public function __construct(
-		LoggerInterface $logger,
-		MemberService $memberService,
-		ShareTokenService $shareTokenService,
-		ShareWrapperService $shareWrapperService,
+		private LoggerInterface $logger,
+		private MemberService $memberService,
+		private ShareTokenService $shareTokenService,
+		private ShareWrapperService $shareWrapperService
 	) {
-		$this->logger = $logger;
-		$this->memberService = $memberService;
-		$this->shareTokenService = $shareTokenService;
-		$this->shareWrapperService = $shareWrapperService;
 	}
 
 	public function handle(Event $event): void {
@@ -61,9 +52,7 @@ class RemovingMember implements IEventListener {
 		$singleIds = array_merge(
 			[$circle->getSingleId()],
 			array_map(
-				function (Membership $membership) {
-					return $membership->getCircleId();
-				}, $circle->getMemberships()
+				fn (Membership $membership) => $membership->getCircleId(), $circle->getMemberships()
 			)
 		);
 
@@ -92,7 +81,7 @@ class RemovingMember implements IEventListener {
 			try {
 				$member->getLink($singleId);
 				continue;
-			} catch (MembershipNotFoundException $e) {
+			} catch (MembershipNotFoundException) {
 			}
 
 			$this->shareTokenService->removeTokens($member->getSingleId(), $singleId);

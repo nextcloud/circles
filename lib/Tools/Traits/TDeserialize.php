@@ -71,7 +71,7 @@ trait TDeserialize {
 				} else {
 					$arr[] = $this->deserialize($entry, $class);
 				}
-			} catch (InvalidItemException $e) {
+			} catch (InvalidItemException) {
 			}
 		}
 

@@ -19,11 +19,9 @@ use OCP\Group\Events\UserAddedEvent;
 
 /** @template-implements IEventListener<UserAddedEvent|Event> */
 class GroupMemberAdded implements IEventListener {
-	/** @var SyncService */
-	private $syncService;
-
-	public function __construct(SyncService $syncService) {
-		$this->syncService = $syncService;
+	public function __construct(
+		private readonly SyncService $syncService
+	) {
 	}
 
 	public function handle(Event $event): void {
@@ -35,7 +33,7 @@ class GroupMemberAdded implements IEventListener {
 		$user = $event->getUser();
 		try {
 			$this->syncService->groupMemberAdded($group->getGID(), $user->getUID());
-		} catch (Exception $e) {
+		} catch (Exception) {
 		}
 	}
 }

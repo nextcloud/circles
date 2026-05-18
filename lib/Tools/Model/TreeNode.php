@@ -15,12 +15,6 @@ class TreeNode {
 	/** @var self[] */
 	private $children = [];
 
-	/** @var self */
-	private $parent;
-
-	/** @var SimpleDataStore */
-	private $item;
-
 
 	/** @var self */
 	private $currentChild;
@@ -38,10 +32,10 @@ class TreeNode {
 	 * @param self|null $parent
 	 * @param SimpleDataStore $item
 	 */
-	public function __construct(?TreeNode $parent, SimpleDataStore $item) {
-		$this->parent = $parent;
-		$this->item = $item;
-
+	public function __construct(
+		private readonly ?TreeNode $parent,
+		private readonly SimpleDataStore $item
+	) {
 		if ($this->parent !== null) {
 			$this->parent->addChild($this);
 		}

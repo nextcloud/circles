@@ -20,19 +20,15 @@ use OCP\EventDispatcher\Event;
  * @package OCA\Circles\Events
  */
 class MembershipsRemovedEvent extends Event {
-	/** @var Membership[] */
-	private $memberships;
-
-
 	/**
 	 * MembershipsRemovedEvent constructor.
 	 *
 	 * @param Membership[] $memberships
 	 */
-	public function __construct(array $memberships) {
+	public function __construct(
+		private readonly array $memberships
+	) {
 		parent::__construct();
-
-		$this->memberships = $memberships;
 	}
 
 

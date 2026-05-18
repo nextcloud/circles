@@ -36,22 +36,16 @@ use OCA\Circles\Tools\Exceptions\UnknownTypeException;
  * @package OCA\Circles\Service
  */
 class FederatedShareService extends NCSignature {
-	/** @var FederatedEventService */
-	private $federatedEventService;
-
-	/** @var CircleService */
-	private $circleService;
-
-
 	/**
 	 * FederatedEventService constructor.
 	 *
 	 * @param FederatedEventService $federatedEventService
 	 * @param CircleService $circleService
 	 */
-	public function __construct(FederatedEventService $federatedEventService, CircleService $circleService) {
-		$this->federatedEventService = $federatedEventService;
-		$this->circleService = $circleService;
+	public function __construct(
+		private readonly FederatedEventService $federatedEventService,
+		private readonly CircleService $circleService
+	) {
 	}
 
 

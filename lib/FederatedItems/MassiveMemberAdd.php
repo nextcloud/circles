@@ -80,7 +80,7 @@ class MassiveMemberAdd extends SingleMemberAdd implements
 				} else {
 					$this->eventService->memberAdding($event);
 				}
-			} catch (Exception $e) {
+			} catch (Exception) {
 			}
 		}
 

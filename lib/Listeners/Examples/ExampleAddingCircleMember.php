@@ -26,13 +26,9 @@ use OCP\EventDispatcher\IEventListener;
 class ExampleAddingCircleMember implements IEventListener {
 	use TNCLogger;
 
-
-	/** @var ConfigService */
-	private $configService;
-
-	public function __construct(ConfigService $configService) {
-		$this->configService = $configService;
-
+	public function __construct(
+		private ConfigService $configService
+	) {
 		$this->setup('app', Application::APP_ID);
 	}
 
@@ -60,9 +56,7 @@ class ExampleAddingCircleMember implements IEventListener {
 				 . Member::$DEF_LEVEL[$member->getLevel()] . '; ';
 
 		$memberships = array_map(
-			function (Membership $membership) {
-				return $membership->getCircleId();
-			}, $circle->getMemberships()
+			fn (Membership $membership) => $membership->getCircleId(), $circle->getMemberships()
 		);
 
 		$listMemberships = (count($memberships) > 0) ? implode(', ', $memberships) : 'none';
@@ -72,9 +66,7 @@ class ExampleAddingCircleMember implements IEventListener {
 		if ($member->getUserType() === Member::TYPE_CIRCLE) {
 			$basedOn = $member->getBasedOn();
 			$members = array_map(
-				function (Member $member) {
-					return $member->getUserId() . ' (' . Member::$TYPE[$member->getUserType()] . ')';
-				}, $basedOn->getInheritedMembers()
+				fn (Member $member) => $member->getUserId() . ' (' . Member::$TYPE[$member->getUserType()] . ')', $basedOn->getInheritedMembers()
 			);
 
 			$info .= ' Member is a Circle (singleId: ' . $basedOn->getSingleId()

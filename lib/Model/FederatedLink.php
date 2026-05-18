@@ -287,7 +287,7 @@ class FederatedLink implements \JsonSerializable {
 			$this->hasToBeValidStatusUpdateWhileRequestDeclined($status);
 			$this->hasToBeValidStatusUpdateWhileLinkRequested($status);
 			$this->hasToBeValidStatusUpdateWhileRequestSent($status);
-		} catch (FederatedCircleStatusUpdateException $e) {
+		} catch (FederatedCircleStatusUpdateException) {
 			throw new FederatedCircleStatusUpdateException('The status could not be updated');
 		}
 	}
@@ -402,6 +402,6 @@ class FederatedLink implements \JsonSerializable {
 
 
 	public static function fromJSON($json) {
-		return self::fromArray(json_decode($json, true));
+		return self::fromArray(json_decode((string)$json, true));
 	}
 }

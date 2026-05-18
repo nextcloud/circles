@@ -23,7 +23,7 @@ use Psr\Log\LoggerInterface;
 #[AddIndex('circles_mountpoint', IndexType::UNIQUE, 'add uniqueness to mountpoint per user')]
 class Version0031Date20241105133904 extends SimpleMigrationStep {
 	public function __construct(
-		private LoggerInterface $logger,
+		private readonly LoggerInterface $logger,
 	) {
 	}
 

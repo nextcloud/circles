@@ -30,23 +30,17 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Command
  */
 class MembersSearch extends Base {
-	/** @var SearchService */
-	private $searchService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	/**
 	 * MembersSearch constructor.
 	 *
 	 * @param SearchService $searchService
 	 * @param ConfigService $configService
 	 */
-	public function __construct(SearchService $searchService, ConfigService $configService) {
+	public function __construct(
+		private readonly SearchService $searchService,
+		private readonly ConfigService $configService
+	) {
 		parent::__construct();
-		$this->searchService = $searchService;
-		$this->configService = $configService;
 	}
 
 
@@ -69,7 +63,7 @@ class MembersSearch extends Base {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$result = $this->searchService->search($input->getArgument('needle'));
 
-		if (strtolower($input->getOption('output')) === 'json') {
+		if (strtolower((string)$input->getOption('output')) === 'json') {
 			$output->writeln(json_encode($result, JSON_PRETTY_PRINT));
 		}
 

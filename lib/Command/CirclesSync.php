@@ -34,19 +34,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Command
  */
 class CirclesSync extends Base {
-	/** @var SyncService */
-	private $syncService;
-
-	/** @var MigrationService */
-	private $migrationService;
-
-	/** @var OutputService */
-	private $outputService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	/**
 	 * CirclesSync constructor.
 	 *
@@ -55,17 +42,12 @@ class CirclesSync extends Base {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		SyncService $syncService,
-		MigrationService $migrationService,
-		OutputService $outputService,
-		ConfigService $configService,
+		private readonly SyncService $syncService,
+		private readonly MigrationService $migrationService,
+		private readonly OutputService $outputService,
+		private readonly ConfigService $configService,
 	) {
 		parent::__construct();
-
-		$this->syncService = $syncService;
-		$this->migrationService = $migrationService;
-		$this->outputService = $outputService;
-		$this->configService = $configService;
 	}
 
 

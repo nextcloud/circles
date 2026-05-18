@@ -56,22 +56,6 @@ class CirclesList extends Base {
 	use TStringTools;
 
 
-	/** @var ModelManager */
-	private $modelManager;
-
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var RemoteService */
-	private $remoteService;
-
-	/** @var CircleService */
-	private $circleService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	/** @var InputInterface */
 	private $input;
 
@@ -86,15 +70,13 @@ class CirclesList extends Base {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		ModelManager $modelManager, FederatedUserService $federatedUserService, RemoteService $remoteService,
-		CircleService $circleService, ConfigService $configService,
+		private ModelManager $modelManager,
+		private FederatedUserService $federatedUserService,
+		private RemoteService $remoteService,
+		private CircleService $circleService,
+		private ConfigService $configService,
 	) {
 		parent::__construct();
-		$this->modelManager = $modelManager;
-		$this->federatedUserService = $federatedUserService;
-		$this->remoteService = $remoteService;
-		$this->circleService = $circleService;
-		$this->configService = $configService;
 	}
 
 
@@ -201,7 +183,7 @@ class CirclesList extends Base {
 			$circles = $this->circleService->getCircles($probe);
 		}
 
-		if (strtolower($input->getOption('output')) === 'json') {
+		if (strtolower((string)$input->getOption('output')) === 'json') {
 			$output->writeln(json_encode($circles, JSON_PRETTY_PRINT));
 
 			return 0;

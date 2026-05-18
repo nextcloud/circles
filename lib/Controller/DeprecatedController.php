@@ -21,21 +21,13 @@ use OCP\IRequest;
  * re-implemented only to re-enable an old feature until we switch to a better integration.
  */
 class DeprecatedController extends Controller {
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var CircleService */
-	private $circleService;
-
 	public function __construct(
 		string $appName,
 		IRequest $request,
-		FederatedUserService $federatedUserService,
-		CircleService $circleService,
+		private readonly FederatedUserService $federatedUserService,
+		private readonly CircleService $circleService,
 	) {
 		parent::__construct($appName, $request);
-		$this->federatedUserService = $federatedUserService;
-		$this->circleService = $circleService;
 	}
 
 
@@ -61,7 +53,7 @@ class DeprecatedController extends Controller {
 			$data = $this->circleService->getCircles($probe);
 
 			return new DataResponse(['data' => $data]);
-		} catch (Exception $e) {
+		} catch (Exception) {
 			return new DataResponse([]);
 		}
 	}

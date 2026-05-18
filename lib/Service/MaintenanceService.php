@@ -141,7 +141,7 @@ class MaintenanceService {
 		try {
 			$this->output('Remove circles with no owner');
 			$this->removeCirclesWithNoOwner();
-		} catch (Exception $e) {
+		} catch (Exception) {
 		}
 	}
 
@@ -159,13 +159,13 @@ class MaintenanceService {
 		try {
 			$this->output('Retry failed FederatedEvents (asap)');
 			$this->eventWrapperService->retry(EventWrapperService::RETRY_ASAP);
-		} catch (Exception $e) {
+		} catch (Exception) {
 		}
 
 		try {
 			$this->output('Sync unknown trusted server');
 			$this->remoteSyncService->syncTrustedServers();
-		} catch (Exception $e) {
+		} catch (Exception) {
 		}
 	}
 
@@ -177,7 +177,7 @@ class MaintenanceService {
 		try {
 			$this->output('Retry failed FederatedEvents (hourly)');
 			$this->eventWrapperService->retry(EventWrapperService::RETRY_HOURLY);
-		} catch (Exception $e) {
+		} catch (Exception) {
 		}
 	}
 
@@ -235,14 +235,14 @@ class MaintenanceService {
 			// Can be removed in NC27.
 			$this->output('Remove orphan shares');
 			$this->removeOrphanShares();
-		} catch (Exception $e) {
+		} catch (Exception) {
 		}
 
 		try {
 			// Can be removed in NC27.
 			$this->output('fix sub-circle display name');
 			$this->fixSubCirclesDisplayName();
-		} catch (Exception $e) {
+		} catch (Exception) {
 		}
 	}
 
@@ -296,16 +296,12 @@ class MaintenanceService {
 			->includeSystemCircles();
 
 		$circles = array_map(
-			function (Circle $circle) {
-				return $circle->getSingleId();
-			}, $this->circleRequest->getCircles(null, $probe)
+			fn (Circle $circle) => $circle->getSingleId(), $this->circleRequest->getCircles(null, $probe)
 		);
 
 		$shares = array_unique(
 			array_map(
-				function (ShareWrapper $share) {
-					return $share->getSharedWith();
-				}, $this->shareWrapperRequest->getShares()
+				fn (ShareWrapper $share) => $share->getSharedWith(), $this->shareWrapperRequest->getShares()
 			)
 		);
 
@@ -413,7 +409,7 @@ class MaintenanceService {
 			if ($this->canRunLevel($i, $last)) {
 				try {
 					$this->runMaintenance($i);
-				} catch (MaintenanceException $e) {
+				} catch (MaintenanceException) {
 					continue;
 				}
 				$last->sInt((string)$i, time());

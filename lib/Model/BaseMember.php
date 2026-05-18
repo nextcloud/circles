@@ -389,7 +389,7 @@ class BaseMember implements JsonSerializable {
 	 * @return DeprecatedMember
 	 */
 	public static function fromJSON($json) {
-		return self::fromArray(json_decode($json, true));
+		return self::fromArray(json_decode((string)$json, true));
 	}
 
 
@@ -411,48 +411,32 @@ class BaseMember implements JsonSerializable {
 	}
 
 	public function getLevelString() {
-		switch ($this->getLevel()) {
-			case self::LEVEL_NONE:
-				return 'Not a member';
-			case self::LEVEL_MEMBER:
-				return 'Member';
-			case self::LEVEL_MODERATOR:
-				return 'Moderator';
-			case self::LEVEL_ADMIN:
-				return 'Admin';
-			case self::LEVEL_OWNER:
-				return 'Owner';
-		}
-
-		return 'none';
+		return match ($this->getLevel()) {
+			self::LEVEL_NONE => 'Not a member',
+			self::LEVEL_MEMBER => 'Member',
+			self::LEVEL_MODERATOR => 'Moderator',
+			self::LEVEL_ADMIN => 'Admin',
+			self::LEVEL_OWNER => 'Owner',
+			default => 'none',
+		};
 	}
 
 
 	public function getTypeString() {
-		switch ($this->getType()) {
-			case self::TYPE_USER:
-				return 'Local Member';
-			case self::TYPE_GROUP:
-				return 'Group';
-			case self::TYPE_MAIL:
-				return 'Mail address';
-			case self::TYPE_CONTACT:
-				return 'Contact';
-		}
-
-		return 'none';
+		return match ($this->getType()) {
+			self::TYPE_USER => 'Local Member',
+			self::TYPE_GROUP => 'Group',
+			self::TYPE_MAIL => 'Mail address',
+			self::TYPE_CONTACT => 'Contact',
+			default => 'none',
+		};
 	}
 
 	public function getTypeName() {
-		switch ($this->getType()) {
-			case self::TYPE_USER:
-			case self::TYPE_MAIL:
-			case self::TYPE_CONTACT:
-				return 'user';
-			case self::TYPE_GROUP:
-				return 'user-group';
-		}
-
-		return 'none';
+		return match ($this->getType()) {
+			self::TYPE_USER, self::TYPE_MAIL, self::TYPE_CONTACT => 'user',
+			self::TYPE_GROUP => 'user-group',
+			default => 'none',
+		};
 	}
 }

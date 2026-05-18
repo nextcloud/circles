@@ -28,15 +28,6 @@ class Migration implements IRepairStep {
 	use TNCLogger;
 
 
-	/** @var MigrationService */
-	private $migrationService;
-
-	private $outputService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	/**
 	 * Migration constructor.
 	 *
@@ -45,13 +36,10 @@ class Migration implements IRepairStep {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		MigrationService $migrationService,
-		OutputService $outputService,
-		ConfigService $configService,
+		private MigrationService $migrationService,
+		private OutputService $outputService,
+		private ConfigService $configService
 	) {
-		$this->migrationService = $migrationService;
-		$this->outputService = $outputService;
-		$this->configService = $configService;
 	}
 
 

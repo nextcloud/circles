@@ -175,7 +175,7 @@ class CirclesCheck extends Base {
 			}
 
 			return;
-		} catch (Exception $e) {
+		} catch (Exception) {
 		}
 
 		$output->writeln('');
@@ -195,7 +195,7 @@ class CirclesCheck extends Base {
 
 			try {
 				[$scheme, $cloudId, $path] = $this->parseAddress($loopback);
-			} catch (Exception $e) {
+			} catch (Exception) {
 				$output->writeln('<error>format must be http[s]://domain.name[:post][/path]</error>');
 				continue;
 			}
@@ -208,7 +208,7 @@ class CirclesCheck extends Base {
 				$this->saveLoopback($input, $output, $loopback);
 
 				return;
-			} catch (Exception $e) {
+			} catch (Exception) {
 				$output->writeln('');
 			}
 		}
@@ -392,7 +392,7 @@ class CirclesCheck extends Base {
 
 			try {
 				[$scheme, $cloudId, $path] = $this->parseAddress($internal);
-			} catch (Exception $e) {
+			} catch (Exception) {
 				$output->writeln('<error>format must be http[s]://domain.name[:post][/path]</error>');
 				continue;
 			}
@@ -425,7 +425,7 @@ class CirclesCheck extends Base {
 				$output->writeln('paste the result here: ');
 				$question = new Question('', '');
 				$pastedWebfinger = new SimpleDataStore();
-				$pastedWebfinger->json(trim($helper->ask($input, $output, $question)));
+				$pastedWebfinger->json(trim((string)$helper->ask($input, $output, $question)));
 
 				if ($pastedWebfinger->g('subject') !== Application::APP_SUBJECT) {
 					$output->writeln('<error>Cannot extract SUBJECT from the pasted data</error>');
@@ -471,7 +471,7 @@ class CirclesCheck extends Base {
 				$output->writeln('paste the result here: ');
 				$question = new Question('', '');
 				$pastedSignatory = new SimpleDataStore();
-				$pastedSignatory->json(trim($helper->ask($input, $output, $question)));
+				$pastedSignatory->json(trim((string)$helper->ask($input, $output, $question)));
 
 				$this->appConfig->clearCache();
 				$this->interfaceService->setCurrentInterface(InterfaceService::IFACE_TEST);
@@ -572,7 +572,7 @@ class CirclesCheck extends Base {
 
 			try {
 				[$scheme, $cloudId, $path] = $this->parseAddress($frontal);
-			} catch (Exception $e) {
+			} catch (Exception) {
 				$output->writeln('<error>format must be http[s]://domain.name[:post][/path]</error>');
 				continue;
 			}
@@ -605,7 +605,7 @@ class CirclesCheck extends Base {
 				$output->writeln('paste the result here: ');
 				$question = new Question('', '');
 				$pastedWebfinger = new SimpleDataStore();
-				$pastedWebfinger->json(trim($helper->ask($input, $output, $question)));
+				$pastedWebfinger->json(trim((string)$helper->ask($input, $output, $question)));
 
 				if ($pastedWebfinger->g('subject') !== Application::APP_SUBJECT) {
 					$output->writeln('<error>Cannot extract SUBJECT from the pasted data</error>');
@@ -651,7 +651,7 @@ class CirclesCheck extends Base {
 				$output->writeln('paste the result here: ');
 				$question = new Question('', '');
 				$pastedSignatory = new SimpleDataStore();
-				$pastedSignatory->json(trim($helper->ask($input, $output, $question)));
+				$pastedSignatory->json(trim((string)$helper->ask($input, $output, $question)));
 
 				$this->appConfig->clearCache();
 				$this->interfaceService->setCurrentInterface(InterfaceService::IFACE_TEST);
@@ -746,7 +746,7 @@ class CirclesCheck extends Base {
 			if ($result->getStatusCode() === 200) {
 				return true;
 			}
-		} catch (RequestNetworkException $e) {
+		} catch (RequestNetworkException) {
 			$output->writeln('<error>fail</error>');
 		}
 

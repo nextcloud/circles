@@ -132,7 +132,7 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 				$this->l10n->t('This item is already shared with this team'),
 				$knowShareWrapper->getShare($this->rootFolder, $this->userManager, $this->urlGenerator)
 			);
-		} catch (ShareWrapperNotFoundException $e) {
+		} catch (ShareWrapperNotFoundException) {
 		}
 
 		$this->federatedUserService->initCurrentUser();
@@ -149,7 +149,7 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 		try {
 			$wrappedShare = $this->shareWrapperService->getShareById((int)$share->getId());
 			$wrappedShare->setOwner($owner);
-		} catch (ShareWrapperNotFoundException $e) {
+		} catch (ShareWrapperNotFoundException) {
 			throw new ShareNotFound();
 		}
 
@@ -211,7 +211,7 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 		$this->federatedUserService->initCurrentUser();
 		try {
 			$wrappedShare = $this->shareWrapperService->getShareById((int)$share->getId());
-		} catch (ShareWrapperNotFoundException $e) {
+		} catch (ShareWrapperNotFoundException) {
 			return;
 		}
 
@@ -219,9 +219,9 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 
 		try {
 			$circle = $this->circleService->getCircle($share->getSharedWith());
-		} catch (CircleNotFoundException $e) {
+		} catch (CircleNotFoundException) {
 			return;
-		} catch (InitiatorNotFoundException $e) {
+		} catch (InitiatorNotFoundException) {
 			// force the unshare ?
 			return;
 		}
@@ -413,9 +413,7 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 
 		return array_filter(
 			array_map(
-				function (ShareWrapper $wrapper) {
-					return $wrapper->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
-				}, $wrappedShares
+				fn (ShareWrapper $wrapper) => $wrapper->getShare($this->rootFolder, $this->userManager, $this->urlGenerator), $wrappedShares
 			)
 		);
 	}
@@ -443,7 +441,7 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 
 		try {
 			$wrappedShare = $this->shareWrapperService->getShareById((int)$shareId, $federatedUser);
-		} catch (ShareWrapperNotFoundException $e) {
+		} catch (ShareWrapperNotFoundException) {
 			throw new  ShareNotFound();
 		}
 
@@ -465,9 +463,7 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 
 		return array_filter(
 			array_map(
-				function (ShareWrapper $wrapper) {
-					return $wrapper->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
-				}, $wrappedShares
+				fn (ShareWrapper $wrapper) => $wrapper->getShare($this->rootFolder, $this->userManager, $this->urlGenerator), $wrappedShares
 			)
 		);
 	}
@@ -519,11 +515,9 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 
 		return array_filter(
 			array_map(
-				function (ShareWrapper $wrapper) {
-					return $wrapper->getShare(
-						$this->rootFolder, $this->userManager, $this->urlGenerator, true
-					);
-				}, $wrappedShares
+				fn (ShareWrapper $wrapper) => $wrapper->getShare(
+					$this->rootFolder, $this->userManager, $this->urlGenerator, true
+				), $wrappedShares
 			)
 		);
 	}
@@ -558,11 +552,9 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 		/** @var array<string, IShare> */
 		return array_filter(
 			array_map(
-				function (ShareWrapper $wrapper) {
-					return $wrapper->getShare(
-						$this->rootFolder, $this->userManager, $this->urlGenerator, true
-					);
-				}, $wrappedShares
+				fn (ShareWrapper $wrapper) => $wrapper->getShare(
+					$this->rootFolder, $this->userManager, $this->urlGenerator, true
+				), $wrappedShares
 			)
 		);
 	}
@@ -582,7 +574,7 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 
 		try {
 			$wrappedShare = $this->shareWrapperService->getShareByToken($token);
-		} catch (ShareWrapperNotFoundException $e) {
+		} catch (ShareWrapperNotFoundException) {
 			throw new ShareNotFound();
 		}
 

@@ -121,7 +121,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 			$this->federationNotifications =
 				Server::get(Notifications::class);
 			$this->federatedEnabled = true;
-		} catch (ContainerExceptionInterface $e) {
+		} catch (ContainerExceptionInterface) {
 		}
 	}
 
@@ -221,7 +221,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 				foreach ($mails as $mail) {
 					$this->sharedByMail($circle, $share, $mail, $sharesToken, $password);
 				}
-			} catch (Exception $e) {
+			} catch (Exception) {
 			}
 		}
 
@@ -259,9 +259,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 		$allShares = $this->fileSharesRequest->getSharesForCircle($member->getCircleId());
 		$knownShares = array_map(
-			function (SharesToken $shareToken) {
-				return $shareToken->getShareId();
-			},
+			fn (SharesToken $shareToken) => $shareToken->getShareId(),
 			$this->tokensRequest->getTokensFromMember($member)
 		);
 
@@ -545,12 +543,12 @@ class FileSharingBroadcaster implements IBroadcaster {
 		$emailTemplate->addHeader();
 		$emailTemplate->addHeading($subject, false);
 		$emailTemplate->addBodyText(
-			htmlspecialchars($text) . '<br>' . htmlspecialchars(
+			htmlspecialchars((string)$text) . '<br>' . htmlspecialchars(
 				$this->l10n->t('Click the button below to open it.')
 			), $text
 		);
 		$emailTemplate->addBodyButton(
-			$this->l10n->t('Open »%s«', [htmlspecialchars($fileName)]), $link
+			$this->l10n->t('Open »%s«', [htmlspecialchars((string)$fileName)]), $link
 		);
 
 		return $emailTemplate;
@@ -577,7 +575,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 		foreach ($unknownShares as $share) {
 			try {
 				$data[] = $this->getMailLinkFromShare($share, $member, $password);
-			} catch (TokenDoesNotExistException $e) {
+			} catch (TokenDoesNotExistException) {
 			}
 		}
 
@@ -682,7 +680,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 		);
 		$author = $share['uid_initiator'];
 
-		$filename = basename($share['file_target']);
+		$filename = basename((string)$share['file_target']);
 
 		return [
 			'author' => $author,
@@ -728,7 +726,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 			//				), $text
 			//			);
 			$emailTemplate->addBodyButton(
-				$this->l10n->t('Open »%s«', [htmlspecialchars($item['filename'])]), $item['link']
+				$this->l10n->t('Open »%s«', [htmlspecialchars((string)$item['filename'])]), $item['link']
 			);
 		}
 	}

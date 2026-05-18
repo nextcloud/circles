@@ -45,22 +45,6 @@ class RemoteDownstreamService {
 	use TAsync;
 
 
-	/** @var CircleRequest */
-	private $circleRequest;
-
-	/** @var MemberRequest */
-	private $memberRequest;
-
-	/** @var FederatedEventService */
-	private $federatedEventService;
-
-	/** @var RemoteService */
-	private $remoteService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	/**
 	 * RemoteDownstreamService constructor.
 	 *
@@ -70,19 +54,13 @@ class RemoteDownstreamService {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		CircleRequest $circleRequest,
-		MemberRequest $memberRequest,
-		FederatedEventService $federatedEventService,
-		RemoteService $remoteService,
-		ConfigService $configService,
+		private CircleRequest $circleRequest,
+		private MemberRequest $memberRequest,
+		private FederatedEventService $federatedEventService,
+		private RemoteService $remoteService,
+		private ConfigService $configService,
 	) {
 		$this->setup('app', 'circles');
-
-		$this->circleRequest = $circleRequest;
-		$this->memberRequest = $memberRequest;
-		$this->federatedEventService = $federatedEventService;
-		$this->remoteService = $remoteService;
-		$this->configService = $configService;
 	}
 
 
@@ -229,7 +207,7 @@ class RemoteDownstreamService {
 			$probe->includeSystemCircles()
 				->includePersonalCircles();
 			$localCircle = $this->circleRequest->getCircle($circle->getSingleId(), null, $probe);
-		} catch (CircleNotFoundException $e) {
+		} catch (CircleNotFoundException) {
 			try {
 				$this->remoteService->syncRemoteCircle(
 					$circle->getSingleId(),
@@ -237,7 +215,7 @@ class RemoteDownstreamService {
 				);
 
 				return true;
-			} catch (Exception $e) {
+			} catch (Exception) {
 				return false;
 			}
 		}
@@ -283,7 +261,7 @@ class RemoteDownstreamService {
 
 		try {
 			$localMember = $this->memberRequest->getMemberById($member->getId());
-		} catch (MemberNotFoundException $e) {
+		} catch (MemberNotFoundException) {
 			$this->debug('Member not found', ['member' => $member]);
 
 			return false;

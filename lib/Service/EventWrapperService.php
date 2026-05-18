@@ -39,19 +39,6 @@ class EventWrapperService extends NCSignature {
 	];
 
 
-	/** @var EventWrapperRequest */
-	private $eventWrapperRequest;
-
-	/** @var FederatedEventService */
-	private $federatedEventService;
-
-	/** @var RemoteUpstreamService */
-	private $remoteUpstreamService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	/**
 	 * EventWrapperService constructor.
 	 *
@@ -61,15 +48,11 @@ class EventWrapperService extends NCSignature {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		EventWrapperRequest $eventWrapperRequest,
-		FederatedEventService $federatedEventService,
-		RemoteUpstreamService $remoteUpstreamService,
-		ConfigService $configService,
+		private EventWrapperRequest $eventWrapperRequest,
+		private FederatedEventService $federatedEventService,
+		private RemoteUpstreamService $remoteUpstreamService,
+		private ConfigService $configService
 	) {
-		$this->eventWrapperRequest = $eventWrapperRequest;
-		$this->federatedEventService = $federatedEventService;
-		$this->remoteUpstreamService = $remoteUpstreamService;
-		$this->configService = $configService;
 	}
 
 
@@ -119,7 +102,7 @@ class EventWrapperService extends NCSignature {
 				$this->remoteUpstreamService->broadcastEvent($wrapper);
 			}
 			$status = EventWrapper::STATUS_DONE;
-		} catch (Exception $e) {
+		} catch (Exception) {
 			$retry++;
 		}
 
@@ -155,9 +138,7 @@ class EventWrapperService extends NCSignature {
 	 */
 	private function getFailedEvents(array $retryRange): array {
 		$token = array_map(
-			function (EventWrapper $event): string {
-				return $event->getToken();
-			}, $this->eventWrapperRequest->getFailedEvents($retryRange)
+			fn (EventWrapper $event): string => $event->getToken(), $this->eventWrapperRequest->getFailedEvents($retryRange)
 		);
 
 		return array_values(array_unique($token));

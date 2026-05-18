@@ -245,7 +245,7 @@ class CoreRequestBuilder {
 			try {
 				$qb->delete($table);
 				$qb->executeStatement();
-			} catch (Exception $e) {
+			} catch (Exception) {
 			}
 		}
 

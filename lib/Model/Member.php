@@ -809,14 +809,14 @@ class Member extends ManagedModel implements
 			/** @var FederatedUser $invitedBy */
 			$invitedBy = $this->deserialize($this->getArray('invitedBy', $data), FederatedUser::class);
 			$this->setInvitedBy($invitedBy);
-		} catch (InvalidItemException $e) {
+		} catch (InvalidItemException) {
 		}
 
 		try {
 			/** @var FederatedUSer $inheritedBy */
 			$inheritedBy = $this->deserialize($this->getArray('inheritedBy', $data), Membership::class);
 			$this->setInheritedBy($inheritedBy);
-		} catch (InvalidItemException $e) {
+		} catch (InvalidItemException) {
 		}
 
 		return $this;
@@ -871,7 +871,7 @@ class Member extends ManagedModel implements
 				try {
 					$invitedBy = new FederatedUser();
 					$this->setInvitedBy($invitedBy->import($invitedByArray));
-				} catch (InvalidItemException $e) {
+				} catch (InvalidItemException) {
 				}
 			}
 		}

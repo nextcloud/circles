@@ -44,16 +44,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Command
  */
 class MembersRemove extends Base {
-	/** @var MemberRequest */
-	private $memberRequest;
-
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var MemberService */
-	private $memberService;
-
-
 	/**
 	 * MembersRemove constructor.
 	 *
@@ -62,12 +52,11 @@ class MembersRemove extends Base {
 	 * @param MemberService $memberService
 	 */
 	public function __construct(
-		MemberRequest $memberRequest, FederatedUserService $federatedUserService, MemberService $memberService,
+		private readonly MemberRequest $memberRequest,
+		private readonly FederatedUserService $federatedUserService,
+		private readonly MemberService $memberService,
 	) {
 		parent::__construct();
-		$this->memberRequest = $memberRequest;
-		$this->federatedUserService = $federatedUserService;
-		$this->memberService = $memberService;
 	}
 
 
@@ -118,7 +107,7 @@ class MembersRemove extends Base {
 
 		$outcome = $this->memberService->removeMember($memberId);
 
-		if (strtolower($input->getOption('output')) === 'json') {
+		if (strtolower((string)$input->getOption('output')) === 'json') {
 			$output->writeln(json_encode($outcome, JSON_PRETTY_PRINT));
 		}
 

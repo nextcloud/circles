@@ -38,8 +38,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CirclesConfig extends Base {
 	public function __construct(
-		private FederatedUserService $federatedUserService,
-		private CircleService $circleService,
+		private readonly FederatedUserService $federatedUserService,
+		private readonly CircleService $circleService,
 	) {
 		parent::__construct();
 	}
@@ -116,16 +116,16 @@ class CirclesConfig extends Base {
 		} catch (FederatedItemException $e) {
 			if ($input->getOption('status-code')) {
 				throw new FederatedItemException(
-					' [' . get_class($e) . ', ' . ((string)$e->getStatus()) . ']' . "\n" . $e->getMessage()
+					' [' . $e::class . ', ' . ((string)$e->getStatus()) . ']' . "\n" . $e->getMessage()
 				);
 			}
 
 			throw $e;
 		}
 
-		if (strtolower($input->getOption('output')) === 'json') {
+		if (strtolower((string)$input->getOption('output')) === 'json') {
 			$output->writeln(json_encode($outcome, JSON_PRETTY_PRINT));
-		} elseif (strtolower($input->getOption('output')) !== 'none') {
+		} elseif (strtolower((string)$input->getOption('output')) !== 'none') {
 			$circle = $this->circleService->getCircle($circleId);
 			$output->writeln(
 				json_encode(
@@ -150,12 +150,12 @@ class CirclesConfig extends Base {
 		$valid = $this->filterValidConfig($current);
 		foreach ($listing as $item) {
 			$add = true;
-			if (substr($item, 0, 1) === '_') {
+			if (str_starts_with((string)$item, '_')) {
 				$add = false;
-				$item = substr($item, 1);
+				$item = substr((string)$item, 1);
 			}
 
-			$value = array_search(strtoupper($item), $valid);
+			$value = array_search(strtoupper((string)$item), $valid);
 			if (!$value) {
 				throw new InvalidArgumentException(
 					'Invalid config \'' . $item . '\'. Available values: '

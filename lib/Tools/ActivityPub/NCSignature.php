@@ -242,7 +242,7 @@ class NCSignature {
 		try {
 			$signedRequest->setSignatory($this->retrieveSignatory($data->g('keyId'), false));
 			$this->verifySignedRequest($signedRequest);
-		} catch (SignatoryException $e) {
+		} catch (SignatoryException) {
 			$signedRequest->setSignatory($this->retrieveSignatory($data->g('keyId'), true));
 			$this->verifySignedRequest($signedRequest);
 		}
@@ -304,7 +304,7 @@ class NCSignature {
 				if ($element !== '(request-target)') {
 					$signedRequest->getOutgoingRequest()->addHeader($element, $value);
 				}
-			} catch (ItemNotFoundException $e) {
+			} catch (ItemNotFoundException) {
 			}
 		}
 
@@ -349,14 +349,10 @@ class NCSignature {
 	 * @return string
 	 */
 	private function getUsedEncryption(NCSignedRequest $signedRequest): string {
-		switch ($signedRequest->getSignatureHeader()->g('algorithm')) {
-			case 'rsa-sha512':
-				return NCSignatory::SHA512;
-
-			case 'rsa-sha256':
-			default:
-				return NCSignatory::SHA256;
-		}
+		return match ($signedRequest->getSignatureHeader()->g('algorithm')) {
+			'rsa-sha512' => NCSignatory::SHA512,
+			default => NCSignatory::SHA256,
+		};
 	}
 
 	/**
@@ -365,14 +361,10 @@ class NCSignature {
 	 * @return string
 	 */
 	private function getChosenEncryption(NCSignatory $signatory): string {
-		switch ($signatory->getAlgorithm()) {
-			case NCSignatory::SHA512:
-				return 'ras-sha512';
-
-			case NCSignatory::SHA256:
-			default:
-				return 'ras-sha256';
-		}
+		return match ($signatory->getAlgorithm()) {
+			NCSignatory::SHA512 => 'ras-sha512',
+			default => 'ras-sha256',
+		};
 	}
 
 
@@ -382,13 +374,9 @@ class NCSignature {
 	 * @return int
 	 */
 	public function getOpenSSLAlgo(NCSignatory $signatory): int {
-		switch ($signatory->getAlgorithm()) {
-			case NCSignatory::SHA512:
-				return OPENSSL_ALGO_SHA512;
-
-			case NCSignatory::SHA256:
-			default:
-				return OPENSSL_ALGO_SHA256;
-		}
+		return match ($signatory->getAlgorithm()) {
+			NCSignatory::SHA512 => OPENSSL_ALGO_SHA512,
+			default => OPENSSL_ALGO_SHA256,
+		};
 	}
 }

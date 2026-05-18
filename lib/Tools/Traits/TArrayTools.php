@@ -287,7 +287,7 @@ trait TArrayTools {
 				$o->$method($item);
 
 				$r[] = $o;
-			} catch (Exception $e) {
+			} catch (Exception) {
 			}
 		}
 

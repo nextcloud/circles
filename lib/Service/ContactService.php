@@ -36,22 +36,16 @@ class ContactService {
 	use TNCLogger;
 
 
-	/** @var IURLGenerator */
-	private $urlGenerator;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	/**
 	 * ContactService constructor.
 	 *
 	 * @param IURLGenerator $urlGenerator
 	 * @param ConfigService $configService
 	 */
-	public function __construct(IURLGenerator $urlGenerator, ConfigService $configService) {
-		$this->urlGenerator = $urlGenerator;
-		$this->configService = $configService;
+	public function __construct(
+		private IURLGenerator $urlGenerator,
+		private ConfigService $configService
+	) {
 	}
 
 
@@ -184,7 +178,7 @@ class ContactService {
 
 		try {
 			return $this->getMailAddresses($member->getUserId());
-		} catch (Exception $e) {
+		} catch (Exception) {
 			return [];
 		}
 	}

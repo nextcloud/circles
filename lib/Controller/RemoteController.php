@@ -100,7 +100,7 @@ class RemoteController extends Controller {
 	public function appService(string $test = ''): DataResponse {
 		try {
 			$this->publicPageJsonLimited();
-		} catch (JsonNotRequestedException $e) {
+		} catch (JsonNotRequestedException) {
 			return new DataResponse();
 		}
 
@@ -419,14 +419,14 @@ class RemoteController extends Controller {
 			/** @var FederatedUser $initiator */
 			$filterMember = $store->gObj('filterMember', Member::class);
 			$data->aObj('filterMember', $filterMember);
-		} catch (InvalidItemException|ItemNotFoundException $e) {
+		} catch (InvalidItemException|ItemNotFoundException) {
 		}
 
 		try {
 			/** @var FederatedUser $initiator */
 			$filterCircle = $store->gObj('filterCircle', Circle::class);
 			$data->aObj('filterCircle', $filterCircle);
-		} catch (InvalidItemException|ItemNotFoundException $e) {
+		} catch (InvalidItemException|ItemNotFoundException) {
 		}
 
 		return $data;
@@ -528,7 +528,7 @@ class RemoteController extends Controller {
 	 * @return bool
 	 */
 	private function areWithinAcceptHeader(array $needles): bool {
-		$accepts = array_map([$this, 'trimHeader'], explode(',', $this->request->getHeader('Accept')));
+		$accepts = array_map($this->trimHeader(...), explode(',', $this->request->getHeader('Accept')));
 
 		foreach ($accepts as $accept) {
 			if (in_array($accept, $needles)) {

@@ -30,19 +30,6 @@ class ShareTokenService {
 	use TStringTools;
 
 
-	/** @var IURLGenerator */
-	private $urlGenerator;
-
-	/** @var ShareTokenRequest */
-	private $shareTokenRequest;
-
-	/** @var ConfigService */
-	private $configService;
-
-	/** @var InterfaceService */
-	private $interfaceService;
-
-
 	/**
 	 * ShareTokenService constructor.
 	 *
@@ -52,15 +39,11 @@ class ShareTokenService {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IURLGenerator $urlGenerator,
-		ShareTokenRequest $shareTokenRequest,
-		InterfaceService $interfaceService,
-		ConfigService $configService,
+		private IURLGenerator $urlGenerator,
+		private ShareTokenRequest $shareTokenRequest,
+		private InterfaceService $interfaceService,
+		private ConfigService $configService
 	) {
-		$this->urlGenerator = $urlGenerator;
-		$this->shareTokenRequest = $shareTokenRequest;
-		$this->interfaceService = $interfaceService;
-		$this->configService = $configService;
 	}
 
 
@@ -96,7 +79,7 @@ class ShareTokenService {
 		try {
 			$this->shareTokenRequest->search($shareToken);
 			throw new ShareTokenAlreadyExistException();
-		} catch (ShareTokenNotFoundException $e) {
+		} catch (ShareTokenNotFoundException) {
 		}
 
 		$this->shareTokenRequest->save($shareToken);

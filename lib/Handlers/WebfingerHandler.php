@@ -66,7 +66,7 @@ class WebfingerHandler implements IHandler {
 				'version' => $this->configService->getAppValue('installed_version'),
 				'api' => Application::APP_API
 			];
-		} catch (UnknownInterfaceException|SignatoryException $e) {
+		} catch (UnknownInterfaceException|SignatoryException) {
 			return $response;
 		}
 

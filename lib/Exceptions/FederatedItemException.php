@@ -70,7 +70,7 @@ class FederatedItemException extends Exception implements JsonSerializable {
 	 */
 	public function jsonSerialize(): array {
 		return [
-			'class' => get_class($this),
+			'class' => static::class,
 			'status' => $this->getStatus(),
 			'code' => $this->getCode(),
 			'message' => $this->getMessage()

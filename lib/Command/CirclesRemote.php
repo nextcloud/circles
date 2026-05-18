@@ -181,7 +181,7 @@ class CirclesRemote extends Base {
 
 		try {
 			$localSignatory = $this->remoteStreamService->getAppSignatory();
-		} catch (SignatoryException $e) {
+		} catch (SignatoryException) {
 			$this->output->writeln(
 				'<error>Federated Circles not enabled locally. Please run ./occ circles:remote:init</error>'
 			);
@@ -266,9 +266,9 @@ class CirclesRemote extends Base {
 					);
 					$this->remoteStreamService->update($remoteSignatory, RemoteStreamService::UPDATE_HREF);
 				}
-			} catch (RemoteUidException $e) {
+			} catch (RemoteUidException) {
 				$this->updateRemote($remoteSignatory);
-			} catch (RemoteNotFoundException $e) {
+			} catch (RemoteNotFoundException) {
 				$this->saveRemote($remoteSignatory);
 			}
 		}
@@ -376,9 +376,7 @@ class CirclesRemote extends Base {
 	private function verifyGSInstances(): void {
 		$instances = $this->globalScaleService->getGlobalScaleInstances();
 		$known = array_map(
-			function (RemoteInstance $instance): string {
-				return $instance->getInstance();
-			}, $this->remoteRequest->getFromType(RemoteInstance::TYPE_GLOBALSCALE)
+			fn (RemoteInstance $instance): string => $instance->getInstance(), $this->remoteRequest->getFromType(RemoteInstance::TYPE_GLOBALSCALE)
 		);
 
 		$missing = array_diff($instances, $known);
@@ -430,7 +428,7 @@ class CirclesRemote extends Base {
 	 */
 	private function getRemoteType(): string {
 		foreach (RemoteInstance::$LIST_TYPE as $type) {
-			if (strtolower($this->input->getOption('type')) === strtolower($type)) {
+			if (strtolower((string)$this->input->getOption('type')) === strtolower((string)$type)) {
 				return $type;
 			}
 		}
@@ -443,7 +441,7 @@ class CirclesRemote extends Base {
 	 */
 	private function getRemoteInterface(): int {
 		foreach (InterfaceService::$LIST_IFACE as $iface => $def) {
-			if (strtolower($this->input->getOption('iface')) === strtolower($def)) {
+			if (strtolower((string)$this->input->getOption('iface')) === strtolower((string)$def)) {
 				return $iface;
 			}
 		}

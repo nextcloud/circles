@@ -78,7 +78,7 @@ class MountRequestBuilder extends CoreRequestBuilder {
 		/** @var Mount $circle */
 		try {
 			$circle = $qb->asItem(Mount::class);
-		} catch (RowNotFoundException $e) {
+		} catch (RowNotFoundException) {
 			throw new MountNotFoundException('Mount not found');
 		}
 

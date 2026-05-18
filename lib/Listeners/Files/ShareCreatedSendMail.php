@@ -42,52 +42,17 @@ class ShareCreatedSendMail implements IEventListener {
 	use TStringTools;
 	use TNCLogger;
 
-
-	/** @var ShareWrapperService */
-	private $shareWrapperService;
-
-	/** @var ShareTokenService */
-	private $shareTokenService;
-
-	/** @var RemoteStreamService */
-	private $remoteStreamService;
-
-	/** @var SendMailService */
-	private $sendMailService;
-
-	/** @var ConfigService */
-	private $configService;
-
-	/** @var ContactService */
-	private $contactService;
-	/** @var IUserManager */
-	private $userManager;
-	/** @var IURLGenerator */
-	private $urlGenerator;
-	/** @var IRootFolder */
-	private $rootFolder;
-
 	public function __construct(
-		ShareWrapperService $shareWrapperService,
-		ShareTokenService $shareTokenService,
-		RemoteStreamService $remoteStreamService,
-		SendMailService $sendMailService,
-		ContactService $contactService,
-		ConfigService $configService,
-		IUserManager $userManager,
-		IURLGenerator $urlGenerator,
-		IRootFolder $rootFolder,
+		private ShareWrapperService $shareWrapperService,
+		private ShareTokenService $shareTokenService,
+		private RemoteStreamService $remoteStreamService,
+		private SendMailService $sendMailService,
+		private ContactService $contactService,
+		private ConfigService $configService,
+		private IUserManager $userManager,
+		private IURLGenerator $urlGenerator,
+		private IRootFolder $rootFolder,
 	) {
-		$this->shareWrapperService = $shareWrapperService;
-		$this->shareTokenService = $shareTokenService;
-		$this->remoteStreamService = $remoteStreamService;
-		$this->sendMailService = $sendMailService;
-		$this->contactService = $contactService;
-		$this->configService = $configService;
-		$this->userManager = $userManager;
-		$this->urlGenerator = $urlGenerator;
-		$this->rootFolder = $rootFolder;
-
 		$this->setup('app', Application::APP_ID);
 	}
 
@@ -162,7 +127,7 @@ class ShareCreatedSendMail implements IEventListener {
 						|| $this->remoteStreamService->isFromSameInstance($origin, $member->getInstance())) {
 						$mails = $data->gArray('mails');
 					}
-				} catch (RemoteNotFoundException $e) {
+				} catch (RemoteNotFoundException) {
 					continue;
 				}
 
@@ -170,7 +135,7 @@ class ShareCreatedSendMail implements IEventListener {
 					// are we sure the 'share' entry is valid and not spoofed !?
 					/** @var ShareWrapper $share */
 					$share = $data->gObj('share', ShareWrapper::class);
-				} catch (Exception $e) {
+				} catch (Exception) {
 				}
 			}
 

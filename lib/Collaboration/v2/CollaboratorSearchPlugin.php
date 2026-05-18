@@ -34,16 +34,6 @@ class CollaboratorSearchPlugin implements ISearchPlugin {
 	use TNCLogger;
 
 
-	/** @var IRequest */
-	private $request;
-
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var CircleService */
-	private $circleService;
-
-
 	/**
 	 * CollaboratorSearchPlugin constructor.
 	 *
@@ -52,14 +42,10 @@ class CollaboratorSearchPlugin implements ISearchPlugin {
 	 * @param CircleService $circleService
 	 */
 	public function __construct(
-		IRequest $request,
-		FederatedUserService $federatedUserService,
-		CircleService $circleService,
+		private IRequest $request,
+		private FederatedUserService $federatedUserService,
+		private CircleService $circleService,
 	) {
-		$this->request = $request;
-		$this->federatedUserService = $federatedUserService;
-		$this->circleService = $circleService;
-
 		$this->setup('app', Application::APP_ID);
 	}
 
@@ -110,7 +96,7 @@ class CollaboratorSearchPlugin implements ISearchPlugin {
 
 				$circles = $this->circleService->probeCircles($probe, $dataProbe);
 			}
-		} catch (Exception $e) {
+		} catch (Exception) {
 			return false;
 		}
 
