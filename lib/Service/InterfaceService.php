@@ -36,7 +36,7 @@ class InterfaceService {
 	public const IFACE_FRONTAL = 7;
 	public const IFACE_TEST = 99;
 
-	public static $LIST_IFACE = [
+	public const LIST_IFACE = [
 		self::IFACE_INTERNAL => 'internal',
 		self::IFACE_FRONTAL => 'frontal',
 		self::IFACE0 => 'iface0',
@@ -246,7 +246,7 @@ class InterfaceService {
 
 		$detailed = [];
 		foreach ($interfaces as $id => $iface) {
-			$detailed[self::$LIST_IFACE[$id]] = $iface;
+			$detailed[self::LIST_IFACE[$id]] = $iface;
 		}
 
 		return $detailed;
@@ -276,7 +276,7 @@ class InterfaceService {
 
 		$detailed = [];
 		foreach ($internalInterfaces as $id => $iface) {
-			$detailed[self::$LIST_IFACE[$id]] = $iface;
+			$detailed[self::LIST_IFACE[$id]] = $iface;
 		}
 
 		return $detailed;

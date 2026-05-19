@@ -296,12 +296,14 @@ class MaintenanceService {
 			->includeSystemCircles();
 
 		$circles = array_map(
-			fn (Circle $circle) => $circle->getSingleId(), $this->circleRequest->getCircles(null, $probe)
+			fn (Circle $circle) => $circle->getSingleId(),
+			$this->circleRequest->getCircles(null, $probe)
 		);
 
 		$shares = array_unique(
 			array_map(
-				fn (ShareWrapper $share) => $share->getSharedWith(), $this->shareWrapperRequest->getShares()
+				fn (ShareWrapper $share) => $share->getSharedWith(),
+				$this->shareWrapperRequest->getShares()
 			)
 		);
 

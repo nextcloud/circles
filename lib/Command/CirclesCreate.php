@@ -35,13 +35,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CirclesCreate extends Base {
 	use TDeserialize;
 
-
-	/**
-	 * CirclesCreate constructor.
-	 *
-	 * @param FederatedUserService $federatedUserService
-	 * @param CircleService $circleService
-	 */
 	public function __construct(
 		private FederatedUserService $federatedUserService,
 		private CircleService $circleService,

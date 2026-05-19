@@ -68,17 +68,6 @@ class MembersList extends Base {
 	/** @var string */
 	private $treeType = '';
 
-
-	/**
-	 * MembersList constructor.
-	 *
-	 * @param MemberRequest $memberRequest
-	 * @param FederatedUserService $federatedUserService
-	 * @param RemoteService $remoteService
-	 * @param CircleService $circleService
-	 * @param MemberService $memberService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
 		private MemberRequest $memberRequest,
 		private FederatedUserService $federatedUserService,

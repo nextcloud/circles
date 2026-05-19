@@ -34,13 +34,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Command
  */
 class CirclesSync extends Base {
-	/**
-	 * CirclesSync constructor.
-	 *
-	 * @param SyncService $syncService
-	 * @param OutputService $outputService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
 		private readonly SyncService $syncService,
 		private readonly MigrationService $migrationService,
@@ -50,10 +43,6 @@ class CirclesSync extends Base {
 		parent::__construct();
 	}
 
-
-	/**
-	 *
-	 */
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:sync')

@@ -15,8 +15,7 @@ use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCP\DB\Exception;
 use OCP\DB\QueryBuilder\IQueryBuilder;
-use OCP\IAppConfig;
-use OCP\IConfig;
+use OCP\AppFramework\Services\IAppConfig;
 use OCP\IDBConnection;
 use OCP\Share\IShare;
 use Psr\Log\LoggerInterface;
@@ -30,8 +29,7 @@ class MigrateCustomGroups extends Base {
 
 	public function __construct(
 		private readonly CirclesManager $circlesManager,
-		protected IDBConnection $connection,
-		protected IConfig $config,
+		private readonly IDBConnection $connection,
 		private readonly LoggerInterface $logger,
 		private readonly IAppConfig $appConfig,
 	) {
@@ -51,7 +49,7 @@ class MigrateCustomGroups extends Base {
 		}
 
 		$this->migrateTeams();
-		$this->appConfig->setValue('circles', 'imported_custom_groups', 'true');
+		$this->appConfig->setAppValueBool('imported_custom_groups', true);
 
 		return 0;
 	}
@@ -78,8 +76,8 @@ class MigrateCustomGroups extends Base {
 				continue; // if group or owner is not know, we ignore the entry.
 			}
 
-			$name = $rowCG['display_name'];
-			while (strlen((string)$name) < 3) {
+			$name = (string)$rowCG['display_name'];
+			while (strlen($name) < 3) {
 				$name = '_' . $name;
 			}
 
@@ -249,8 +247,8 @@ class MigrateCustomGroups extends Base {
 	}
 
 	protected function shouldRun(): bool {
-		$alreadyImported = $this->appConfig->getValue('circles', 'imported_custom_groups', 'false');
-		return $alreadyImported === 'false' && $this->connection->tableExists('custom_group') && $this->connection->tableExists('custom_group_member');
+		$alreadyImported = $this->appConfig->getAppValueBool('imported_custom_groups');
+		return !$alreadyImported && $this->connection->tableExists('custom_group') && $this->connection->tableExists('custom_group_member');
 	}
 
 	/**

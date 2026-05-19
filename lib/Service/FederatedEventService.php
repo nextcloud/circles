@@ -438,7 +438,8 @@ class FederatedEventService extends NCSignature {
 		if ($event->hasMember()
 			&& !$this->configService->isLocalInstance($event->getMember()->getInstance())) {
 			$currentInstances = array_map(
-				fn (RemoteInstance $instance): string => $instance->getInstance(), $instances
+				fn (RemoteInstance $instance): string => $instance->getInstance(),
+				$instances
 			);
 
 			if (!in_array($event->getMember()->getInstance(), $currentInstances)) {

@@ -75,7 +75,7 @@ class CirclesRemote extends Base {
 			)
 			->addOption(
 				'iface', '', InputOption::VALUE_REQUIRED, 'set interface to use to contact remote',
-				InterfaceService::$LIST_IFACE[InterfaceService::IFACE_FRONTAL]
+				InterfaceService::LIST_IFACE[InterfaceService::IFACE_FRONTAL]
 			)
 			->addOption('yes', '', InputOption::VALUE_NONE, 'silently add the remote instance')
 			->addOption('all', '', InputOption::VALUE_NONE, 'display all information');
@@ -291,7 +291,7 @@ class CirclesRemote extends Base {
 		$question = new ConfirmationQuestion(
 			'Would you like to identify this remote instance as \'<comment>' . $remoteSignatory->getType()
 			. '</comment>\' using interface \'<comment>'
-			. InterfaceService::$LIST_IFACE[$remoteSignatory->getInterface()]
+			. InterfaceService::LIST_IFACE[$remoteSignatory->getInterface()]
 			. '</comment>\' ? (y/N) ',
 			false,
 			'/^(y|Y)/i'
@@ -376,7 +376,8 @@ class CirclesRemote extends Base {
 	private function verifyGSInstances(): void {
 		$instances = $this->globalScaleService->getGlobalScaleInstances();
 		$known = array_map(
-			fn (RemoteInstance $instance): string => $instance->getInstance(), $this->remoteRequest->getFromType(RemoteInstance::TYPE_GLOBALSCALE)
+			fn (RemoteInstance $instance): string => $instance->getInstance(),
+			$this->remoteRequest->getFromType(RemoteInstance::TYPE_GLOBALSCALE)
 		);
 
 		$missing = array_diff($instances, $known);
@@ -411,7 +412,7 @@ class CirclesRemote extends Base {
 			$rows[] = [
 				$instance->getInstance(),
 				$instance->getType(),
-				InterfaceService::$LIST_IFACE[$instance->getInterface()],
+				InterfaceService::LIST_IFACE[$instance->getInterface()],
 				$instance->getUid(),
 				$currentUid,
 				json_encode($instance->getAliases())
@@ -427,25 +428,25 @@ class CirclesRemote extends Base {
 	 * @throws Exception
 	 */
 	private function getRemoteType(): string {
-		foreach (RemoteInstance::$LIST_TYPE as $type) {
-			if (strtolower((string)$this->input->getOption('type')) === strtolower((string)$type)) {
+		foreach (RemoteInstance::LIST_TYPE as $type) {
+			if (strtolower((string)$this->input->getOption('type')) === strtolower($type)) {
 				return $type;
 			}
 		}
 
-		throw new Exception('Unknown type: ' . implode(', ', RemoteInstance::$LIST_TYPE));
+		throw new Exception('Unknown type: ' . implode(', ', RemoteInstance::LIST_TYPE));
 	}
 
 	/**
 	 * @throws Exception
 	 */
 	private function getRemoteInterface(): int {
-		foreach (InterfaceService::$LIST_IFACE as $iface => $def) {
-			if (strtolower((string)$this->input->getOption('iface')) === strtolower((string)$def)) {
+		foreach (InterfaceService::LIST_IFACE as $iface => $def) {
+			if (strtolower((string)$this->input->getOption('iface')) === strtolower($def)) {
 				return $iface;
 			}
 		}
 
-		throw new Exception('Unknown interface: ' . implode(', ', InterfaceService::$LIST_IFACE));
+		throw new Exception('Unknown interface: ' . implode(', ', InterfaceService::LIST_IFACE));
 	}
 }

@@ -43,12 +43,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Command
  */
 class CirclesJoin extends Base {
-	/**
-	 * CirclesJoin constructor.
-	 *
-	 * @param FederatedUserService $federatedUserService
-	 * @param CircleService $circleService
-	 */
 	public function __construct(
 		private readonly FederatedUserService $federatedUserService,
 		private readonly CircleService $circleService,

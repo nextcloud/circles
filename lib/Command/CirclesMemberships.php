@@ -63,27 +63,10 @@ class CirclesMemberships extends Base {
 	use TArrayTools;
 	use TConsoleTree;
 
+	private InputInterface $input;
 
-	/** @var InputInterface */
-	private $input;
+	private array $memberships = [];
 
-
-	/** @var array */
-	private $memberships = [];
-
-
-	/**
-	 * CirclesMemberships constructor.
-	 *
-	 * @param IUserManager $userManager
-	 * @param MembershipRequest $membershipRequest
-	 * @param MemberRequest $memberRequest
-	 * @param CircleRequest $circleRequest
-	 * @param FederatedUserService $federatedUserService
-	 * @param CircleService $circleService
-	 * @param MembershipService $membershipService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
 		private IUserManager $userManager,
 		private MembershipRequest $membershipRequest,
@@ -97,10 +80,6 @@ class CirclesMemberships extends Base {
 		parent::__construct();
 	}
 
-
-	/**
-	 *
-	 */
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:memberships')

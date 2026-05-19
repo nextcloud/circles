@@ -32,7 +32,7 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 	public const TYPE_TRUSTED = 'Trusted';    // everything about Federated Circles are broadcasted.
 	public const TYPE_GLOBALSCALE = 'GlobalScale';  // every Circle is broadcasted,
 
-	public static $LIST_TYPE = [
+	public const LIST_TYPE = [
 		self::TYPE_UNKNOWN,
 		self::TYPE_PASSIVE,
 		self::TYPE_EXTERNAL,

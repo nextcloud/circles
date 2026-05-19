@@ -30,12 +30,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Command
  */
 class MembersSearch extends Base {
-	/**
-	 * MembersSearch constructor.
-	 *
-	 * @param SearchService $searchService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
 		private readonly SearchService $searchService,
 		private readonly ConfigService $configService

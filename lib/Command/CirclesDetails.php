@@ -46,15 +46,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Command
  */
 class CirclesDetails extends Base {
-	/**
-	 * CirclesDetails constructor.
-	 *
-	 * @param FederatedUserService $federatedUserService
-	 * @param RemoteService $remoteService
-	 * @param CircleService $circleService
-	 * @param MemberService $memberService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
 		private readonly FederatedUserService $federatedUserService,
 		private readonly RemoteService $remoteService,

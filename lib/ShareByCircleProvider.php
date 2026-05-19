@@ -413,7 +413,8 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 
 		return array_filter(
 			array_map(
-				fn (ShareWrapper $wrapper) => $wrapper->getShare($this->rootFolder, $this->userManager, $this->urlGenerator), $wrappedShares
+				fn (ShareWrapper $wrapper) => $wrapper->getShare($this->rootFolder, $this->userManager, $this->urlGenerator),
+				$wrappedShares
 			)
 		);
 	}
@@ -463,7 +464,8 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 
 		return array_filter(
 			array_map(
-				fn (ShareWrapper $wrapper) => $wrapper->getShare($this->rootFolder, $this->userManager, $this->urlGenerator), $wrappedShares
+				fn (ShareWrapper $wrapper) => $wrapper->getShare($this->rootFolder, $this->userManager, $this->urlGenerator),
+				$wrappedShares
 			)
 		);
 	}
@@ -517,7 +519,8 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 			array_map(
 				fn (ShareWrapper $wrapper) => $wrapper->getShare(
 					$this->rootFolder, $this->userManager, $this->urlGenerator, true
-				), $wrappedShares
+				),
+				$wrappedShares
 			)
 		);
 	}
@@ -554,7 +557,8 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 			array_map(
 				fn (ShareWrapper $wrapper) => $wrapper->getShare(
 					$this->rootFolder, $this->userManager, $this->urlGenerator, true
-				), $wrappedShares
+				),
+				$wrappedShares
 			)
 		);
 	}

@@ -174,11 +174,7 @@ class GSWrapper implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
-	 * @param array $data
-	 *
-	 * @return GSWrapper
 	 * @throws JsonException
 	 * @throws ModelException
 	 */
@@ -197,7 +193,6 @@ class GSWrapper implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return array

@@ -364,11 +364,7 @@ class GSEvent implements JsonSerializable {
 		return true;
 	}
 
-
 	/**
-	 * @param string $json
-	 *
-	 * @return GSEvent
 	 * @throws JsonException
 	 * @throws ModelException
 	 */
@@ -380,7 +376,6 @@ class GSEvent implements JsonSerializable {
 
 		return $this->import($data);
 	}
-
 
 	/**
 	 * @param array $data

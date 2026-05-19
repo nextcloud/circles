@@ -43,22 +43,10 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 	use TDeserialize;
 	use TArrayTools;
 
+	private OutputInterface $output;
 
-	/** @var OutputInterface */
-	private $output;
+	private Report $report;
 
-	/** @var Report */
-	private $report;
-
-
-	/**
-	 * CirclesReport constructor.
-	 *
-	 * @param FederatedUserService $federatedUserService
-	 * @param CircleService $circleService
-	 * @param MemberService $memberService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
 		private FederatedUserService $federatedUserService,
 		private CircleService $circleService,

@@ -224,7 +224,8 @@ class Circles {
 			try {
 				$circleService->getCircle($uniqueId); // checking current user have access to said circle
 				$files = array_map(
-					fn (ShareWrapper $wrapper): int => $wrapper->getFileSource(), $shareWrapperService->getSharesToCircle($uniqueId)
+					fn (ShareWrapper $wrapper): int => $wrapper->getFileSource(),
+					$shareWrapperService->getSharesToCircle($uniqueId)
 				);
 			} catch (\Exception) {
 				$files = [];

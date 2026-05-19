@@ -56,7 +56,8 @@ class ExampleAddingCircleMember implements IEventListener {
 				 . Member::$DEF_LEVEL[$member->getLevel()] . '; ';
 
 		$memberships = array_map(
-			fn (Membership $membership) => $membership->getCircleId(), $circle->getMemberships()
+			fn (Membership $membership) => $membership->getCircleId(),
+			$circle->getMemberships()
 		);
 
 		$listMemberships = (count($memberships) > 0) ? implode(', ', $memberships) : 'none';
@@ -66,7 +67,8 @@ class ExampleAddingCircleMember implements IEventListener {
 		if ($member->getUserType() === Member::TYPE_CIRCLE) {
 			$basedOn = $member->getBasedOn();
 			$members = array_map(
-				fn (Member $member) => $member->getUserId() . ' (' . Member::$TYPE[$member->getUserType()] . ')', $basedOn->getInheritedMembers()
+				fn (Member $member) => $member->getUserId() . ' (' . Member::$TYPE[$member->getUserType()] . ')',
+				$basedOn->getInheritedMembers()
 			);
 
 			$info .= ' Member is a Circle (singleId: ' . $basedOn->getSingleId()

@@ -52,7 +52,8 @@ class RemovingMember implements IEventListener {
 		$singleIds = array_merge(
 			[$circle->getSingleId()],
 			array_map(
-				fn (Membership $membership) => $membership->getCircleId(), $circle->getMemberships()
+				fn (Membership $membership) => $membership->getCircleId(),
+				$circle->getMemberships()
 			)
 		);
 

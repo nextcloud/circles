@@ -234,7 +234,10 @@ class SyncService {
 		$circle = $this->federatedUserService->getGroupCircle($groupId);
 		$this->circleService->updateDisplayName($circle->getSingleId(), $this->groupManager->getDisplayName($groupId));
 
-		$members = array_map(fn (Member $member): string => $member->getSingleId(), $this->memberRequest->getMembers($circle->getSingleId()));
+		$members = array_map(
+			fn (Member $member): string => $member->getSingleId(),
+			$this->memberRequest->getMembers($circle->getSingleId())
+		);
 
 		$group = $this->groupManager->get($groupId);
 		foreach ($group->getUsers() as $user) {

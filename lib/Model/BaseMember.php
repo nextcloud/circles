@@ -349,13 +349,7 @@ class BaseMember implements JsonSerializable {
 		$this->setLevel($level);
 	}
 
-
-	/**
-	 * @param $arr
-	 *
-	 * @return null|DeprecatedMember
-	 */
-	public static function fromArray($arr) {
+	public static function fromArray(?array $arr): ?DeprecatedMember {
 		if ($arr === null) {
 			return null;
 		}
@@ -382,14 +376,11 @@ class BaseMember implements JsonSerializable {
 		return $member;
 	}
 
-
 	/**
-	 * @param $json
-	 *
-	 * @return DeprecatedMember
+	 * @throws \JsonException
 	 */
-	public static function fromJSON($json) {
-		return self::fromArray(json_decode((string)$json, true));
+	public static function fromJSON(string $json): ?DeprecatedMember {
+		return self::fromArray(json_decode($json, true));
 	}
 
 

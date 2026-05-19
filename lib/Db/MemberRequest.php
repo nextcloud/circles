@@ -354,7 +354,8 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->andwhere($qb->expr()->nonEmptyString(CoreQueryBuilder::MEMBER . '.instance'));
 
 		return array_map(
-			fn (Member $member): string => $member->getInstance(), $this->getItemsFromRequest($qb)
+			fn (Member $member): string => $member->getInstance(),
+			$this->getItemsFromRequest($qb)
 		);
 	}
 

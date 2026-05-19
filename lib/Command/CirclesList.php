@@ -55,20 +55,8 @@ class CirclesList extends Base {
 	use TArrayTools;
 	use TStringTools;
 
+	private InputInterface $input;
 
-	/** @var InputInterface */
-	private $input;
-
-
-	/**
-	 * CirclesList constructor.
-	 *
-	 * @param ModelManager $modelManager
-	 * @param FederatedUserService $federatedUserService
-	 * @param RemoteService $remoteService
-	 * @param CircleService $circleService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
 		private ModelManager $modelManager,
 		private FederatedUserService $federatedUserService,

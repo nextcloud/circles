@@ -40,18 +40,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 class SharesFiles extends Base {
 	use TArrayTools;
 
+	private int $fileId = 0;
 
-	/** @var int */
-	private $fileId = 0;
-
-
-	/**
-	 * SharesFilesList constructor.
-	 *
-	 * @param FederatedUserService $federatedUserService
-	 * @param ShareWrapperService $shareWrapperService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
 		private FederatedUserService $federatedUserService,
 		private ShareWrapperService $shareWrapperService,
@@ -60,10 +50,6 @@ class SharesFiles extends Base {
 		parent::__construct();
 	}
 
-
-	/**
-	 *
-	 */
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:shares:files')

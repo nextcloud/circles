@@ -30,7 +30,8 @@ class RemoteSyncService {
 		}
 
 		$known = array_map(
-			static fn (RemoteInstance $instance): string => $instance->getInstance(), $this->remoteRequest->getFromType(RemoteInstance::TYPE_EXTERNAL)
+			static fn (RemoteInstance $instance): string => $instance->getInstance(),
+			$this->remoteRequest->getFromType(RemoteInstance::TYPE_EXTERNAL)
 		);
 
 		foreach ($this->trustedServerService->getTrustedServers() as $trusted) {

@@ -83,13 +83,6 @@ class CirclesTest extends Base {
 	/** @var array */
 	private $federatedUsers = [];
 
-
-	/**
-	 * CirclesTest constructor.
-	 *
-	 * @param CoreRequestBuilder $coreQueryBuilder
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
 		private CoreRequestBuilder $coreQueryBuilder,
 		private ConfigService $configService
@@ -97,10 +90,6 @@ class CirclesTest extends Base {
 		parent::__construct();
 	}
 
-
-	/**
-	 *
-	 */
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:test')
@@ -212,7 +201,8 @@ class CirclesTest extends Base {
 
 
 		$members = array_map(
-			fn (Member $member): string => $member->getUserId() . ' ' . $member->getSingleId() . '   - ' . $member->getUserType(), $circle->getInheritedMembers()
+			fn (Member $member): string => $member->getUserId() . ' ' . $member->getSingleId() . '   - ' . $member->getUserType(),
+			$circle->getInheritedMembers()
 		);
 
 		echo json_encode($members, JSON_PRETTY_PRINT);

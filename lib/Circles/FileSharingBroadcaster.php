@@ -518,19 +518,8 @@ class FileSharingBroadcaster implements IBroadcaster {
 		$this->mailer->send($message);
 	}
 
-
-	/**
-	 * @param $subject
-	 * @param $text
-	 * @param $fileName
-	 * @param $link
-	 * @param string $author
-	 * @param string $circleName
-	 *
-	 * @return IEMailTemplate
-	 */
-	private function generateEmailTemplate($subject, $text, $fileName, $link, $author, $circleName,
-	) {
+	private function generateEmailTemplate(string $subject, string $text, string $fileName, string $link, string $author, string $circleName,
+	): IEMailTemplate {
 		$emailTemplate = $this->mailer->createEMailTemplate(
 			'circles.ShareNotification', [
 				'fileName' => $fileName,
@@ -543,12 +532,13 @@ class FileSharingBroadcaster implements IBroadcaster {
 		$emailTemplate->addHeader();
 		$emailTemplate->addHeading($subject, false);
 		$emailTemplate->addBodyText(
-			htmlspecialchars((string)$text) . '<br>' . htmlspecialchars(
+			htmlspecialchars($text) . '<br>' . htmlspecialchars(
 				$this->l10n->t('Click the button below to open it.')
-			), $text
+			),
+			$text
 		);
 		$emailTemplate->addBodyButton(
-			$this->l10n->t('Open »%s«', [htmlspecialchars((string)$fileName)]), $link
+			$this->l10n->t('Open »%s«', [htmlspecialchars($fileName)]), $link
 		);
 
 		return $emailTemplate;
@@ -665,14 +655,11 @@ class FileSharingBroadcaster implements IBroadcaster {
 	}
 
 	/**
-	 * @param array $share
-	 * @param DeprecatedMember $member
-	 * @param string $password
+	 * @param array{uid_initiator:string,file_target:string} $share
 	 *
-	 * @return array
 	 * @throws TokenDoesNotExistException
 	 */
-	private function getMailLinkFromShare(array $share, DeprecatedMember $member, string $password = '') {
+	private function getMailLinkFromShare(array $share, DeprecatedMember $member, string $password = ''): array {
 		$sharesToken = $this->tokensRequest->generateTokenForMember($member, $share['id'], $password);
 		$link = $this->urlGenerator->linkToRouteAbsolute(
 			'files_sharing.sharecontroller.showShare',
@@ -680,7 +667,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 		);
 		$author = $share['uid_initiator'];
 
-		$filename = basename((string)$share['file_target']);
+		$filename = basename($share['file_target']);
 
 		return [
 			'author' => $author,

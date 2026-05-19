@@ -460,7 +460,8 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	 */
 	public function addInheritedMembers(array $members): self {
 		$knownIds = array_map(
-			fn (Member $member): string => $member->getId(), $this->inheritedMembers
+			fn (Member $member): string => $member->getId(),
+			$this->inheritedMembers
 		);
 
 		foreach ($members as $member) {

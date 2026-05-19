@@ -42,13 +42,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Command
  */
 class MembersDetails extends Base {
-	/**
-	 * MembersDetails constructor.
-	 *
-	 * @param MemberRequest $memberRequest
-	 * @param FederatedUserService $federatedUserService
-	 * @param MemberService $memberService
-	 */
 	public function __construct(
 		private readonly MemberRequest $memberRequest,
 		private readonly FederatedUserService $federatedUserService,

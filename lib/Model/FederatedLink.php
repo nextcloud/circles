@@ -381,8 +381,7 @@ class FederatedLink implements \JsonSerializable {
 		return $json;
 	}
 
-
-	public static function fromArray($arr) {
+	public static function fromArray(?array $arr): ?self {
 		if ($arr === null) {
 			return null;
 		}
@@ -400,8 +399,7 @@ class FederatedLink implements \JsonSerializable {
 		return $link;
 	}
 
-
-	public static function fromJSON($json) {
-		return self::fromArray(json_decode((string)$json, true));
+	public static function fromJSON(string $json): ?self {
+		return self::fromArray(json_decode($json, true));
 	}
 }

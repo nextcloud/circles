@@ -138,7 +138,8 @@ class EventWrapperService extends NCSignature {
 	 */
 	private function getFailedEvents(array $retryRange): array {
 		$token = array_map(
-			fn (EventWrapper $event): string => $event->getToken(), $this->eventWrapperRequest->getFailedEvents($retryRange)
+			fn (EventWrapper $event): string => $event->getToken(),
+			$this->eventWrapperRequest->getFailedEvents($retryRange)
 		);
 
 		return array_values(array_unique($token));

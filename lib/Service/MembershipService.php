@@ -218,7 +218,8 @@ class MembershipService {
 	 */
 	private function getChildrenMembers(string $id, array &$knownIds = []): array {
 		$singleIds = array_map(
-			fn (Member $item): string => $item->getSingleId(), $this->memberRequest->getMembers($id)
+			fn (Member $item): string => $item->getSingleId(),
+			$this->memberRequest->getMembers($id)
 		);
 
 		foreach ($singleIds as $singleId) {
@@ -240,7 +241,8 @@ class MembershipService {
 	 */
 	private function getChildrenMemberships(string $id, array &$knownIds = []): array {
 		$singleIds = array_map(
-			fn (Membership $item): string => $item->getSingleId(), $this->membershipRequest->getInherited($id)
+			fn (Membership $item): string => $item->getSingleId(),
+			$this->membershipRequest->getInherited($id)
 		);
 
 		foreach ($singleIds as $singleId) {
@@ -292,7 +294,8 @@ class MembershipService {
 	 */
 	private function removeDeprecatedMemberships(array $memberships, array $known): array {
 		$circleIds = array_map(
-			fn (Membership $membership): string => $membership->getCircleId(), $memberships
+			fn (Membership $membership): string => $membership->getCircleId(),
+			$memberships
 		);
 
 		$deprecated = [];

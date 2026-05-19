@@ -44,13 +44,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Command
  */
 class MembersRemove extends Base {
-	/**
-	 * MembersRemove constructor.
-	 *
-	 * @param MemberRequest $memberRequest
-	 * @param FederatedUserService $federatedUserService
-	 * @param MemberService $memberService
-	 */
 	public function __construct(
 		private readonly MemberRequest $memberRequest,
 		private readonly FederatedUserService $federatedUserService,

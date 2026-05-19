@@ -40,11 +40,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Command
  */
 class CirclesDestroy extends Base {
-	/**
-	 * CirclesDestroy constructor.
-	 *
-	 * @param CircleService $circleService
-	 */
 	public function __construct(
 		private readonly FederatedUserService $federatedUserService,
 		private readonly CircleService $circleService

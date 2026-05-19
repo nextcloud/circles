@@ -109,13 +109,8 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 
 	/**
 	 * set all infos from an Array.
-	 *
-	 * @param $arr
-	 * @param bool $allSettings
-	 *
-	 * @return $this
 	 */
-	public static function fromArray($arr, bool $allSettings = false) {
+	public static function fromArray(?array $arr, bool $allSettings = false): self {
 		if ($arr === null || empty($arr)) {
 			return new DeprecatedCircle();
 		}
@@ -198,16 +193,9 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 		return $settings;
 	}
 
-
-	/**
-	 * @param $json
-	 *
-	 * @return DeprecatedCircle
-	 */
-	public static function fromJSON($json) {
-		return self::fromArray(json_decode((string)$json, true));
+	public static function fromJSON(string $json): self {
+		return self::fromArray(json_decode($json, true));
 	}
-
 
 	/**
 	 * @throws CircleTypeNotValidException
