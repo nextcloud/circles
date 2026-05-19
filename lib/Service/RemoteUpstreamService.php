@@ -34,19 +34,6 @@ class RemoteUpstreamService {
 	use TNCRequest;
 
 
-	/** @var EventWrapperRequest */
-	private $eventWrapperRequest;
-
-	/** @var RemoteStreamService */
-	private $remoteStreamService;
-
-	/** @var InterfaceService */
-	private $interfaceService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	/**
 	 * RemoteUpstreamService constructor.
 	 *
@@ -56,15 +43,11 @@ class RemoteUpstreamService {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		EventWrapperRequest $eventWrapperRequest,
-		RemoteStreamService $remoteStreamService,
-		InterfaceService $interfaceService,
-		ConfigService $configService,
+		private EventWrapperRequest $eventWrapperRequest,
+		private RemoteStreamService $remoteStreamService,
+		private InterfaceService $interfaceService,
+		private ConfigService $configService,
 	) {
-		$this->eventWrapperRequest = $eventWrapperRequest;
-		$this->remoteStreamService = $remoteStreamService;
-		$this->interfaceService = $interfaceService;
-		$this->configService = $configService;
 	}
 
 

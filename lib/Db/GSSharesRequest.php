@@ -55,7 +55,7 @@ class GSSharesRequest extends GSSharesRequestBuilder {
 
 		$shares = [];
 		$cursor = $qb->executeQuery();
-		while ($data = $cursor->fetch()) {
+		while ($data = $cursor->fetchAssociative()) {
 			$shares[] = $this->parseGSSharesSelectSql($data);
 		}
 		$cursor->closeCursor();
@@ -127,7 +127,7 @@ class GSSharesRequest extends GSSharesRequestBuilder {
 
 		$shares = [];
 		$cursor = $qb->executeQuery();
-		$data = $cursor->fetch();
+		$data = $cursor->fetchAssociative();
 
 		if ($data === false) {
 			throw new ShareNotFound();
@@ -152,7 +152,7 @@ class GSSharesRequest extends GSSharesRequestBuilder {
 
 		$shares = [];
 		$cursor = $qb->executeQuery();
-		$data = $cursor->fetch();
+		$data = $cursor->fetchAssociative();
 		if ($data === false) {
 			throw new ShareNotFound();
 		}

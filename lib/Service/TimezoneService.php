@@ -10,14 +10,8 @@ use DateTime;
 use OC\AppFramework\Utility\TimeFactory;
 
 class TimezoneService {
-	/** @var string */
-	private $userId;
-
 	/** @var TimeFactory */
 	private $timeFactory;
-
-	/** @var ConfigService */
-	private $configService;
 
 
 	/**
@@ -28,13 +22,11 @@ class TimezoneService {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		$userId,
+		private $userId,
 		TimeFactory $timeFactory,
-		ConfigService $configService,
+		private readonly ConfigService $configService,
 	) {
-		$this->userId = $userId;
 		$this->timeFactory = $timeFactory;
-		$this->configService = $configService;
 	}
 
 
@@ -49,7 +41,7 @@ class TimezoneService {
 
 
 	public function convertToTimestamp($time) {
-		return strtotime($time);
+		return strtotime((string)$time);
 	}
 
 

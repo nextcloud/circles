@@ -56,6 +56,7 @@ use OCA\Circles\Tools\Traits\TNCRequest;
 use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\AppFramework\Services\IAppConfig;
 use OCP\Server;
+use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use ReflectionException;
 
@@ -279,7 +280,7 @@ class FederatedEventService extends NCSignature {
 			&& !($item instanceof IFederatedItemMemberRequired)
 			&& !($item instanceof IFederatedItemMemberOptional)) {
 			throw new FederatedEventException(
-				get_class($item)
+				$item::class
 				. ' does not implements IFederatedItemMemberOptional nor IFederatedItemMemberRequired'
 			);
 		}
@@ -374,7 +375,7 @@ class FederatedEventService extends NCSignature {
 			}
 
 			if (in_array($instance->getInstance(), $avoidDuplicate, true)) {
-				Server::get(\Psr\Log\LoggerInterface::class)->warning('duplicate instance, please verify the setup of Federated Teams', ['duplicate' => $avoidDuplicate, 'loopback' => $this->configService->getLoopbackInstance(), 'instance' => $instance->getInstance(), 'interface' => $instance->getInterface()]);
+				Server::get(LoggerInterface::class)->warning('duplicate instance, please verify the setup of Federated Teams', ['duplicate' => $avoidDuplicate, 'loopback' => $this->configService->getLoopbackInstance(), 'instance' => $instance->getInstance(), 'interface' => $instance->getInterface()]);
 				continue;
 			}
 
@@ -437,15 +438,14 @@ class FederatedEventService extends NCSignature {
 		if ($event->hasMember()
 			&& !$this->configService->isLocalInstance($event->getMember()->getInstance())) {
 			$currentInstances = array_map(
-				function (RemoteInstance $instance): string {
-					return $instance->getInstance();
-				}, $instances
+				fn (RemoteInstance $instance): string => $instance->getInstance(),
+				$instances
 			);
 
 			if (!in_array($event->getMember()->getInstance(), $currentInstances)) {
 				try {
 					$instances[] = $this->remoteRequest->getFromInstance($event->getMember()->getInstance());
-				} catch (RemoteNotFoundException $e) {
+				} catch (RemoteNotFoundException) {
 				}
 			}
 		}
@@ -483,7 +483,7 @@ class FederatedEventService extends NCSignature {
 		try {
 			$gs = $this->getFederatedItem($event, false);
 			$gs->result($event, $results);
-		} catch (FederatedEventException $e) {
+		} catch (FederatedEventException) {
 		}
 	}
 }

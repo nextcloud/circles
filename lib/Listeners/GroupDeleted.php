@@ -19,17 +19,14 @@ use OCP\Group\Events\GroupDeletedEvent;
 
 /** @template-implements IEventListener<GroupDeletedEvent|Event> */
 class GroupDeleted implements IEventListener {
-	/** @var SyncService */
-	private $syncService;
-
-
 	/**
 	 * GroupDeleted constructor.
 	 *
 	 * @param SyncService $syncService
 	 */
-	public function __construct(SyncService $syncService) {
-		$this->syncService = $syncService;
+	public function __construct(
+		private readonly SyncService $syncService,
+	) {
 	}
 
 	public function handle(Event $event): void {
@@ -40,7 +37,7 @@ class GroupDeleted implements IEventListener {
 		$group = $event->getGroup();
 		try {
 			$this->syncService->groupDeleted($group->getGID());
-		} catch (Exception $e) {
+		} catch (Exception) {
 		}
 	}
 }

@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\AppInfo;
 
-use Closure;
 use OCA\Circles\ConfigLexicon;
 use OCA\Circles\Dashboard\TeamDashboardWidget;
 use OCA\Circles\Events\AddingCircleMemberEvent;
@@ -144,7 +143,7 @@ class Application extends App implements IBootstrap {
 			$shareManager->registerShareProvider(ShareByCircleProvider::class);
 		});
 
-		$context->injectFn(Closure::fromCallable([$this, 'registerMountProvider']));
+		$context->injectFn($this->registerMountProvider(...));
 	}
 
 	public function registerMountProvider(ContainerInterface $container): void {

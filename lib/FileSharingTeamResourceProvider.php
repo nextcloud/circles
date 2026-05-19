@@ -18,10 +18,10 @@ use OCP\Teams\TeamResource;
 
 class FileSharingTeamResourceProvider implements ITeamResourceProvider {
 	public function __construct(
-		private IL10N $l10n,
-		private ?CirclesManager $circlesManager,
-		private ShareWrapperService $shareWrapperService,
-		private IURLGenerator $urlGenerator,
+		private readonly IL10N $l10n,
+		private readonly ?CirclesManager $circlesManager,
+		private readonly ShareWrapperService $shareWrapperService,
+		private readonly IURLGenerator $urlGenerator,
 	) {
 	}
 
@@ -68,9 +68,7 @@ class FileSharingTeamResourceProvider implements ITeamResourceProvider {
 	 * @return TeamResource[]
 	 */
 	private function convertWrappedShareToResource(array $shares): array {
-		usort($shares, function ($a, $b) {
-			return (int)($b->getItemType() === 'folder') - (int)($a->getItemType() === 'folder');
-		});
+		usort($shares, fn ($a, $b) => (int)($b->getItemType() === 'folder') - (int)($a->getItemType() === 'folder'));
 		return array_map(function (ShareWrapper $shareWrapper) {
 			$isFolder = $shareWrapper->getItemType() === 'folder';
 			return new TeamResource(
@@ -91,9 +89,7 @@ class FileSharingTeamResourceProvider implements ITeamResourceProvider {
 			return false;
 		}
 
-		return count(array_filter($this->getSharedWith($teamId), function (TeamResource $resource) use ($resourceId) {
-			return $resource->getId() === $resourceId;
-		})) !== 0;
+		return count(array_filter($this->getSharedWith($teamId), fn (TeamResource $resource) => $resource->getId() === $resourceId)) !== 0;
 	}
 
 	public function getTeamsForResource(string $resourceId): array {
@@ -103,8 +99,6 @@ class FileSharingTeamResourceProvider implements ITeamResourceProvider {
 
 		$shares = $this->shareWrapperService->getSharesByFileId((int)$resourceId);
 
-		return array_map(function ($share) {
-			return $share->getSharedWith();
-		}, $shares);
+		return array_map(fn ($share) => $share->getSharedWith(), $shares);
 	}
 }

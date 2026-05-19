@@ -96,7 +96,7 @@ class CircleRequest extends CircleRequestBuilder {
 		try {
 			$this->getCircle($circle->getSingleId());
 			$this->update($circle);
-		} catch (CircleNotFoundException $e) {
+		} catch (CircleNotFoundException) {
 			$this->save($circle);
 		}
 	}
@@ -408,7 +408,7 @@ class CircleRequest extends CircleRequestBuilder {
 
 		try {
 			$circle = $this->getItemFromRequest($qb);
-		} catch (CircleNotFoundException $e) {
+		} catch (CircleNotFoundException) {
 			throw new FederatedUserNotFoundException('singleId not found');
 		}
 
@@ -444,7 +444,7 @@ class CircleRequest extends CircleRequestBuilder {
 
 		try {
 			return $this->getItemFromRequest($qb);
-		} catch (CircleNotFoundException $e) {
+		} catch (CircleNotFoundException) {
 			throw new SingleCircleNotFoundException();
 		}
 	}

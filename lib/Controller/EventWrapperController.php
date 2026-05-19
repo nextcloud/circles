@@ -21,6 +21,8 @@ use OCA\Circles\Tools\Traits\TAsync;
 use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
+use OCP\AppFramework\Http\Attribute\PublicPage;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\IAppConfig;
 use OCP\IRequest;
@@ -33,22 +35,6 @@ use OCP\IRequest;
 class EventWrapperController extends Controller {
 	use TStringTools;
 	use TAsync;
-
-
-	/** @var EventWrapperService */
-	private $eventWrapperService;
-
-	/** @var FederatedEventService */
-	private $federatedEventService;
-
-	/** @var RemoteUpstreamService */
-	private $remoteUpstreamService;
-
-	/** @var RemoteDownstreamService */
-	private $remoteDownstreamService;
-
-	/** @var ConfigService */
-	private $configService;
 
 
 	/**
@@ -66,18 +52,13 @@ class EventWrapperController extends Controller {
 		string $appName,
 		IRequest $request,
 		private readonly IAppConfig $appConfig,
-		EventWrapperService $eventWrapperService,
-		FederatedEventService $federatedEventService,
-		RemoteUpstreamService $remoteUpstreamService,
-		RemoteDownstreamService $remoteDownstreamService,
-		ConfigService $configService,
+		private EventWrapperService $eventWrapperService,
+		private FederatedEventService $federatedEventService,
+		private RemoteUpstreamService $remoteUpstreamService,
+		private RemoteDownstreamService $remoteDownstreamService,
+		private ConfigService $configService,
 	) {
 		parent::__construct($appName, $request);
-		$this->eventWrapperService = $eventWrapperService;
-		$this->federatedEventService = $federatedEventService;
-		$this->remoteUpstreamService = $remoteUpstreamService;
-		$this->remoteDownstreamService = $remoteDownstreamService;
-		$this->configService = $configService;
 
 		$this->setup('app', Application::APP_ID);
 		$this->setupInt(self::$SETUP_TIME_LIMIT, 900);
@@ -90,13 +71,13 @@ class EventWrapperController extends Controller {
 	 * Async process and broadcast the event to every instances of GS
 	 * This should be initiated by the instance that owns the Circles.
 	 *
-	 * @PublicPage
-	 * @NoCSRFRequired
 	 *
 	 * @param string $token
 	 *
 	 * @return DataResponse
 	 */
+	#[PublicPage]
+	#[NoCSRFRequired]
 	public function asyncBroadcast(string $token): DataResponse {
 		$wrappers = $this->remoteUpstreamService->getEventsByToken($token);
 		if (empty($wrappers) && $token !== 'test-dummy-token') {

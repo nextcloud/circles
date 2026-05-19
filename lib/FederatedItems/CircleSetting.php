@@ -27,18 +27,11 @@ class CircleSetting implements
 	IFederatedItemAsyncProcess {
 	use TDeserialize;
 
-	private CircleRequest $circleRequest;
-	private ShareTokenService $shareTokenService;
-	private ConfigService $configService;
-
 	public function __construct(
-		CircleRequest $circleRequest,
-		ShareTokenService $shareTokenService,
-		ConfigService $configService,
+		private CircleRequest $circleRequest,
+		private ShareTokenService $shareTokenService,
+		private ConfigService $configService,
 	) {
-		$this->circleRequest = $circleRequest;
-		$this->shareTokenService = $shareTokenService;
-		$this->configService = $configService;
 	}
 
 

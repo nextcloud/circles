@@ -41,16 +41,7 @@ class Request implements JsonSerializable {
 	private $port = 0;
 
 	/** @var string */
-	private $url = '';
-
-	/** @var string */
 	private $baseUrl = '';
-
-	/** @var int */
-	private $type = 0;
-
-	/** @var bool */
-	private $binary = false;
 
 	/** @var bool */
 	private $verifyPeer = true;
@@ -96,10 +87,11 @@ class Request implements JsonSerializable {
 	 * @param int $type
 	 * @param bool $binary
 	 */
-	public function __construct(string $url = '', int $type = 0, bool $binary = false) {
-		$this->url = $url;
-		$this->type = $type;
-		$this->binary = $binary;
+	public function __construct(
+		private string $url = '',
+		private int $type = 0,
+		private bool $binary = false,
+	) {
 	}
 
 
@@ -215,7 +207,7 @@ class Request implements JsonSerializable {
 	 * @return Request
 	 */
 	public function setInstance(string $instance): Request {
-		if (strpos($instance, ':') === false) {
+		if (!str_contains($instance, ':')) {
 			$this->setHost($instance);
 
 			return $this;
@@ -661,16 +653,12 @@ class Request implements JsonSerializable {
 			return '';
 		}
 
-		switch ($this->getQueryStringType()) {
-			case self::QS_VAR_ARRAY:
-				return '?' . http_build_query($this->getParams());
-
-			case self::QS_VAR_DUPLICATE:
-			default:
-				return '?' . preg_replace(
-					'/%5B(?:[0-9]|[1-9][0-9]+)%5D=/', '=', http_build_query($this->getParams())
-				);
-		}
+		return match ($this->getQueryStringType()) {
+			self::QS_VAR_ARRAY => '?' . http_build_query($this->getParams()),
+			default => '?' . preg_replace(
+				'/%5B(?:[0-9]|[1-9][0-9]+)%5D=/', '=', http_build_query($this->getParams())
+			),
+		};
 	}
 
 
@@ -780,33 +768,23 @@ class Request implements JsonSerializable {
 	 * @return int
 	 */
 	public static function type(string $type): int {
-		switch (strtoupper($type)) {
-			case 'GET':
-				return self::TYPE_GET;
-			case 'POST':
-				return self::TYPE_POST;
-			case 'PUT':
-				return self::TYPE_PUT;
-			case 'DELETE':
-				return self::TYPE_DELETE;
-		}
-
-		return 0;
+		return match (strtoupper($type)) {
+			'GET' => self::TYPE_GET,
+			'POST' => self::TYPE_POST,
+			'PUT' => self::TYPE_PUT,
+			'DELETE' => self::TYPE_DELETE,
+			default => 0,
+		};
 	}
 
 
 	public static function method(int $type): string {
-		switch ($type) {
-			case self::TYPE_GET:
-				return 'get';
-			case self::TYPE_POST:
-				return 'post';
-			case self::TYPE_PUT:
-				return 'put';
-			case self::TYPE_DELETE:
-				return 'delete';
-		}
-
-		return '';
+		return match ($type) {
+			self::TYPE_GET => 'get',
+			self::TYPE_POST => 'post',
+			self::TYPE_PUT => 'put',
+			self::TYPE_DELETE => 'delete',
+			default => '',
+		};
 	}
 }

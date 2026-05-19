@@ -29,19 +29,6 @@ class NotificationService {
 	use TNCLogger;
 
 
-	/** @var IURLGenerator */
-	private $urlGenerator;
-
-	/** @var INotificationManager */
-	private $notificationManager;
-
-	/** @var MemberRequest */
-	private $memberRequest;
-
-	/** @var TimezoneService */
-	private $timezoneService;
-
-
 	/**
 	 * NotificationService constructor.
 	 *
@@ -51,16 +38,11 @@ class NotificationService {
 	 * @param TimezoneService $timezoneService
 	 */
 	public function __construct(
-		IURLGenerator $urlGenerator,
-		INotificationManager $notificationManager,
-		MemberRequest $memberRequest,
-		TimezoneService $timezoneService,
+		private IURLGenerator $urlGenerator,
+		private INotificationManager $notificationManager,
+		private MemberRequest $memberRequest,
+		private TimezoneService $timezoneService,
 	) {
-		$this->urlGenerator = $urlGenerator;
-		$this->notificationManager = $notificationManager;
-		$this->memberRequest = $memberRequest;
-		$this->timezoneService = $timezoneService;
-
 		$this->setup('app', Application::APP_ID);
 	}
 

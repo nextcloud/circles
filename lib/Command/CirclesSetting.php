@@ -41,10 +41,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CirclesSetting extends Base {
 	public function __construct(
-		private IHasher $hasher,
-		private FederatedUserService $federatedUserService,
-		private CircleService $circleService,
-		private ConfigService $configService,
+		private readonly IHasher $hasher,
+		private readonly FederatedUserService $federatedUserService,
+		private readonly CircleService $circleService,
+		private readonly ConfigService $configService,
 	) {
 		parent::__construct();
 	}
@@ -129,14 +129,14 @@ class CirclesSetting extends Base {
 		} catch (FederatedItemException $e) {
 			if ($input->getOption('status-code')) {
 				throw new FederatedItemException(
-					' [' . get_class($e) . ', ' . ((string)$e->getStatus()) . ']' . "\n" . $e->getMessage()
+					' [' . $e::class . ', ' . ((string)$e->getStatus()) . ']' . "\n" . $e->getMessage()
 				);
 			}
 
 			throw $e;
 		}
 
-		if (strtolower($input->getOption('output')) === 'json') {
+		if (strtolower((string)$input->getOption('output')) === 'json') {
 			$output->writeln(json_encode($outcome, JSON_PRETTY_PRINT));
 		}
 

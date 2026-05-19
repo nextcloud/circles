@@ -17,7 +17,7 @@ class SyncGroupCirclesJob extends QueuedJob {
 
 	public function __construct(
 		ITimeFactory $time,
-		private SyncService $syncService,
+		private readonly SyncService $syncService,
 	) {
 		parent::__construct($time);
 	}

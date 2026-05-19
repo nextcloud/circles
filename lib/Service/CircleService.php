@@ -67,39 +67,8 @@ class CircleService {
 	public const CACHE_GET_CIRCLES = 'circles/getCircles';
 	public const CACHE_GET_CIRCLES_TTL = 300;
 
-
-	/** @var IL10N */
-	private $l10n;
-
-	/** @var IHasher */
-	private $hasher;
-
 	/** @var ICache $cache */
 	private $cache;
-
-	/** @var CircleRequest */
-	private $circleRequest;
-
-	/** @var MemberRequest */
-	private $memberRequest;
-
-	/** @var RemoteStreamService */
-	private $remoteStreamService;
-
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var FederatedEventService */
-	private $federatedEventService;
-
-	/** @var MemberService */
-	private $memberService;
-
-	/** @var PermissionService */
-	private $permissionService;
-
-	/** @var ConfigService */
-	private $configService;
 
 
 	/**
@@ -115,30 +84,20 @@ class CircleService {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IL10N $l10n,
-		IHasher $hasher,
+		private IL10N $l10n,
+		private IHasher $hasher,
 		ICacheFactory $cacheFactory,
-		CircleRequest $circleRequest,
-		MemberRequest $memberRequest,
-		RemoteStreamService $remoteStreamService,
-		FederatedUserService $federatedUserService,
-		FederatedEventService $federatedEventService,
-		MemberService $memberService,
-		PermissionService $permissionService,
-		ConfigService $configService,
+		private CircleRequest $circleRequest,
+		private MemberRequest $memberRequest,
+		private RemoteStreamService $remoteStreamService,
+		private FederatedUserService $federatedUserService,
+		private FederatedEventService $federatedEventService,
+		private MemberService $memberService,
+		private PermissionService $permissionService,
+		private ConfigService $configService,
 		private readonly IEventDispatcher $eventDispatcher,
 	) {
-		$this->l10n = $l10n;
-		$this->hasher = $hasher;
 		$this->cache = $cacheFactory->createDistributed(self::CACHE_GET_CIRCLES);
-		$this->circleRequest = $circleRequest;
-		$this->memberRequest = $memberRequest;
-		$this->remoteStreamService = $remoteStreamService;
-		$this->federatedUserService = $federatedUserService;
-		$this->federatedEventService = $federatedEventService;
-		$this->memberService = $memberService;
-		$this->permissionService = $permissionService;
-		$this->configService = $configService;
 
 		$this->setup('app', Application::APP_ID);
 	}
@@ -541,7 +500,7 @@ class CircleService {
 				}
 
 				return $this->deserializeList($cachedData, Circle::class);
-			} catch (InvalidItemException $e) {
+			} catch (InvalidItemException) {
 			}
 		}
 
@@ -592,7 +551,7 @@ class CircleService {
 				if ($stored->getSingleId() === $circle->getSingleId()) {
 					throw new CircleNotFoundException();
 				}
-			} catch (CircleNotFoundException $e) {
+			} catch (CircleNotFoundException) {
 				$circle->setDisplayName($testDisplayName);
 
 				return;
@@ -626,7 +585,7 @@ class CircleService {
 				if ($stored->getSingleId() === $circle->getSingleId()) {
 					throw new CircleNotFoundException();
 				}
-			} catch (CircleNotFoundException $e) {
+			} catch (CircleNotFoundException) {
 				$circle->setSanitizedName($testSanitizedName);
 
 				return;
@@ -702,7 +661,7 @@ class CircleService {
 	public function cleanCircleName(string $name): string {
 		$name = preg_replace('/\s+/', ' ', $name);
 
-		return trim($name);
+		return trim((string)$name);
 	}
 
 

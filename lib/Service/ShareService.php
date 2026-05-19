@@ -20,22 +20,16 @@ use OCA\Circles\Model\Federated\FederatedEvent;
  * @package OCA\Circles\Service
  */
 class ShareService {
-	/** @var FederatedEventService */
-	private $federatedEventService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	/**
 	 * ShareService constructor.
 	 *
 	 * @param FederatedEventService $federatedEventService
 	 * @param ConfigService $configService
 	 */
-	public function __construct(FederatedEventService $federatedEventService, ConfigService $configService) {
-		$this->federatedEventService = $federatedEventService;
-		$this->configService = $configService;
+	public function __construct(
+		private readonly FederatedEventService $federatedEventService,
+		private readonly ConfigService $configService,
+	) {
 	}
 
 

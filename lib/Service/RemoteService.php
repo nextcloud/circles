@@ -40,22 +40,6 @@ use OCA\Circles\Tools\Model\SimpleDataStore;
  * @package OCA\Circles\Service
  */
 class RemoteService extends NCSignature {
-	/** @var CircleRequest */
-	private $circleRequest;
-
-	/** @var MemberRequest */
-	private $memberRequest;
-
-	/** @var RemoteStreamService */
-	private $remoteStreamService;
-
-	/** @var MembershipService */
-	private $membershipService;
-
-	/** @var ShareService */
-	private $shareService;
-
-
 	/**
 	 * RemoteService constructor.
 	 *
@@ -66,16 +50,13 @@ class RemoteService extends NCSignature {
 	 * @param ShareService $shareService
 	 */
 	public function __construct(
-		CircleRequest $circleRequest, MemberRequest $memberRequest, RemoteStreamService $remoteStreamService,
-		MembershipService $membershipService, ShareService $shareService,
+		private readonly CircleRequest $circleRequest,
+		private readonly MemberRequest $memberRequest,
+		private readonly RemoteStreamService $remoteStreamService,
+		private readonly MembershipService $membershipService,
+		private readonly ShareService $shareService,
 	) {
 		$this->setup('app', 'circles');
-
-		$this->circleRequest = $circleRequest;
-		$this->memberRequest = $memberRequest;
-		$this->remoteStreamService = $remoteStreamService;
-		$this->membershipService = $membershipService;
-		$this->shareService = $shareService;
 	}
 
 
@@ -105,7 +86,7 @@ class RemoteService extends NCSignature {
 				$circle = new Circle();
 				$circle->import($item);
 				$circles[] = $circle;
-			} catch (InvalidItemException $e) {
+			} catch (InvalidItemException) {
 			}
 		}
 
@@ -175,7 +156,7 @@ class RemoteService extends NCSignature {
 				$member = new Member();
 				$member->import($item);
 				$members[] = $member;
-			} catch (InvalidItemException $e) {
+			} catch (InvalidItemException) {
 			}
 		}
 
@@ -210,7 +191,7 @@ class RemoteService extends NCSignature {
 				$member = new Member();
 				$member->import($item);
 				$members[] = $member;
-			} catch (InvalidItemException $e) {
+			} catch (InvalidItemException) {
 			}
 		}
 
@@ -245,7 +226,7 @@ class RemoteService extends NCSignature {
 				$member = new Membership();
 				$member->import($item);
 				$members[] = $member;
-			} catch (InvalidItemException $e) {
+			} catch (InvalidItemException) {
 			}
 		}
 
@@ -344,7 +325,7 @@ class RemoteService extends NCSignature {
 		foreach ($members as $member) {
 			try {
 				$this->memberRequest->insertOrUpdate($member);
-			} catch (InvalidIdException $e) {
+			} catch (InvalidIdException) {
 			}
 		}
 
@@ -386,7 +367,7 @@ class RemoteService extends NCSignature {
 		$federatedUser = new FederatedUser();
 		try {
 			$federatedUser->import($result);
-		} catch (InvalidItemException $e) {
+		} catch (InvalidItemException) {
 			throw new FederatedUserException('incorrect federated user returned from instance');
 		}
 		if ($federatedUser->getInstance() !== $instance) {

@@ -1,5 +1,15 @@
 {
+    "autoload-dev": {
+        "psr-4": {
+            "OCP\\": "vendor/nextcloud/ocp/OCP/",
+            "NCU\\": "vendor/nextcloud/ocp/NCU/"
+        },
+		"classmap": [
+			"../../tests/stubs"
+		]
+	},
     "require-dev": {
-        "nextcloud/rector": "^0.4.1"
+        "nextcloud/rector": "^0.5.1",
+        "nextcloud/ocp": "dev-master"
     }
 }

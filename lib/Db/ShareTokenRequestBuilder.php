@@ -80,7 +80,7 @@ class ShareTokenRequestBuilder extends CoreRequestBuilder {
 		/** @var ShareToken $shareToken */
 		try {
 			$shareToken = $qb->asItem(ShareToken::class);
-		} catch (RowNotFoundException $e) {
+		} catch (RowNotFoundException) {
 			throw new ShareTokenNotFoundException();
 		}
 

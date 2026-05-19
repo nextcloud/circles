@@ -50,22 +50,6 @@ class CircleLeave implements
 	use TNCLogger;
 
 
-	/** @var MemberRequest */
-	private $memberRequest;
-
-	/** @var CircleRequest */
-	private $circleRequest;
-
-	/** @var MembershipService */
-	private $membershipService;
-
-	/** @var EventService */
-	private $eventService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	/**
 	 * CircleLeave constructor.
 	 *
@@ -76,18 +60,12 @@ class CircleLeave implements
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		MemberRequest $memberRequest,
-		CircleRequest $circleRequest,
-		MembershipService $membershipService,
-		EventService $eventService,
-		ConfigService $configService,
+		private MemberRequest $memberRequest,
+		private CircleRequest $circleRequest,
+		private MembershipService $membershipService,
+		private EventService $eventService,
+		private ConfigService $configService,
 	) {
-		$this->memberRequest = $memberRequest;
-		$this->circleRequest = $circleRequest;
-		$this->membershipService = $membershipService;
-		$this->eventService = $eventService;
-		$this->configService = $configService;
-
 		$this->setup('app', Application::APP_ID);
 	}
 
@@ -107,7 +85,7 @@ class CircleLeave implements
 				try {
 					$newOwner = $this->selectNewOwner($circle);
 					$event->getData()->s('newOwnerId', $newOwner->getId());
-				} catch (MemberNotFoundException $e) {
+				} catch (MemberNotFoundException) {
 					$event->getData()->sBool('destroyCircle', true);
 				}
 			}
@@ -122,7 +100,7 @@ class CircleLeave implements
 					$member->getSingleId(),
 					$probe
 				);
-			} catch (MemberNotFoundException $e) {
+			} catch (MemberNotFoundException) {
 				throw new MemberNotFoundException(StatusCode::$CIRCLE_LEAVE[120], 120);
 			}
 		}
@@ -140,7 +118,7 @@ class CircleLeave implements
 		try {
 			$outcome = $this->circleRequest->getCircle($circle->getSingleId(), $initiator);
 			$event->setOutcome($this->serialize($outcome));
-		} catch (CircleNotFoundException $e) {
+		} catch (CircleNotFoundException) {
 			// if member have no visibility on the circle after leaving it, we don't fill outcome
 		}
 	}

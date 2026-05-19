@@ -42,30 +42,12 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Command
  */
 class MembersDetails extends Base {
-	/** @var MemberRequest */
-	private $memberRequest;
-
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var MemberService */
-	private $memberService;
-
-
-	/**
-	 * MembersDetails constructor.
-	 *
-	 * @param MemberRequest $memberRequest
-	 * @param FederatedUserService $federatedUserService
-	 * @param MemberService $memberService
-	 */
 	public function __construct(
-		MemberRequest $memberRequest, FederatedUserService $federatedUserService, MemberService $memberService,
+		private readonly MemberRequest $memberRequest,
+		private readonly FederatedUserService $federatedUserService,
+		private readonly MemberService $memberService,
 	) {
 		parent::__construct();
-		$this->memberRequest = $memberRequest;
-		$this->federatedUserService = $federatedUserService;
-		$this->memberService = $memberService;
 	}
 
 

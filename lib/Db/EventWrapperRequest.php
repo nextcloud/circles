@@ -13,6 +13,7 @@ namespace OCA\Circles\Db;
 
 use OCA\Circles\Model\Federated\EventWrapper;
 use OCP\DB\Exception;
+use OCP\Server;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -47,7 +48,7 @@ class EventWrapperRequest extends EventWrapperRequestBuilder {
 				throw $e;
 			}
 
-			$logger = \OCP\Server::get(LoggerInterface::class);
+			$logger = Server::get(LoggerInterface::class);
 			$logger->warning('issue while storing event', ['exception' => $e]);
 		}
 	}

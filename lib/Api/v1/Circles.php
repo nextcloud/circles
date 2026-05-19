@@ -215,7 +215,7 @@ class Circles {
 			$shareWrapperService = Server::get(ShareWrapperService::class);
 
 			$federatedUserService->initCurrentUser();
-		} catch (\Exception $e) {
+		} catch (\Exception) {
 			return [];
 		}
 
@@ -224,11 +224,10 @@ class Circles {
 			try {
 				$circleService->getCircle($uniqueId); // checking current user have access to said circle
 				$files = array_map(
-					function (ShareWrapper $wrapper): int {
-						return $wrapper->getFileSource();
-					}, $shareWrapperService->getSharesToCircle($uniqueId)
+					fn (ShareWrapper $wrapper): int => $wrapper->getFileSource(),
+					$shareWrapperService->getSharesToCircle($uniqueId)
 				);
-			} catch (\Exception $e) {
+			} catch (\Exception) {
 				$files = [];
 			}
 

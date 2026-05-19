@@ -62,13 +62,6 @@ class CirclesTest extends Base {
 	];
 
 
-	/** @var CoreRequestBuilder */
-	private $coreQueryBuilder;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	/** @var InputInterface */
 	private $input;
 
@@ -90,24 +83,13 @@ class CirclesTest extends Base {
 	/** @var array */
 	private $federatedUsers = [];
 
-
-	/**
-	 * CirclesTest constructor.
-	 *
-	 * @param CoreRequestBuilder $coreRequestBuilder
-	 * @param ConfigService $configService
-	 */
-	public function __construct(CoreRequestBuilder $coreRequestBuilder, ConfigService $configService) {
+	public function __construct(
+		private CoreRequestBuilder $coreQueryBuilder,
+		private ConfigService $configService,
+	) {
 		parent::__construct();
-
-		$this->coreQueryBuilder = $coreRequestBuilder;
-		$this->configService = $configService;
 	}
 
-
-	/**
-	 *
-	 */
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:test')
@@ -193,11 +175,7 @@ class CirclesTest extends Base {
 		$circlesManager->startSession($federatedUser);
 		$circles = $circlesManager->getCircles(
 			null,
-			null,
-			[
-				'mustBeMember' => true,
-				'include' => Circle::CFG_SYSTEM | Circle::CFG_HIDDEN
-			]
+			null
 		);
 
 
@@ -223,9 +201,8 @@ class CirclesTest extends Base {
 
 
 		$members = array_map(
-			function (Member $member): string {
-				return $member->getUserId() . ' ' . $member->getSingleId() . '   - ' . $member->getUserType();
-			}, $circle->getInheritedMembers()
+			fn (Member $member): string => $member->getUserId() . ' ' . $member->getSingleId() . '   - ' . $member->getUserType(),
+			$circle->getInheritedMembers()
 		);
 
 		echo json_encode($members, JSON_PRETTY_PRINT);
@@ -309,7 +286,7 @@ class CirclesTest extends Base {
 				$this->testCirclesApp();
 			} catch (Exception $e) {
 				if ($this->pOn) {
-					$message = ($e->getMessage() !== '') ? $e->getMessage() : get_class($e);
+					$message = ($e->getMessage() !== '') ? $e->getMessage() : $e::class;
 					$this->output->writeln('<error>' . $message . '</error>');
 				} else {
 					throw $e;

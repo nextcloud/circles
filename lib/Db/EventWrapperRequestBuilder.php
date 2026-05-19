@@ -81,7 +81,7 @@ class EventWrapperRequestBuilder extends CoreRequestBuilder {
 		/** @var EventWrapper $wrapper */
 		try {
 			$wrapper = $qb->asItem(EventWrapper::class);
-		} catch (RowNotFoundException $e) {
+		} catch (RowNotFoundException) {
 			throw new EventWrapperNotFoundException();
 		}
 

@@ -60,25 +60,6 @@ class MemberService {
 	use TNCLogger;
 
 
-	/** @var CircleRequest */
-	private $circleRequest;
-
-	/** @var MemberRequest */
-	private $memberRequest;
-
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var MembershipService */
-	private $membershipService;
-
-	/** @var FederatedEventService */
-	private $federatedEventService;
-
-	/** @var RemoteStreamService */
-	private $remoteStreamService;
-
-
 	/**
 	 * MemberService constructor.
 	 *
@@ -89,21 +70,15 @@ class MemberService {
 	 * @param RemoteStreamService $remoteStreamService
 	 */
 	public function __construct(
-		CircleRequest $circleRequest,
-		MemberRequest $memberRequest,
-		FederatedUserService $federatedUserService,
-		MembershipService $membershipService,
-		FederatedEventService $federatedEventService,
-		RemoteStreamService $remoteStreamService,
+		private CircleRequest $circleRequest,
+		private MemberRequest $memberRequest,
+		private FederatedUserService $federatedUserService,
+		private MembershipService $membershipService,
+		private FederatedEventService $federatedEventService,
+		private RemoteStreamService $remoteStreamService,
 		private readonly IEventDispatcher $eventDispatcher,
 		private readonly IUserManager $userManager,
 	) {
-		$this->circleRequest = $circleRequest;
-		$this->memberRequest = $memberRequest;
-		$this->federatedUserService = $federatedUserService;
-		$this->membershipService = $membershipService;
-		$this->federatedEventService = $federatedEventService;
-		$this->remoteStreamService = $remoteStreamService;
 	}
 
 	//
@@ -270,7 +245,7 @@ class MemberService {
 
 		$this->federatedEventService->newEvent($event);
 
-		$this->eventDispatcher->dispatchTyped(new UserShareAccessUpdatedEvent(array_merge(...array_map(fn (Member $member) => $this->collectShareAccessUpdateUsers($member), array_values($members)))));
+		$this->eventDispatcher->dispatchTyped(new UserShareAccessUpdatedEvent(array_merge(...array_map($this->collectShareAccessUpdateUsers(...), array_values($members)))));
 
 		return $event->getOutcome();
 	}

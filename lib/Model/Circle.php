@@ -460,9 +460,8 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	 */
 	public function addInheritedMembers(array $members): self {
 		$knownIds = array_map(
-			function (Member $member): string {
-				return $member->getId();
-			}, $this->inheritedMembers
+			fn (Member $member): string => $member->getId(),
+			$this->inheritedMembers
 		);
 
 		foreach ($members as $member) {
@@ -798,14 +797,14 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 			/** @var Member $owner */
 			$owner = $this->deserialize($this->getArray('owner', $data), Member::class);
 			$this->setOwner($owner);
-		} catch (InvalidItemException $e) {
+		} catch (InvalidItemException) {
 		}
 
 		try {
 			/** @var Member $initiator */
 			$initiator = $this->deserialize($this->getArray('initiator', $data), Member::class);
 			$this->setInitiator($initiator);
-		} catch (InvalidItemException $e) {
+		} catch (InvalidItemException) {
 		}
 
 		return $this;
@@ -859,7 +858,7 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 			try {
 				$initiatorHelper->mustBeAdmin();
 				$arr['settings'] = $this->getSettings();
-			} catch (MemberHelperException|MemberLevelException $e) {
+			} catch (MemberHelperException|MemberLevelException) {
 			}
 		}
 
@@ -962,7 +961,7 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		$config = [];
 		foreach (array_keys(Circle::$DEF_CFG) as $def) {
 			if ($circle->isConfig($def)) {
-				[$short, $long] = explode('|', Circle::$DEF_CFG[$def]);
+				[$short, $long] = explode('|', (string)Circle::$DEF_CFG[$def]);
 				switch ($display) {
 					case self::FLAGS_SHORT:
 						$config[] = $short;

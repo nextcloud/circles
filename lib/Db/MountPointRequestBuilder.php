@@ -60,7 +60,7 @@ class MountPointRequestBuilder extends CoreRequestBuilder {
 		/** @var MountPoint $mountpoint */
 		try {
 			$mountpoint = $qb->asItem(MountPoint::class);
-		} catch (RowNotFoundException $e) {
+		} catch (RowNotFoundException) {
 			throw new MountNotFoundException('Mount not found');
 		}
 

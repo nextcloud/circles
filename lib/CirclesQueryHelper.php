@@ -28,14 +28,8 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
  * @package OCA\Circles
  */
 class CirclesQueryHelper {
-	/** @var CoreRequestBuilder */
-	private $coreRequestBuilder;
-
 	/** @var CoreQueryBuilder&IQueryBuilder */
 	private $queryBuilder;
-
-	/** @var FederatedUserService */
-	private $federatedUserService;
 
 
 	/**
@@ -45,11 +39,9 @@ class CirclesQueryHelper {
 	 * @param FederatedUserService $federatedUserService
 	 */
 	public function __construct(
-		CoreRequestBuilder $coreRequestBuilder,
-		FederatedUserService $federatedUserService,
+		private readonly CoreRequestBuilder $coreRequestBuilder,
+		private readonly FederatedUserService $federatedUserService,
 	) {
-		$this->coreRequestBuilder = $coreRequestBuilder;
-		$this->federatedUserService = $federatedUserService;
 	}
 
 

@@ -40,22 +40,11 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Command
  */
 class CirclesDestroy extends Base {
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var CircleService */
-	private $circleService;
-
-
-	/**
-	 * CirclesDestroy constructor.
-	 *
-	 * @param CircleService $circleService
-	 */
-	public function __construct(FederatedUserService $federatedUserService, CircleService $circleService) {
+	public function __construct(
+		private readonly FederatedUserService $federatedUserService,
+		private readonly CircleService $circleService,
+	) {
 		parent::__construct();
-		$this->federatedUserService = $federatedUserService;
-		$this->circleService = $circleService;
 	}
 
 
@@ -108,14 +97,14 @@ class CirclesDestroy extends Base {
 		} catch (FederatedItemException $e) {
 			if ($input->getOption('status-code')) {
 				throw new FederatedItemException(
-					' [' . get_class($e) . ', ' . ((string)$e->getStatus()) . ']' . "\n" . $e->getMessage()
+					' [' . $e::class . ', ' . ((string)$e->getStatus()) . ']' . "\n" . $e->getMessage()
 				);
 			}
 
 			throw $e;
 		}
 
-		if (strtolower($input->getOption('output')) === 'json') {
+		if (strtolower((string)$input->getOption('output')) === 'json') {
 			$output->writeln(json_encode($outcome, JSON_PRETTY_PRINT));
 		}
 

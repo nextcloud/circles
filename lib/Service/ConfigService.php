@@ -439,17 +439,11 @@ class ConfigService {
 	public function getGSInfo(string $type): string {
 		$clef = $this->config->getSystemValue('gss.jwt.key', '');
 		$mode = $this->config->getSystemValue('gss.mode', '');
-
-		switch ($type) {
-			case self::GS_MODE:
-				return $mode;
-
-			case self::GS_KEY:
-				return $clef;
-		}
-
-
-		return '';
+		return match ($type) {
+			self::GS_MODE => $mode,
+			self::GS_KEY => $clef,
+			default => '',
+		};
 	}
 
 
@@ -473,9 +467,7 @@ class ConfigService {
 	 */
 	public function getTrustedDomains(): array {
 		return array_map(
-			function (string $address) {
-				return strtolower($address);
-			}, $this->config->getSystemValue('trusted_domains', [])
+			strtolower(...), $this->config->getSystemValue('trusted_domains', [])
 		);
 	}
 
@@ -503,7 +495,7 @@ class ConfigService {
 			$cliUrl = $this->config->getSystemValue('overwrite.cli.url', '');
 		}
 
-		$loopback = parse_url($cliUrl);
+		$loopback = parse_url((string)$cliUrl);
 		if (!is_array($loopback) || !array_key_exists('host', $loopback)) {
 			return $cliUrl;
 		}
@@ -601,20 +593,14 @@ class ConfigService {
 	 * @return string
 	 */
 	public function getIfaceInstance(int $iface): string {
-		switch ($iface) {
-			case InterfaceService::IFACE0:
-				return $this->getAppValue(self::IFACE0_CLOUD_ID);
-			case InterfaceService::IFACE1:
-				return $this->getAppValue(self::IFACE1_CLOUD_ID);
-			case InterfaceService::IFACE2:
-				return $this->getAppValue(self::IFACE2_CLOUD_ID);
-			case InterfaceService::IFACE3:
-				return $this->getAppValue(self::IFACE3_CLOUD_ID);
-			case InterfaceService::IFACE4:
-				return $this->getAppValue(self::IFACE4_CLOUD_ID);
-		}
-
-		return '';
+		return match ($iface) {
+			InterfaceService::IFACE0 => $this->getAppValue(self::IFACE0_CLOUD_ID),
+			InterfaceService::IFACE1 => $this->getAppValue(self::IFACE1_CLOUD_ID),
+			InterfaceService::IFACE2 => $this->getAppValue(self::IFACE2_CLOUD_ID),
+			InterfaceService::IFACE3 => $this->getAppValue(self::IFACE3_CLOUD_ID),
+			InterfaceService::IFACE4 => $this->getAppValue(self::IFACE4_CLOUD_ID),
+			default => '',
+		};
 	}
 
 
@@ -682,15 +668,11 @@ class ConfigService {
 		if ($this->isLocalInstance($instance)) {
 			return '';
 		}
-
-		switch ($type) {
-			case self::DISPLAY_AT:
-				return '@' . $instance;
-			case self::DISPLAY_PARENTHESIS:
-				return '(' . $instance . ')';
-		}
-
-		return $instance;
+		return match ($type) {
+			self::DISPLAY_AT => '@' . $instance,
+			self::DISPLAY_PARENTHESIS => '(' . $instance . ')',
+			default => $instance,
+		};
 	}
 
 
@@ -742,7 +724,7 @@ class ConfigService {
 				$path = $this->config->getSystemValueString('htaccess.RewriteBase', '/') . substr($path, 11);
 			}
 
-			$knownPath = parse_url($this->config->getSystemValue('overwrite.cli.url'), PHP_URL_PATH);
+			$knownPath = parse_url((string)$this->config->getSystemValue('overwrite.cli.url'), PHP_URL_PATH);
 		} else {
 			$knownPath = OC::$WEBROOT;
 		}

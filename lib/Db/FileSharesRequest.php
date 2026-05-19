@@ -65,7 +65,7 @@ class FileSharesRequest extends FileSharesRequestBuilder {
 
 		$shares = [];
 		$cursor = $qb->executeQuery();
-		while ($data = $cursor->fetch()) {
+		while ($data = $cursor->fetchAssociative()) {
 			$shares[] = $data;
 		}
 		$cursor->closeCursor();
@@ -87,7 +87,7 @@ class FileSharesRequest extends FileSharesRequestBuilder {
 
 		$shares = [];
 		$cursor = $qb->executeQuery();
-		while ($data = $cursor->fetch()) {
+		while ($data = $cursor->fetchAssociative()) {
 			$shares[] = $data;
 		}
 		$cursor->closeCursor();

@@ -115,7 +115,7 @@ class NCRequestResult implements JsonSerializable {
 
 	public function withinHeader(string $key, string $needle): bool {
 		foreach ($this->getHeader($key) as $header) {
-			if (strpos($header, $needle) !== false) {
+			if (str_contains((string)$header, $needle)) {
 				return true;
 			}
 		}
@@ -220,7 +220,7 @@ class NCRequestResult implements JsonSerializable {
 
 		try {
 			$content = $this->getContent();
-		} catch (RequestContentException $e) {
+		} catch (RequestContentException) {
 			return self::TYPE_BINARY;
 		}
 
@@ -248,7 +248,7 @@ class NCRequestResult implements JsonSerializable {
 			if (is_array($arr)) {
 				$this->contentAsArray = $arr;
 			}
-		} catch (RequestContentException $e) {
+		} catch (RequestContentException) {
 		}
 	}
 
@@ -286,7 +286,7 @@ class NCRequestResult implements JsonSerializable {
 	public function jsonSerialize(): array {
 		try {
 			$content = $this->getContent();
-		} catch (RequestContentException $e) {
+		} catch (RequestContentException) {
 			$content = 'not a string';
 		}
 

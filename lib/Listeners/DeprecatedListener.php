@@ -40,19 +40,6 @@ use OCP\IUser;
  * @package OCA\Circles\Events
  */
 class DeprecatedListener {
-	/** @var CircleRequest */
-	private $circleRequest;
-
-	/** @var FederatedEventService */
-	private $federatedEventService;
-
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var CircleService */
-	private $circleService;
-
-
 	/**
 	 * DeprecatedListener constructor.
 	 *
@@ -62,15 +49,11 @@ class DeprecatedListener {
 	 * @param CircleService $circleService
 	 */
 	public function __construct(
-		CircleRequest $circleRequest,
-		FederatedUserService $federatedUserService,
-		FederatedEventService $federatedEventService,
-		CircleService $circleService,
+		private readonly CircleRequest $circleRequest,
+		private readonly FederatedUserService $federatedUserService,
+		private readonly FederatedEventService $federatedEventService,
+		private readonly CircleService $circleService,
 	) {
-		$this->circleRequest = $circleRequest;
-		$this->federatedUserService = $federatedUserService;
-		$this->federatedEventService = $federatedEventService;
-		$this->circleService = $circleService;
 	}
 
 
@@ -110,7 +93,7 @@ class DeprecatedListener {
 
 			try {
 				$this->federatedEventService->newEvent($event);
-			} catch (Exception $e) {
+			} catch (Exception) {
 			}
 		}
 	}

@@ -344,14 +344,14 @@ class FederatedUser extends ManagedModel implements
 			/** @var Circle $circle */
 			$circle = $this->deserialize($this->getArray('basedOn', $data), Circle::class);
 			$this->setBasedOn($circle);
-		} catch (InvalidItemException $e) {
+		} catch (InvalidItemException) {
 		}
 
 		try {
 			/** @var Membership $membership */
 			$membership = $this->deserialize($this->getArray('membership', $data), Membership::class);
 			$this->setInheritance($membership);
-		} catch (InvalidItemException $e) {
+		} catch (InvalidItemException) {
 		}
 
 		return $this;

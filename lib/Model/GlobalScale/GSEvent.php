@@ -47,10 +47,6 @@ class GSEvent implements JsonSerializable {
 
 	use TArrayTools;
 
-
-	/** @var string */
-	private $type = '';
-
 	/** @var string */
 	private $source = '';
 
@@ -76,12 +72,6 @@ class GSEvent implements JsonSerializable {
 	private $key = '';
 
 	/** @var bool */
-	private $local = false;
-
-	/** @var bool */
-	private $force = false;
-
-	/** @var bool */
 	private $async = false;
 
 	/** @var bool */
@@ -95,10 +85,11 @@ class GSEvent implements JsonSerializable {
 	 * @param bool $local
 	 * @param bool $force
 	 */
-	public function __construct(string $type = '', bool $local = false, bool $force = false) {
-		$this->type = $type;
-		$this->local = $local;
-		$this->force = $force;
+	public function __construct(
+		private string $type = '',
+		private bool $local = false,
+		private bool $force = false,
+	) {
 		$this->data = new SimpleDataStore();
 		$this->result = new SimpleDataStore();
 	}
@@ -373,11 +364,7 @@ class GSEvent implements JsonSerializable {
 		return true;
 	}
 
-
 	/**
-	 * @param string $json
-	 *
-	 * @return GSEvent
 	 * @throws JsonException
 	 * @throws ModelException
 	 */
@@ -389,7 +376,6 @@ class GSEvent implements JsonSerializable {
 
 		return $this->import($data);
 	}
-
 
 	/**
 	 * @param array $data

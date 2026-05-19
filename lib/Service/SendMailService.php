@@ -31,22 +31,6 @@ class SendMailService {
 	use TStringTools;
 
 
-	/** @var IL10N */
-	private $l10n;
-
-	/** @var IHasher */
-	private $hasher;
-
-	/** @var IMailer */
-	private $mailer;
-
-	/** @var Defaults */
-	private $defaults;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	/**
 	 * SendMailService constructor.
 	 *
@@ -56,18 +40,13 @@ class SendMailService {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IL10N $l10n,
-		IHasher $hasher,
-		IMailer $mailer,
-		Defaults $defaults,
-		ConfigService $configService,
+		private IL10N $l10n,
+		private IHasher $hasher,
+		private IMailer $mailer,
+		private Defaults $defaults,
+		private ConfigService $configService,
 		private IManager $shareManager,
 	) {
-		$this->l10n = $l10n;
-		$this->hasher = $hasher;
-		$this->mailer = $mailer;
-		$this->defaults = $defaults;
-		$this->configService = $configService;
 	}
 
 
@@ -121,7 +100,7 @@ class SendMailService {
 		foreach ($mails as $mail) {
 			try {
 				$this->sendMailExistingShares($template, $author, $mail, sizeof($links) > 1);
-			} catch (Exception $e) {
+			} catch (Exception) {
 			}
 
 			$this->sendMailPassword($circle, $author, $mail, $password);
@@ -162,7 +141,7 @@ class SendMailService {
 	private function fillMailExistingShares(IEMailTemplate $emailTemplate, array $links) {
 		foreach ($links as $item) {
 			$emailTemplate->addBodyButton(
-				$this->l10n->t('Open »%s«', [htmlspecialchars($item['filename'])]), $item['link']
+				$this->l10n->t('Open »%s«', [htmlspecialchars((string)$item['filename'])]), $item['link']
 			);
 		}
 	}
@@ -261,7 +240,7 @@ class SendMailService {
 				$instanceName,
 			]
 		);
-		$message->setFrom([\OCP\Util::getDefaultEmailAddress('noreply') => $senderName]);
+		$message->setFrom([Util::getDefaultEmailAddress('noreply') => $senderName]);
 
 		// The "Reply-To" is set to the sharer if an mail address is configured
 		// also the default footer contains a "Do not reply" which needs to be adjusted.

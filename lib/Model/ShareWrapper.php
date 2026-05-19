@@ -540,19 +540,19 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		try {
 			$owner = new Member();
 			$this->setOwner($owner->import($this->getArray('owner', $data)));
-		} catch (InvalidItemException $e) {
+		} catch (InvalidItemException) {
 		}
 
 		try {
 			$member = new Member();
 			$this->setInitiator($member->import($this->getArray('viewer', $data)));
-		} catch (InvalidItemException $e) {
+		} catch (InvalidItemException) {
 		}
 
 		try {
 			$shareToken = new ShareToken();
 			$this->setShareToken($shareToken->import($this->getArray('shareToken', $data)));
-		} catch (InvalidItemException $e) {
+		} catch (InvalidItemException) {
 		}
 
 		return $this;

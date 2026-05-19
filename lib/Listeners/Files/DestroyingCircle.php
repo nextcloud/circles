@@ -26,18 +26,14 @@ class DestroyingCircle implements IEventListener {
 	use TNCLogger;
 
 
-	/** @var ShareWrapperService */
-	private $shareWrapperService;
-
-
 	/**
 	 * AddingMember constructor.
 	 *
 	 * @param ShareWrapperService $shareWrapperService
 	 */
-	public function __construct(ShareWrapperService $shareWrapperService) {
-		$this->shareWrapperService = $shareWrapperService;
-
+	public function __construct(
+		private ShareWrapperService $shareWrapperService,
+	) {
 		$this->setup('app', Application::APP_ID);
 	}
 

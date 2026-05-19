@@ -40,8 +40,8 @@ use OCP\EventDispatcher\IEventDispatcher;
 
 class EventService {
 	public function __construct(
-		private IEventDispatcher $eventDispatcher,
-		private ActivityService $activityService,
+		private readonly IEventDispatcher $eventDispatcher,
+		private readonly ActivityService $activityService,
 	) {
 	}
 

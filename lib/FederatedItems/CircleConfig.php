@@ -33,16 +33,6 @@ class CircleConfig implements
 	use TDeserialize;
 
 
-	/** @var CircleRequest */
-	private $circleRequest;
-
-	/** @var PermissionService */
-	private $permissionService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	/**
 	 * CircleConfig constructor.
 	 *
@@ -51,13 +41,10 @@ class CircleConfig implements
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		CircleRequest $circleRequest,
-		PermissionService $permissionService,
-		ConfigService $configService,
+		private CircleRequest $circleRequest,
+		private PermissionService $permissionService,
+		private ConfigService $configService,
 	) {
-		$this->circleRequest = $circleRequest;
-		$this->permissionService = $permissionService;
-		$this->configService = $configService;
 	}
 
 

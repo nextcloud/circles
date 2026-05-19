@@ -24,13 +24,9 @@ use OCP\EventDispatcher\IEventListener;
 class ExampleRequestingCircleMember implements IEventListener {
 	use TNCLogger;
 
-
-	/** @var ConfigService */
-	private $configService;
-
-	public function __construct(ConfigService $configService) {
-		$this->configService = $configService;
-
+	public function __construct(
+		private ConfigService $configService,
+	) {
 		$this->setup('app', Application::APP_ID);
 	}
 

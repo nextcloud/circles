@@ -35,10 +35,6 @@ class FederatedEvent implements JsonSerializable {
 
 	use TArrayTools;
 
-
-	/** @var string */
-	private $class;
-
 	/** @var string */
 	private $origin = '';
 
@@ -102,8 +98,9 @@ class FederatedEvent implements JsonSerializable {
 	 *
 	 * @param string $class
 	 */
-	public function __construct(string $class = '') {
-		$this->class = $class;
+	public function __construct(
+		private string $class = '',
+	) {
 		$this->params = new SimpleDataStore();
 		$this->internal = new SimpleDataStore();
 		$this->data = new SimpleDataStore();
@@ -584,7 +581,7 @@ class FederatedEvent implements JsonSerializable {
 			$circle = new Circle();
 			$circle->import($this->getArray('circle', $data));
 			$this->setCircle($circle);
-		} catch (InvalidItemException $e) {
+		} catch (InvalidItemException) {
 		}
 
 		if (array_key_exists('member', $data)) {

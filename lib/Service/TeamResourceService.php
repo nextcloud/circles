@@ -14,9 +14,9 @@ use Psr\Log\LoggerInterface;
 class TeamResourceService {
 	
 	public function __construct(
-		private FileSharingTeamResourceProvider $resourceProvider,
-		private IURLGenerator $urlGenerator,
-		private LoggerInterface $logger,
+		private readonly FileSharingTeamResourceProvider $resourceProvider,
+		private readonly IURLGenerator $urlGenerator,
+		private readonly LoggerInterface $logger,
 	) {
 	}
 

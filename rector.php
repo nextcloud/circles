@@ -17,6 +17,7 @@ return RectorConfig::configure()
 		__DIR__ . '/tests/unit',
 	])
 	->withImportNames(importShortClasses: false)
+	->withPhpSets(php82: true)
 	->withSets([
-		NextcloudSets::NEXTCLOUD_25,
+		NextcloudSets::NEXTCLOUD_34,
 	]);

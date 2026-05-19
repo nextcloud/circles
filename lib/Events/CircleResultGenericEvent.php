@@ -23,12 +23,6 @@ use OCP\EventDispatcher\Event;
  * @package OCA\Circles\Events
  */
 class CircleResultGenericEvent extends Event {
-	/** @var FederatedEvent */
-	private $federatedEvent;
-
-	/** @var SimpleDataStore[] */
-	private $results;
-
 	/** @var Circle */
 	private $circle;
 
@@ -42,15 +36,15 @@ class CircleResultGenericEvent extends Event {
 	 * @param FederatedEvent $federatedEvent
 	 * @param SimpleDataStore[] $results
 	 */
-	public function __construct(FederatedEvent $federatedEvent, array $results) {
+	public function __construct(
+		private readonly FederatedEvent $federatedEvent,
+		private readonly array $results,
+	) {
 		parent::__construct();
 
-		$this->federatedEvent = $federatedEvent;
-		$this->results = $results;
-
-		$this->circle = $federatedEvent->getCircle();
-		if ($federatedEvent->hasMember()) {
-			$this->member = $federatedEvent->getMember();
+		$this->circle = $this->federatedEvent->getCircle();
+		if ($this->federatedEvent->hasMember()) {
+			$this->member = $this->federatedEvent->getMember();
 		}
 	}
 

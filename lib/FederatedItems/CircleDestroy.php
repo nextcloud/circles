@@ -42,19 +42,6 @@ class CircleDestroy implements
 	use TDeserialize;
 
 
-	/** @var CircleRequest */
-	private $circleRequest;
-
-	/** @var MemberRequest */
-	private $memberRequest;
-
-
-	private $eventService;
-
-	/** @var MembershipService */
-	private $membershipService;
-
-
 	/**
 	 * CircleDestroy constructor.
 	 *
@@ -64,13 +51,11 @@ class CircleDestroy implements
 	 * @param MembershipService $membershipService
 	 */
 	public function __construct(
-		CircleRequest $circleRequest, MemberRequest $memberRequest, EventService $eventService,
-		MembershipService $membershipService,
+		private CircleRequest $circleRequest,
+		private MemberRequest $memberRequest,
+		private EventService $eventService,
+		private MembershipService $membershipService,
 	) {
-		$this->circleRequest = $circleRequest;
-		$this->memberRequest = $memberRequest;
-		$this->eventService = $eventService;
-		$this->membershipService = $membershipService;
 	}
 
 

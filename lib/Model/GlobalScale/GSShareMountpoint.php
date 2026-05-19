@@ -23,16 +23,6 @@ class GSShareMountpoint implements JsonSerializable {
 	use TArrayTools;
 
 
-	/** @var int */
-	private $shareId = 0;
-
-	/** @var string */
-	private $userId = '';
-
-	/** @var string */
-	private $mountPoint = '';
-
-
 	/**
 	 * GSShareMountpoint constructor.
 	 *
@@ -40,10 +30,11 @@ class GSShareMountpoint implements JsonSerializable {
 	 * @param string $userId
 	 * @param string $mountPoint
 	 */
-	public function __construct(int $shareId = 0, string $userId = '', string $mountPoint = '') {
-		$this->shareId = $shareId;
-		$this->userId = $userId;
-		$this->mountPoint = $mountPoint;
+	public function __construct(
+		private int $shareId = 0,
+		private string $userId = '',
+		private string $mountPoint = '',
+	) {
 	}
 
 

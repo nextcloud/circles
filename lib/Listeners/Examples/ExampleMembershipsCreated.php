@@ -28,20 +28,10 @@ class ExampleMembershipsCreated implements IEventListener {
 	use TStringTools;
 	use TNCLogger;
 
-
-	/** @var CirclesManager */
-	private $circlesManager;
-
-	/** @var ConfigService */
-	private $configService;
-
 	public function __construct(
-		CirclesManager $circlesManager,
-		ConfigService $configService,
+		private CirclesManager $circlesManager,
+		private ConfigService $configService,
 	) {
-		$this->circlesManager = $circlesManager;
-		$this->configService = $configService;
-
 		$this->setup('app', Application::APP_ID);
 	}
 

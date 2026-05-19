@@ -433,7 +433,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 					$alias, CoreRequestBuilder::TABLE_REMOTE, $aliasRemoteInstance,
 					$expr->eq($alias . '.instance', $aliasRemoteInstance . '.instance')
 				);
-		} catch (RequestBuilderException $e) {
+		} catch (RequestBuilderException) {
 		}
 	}
 
@@ -777,7 +777,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 
 		try {
 			$aliasInvitedBy = $this->generateAlias($aliasMember, self::INVITED_BY);
-		} catch (RequestBuilderException $e) {
+		} catch (RequestBuilderException) {
 			return;
 		}
 
@@ -808,7 +808,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 
 		try {
 			$aliasBasedOn = $this->generateAlias($aliasMember, self::BASED_ON, $options);
-		} catch (RequestBuilderException $e) {
+		} catch (RequestBuilderException) {
 			return;
 		}
 
@@ -840,7 +840,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		try {
 			$aliasMember = $this->generateAlias($alias, self::OWNER, $options);
 			$getData = $this->getBool('getData', $options, false);
-		} catch (RequestBuilderException $e) {
+		} catch (RequestBuilderException) {
 			return;
 		}
 
@@ -877,7 +877,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 
 		try {
 			$aliasMembership = $this->generateAlias($alias, self::MEMBERSHIPS);
-		} catch (RequestBuilderException $e) {
+		} catch (RequestBuilderException) {
 			return;
 		}
 
@@ -915,7 +915,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		try {
 			$aliasMember = $this->generateAlias($alias, self::MEMBER, $options);
 			$getData = $this->getBool('getData', $options, false);
-		} catch (RequestBuilderException $e) {
+		} catch (RequestBuilderException) {
 			return;
 		}
 
@@ -1153,7 +1153,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 				$aliasConfig,
 				$expr->eq($alias . '.circle_id', $aliasConfig . '.unique_id')
 			);
-		} catch (RequestBuilderException $e) {
+		} catch (RequestBuilderException) {
 		}
 	}
 
@@ -1199,7 +1199,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			try {
 				$aliasDirectInitiator = $this->generateAlias($alias, self::DIRECT_INITIATOR, $options);
 				$listMembershipCircleAlias[] = $aliasDirectInitiator;
-			} catch (RequestBuilderException $e) {
+			} catch (RequestBuilderException) {
 				// meaning that this path does not require DIRECT_INITIATOR; can be safely ignored
 			}
 		}
@@ -1207,12 +1207,10 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		try {
 			$aliasMembershipCircle = $this->generateAlias($aliasMembership, self::CONFIG, $options);
 			$orXMembershipCircle = $expr->orX(...array_map(
-				function (string $alias) use ($aliasMembershipCircle) {
-					return $this->expr()->eq(
-						$alias . '.circle_id',
-						$aliasMembershipCircle . '.unique_id'
-					);
-				},
+				fn (string $alias) => $this->expr()->eq(
+					$alias . '.circle_id',
+					$aliasMembershipCircle . '.unique_id'
+				),
 				$listMembershipCircleAlias
 			));
 
@@ -1222,7 +1220,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 				$aliasMembershipCircle,
 				$orXMembershipCircle
 			);
-		} catch (RequestBuilderException $e) {
+		} catch (RequestBuilderException) {
 			// meaning that this path (ie. self::$SQL_PATH) does not require CONFIG; can be safely ignored
 		}
 
@@ -1244,7 +1242,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 							$expr->eq($aliasDirectInitiator . '.circle_id', $helperAlias . '.' . $field)
 						)
 					);
-			} catch (RequestBuilderException $e) {
+			} catch (RequestBuilderException) {
 				// meaning that this path does not require DIRECT_INITIATOR; can be safely ignored
 			}
 		}
@@ -1283,7 +1281,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			$this->generateMemberSelectAlias($aliasInitiator, $default)
 				->generateMemberSelectAlias($aliasInheritedBy)
 				->generateMembershipSelectAlias($aliasMembership, $aliasInheritedByMembership);
-		} catch (RequestBuilderException $e) {
+		} catch (RequestBuilderException) {
 		}
 	}
 
@@ -1299,7 +1297,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 
 		try {
 			$aliasInitiator = $this->generateAlias($alias, self::INITIATOR);
-		} catch (RequestBuilderException $e) {
+		} catch (RequestBuilderException) {
 			return null;
 		}
 
@@ -1353,12 +1351,10 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 
 		$minimumLevel = $this->getInt('minimumLevel', $options);
 		$orXLevelCheck = $expr->orX(...array_map(
-			function (string $alias) use ($minimumLevel) {
-				return $this->expr()->gte(
-					$alias . '.level',
-					$this->createNamedParameter($minimumLevel, self::PARAM_INT)
-				);
-			},
+			fn (string $alias) => $this->expr()->gte(
+				$alias . '.level',
+				$this->createNamedParameter($minimumLevel, self::PARAM_INT)
+			),
 			$levelCheck
 		));
 		$andXMember = [$orXLevelCheck];

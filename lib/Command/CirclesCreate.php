@@ -35,26 +35,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CirclesCreate extends Base {
 	use TDeserialize;
 
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var CircleService */
-	private $circleService;
-
-
-	/**
-	 * CirclesCreate constructor.
-	 *
-	 * @param FederatedUserService $federatedUserService
-	 * @param CircleService $circleService
-	 */
 	public function __construct(
-		FederatedUserService $federatedUserService,
-		CircleService $circleService,
+		private FederatedUserService $federatedUserService,
+		private CircleService $circleService,
 	) {
 		parent::__construct();
-		$this->federatedUserService = $federatedUserService;
-		$this->circleService = $circleService;
 	}
 
 
@@ -104,16 +89,16 @@ class CirclesCreate extends Base {
 		} catch (FederatedItemException $e) {
 			if ($input->getOption('status-code')) {
 				throw new FederatedItemException(
-					' [' . get_class($e) . ', ' . ((string)$e->getStatus()) . ']' . "\n" . $e->getMessage()
+					' [' . $e::class . ', ' . ((string)$e->getStatus()) . ']' . "\n" . $e->getMessage()
 				);
 			}
 
 			throw $e;
 		}
 
-		if (strtolower($input->getOption('output')) === 'json') {
+		if (strtolower((string)$input->getOption('output')) === 'json') {
 			$output->writeln(json_encode($outcome, JSON_PRETTY_PRINT));
-		} elseif (strtolower($input->getOption('output')) !== 'none') {
+		} elseif (strtolower((string)$input->getOption('output')) !== 'none') {
 			/** @var Circle $circle */
 			$circle = $this->deserialize($outcome, Circle::class);
 			$output->writeln('Id: <info>' . $circle->getSingleId() . '</info>');

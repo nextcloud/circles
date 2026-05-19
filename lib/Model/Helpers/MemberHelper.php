@@ -35,17 +35,14 @@ class MemberHelper {
 	use TArrayTools;
 
 
-	/** @var Member */
-	private $member;
-
-
 	/**
 	 * Member constructor.
 	 *
 	 * @param Member $member
 	 */
-	public function __construct(Member $member) {
-		$this->member = $member;
+	public function __construct(
+		private Member $member,
+	) {
 	}
 
 
@@ -57,12 +54,12 @@ class MemberHelper {
 	 * @throws MemberLevelException
 	 */
 	public function __call(string $name, array $arguments): void {
-		if (substr(strtolower($name), 0, 8) === 'cannotbe') {
+		if (str_starts_with(strtolower($name), 'cannotbe')) {
 			$this->cannotBe(substr($name, 8), $arguments);
 
 			return;
 		}
-		if (substr(strtolower($name), 0, 6) === 'mustbe') {
+		if (str_starts_with(strtolower($name), 'mustbe')) {
 			$this->mustBe(substr($name, 6), $arguments);
 
 			return;
@@ -82,7 +79,7 @@ class MemberHelper {
 	private function mustBe(string $levelString, array $arguments): void {
 		try {
 			$level = Member::parseLevelString($levelString);
-		} catch (ParseMemberLevelException $e) {
+		} catch (ParseMemberLevelException) {
 			throw new MemberHelperException('method ' . $levelString . ' not found');
 		}
 
@@ -100,7 +97,7 @@ class MemberHelper {
 	private function cannotBe(string $levelString, array $arguments): void {
 		try {
 			$level = Member::parseLevelString($levelString);
-		} catch (ParseMemberLevelException $e) {
+		} catch (ParseMemberLevelException) {
 			throw new MemberHelperException('method ' . $levelString . ' not found');
 		}
 

@@ -40,16 +40,6 @@ class FileUnshare implements
 	use TNCLogger;
 
 
-	/** @var MountRequest */
-	private $mountRequest;
-
-	/** @var EventService */
-	private $eventService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	/**
 	 * FileUnshare constructor.
 	 *
@@ -58,13 +48,10 @@ class FileUnshare implements
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		MountRequest $mountRequest,
-		EventService $eventService,
-		ConfigService $configService,
+		private MountRequest $mountRequest,
+		private EventService $eventService,
+		private ConfigService $configService,
 	) {
-		$this->mountRequest = $mountRequest;
-		$this->eventService = $eventService;
-		$this->configService = $configService;
 	}
 
 

@@ -35,35 +35,13 @@ class PreparingMemberSendMail implements IEventListener {
 	use TStringTools;
 	use TNCLogger;
 
-
-	/** @var ShareWrapperService */
-	private $shareWrapperService;
-
-	/** @var ShareTokenService */
-	private $shareTokenService;
-
-	/** @var SendMailService */
-	private $sendMailService;
-
-	/** @var ConfigService */
-	private $configService;
-
-	/** @var ContactService */
-	private $contactService;
-
 	public function __construct(
-		ShareWrapperService $shareWrapperService,
-		ShareTokenService $shareTokenService,
-		SendMailService $sendMailService,
-		ContactService $contactService,
-		ConfigService $configService,
+		private ShareWrapperService $shareWrapperService,
+		private ShareTokenService $shareTokenService,
+		private SendMailService $sendMailService,
+		private ContactService $contactService,
+		private ConfigService $configService,
 	) {
-		$this->shareWrapperService = $shareWrapperService;
-		$this->shareTokenService = $shareTokenService;
-		$this->sendMailService = $sendMailService;
-		$this->contactService = $contactService;
-		$this->configService = $configService;
-
 		$this->setup('app', Application::APP_ID);
 	}
 

@@ -77,7 +77,7 @@ class CircleCreate implements
 		try {
 			$this->circleRequest->getCircle($circle->getSingleId());
 			throw new FederatedEventDSyncException('Circle already exist');
-		} catch (CircleNotFoundException $e) {
+		} catch (CircleNotFoundException) {
 		}
 
 		$this->circleService->confirmName($circle);
@@ -85,7 +85,7 @@ class CircleCreate implements
 		try {
 			$this->memberRequest->getMemberById($owner->getId());
 			throw new FederatedEventDSyncException('Owner already exist');
-		} catch (MemberNotFoundException $e) {
+		} catch (MemberNotFoundException) {
 		}
 
 		if ($owner->hasInvitedBy()) {

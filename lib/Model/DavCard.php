@@ -319,13 +319,13 @@ class DavCard implements JsonSerializable {
 
 		$data = preg_split('/\R/', $dav);
 		foreach ($data as $entry) {
-			if (trim($entry) === '' || strpos($entry, ':') === false) {
+			if (trim($entry) === '' || !str_contains($entry, ':')) {
 				continue;
 			}
 			[$k, $v] = explode(':', $entry, 2);
 
 			$k = strtoupper($k);
-			if (strpos($entry, ';') !== false) {
+			if (str_contains($entry, ';')) {
 				[$k] = explode(';', $entry, 2);
 			}
 
@@ -348,7 +348,7 @@ class DavCard implements JsonSerializable {
 					break;
 
 				case 'CATEGORIES':
-					if (strpos($v, ',') === false) {
+					if (!str_contains($v, ',')) {
 						$result['CATEGORIES'] = [$v];
 					} else {
 						$result['CATEGORIES'] = explode(',', $v);

@@ -23,12 +23,12 @@ use Psr\Container\ContainerInterface;
 
 class Capabilities implements ICapability {
 	public function __construct(
-		private IL10N $l10n,
-		private IAppManager $appManager,
-		private InterfaceService $interfaceService,
-		private ConfigService $configService,
-		private Coordinator $coordinator,
-		private ContainerInterface $container,
+		private readonly IL10N $l10n,
+		private readonly IAppManager $appManager,
+		private readonly InterfaceService $interfaceService,
+		private readonly ConfigService $configService,
+		private readonly Coordinator $coordinator,
+		private readonly ContainerInterface $container,
 	) {
 	}
 

@@ -62,55 +62,21 @@ class MembersList extends Base {
 	use TStringTools;
 
 
-	/** @var MemberRequest */
-	private $memberRequest;
-
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var RemoteService */
-	private $remoteService;
-
-	/** @var CircleService */
-	private $circleService;
-
-	/** @var MemberService */
-	private $memberService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	/** @var InputInterface */
 	private $input;
 
 	/** @var string */
 	private $treeType = '';
 
-
-	/**
-	 * MembersList constructor.
-	 *
-	 * @param MemberRequest $memberRequest
-	 * @param FederatedUserService $federatedUserService
-	 * @param RemoteService $remoteService
-	 * @param CircleService $circleService
-	 * @param MemberService $memberService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
-		MemberRequest $memberRequest, FederatedUserService $federatedUserService,
-		RemoteService $remoteService, CircleService $circleService, MemberService $memberService,
-		ConfigService $configService,
+		private MemberRequest $memberRequest,
+		private FederatedUserService $federatedUserService,
+		private RemoteService $remoteService,
+		private CircleService $circleService,
+		private MemberService $memberService,
+		private ConfigService $configService,
 	) {
 		parent::__construct();
-
-		$this->memberRequest = $memberRequest;
-		$this->federatedUserService = $federatedUserService;
-		$this->remoteService = $remoteService;
-		$this->circleService = $circleService;
-		$this->memberService = $memberService;
-		$this->configService = $configService;
 	}
 
 
@@ -162,7 +128,7 @@ class MembersList extends Base {
 
 		$tree = null;
 		if ($input->getOption('tree') !== false) {
-			$this->treeType = (is_null($input->getOption('tree'))) ? 'all' : $input->getOption('tree');
+			$this->treeType = $input->getOption('tree') ?? 'all';
 
 			$this->federatedUserService->commandLineInitiator($initiator, $initiatorType, $circleId, true);
 			$circle = $this->circleService->getCircle($circleId);
@@ -188,7 +154,7 @@ class MembersList extends Base {
 
 		if (!is_null($tree)) {
 			$this->drawTree(
-				$tree, [$this, 'displayLeaf'],
+				$tree, $this->displayLeaf(...),
 				[
 					'height' => 3,
 					'node-spacing' => 1,
@@ -199,7 +165,7 @@ class MembersList extends Base {
 			return 0;
 		}
 
-		if (strtolower($input->getOption('output')) === 'json') {
+		if (strtolower((string)$input->getOption('output')) === 'json') {
 			$output->writeln(json_encode($members, JSON_PRETTY_PRINT));
 
 			return 0;
@@ -303,7 +269,7 @@ class MembersList extends Base {
 
 			try {
 				$members = $this->remoteService->getMembersFromInstance($circleId, $instance, $data);
-			} catch (RemoteInstanceException $e) {
+			} catch (RemoteInstanceException) {
 				return [];
 			}
 		} else {
@@ -328,7 +294,7 @@ class MembersList extends Base {
 							$circle = $this->remoteService->getCircleFromInstance(
 								$member->getSingleId(), $member->getInstance(), $data
 							);
-						} catch (CircleNotFoundException|RemoteInstanceException $e) {
+						} catch (CircleNotFoundException|RemoteInstanceException) {
 						}
 					} else {
 						$this->federatedUserService->commandLineInitiator(
@@ -395,7 +361,7 @@ class MembersList extends Base {
 				try {
 					$circle = $data->gObj('circle', Circle::class);
 					/** @var Circle $circle */
-				} catch (Exception $e) {
+				} catch (Exception) {
 				}
 			}
 
@@ -446,7 +412,7 @@ class MembersList extends Base {
 			}
 
 			return $line;
-		} catch (InvalidItemException|ItemNotFoundException|UnknownTypeException $e) {
+		} catch (InvalidItemException|ItemNotFoundException|UnknownTypeException) {
 		}
 
 		return '';

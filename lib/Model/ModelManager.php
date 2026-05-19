@@ -49,18 +49,6 @@ use OCP\IURLGenerator;
 class ModelManager {
 	use TNCLogger;
 
-
-	private IURLGenerator $urlGenerator;
-	private IAppManager $appManager;
-	private CoreQueryBuilder $coreRequestBuilder;
-	private CircleRequest $circleRequest;
-	private MemberRequest $memberRequest;
-	private MembershipRequest $membershipRequest;
-	private InterfaceService $interfaceService;
-	private MembershipService $membershipService;
-	private RemoteService $remoteService;
-	private ConfigService $configService;
-
 	private bool $fullDetails = false;
 	private bool $pathLinkGenerated = false;
 	private string $pathLinkGeneration = '';
@@ -80,28 +68,17 @@ class ModelManager {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IURLGenerator $urlGenerator,
-		IAppManager $appManager,
-		CoreQueryBuilder $coreRequestBuilder,
-		CircleRequest $circleRequest,
-		MemberRequest $memberRequest,
-		MembershipRequest $membershipRequest,
-		InterfaceService $interfaceService,
-		MembershipService $membershipService,
-		RemoteService $remoteService,
-		ConfigService $configService,
+		private IURLGenerator $urlGenerator,
+		private IAppManager $appManager,
+		private CoreQueryBuilder $coreRequestBuilder,
+		private CircleRequest $circleRequest,
+		private MemberRequest $memberRequest,
+		private MembershipRequest $membershipRequest,
+		private InterfaceService $interfaceService,
+		private MembershipService $membershipService,
+		private RemoteService $remoteService,
+		private ConfigService $configService,
 	) {
-		$this->urlGenerator = $urlGenerator;
-		$this->appManager = $appManager;
-		$this->coreRequestBuilder = $coreRequestBuilder;
-		$this->circleRequest = $circleRequest;
-		$this->memberRequest = $memberRequest;
-		$this->membershipRequest = $membershipRequest;
-		$this->interfaceService = $interfaceService;
-		$this->membershipService = $membershipService;
-		$this->remoteService = $remoteService;
-		$this->configService = $configService;
-
 		$this->setup('app', Application::APP_ID);
 	}
 
@@ -120,7 +97,7 @@ class ModelManager {
 	public function getMembers(Circle $circle, int $limit = 0): void {
 		try {
 			$circle->setMembers($this->memberRequest->getMembers($circle->getSingleId(), limit: $limit));
-		} catch (RequestBuilderException $e) {
+		} catch (RequestBuilderException) {
 			// TODO: debug log
 		}
 	}
@@ -136,7 +113,7 @@ class ModelManager {
 				$this->memberRequest->getInheritedMembers($circle->getSingleId(), $detailed),
 				$detailed
 			);
-		} catch (RequestBuilderException $e) {
+		} catch (RequestBuilderException) {
 			// TODO: debug log
 		}
 	}
@@ -159,7 +136,7 @@ class ModelManager {
 				&& !$this->configService->isLocalInstance($inherited->getInstance())) {
 				try {
 					$this->circleRequest->getCircle($inherited->getSingleId());
-				} catch (CircleNotFoundException $e) {
+				} catch (CircleNotFoundException) {
 					$remote = $this->remoteService->getInheritedFromInstance(
 						$inherited->getSingleId(),
 						$inherited->getInstance()
@@ -267,7 +244,7 @@ class ModelManager {
 					$owner = new Member();
 					$owner->importFromDatabase($data, $prefix);
 					$circle->setOwner($owner);
-				} catch (MemberNotFoundException $e) {
+				} catch (MemberNotFoundException) {
 				}
 				break;
 
@@ -276,7 +253,7 @@ class ModelManager {
 					$initiator = new Member();
 					$initiator->importFromDatabase($data, $prefix);
 					$circle->setInitiator($initiator);
-				} catch (MemberNotFoundException $e) {
+				} catch (MemberNotFoundException) {
 				}
 				break;
 
@@ -285,7 +262,7 @@ class ModelManager {
 					$directInitiator = new Member();
 					$directInitiator->importFromDatabase($data, $prefix);
 					$circle->setDirectInitiator($directInitiator);
-				} catch (MemberNotFoundException $e) {
+				} catch (MemberNotFoundException) {
 				}
 				break;
 		}
@@ -305,7 +282,7 @@ class ModelManager {
 					$circle = new Circle();
 					$circle->importFromDatabase($data, $prefix);
 					$member->setCircle($circle);
-				} catch (CircleNotFoundException $e) {
+				} catch (CircleNotFoundException) {
 				}
 				break;
 
@@ -314,7 +291,7 @@ class ModelManager {
 					$circle = new Circle();
 					$circle->importFromDatabase($data, $prefix);
 					$member->setBasedOn($circle);
-				} catch (CircleNotFoundException $e) {
+				} catch (CircleNotFoundException) {
 				}
 				break;
 
@@ -323,7 +300,7 @@ class ModelManager {
 					$inheritedBy = new FederatedUser();
 					$inheritedBy->importFromDatabase($data, $prefix);
 					$member->setInheritedBy($inheritedBy);
-				} catch (FederatedUserNotFoundException $e) {
+				} catch (FederatedUserNotFoundException) {
 				}
 				break;
 
@@ -334,7 +311,7 @@ class ModelManager {
 					$invitedBy = new FederatedUser();
 					$invitedBy->importFromCircle($invitedByCircle);
 					$member->setInvitedBy($invitedBy);
-				} catch (CircleNotFoundException|OwnerNotFoundException $e) {
+				} catch (CircleNotFoundException|OwnerNotFoundException) {
 				}
 				break;
 
@@ -343,7 +320,7 @@ class ModelManager {
 					$inheritanceFrom = new Member();
 					$inheritanceFrom->importFromDatabase($data, $prefix);
 					$member->setInheritanceFrom($inheritanceFrom);
-				} catch (MemberNotFoundException $e) {
+				} catch (MemberNotFoundException) {
 				}
 				break;
 
@@ -352,7 +329,7 @@ class ModelManager {
 					$remoteInstance = new RemoteInstance();
 					$remoteInstance->importFromDatabase($data, $prefix);
 					$member->setRemoteInstance($remoteInstance);
-				} catch (RemoteNotFoundException $e) {
+				} catch (RemoteNotFoundException) {
 				}
 				break;
 		}
@@ -377,7 +354,7 @@ class ModelManager {
 					$membership = new Membership();
 					$membership->importFromDatabase($data, $prefix);
 					$federatedUser->setInheritance($membership);
-				} catch (MembershipNotFoundException $e) {
+				} catch (MembershipNotFoundException) {
 				}
 				break;
 		}
@@ -402,7 +379,7 @@ class ModelManager {
 					$circle = new Circle();
 					$circle->importFromDatabase($data, $prefix);
 					$shareWrapper->setCircle($circle);
-				} catch (CircleNotFoundException $e) {
+				} catch (CircleNotFoundException) {
 				}
 				break;
 
@@ -411,7 +388,7 @@ class ModelManager {
 					$initiator = new Member();
 					$initiator->importFromDatabase($data, $prefix);
 					$shareWrapper->setInitiator($initiator);
-				} catch (MemberNotFoundException $e) {
+				} catch (MemberNotFoundException) {
 				}
 				break;
 
@@ -420,7 +397,7 @@ class ModelManager {
 					$inheritedBy = new Member();
 					$inheritedBy->importFromDatabase($data, $prefix);
 					$shareWrapper->setInitiator($inheritedBy);
-				} catch (MemberNotFoundException $e) {
+				} catch (MemberNotFoundException) {
 				}
 				break;
 
@@ -429,7 +406,7 @@ class ModelManager {
 					$fileCache = new FileCacheWrapper();
 					$fileCache->importFromDatabase($data, $prefix);
 					$shareWrapper->setFileCache($fileCache);
-				} catch (FileCacheNotFoundException $e) {
+				} catch (FileCacheNotFoundException) {
 				}
 				break;
 
@@ -438,7 +415,7 @@ class ModelManager {
 					$token = new ShareToken();
 					$token->importFromDatabase($data, $prefix);
 					$shareWrapper->setShareToken($token);
-				} catch (ShareTokenNotFoundException $e) {
+				} catch (ShareTokenNotFoundException) {
 				}
 				break;
 		}

@@ -37,33 +37,12 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Command
  */
 class MembersAdd extends Base {
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var MemberService */
-	private $memberService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
-	/**
-	 * MembersAdd constructor.
-	 *
-	 * @param FederatedUserService $federatedUserService
-	 * @param MemberService $memberService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
-		FederatedUserService $federatedUserService,
-		MemberService $memberService,
-		ConfigService $configService,
+		private readonly FederatedUserService $federatedUserService,
+		private readonly MemberService $memberService,
+		private readonly ConfigService $configService,
 	) {
 		parent::__construct();
-
-		$this->federatedUserService = $federatedUserService;
-		$this->memberService = $memberService;
-		$this->configService = $configService;
 	}
 
 
@@ -109,14 +88,14 @@ class MembersAdd extends Base {
 		} catch (FederatedItemException $e) {
 			if ($input->getOption('status-code')) {
 				throw new FederatedItemException(
-					' [' . get_class($e) . ', ' . ((string)$e->getStatus()) . ']' . "\n" . $e->getMessage()
+					' [' . $e::class . ', ' . ((string)$e->getStatus()) . ']' . "\n" . $e->getMessage()
 				);
 			}
 
 			throw $e;
 		}
 
-		if (strtolower($input->getOption('output')) === 'json') {
+		if (strtolower((string)$input->getOption('output')) === 'json') {
 			$output->writeln(json_encode($outcome, JSON_PRETTY_PRINT));
 		}
 
@@ -136,7 +115,7 @@ class MembersAdd extends Base {
 		/** @var string $lookup */
 		try {
 			$lookup = $this->configService->getGSLookup();
-		} catch (GSStatusException $e) {
+		} catch (GSStatusException) {
 			return '';
 		}
 
@@ -152,7 +131,7 @@ class MembersAdd extends Base {
 			RequestNetworkException|
 			RequestResultSizeException|
 			RequestServerException|
-			RequestResultNotJsonException $e
+			RequestResultNotJsonException
 		) {
 			return '';
 		}
@@ -163,8 +142,8 @@ class MembersAdd extends Base {
 				continue;
 			}
 
-			[, $host] = explode('@', $user['federationId']);
-			if (strtolower($user['userid']['value']) === strtolower($search)) {
+			[, $host] = explode('@', (string)$user['federationId']);
+			if (strtolower((string)$user['userid']['value']) === strtolower($search)) {
 				$userId = $user['userid']['value'];
 				$instance = $host;
 			}

@@ -35,23 +35,14 @@ class SearchService {
 	];
 
 
-	/** @var IURLGenerator */
-	private $urlGenerator;
-
-	/** @var CircleService */
-	private $circleService;
-
-
 	/**
 	 * @param IURLGenerator $urlGenerator
 	 * @param CircleService $circleService
 	 */
 	public function __construct(
-		IURLGenerator $urlGenerator,
-		CircleService $circleService,
+		private IURLGenerator $urlGenerator,
+		private CircleService $circleService,
 	) {
-		$this->urlGenerator = $urlGenerator;
-		$this->circleService = $circleService;
 	}
 
 
@@ -87,7 +78,7 @@ class SearchService {
 
 		try {
 			$circles = $this->circleService->getCircles($probe);
-		} catch (InitiatorNotFoundException $e) {
+		} catch (InitiatorNotFoundException) {
 			return [];
 		}
 

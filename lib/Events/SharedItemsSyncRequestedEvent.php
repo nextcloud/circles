@@ -22,9 +22,6 @@ use OCP\EventDispatcher\Event;
  * @package OCA\Circles\Events
  */
 class SharedItemsSyncRequestedEvent extends Event {
-	/** @var FederatedEvent */
-	private $federatedEvent;
-
 	/** @var Circle */
 	private $circle;
 
@@ -38,11 +35,11 @@ class SharedItemsSyncRequestedEvent extends Event {
 	 *
 	 * @param FederatedEvent $federatedEvent
 	 */
-	public function __construct(FederatedEvent $federatedEvent) {
+	public function __construct(
+		private readonly FederatedEvent $federatedEvent,
+	) {
 		parent::__construct();
-
-		$this->federatedEvent = $federatedEvent;
-		$this->circle = $federatedEvent->getCircle();
+		$this->circle = $this->federatedEvent->getCircle();
 	}
 
 

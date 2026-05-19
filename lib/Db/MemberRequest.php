@@ -91,7 +91,7 @@ class MemberRequest extends MemberRequestBuilder {
 		try {
 			$this->searchMember($member);
 			$this->update($member);
-		} catch (MemberNotFoundException $e) {
+		} catch (MemberNotFoundException) {
 			$this->save($member);
 		}
 	}
@@ -354,9 +354,8 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->andwhere($qb->expr()->nonEmptyString(CoreQueryBuilder::MEMBER . '.instance'));
 
 		return array_map(
-			function (Member $member): string {
-				return $member->getInstance();
-			}, $this->getItemsFromRequest($qb)
+			fn (Member $member): string => $member->getInstance(),
+			$this->getItemsFromRequest($qb)
 		);
 	}
 

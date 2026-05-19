@@ -34,13 +34,13 @@ use Symfony\Component\Console\Question\Question;
  */
 class CirclesMaintenance extends Base {
 	public function __construct(
-		private FederatedUserService $federatedUserService,
-		private CoreRequestBuilder $coreRequestBuilder,
-		private MaintenanceService $maintenanceService,
-		private OutputService $outputService,
-		private IDBConnection $dbConnection,
-		private LoggerInterface $logger,
-		private IAppManager $appManager,
+		private readonly FederatedUserService $federatedUserService,
+		private readonly CoreRequestBuilder $coreRequestBuilder,
+		private readonly MaintenanceService $maintenanceService,
+		private readonly OutputService $outputService,
+		private readonly IDBConnection $dbConnection,
+		private readonly LoggerInterface $logger,
+		private readonly IAppManager $appManager,
 	) {
 		parent::__construct();
 	}
@@ -129,7 +129,7 @@ class CirclesMaintenance extends Base {
 			/** @var QuestionHelper $helper */
 			$helper = $this->getHelper('question');
 			$confirmation = $helper->ask($input, $output, $question);
-			if (strtolower($confirmation) !== $action) {
+			if (strtolower((string)$confirmation) !== $action) {
 				$output->writeln('aborted.');
 
 				return 0;
@@ -184,11 +184,11 @@ class CirclesMaintenance extends Base {
 		$qb->select('uid')->from('user_saml_users');
 
 		$cursor = $qb->executeQuery();
-		while ($row = $cursor->fetch()) {
+		while ($row = $cursor->fetchAssociative()) {
 			try {
 				$this->refreshSingleDisplayName($row['uid'], $output);
 			} catch (Exception $e) {
-				$output->writeln(get_class($e) . ' while trying to update display name of ' . $row['uid']);
+				$output->writeln($e::class . ' while trying to update display name of ' . $row['uid']);
 			}
 		}
 	}
@@ -201,7 +201,7 @@ class CirclesMaintenance extends Base {
 			try {
 				$this->refreshSingleDisplayName($user['name'], $output);
 			} catch (Exception $e) {
-				$output->writeln(get_class($e) . ' while trying to update display name of ' . $user['name']);
+				$output->writeln($e::class . ' while trying to update display name of ' . $user['name']);
 			}
 		}
 	}

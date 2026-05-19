@@ -192,7 +192,7 @@ class SingleMemberAdd implements
 					$member->getUserType()
 				);
 			}
-		} catch (MemberNotFoundException $e) {
+		} catch (MemberNotFoundException) {
 			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[120], 120);
 		}
 
@@ -294,7 +294,7 @@ class SingleMemberAdd implements
 			}
 
 			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[122], 122);
-		} catch (MemberNotFoundException $e) {
+		} catch (MemberNotFoundException) {
 			$member->setId($this->token(ManagedModel::ID_LENGTH));
 
 			if ($circle->isConfig(Circle::CFG_INVITE)

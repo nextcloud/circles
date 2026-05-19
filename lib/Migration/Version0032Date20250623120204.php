@@ -24,7 +24,7 @@ use Psr\Log\LoggerInterface;
 #[AddColumn('circles_mount', 'remote_id', ColumnType::INTEGER, 'store remote share id for quicker identification')]
 class Version0032Date20250623120204 extends SimpleMigrationStep {
 	public function __construct(
-		private LoggerInterface $logger,
+		private readonly LoggerInterface $logger,
 	) {
 	}
 

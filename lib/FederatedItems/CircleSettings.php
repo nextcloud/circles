@@ -25,17 +25,14 @@ class CircleSettings implements IFederatedItem {
 	use TDeserialize;
 
 
-	/** @var CircleRequest */
-	private $circleRequest;
-
-
 	/**
 	 * CircleSettings constructor.
 	 *
 	 * @param CircleRequest $circleRequest
 	 */
-	public function __construct(CircleRequest $circleRequest) {
-		$this->circleRequest = $circleRequest;
+	public function __construct(
+		private CircleRequest $circleRequest,
+	) {
 	}
 
 

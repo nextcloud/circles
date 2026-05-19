@@ -157,7 +157,7 @@ class MiscService {
 			$contact = $cm->search($contactId, ['UID']);
 
 			$entries = array_shift($contact);
-		} catch (Exception $e) {
+		} catch (Exception) {
 		}
 
 		if (key_exists('FN', $entries) && $entries['FN'] !== '') {
@@ -232,11 +232,11 @@ class MiscService {
 	 *
 	 */
 	public static function getContactData($ident) {
-		if (!class_exists(ContactsManager::class) || !strpos($ident, ':')) {
+		if (!class_exists(ContactsManager::class) || !strpos((string)$ident, ':')) {
 			return [];
 		}
 
-		[$userId, $contactId] = explode(':', $ident);
+		[$userId, $contactId] = explode(':', (string)$ident);
 
 		try {
 			/** @var ContactsManager $cManager */
@@ -248,7 +248,7 @@ class MiscService {
 			$contact = $cm->search($contactId, ['UID']);
 
 			return array_shift($contact);
-		} catch (Exception $e) {
+		} catch (Exception) {
 		}
 
 		return [];
@@ -358,7 +358,7 @@ class MiscService {
 		for ($i = 0; $i <= $length; $i++) {
 			try {
 				$str .= $chars[random_int(0, $max)];
-			} catch (Exception $e) {
+			} catch (Exception) {
 			}
 		}
 

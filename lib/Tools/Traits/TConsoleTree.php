@@ -81,7 +81,7 @@ trait TConsoleTree {
 			if ($p < $prec) {
 				for ($i = 0; $i < $config['node-spacing']; $i++) {
 					$spacing = substr($empty, 0, -3);
-					if (substr($spacing, -1) === ' ') {
+					if (str_ends_with($spacing, ' ')) {
 						$spacing = substr($spacing, 0, -1) . '│';
 					}
 					$output->writeln($spacing);

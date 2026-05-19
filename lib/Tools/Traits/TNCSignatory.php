@@ -100,7 +100,7 @@ trait TNCSignatory {
 				$this->debug('invalid format', ['signatory' => $signatory, 'keyId' => $keyId]);
 				throw new SignatoryException('invalid format');
 			}
-		} catch (InvalidOriginException $e) {
+		} catch (InvalidOriginException) {
 			throw new SignatoryException('invalid origin');
 		}
 	}
@@ -149,12 +149,7 @@ trait TNCSignatory {
 		$signatory->setPrivateKey($privateKey);
 	}
 
-
 	/**
-	 * @param string $clear
-	 * @param NCSignatory $signatory
-	 *
-	 * @return string
 	 * @throws SignatoryException
 	 */
 	public function signString(string $clear, NCSignatory $signatory): string {
@@ -168,13 +163,7 @@ trait TNCSignatory {
 		return base64_encode($signed);
 	}
 
-
 	/**
-	 * @param string $clear
-	 * @param string $signed
-	 * @param string $publicKey
-	 * @param string $algo
-	 *
 	 * @throws SignatureException
 	 */
 	public function verifyString(

@@ -27,29 +27,16 @@ class UnifiedSearchProvider implements IProvider {
 	public const ORDER = 9;
 
 
-	/** @var IL10N */
-	private $l10n;
-
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var SearchService */
-	private $searchService;
-
-
 	/**
 	 * @param IL10N $l10n
 	 * @param FederatedUserService $federatedUserService
 	 * @param SearchService $searchService
 	 */
 	public function __construct(
-		IL10N $l10n,
-		FederatedUserService $federatedUserService,
-		SearchService $searchService,
+		private readonly IL10N $l10n,
+		private readonly FederatedUserService $federatedUserService,
+		private readonly SearchService $searchService,
 	) {
-		$this->l10n = $l10n;
-		$this->federatedUserService = $federatedUserService;
-		$this->searchService = $searchService;
 	}
 
 
@@ -94,7 +81,7 @@ class UnifiedSearchProvider implements IProvider {
 		try {
 			$this->federatedUserService->setLocalCurrentUser($user);
 			$result = $this->searchService->unifiedSearch($term, $options);
-		} catch (Exception $e) {
+		} catch (Exception) {
 		}
 
 		return SearchResult::paginated(
@@ -119,7 +106,7 @@ class UnifiedSearchProvider implements IProvider {
 			if (strtolower(substr($word, 0, 3)) === 'is:') {
 				try {
 					$options['level'] = Member::parseLevelString(substr($word, 3));
-				} catch (ParseMemberLevelException $e) {
+				} catch (ParseMemberLevelException) {
 				}
 			} else {
 				$new[] = $word;

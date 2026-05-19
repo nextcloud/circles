@@ -19,17 +19,14 @@ use OCP\User\Events\UserCreatedEvent;
 
 /** @template-implements IEventListener<UserCreatedEvent|Event> */
 class UserCreated implements IEventListener {
-	/** @var SyncService */
-	private $syncService;
-
-
 	/**
 	 * UserCreated constructor.
 	 *
 	 * @param SyncService $syncService
 	 */
-	public function __construct(SyncService $syncService) {
-		$this->syncService = $syncService;
+	public function __construct(
+		private readonly SyncService $syncService,
+	) {
 	}
 
 
@@ -45,7 +42,7 @@ class UserCreated implements IEventListener {
 
 		try {
 			$this->syncService->syncNextcloudUser($user->getUID());
-		} catch (Exception $e) {
+		} catch (Exception) {
 		}
 	}
 }

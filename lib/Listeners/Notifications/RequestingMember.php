@@ -19,7 +19,7 @@ use OCP\EventDispatcher\IEventListener;
 /** @template-implements IEventListener<RequestingCircleMemberEvent|AddingCircleMemberEvent|Event> */
 class RequestingMember implements IEventListener {
 	public function __construct(
-		private NotificationService $notificationService,
+		private readonly NotificationService $notificationService,
 	) {
 	}
 

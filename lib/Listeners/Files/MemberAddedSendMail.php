@@ -28,20 +28,10 @@ class MemberAddedSendMail implements IEventListener {
 	use TStringTools;
 	use TNCLogger;
 
-
-	/** @var ShareWrapperService */
-	private $shareWrapperService;
-
-	/** @var SendMailService */
-	private $sendMailService;
-
 	public function __construct(
-		ShareWrapperService $shareWrapperService,
-		SendMailService $sendMailService,
+		private ShareWrapperService $shareWrapperService,
+		private SendMailService $sendMailService,
 	) {
-		$this->sendMailService = $sendMailService;
-		$this->shareWrapperService = $shareWrapperService;
-
 		$this->setup('app', Application::APP_ID);
 	}
 

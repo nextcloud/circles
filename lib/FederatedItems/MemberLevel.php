@@ -40,19 +40,6 @@ class MemberLevel implements
 	use TDeserialize;
 
 
-	/** @var MemberRequest */
-	private $memberRequest;
-
-	/** @var MembershipService */
-	private $membershipService;
-
-	/** @var EventService */
-	private $eventService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	/**
 	 * MemberAdd constructor.
 	 *
@@ -62,15 +49,11 @@ class MemberLevel implements
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		MemberRequest $memberRequest,
-		MembershipService $membershipService,
-		EventService $eventService,
-		ConfigService $configService,
+		private MemberRequest $memberRequest,
+		private MembershipService $membershipService,
+		private EventService $eventService,
+		private ConfigService $configService,
 	) {
-		$this->memberRequest = $memberRequest;
-		$this->membershipService = $membershipService;
-		$this->eventService = $eventService;
-		$this->configService = $configService;
 	}
 
 

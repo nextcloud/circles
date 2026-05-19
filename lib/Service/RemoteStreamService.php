@@ -62,19 +62,6 @@ class RemoteStreamService extends NCSignature {
 	public const UPDATE_HREF = 'href';
 
 
-	/** @var IURLGenerator */
-	private $urlGenerator;
-
-	/** @var RemoteRequest */
-	private $remoteRequest;
-
-	/** @var InterfaceService */
-	private $interfaceService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	/**
 	 * RemoteStreamService constructor.
 	 *
@@ -85,17 +72,12 @@ class RemoteStreamService extends NCSignature {
 	 */
 	public function __construct(
 		private readonly IConfig $config,
-		IURLGenerator $urlGenerator,
-		RemoteRequest $remoteRequest,
-		InterfaceService $interfaceService,
-		ConfigService $configService,
+		private IURLGenerator $urlGenerator,
+		private RemoteRequest $remoteRequest,
+		private InterfaceService $interfaceService,
+		private ConfigService $configService,
 	) {
 		$this->setup('app', 'circles');
-
-		$this->urlGenerator = $urlGenerator;
-		$this->remoteRequest = $remoteRequest;
-		$this->interfaceService = $interfaceService;
-		$this->configService = $configService;
 	}
 
 
@@ -177,7 +159,7 @@ class RemoteStreamService extends NCSignature {
 			$app = $this->getAppSignatory();
 
 			$this->removeSimpleSignatory($app);
-		} catch (SignatoryException $e) {
+		} catch (SignatoryException) {
 		}
 	}
 
@@ -355,7 +337,7 @@ class RemoteStreamService extends NCSignature {
 		if (!$refresh) {
 			try {
 				return $this->remoteRequest->getFromHref(NCSignatory::removeFragment($keyId));
-			} catch (RemoteNotFoundException $e) {
+			} catch (RemoteNotFoundException) {
 				throw new SignatoryException();
 			}
 		}
@@ -416,7 +398,7 @@ class RemoteStreamService extends NCSignature {
 			} else {
 				throw new RemoteAlreadyExistsException('instance is already known');
 			}
-		} catch (RemoteNotFoundException $e) {
+		} catch (RemoteNotFoundException) {
 		}
 
 		$this->remoteRequest->save($remoteInstance);
@@ -502,7 +484,7 @@ class RemoteStreamService extends NCSignature {
 			$test = new ReflectionClass($class);
 			$this->confirmFederatedItemExceptionFromClass($test);
 			$e = $class;
-		} catch (ReflectionException|FederatedItemException $_e) {
+		} catch (ReflectionException|FederatedItemException) {
 			$e = $this->getFederatedItemExceptionFromStatus($result->getStatusCode());
 		}
 
@@ -559,7 +541,7 @@ class RemoteStreamService extends NCSignature {
 	public function confirmValidRemote(RemoteInstance $remote, ?RemoteInstance &$stored = null): void {
 		try {
 			$stored = $this->remoteRequest->getFromHref($remote->getId());
-		} catch (RemoteNotFoundException $e) {
+		} catch (RemoteNotFoundException) {
 			if ($remote->getInstance() === '') {
 				throw new RemoteNotFoundException();
 			}
