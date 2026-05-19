@@ -24,7 +24,6 @@ use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\FederatedItems\CircleEdit;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
-use OCA\Circles\Tools\Model\SimpleDataStore;
 use OCP\Files\IAppData;
 use OCP\Files\NotFoundException;
 use OCP\Files\NotPermittedException;
@@ -50,17 +49,17 @@ class AvatarService {
 	 * @throws \RuntimeException
 	 */
 	public function getAvatar(string $circleId): ?ISimpleFile {
-		$circle = $this->circleService->getCircle($circleId);
-		$fileName = $circle->getAvatar();
-
-		if ($fileName === '') {
-			return null;
-		}
+		// throws CircleNotFoundException if requesting user is not member
+		$this->circleService->getCircle($circleId);
 
 		try {
 			$folder = $this->appData->getFolder('circle-avatar');
 			if ($folder->fileExists($circleId)) {
-				return $folder->getFolder($circleId)->getFile($fileName);
+				foreach ($folder->getFolder($circleId)->getDirectoryListing() as $file) {
+					if (str_starts_with($file->getName(), 'circle-avatar')) {
+						return $file;
+					}
+				}
 			}
 		} catch (NotFoundException $e) {
 		}
@@ -89,11 +88,10 @@ class AvatarService {
 		$initiatorHelper = new MemberHelper($circle->getInitiator());
 		$initiatorHelper->mustBeAdmin();
 
-		$avatarFileName = $this->setAvatar($circleId, $file);
+		$this->setAvatar($circleId, $file);
 
 		$event = new FederatedEvent(CircleEdit::class);
 		$event->setCircle($circle);
-		$event->setParams(new SimpleDataStore(['avatar' => $avatarFileName]));
 
 		$this->federatedEventService->newEvent($event);
 
@@ -124,7 +122,6 @@ class AvatarService {
 
 		$event = new FederatedEvent(CircleEdit::class);
 		$event->setCircle($circle);
-		$event->setParams(new SimpleDataStore(['avatar' => '']));
 
 		$this->federatedEventService->newEvent($event);
 
@@ -171,7 +168,7 @@ class AvatarService {
 			$file->delete();
 		}
 
-		$avatarFileName = $this->random->generate(16, ISecureRandom::CHAR_HUMAN_READABLE);
+		$avatarFileName = 'circle-avatar';
 		if ($mimeType === 'image/jpeg') {
 			$avatarFileName .= '.jpg';
 		} else {

@@ -51,24 +51,6 @@ class LocalController extends OCSController {
 	use TDeserialize;
 	use TNCLogger;
 
-	/** @var ConfigService */
-	protected $configService;
-
-
-	/**
-	 * LocalController constructor.
-	 *
-	 * @param string $appName
-	 * @param IRequest $request
-	 * @param IUserSession $userSession
-	 * @param FederatedUserService $federatedUserService
-	 * @param CircleService $circleService
-	 * @param MemberService $memberService
-	 * @param MembershipService $membershipService
-	 * @param SearchService $searchService
-	 * @param AvatarService $avatarService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
 		string $appName,
 		IRequest $request,
@@ -80,11 +62,9 @@ class LocalController extends OCSController {
 		private PermissionService $permissionService,
 		private SearchService $searchService,
 		private AvatarService $avatarService,
-		ConfigService $configService,
+		private ConfigService $configService,
 	) {
 		parent::__construct($appName, $request);
-		$this->configService = $configService;
-
 		$this->setup('app', 'circles');
 	}
 
@@ -619,8 +599,6 @@ class LocalController extends OCSController {
 
 
 	/**
-	 * @NoAdminRequired
-	 *
 	 * @param string $circleId
 	 * @param string $singleId
 	 *

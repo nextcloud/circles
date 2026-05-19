@@ -55,8 +55,7 @@ class LocalControllerTest extends TestCase {
 	/** @var SearchService|MockObject */
 	private $searchService;
 
-	/** @var AvatarService */
-	private $avatarService;
+	private AvatarService $avatarService;
 
 	/** @var PermissionService|MockObject */
 	private $permissionService;
