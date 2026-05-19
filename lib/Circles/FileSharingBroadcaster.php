@@ -655,7 +655,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 	}
 
 	/**
-	 * @param array{uid_initiator:string,file_target:string} $share
+	 * @param array{uid_initiator:string,file_target:string,id:int} $share
 	 *
 	 * @throws TokenDoesNotExistException
 	 */

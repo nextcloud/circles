@@ -71,7 +71,7 @@ class ProviderParser {
 		foreach ($ak as $k) {
 			$subAk = array_keys($data[$k]);
 			foreach ($subAk as $sK) {
-				if (str_starts_with((string)$sK, '_')) {
+				if (str_starts_with($sK, '_')) {
 					unset($data[$k][$sK]);
 				}
 			}

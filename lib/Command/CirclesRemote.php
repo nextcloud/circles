@@ -442,7 +442,7 @@ class CirclesRemote extends Base {
 	 */
 	private function getRemoteInterface(): int {
 		foreach (InterfaceService::LIST_IFACE as $iface => $def) {
-			if (strtolower((string)$this->input->getOption('iface')) === strtolower($def)) {
+			if (strtolower((string)$this->input->getOption('iface')) === $def) {
 				return $iface;
 			}
 		}

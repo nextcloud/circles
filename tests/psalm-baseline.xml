@@ -46,12 +46,6 @@
       <code><![CDATA[retrieveJson]]></code>
     </UndefinedMethod>
   </file>
-  <file src="lib/Command/MigrateCustomGroups.php">
-    <DeprecatedMethod>
-      <code><![CDATA[getAppValue]]></code>
-      <code><![CDATA[setAppValue]]></code>
-    </DeprecatedMethod>
-  </file>
   <file src="lib/Db/AccountsRequest.php">
     <DeprecatedClass>
       <code><![CDATA[new MemberDoesNotExistException()]]></code>
@@ -159,14 +153,6 @@
     <RedundantCast>
       <code><![CDATA[(array)self::CIRCLES_SETTINGS_DEFAULT]]></code>
     </RedundantCast>
-  </file>
-  <file src="lib/Model/BaseMember.php">
-    <InvalidNullableReturnType>
-      <code><![CDATA[DeprecatedMember]]></code>
-    </InvalidNullableReturnType>
-    <NullableReturnStatement>
-      <code><![CDATA[self::fromArray(json_decode($json, true))]]></code>
-    </NullableReturnStatement>
   </file>
   <file src="lib/Model/Circle.php">
     <LessSpecificImplementedReturnType>
@@ -435,14 +421,6 @@
       <code><![CDATA[$item]]></code>
     </InvalidReturnStatement>
   </file>
-  <file src="lib/Tools/Model/TreeNode.php">
-    <InvalidNullableReturnType>
-      <code><![CDATA[TreeNode]]></code>
-    </InvalidNullableReturnType>
-    <NullableReturnStatement>
-      <code><![CDATA[$this->currentChild]]></code>
-    </NullableReturnStatement>
-  </file>
   <file src="lib/Tools/Traits/TArrayTools.php">
     <TooManyArguments>
       <code><![CDATA[getArray]]></code>
@@ -468,10 +446,5 @@
     <UndefinedMethod>
       <code><![CDATA[getOpenSSLAlgo]]></code>
     </UndefinedMethod>
-  </file>
-  <file src="lib/Tools/Traits/TStringTools.php">
-    <InvalidArrayOffset>
-      <code><![CDATA[$s[$e]]]></code>
-    </InvalidArrayOffset>
   </file>
 </files>

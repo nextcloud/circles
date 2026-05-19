@@ -149,12 +149,7 @@ trait TNCSignatory {
 		$signatory->setPrivateKey($privateKey);
 	}
 
-
 	/**
-	 * @param string $clear
-	 * @param NCSignatory $signatory
-	 *
-	 * @return string
 	 * @throws SignatoryException
 	 */
 	public function signString(string $clear, NCSignatory $signatory): string {
@@ -165,16 +160,10 @@ trait TNCSignatory {
 
 		openssl_sign($clear, $signed, $privateKey, $this->getOpenSSLAlgo($signatory));
 
-		return base64_encode((string)$signed);
+		return base64_encode($signed);
 	}
 
-
 	/**
-	 * @param string $clear
-	 * @param string $signed
-	 * @param string $publicKey
-	 * @param string $algo
-	 *
 	 * @throws SignatureException
 	 */
 	public function verifyString(
