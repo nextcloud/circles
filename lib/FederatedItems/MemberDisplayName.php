@@ -51,7 +51,7 @@ class MemberDisplayName implements
 		private MemberRequest $memberRequest,
 		private MembershipService $membershipService,
 		private EventService $eventService,
-		private ConfigService $configService
+		private ConfigService $configService,
 	) {
 	}
 

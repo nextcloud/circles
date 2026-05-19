@@ -99,7 +99,7 @@ class FederatedEvent implements JsonSerializable {
 	 * @param string $class
 	 */
 	public function __construct(
-		private string $class = ''
+		private string $class = '',
 	) {
 		$this->params = new SimpleDataStore();
 		$this->internal = new SimpleDataStore();

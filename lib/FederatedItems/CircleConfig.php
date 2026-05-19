@@ -43,7 +43,7 @@ class CircleConfig implements
 	public function __construct(
 		private CircleRequest $circleRequest,
 		private PermissionService $permissionService,
-		private ConfigService $configService
+		private ConfigService $configService,
 	) {
 	}
 

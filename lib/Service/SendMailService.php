@@ -45,7 +45,7 @@ class SendMailService {
 		private IMailer $mailer,
 		private Defaults $defaults,
 		private ConfigService $configService,
-		private IManager $shareManager
+		private IManager $shareManager,
 	) {
 	}
 

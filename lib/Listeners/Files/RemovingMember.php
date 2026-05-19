@@ -31,7 +31,7 @@ class RemovingMember implements IEventListener {
 		private LoggerInterface $logger,
 		private MemberService $memberService,
 		private ShareTokenService $shareTokenService,
-		private ShareWrapperService $shareWrapperService
+		private ShareWrapperService $shareWrapperService,
 	) {
 	}
 

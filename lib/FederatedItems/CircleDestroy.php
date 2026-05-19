@@ -54,7 +54,7 @@ class CircleDestroy implements
 		private CircleRequest $circleRequest,
 		private MemberRequest $memberRequest,
 		private EventService $eventService,
-		private MembershipService $membershipService
+		private MembershipService $membershipService,
 	) {
 	}
 

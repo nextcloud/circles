@@ -33,7 +33,7 @@ class GSShareMountpoint implements JsonSerializable {
 	public function __construct(
 		private int $shareId = 0,
 		private string $userId = '',
-		private string $mountPoint = ''
+		private string $mountPoint = '',
 	) {
 	}
 

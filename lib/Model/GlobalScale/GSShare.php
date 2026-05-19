@@ -53,7 +53,7 @@ class GSShare implements JsonSerializable {
 	 */
 	public function __construct(
 		private string $circleId = '',
-		private string $token = ''
+		private string $token = '',
 	) {
 	}
 

@@ -88,7 +88,7 @@ class GSEvent implements JsonSerializable {
 	public function __construct(
 		private string $type = '',
 		private bool $local = false,
-		private bool $force = false
+		private bool $force = false,
 	) {
 		$this->data = new SimpleDataStore();
 		$this->result = new SimpleDataStore();

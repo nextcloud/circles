@@ -32,7 +32,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class MembersSearch extends Base {
 	public function __construct(
 		private readonly SearchService $searchService,
-		private readonly ConfigService $configService
+		private readonly ConfigService $configService,
 	) {
 		parent::__construct();
 	}

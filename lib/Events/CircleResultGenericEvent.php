@@ -38,7 +38,7 @@ class CircleResultGenericEvent extends Event {
 	 */
 	public function __construct(
 		private readonly FederatedEvent $federatedEvent,
-		private readonly array $results
+		private readonly array $results,
 	) {
 		parent::__construct();
 

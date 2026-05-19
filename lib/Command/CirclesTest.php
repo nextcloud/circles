@@ -85,7 +85,7 @@ class CirclesTest extends Base {
 
 	public function __construct(
 		private CoreRequestBuilder $coreQueryBuilder,
-		private ConfigService $configService
+		private ConfigService $configService,
 	) {
 		parent::__construct();
 	}

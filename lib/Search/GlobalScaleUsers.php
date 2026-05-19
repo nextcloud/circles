@@ -38,7 +38,7 @@ class GlobalScaleUsers implements ISearch {
 	 */
 	public function __construct(
 		private ConfigService $configService,
-		private MiscService $miscService
+		private MiscService $miscService,
 	) {
 	}
 

@@ -31,7 +31,7 @@ class CircleSettings implements IFederatedItem {
 	 * @param CircleRequest $circleRequest
 	 */
 	public function __construct(
-		private CircleRequest $circleRequest
+		private CircleRequest $circleRequest,
 	) {
 	}
 

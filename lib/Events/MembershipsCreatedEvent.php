@@ -26,7 +26,7 @@ class MembershipsCreatedEvent extends Event {
 	 * @param Membership[] $memberships
 	 */
 	public function __construct(
-		private readonly array $memberships
+		private readonly array $memberships,
 	) {
 		parent::__construct();
 	}

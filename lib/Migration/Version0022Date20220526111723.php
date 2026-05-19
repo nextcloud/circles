@@ -27,7 +27,7 @@ class Version0022Date20220526111723 extends SimpleMigrationStep {
 	 * @param Connection $connection
 	 */
 	public function __construct(
-		private readonly Connection $connection
+		private readonly Connection $connection,
 	) {
 	}
 

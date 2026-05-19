@@ -32,7 +32,7 @@ class DestroyingCircle implements IEventListener {
 	 * @param ShareWrapperService $shareWrapperService
 	 */
 	public function __construct(
-		private ShareWrapperService $shareWrapperService
+		private ShareWrapperService $shareWrapperService,
 	) {
 		$this->setup('app', Application::APP_ID);
 	}

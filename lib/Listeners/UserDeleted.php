@@ -25,7 +25,7 @@ class UserDeleted implements IEventListener {
 	 * @param SyncService $syncService
 	 */
 	public function __construct(
-		private readonly SyncService $syncService
+		private readonly SyncService $syncService,
 	) {
 	}
 

@@ -40,7 +40,7 @@ class CirclesQueryHelper {
 	 */
 	public function __construct(
 		private readonly CoreRequestBuilder $coreRequestBuilder,
-		private readonly FederatedUserService $federatedUserService
+		private readonly FederatedUserService $federatedUserService,
 	) {
 	}
 

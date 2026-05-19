@@ -42,7 +42,7 @@ class ItemLock implements
 	 * @param ShareLockRequest $shareLockRequest
 	 */
 	public function __construct(
-		private ShareLockRequest $shareLockRequest
+		private ShareLockRequest $shareLockRequest,
 	) {
 	}
 

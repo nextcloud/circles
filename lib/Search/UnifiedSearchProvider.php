@@ -35,7 +35,7 @@ class UnifiedSearchProvider implements IProvider {
 	public function __construct(
 		private readonly IL10N $l10n,
 		private readonly FederatedUserService $federatedUserService,
-		private readonly SearchService $searchService
+		private readonly SearchService $searchService,
 	) {
 	}
 

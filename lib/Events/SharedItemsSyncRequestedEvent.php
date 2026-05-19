@@ -36,7 +36,7 @@ class SharedItemsSyncRequestedEvent extends Event {
 	 * @param FederatedEvent $federatedEvent
 	 */
 	public function __construct(
-		private readonly FederatedEvent $federatedEvent
+		private readonly FederatedEvent $federatedEvent,
 	) {
 		parent::__construct();
 		$this->circle = $this->federatedEvent->getCircle();

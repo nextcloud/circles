@@ -50,7 +50,7 @@ class MembershipService {
 		private MemberRequest $memberRequest,
 		private EventService $eventService,
 		private ShareWrapperService $shareWrapperService,
-		private OutputService $outputService
+		private OutputService $outputService,
 	) {
 	}
 

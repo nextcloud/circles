@@ -51,7 +51,7 @@ class EventWrapperService extends NCSignature {
 		private EventWrapperRequest $eventWrapperRequest,
 		private FederatedEventService $federatedEventService,
 		private RemoteUpstreamService $remoteUpstreamService,
-		private ConfigService $configService
+		private ConfigService $configService,
 	) {
 	}
 

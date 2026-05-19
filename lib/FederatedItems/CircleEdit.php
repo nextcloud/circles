@@ -43,7 +43,7 @@ class CircleEdit implements IFederatedItem {
 		private CircleRequest $circleRequest,
 		private MemberRequest $memberRequest,
 		private CircleService $circleService,
-		private EventService $eventService
+		private EventService $eventService,
 	) {
 	}
 

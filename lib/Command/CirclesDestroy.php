@@ -42,7 +42,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CirclesDestroy extends Base {
 	public function __construct(
 		private readonly FederatedUserService $federatedUserService,
-		private readonly CircleService $circleService
+		private readonly CircleService $circleService,
 	) {
 		parent::__construct();
 	}

@@ -52,7 +52,7 @@ class DeprecatedListener {
 		private readonly CircleRequest $circleRequest,
 		private readonly FederatedUserService $federatedUserService,
 		private readonly FederatedEventService $federatedEventService,
-		private readonly CircleService $circleService
+		private readonly CircleService $circleService,
 	) {
 	}
 

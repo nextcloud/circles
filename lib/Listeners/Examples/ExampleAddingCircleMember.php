@@ -27,7 +27,7 @@ class ExampleAddingCircleMember implements IEventListener {
 	use TNCLogger;
 
 	public function __construct(
-		private ConfigService $configService
+		private ConfigService $configService,
 	) {
 		$this->setup('app', Application::APP_ID);
 	}

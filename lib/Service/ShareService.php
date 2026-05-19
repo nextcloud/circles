@@ -28,7 +28,7 @@ class ShareService {
 	 */
 	public function __construct(
 		private readonly FederatedEventService $federatedEventService,
-		private readonly ConfigService $configService
+		private readonly ConfigService $configService,
 	) {
 	}
 

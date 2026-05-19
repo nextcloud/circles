@@ -41,7 +41,7 @@ class MemberHelper {
 	 * @param Member $member
 	 */
 	public function __construct(
-		private Member $member
+		private Member $member,
 	) {
 	}
 

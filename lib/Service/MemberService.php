@@ -77,7 +77,7 @@ class MemberService {
 		private FederatedEventService $federatedEventService,
 		private RemoteStreamService $remoteStreamService,
 		private readonly IEventDispatcher $eventDispatcher,
-		private readonly IUserManager $userManager
+		private readonly IUserManager $userManager,
 	) {
 	}
 

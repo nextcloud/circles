@@ -30,7 +30,7 @@ class CircleSetting implements
 	public function __construct(
 		private CircleRequest $circleRequest,
 		private ShareTokenService $shareTokenService,
-		private ConfigService $configService
+		private ConfigService $configService,
 	) {
 	}
 

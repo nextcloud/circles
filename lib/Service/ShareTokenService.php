@@ -42,7 +42,7 @@ class ShareTokenService {
 		private IURLGenerator $urlGenerator,
 		private ShareTokenRequest $shareTokenRequest,
 		private InterfaceService $interfaceService,
-		private ConfigService $configService
+		private ConfigService $configService,
 	) {
 	}
 

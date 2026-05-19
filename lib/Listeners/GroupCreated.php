@@ -20,7 +20,7 @@ use OCP\Group\Events\GroupCreatedEvent;
 /** @template-implements IEventListener<GroupCreatedEvent|Event> */
 class GroupCreated implements IEventListener {
 	public function __construct(
-		private readonly SyncService $syncService
+		private readonly SyncService $syncService,
 	) {
 	}
 

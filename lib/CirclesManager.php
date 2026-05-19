@@ -69,7 +69,7 @@ class CirclesManager {
 		private readonly MemberService $memberService,
 		private readonly MembershipService $membershipService,
 		private readonly ConfigService $configService,
-		private readonly CirclesQueryHelper $circlesQueryHelper
+		private readonly CirclesQueryHelper $circlesQueryHelper,
 	) {
 	}
 

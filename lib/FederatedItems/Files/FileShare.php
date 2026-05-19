@@ -51,7 +51,7 @@ class FileShare implements
 	public function __construct(
 		private MountRequest $mountRequest,
 		private EventService $eventService,
-		private ConfigService $configService
+		private ConfigService $configService,
 	) {
 	}
 

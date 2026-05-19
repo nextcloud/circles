@@ -29,7 +29,7 @@ class LocalUsers implements ISearch {
 	 */
 	public function __construct(
 		private ICollaboratorSearch $search,
-		private ConfigService $configService
+		private ConfigService $configService,
 	) {
 	}
 

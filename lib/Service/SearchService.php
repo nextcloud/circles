@@ -41,7 +41,7 @@ class SearchService {
 	 */
 	public function __construct(
 		private IURLGenerator $urlGenerator,
-		private CircleService $circleService
+		private CircleService $circleService,
 	) {
 	}
 

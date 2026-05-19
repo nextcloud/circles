@@ -23,7 +23,7 @@ class Maintenance extends TimedJob {
 	 */
 	public function __construct(
 		ITimeFactory $time,
-		private readonly MaintenanceService $maintenanceService
+		private readonly MaintenanceService $maintenanceService,
 	) {
 		parent::__construct($time);
 

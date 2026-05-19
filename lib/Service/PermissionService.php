@@ -27,7 +27,7 @@ class PermissionService {
 	public function __construct(
 		private readonly IL10N $l10n,
 		private readonly FederatedUserService $federatedUserService,
-		private readonly ConfigService $configService
+		private readonly ConfigService $configService,
 	) {
 	}
 

@@ -20,7 +20,7 @@ use OCP\Group\Events\UserRemovedEvent;
 /** @template-implements IEventListener<UserRemovedEvent|Event> */
 class GroupMemberRemoved implements IEventListener {
 	public function __construct(
-		private readonly SyncService $syncService
+		private readonly SyncService $syncService,
 	) {
 	}
 

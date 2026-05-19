@@ -26,7 +26,7 @@ class FederatedUsers implements ISearch {
 	 * @param MemberRequest $memberRequest
 	 */
 	public function __construct(
-		private readonly MemberRequest $memberRequest
+		private readonly MemberRequest $memberRequest,
 	) {
 	}
 

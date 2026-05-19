@@ -19,7 +19,7 @@ class TreeNode {
 
 	public function __construct(
 		private readonly ?TreeNode $parent,
-		private readonly SimpleDataStore $item
+		private readonly SimpleDataStore $item,
 	) {
 		if ($this->parent !== null) {
 			$this->parent->addChild($this);

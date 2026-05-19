@@ -44,7 +44,7 @@ class FederatedShareService extends NCSignature {
 	 */
 	public function __construct(
 		private readonly FederatedEventService $federatedEventService,
-		private readonly CircleService $circleService
+		private readonly CircleService $circleService,
 	) {
 	}
 

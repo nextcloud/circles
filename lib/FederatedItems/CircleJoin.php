@@ -75,7 +75,7 @@ class CircleJoin implements
 		private MemberService $memberService,
 		private MembershipService $membershipService,
 		private EventService $eventService,
-		private ConfigService $configService
+		private ConfigService $configService,
 	) {
 	}
 

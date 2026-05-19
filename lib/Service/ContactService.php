@@ -44,7 +44,7 @@ class ContactService {
 	 */
 	public function __construct(
 		private IURLGenerator $urlGenerator,
-		private ConfigService $configService
+		private ConfigService $configService,
 	) {
 	}
 

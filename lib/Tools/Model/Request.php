@@ -90,7 +90,7 @@ class Request implements JsonSerializable {
 	public function __construct(
 		private string $url = '',
 		private int $type = 0,
-		private bool $binary = false
+		private bool $binary = false,
 	) {
 	}
 

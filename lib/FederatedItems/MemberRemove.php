@@ -43,7 +43,7 @@ class MemberRemove implements
 	public function __construct(
 		private readonly MemberRequest $memberRequest,
 		private readonly MembershipService $membershipService,
-		private readonly EventService $eventService
+		private readonly EventService $eventService,
 	) {
 	}
 
