@@ -39,6 +39,9 @@ return [
 		['name' => 'Local#editDescription', 'url' => '/circles/{circleId}/description', 'verb' => 'PUT'],
 		['name' => 'Local#editSetting', 'url' => '/circles/{circleId}/setting', 'verb' => 'PUT'],
 		['name' => 'Local#editConfig', 'url' => '/circles/{circleId}/config', 'verb' => 'PUT'],
+		['name' => 'Local#circleAvatar', 'url' => '/circles/{circleId}/avatar', 'verb' => 'GET'],
+		['name' => 'Local#uploadAvatar', 'url' => '/circles/{circleId}/avatar', 'verb' => 'POST'],
+		['name' => 'Local#removeAvatar', 'url' => '/circles/{circleId}/avatar', 'verb' => 'DELETE'],
 		['name' => 'Local#link', 'url' => '/link/{circleId}/{singleId}', 'verb' => 'GET'],
 
 		// Teams Dashboard widget endpoint
