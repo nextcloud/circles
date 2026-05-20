@@ -96,6 +96,8 @@ OC.L10N.register(
     "Level cannot be changed for this type of member" : "Нивото не може да се променя за член от този тип ",
     "Accept" : "Приемане",
     "Refuse" : "Отказ",
+    "No image file provided" : "Не е предоставен файл с изображение",
+    "Invalid file provided" : "Предоставен е невалиден файл",
     "%s" : "%s",
     "%s owned by %s" : "%s притежаван от  %s",
     "%s shared a file with \"%s\"." : "%s сподели файл с „%s“.",
