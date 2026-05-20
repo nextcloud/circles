@@ -14,6 +14,7 @@ OC.L10N.register(
     "Owner" : "Perc'henner",
     "Open »%s«" : "Digeriñ  »%s«",
     "Accept" : "Kadarnaat",
+    "Invalid file provided" : "Ar restr roet n'eo ket unan aotreet",
     "%s" : "%s",
     "Open %s" : "Digeriñ %s",
     "Loading…" : "O kargañ...",
