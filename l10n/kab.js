@@ -11,6 +11,7 @@ OC.L10N.register(
     "Admin" : "Anedbal",
     "Owner" : "Bab",
     "Open »%s«" : "Ldi »%s«",
+    "File is too big" : "Afaylu-agi bezzaf meqqer",
     "%s" : "%s",
     "Open %s" : "Ldi %s",
     "Loading…" : "Asali...",

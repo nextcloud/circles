@@ -9,6 +9,8 @@ OC.L10N.register(
     "Admin" : "Admin",
     "Owner" : "Owner",
     "Files" : "Dateien",
+    "Invalid image" : "Ongülteg d'Bild",
+    "Unknown filetype" : "Onbekannten Fichier Typ",
     "Loading…" : "Et gëtt gelueden",
     "No files in here" : "Keng Dokumenter hei",
     "No entries found in this folder" : "Keng Elementer an dësem Dossier fonnt",

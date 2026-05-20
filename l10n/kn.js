@@ -9,6 +9,8 @@ OC.L10N.register(
     "Admin" : "﻿ನಿರ್ವಹಕ",
     "Owner" : "Owner",
     "Files" : "﻿ಕಡತಗಳು",
+    "Invalid image" : "ಅಸಾಮರ್ಥ್ಯ ಚಿತ್ರ",
+    "Unknown filetype" : "﻿ಅಪರಿಚಿತ ಕಡತ ಮಾದರಿ",
     "Name" : "﻿ಹೆಸರು",
     "Size" : "﻿ ಗಾತ್ರ",
     "Modified" : "﻿ಬದಲಾಯಿಸಿದ"
