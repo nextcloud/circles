@@ -42,6 +42,7 @@ class DeprecatedController extends Controller {
 	public function listing(string $term = ''): DataResponse {
 		try {
 			$this->federatedUserService->initCurrentUser();
+			$this->federatedUserService->mustHaveCurrentUser();
 			$probe = new CircleProbe();
 
 			$filterCircle = new Circle();
