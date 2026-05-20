@@ -9,6 +9,8 @@ OC.L10N.register(
     "Owner" : "හිමිකරු",
     "Files" : "ගොනු",
     "Accept" : "පිළිගන්න",
+    "File is too big" : "ගොනුව ඉතා විශාලයි",
+    "Invalid image" : "වලංගු නොවන පින්තූරයකි",
     "%s" : "%s",
     "Loading…" : "පූරණය වෙමින්…",
     "Name" : "නම",
