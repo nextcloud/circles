@@ -10,6 +10,9 @@ OC.L10N.register(
     "Federated" : "Federated",
     "Admin" : "প্রশাসন",
     "Owner" : "Owner",
+    "File is too big" : "ফাইল খুব বড়",
+    "Invalid image" : "অবৈধ চিত্র",
+    "Unknown filetype" : "অজানা প্রকৃতির ফাইল",
     "Name" : "নাম",
     "Size" : "আকার",
     "Modified" : "পরিবর্তিত"

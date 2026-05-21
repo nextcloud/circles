@@ -130,7 +130,7 @@ OC.L10N.register(
     "Accept" : "Annehmen",
     "Refuse" : "Ablehnen",
     "Leave the team" : "Das Team verlassen",
-    "No image file provided" : "Keine Bilddatei bereitgestellt",
+    "No image file provided" : "Kein Bild zur Verfügung gestellt",
     "Invalid file provided" : "Ungültige Datei bereitgestellt",
     "File is too big" : "Datei ist zu groß",
     "Invalid image" : "Ungültiges Bild",
