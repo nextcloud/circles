@@ -133,6 +133,7 @@ OC.L10N.register(
     "No image file provided" : "Файл зображення не надано",
     "Invalid file provided" : "Надано помилковий файл",
     "File is too big" : "Файл занадто великий",
+    "Invalid image" : "Недійсне зображення",
     "Unknown filetype" : "Невідомий тип файлу",
     "%s" : "%s ",
     "Personal team" : "Приватна команда",
