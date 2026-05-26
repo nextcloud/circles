@@ -18,6 +18,9 @@ use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\Probes\MemberProbe;
+use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\TimezoneService;
+use OCP\IDBConnection;
 
 /**
  * Class MemberRequest
@@ -25,6 +28,15 @@ use OCA\Circles\Model\Probes\MemberProbe;
  * @package OCA\Circles\Db
  */
 class MemberRequest extends MemberRequestBuilder {
+
+	public function __construct(
+		private IDBConnection $db,
+		TimezoneService $timezoneService,
+		ConfigService $configService,
+	) {
+		parent::__construct($timezoneService, $configService);
+	}
+
 	/**
 	 * @param Member $member
 	 *
@@ -173,6 +185,42 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->limitToSingleId($member->getSingleId());
 
 		$qb->executeStatement();
+	}
+
+	/**
+	 * @return ?Member old owner or null if old owner was not found
+	 */
+	public function promoteToOwner(Member $member): ?Member {
+		try {
+			$this->db->beginTransaction();
+
+			$qb = $this->getMemberSelectSql();
+			$qb->limitToCircleId($member->getCircleId());
+			$qb->limitInt('level', Member::LEVEL_OWNER);
+			// forUpdate locks the owner row until transaction is commited, forcing concurrent
+			// requests to wait and read the updated current owner, preventing multiple owners
+			$qb->forUpdate();
+
+			try {
+				$oldOwner = $this->getItemFromRequest($qb);
+			} catch (MemberNotFoundException) {
+				$oldOwner = null;
+			}
+
+			$this->updateLevel($member);
+
+			if ($oldOwner !== null && $oldOwner->getId() !== $member->getId()) {
+				$oldOwner->setLevel(Member::LEVEL_ADMIN);
+				$this->updateLevel($oldOwner);
+			}
+
+			$this->db->commit();
+
+			return $oldOwner;
+		} catch (\Throwable $e) {
+			$this->db->rollBack();
+			throw $e;
+		}
 	}
 
 	/**
