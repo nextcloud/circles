@@ -22,6 +22,7 @@ defineProps<{
 				v-for="resource in resources.slice(0, 5)"
 				:key="resource.id"
 				class="team-resources__box"
+				:class="{ 'team-resources__box--talk': resource.type === 'talk' }"
 				:title="resource.name"
 				:style="{ '--fallback-icon': `url('${resource.fallbackIcon}')` }">
 				<a :href="resource.url" class="team-resources__link">
@@ -60,7 +61,8 @@ defineProps<{
 		position: relative;
 		width: var(--resource-box-size);
 		height: var(--resource-box-size);
-		border-radius: var(--border-radius-element);
+		border-radius: var(--border-radius-small);
+		overflow: hidden;
 		background-color: var(--color-main-background);
 		background-size: calc(var(--resource-box-size) - 4px);
 		background-repeat: no-repeat;
@@ -79,6 +81,11 @@ defineProps<{
 		&:has(.team-resources__link:focus-visible) {
 			// for accessibility we need a focus visible outline
 			outline: 2px solid var(--color-main-text);
+		}
+
+		&--talk,
+		&--talk .team-resources__icon {
+			border-radius: var(--border-radius-pill);
 		}
 	}
 
