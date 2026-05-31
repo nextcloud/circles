@@ -16,6 +16,7 @@ OC.L10N.register(
     "Open" : "Atvērt",
     "Invite" : "Uzaicināt",
     "Password protected" : "Aizsargāts ar paroli",
+    "No Owner" : "Nav īpašnieka",
     "Hidden" : "Paslēpts",
     "Local" : "Vietējs",
     "Root" : "Root",
