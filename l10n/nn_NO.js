@@ -11,6 +11,7 @@ OC.L10N.register(
     "Admin" : "Administrer",
     "Owner" : "Owner",
     "Open »%s«" : "Opna »%s«",
+    "Accept" : "Godta",
     "Invalid file provided" : "Ugyldig fil",
     "File is too big" : "Fila er for stor",
     "Invalid image" : "Ugyldig bilete",
