@@ -122,6 +122,7 @@
     "Leave the team" : "Deixa l'equip",
     "No image file provided" : "No s'ha proporcionat cap imatge o fitxer",
     "Invalid file provided" : "El fitxer proporcionat no és vàlid",
+    "File is too big" : "El fitxer és massa gran",
     "Unknown filetype" : "Tipus de fitxer desconegut",
     "%s" : "%s",
     "Personal team" : "Equip personal",
