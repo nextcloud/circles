@@ -125,6 +125,7 @@ OC.L10N.register(
     "Refuse" : "Afvis",
     "Leave the team" : "Forlad teamet",
     "Invalid file provided" : "Der er angivet en ugyldig fil",
+    "File is too big" : "Filen er for stor",
     "Invalid image" : "Ugyldigt billede",
     "Unknown filetype" : "Ukendt filtype",
     "%s" : "%s",

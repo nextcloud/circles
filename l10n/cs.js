@@ -132,6 +132,7 @@ OC.L10N.register(
     "Leave the team" : "Opustit tým",
     "No image file provided" : "Neposkytnut žádný soubor, obsahující obrázek",
     "Invalid file provided" : "Poskytnut neplatný soubor",
+    "File is too big" : "Soubor je příliš velký",
     "Invalid image" : "Neplatný obrázek",
     "Unknown filetype" : "Neznámý typ souboru",
     "%s" : "%s",
