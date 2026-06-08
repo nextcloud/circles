@@ -424,9 +424,21 @@ class ConfigService {
 
 
 	/**
-	 * @return array
-	 */
+	* Returns the list of GSS mockup instances.
+	* @return array
+	*/
 	public function getGSSMockup(): array {
+		// Try reading from the database (app config)
+		$dbValue = $this->config->getAppValue(Application::APP_ID, 'gss.mockup', '');
+
+		if ($dbValue !== '') {
+			$decoded = json_decode($dbValue, true);
+			if (is_array($decoded)) {
+				return $decoded;
+			}
+		}
+
+		// Fall back to system config (config.php) for backward compatibility
 		return $this->config->getSystemValue('gss.mockup', []);
 	}
 
