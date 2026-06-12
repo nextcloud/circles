@@ -20,6 +20,7 @@ export interface ITeamResource {
 	fallbackIcon: string
 	iconUrl: string
 	url: string
+	type?: string
 }
 
 export interface ITeam {
