@@ -52,7 +52,7 @@ class FederatedUser extends ManagedModel implements
 	/** @var string */
 	private $displayName = '';
 
-	/** @var Circle */
+	/** @var ?Circle */
 	private $basedOn;
 
 	/** @var int */
@@ -195,9 +195,9 @@ class FederatedUser extends ManagedModel implements
 	}
 
 	/**
-	 * @return Circle
+	 * @return ?Circle
 	 */
-	public function getBasedOn(): Circle {
+	public function getBasedOn(): ?Circle {
 		return $this->basedOn;
 	}
 

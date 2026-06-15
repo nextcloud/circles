@@ -75,9 +75,9 @@ interface IFederatedUser extends IFederatedModel {
 	public function setBasedOn(?Circle $basedOn): self;
 
 	/**
-	 * @return Circle
+	 * @return ?Circle
 	 */
-	public function getBasedOn(): Circle;
+	public function getBasedOn(): ?Circle;
 
 	/**
 	 * @return bool
