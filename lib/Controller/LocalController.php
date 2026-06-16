@@ -19,6 +19,7 @@ use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\BasicProbe;
@@ -430,7 +431,15 @@ class LocalController extends OCSController {
 				->setItemsLimit($limit)
 				->setItemsOffset($offset);
 
-			return new DataResponse($this->serializeArray($this->circleService->getCircles($probe)));
+			// hide configs of "visible to everyone" circles for non-members (return only CFG_VISIBLE)
+			$circles = (array_map(function (Circle $circle) {
+				if ($circle->isConfig(Circle::CFG_VISIBLE) && !$circle->hasInitiator()) {
+					$circle->setConfig(Circle::CFG_VISIBLE);
+				}
+				return $circle;
+			}, $this->circleService->getCircles($probe)));
+
+			return new DataResponse($this->serializeArray($circles));
 		} catch (Exception $e) {
 			$this->e($e);
 			throw new OCSException($e->getMessage(), (int)$e->getCode());
