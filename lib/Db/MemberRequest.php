@@ -333,6 +333,19 @@ class MemberRequest extends MemberRequestBuilder {
 
 
 	/**
+	 * @throws MemberNotFoundException
+	 * @throws RequestBuilderException
+	 */
+	public function getMemberByUserId(string $circleId, string $userId): Member {
+		$qb = $this->getMemberSelectSql();
+		$qb->limitToCircleId($circleId);
+		$qb->limitToUserId($userId);
+
+		return $this->getItemFromRequest($qb);
+	}
+
+
+	/**
 	 * @param string $circleId
 	 *
 	 * @return array

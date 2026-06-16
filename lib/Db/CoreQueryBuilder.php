@@ -298,6 +298,11 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 	}
 
 
+	public function limitToUserId(string $userId, string $alias = ''): void {
+		$this->limit('user_id', $userId, $alias, true);
+	}
+
+
 	/**
 	 * @param string $itemId
 	 */
