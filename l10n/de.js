@@ -139,6 +139,7 @@ OC.L10N.register(
     "Personal team" : "Persönliches Team",
     "%s owned by %s" : "%s gehört %s",
     "You have no permission to create a new team" : "Du hast nicht die Berechtigung, ein neues Team zu erstellen",
+    "Insufficient permissions to perform this action" : "Keine ausreichenden Berechtigungen zum Ausführen dieser Aktion",
     "%s shared a file with \"%s\"." : "%s hat eine Datei mit \"%s\" geteilt",
     "%s shared a file with you." : "%s hat eine Datei mit dir geteilt.",
     "%1$s shared %2$s with %3$s" : "%1$s hat %2$s mit %3$s geteilt",

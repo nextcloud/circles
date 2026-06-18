@@ -139,6 +139,7 @@ OC.L10N.register(
     "Personal team" : "Asmeninė komanda",
     "%s owned by %s" : "%s priklauso %s",
     "You have no permission to create a new team" : "Jūs neturite leidimo kurti naujos komandos",
+    "Insufficient permissions to perform this action" : "Nepakanka teisių šiam veiksmui atlikti",
     "%s shared a file with \"%s\"." : "%s bendrino failą su „%s“.",
     "%s shared a file with you." : "%s bendrino su jumis failą.",
     "%1$s shared %2$s with %3$s" : "%1$s pasidalino %2$s su %3$s",

@@ -137,6 +137,7 @@
     "Personal team" : "Личная команда",
     "%s owned by %s" : "%s, владелец: %s",
     "You have no permission to create a new team" : "У вас нет прав для создания новой команды",
+    "Insufficient permissions to perform this action" : "Недостаточно разрешений для выполнения этого действия",
     "%s shared a file with \"%s\"." : "%s поделился файлом с \"%s\".",
     "%s shared a file with you." : "%s поделился с вами файлом.",
     "%1$s shared %2$s with %3$s" : "%1$s поделился(ась) %2$s с %3$s",
