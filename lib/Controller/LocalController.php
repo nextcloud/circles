@@ -412,10 +412,15 @@ class LocalController extends OCSController {
 				->setItemsLimit($limit)
 				->setItemsOffset($offset);
 
-			// hide configs of "visible to everyone" circles for non-members (return only CFG_VISIBLE)
+			// hide full config of "visible to everyone" circles for non-members
 			$circles = (array_map(function (Circle $circle) {
 				if ($circle->isConfig(Circle::CFG_VISIBLE) && !$circle->hasInitiator()) {
-					$circle->setConfig(Circle::CFG_VISIBLE);
+					// return only configs needed by frontend
+					$circleConfig = Circle::CFG_VISIBLE;
+					if ($circle->isConfig(Circle::CFG_OPEN)) {
+						$circleConfig += Circle::CFG_OPEN;
+					}
+					$circle->setConfig($circleConfig);
 				}
 				return $circle;
 			}, $this->circleService->getCircles($probe)));
