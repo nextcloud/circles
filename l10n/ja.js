@@ -139,6 +139,7 @@ OC.L10N.register(
     "Personal team" : "パーソナルチーム",
     "%s owned by %s" : "%s%sが所有",
     "You have no permission to create a new team" : "新しいチームを作成する権限がありません",
+    "Insufficient permissions to perform this action" : "この操作を実行するための権限が不足しています",
     "%s shared a file with \"%s\"." : "%sは\"%s\"どファイルを共有しました。",
     "%s shared a file with you." : "%sはあなたとファイルを共有しました。",
     "%1$s shared %2$s with %3$s" : "%1$s は %2$s を %3$s と共有しました",
