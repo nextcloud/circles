@@ -139,6 +139,7 @@ OC.L10N.register(
     "Personal team" : "个人团队",
     "%s owned by %s" : "%s 所有者为 %s",
     "You have no permission to create a new team" : "你没有足够的权限创建一个新的团队",
+    "Insufficient permissions to perform this action" : "权限不足，无法执行此操作",
     "%s shared a file with \"%s\"." : "%s 和 \"%s\"分享了一个文件",
     "%s shared a file with you." : "%s 和你分享了一个文件",
     "%1$s shared %2$s with %3$s" : "%1$s 与 %3$s 共享了 %2$s",
