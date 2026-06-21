@@ -222,7 +222,7 @@ class MaintenanceService {
 		try {
 			$this->output('Update memberships');
 			$this->updateAllMemberships();
-		} catch (Exception $e) {
+		} catch (Exception) {
 		}
 
 		try {
