@@ -139,6 +139,7 @@ OC.L10N.register(
     "Personal team" : "Приватна команда",
     "%s owned by %s" : "%s належить %s",
     "You have no permission to create a new team" : "У вас відсутні дозволи створювати нові команди",
+    "Insufficient permissions to perform this action" : "Недостатні повноваження для виконання цієї дії",
     "%s shared a file with \"%s\"." : "%s поділив(-ла-)ся файлом з \"%s\".",
     "%s shared a file with you." : "%s поділив(-ла-)ся з вами файлом.",
     "%1$s shared %2$s with %3$s" : "%1$s спільний %2$s з %3$s",

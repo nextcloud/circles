@@ -139,6 +139,7 @@ OC.L10N.register(
     "Personal team" : "Foireann phearsanta",
     "%s owned by %s" : "%s ar úinéireacht ag %s",
     "You have no permission to create a new team" : "Níl aon chead agat foireann nua a chruthú",
+    "Insufficient permissions to perform this action" : "Gan dóthain ceadanna chun an gníomh seo a dhéanamh",
     "%s shared a file with \"%s\"." : "Roinn %s comhad le \"%s\".",
     "%s shared a file with you." : "Roinn%s comhad leat.",
     "%1$s shared %2$s with %3$s" : "%1$s roinnte %2$s le %3$s",

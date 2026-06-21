@@ -137,6 +137,7 @@
     "Personal team" : "Személyes csapat",
     "%s owned by %s" : "a(z) %s tulajdonosa %s",
     "You have no permission to create a new team" : "Nincs jogosultsága új csapat létrehozásához",
+    "Insufficient permissions to perform this action" : "Nincs elegendő jogosultsága a művelet végrehajtásához",
     "%s shared a file with \"%s\"." : "%s megosztott egy fájlt a következővel: „%s”.",
     "%s shared a file with you." : "%s megosztott egy fájlt Önnel.",
     "%1$s shared %2$s with %3$s" : "%1$s megosztotta ezt: %2$s, vele: %3$s",
