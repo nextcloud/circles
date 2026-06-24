@@ -106,37 +106,37 @@ class Connection extends PrimaryReadReplicaConnection {
 	 * @throws \Exception
 	 */
 	public function __construct(private array $params, Driver $driver, ?Configuration $config = null, ?EventManager $eventManager = null)
- {
- }
+    {
+    }
 
 	/**
 	 * @return IDBConnection[]
 	 */
 	public function getShardConnections(): array
- {
- }
+    {
+    }
 
 	/**
 	 * @throws Exception
 	 */
 	public function connect($connectionName = null)
- {
- }
+    {
+    }
 
 	protected function performConnect(?string $connectionName = null): bool
- {
- }
+    {
+    }
 
 	public function getStats(): array
- {
- }
+    {
+    }
 
 	/**
 	 * Returns a QueryBuilder for the connection.
 	 */
 	public function getQueryBuilder(): IQueryBuilder
- {
- }
+    {
+    }
 
 	/**
 	 * Gets the QueryBuilder for the connection.
@@ -145,8 +145,8 @@ class Connection extends PrimaryReadReplicaConnection {
 	 * @deprecated 8.0.0 please use $this->getQueryBuilder() instead
 	 */
 	public function createQueryBuilder()
- {
- }
+    {
+    }
 
 	/**
 	 * Gets the ExpressionBuilder for the connection.
@@ -155,8 +155,8 @@ class Connection extends PrimaryReadReplicaConnection {
 	 * @deprecated 8.0.0 please use $this->getQueryBuilder()->expr() instead
 	 */
 	public function getExpressionBuilder()
- {
- }
+    {
+    }
 
 	/**
 	 * Get the file and line that called the method where `getCallerBacktrace()` was used
@@ -164,15 +164,15 @@ class Connection extends PrimaryReadReplicaConnection {
 	 * @return string
 	 */
 	protected function getCallerBacktrace()
- {
- }
+    {
+    }
 
 	/**
 	 * @return string
 	 */
 	public function getPrefix()
- {
- }
+    {
+    }
 
 	/**
 	 * Prepares an SQL statement.
@@ -185,8 +185,8 @@ class Connection extends PrimaryReadReplicaConnection {
 	 * @throws Exception
 	 */
 	public function prepare($sql, $limit = null, $offset = null): Statement
- {
- }
+    {
+    }
 
 	/**
 	 * Executes an, optionally parametrized, SQL query.
@@ -204,15 +204,15 @@ class Connection extends PrimaryReadReplicaConnection {
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	public function executeQuery(string $sql, array $params = [], $types = [], ?QueryCacheProfile $qcp = null): Result
- {
- }
+    {
+    }
 
 	/**
 	 * @throws Exception
 	 */
 	public function executeUpdate(string $sql, array $params = [], array $types = []): int
- {
- }
+    {
+    }
 
 	/**
 	 * Executes an SQL INSERT/UPDATE/DELETE query with the given parameters
@@ -229,12 +229,12 @@ class Connection extends PrimaryReadReplicaConnection {
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	public function executeStatement($sql, array $params = [], array $types = []): int
- {
- }
+    {
+    }
 
 	protected function logQueryToFile(string $sql, array $params): void
- {
- }
+    {
+    }
 
 	/**
 	 * Returns the ID of the last inserted row, or the last value from a sequence object,
@@ -250,16 +250,16 @@ class Connection extends PrimaryReadReplicaConnection {
 	 * @throws Exception
 	 */
 	public function lastInsertId($name = null): int
- {
- }
+    {
+    }
 
 	/**
 	 * @internal
 	 * @throws Exception
 	 */
 	public function realLastInsertId($seqName = null)
- {
- }
+    {
+    }
 
 	/**
 	 * Insert a row if the matching row does not exists. To accomplish proper race condition avoidance
@@ -276,12 +276,12 @@ class Connection extends PrimaryReadReplicaConnection {
 	 * @deprecated 15.0.0 - use unique index and "try { $db->insert() } catch (UniqueConstraintViolationException $e) {}" instead, because it is more reliable and does not have the risk for deadlocks - see https://github.com/nextcloud/server/pull/12371
 	 */
 	public function insertIfNotExist($table, $input, ?array $compare = null)
- {
- }
+    {
+    }
 
 	public function insertIgnoreConflict(string $table, array $values): int
- {
- }
+    {
+    }
 
 	/**
 	 * Insert or update a row value
@@ -295,8 +295,8 @@ class Connection extends PrimaryReadReplicaConnection {
 	 * @throws PreConditionNotMetException
 	 */
 	public function setValues(string $table, array $keys, array $values, array $updatePreconditionValues = []): int
- {
- }
+    {
+    }
 
 	/**
 	 * Create an exclusive read+write lock on a table
@@ -308,8 +308,8 @@ class Connection extends PrimaryReadReplicaConnection {
 	 * @since 9.1.0
 	 */
 	public function lockTable($tableName)
- {
- }
+    {
+    }
 
 	/**
 	 * Release a previous acquired lock again
@@ -318,8 +318,8 @@ class Connection extends PrimaryReadReplicaConnection {
 	 * @since 9.1.0
 	 */
 	public function unlockTable()
- {
- }
+    {
+    }
 
 	/**
 	 * returns the error code and message as a string for logging
@@ -327,16 +327,16 @@ class Connection extends PrimaryReadReplicaConnection {
 	 * @return string
 	 */
 	public function getError()
- {
- }
+    {
+    }
 
 	public function errorCode()
- {
- }
+    {
+    }
 
 	public function errorInfo()
- {
- }
+    {
+    }
 
 	/**
 	 * Drop a table from the database if it exists
@@ -346,8 +346,8 @@ class Connection extends PrimaryReadReplicaConnection {
 	 * @throws Exception
 	 */
 	public function dropTable($table)
- {
- }
+    {
+    }
 
 	/**
 	 * Truncate a table data if it exists
@@ -358,8 +358,8 @@ class Connection extends PrimaryReadReplicaConnection {
 	 * @throws Exception
 	 */
 	public function truncateTable(string $table, bool $cascade)
- {
- }
+    {
+    }
 
 	/**
 	 * Check if a table exists
@@ -370,12 +370,12 @@ class Connection extends PrimaryReadReplicaConnection {
 	 * @throws Exception
 	 */
 	public function tableExists($table)
- {
- }
+    {
+    }
 
 	protected function finishQuery(string $statement): string
- {
- }
+    {
+    }
 
 	// internal use
 	/**
@@ -383,8 +383,8 @@ class Connection extends PrimaryReadReplicaConnection {
 	 * @return string
 	 */
 	protected function replaceTablePrefix($statement)
- {
- }
+    {
+    }
 
 	/**
 	 * Check if a transaction is active
@@ -393,8 +393,8 @@ class Connection extends PrimaryReadReplicaConnection {
 	 * @since 8.2.0
 	 */
 	public function inTransaction()
- {
- }
+    {
+    }
 
 	/**
 	 * Escape a parameter to be used in a LIKE query
@@ -403,8 +403,8 @@ class Connection extends PrimaryReadReplicaConnection {
 	 * @return string
 	 */
 	public function escapeLikeParameter($param)
- {
- }
+    {
+    }
 
 	/**
 	 * Check whether or not the current database support 4byte wide unicode
@@ -413,8 +413,8 @@ class Connection extends PrimaryReadReplicaConnection {
 	 * @since 11.0.0
 	 */
 	public function supports4ByteText()
- {
- }
+    {
+    }
 
 
 	/**
@@ -424,8 +424,8 @@ class Connection extends PrimaryReadReplicaConnection {
 	 * @throws Exception
 	 */
 	public function createSchema()
- {
- }
+    {
+    }
 
 	/**
 	 * Migrate the database to the given schema
@@ -438,35 +438,35 @@ class Connection extends PrimaryReadReplicaConnection {
 	 * @return string|null Returns a string only if $dryRun is true.
 	 */
 	public function migrateToSchema(Schema $toSchema, bool $dryRun = false)
- {
- }
+    {
+    }
 
 	public function beginTransaction()
- {
- }
+    {
+    }
 
 	public function commit()
- {
- }
+    {
+    }
 
 	public function rollBack()
- {
- }
+    {
+    }
 
 	/**
 	 * @return IDBConnection::PLATFORM_MYSQL|IDBConnection::PLATFORM_ORACLE|IDBConnection::PLATFORM_POSTGRES|IDBConnection::PLATFORM_SQLITE|IDBConnection::PLATFORM_MARIADB
 	 */
 	public function getDatabaseProvider(bool $strict = false): string
- {
- }
+    {
+    }
 
 	/**
 	 * @internal Should only be used inside the QueryBuilder, ExpressionBuilder and FunctionBuilder
 	 * All apps and API code should not need this and instead use provided functionality from the above.
 	 */
 	public function getServerVersion(): string
- {
- }
+    {
+    }
 
 	/**
 	 * Log a database exception if enabled
@@ -475,14 +475,14 @@ class Connection extends PrimaryReadReplicaConnection {
 	 * @return void
 	 */
 	public function logDatabaseException(\Exception $exception): void
- {
- }
+    {
+    }
 
 	public function getShardDefinition(string $name): ?ShardDefinition
- {
- }
+    {
+    }
 
 	public function getCrossShardMoveHelper(): CrossShardMoveHelper
- {
- }
+    {
+    }
 }

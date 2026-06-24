@@ -12,14 +12,10 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 interface Constraint
 {
     /** @return string */
-    public function getName()
-    {
-    }
+    public function getName();
 
     /** @return string */
-    public function getQuotedName(AbstractPlatform $platform)
-    {
-    }
+    public function getQuotedName(AbstractPlatform $platform);
 
     /**
      * Returns the names of the referencing table columns
@@ -27,9 +23,7 @@ interface Constraint
      *
      * @return string[]
      */
-    public function getColumns()
-    {
-    }
+    public function getColumns();
 
     /**
      * Returns the quoted representation of the column names
@@ -43,7 +37,5 @@ interface Constraint
      *
      * @return string[]
      */
-    public function getQuotedColumns(AbstractPlatform $platform)
-    {
-    }
+    public function getQuotedColumns(AbstractPlatform $platform);
 }

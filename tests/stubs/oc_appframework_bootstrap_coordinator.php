@@ -40,22 +40,22 @@ class Coordinator {
 	}
 
 	public function runInitialRegistration(): void
- {
- }
+    {
+    }
 
 	public function runLazyRegistration(string $appId): void
- {
- }
+    {
+    }
 
 	public function getRegistrationContext(): ?RegistrationContext
- {
- }
+    {
+    }
 
 	public function bootApp(string $appId): void
- {
- }
+    {
+    }
 
 	public function isBootable(string $appId)
- {
- }
+    {
+    }
 }
