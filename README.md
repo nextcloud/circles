@@ -12,7 +12,6 @@ Those groups of people can then be used by any other app for sharing purpose.
 
 The app was formerly named circles which is still used as internal identifier a lot.
 
-
 # Installation
 The *Teams* app is installed and enabled by default.
 
