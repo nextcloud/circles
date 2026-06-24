@@ -118,7 +118,7 @@ class Member extends ManagedModel implements
 	/** @var int */
 	private $userType = 0;
 
-	/** @var Circle */
+	/** @var ?Circle */
 	private $basedOn;
 
 	/** @var Member */
@@ -384,9 +384,9 @@ class Member extends ManagedModel implements
 	}
 
 	/**
-	 * @return Circle
+	 * @return ?Circle
 	 */
-	public function getBasedOn(): Circle {
+	public function getBasedOn(): ?Circle {
 		return $this->basedOn;
 	}
 
@@ -721,7 +721,7 @@ class Member extends ManagedModel implements
 		if ($singleId !== '') {
 			$this->getManager()->getLink($this, $singleId, $detailed);
 		}
-		
+
 		throw new MembershipNotFoundException();
 	}
 
