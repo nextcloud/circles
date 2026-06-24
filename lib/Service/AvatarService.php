@@ -30,15 +30,16 @@ use OCP\Files\NotPermittedException;
 use OCP\Files\SimpleFS\ISimpleFile;
 use OCP\Files\SimpleFS\ISimpleFolder;
 use OCP\IL10N;
+use OCP\Image;
 use OCP\Security\ISecureRandom;
 
 class AvatarService {
 	public function __construct(
-		private IAppData $appData,
-		private IL10N $l,
-		private ISecureRandom $random,
-		private CircleService $circleService,
-		private FederatedEventService $federatedEventService,
+		private readonly IAppData $appData,
+		private readonly IL10N $l,
+		private readonly ISecureRandom $random,
+		private readonly CircleService $circleService,
+		private readonly FederatedEventService $federatedEventService,
 	) {
 	}
 
@@ -61,7 +62,7 @@ class AvatarService {
 					}
 				}
 			}
-		} catch (NotFoundException $e) {
+		} catch (NotFoundException) {
 		}
 
 		return null;
@@ -142,7 +143,7 @@ class AvatarService {
 
 		$content = file_get_contents($file['tmp_name']);
 		unlink($file['tmp_name']);
-		$image = new \OCP\Image();
+		$image = new Image();
 		$image->loadFromData($content);
 		$image->readExif($content);
 
@@ -196,7 +197,7 @@ class AvatarService {
 		}
 		try {
 			$avatarFolder = $folder->getFolder($circleId);
-		} catch (NotFoundException $e) {
+		} catch (NotFoundException) {
 			$avatarFolder = $folder->newFolder($circleId);
 		}
 		return $avatarFolder;
