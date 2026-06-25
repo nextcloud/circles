@@ -296,6 +296,7 @@ class CircleRequest extends CircleRequestBuilder {
 
 		$aliasMembership = $qb->generateAlias(CoreQueryBuilder::CIRCLE, CoreQueryBuilder::MEMBERSHIPS);
 
+		$aliasInitiator = null;
 		if (is_null($initiator)) {
 			// to get unique result, enforce a limit on level=owner
 			$limit = $qb->exprLimitInt('level', Member::LEVEL_OWNER, $aliasMembership);
@@ -305,10 +306,15 @@ class CircleRequest extends CircleRequestBuilder {
 				$initiator->getSingleId(),
 				$aliasMembership
 			);
-			$qb->completeProbeWithInitiator(CoreQueryBuilder::CIRCLE, 'single_id', $aliasMembership);
+			$aliasInitiator = $qb->completeProbeWithInitiator(CoreQueryBuilder::CIRCLE, 'single_id', $aliasMembership);
 		}
 
 		$qb->andWhere($limit);
+		if (!is_null($aliasInitiator)) {
+			// ensure initiator is not null (desync memberships/members)
+			$qb->filterNull('single_id', alias: $aliasInitiator);
+		}
+
 		$qb->resetSqlPath();
 
 		return $qb;
