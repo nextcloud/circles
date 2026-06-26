@@ -11,7 +11,6 @@ use InvalidArgumentException;
 use OC\Accounts\AccountManager;
 use OC\Avatar\AvatarManager;
 use OC\Hooks\Emitter;
-use OC_Helper;
 use OCP\Accounts\IAccountManager;
 use OCP\Comments\ICommentsManager;
 use OCP\EventDispatcher\IEventDispatcher;
@@ -26,6 +25,7 @@ use OCP\IURLGenerator;
 use OCP\IUser;
 use OCP\IUserBackend;
 use OCP\Notification\IManager as INotificationManager;
+use OCP\Support\Subscription\IAssertion;
 use OCP\User\Backend\IGetHomeBackend;
 use OCP\User\Backend\IPasswordHashBackend;
 use OCP\User\Backend\IProvideAvatarBackend;
@@ -50,9 +50,9 @@ class User implements IUser {
 	/** @var IAccountManager */
 	protected $accountManager;
 
-	public function __construct(private string $uid, private ?UserInterface $backend, private IEventDispatcher $dispatcher, $emitter = null, ?IConfig $config = null, $urlGenerator = null)
- {
- }
+	public function __construct(private string $uid, private ?UserInterface $backend, private IEventDispatcher $dispatcher, $emitter = null, ?IConfig $config = null, ?IURLGenerator $urlGenerator = null, ?IAssertion $assertion = null)
+    {
+    }
 
 	/**
 	 * get the user id
@@ -60,8 +60,8 @@ class User implements IUser {
 	 * @return string
 	 */
 	public function getUID()
- {
- }
+    {
+    }
 
 	/**
 	 * get the display name for the user, if no specific display name is set it will fallback to the user id
@@ -69,8 +69,8 @@ class User implements IUser {
 	 * @return string
 	 */
 	public function getDisplayName()
- {
- }
+    {
+    }
 
 	/**
 	 * set the displayname for the user
@@ -82,52 +82,52 @@ class User implements IUser {
 	 * @throws \InvalidArgumentException
 	 */
 	public function setDisplayName($displayName)
- {
- }
+    {
+    }
 
 	/**
 	 * @inheritDoc
 	 */
 	public function setEMailAddress($mailAddress)
- {
- }
+    {
+    }
 
 	/**
 	 * @inheritDoc
 	 */
 	public function setSystemEMailAddress(string $mailAddress): void
- {
- }
+    {
+    }
 
 	/**
 	 * @inheritDoc
 	 */
 	public function setPrimaryEMailAddress(string $mailAddress): void
- {
- }
+    {
+    }
 
 	/**
 	 * returns the timestamp of the user's last login or 0 if the user did never
 	 * login
 	 */
 	public function getLastLogin(): int
- {
- }
+    {
+    }
 
 	/**
 	 * returns the timestamp of the user's last login or 0 if the user did never
 	 * login
 	 */
 	public function getFirstLogin(): int
- {
- }
+    {
+    }
 
 	/**
 	 * updates the timestamp of the most recent login of this user
 	 */
 	public function updateLastLoginTimestamp(): bool
- {
- }
+    {
+    }
 
 	/**
 	 * Delete the user
@@ -135,8 +135,8 @@ class User implements IUser {
 	 * @return bool
 	 */
 	public function delete()
- {
- }
+    {
+    }
 
 	/**
 	 * Set the password of the user
@@ -146,16 +146,16 @@ class User implements IUser {
 	 * @return bool
 	 */
 	public function setPassword($password, $recoveryPassword = null)
- {
- }
+    {
+    }
 
 	public function getPasswordHash(): ?string
- {
- }
+    {
+    }
 
 	public function setPasswordHash(string $passwordHash): bool
- {
- }
+    {
+    }
 
 	/**
 	 * get the users home folder to mount
@@ -163,8 +163,8 @@ class User implements IUser {
 	 * @return string
 	 */
 	public function getHome()
- {
- }
+    {
+    }
 
 	/**
 	 * Get the name of the backend class the user is connected with
@@ -172,12 +172,12 @@ class User implements IUser {
 	 * @return string
 	 */
 	public function getBackendClassName()
- {
- }
+    {
+    }
 
 	public function getBackend(): ?UserInterface
- {
- }
+    {
+    }
 
 	/**
 	 * Check if the backend allows the user to change their avatar on Personal page
@@ -185,8 +185,8 @@ class User implements IUser {
 	 * @return bool
 	 */
 	public function canChangeAvatar()
- {
- }
+    {
+    }
 
 	/**
 	 * check if the backend supports changing passwords
@@ -194,8 +194,8 @@ class User implements IUser {
 	 * @return bool
 	 */
 	public function canChangePassword()
- {
- }
+    {
+    }
 
 	/**
 	 * check if the backend supports changing display names
@@ -203,8 +203,12 @@ class User implements IUser {
 	 * @return bool
 	 */
 	public function canChangeDisplayName()
- {
- }
+    {
+    }
+
+	public function canChangeEmail(): bool
+    {
+    }
 
 	/**
 	 * check if the user is enabled
@@ -212,8 +216,8 @@ class User implements IUser {
 	 * @return bool
 	 */
 	public function isEnabled()
- {
- }
+    {
+    }
 
 	/**
 	 * set the enabled status for the user
@@ -221,8 +225,8 @@ class User implements IUser {
 	 * @return void
 	 */
 	public function setEnabled(bool $enabled = true)
- {
- }
+    {
+    }
 
 	/**
 	 * get the users email address
@@ -231,22 +235,22 @@ class User implements IUser {
 	 * @since 9.0.0
 	 */
 	public function getEMailAddress()
- {
- }
+    {
+    }
 
 	/**
 	 * @inheritDoc
 	 */
 	public function getSystemEMailAddress(): ?string
- {
- }
+    {
+    }
 
 	/**
 	 * @inheritDoc
 	 */
 	public function getPrimaryEMailAddress(): ?string
- {
- }
+    {
+    }
 
 	/**
 	 * get the users' quota
@@ -255,8 +259,12 @@ class User implements IUser {
 	 * @since 9.0.0
 	 */
 	public function getQuota()
- {
- }
+    {
+    }
+
+	public function getQuotaBytes(): int|float
+    {
+    }
 
 	/**
 	 * set the users' quota
@@ -267,16 +275,16 @@ class User implements IUser {
 	 * @since 9.0.0
 	 */
 	public function setQuota($quota)
- {
- }
+    {
+    }
 
 	public function getManagerUids(): array
- {
- }
+    {
+    }
 
 	public function setManagerUids(array $uids): void
- {
- }
+    {
+    }
 
 	/**
 	 * get the avatar image if it exists
@@ -286,8 +294,8 @@ class User implements IUser {
 	 * @since 9.0.0
 	 */
 	public function getAvatarImage($size)
- {
- }
+    {
+    }
 
 	/**
 	 * get the federation cloud id
@@ -296,10 +304,10 @@ class User implements IUser {
 	 * @since 9.0.0
 	 */
 	public function getCloudId()
- {
- }
+    {
+    }
 
 	public function triggerChange($feature, $value = null, $oldValue = null)
- {
- }
+    {
+    }
 }

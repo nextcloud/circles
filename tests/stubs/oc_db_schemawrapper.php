@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
@@ -21,16 +22,16 @@ class SchemaWrapper implements ISchemaWrapper {
 	protected $tablesToDelete = [];
 
 	public function __construct(Connection $connection, ?Schema $schema = null)
- {
- }
+    {
+    }
 
 	public function getWrappedSchema()
- {
- }
+    {
+    }
 
 	public function performDropTableCalls()
- {
- }
+    {
+    }
 
 	/**
 	 * Gets all table names
@@ -38,8 +39,8 @@ class SchemaWrapper implements ISchemaWrapper {
 	 * @return array
 	 */
 	public function getTableNamesWithoutPrefix()
- {
- }
+    {
+    }
 
 	// Overwritten methods
 
@@ -47,8 +48,8 @@ class SchemaWrapper implements ISchemaWrapper {
 	 * @return array
 	 */
 	public function getTableNames()
- {
- }
+    {
+    }
 
 	/**
 	 * @param string $tableName
@@ -57,8 +58,8 @@ class SchemaWrapper implements ISchemaWrapper {
 	 * @throws \Doctrine\DBAL\Schema\SchemaException
 	 */
 	public function getTable($tableName)
- {
- }
+    {
+    }
 
 	/**
 	 * Does this schema have a table with the given name?
@@ -68,8 +69,8 @@ class SchemaWrapper implements ISchemaWrapper {
 	 * @return boolean
 	 */
 	public function hasTable($tableName)
- {
- }
+    {
+    }
 
 	/**
 	 * Creates a new table.
@@ -78,8 +79,8 @@ class SchemaWrapper implements ISchemaWrapper {
 	 * @return \Doctrine\DBAL\Schema\Table
 	 */
 	public function createTable($tableName)
- {
- }
+    {
+    }
 
 	/**
 	 * Drops a table from the schema.
@@ -88,8 +89,8 @@ class SchemaWrapper implements ISchemaWrapper {
 	 * @return \Doctrine\DBAL\Schema\Schema
 	 */
 	public function dropTable($tableName)
- {
- }
+    {
+    }
 
 	/**
 	 * Gets all tables of this schema.
@@ -97,8 +98,8 @@ class SchemaWrapper implements ISchemaWrapper {
 	 * @return \Doctrine\DBAL\Schema\Table[]
 	 */
 	public function getTables()
- {
- }
+    {
+    }
 
 	/**
 	 * Gets the DatabasePlatform for the database.
@@ -108,6 +109,6 @@ class SchemaWrapper implements ISchemaWrapper {
 	 * @throws Exception
 	 */
 	public function getDatabasePlatform()
- {
- }
+    {
+    }
 }

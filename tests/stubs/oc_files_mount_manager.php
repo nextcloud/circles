@@ -19,30 +19,30 @@ use OCP\Files\NotFoundException;
 
 class Manager implements IMountManager {
 	public function __construct(SetupManagerFactory $setupManagerFactory)
- {
- }
+    {
+    }
 
 	/**
 	 * @param IMountPoint $mount
 	 */
 	public function addMount(IMountPoint $mount)
- {
- }
+    {
+    }
 
 	/**
 	 * @param string $mountPoint
 	 */
 	public function removeMount(string $mountPoint)
- {
- }
+    {
+    }
 
 	/**
 	 * @param string $mountPoint
 	 * @param string $target
 	 */
 	public function moveMount(string $mountPoint, string $target)
- {
- }
+    {
+    }
 
 	/**
 	 * Find the mount for $path
@@ -51,8 +51,8 @@ class Manager implements IMountManager {
 	 * @return IMountPoint
 	 */
 	public function find(string $path): IMountPoint
- {
- }
+    {
+    }
 
 	/**
 	 * Find all mounts in $path
@@ -61,12 +61,12 @@ class Manager implements IMountManager {
 	 * @return IMountPoint[]
 	 */
 	public function findIn(string $path): array
- {
- }
+    {
+    }
 
 	public function clear()
- {
- }
+    {
+    }
 
 	/**
 	 * Find mounts by storage id
@@ -75,15 +75,15 @@ class Manager implements IMountManager {
 	 * @return IMountPoint[]
 	 */
 	public function findByStorageId(string $id): array
- {
- }
+    {
+    }
 
 	/**
 	 * @return IMountPoint[]
 	 */
 	public function getAll(): array
- {
- }
+    {
+    }
 
 	/**
 	 * Find mounts by numeric storage id
@@ -92,12 +92,12 @@ class Manager implements IMountManager {
 	 * @return IMountPoint[]
 	 */
 	public function findByNumericId(int $id): array
- {
- }
+    {
+    }
 
 	public function getSetupManager(): SetupManager
- {
- }
+    {
+    }
 
 	/**
 	 * Return all mounts in a path from a specific mount provider
@@ -107,8 +107,8 @@ class Manager implements IMountManager {
 	 * @return MountPoint[]
 	 */
 	public function getMountsByMountProvider(string $path, array $mountProviders)
- {
- }
+    {
+    }
 
 	/**
 	 * Return the mount matching a cached mount info (or mount file info)
@@ -118,6 +118,6 @@ class Manager implements IMountManager {
 	 * @return IMountPoint|null
 	 */
 	public function getMountFromMountInfo(ICachedMountInfo $info): ?IMountPoint
- {
- }
+    {
+    }
 }

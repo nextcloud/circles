@@ -54,41 +54,28 @@ use Psr\Log\LoggerInterface;
  */
 class Manager extends PublicEmitter implements IUserManager {
 	public function __construct(private IConfig $config, ICacheFactory $cacheFactory, private IEventDispatcher $eventDispatcher, private LoggerInterface $logger)
- {
- }
+    {
+    }
 
 	/**
 	 * Get the active backends
-	 * @return \OCP\UserInterface[]
+	 * @return UserInterface[]
 	 */
-	public function getBackends()
- {
- }
+	public function getBackends(): array
+    {
+    }
 
-	/**
-	 * register a user backend
-	 *
-	 * @param \OCP\UserInterface $backend
-	 */
-	public function registerBackend($backend)
- {
- }
+	public function registerBackend(UserInterface $backend): void
+    {
+    }
 
-	/**
-	 * remove a user backend
-	 *
-	 * @param \OCP\UserInterface $backend
-	 */
-	public function removeBackend($backend)
- {
- }
+	public function removeBackend(UserInterface $backend): void
+    {
+    }
 
-	/**
-	 * remove all user backends
-	 */
-	public function clearBackends()
- {
- }
+	public function clearBackends(): void
+    {
+    }
 
 	/**
 	 * get a user by user id
@@ -97,12 +84,12 @@ class Manager extends PublicEmitter implements IUserManager {
 	 * @return \OC\User\User|null Either the user or null if the specified user does not exist
 	 */
 	public function get($uid)
- {
- }
+    {
+    }
 
 	public function getDisplayName(string $uid): ?string
- {
- }
+    {
+    }
 
 	/**
 	 * get or construct the user object
@@ -113,8 +100,8 @@ class Manager extends PublicEmitter implements IUserManager {
 	 * @return \OC\User\User
 	 */
 	public function getUserObject($uid, $backend, $cacheUser = true)
- {
- }
+    {
+    }
 
 	/**
 	 * check if a user exists
@@ -123,8 +110,8 @@ class Manager extends PublicEmitter implements IUserManager {
 	 * @return bool
 	 */
 	public function userExists($uid)
- {
- }
+    {
+    }
 
 	/**
 	 * Check if the password is valid for the user
@@ -134,8 +121,8 @@ class Manager extends PublicEmitter implements IUserManager {
 	 * @return IUser|false the User object on success, false otherwise
 	 */
 	public function checkPassword($loginName, $password)
- {
- }
+    {
+    }
 
 	/**
 	 * Check if the password is valid for the user
@@ -146,21 +133,12 @@ class Manager extends PublicEmitter implements IUserManager {
 	 * @return IUser|false the User object on success, false otherwise
 	 */
 	public function checkPasswordNoLogging($loginName, $password)
- {
- }
+    {
+    }
 
-	/**
-	 * Search by user id
-	 *
-	 * @param string $pattern
-	 * @param int $limit
-	 * @param int $offset
-	 * @return IUser[]
-	 * @deprecated 27.0.0, use searchDisplayName instead
-	 */
 	public function search($pattern, $limit = null, $offset = null)
- {
- }
+    {
+    }
 
 	/**
 	 * Search by displayName
@@ -171,15 +149,15 @@ class Manager extends PublicEmitter implements IUserManager {
 	 * @return IUser[]
 	 */
 	public function searchDisplayName($pattern, $limit = null, $offset = null)
- {
- }
+    {
+    }
 
 	/**
 	 * @return IUser[]
 	 */
 	public function getDisabledUsers(?int $limit = null, int $offset = 0, string $search = ''): array
- {
- }
+    {
+    }
 
 	/**
 	 * Search known users (from phonebook sync) by displayName
@@ -191,8 +169,8 @@ class Manager extends PublicEmitter implements IUserManager {
 	 * @return IUser[]
 	 */
 	public function searchKnownUsersByDisplayName(string $searcher, string $pattern, ?int $limit = null, ?int $offset = null): array
- {
- }
+    {
+    }
 
 	/**
 	 * @param string $uid
@@ -202,8 +180,8 @@ class Manager extends PublicEmitter implements IUserManager {
 	 * @throws HintException
 	 */
 	public function createUser($uid, $password)
- {
- }
+    {
+    }
 
 	/**
 	 * @param string $uid
@@ -213,8 +191,8 @@ class Manager extends PublicEmitter implements IUserManager {
 	 * @throws \InvalidArgumentException
 	 */
 	public function createUserFromBackend($uid, $password, UserInterface $backend)
- {
- }
+    {
+    }
 
 	/**
 	 * returns how many users per backend exist (if supported by backend)
@@ -224,23 +202,23 @@ class Manager extends PublicEmitter implements IUserManager {
 	 * @return array<string, int> an array of backend class as key and count number as value
 	 */
 	public function countUsers()
- {
- }
+    {
+    }
 
 	public function countUsersTotal(int $limit = 0, bool $onlyMappedUsers = false): int|false
- {
- }
+    {
+    }
 
 	/**
 	 * returns how many users per backend exist in the requested groups (if supported by backend)
 	 *
-	 * @param IGroup[] $groups an array of gid to search in
-	 * @return array|int an array of backend class as key and count number as value
-	 *                   if $hasLoggedIn is true only an int is returned
+	 * @param IGroup[] $groups an array of groups to search in
+	 * @param int $limit limit to stop counting
+	 * @return array{int,int} total number of users, and number of disabled users in the given groups, below $limit. If limit is reached, -1 is returned for number of disabled users
 	 */
-	public function countUsersOfGroups(array $groups)
- {
- }
+	public function countUsersAndDisabledUsersOfGroups(array $groups, int $limit): array
+    {
+    }
 
 	/**
 	 * The callback is executed for each user on each backend.
@@ -253,8 +231,8 @@ class Manager extends PublicEmitter implements IUserManager {
 	 * @since 9.0.0
 	 */
 	public function callForAllUsers(\Closure $callback, $search = '', $onlySeen = false)
- {
- }
+    {
+    }
 
 	/**
 	 * returns how many users are disabled
@@ -263,19 +241,8 @@ class Manager extends PublicEmitter implements IUserManager {
 	 * @since 12.0.0
 	 */
 	public function countDisabledUsers(): int
- {
- }
-
-	/**
-	 * returns how many users are disabled in the requested groups
-	 *
-	 * @param array $groups groupids to search
-	 * @return int
-	 * @since 14.0.0
-	 */
-	public function countDisabledUsersOfGroups(array $groups): int
- {
- }
+    {
+    }
 
 	/**
 	 * returns how many users have logged in once
@@ -284,17 +251,12 @@ class Manager extends PublicEmitter implements IUserManager {
 	 * @since 11.0.0
 	 */
 	public function countSeenUsers()
- {
- }
+    {
+    }
 
-	/**
-	 * @param \Closure $callback
-	 * @psalm-param \Closure(\OCP\IUser):?bool $callback
-	 * @since 11.0.0
-	 */
 	public function callForSeenUsers(\Closure $callback)
- {
- }
+    {
+    }
 
 	/**
 	 * @param string $email
@@ -302,8 +264,8 @@ class Manager extends PublicEmitter implements IUserManager {
 	 * @since 9.1.0
 	 */
 	public function getByEmail($email)
- {
- }
+    {
+    }
 
 	/**
 	 * @param string $uid
@@ -312,8 +274,8 @@ class Manager extends PublicEmitter implements IUserManager {
 	 * @since 26.0.0
 	 */
 	public function validateUserId(string $uid, bool $checkDataDirectory = false): void
- {
- }
+    {
+    }
 
 	/**
 	 * Gets the list of user ids sorted by lastLogin, from most recent to least recent
@@ -324,10 +286,14 @@ class Manager extends PublicEmitter implements IUserManager {
 	 * @return list<string> list of user IDs
 	 */
 	public function getLastLoggedInUsers(?int $limit = null, int $offset = 0, string $search = ''): array
- {
- }
+    {
+    }
 
 	public function getDisplayNameCache(): DisplayNameCache
- {
- }
+    {
+    }
+
+	public function getSeenUsers(int $offset = 0, ?int $limit = null): \Iterator
+    {
+    }
 }
