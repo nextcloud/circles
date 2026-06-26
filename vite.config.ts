@@ -7,6 +7,7 @@ import { createAppConfig } from '@nextcloud/vite-config'
 import { join } from 'node:path'
 
 export default (env) => createAppConfig({
+	main: join(import.meta.dirname, 'src/main.ts'),
 	dashboard: join(import.meta.dirname, 'src/dashboard.ts'),
 	'settings-admin': join(import.meta.dirname, 'src/settings-admin.ts'),
 }, {
@@ -20,6 +21,13 @@ export default (env) => createAppConfig({
 			watch: env.mode === 'development'
 				? { allowInputInsideOutputPath: true }
 				: undefined,
+		},
+		css: {
+			modules: {
+				// Expose module class names as camelCase so templates can use
+				// `$style.teamCardHead` instead of `$style['team-card__head']`.
+				localsConvention: 'camelCaseOnly',
+			},
 		},
 	},
 })(env)
