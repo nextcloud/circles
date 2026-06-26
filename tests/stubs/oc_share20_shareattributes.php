@@ -11,27 +11,27 @@ use OCP\Share\IAttributes;
 
 class ShareAttributes implements IAttributes {
 	public function __construct()
- {
- }
+    {
+    }
 
 	/**
 	 * @inheritdoc
 	 */
 	public function setAttribute(string $scope, string $key, mixed $value): IAttributes
- {
- }
+    {
+    }
 
 	/**
 	 * @inheritdoc
 	 */
 	public function getAttribute(string $scope, string $key): mixed
- {
- }
+    {
+    }
 
 	/**
 	 * @inheritdoc
 	 */
 	public function toArray(): array
- {
- }
+    {
+    }
 }

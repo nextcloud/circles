@@ -36,8 +36,8 @@ class ContactsManager {
 	 * @param IURLGenerator $urlGenerator
 	 */
 	public function setupContactsProvider(IManager $cm, $userId, IURLGenerator $urlGenerator)
- {
- }
+    {
+    }
 
 	/**
 	 * @param IManager $cm
@@ -45,6 +45,6 @@ class ContactsManager {
 	 * @param IURLGenerator $urlGenerator
 	 */
 	public function setupSystemContactsProvider(IManager $cm, ?string $userId, IURLGenerator $urlGenerator)
- {
- }
+    {
+    }
 }

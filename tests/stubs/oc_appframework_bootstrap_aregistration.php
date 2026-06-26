@@ -13,13 +13,13 @@ namespace OC\AppFramework\Bootstrap;
  */
 abstract class ARegistration {
 	public function __construct(string $appId)
- {
- }
+    {
+    }
 
 	/**
 	 * @return string
 	 */
 	public function getAppId(): string
- {
- }
+    {
+    }
 }

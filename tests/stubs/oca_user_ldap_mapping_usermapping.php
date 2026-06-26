@@ -25,21 +25,21 @@ class UserMapping extends AbstractMapping {
 	protected const PROV_API_REGEX = '/\/ocs\/v[1-9].php\/cloud\/(groups|users)/';
 
 	public function __construct(IDBConnection $dbc, ICacheFactory $cacheFactory, IAppConfig $config, bool $isCLI, private IAssertion $assertion)
- {
- }
+    {
+    }
 
 	/**
 	 * @throws HintException
 	 */
 	public function map($fdn, $name, $uuid): bool
- {
- }
+    {
+    }
 
 	/**
 	 * returns the DB table name which holds the mappings
 	 * @return string
 	 */
 	protected function getTableName(bool $includePrefix = true)
- {
- }
+    {
+    }
 }
