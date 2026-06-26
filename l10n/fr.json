@@ -137,6 +137,7 @@
     "Personal team" : "Équipe personnelle",
     "%s owned by %s" : "%s appartenant à %s",
     "You have no permission to create a new team" : "Vous n'avez pas l'autorisation de créer une nouvelle équipe",
+    "Insufficient permissions to perform this action" : "Autorisations insuffisantes pour effectuer cette action.",
     "%s shared a file with \"%s\"." : "%s a partagé un fichier avec « %s ».",
     "%s shared a file with you." : "%s a partagé un fichier avec vous.",
     "%1$s shared %2$s with %3$s" : "%1$s a partagé %2$s avec %3$s",
