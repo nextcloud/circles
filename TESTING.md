@@ -155,5 +155,7 @@ npx playwright show-trace test-results/<test-name>/trace.zip
 
 ## CI
 
-These tests are not yet wired into CI. The Forms app has ready templates to copy:
-`node-test.yml` (Vitest) and `playwright.yml` (E2E) under its `.github/workflows/`.
+Both layers run automatically on pull requests, so there's nothing to set up before writing tests:
+
+- **Vitest** — `.github/workflows/node-test.yml` runs `npm run test` and `npm run test:coverage` and uploads coverage. This is the org workflow template (synced from `nextcloud/.github`); don't hand-edit it, the template sync would overwrite your changes.
+- **Playwright** — `.github/workflows/playwright.yml` builds the app, installs Chromium, and runs `npx playwright test`. The HTML report is uploaded as a build artifact (`playwright-report`, kept 30 days). This one is app-specific, so edit it here as the suite grows.

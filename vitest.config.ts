@@ -19,6 +19,11 @@ export default defineConfig({
 				url: 'http://localhost',
 			},
 		},
+		// lcov is what the codecov CI step uploads; text prints a summary locally.
+		coverage: {
+			provider: 'v8',
+			reporter: ['text', 'lcov'],
+		},
 		setupFiles: ['src/test-setup.ts'],
 		server: {
 			deps: {
