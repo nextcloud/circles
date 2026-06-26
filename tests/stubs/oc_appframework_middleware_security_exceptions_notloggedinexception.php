@@ -17,6 +17,6 @@ use OCP\AppFramework\Http;
  */
 class NotLoggedInException extends SecurityException {
 	public function __construct()
- {
- }
+    {
+    }
 }

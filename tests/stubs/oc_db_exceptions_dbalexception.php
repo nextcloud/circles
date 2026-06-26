@@ -33,15 +33,17 @@ use OCP\DB\Exception;
  * @psalm-immutable
  */
 class DbalException extends Exception {
-	public static function wrap(\Doctrine\DBAL\Exception $original, string $message = ''): self
- {
- }
+	public readonly ?string $query;
+
+	public static function wrap(\Doctrine\DBAL\Exception $original, string $message = '', ?string $query = null): self
+    {
+    }
 
 	public function isRetryable(): bool
- {
- }
+    {
+    }
 
 	public function getReason(): ?int
- {
- }
+    {
+    }
 }

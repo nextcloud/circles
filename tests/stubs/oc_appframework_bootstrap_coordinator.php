@@ -20,6 +20,7 @@ use OCP\Dashboard\IManager;
 use OCP\Diagnostics\IEventLogger;
 use OCP\EventDispatcher\IEventDispatcher;
 use OCP\IServerContainer;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Log\LoggerInterface;
 use Throwable;
 use function class_exists;
@@ -39,22 +40,22 @@ class Coordinator {
 	}
 
 	public function runInitialRegistration(): void
- {
- }
+    {
+    }
 
 	public function runLazyRegistration(string $appId): void
- {
- }
+    {
+    }
 
 	public function getRegistrationContext(): ?RegistrationContext
- {
- }
+    {
+    }
 
 	public function bootApp(string $appId): void
- {
- }
+    {
+    }
 
 	public function isBootable(string $appId)
- {
- }
+    {
+    }
 }
