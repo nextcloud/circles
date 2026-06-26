@@ -45,6 +45,15 @@ Those groups of people can then be used by any other app for sharing purpose.
 		</post-migration>
 	</repair-steps>
 
+	<navigations>
+		<navigation>
+			<name>Teams</name>
+			<route>circles.Page.index</route>
+			<icon>circles.svg</icon>
+			<order>80</order>
+		</navigation>
+	</navigations>
+
 	<commands>
 		<command>OCA\Circles\Command\CirclesCreate</command>
 		<command>OCA\Circles\Command\MembersAdd</command>

@@ -86,6 +86,12 @@ return [
 	],
 
 	'routes' => [
+		// Teams single-page application
+		['name' => 'Page#index', 'url' => '/teams', 'verb' => 'GET'],
+		// Catch-all so the SPA's HTML5-history client routes survive a reload.
+		['name' => 'Page#indexPath', 'url' => '/teams/{path}', 'verb' => 'GET',
+			'requirements' => ['path' => '.*'], 'defaults' => ['path' => '']],
+
 		['name' => 'EventWrapper#asyncBroadcast', 'url' => '/async/{token}/', 'verb' => 'POST'],
 
 		['name' => 'Remote#appService', 'url' => '/', 'verb' => 'GET'],
