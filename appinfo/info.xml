@@ -31,7 +31,7 @@ Those groups of people can then be used by any other app for sharing purpose.
 	<repository>https://github.com/nextcloud/circles.git</repository>
 	<screenshot>https://raw.githubusercontent.com/nextcloud/circles/master/screenshots/0.12.0.png</screenshot>
 	<dependencies>
-		<nextcloud min-version="34" max-version="34"/>
+		<nextcloud min-version="34" max-version="35"/>
 	</dependencies>
 	<default_enable/>
 	<background-jobs>
