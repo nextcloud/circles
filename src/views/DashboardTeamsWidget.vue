@@ -21,7 +21,7 @@ import TeamsList from '../components/TeamsList.vue'
 import { logger } from '../logger.ts'
 
 const LOADING_LIMIT = 3
-const createTeamHref = generateUrl('/apps/contacts/#/circles')
+const createTeamHref = generateUrl('/apps/circles/teams')
 
 const teamsList = useTemplateRef('teamsListKey')
 

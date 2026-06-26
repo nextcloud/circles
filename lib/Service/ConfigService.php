@@ -79,7 +79,6 @@ class ConfigService {
 	public const HARD_MODERATION = 'hard_moderation';
 	public const FRONTEND_ENABLED = 'frontend_enabled';
 	public const KEYHOLE_CFG_REQUEST = 'keyhole_cfg_request';
-	public const ROUTE_TO_CIRCLE = 'route_to_circle';
 	public const EVENT_EXAMPLES = 'event_examples';
 	public const ENFORCE_PASSWORD = 'enforce_password';
 
@@ -159,7 +158,6 @@ class ConfigService {
 		self::FRONTEND_ENABLED => '1',
 		self::HARD_MODERATION => '0',
 		self::KEYHOLE_CFG_REQUEST => '0',
-		self::ROUTE_TO_CIRCLE => 'contacts.contacts.directcircle',
 		self::EVENT_EXAMPLES => '0',
 		self::ENFORCE_PASSWORD => '2',
 
