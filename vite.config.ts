@@ -7,6 +7,7 @@ import { createAppConfig } from '@nextcloud/vite-config'
 import { join } from 'node:path'
 
 export default (env) => createAppConfig({
+	main: join(import.meta.dirname, 'src/main.ts'),
 	dashboard: join(import.meta.dirname, 'src/dashboard.ts'),
 	'settings-admin': join(import.meta.dirname, 'src/settings-admin.ts'),
 }, {
