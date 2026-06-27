@@ -7,6 +7,12 @@
 /tests/coverage*
 /tests/clover.xml
 
+# front-end test artifacts
+/coverage
+/playwright-report
+/test-results
+/playwright/.cache
+
 # 3rdparty
 node_modules/
 /vendor
