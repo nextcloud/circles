@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SPDX-FileCopyrightText: 2016-2024 Nextcloud GmbH and Nextcloud contributors
  * SPDX-FileCopyrightText: 2016 ownCloud, Inc.
@@ -19,6 +20,6 @@ class PublicEmitter extends BasicEmitter {
 	 * @suppress PhanAccessMethodProtected
 	 */
 	public function emit($scope, $method, array $arguments = [])
- {
- }
+    {
+    }
 }

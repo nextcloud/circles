@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SPDX-FileCopyrightText: 2016-2024 Nextcloud GmbH and Nextcloud contributors
  * SPDX-FileCopyrightText: 2016 ownCloud, Inc.
@@ -21,6 +22,7 @@ use OCP\Files\Events\InvalidateMountCacheEvent;
 use OCP\Files\NotFoundException;
 use OCP\Files\Storage\IStorageFactory;
 use OCP\Http\Client\IClientService;
+use OCP\IConfig;
 use OCP\IDBConnection;
 use OCP\IGroupManager;
 use OCP\IUserManager;
@@ -37,9 +39,9 @@ use Psr\Log\LoggerInterface;
 class Manager {
 	public const STORAGE = '\OCA\Files_Sharing\External\Storage';
 
-	public function __construct(private IDBConnection $connection, \OC\Files\Mount\Manager $mountManager, private IStorageFactory $storageLoader, private IClientService $clientService, private IManager $notificationManager, private IDiscoveryService $discoveryService, private ICloudFederationProviderManager $cloudFederationProviderManager, private ICloudFederationFactory $cloudFederationFactory, private IGroupManager $groupManager, private IUserManager $userManager, IUserSession $userSession, private IEventDispatcher $eventDispatcher, private LoggerInterface $logger)
- {
- }
+	public function __construct(private IDBConnection $connection, private \OC\Files\Mount\Manager $mountManager, private IStorageFactory $storageLoader, private IClientService $clientService, private IManager $notificationManager, private IDiscoveryService $discoveryService, private ICloudFederationProviderManager $cloudFederationProviderManager, private ICloudFederationFactory $cloudFederationFactory, private IGroupManager $groupManager, private IUserManager $userManager, IUserSession $userSession, private IEventDispatcher $eventDispatcher, private LoggerInterface $logger, private IConfig $config)
+    {
+    }
 
 	/**
 	 * add new server-to-server share
@@ -58,12 +60,12 @@ class Manager {
 	 * @throws \Doctrine\DBAL\Exception
 	 */
 	public function addShare($remote, $token, $password, $name, $owner, $shareType, $accepted = false, $user = null, $remoteId = '', $parent = -1)
- {
- }
+    {
+    }
 
 	public function getShare(int $id, ?string $user = null): array|false
- {
- }
+    {
+    }
 
 	/**
 	 * Get share by token
@@ -72,8 +74,8 @@ class Manager {
 	 * @return array|false
 	 */
 	public function getShareByToken(string $token): array|false
- {
- }
+    {
+    }
 
 	/**
 	 * accept server-to-server share
@@ -82,8 +84,8 @@ class Manager {
 	 * @return bool True if the share could be accepted, false otherwise
 	 */
 	public function acceptShare(int $id, ?string $user = null)
- {
- }
+    {
+    }
 
 	/**
 	 * decline server-to-server share
@@ -92,12 +94,12 @@ class Manager {
 	 * @return bool True if the share could be declined, false otherwise
 	 */
 	public function declineShare(int $id, ?string $user = null)
- {
- }
+    {
+    }
 
 	public function processNotification(int $remoteShare, ?string $user = null): void
- {
- }
+    {
+    }
 
 	/**
 	 * try send accept message to ocm end-point
@@ -109,8 +111,8 @@ class Manager {
 	 * @return array|false
 	 */
 	protected function tryOCMEndPoint($remoteDomain, $token, $remoteId, $feedback)
- {
- }
+    {
+    }
 
 
 	/**
@@ -120,27 +122,27 @@ class Manager {
 	 * @return string
 	 */
 	protected function stripPath($path)
- {
- }
+    {
+    }
 
 	public function getMount($data, ?string $user = null)
- {
- }
+    {
+    }
 
 	/**
 	 * @param array $data
 	 * @return Mount
 	 */
 	protected function mountShare($data, ?string $user = null)
- {
- }
+    {
+    }
 
 	/**
 	 * @return \OC\Files\Mount\Manager
 	 */
 	public function getMountManager()
- {
- }
+    {
+    }
 
 	/**
 	 * @param string $source
@@ -148,12 +150,12 @@ class Manager {
 	 * @return bool
 	 */
 	public function setMountPoint($source, $target)
- {
- }
+    {
+    }
 
 	public function removeShare($mountPoint): bool
- {
- }
+    {
+    }
 
 	/**
 	 * remove re-shares from share table and mapping in the federated_reshares table
@@ -161,8 +163,8 @@ class Manager {
 	 * @param $mountPointId
 	 */
 	protected function removeReShares($mountPointId)
- {
- }
+    {
+    }
 
 	/**
 	 * remove all shares for user $uid if the user was deleted
@@ -170,12 +172,12 @@ class Manager {
 	 * @param string $uid
 	 */
 	public function removeUserShares($uid): bool
- {
- }
+    {
+    }
 
 	public function removeGroupShares($gid): bool
- {
- }
+    {
+    }
 
 	/**
 	 * return a list of shares which are not yet accepted by the user
@@ -183,8 +185,8 @@ class Manager {
 	 * @return list<Files_SharingRemoteShare> list of open server-to-server shares
 	 */
 	public function getOpenShares()
- {
- }
+    {
+    }
 
 	/**
 	 * return a list of shares which are accepted by the user
@@ -192,6 +194,6 @@ class Manager {
 	 * @return list<Files_SharingRemoteShare> list of accepted server-to-server shares
 	 */
 	public function getAcceptedShares()
- {
- }
+    {
+    }
 }

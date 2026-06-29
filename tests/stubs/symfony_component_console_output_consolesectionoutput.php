@@ -43,19 +43,15 @@ class ConsoleSectionOutput extends StreamOutput
      * Clears previous output for this section.
      *
      * @param int $lines Number of lines to clear. If null, then the entire output of this section is cleared
-     *
-     * @return void
      */
-    public function clear(?int $lines = null)
+    public function clear(?int $lines = null): void
     {
     }
 
     /**
      * Overwrites the previous output with a new message.
-     *
-     * @return void
      */
-    public function overwrite(string|iterable $message)
+    public function overwrite(string|iterable $message): void
     {
     }
 
@@ -81,10 +77,7 @@ class ConsoleSectionOutput extends StreamOutput
     {
     }
 
-    /**
-     * @return void
-     */
-    protected function doWrite(string $message, bool $newline)
+    protected function doWrite(string $message, bool $newline): void
     {
     }
 }
