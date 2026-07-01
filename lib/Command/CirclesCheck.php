@@ -10,6 +10,7 @@ namespace OCA\Circles\Command;
 
 use Exception;
 use OC\Core\Command\Base;
+use OC\Memcache\APCu;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\AppInfo\Capabilities;
 use OCA\Circles\Exceptions\FederatedEventException;
@@ -39,6 +40,7 @@ use OCA\Circles\Tools\Traits\TArrayTools;
 use OCA\Circles\Tools\Traits\TNCRequest;
 use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\IAppConfig;
+use OCP\IConfig;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -67,6 +69,7 @@ class CirclesCheck extends Base {
 	public function __construct(
 		private Capabilities $capabilities,
 		private IAppConfig $appConfig,
+		private IConfig $config,
 		private InterfaceService $interfaceService,
 		private FederatedEventService $federatedEventService,
 		private RemoteService $remoteService,
@@ -260,6 +263,17 @@ class CirclesCheck extends Base {
 
 		if (!$this->testRequest($output, 'GET', 'core.CSRFToken.index')) {
 			return false;
+		}
+
+		$localIsApcu = ltrim($this->config->getSystemValueString('memcache.local'), '\\') === '\OC\Memcache\APCu';
+		if ($localIsApcu) {
+			/*
+			 * APCu cache is not shared between the CLI process and web requests, so freshly
+			 * set values will either be missing or stale and make the check fail.
+			 * The amount of seconds slept here depends on the TTL set by the AppConfig.
+			 */
+			$output->writeln('- Waiting for APCu config cache to refresh (4s)');
+			sleep(4);
 		}
 
 		if (!$this->testRequest(
