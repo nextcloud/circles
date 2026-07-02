@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 use OCA\Circles\Db\MemberRequest;
+use OCA\Circles\Db\MembershipRequest;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\InsufficientPermissionException;
 use OCA\Circles\Exceptions\MemberHelperException;
@@ -31,6 +32,7 @@ class PermissionService {
 		private readonly FederatedUserService $federatedUserService,
 		private readonly ConfigService $configService,
 		private readonly MemberRequest $memberRequest,
+		private readonly MembershipRequest $membershipRequest,
 	) {
 	}
 
@@ -154,9 +156,16 @@ class PermissionService {
 		try {
 			return $this->memberRequest->getMemberByUserId($circleId, $userId);
 		} catch (MemberNotFoundException) {
-			throw new InsufficientPermissionException(
-				$this->l10n->t('Insufficient permissions to perform this action')
-			);
+			// not a direct member, check if user has inherited membership via group/circle
+			try {
+				$membership = $this->membershipRequest->getMembershipByUserId($circleId, $userId);
+				// return group/circle member through which access is inherited, to use its permission level
+				return $this->memberRequest->getMember($circleId, $membership->getInheritanceFirst());
+			} catch (MembershipNotFoundException) {
+				throw new InsufficientPermissionException(
+					$this->l10n->t('Insufficient permissions to perform this action')
+				);
+			}
 		}
 	}
 
