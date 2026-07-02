@@ -82,6 +82,26 @@ class MembershipRequest extends MembershipRequestBuilder {
 
 
 	/**
+	 * @throws MembershipNotFoundException
+	 */
+	public function getMembershipByUserId(string $circleId, string $userId): Membership {
+		$qb = $this->getMembershipSelectSql();
+		$qb->limitToCircleId($circleId);
+
+		$expr = $qb->expr();
+		$qb->leftJoin(
+			CoreQueryBuilder::MEMBERSHIPS,
+			CoreRequestBuilder::TABLE_MEMBER,
+			CoreQueryBuilder::MEMBER,
+			$expr->eq(CoreQueryBuilder::MEMBER . '.single_id', CoreQueryBuilder::MEMBERSHIPS . '.single_id')
+		);
+		$qb->andWhere($expr->eq(CoreQueryBuilder::MEMBER . '.user_id', $qb->createNamedParameter($userId)));
+
+		return $this->getItemFromRequest($qb);
+	}
+
+
+	/**
 	 * @param string $singleId
 	 *
 	 * @return Membership[]
