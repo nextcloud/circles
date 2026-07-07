@@ -14,5 +14,5 @@ This file is generated from multiple sources. Included packages:
 	- version: 33.0.0-dev.0
 	- license: AGPL-3.0-or-later
 - vite
-	- version: 7.1.11
+	- version: 7.1.12
 	- license: MIT
