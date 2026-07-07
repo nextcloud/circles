@@ -23,7 +23,6 @@ use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\IFederatedItem;
-use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\IFederatedItemHighSeverity;
 use OCA\Circles\IFederatedItemInitiatorMembershipNotRequired;
 use OCA\Circles\IFederatedItemMemberCheckNotRequired;
@@ -47,7 +46,6 @@ use OCP\IUserManager;
 class CircleJoin implements
 	IFederatedItem,
 	IFederatedItemInitiatorMembershipNotRequired,
-	IFederatedItemAsyncProcess,
 	IFederatedItemHighSeverity,
 	IFederatedItemMemberCheckNotRequired,
 	IFederatedItemMemberOptional {
@@ -98,7 +96,8 @@ class CircleJoin implements
 			$member->setInvitedBy($initiator->getInvitedBy());
 		}
 
-		$this->manageMemberStatus($circle, $member);
+		$invitationCode = $event->getParams()->g('invitationCode');
+		$this->manageMemberStatus($circle, $member, $invitationCode);
 
 		$this->circleService->confirmCircleNotFull($circle);
 
@@ -219,11 +218,12 @@ class CircleJoin implements
 	/**
 	 * @param Circle $circle
 	 * @param Member $member
+	 * @param string|null $invitationCode
 	 *
 	 * @throws FederatedItemBadRequestException
 	 * @throws RequestBuilderException
 	 */
-	private function manageMemberStatus(Circle $circle, Member $member) {
+	private function manageMemberStatus(Circle $circle, Member $member, ?string $invitationCode = null) {
 		try {
 			$knownMember = $this->memberRequest->searchMember($member);
 			if ($knownMember->getLevel() === Member::LEVEL_NONE) {
@@ -245,7 +245,8 @@ class CircleJoin implements
 
 			throw new MemberAlreadyExistsException(StatusCode::$CIRCLE_JOIN[122], 122);
 		} catch (MemberNotFoundException) {
-			if (!$circle->isConfig(Circle::CFG_OPEN)) {
+			$allowedToJoin = $invitationCode && $circle->getCircleInvitation()?->getInvitationCode() === $invitationCode;
+			if (!$circle->isConfig(Circle::CFG_OPEN) && !$allowedToJoin) {
 				throw new FederatedItemBadRequestException(StatusCode::$CIRCLE_JOIN[124], 124);
 			}
 

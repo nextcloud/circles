@@ -593,6 +593,97 @@ class LocalController extends OCSController {
 		}
 	}
 
+	#[NoAdminRequired]
+	public function createInvitation(string $circleId): DataResponse {
+		try {
+			$this->setCurrentFederatedUser();
+
+			$outcome = $this->circleService->createInvitation($circleId);
+
+			return new DataResponse($this->serializeArray($outcome));
+		} catch (\Exception $e) {
+			$this->e($e, ['circleId' => $circleId]);
+			throw new OCSException($e->getMessage(), (int)$e->getCode(), $e);
+		}
+	}
+
+	#[NoAdminRequired]
+	public function revokeInvitation(string $circleId): DataResponse {
+		try {
+			$this->setCurrentFederatedUser();
+
+			$outcome = $this->circleService->revokeInvitation($circleId);
+
+			return new DataResponse($this->serializeArray($outcome));
+		} catch (\Exception $e) {
+			$this->e($e, ['circleId' => $circleId]);
+			throw new OCSException($e->getMessage(), (int)$e->getCode(), $e);
+		}
+	}
+
+	#[NoAdminRequired]
+	#[BruteForceProtection(action: 'getInvitation')]
+	public function getInvitation(string $invitationCode): DataResponse {
+		try {
+			$this->setCurrentFederatedUser();
+
+			$circleProbe = (new CircleProbe())
+				->includeSystemCircles()
+				->includeHiddenCircles()
+				->filterByInvitationCode($invitationCode);
+
+			$circles = $this->circleService->getCircles($circleProbe);
+			if (empty($circles)) {
+				return new DataResponse([], Http::STATUS_NOT_FOUND);
+			}
+			$circle = reset($circles);
+
+			$membershipStatus = 'NOT_A_MEMBER';
+			if ($circle->hasInitiator()) {
+				if ($circle->getInitiator()->getLevel() > Member::LEVEL_NONE) {
+					$membershipStatus = 'MEMBER';
+				} elseif ($circle->getInitiator()->getStatus() === Member::STATUS_REQUEST) {
+					$membershipStatus = 'REQUESTED_MEMBERSHIP';
+				}
+			}
+
+			return new DataResponse([
+				'circleId' => $circle->getSingleId(),
+				'circleName' => $circle->getName(),
+				'membershipStatus' => $membershipStatus,
+			]);
+		} catch (\Exception $e) {
+			$this->e($e, ['circleId' => $invitationCode]);
+			throw new OCSException($e->getMessage(), (int)$e->getCode(), $e);
+		}
+	}
+
+	#[NoAdminRequired]
+	#[BruteForceProtection(action: 'joinInvitation')]
+	public function joinInvitation(string $invitationCode): DataResponse {
+		try {
+			$this->setCurrentFederatedUser();
+
+			$circleProbe = (new CircleProbe())
+				->includeSystemCircles()
+				->includeHiddenCircles()
+				->filterByInvitationCode($invitationCode);
+
+			$circles = $this->circleService->getCircles($circleProbe);
+			if (empty($circles)) {
+				return new DataResponse([], Http::STATUS_NOT_FOUND);
+			}
+			$circle = reset($circles);
+
+			$result = $this->circleService->circleJoin($circle->getSingleId(), $invitationCode);
+
+			return new DataResponse($this->serializeArray($result));
+		} catch (\Exception $e) {
+			$this->e($e, ['circleId' => $invitationCode]);
+			throw new OCSException($e->getMessage(), (int)$e->getCode(), $e);
+		}
+	}
+
 	/**
 	 * @throws FederatedUserException
 	 * @throws FederatedUserNotFoundException

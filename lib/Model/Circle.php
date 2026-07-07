@@ -204,6 +204,9 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	/** @var int */
 	private $populationInherited = 0;
 
+	/** @var CircleInvitation|null */
+	private $circleInvitation = null;
+
 	//	/** @var bool */
 	//	private $hidden = false;
 
@@ -665,6 +668,23 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		return $this->populationInherited;
 	}
 
+	/**
+	 * @param CircleInvitation|null $circleInvitation
+	 *
+	 * @return Circle
+	 */
+	public function setCircleInvitation(?CircleInvitation $circleInvitation): self {
+		$this->circleInvitation = $circleInvitation;
+
+		return $this;
+	}
+
+	/**
+	 * @return CircleInvitation|null
+	 */
+	public function getCircleInvitation(): ?CircleInvitation {
+		return $this->circleInvitation;
+	}
 
 	/**
 	 * @param array $settings
@@ -807,6 +827,13 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		} catch (InvalidItemException) {
 		}
 
+		try {
+			/** @var CircleInvitation $circleInvitation */
+			$circleInvitation = $this->deserialize($this->getArray('invitation', $data), CircleInvitation::class);
+			$this->setCircleInvitation($circleInvitation);
+		} catch (InvalidItemException $e) {
+		}
+
 		return $this;
 	}
 
@@ -858,6 +885,7 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 			try {
 				$initiatorHelper->mustBeAdmin();
 				$arr['settings'] = $this->getSettings();
+				$arr['invitationCode'] = $this->getCircleInvitation()?->getInvitationCode();
 			} catch (MemberHelperException|MemberLevelException) {
 			}
 		}
