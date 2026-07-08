@@ -1,15 +1,28 @@
 SPDX-License-Identifier: AGPL-3.0-or-later
 SPDX-License-Identifier: Apache-2.0
+SPDX-License-Identifier: MIT
 SPDX-FileCopyrightText: Austin Andrews
+SPDX-FileCopyrightText: Eric Norris (https://github.com/ericnorris)
+SPDX-FileCopyrightText: Jacob Clevenger<https://github.com/wheatjs>
 SPDX-FileCopyrightText: Nextcloud GmbH and Nextcloud contributors
+SPDX-FileCopyrightText: ts-md5 developers
 
 This file is generated from multiple sources. Included packages:
 - @mdi/js
 	- version: 7.4.47
 	- license: Apache-2.0
 - @nextcloud/vue
-	- version: 9.5.0
+	- version: 9.8.2
 	- license: AGPL-3.0-or-later
+- @vueuse/components
+	- version: 14.3.0
+	- license: MIT
+- striptags
+	- version: 3.2.0
+	- license: MIT
 - teams
 	- version: 35.0.0-dev.0
 	- license: AGPL-3.0-or-later
+- ts-md5
+	- version: 2.0.1
+	- license: MIT
