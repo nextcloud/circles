@@ -760,7 +760,7 @@ class Member extends ManagedModel implements
 			/** @var Circle $circle */
 			$circle = $this->deserialize($this->getArray('circle', $data), Circle::class);
 			$this->setCircle($circle);
-		} catch (InvalidItemException $e) {
+		} catch (InvalidItemException) {
 		}
 
 		try {
