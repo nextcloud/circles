@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\FederatedItems;
 
@@ -49,7 +47,6 @@ class CircleLeave implements
 	use TDeserialize;
 	use TNCLogger;
 
-
 	/**
 	 * CircleLeave constructor.
 	 *
@@ -68,7 +65,6 @@ class CircleLeave implements
 	) {
 		$this->setup('app', Application::APP_ID);
 	}
-
 
 	/**
 	 * @param FederatedEvent $event
@@ -123,7 +119,6 @@ class CircleLeave implements
 		}
 	}
 
-
 	/**
 	 * @param FederatedEvent $event
 	 *
@@ -159,7 +154,6 @@ class CircleLeave implements
 		$this->membershipService->updatePopulation($event->getCircle());
 	}
 
-
 	/**
 	 * @param FederatedEvent $event
 	 * @param array $results
@@ -171,7 +165,6 @@ class CircleLeave implements
 			$this->eventService->circleDestroyed($event, $results);
 		}
 	}
-
 
 	/**
 	 * @param Circle $circle

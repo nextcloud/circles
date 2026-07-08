@@ -75,9 +75,9 @@ class SettingsController extends OCSController {
 			return null;
 		}
 
-		return $this->appConfig->getAppValueString(ConfigService::FRONTAL_CLOUD_SCHEME) . '://' .
-			$this->appConfig->getAppValueString(ConfigService::FRONTAL_CLOUD_ID) .
-			$this->appConfig->getAppValueString(ConfigService::FRONTAL_CLOUD_PATH) . '/';
+		return $this->appConfig->getAppValueString(ConfigService::FRONTAL_CLOUD_SCHEME) . '://'
+			. $this->appConfig->getAppValueString(ConfigService::FRONTAL_CLOUD_ID)
+			. $this->appConfig->getAppValueString(ConfigService::FRONTAL_CLOUD_PATH) . '/';
 	}
 
 	private function parseFrontalAddress(string $url): ?array {

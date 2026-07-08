@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Command;
 
@@ -60,7 +58,6 @@ class SharesFiles extends Base {
 			->addOption('by', '', InputOption::VALUE_REQUIRED, 'get files shared BY USERID', '')
 			->addOption('all', '', InputOption::VALUE_NONE, 'get all data about the shares');
 	}
-
 
 	/**
 	 * @param InputInterface $input
@@ -118,7 +115,6 @@ class SharesFiles extends Base {
 		//			return 0;
 		//		}
 	}
-
 
 	/**
 	 * @param int $fileId
@@ -210,7 +206,6 @@ class SharesFiles extends Base {
 		$table->setRows($rows);
 		$table->render();
 	}
-
 
 	/**
 	 * @param int $fileId

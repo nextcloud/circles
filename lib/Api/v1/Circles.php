@@ -46,7 +46,6 @@ class Circles {
 	public const LEVEL_ADMIN = Member::LEVEL_ADMIN;
 	public const LEVEL_OWNER = Member::LEVEL_OWNER;
 
-
 	/**
 	 * Circles::listCircles();
 	 *
@@ -87,7 +86,6 @@ class Circles {
 
 		return $circleService->getCircles($probe);
 	}
-
 
 	/**
 	 * @param string $userId
@@ -131,7 +129,6 @@ class Circles {
 		return $circleService->probeCircles($probe);
 	}
 
-
 	/**
 	 * @param string $circleUniqueId
 	 * @param bool $forceAll
@@ -171,7 +168,6 @@ class Circles {
 		return $circleService->getCircle($circleUniqueId);
 	}
 
-
 	/**
 	 * @param string $circleUniqueId
 	 * @param string $ident
@@ -194,7 +190,6 @@ class Circles {
 
 		return $circlesManager->getLink($circleUniqueId, $federatedUser->getSingleId());
 	}
-
 
 	/**
 	 * @param array $circleUniqueIds

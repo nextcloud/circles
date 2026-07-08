@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-
 namespace OCA\Circles\Db;
 
 use OCA\Circles\Model\DeprecatedMember;
@@ -24,7 +23,6 @@ use OCP\Share\Exceptions\ShareNotFound;
 class GSSharesRequest extends GSSharesRequestBuilder {
 	use TStringTools;
 
-
 	/**
 	 * @param GSShare $gsShare
 	 */
@@ -40,7 +38,6 @@ class GSSharesRequest extends GSSharesRequestBuilder {
 			->setValue('mountpoint_hash', $qb->createNamedParameter($hash));
 		$qb->executeStatement();
 	}
-
 
 	/**
 	 * @param string $userId
@@ -63,7 +60,6 @@ class GSSharesRequest extends GSSharesRequestBuilder {
 		return $shares;
 	}
 
-
 	/**
 	 * @param DeprecatedMember $member
 	 */
@@ -75,7 +71,6 @@ class GSSharesRequest extends GSSharesRequestBuilder {
 
 		$qb->executeStatement();
 	}
-
 
 	/**
 	 * @param IQueryBuilder $qb
@@ -95,7 +90,6 @@ class GSSharesRequest extends GSSharesRequestBuilder {
 		));
 	}
 
-
 	private function leftJoinMountPoint(IQueryBuilder $qb, string $userId) {
 		$expr = $qb->expr();
 		$pf = '' . $this->default_select_alias . '.';
@@ -109,7 +103,6 @@ class GSSharesRequest extends GSSharesRequestBuilder {
 		$qb->selectAlias('mp.mountPoint', 'gsshares_mountpoint')
 			->leftJoin($this->default_select_alias, DeprecatedRequestBuilder::TABLE_GSSHARES_MOUNTPOINT, 'mp', $on);
 	}
-
 
 	/**
 	 * @param string $userId
@@ -136,7 +129,6 @@ class GSSharesRequest extends GSSharesRequestBuilder {
 		return $this->parseGSSharesMountpointSelectSql($data);
 	}
 
-
 	/**
 	 * @param int $gsShareId
 	 * @param string $userId
@@ -160,7 +152,6 @@ class GSSharesRequest extends GSSharesRequestBuilder {
 		return $this->parseGSSharesMountpointSelectSql($data);
 	}
 
-
 	/**
 	 * @param GSShareMountpoint $mountpoint
 	 */
@@ -175,7 +166,6 @@ class GSSharesRequest extends GSSharesRequestBuilder {
 			->setValue('mountpoint_hash', $qb->createNamedParameter($hash));
 		$qb->executeStatement();
 	}
-
 
 	/**
 	 * @param GSShareMountpoint $mountpoint

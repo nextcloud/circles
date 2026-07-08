@@ -66,7 +66,6 @@ class CirclesSetting extends Base {
 			->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
 	}
 
-
 	/**
 	 * @param InputInterface $input
 	 * @param OutputInterface $output
@@ -143,10 +142,8 @@ class CirclesSetting extends Base {
 		return 0;
 	}
 
-
 	private function testPassword(OutputInterface $output, Circle $circle, string $testPassword): void {
 		$output->writeln('');
-
 
 		$output->write('Password enforced for this Circle: ');
 		if (!$this->configService->enforcePasswordOnSharedFile($circle)) {

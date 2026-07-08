@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Command;
 
@@ -52,7 +50,6 @@ class MembersRemove extends Base {
 		parent::__construct();
 	}
 
-
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:members:remove')
@@ -61,7 +58,6 @@ class MembersRemove extends Base {
 			->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
 			->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0');
 	}
-
 
 	/**
 	 * @param InputInterface $input

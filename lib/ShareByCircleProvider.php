@@ -260,7 +260,6 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 		}
 	}
 
-
 	/**
 	 * @param IShare $share
 	 * @param string $recipient
@@ -293,7 +292,6 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 		return $wrappedShare->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
 	}
 
-
 	/**
 	 * @param IShare $share
 	 * @param string $recipient
@@ -316,7 +314,6 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 
 		return $wrappedShare->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
 	}
-
 
 	/**
 	 * @param string $userId
@@ -352,8 +349,8 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 				$result[$wrappedShare->getFileSource()] = [];
 			}
 			if ($wrappedShare->getFileCache()->isAccessible()) {
-				$result[$wrappedShare->getFileSource()][] =
-					$wrappedShare->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
+				$result[$wrappedShare->getFileSource()][]
+					= $wrappedShare->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
 			} else {
 				$this->logger->debug('shared document is not available anymore', ['wrappedShare' => $wrappedShare]);
 				if ($wrappedShare->getFileCache()->getPath() === '') {
@@ -364,7 +361,6 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 
 		return $result;
 	}
-
 
 	/**
 	 * @param string $userId
@@ -419,7 +415,6 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 		);
 	}
 
-
 	/**
 	 * @param string $shareId
 	 * @param string|null $recipientId
@@ -449,7 +444,6 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 		return $wrappedShare->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
 	}
 
-
 	/**
 	 * @param Node $path
 	 *
@@ -469,7 +463,6 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 			)
 		);
 	}
-
 
 	/**
 	 * @param string $userId
@@ -590,7 +583,6 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 		return $share;
 	}
 
-
 	public function formatShare(IShare $share): array {
 		$this->federatedUserService->initCurrentUser();
 		$circleProbe = new CircleProbe();
@@ -613,7 +605,6 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 		return $result;
 	}
 
-
 	/**
 	 * @param string $uid
 	 * @param int $shareType
@@ -621,13 +612,11 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 	public function userDeleted($uid, $shareType): void {
 	}
 
-
 	/**
 	 * @param string $gid
 	 */
 	public function groupDeleted($gid): void {
 	}
-
 
 	/**
 	 * @param string $uid
@@ -635,7 +624,6 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 	 */
 	public function userDeletedFromGroup($uid, $gid): void {
 	}
-
 
 	/**
 	 * if $currentAccess, returns long version of the access list:
@@ -669,7 +657,6 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 		foreach ($nodes as $node) {
 			$ids[] = $node->getId();
 		}
-
 
 		if (!$currentAccess) {
 			return $this->getAccessListShort($ids);
@@ -813,7 +800,6 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 	public function getChildren(IShare $parent): array {
 		return [];
 	}
-
 
 	/**
 	 * @return iterable

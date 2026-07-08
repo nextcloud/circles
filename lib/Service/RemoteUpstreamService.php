@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Service;
 
@@ -33,7 +31,6 @@ use OCA\Circles\Tools\Traits\TNCRequest;
 class RemoteUpstreamService {
 	use TNCRequest;
 
-
 	/**
 	 * RemoteUpstreamService constructor.
 	 *
@@ -50,7 +47,6 @@ class RemoteUpstreamService {
 	) {
 	}
 
-
 	/**
 	 * @param string $token
 	 *
@@ -59,7 +55,6 @@ class RemoteUpstreamService {
 	public function getEventsByToken(string $token): array {
 		return $this->eventWrapperRequest->getByToken($token);
 	}
-
 
 	/**
 	 * @param EventWrapper $wrapper
@@ -85,7 +80,6 @@ class RemoteUpstreamService {
 		$wrapper->getEvent()->setResult(new SimpleDataStore($data));
 	}
 
-
 	/**
 	 * @param FederatedEvent $event
 	 *
@@ -109,7 +103,6 @@ class RemoteUpstreamService {
 		$event->setOutcome($data);
 	}
 
-
 	//
 	//
 	//
@@ -126,7 +119,6 @@ class RemoteUpstreamService {
 	//		$this->removeDeprecatedCircles();
 	//		$this->removeDeprecatedEvents();
 	//	}
-
 
 	//	/**
 	//	 * @param array $circles

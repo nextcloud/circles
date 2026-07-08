@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
@@ -54,13 +53,11 @@ class RemoteStreamService extends NCSignature {
 	use TStringTools;
 	use TNCWellKnown;
 
-
 	public const UPDATE_DATA = 'data';
 	public const UPDATE_ITEM = 'item';
 	public const UPDATE_TYPE = 'type';
 	public const UPDATE_INSTANCE = 'instance';
 	public const UPDATE_HREF = 'href';
-
 
 	/**
 	 * RemoteStreamService constructor.
@@ -79,7 +76,6 @@ class RemoteStreamService extends NCSignature {
 	) {
 		$this->setup('app', 'circles');
 	}
-
 
 	/**
 	 * Returns the Signatory model for the Circles app.
@@ -150,7 +146,6 @@ class RemoteStreamService extends NCSignature {
 		return $app;
 	}
 
-
 	/**
 	 * Reset the Signatory (and the Identity) for the Circles app.
 	 */
@@ -162,7 +157,6 @@ class RemoteStreamService extends NCSignature {
 		} catch (SignatoryException) {
 		}
 	}
-
 
 	/**
 	 * shortcut to requestRemoteInstance that return result if available, or exception.
@@ -202,7 +196,6 @@ class RemoteStreamService extends NCSignature {
 
 		throw $this->getFederatedItemExceptionFromResult($result);
 	}
-
 
 	/**
 	 * Send a request to a remote instance, based on:
@@ -257,7 +250,6 @@ class RemoteStreamService extends NCSignature {
 		return $signedRequest;
 	}
 
-
 	/**
 	 * get the value of an entry from the Signatory of the RemoteInstance.
 	 *
@@ -281,7 +273,6 @@ class RemoteStreamService extends NCSignature {
 		return $this->feedStringWithParams($value, $params);
 	}
 
-
 	/**
 	 * get RemoteInstance with confirmed and known identity from database.
 	 *
@@ -299,7 +290,6 @@ class RemoteStreamService extends NCSignature {
 
 		return $remoteInstance;
 	}
-
 
 	/**
 	 * Add a remote instance, based on the address
@@ -321,7 +311,6 @@ class RemoteStreamService extends NCSignature {
 
 		return $remoteInstance;
 	}
-
 
 	/**
 	 * retrieve Signatory.
@@ -356,7 +345,6 @@ class RemoteStreamService extends NCSignature {
 
 		return $remoteInstance;
 	}
-
 
 	/**
 	 * Add a remote instance, based on the address
@@ -404,7 +392,6 @@ class RemoteStreamService extends NCSignature {
 		$this->remoteRequest->save($remoteInstance);
 	}
 
-
 	/**
 	 * @param string $address
 	 *
@@ -422,7 +409,6 @@ class RemoteStreamService extends NCSignature {
 		throw new RemoteNotFoundException();
 	}
 
-
 	/**
 	 * @param string $instance
 	 * @param string $check
@@ -438,7 +424,6 @@ class RemoteStreamService extends NCSignature {
 
 		return false;
 	}
-
 
 	/**
 	 * Confirm the Auth of a RemoteInstance, based on the result from a request
@@ -467,7 +452,6 @@ class RemoteStreamService extends NCSignature {
 		}
 	}
 
-
 	/**
 	 * @param NCRequestResult $result
 	 *
@@ -491,7 +475,6 @@ class RemoteStreamService extends NCSignature {
 		return new $e($message, $code);
 	}
 
-
 	/**
 	 * @param ReflectionClass $class
 	 *
@@ -512,7 +495,6 @@ class RemoteStreamService extends NCSignature {
 		}
 	}
 
-
 	/**
 	 * @param int $statusCode
 	 *
@@ -527,7 +509,6 @@ class RemoteStreamService extends NCSignature {
 
 		return FederatedItemException::class;
 	}
-
 
 	/**
 	 * TODO: confirm if method is really needed
@@ -553,7 +534,6 @@ class RemoteStreamService extends NCSignature {
 			throw new RemoteUidException();
 		}
 	}
-
 
 	/**
 	 * TODO: check if this method is not useless

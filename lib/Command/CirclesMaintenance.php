@@ -45,7 +45,6 @@ class CirclesMaintenance extends Base {
 		parent::__construct();
 	}
 
-
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:maintenance')

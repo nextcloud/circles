@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
@@ -30,7 +29,6 @@ class Version0022Date20220526111723 extends SimpleMigrationStep {
 		private readonly Connection $connection,
 	) {
 	}
-
 
 	/**
 	 * @param IOutput $output

@@ -84,7 +84,6 @@ class CircleMountProvider implements IMountProvider, IPartialMountProvider {
 		return $mounts;
 	}
 
-
 	/**
 	 * @throws InitiatorNotFoundException
 	 * @throws MountPointConstructionException

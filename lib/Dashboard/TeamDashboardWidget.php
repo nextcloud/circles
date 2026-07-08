@@ -27,7 +27,6 @@ class TeamDashboardWidget implements IIconWidget, IButtonWidget, IConditionalWid
 	) {
 	}
 
-
 	/**
 	 * @inheritDoc
 	 */
@@ -97,7 +96,7 @@ class TeamDashboardWidget implements IIconWidget, IButtonWidget, IConditionalWid
 	}
 
 	public function isEnabled(): bool {
-		return $this->appManager->isEnabledForUser('contacts') &&
-			$this->configService->getAppValueBool(ConfigService::FRONTEND_ENABLED);
+		return $this->appManager->isEnabledForUser('contacts')
+			&& $this->configService->getAppValueBool(ConfigService::FRONTEND_ENABLED);
 	}
 }

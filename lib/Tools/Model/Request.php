@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Tools\Model;
 
@@ -17,16 +15,13 @@ use OCA\Circles\Tools\Traits\TArrayTools;
 class Request implements JsonSerializable {
 	use TArrayTools;
 
-
 	public const TYPE_GET = 0;
 	public const TYPE_POST = 1;
 	public const TYPE_PUT = 2;
 	public const TYPE_DELETE = 3;
 
-
 	public const QS_VAR_DUPLICATE = 1;
 	public const QS_VAR_ARRAY = 2;
-
 
 	/** @var string */
 	private $protocol = '';
@@ -79,7 +74,6 @@ class Request implements JsonSerializable {
 	/** @var string */
 	private $contentType = '';
 
-
 	/**
 	 * Request constructor.
 	 *
@@ -93,7 +87,6 @@ class Request implements JsonSerializable {
 		private bool $binary = false,
 	) {
 	}
-
 
 	/**
 	 * @param string $protocol
@@ -142,7 +135,6 @@ class Request implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return string
 	 * @deprecated - 19 - use getHost();
@@ -181,7 +173,6 @@ class Request implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return int
 	 */
@@ -199,7 +190,6 @@ class Request implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @param string $instance
@@ -222,7 +212,6 @@ class Request implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -234,7 +223,6 @@ class Request implements JsonSerializable {
 
 		return $instance;
 	}
-
 
 	/**
 	 * @param string $url
@@ -293,7 +281,6 @@ class Request implements JsonSerializable {
 		return $this->binary;
 	}
 
-
 	/**
 	 * @param bool $verifyPeer
 	 *
@@ -311,7 +298,6 @@ class Request implements JsonSerializable {
 	public function isVerifyPeer(): bool {
 		return $this->verifyPeer;
 	}
-
 
 	/**
 	 * @param bool $httpErrorsAllowed
@@ -331,7 +317,6 @@ class Request implements JsonSerializable {
 		return $this->httpErrorsAllowed;
 	}
 
-
 	/**
 	 * @param bool $followLocation
 	 *
@@ -349,7 +334,6 @@ class Request implements JsonSerializable {
 	public function isFollowLocation(): bool {
 		return $this->followLocation;
 	}
-
 
 	/**
 	 * @return string
@@ -386,14 +370,12 @@ class Request implements JsonSerializable {
 		return $url;
 	}
 
-
 	/**
 	 * @return string
 	 */
 	public function getPath(): string {
 		return $this->baseUrl . $this->url;
 	}
-
 
 	/**
 	 * @return string
@@ -402,7 +384,6 @@ class Request implements JsonSerializable {
 	public function getUrl(): string {
 		return $this->getPath();
 	}
-
 
 	/**
 	 * @return string
@@ -413,14 +394,12 @@ class Request implements JsonSerializable {
 		return $this->getUsedProtocol() . '://' . $this->getHost() . $port . $this->getParametersUrl();
 	}
 
-
 	/**
 	 * @return int
 	 */
 	public function getType(): int {
 		return $this->type;
 	}
-
 
 	public function addHeader($key, $value): Request {
 		$header = $this->get($key, $this->headers);
@@ -453,7 +432,6 @@ class Request implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return array
 	 */
@@ -471,7 +449,6 @@ class Request implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @param int $queryStringType
@@ -491,14 +468,12 @@ class Request implements JsonSerializable {
 		return $this->queryStringType;
 	}
 
-
 	/**
 	 * @return array
 	 */
 	public function getData(): array {
 		return $this->data;
 	}
-
 
 	/**
 	 * @param array $data
@@ -511,7 +486,6 @@ class Request implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @param string $data
 	 *
@@ -523,7 +497,6 @@ class Request implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @param JsonSerializable $data
 	 *
@@ -534,7 +507,6 @@ class Request implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return array
@@ -554,7 +526,6 @@ class Request implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @param string $k
 	 * @param string $v
@@ -566,7 +537,6 @@ class Request implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @param string $k
@@ -580,7 +550,6 @@ class Request implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @param string $k
 	 * @param string $v
@@ -593,7 +562,6 @@ class Request implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @param string $k
 	 * @param int $v
@@ -605,7 +573,6 @@ class Request implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return string
@@ -642,7 +609,6 @@ class Request implements JsonSerializable {
 		);
 	}
 
-
 	/**
 	 * @param int $type
 	 *
@@ -660,7 +626,6 @@ class Request implements JsonSerializable {
 			),
 		};
 	}
-
 
 	/**
 	 * @return int
@@ -680,7 +645,6 @@ class Request implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -698,7 +662,6 @@ class Request implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return int
@@ -718,7 +681,6 @@ class Request implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -736,7 +698,6 @@ class Request implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return array
@@ -761,7 +722,6 @@ class Request implements JsonSerializable {
 		];
 	}
 
-
 	/**
 	 * @param string $type
 	 *
@@ -776,7 +736,6 @@ class Request implements JsonSerializable {
 			default => 0,
 		};
 	}
-
 
 	public static function method(int $type): string {
 		return match ($type) {

@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Events;
 
@@ -25,10 +23,8 @@ class SharedItemsSyncRequestedEvent extends Event {
 	/** @var Circle */
 	private $circle;
 
-
 	/** @var array */
 	private $sharedItems = [];
-
 
 	/**
 	 * CircleMemberAddedEvent constructor.
@@ -42,7 +38,6 @@ class SharedItemsSyncRequestedEvent extends Event {
 		$this->circle = $this->federatedEvent->getCircle();
 	}
 
-
 	/**
 	 * @return FederatedEvent
 	 */
@@ -50,14 +45,12 @@ class SharedItemsSyncRequestedEvent extends Event {
 		return $this->federatedEvent;
 	}
 
-
 	/**
 	 * @return Circle
 	 */
 	public function getCircle(): Circle {
 		return $this->circle;
 	}
-
 
 	/**
 	 * @param string $appId
@@ -78,7 +71,6 @@ class SharedItemsSyncRequestedEvent extends Event {
 		$this->initArray($appId, $source);
 		$this->sharedItems[$appId][$source][] = $data;
 	}
-
 
 	/**
 	 * @param string $appId

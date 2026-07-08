@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\FederatedItems;
 
@@ -33,7 +31,6 @@ class CircleSetting implements
 		private ConfigService $configService,
 	) {
 	}
-
 
 	/**
 	 * @param FederatedEvent $event
@@ -76,7 +73,6 @@ class CircleSetting implements
 		$event->setOutcome($this->serialize($new));
 	}
 
-
 	/**
 	 * @param FederatedEvent $event
 	 */
@@ -113,7 +109,6 @@ class CircleSetting implements
 			$this->shareTokenService->removeSharePassword($circle->getSingleId());
 		}
 	}
-
 
 	/**
 	 * @param FederatedEvent $event

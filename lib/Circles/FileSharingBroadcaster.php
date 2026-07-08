@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-
 namespace OCA\Circles\Circles;
 
 use Exception;
@@ -90,7 +89,6 @@ class FileSharingBroadcaster implements IBroadcaster {
 	/** @var bool */
 	private $federatedEnabled = false;
 
-
 	/**
 	 * {@inheritdoc}
 	 */
@@ -118,20 +116,18 @@ class FileSharingBroadcaster implements IBroadcaster {
 		}
 
 		try {
-			$this->federationNotifications =
-				Server::get(Notifications::class);
+			$this->federationNotifications
+				= Server::get(Notifications::class);
 			$this->federatedEnabled = true;
 		} catch (ContainerExceptionInterface) {
 		}
 	}
-
 
 	/**
 	 * {@inheritdoc}
 	 */
 	public function end() {
 	}
-
 
 	/**
 	 * {@inheritdoc}
@@ -144,7 +140,6 @@ class FileSharingBroadcaster implements IBroadcaster {
 		return true;
 	}
 
-
 	/**
 	 * {@inheritdoc}
 	 */
@@ -152,14 +147,12 @@ class FileSharingBroadcaster implements IBroadcaster {
 		return true;
 	}
 
-
 	/**
 	 * {@inheritdoc}
 	 */
 	public function editShareToCircle(SharingFrame $frame, DeprecatedCircle $circle) {
 		return true;
 	}
-
 
 	/**
 	 * {@inheritdoc}
@@ -207,8 +200,8 @@ class FileSharingBroadcaster implements IBroadcaster {
 				//					}
 				//				}
 
-				$sharesToken =
-					$this->tokensRequest->generateTokenForMember($member, $share->getId(), $password);
+				$sharesToken
+					= $this->tokensRequest->generateTokenForMember($member, $share->getId(), $password);
 				$mails = [$member->getUserId()];
 				if ($member->getType() === DeprecatedMember::TYPE_CONTACT) {
 					$mails = $this->getMailsFromContact($member->getUserId());
@@ -228,7 +221,6 @@ class FileSharingBroadcaster implements IBroadcaster {
 		return true;
 	}
 
-
 	/**
 	 * {@inheritdoc}
 	 */
@@ -236,14 +228,12 @@ class FileSharingBroadcaster implements IBroadcaster {
 		return true;
 	}
 
-
 	/**
 	 * {@inheritdoc}
 	 */
 	public function editShareToMember(SharingFrame $frame, DeprecatedMember $member) {
 		return true;
 	}
-
 
 	/**
 	 * @param DeprecatedCircle $circle
@@ -294,7 +284,6 @@ class FileSharingBroadcaster implements IBroadcaster {
 		$this->sendMailExitingShares($circle, $unknownShares, $author, $member, $recipient);
 	}
 
-
 	/**
 	 * recreate the share from the JSON payload.
 	 *
@@ -318,7 +307,6 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 		return $share;
 	}
-
 
 	/**
 	 * @param DeprecatedCircle $circle
@@ -366,7 +354,6 @@ class FileSharingBroadcaster implements IBroadcaster {
 		return false;
 	}
 
-
 	/**
 	 * @param DeprecatedCircle $circle
 	 * @param IShare $share
@@ -400,7 +387,6 @@ class FileSharingBroadcaster implements IBroadcaster {
 		}
 	}
 
-
 	/**
 	 * @param $fileName
 	 * @param string $link
@@ -421,8 +407,8 @@ class FileSharingBroadcaster implements IBroadcaster {
 		$subject = $this->l10n->t('%s shared »%s« with you.', [$author, $fileName]);
 		$text = $this->l10n->t('%s shared »%s« with "%s".', [$author, $fileName, $circleName]);
 
-		$emailTemplate =
-			$this->generateEmailTemplate($subject, $text, $fileName, $link, $author, $circleName);
+		$emailTemplate
+			= $this->generateEmailTemplate($subject, $text, $fileName, $link, $author, $circleName);
 
 		$instanceName = $this->defaults->getName();
 		$senderName = $this->l10n->t('%s on %s', [$author, $instanceName]);
@@ -434,7 +420,6 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 		$this->mailer->send($message);
 	}
-
 
 	/**
 	 * @param IShare $share
@@ -461,10 +446,10 @@ class FileSharingBroadcaster implements IBroadcaster {
 		$shareWith = $share->getSharedWith();
 
 		$initiatorUser = $this->userManager->get($initiator);
-		$initiatorDisplayName =
-			($initiatorUser instanceof IUser) ? $initiatorUser->getDisplayName() : $initiator;
-		$initiatorEmailAddress =
-			($initiatorUser instanceof IUser) ? $initiatorUser->getEMailAddress() : null;
+		$initiatorDisplayName
+			= ($initiatorUser instanceof IUser) ? $initiatorUser->getDisplayName() : $initiator;
+		$initiatorEmailAddress
+			= ($initiatorUser instanceof IUser) ? $initiatorUser->getEMailAddress() : null;
 
 		$plainBodyPart = $this->l10n->t(
 			"%1\$s shared »%2\$s« with you.\nYou should have already received a separate email with a link to access it.\n",
@@ -544,7 +529,6 @@ class FileSharingBroadcaster implements IBroadcaster {
 		return $emailTemplate;
 	}
 
-
 	/**
 	 * @param DeprecatedCircle $circle
 	 * @param array $unknownShares
@@ -582,7 +566,6 @@ class FileSharingBroadcaster implements IBroadcaster {
 			$this->logger->log(2, 'Failed to send mail about existing share ' . $e->getMessage());
 		}
 	}
-
 
 	/**
 	 * @param $author
@@ -676,7 +659,6 @@ class FileSharingBroadcaster implements IBroadcaster {
 		];
 	}
 
-
 	/**
 	 * @param $author
 	 * @param string $circleName
@@ -699,7 +681,6 @@ class FileSharingBroadcaster implements IBroadcaster {
 		return $emailTemplate;
 	}
 
-
 	/**
 	 * @param IEMailTemplate $emailTemplate
 	 * @param array $data
@@ -717,7 +698,6 @@ class FileSharingBroadcaster implements IBroadcaster {
 			);
 		}
 	}
-
 
 	/**
 	 * @param IEMailTemplate $emailTemplate
@@ -743,7 +723,6 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 		$this->mailer->send($message);
 	}
-
 
 	/**
 	 * @param string $contactId

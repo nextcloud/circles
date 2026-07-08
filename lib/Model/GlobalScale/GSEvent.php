@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Model\GlobalScale;
 
@@ -44,7 +42,6 @@ class GSEvent implements JsonSerializable {
 	public const FILE_SHARE = '\OCA\Circles\GlobalScale\FileShare';
 	public const FILE_UNSHARE = '\OCA\Circles\GlobalScale\FileUnshare';
 
-
 	use TArrayTools;
 
 	/** @var string */
@@ -77,7 +74,6 @@ class GSEvent implements JsonSerializable {
 	/** @var bool */
 	private $checked = false;
 
-
 	/**
 	 * GSEvent constructor.
 	 *
@@ -93,7 +89,6 @@ class GSEvent implements JsonSerializable {
 		$this->data = new SimpleDataStore();
 		$this->result = new SimpleDataStore();
 	}
-
 
 	/**
 	 * @return string
@@ -112,7 +107,6 @@ class GSEvent implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return string
@@ -147,7 +141,6 @@ class GSEvent implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return bool
 	 */
@@ -165,7 +158,6 @@ class GSEvent implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return bool
@@ -185,7 +177,6 @@ class GSEvent implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return bool
 	 */
@@ -203,7 +194,6 @@ class GSEvent implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return DeprecatedCircle
@@ -250,7 +240,6 @@ class GSEvent implements JsonSerializable {
 		return $this->circle;
 	}
 
-
 	/**
 	 * @return DeprecatedMember
 	 */
@@ -276,7 +265,6 @@ class GSEvent implements JsonSerializable {
 		return ($this->member !== null);
 	}
 
-
 	/**
 	 * @param SimpleDataStore $data
 	 *
@@ -294,7 +282,6 @@ class GSEvent implements JsonSerializable {
 	public function getData(): SimpleDataStore {
 		return $this->data;
 	}
-
 
 	/**
 	 * @return int
@@ -314,7 +301,6 @@ class GSEvent implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return SimpleDataStore
 	 */
@@ -333,7 +319,6 @@ class GSEvent implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -351,7 +336,6 @@ class GSEvent implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return bool
@@ -407,7 +391,6 @@ class GSEvent implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return array

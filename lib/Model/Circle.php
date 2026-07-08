@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Model;
 
@@ -94,7 +92,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	public const CFG_APP = 131072;          // Some features are not available to the OCS API (ie. destroying Circle)
 	public static $DEF_CFG_MAX = 262143;
 
-
 	/**
 	 * Note: When editing those values, update lib/Application/Capabilities.php
 	 *
@@ -122,7 +119,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		131072 => 'A|App'
 	];
 
-
 	/**
 	 * Note: When editing those values, update lib/AppInfo/Capabilities.php
 	 *
@@ -142,7 +138,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		11010 => 'Collectives App'
 	];
 
-
 	public static $DEF_CFG_CORE_FILTER = [
 		1,
 		2,
@@ -154,7 +149,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		1024,
 		2048
 	];
-
 
 	/** @var string */
 	private $singleId = '';
@@ -210,7 +204,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	/** @var int */
 	private $creation = 0;
 
-
 	/** @var Member[] */
 	private $members = null;
 
@@ -222,7 +215,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 
 	/** @var Membership[] */
 	private $memberships = null;
-
 
 	/**
 	 * Circle constructor.
@@ -255,7 +247,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	public function getUniqueId(): string {
 		return $this->getSingleId();
 	}
-
 
 	/**
 	 * @param int $config
@@ -307,7 +298,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		}
 	}
 
-
 	/**
 	 * @param string $name
 	 *
@@ -325,7 +315,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	public function getName(): string {
 		return $this->name;
 	}
-
 
 	/**
 	 * @param string $displayName
@@ -345,7 +334,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		return $this->displayName;
 	}
 
-
 	/**
 	 * @param string $sanitizedName
 	 *
@@ -364,7 +352,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		return $this->sanitizedName;
 	}
 
-
 	/**
 	 * @param int $source
 	 *
@@ -382,7 +369,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	public function getSource(): int {
 		return $this->source;
 	}
-
 
 	/**
 	 * @param ?Member $owner
@@ -408,7 +394,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	public function hasOwner(): bool {
 		return !is_null($this->owner);
 	}
-
 
 	/**
 	 * @return bool
@@ -438,7 +423,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 
 		return $this->members;
 	}
-
 
 	/**
 	 * @param array $members
@@ -474,7 +458,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		return $this;
 	}
 
-
 	/**
 	 * if $remote is true, it will returns also details on inherited members from remote+locals Circles.
 	 * This should be used only if extra details are required (mail address ?) as it will send a request to
@@ -505,7 +488,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		return $this->inheritedMembers;
 	}
 
-
 	/**
 	 * @return bool
 	 */
@@ -535,7 +517,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		return $this->memberships;
 	}
 
-
 	/**
 	 * @param string $singleId
 	 * @param bool $detailed
@@ -547,7 +528,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	public function getLink(string $singleId, bool $detailed = false): Membership {
 		return $this->getManager()->getLink($this, $singleId, $detailed);
 	}
-
 
 	/**
 	 * @param Member|null $initiator
@@ -592,7 +572,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		return $this;
 	}
 
-
 	/**
 	 * @param string $instance
 	 *
@@ -618,7 +597,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		return $this->getOwner()->getInstance();
 	}
 
-
 	/**
 	 * @return bool
 	 * @throws OwnerNotFoundException
@@ -626,7 +604,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	public function isLocal(): bool {
 		return $this->getManager()->isLocalInstance($this->getInstance());
 	}
-
 
 	/**
 	 * @param int $population
@@ -646,7 +623,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		return $this->population;
 	}
 
-
 	/**
 	 * @param int $population
 	 *
@@ -664,7 +640,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	public function getPopulationInherited(): int {
 		return $this->populationInherited;
 	}
-
 
 	/**
 	 * @param array $settings
@@ -684,7 +659,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		return $this->settings;
 	}
 
-
 	/**
 	 * @param string $description
 	 *
@@ -703,14 +677,12 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		return $this->description;
 	}
 
-
 	/**
 	 * @return string
 	 */
 	public function getUrl(): string {
 		return $this->getManager()->generateLinkToCircle($this->getSingleId());
 	}
-
 
 	/**
 	 * @param int $contactAddressBook
@@ -730,7 +702,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		return $this->contactAddressBook;
 	}
 
-
 	/**
 	 * @param string $contactGroupName
 	 *
@@ -749,7 +720,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		return $this->contactGroupName;
 	}
 
-
 	/**
 	 * @param int $creation
 	 *
@@ -767,7 +737,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	public function getCreation(): int {
 		return $this->creation;
 	}
-
 
 	/**
 	 * @param array $data
@@ -809,7 +778,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 
 		return $this;
 	}
-
 
 	/**
 	 * @return array
@@ -865,7 +833,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		return $arr;
 	}
 
-
 	/**
 	 * @param array $data
 	 * @param string $prefix
@@ -900,7 +867,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 
 		$this->getManager()->manageImportFromDatabase($this, $data, $prefix);
 
-
 		// TODO: deprecated in NC27, remove those (17) lines that was needed to finalise migration to 24
 		// if password is not hashed (pre-22), hash it and update new settings in DB
 		$curr = $this->get('password_single', $this->getSettings());
@@ -920,7 +886,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 
 		return $this;
 	}
-
 
 	/**
 	 * @param Circle $circle
@@ -949,7 +914,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 
 		return true;
 	}
-
 
 	/**
 	 * @param Circle $circle

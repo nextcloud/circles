@@ -101,7 +101,6 @@ class BaseMember implements JsonSerializable {
 		$this->setStatus(DeprecatedMember::STATUS_NONMEMBER);
 	}
 
-
 	/**
 	 * @param string $circleUniqueId
 	 *
@@ -120,7 +119,6 @@ class BaseMember implements JsonSerializable {
 		return $this->circleUniqueId;
 	}
 
-
 	/**
 	 * @return int
 	 */
@@ -132,7 +130,6 @@ class BaseMember implements JsonSerializable {
 		$this->type = (int)$type;
 	}
 
-
 	public function getViewerType() {
 		if ($this->getType() === 2) {
 			return 'group';
@@ -140,7 +137,6 @@ class BaseMember implements JsonSerializable {
 			return 'user';
 		}
 	}
-
 
 	public function setUserId($userId) {
 		$this->userId = $userId;
@@ -152,7 +148,6 @@ class BaseMember implements JsonSerializable {
 		return $this->userId;
 	}
 
-
 	public function setMemberId($memberId) {
 		$this->memberId = $memberId;
 
@@ -162,7 +157,6 @@ class BaseMember implements JsonSerializable {
 	public function getMemberId() {
 		return $this->memberId;
 	}
-
 
 	public function setCachedName($display) {
 		$this->cachedName = $display;
@@ -178,7 +172,6 @@ class BaseMember implements JsonSerializable {
 		return $this->cachedName;
 	}
 
-
 	public function setCachedUpdate(int $time) {
 		$this->cachedUpdate = $time;
 
@@ -188,7 +181,6 @@ class BaseMember implements JsonSerializable {
 	public function getCachedUpdate(): int {
 		return $this->cachedUpdate;
 	}
-
 
 	public function setLevel($level) {
 		$this->level = (int)$level;
@@ -200,7 +192,6 @@ class BaseMember implements JsonSerializable {
 		return $this->level;
 	}
 
-
 	public function setNote($note) {
 		$this->note = $note;
 
@@ -210,7 +201,6 @@ class BaseMember implements JsonSerializable {
 	public function getNote() {
 		return $this->note;
 	}
-
 
 	public function setInstance($instance) {
 		$this->instance = $instance;
@@ -222,7 +212,6 @@ class BaseMember implements JsonSerializable {
 		return $this->instance;
 	}
 
-
 	public function setContactId($contactId) {
 		$this->contactId = $contactId;
 
@@ -232,7 +221,6 @@ class BaseMember implements JsonSerializable {
 	public function getContactId() {
 		return $this->contactId;
 	}
-
 
 	/**
 	 * @param array $contactMeta
@@ -292,7 +280,6 @@ class BaseMember implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @param $status
 	 *
@@ -312,7 +299,6 @@ class BaseMember implements JsonSerializable {
 		return $this->status;
 	}
 
-
 	public function setJoined($joined) {
 		$this->joined = $joined;
 
@@ -323,7 +309,6 @@ class BaseMember implements JsonSerializable {
 		return $this->joined;
 	}
 
-
 	public function getJoinedSince(): int {
 		return $this->joinedSince;
 	}
@@ -332,17 +317,14 @@ class BaseMember implements JsonSerializable {
 		$this->joinedSince = $since;
 	}
 
-
 	public function isLevel($level) {
 		return ($this->getLevel() >= $level);
 	}
-
 
 	public function isAlmostMember() {
 		return ($this->getStatus() === DeprecatedMember::STATUS_INVITED
 				|| $this->getStatus() === DeprecatedMember::STATUS_REQUEST);
 	}
-
 
 	protected function setAsAMember($level = 1) {
 		$this->setStatus(DeprecatedMember::STATUS_MEMBER);
@@ -383,7 +365,6 @@ class BaseMember implements JsonSerializable {
 		return self::fromArray(json_decode($json, true));
 	}
 
-
 	public function jsonSerialize(): array {
 		return [
 			'circle_id' => $this->getCircleId(),
@@ -411,7 +392,6 @@ class BaseMember implements JsonSerializable {
 			default => 'none',
 		};
 	}
-
 
 	public function getTypeString() {
 		return match ($this->getType()) {

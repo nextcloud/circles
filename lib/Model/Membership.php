@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Model;
 
@@ -25,7 +23,6 @@ use OCA\Circles\Tools\Traits\TArrayTools;
  */
 class Membership extends ManagedModel implements IDeserializable, IQueryRow, JsonSerializable {
 	use TArrayTools;
-
 
 	/** @var string */
 	private $singleId = '';
@@ -54,7 +51,6 @@ class Membership extends ManagedModel implements IDeserializable, IQueryRow, Jso
 	/** @var array */
 	private $inheritanceDetails = [];
 
-
 	/**
 	 * Membership constructor.
 	 *
@@ -79,7 +75,6 @@ class Membership extends ManagedModel implements IDeserializable, IQueryRow, Jso
 		$this->setLevel($member->getLevel());
 	}
 
-
 	/**
 	 * @param string $singleId
 	 *
@@ -97,7 +92,6 @@ class Membership extends ManagedModel implements IDeserializable, IQueryRow, Jso
 	public function getSingleId(): string {
 		return $this->singleId;
 	}
-
 
 	/**
 	 * @param string $circleId
@@ -117,7 +111,6 @@ class Membership extends ManagedModel implements IDeserializable, IQueryRow, Jso
 		return $this->circleId;
 	}
 
-
 	/**
 	 * @param int $circleConfig
 	 *
@@ -135,7 +128,6 @@ class Membership extends ManagedModel implements IDeserializable, IQueryRow, Jso
 	public function getCircleConfig(): int {
 		return $this->circleConfig;
 	}
-
 
 	/**
 	 * @param int $level
@@ -155,7 +147,6 @@ class Membership extends ManagedModel implements IDeserializable, IQueryRow, Jso
 		return $this->level;
 	}
 
-
 	/**
 	 * @param string $inheritanceFirst
 	 *
@@ -173,7 +164,6 @@ class Membership extends ManagedModel implements IDeserializable, IQueryRow, Jso
 	public function getInheritanceFirst(): string {
 		return $this->inheritanceFirst;
 	}
-
 
 	/**
 	 * @param string $inheritanceLast
@@ -193,7 +183,6 @@ class Membership extends ManagedModel implements IDeserializable, IQueryRow, Jso
 		return $this->inheritanceLast;
 	}
 
-
 	/**
 	 * @param array $inheritancePath
 	 *
@@ -211,7 +200,6 @@ class Membership extends ManagedModel implements IDeserializable, IQueryRow, Jso
 	public function getInheritancePath(): array {
 		return $this->inheritancePath;
 	}
-
 
 	/**
 	 * @param int $inheritanceDepth
@@ -231,7 +219,6 @@ class Membership extends ManagedModel implements IDeserializable, IQueryRow, Jso
 		return $this->inheritanceDepth;
 	}
 
-
 	/**
 	 * @param array $inheritanceDetails
 	 *
@@ -249,7 +236,6 @@ class Membership extends ManagedModel implements IDeserializable, IQueryRow, Jso
 	public function getInheritanceDetails(): array {
 		return $this->inheritanceDetails;
 	}
-
 
 	/**
 	 * @param array $data
@@ -297,7 +283,6 @@ class Membership extends ManagedModel implements IDeserializable, IQueryRow, Jso
 
 		return $this;
 	}
-
 
 	/**
 	 * @return array

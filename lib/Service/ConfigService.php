@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Service;
 
@@ -36,7 +34,6 @@ class ConfigService {
 	use TStringTools;
 	use TArrayTools;
 	use TNCLogger;
-
 
 	public const FRONTAL_CLOUD_BASE = 'frontal_cloud_base';
 	public const FRONTAL_CLOUD_ID = 'frontal_cloud_id';
@@ -107,7 +104,6 @@ class ConfigService {
 	public const GS_LOOKUP_INSTANCES = '/instances';
 	public const GS_LOOKUP_USERS = '/users';
 
-
 	// deprecated -- removing in NC25
 	public const CIRCLES_CONTACT_BACKEND = 'contact_backend';
 	public const CIRCLES_ACCOUNTS_ONLY = 'accounts_only'; // only UserType=1
@@ -115,7 +111,6 @@ class ConfigService {
 
 	public const FORCE_NC_BASE = 'force_nc_base';
 	public const TEST_NC_BASE = 'test_nc_base';
-
 
 	private static $defaults = [
 		self::FRONTAL_CLOUD_BASE => '',
@@ -188,11 +183,9 @@ class ConfigService {
 		self::CIRCLES_SEARCH_FROM_COLLABORATOR => '0',
 	];
 
-
 	public const DISPLAY_NONE = 0;
 	public const DISPLAY_AT = 1;
 	public const DISPLAY_PARENTHESIS = 2;
-
 
 	/**
 	 * ConfigService constructor.
@@ -209,7 +202,6 @@ class ConfigService {
 	) {
 		$this->setup('app', Application::APP_ID);
 	}
-
 
 	/**
 	 * Get a value by key
@@ -248,7 +240,6 @@ class ConfigService {
 		return ($this->getAppValueInt($key) === 1);
 	}
 
-
 	/**
 	 * Set a value by key
 	 *
@@ -261,14 +252,12 @@ class ConfigService {
 		$this->appConfig->setAppValueString($key, $value);
 	}
 
-
 	/**
 	 *
 	 */
 	public function unsetAppConfig(): void {
 		$this->appConfig->deleteAppValues();
 	}
-
 
 	/**
 	 * Get available hosts
@@ -278,7 +267,6 @@ class ConfigService {
 	public function getAvailableHosts(): array {
 		return $this->config->getSystemValue('trusted_domains', []);
 	}
-
 
 	/**
 	 * Get a user value by key and user
@@ -295,7 +283,6 @@ class ConfigService {
 		return $this->userConfig->getValueString($userId, 'core', $key, $default);
 	}
 
-
 	/**
 	 * @return bool
 	 * @deprecated
@@ -305,7 +292,6 @@ class ConfigService {
 				&& $this->getAppValue(ConfigService::CIRCLES_CONTACT_BACKEND) !== '');
 	}
 
-
 	/**
 	 * @return int
 	 * @deprecated
@@ -313,7 +299,6 @@ class ConfigService {
 	public function contactsBackendType(): int {
 		return (int)$this->getAppValue(ConfigService::CIRCLES_CONTACT_BACKEND);
 	}
-
 
 	/**
 	 * true if:
@@ -331,7 +316,6 @@ class ConfigService {
 		return (!$this->getBool('password_single_enabled', $circle->getSettings(), false)
 				|| $this->get('password_single', $circle->getSettings()) === '');
 	}
-
 
 	/**
 	 * true if:
@@ -351,7 +335,6 @@ class ConfigService {
 		return ($this->getBool('password_single_enabled', $circle->getSettings(), false)
 				&& $this->get('password_single', $circle->getSettings()) !== '');
 	}
-
 
 	/**
 	 * true if:
@@ -380,7 +363,6 @@ class ConfigService {
 		return $this->getBool('enforce_password', $circle->getSettings(), false);
 	}
 
-
 	/**
 	 * // TODO: fetch data from somewhere else than hard coded...
 	 *
@@ -395,7 +377,6 @@ class ConfigService {
 		];
 	}
 
-
 	/**
 	 * @return bool
 	 */
@@ -406,7 +387,6 @@ class ConfigService {
 
 		return $this->config->getSystemValueBool('gs.enabled', false);
 	}
-
 
 	/**
 	 * @return string
@@ -422,14 +402,12 @@ class ConfigService {
 		return $lookup;
 	}
 
-
 	/**
 	 * @return array
 	 */
 	public function getGSSMockup(): array {
 		return $this->config->getSystemValue('gss.mockup', []);
 	}
-
 
 	/**
 	 * @param string $type
@@ -446,7 +424,6 @@ class ConfigService {
 		};
 	}
 
-
 	/**
 	 * @return array
 	 * @throws GSStatusException
@@ -461,7 +438,6 @@ class ConfigService {
 		];
 	}
 
-
 	/**
 	 * @return array
 	 */
@@ -470,7 +446,6 @@ class ConfigService {
 			strtolower(...), $this->config->getSystemValue('trusted_domains', [])
 		);
 	}
-
 
 	/**
 	 * @return string
@@ -549,7 +524,6 @@ class ConfigService {
 		return rtrim($base, '/') . $this->linkToRoute($route, $args);
 	}
 
-
 	/**
 	 * - must be configured using INTERNAL_CLOUD_ID
 	 * - returns host+port, does not specify any protocol
@@ -562,7 +536,6 @@ class ConfigService {
 	public function getInternalInstance(): string {
 		return $this->getAppValue(self::INTERNAL_CLOUD_ID);
 	}
-
 
 	/**
 	 * - must be configured using FRONTAL_CLOUD_ID
@@ -586,7 +559,6 @@ class ConfigService {
 		return $frontalCloudId;
 	}
 
-
 	/**
 	 * @param int $iface
 	 *
@@ -602,7 +574,6 @@ class ConfigService {
 			default => '',
 		};
 	}
-
 
 	/**
 	 * @param string $instance
@@ -629,7 +600,6 @@ class ConfigService {
 
 		return (in_array($instance, $this->getTrustedDomains()));
 	}
-
 
 	/**
 	 * @param IFederatedUser $federatedUser
@@ -675,7 +645,6 @@ class ConfigService {
 		};
 	}
 
-
 	/**
 	 * - Create route using getLoopbackAddress()
 	 * - perfect for loopback request.
@@ -694,7 +663,6 @@ class ConfigService {
 		$request->basedOnUrl($this->getLoopbackPath($route, $args));
 	}
 
-
 	/**
 	 * @param NCRequest $request
 	 */
@@ -706,7 +674,6 @@ class ConfigService {
 		$request->setFollowLocation(true);
 		$request->setTimeout(5);
 	}
-
 
 	/**
 	 * @param string $route
@@ -742,7 +709,6 @@ class ConfigService {
 		return $path;
 	}
 
-
 	/**
 	 * Enforce or Block circle's config/type
 	 *
@@ -756,7 +722,7 @@ class ConfigService {
 	}
 
 	public function isFederatedTeamsEnabled(): bool {
-		return $this->appConfig->getAppValueBool(ConfigLexicon::FEDERATED_TEAMS_ENABLED) &&
-			$this->appConfig->hasAppKey(ConfigLexicon::FEDERATED_TEAMS_FRONTAL, true);
+		return $this->appConfig->getAppValueBool(ConfigLexicon::FEDERATED_TEAMS_ENABLED)
+			&& $this->appConfig->hasAppKey(ConfigLexicon::FEDERATED_TEAMS_FRONTAL, true);
 	}
 }

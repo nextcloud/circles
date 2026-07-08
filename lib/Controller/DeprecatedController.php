@@ -31,7 +31,6 @@ class DeprecatedController extends Controller {
 		parent::__construct($appName, $request);
 	}
 
-
 	/**
 	 * @NoSubAdminRequired
 	 *

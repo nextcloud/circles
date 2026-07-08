@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\FederatedItems;
 
@@ -30,7 +28,6 @@ use OCA\Circles\Tools\Traits\TDeserialize;
 class CircleEdit implements IFederatedItem {
 	use TDeserialize;
 
-
 	/**
 	 * CircleEdit constructor.
 	 *
@@ -46,7 +43,6 @@ class CircleEdit implements IFederatedItem {
 		private EventService $eventService,
 	) {
 	}
-
 
 	/**
 	 * @param FederatedEvent $event
@@ -86,7 +82,6 @@ class CircleEdit implements IFederatedItem {
 		$event->setOutcome($this->serialize($new));
 	}
 
-
 	/**
 	 * @param FederatedEvent $event
 	 *
@@ -116,7 +111,6 @@ class CircleEdit implements IFederatedItem {
 		$this->memberRequest->updateDisplayName($circle->getSingleId(), $circle->getDisplayName());
 		$this->eventService->circleEditing($event);
 	}
-
 
 	/**
 	 * @param FederatedEvent $event

@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Tools\Model;
 
@@ -48,11 +46,9 @@ class NCSignedRequest implements JsonSerializable {
 	/** @var NCSignatory */
 	private $signatory;
 
-
 	public function __construct(string $body = '') {
 		$this->setBody($body);
 	}
-
 
 	/**
 	 * IRequest of the incoming request
@@ -75,7 +71,6 @@ class NCSignedRequest implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * NCRequest of the outgoing request
 	 * outgoing
@@ -96,7 +91,6 @@ class NCSignedRequest implements JsonSerializable {
 	public function getOutgoingRequest(): NCRequest {
 		return $this->outgoingRequest;
 	}
-
 
 	/**
 	 * Body content of the request
@@ -120,7 +114,6 @@ class NCSignedRequest implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * Timestamp of the request
 	 * incoming (outgoing ?)
@@ -141,7 +134,6 @@ class NCSignedRequest implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * Origin of the request, based on the keyId
@@ -164,7 +156,6 @@ class NCSignedRequest implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -182,7 +173,6 @@ class NCSignedRequest implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * Data from the 'Signature' header
@@ -204,7 +194,6 @@ class NCSignedRequest implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * _Clear_ value of the Signature.
@@ -230,7 +219,6 @@ class NCSignedRequest implements JsonSerializable {
 		return $this->clearSignature;
 	}
 
-
 	/**
 	 * _Signed_ value of the signature.
 	 * /!\ base64_encoded, not RAW /!\
@@ -253,7 +241,6 @@ class NCSignedRequest implements JsonSerializable {
 	public function getSignedSignature(): string {
 		return $this->signedSignature;
 	}
-
 
 	/**
 	 * Host/Address to be used in the signature.
@@ -279,7 +266,6 @@ class NCSignedRequest implements JsonSerializable {
 		return $this->host;
 	}
 
-
 	/**
 	 * Signatory used to sign the request
 	 * incoming/outgoing
@@ -303,7 +289,6 @@ class NCSignedRequest implements JsonSerializable {
 	public function hasSignatory(): bool {
 		return ($this->signatory !== null);
 	}
-
 
 	/**
 	 * @return array

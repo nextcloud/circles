@@ -4,6 +4,7 @@
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
+
 namespace OCA\Circles\Db;
 
 use Doctrine\DBAL\Query\QueryBuilder;
@@ -47,7 +48,6 @@ class DeprecatedRequestBuilder {
 		self::TABLE_GSSHARES_MOUNTPOINT
 	];
 
-
 	/** @var IDBConnection */
 	protected $dbConnection;
 
@@ -69,7 +69,6 @@ class DeprecatedRequestBuilder {
 	/** @var bool */
 	protected $leftJoinedNCGroupAndUser = false;
 
-
 	/**
 	 * CoreQueryBuilder constructor.
 	 *
@@ -90,7 +89,6 @@ class DeprecatedRequestBuilder {
 		$this->miscService = $miscService;
 	}
 
-
 	/**
 	 * Limit the request by its Id.
 	 *
@@ -100,7 +98,6 @@ class DeprecatedRequestBuilder {
 	protected function limitToId(IQueryBuilder $qb, $id) {
 		$this->limitToDBField($qb, 'id', $id);
 	}
-
 
 	/**
 	 * Limit the request by its UniqueId.
@@ -112,7 +109,6 @@ class DeprecatedRequestBuilder {
 		$this->limitToDBField($qb, 'unique_id', $uniqueId);
 	}
 
-
 	/**
 	 * Limit the request by its addressbookId.
 	 *
@@ -122,7 +118,6 @@ class DeprecatedRequestBuilder {
 	protected function limitToAddressBookId(IQueryBuilder $qb, $bookId) {
 		$this->limitToDBField($qb, 'contact_addressbook', (string)$bookId);
 	}
-
 
 	/**
 	 * Limit the request by its addressbookId.
@@ -134,7 +129,6 @@ class DeprecatedRequestBuilder {
 		$this->limitToDBField($qb, 'contact_groupname', $groupName);
 	}
 
-
 	/**
 	 * Limit the request to the Circle by its Id.
 	 *
@@ -144,7 +138,6 @@ class DeprecatedRequestBuilder {
 	protected function limitToContactId(IQueryBuilder $qb, $contactId) {
 		$this->limitToDBField($qb, 'contact_id', $contactId);
 	}
-
 
 	/**
 	 * Limit the request by its Token.
@@ -156,7 +149,6 @@ class DeprecatedRequestBuilder {
 		$this->limitToDBField($qb, 'token', $token);
 	}
 
-
 	/**
 	 * Limit the request to the User by its Id.
 	 *
@@ -166,7 +158,6 @@ class DeprecatedRequestBuilder {
 	protected function limitToUserId(IQueryBuilder $qb, $userId) {
 		$this->limitToDBField($qb, 'user_id', $userId);
 	}
-
 
 	/**
 	 * Limit the request to the owner
@@ -178,7 +169,6 @@ class DeprecatedRequestBuilder {
 		$this->limitToDBField($qb, 'owner', $owner);
 	}
 
-
 	/**
 	 * Limit the request to the Member by its Id.
 	 *
@@ -188,7 +178,6 @@ class DeprecatedRequestBuilder {
 	protected function limitToMemberId(IQueryBuilder $qb, string $memberId) {
 		$this->limitToDBField($qb, 'member_id', $memberId);
 	}
-
 
 	/**
 	 * Limit the request to the Type entry.
@@ -200,7 +189,6 @@ class DeprecatedRequestBuilder {
 		$this->limitToDBField($qb, 'user_type', $type);
 	}
 
-
 	/**
 	 * Limit the request to the Instance.
 	 *
@@ -210,7 +198,6 @@ class DeprecatedRequestBuilder {
 	protected function limitToInstance(IQueryBuilder $qb, string $instance) {
 		$this->limitToDBField($qb, 'instance', $instance);
 	}
-
 
 	/**
 	 * Limit the request to the Circle by its Id.
@@ -222,7 +209,6 @@ class DeprecatedRequestBuilder {
 		$this->limitToDBField($qb, 'circle_id', $circleUniqueId);
 	}
 
-
 	/**
 	 * Limit the request to the Circle by its Id.
 	 *
@@ -232,7 +218,6 @@ class DeprecatedRequestBuilder {
 	protected function limitToShareId(IQueryBuilder $qb, int $shareId) {
 		$this->limitToDBField($qb, 'share_id', $shareId);
 	}
-
 
 	/**
 	 * Limit the request to the Circle by its Id.
@@ -275,7 +260,6 @@ class DeprecatedRequestBuilder {
 	//
 	//	}
 
-
 	/**
 	 * Limit the request to the Group by its Id.
 	 *
@@ -285,7 +269,6 @@ class DeprecatedRequestBuilder {
 	protected function limitToGroupId(IQueryBuilder $qb, $groupId) {
 		$this->limitToDBField($qb, 'group_id', $groupId);
 	}
-
 
 	/**
 	 * Limit the search by its Name
@@ -297,7 +280,6 @@ class DeprecatedRequestBuilder {
 		$this->limitToDBField($qb, 'name', $name);
 	}
 
-
 	/**
 	 * Limit the search by its Status (or greater)
 	 *
@@ -307,7 +289,6 @@ class DeprecatedRequestBuilder {
 	protected function limitToStatus(IQueryBuilder $qb, $name) {
 		$this->limitToDBFieldOrGreater($qb, 'status', $name);
 	}
-
 
 	/**
 	 * Limit the request by its Id.
@@ -319,7 +300,6 @@ class DeprecatedRequestBuilder {
 		$this->limitToDBField($qb, 'share_type', $type);
 	}
 
-
 	/**
 	 * Limit the request by its Id.
 	 *
@@ -329,7 +309,6 @@ class DeprecatedRequestBuilder {
 	protected function limitToShareWith(IQueryBuilder $qb, string $with) {
 		$this->limitToDBField($qb, 'share_with', $with);
 	}
-
 
 	/**
 	 * Limit the request to a minimum member level.
@@ -358,7 +337,6 @@ class DeprecatedRequestBuilder {
 		$qb->andWhere($orX);
 	}
 
-
 	/**
 	 * @param IQueryBuilder $qb
 	 * @param int $level
@@ -380,7 +358,6 @@ class DeprecatedRequestBuilder {
 		return $expr->orX(...$orX);
 	}
 
-
 	/**
 	 * Limit the search to Members and Almost members
 	 *
@@ -398,7 +375,6 @@ class DeprecatedRequestBuilder {
 		));
 	}
 
-
 	/**
 	 * @param IQueryBuilder $qb
 	 * @param string $field
@@ -410,7 +386,6 @@ class DeprecatedRequestBuilder {
 		$qb->andWhere($expr->eq($pf . $field, $qb->createNamedParameter($value)));
 	}
 
-
 	/**
 	 * @param IQueryBuilder $qb
 	 * @param string $field
@@ -421,7 +396,6 @@ class DeprecatedRequestBuilder {
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
 		$qb->andWhere($expr->gte($pf . $field, $qb->createNamedParameter($value)));
 	}
-
 
 	/**
 	 * link to the groupId/UserId of the NC DB.
@@ -447,7 +421,6 @@ class DeprecatedRequestBuilder {
 		$qb->andWhere($and);
 	}
 
-
 	/**
 	 * Left Join circle table to get more information about the circle.
 	 *
@@ -471,7 +444,6 @@ class DeprecatedRequestBuilder {
 				$expr->eq($pf . 'circle_id', 'lc.unique_id')
 			);
 	}
-
 
 	/**
 	 * link to the groupId/UserId of the NC DB.

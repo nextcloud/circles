@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Service;
 
@@ -36,7 +34,6 @@ class PermissionService {
 	) {
 	}
 
-
 	/**
 	 * @throws RequestBuilderException
 	 * @throws InitiatorNotFoundException
@@ -51,7 +48,6 @@ class PermissionService {
 			);
 		}
 	}
-
 
 	/**
 	 * @param string $config
@@ -75,7 +71,6 @@ class PermissionService {
 		}
 	}
 
-
 	/**
 	 * @param Circle $circle
 	 *
@@ -98,7 +93,6 @@ class PermissionService {
 
 		return false;
 	}
-
 
 	/**
 	 * Enforce or Block circle's config/type
@@ -133,7 +127,6 @@ class PermissionService {
 
 		$circle->setConfig($config);
 	}
-
 
 	/**
 	 * @return int[]

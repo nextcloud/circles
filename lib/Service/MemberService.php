@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Service;
 
@@ -59,7 +57,6 @@ class MemberService {
 	use TStringTools;
 	use TNCLogger;
 
-
 	/**
 	 * MemberService constructor.
 	 *
@@ -93,7 +90,6 @@ class MemberService {
 	//	}
 	//
 
-
 	/**
 	 * @param string $memberId
 	 * @param string $circleId
@@ -123,7 +119,6 @@ class MemberService {
 
 		return $member;
 	}
-
 
 	/**
 	 * @param string $circleId
@@ -156,7 +151,6 @@ class MemberService {
 			$role,
 		);
 	}
-
 
 	/**
 	 * @param string $circleId
@@ -201,7 +195,6 @@ class MemberService {
 
 		return $event->getOutcome();
 	}
-
 
 	/**
 	 * @param string $circleId
@@ -252,7 +245,6 @@ class MemberService {
 		return $event->getOutcome();
 	}
 
-
 	/**
 	 * @param string $memberId
 	 * @param bool $forceSync
@@ -287,7 +279,6 @@ class MemberService {
 
 		return $event->getOutcome();
 	}
-
 
 	/**
 	 * @return list<IUser>
@@ -325,8 +316,8 @@ class MemberService {
 	 */
 	public function memberLevel(string $memberId, int $level): array {
 		$this->federatedUserService->mustHaveCurrentUser();
-		$member =
-			$this->memberRequest->getMemberById($memberId, $this->federatedUserService->getCurrentUser());
+		$member
+			= $this->memberRequest->getMemberById($memberId, $this->federatedUserService->getCurrentUser());
 
 		$event = new FederatedEvent(MemberLevel::class);
 		$event->setCircle($member->getCircle());
@@ -337,7 +328,6 @@ class MemberService {
 
 		return $event->getOutcome();
 	}
-
 
 	/**
 	 * @param Member $member

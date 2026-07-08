@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Model\Federated;
 
@@ -27,7 +25,6 @@ use OCA\Circles\Tools\Traits\TArrayTools;
 class FederatedShare extends ManagedModel implements IFederatedModel, JsonSerializable, IQueryRow, IDeserializable {
 	use TArrayTools;
 
-
 	/** @var int */
 	private $id = 0;
 
@@ -46,13 +43,11 @@ class FederatedShare extends ManagedModel implements IFederatedModel, JsonSerial
 	/** @var SimpleDataStore */
 	private $data;
 
-
 	/**
 	 * FederatedShare constructor.
 	 */
 	public function __construct() {
 	}
-
 
 	/**
 	 * @param int $id
@@ -72,7 +67,6 @@ class FederatedShare extends ManagedModel implements IFederatedModel, JsonSerial
 		return $this->id;
 	}
 
-
 	/**
 	 * @param string $itemId
 	 *
@@ -90,7 +84,6 @@ class FederatedShare extends ManagedModel implements IFederatedModel, JsonSerial
 	public function getItemId(): string {
 		return $this->itemId;
 	}
-
 
 	/**
 	 * @param string $circleId
@@ -110,7 +103,6 @@ class FederatedShare extends ManagedModel implements IFederatedModel, JsonSerial
 		return $this->circleId;
 	}
 
-
 	/**
 	 * @param string $instance
 	 *
@@ -121,7 +113,6 @@ class FederatedShare extends ManagedModel implements IFederatedModel, JsonSerial
 
 		return $this;
 	}
-
 
 	/**
 	 * @param string $lockStatus
@@ -141,7 +132,6 @@ class FederatedShare extends ManagedModel implements IFederatedModel, JsonSerial
 		return $this->lockStatus;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -156,7 +146,6 @@ class FederatedShare extends ManagedModel implements IFederatedModel, JsonSerial
 		return $this->getManager()->isLocalInstance($this->getInstance());
 	}
 
-
 	/**
 	 * @param array $data
 	 *
@@ -170,7 +159,6 @@ class FederatedShare extends ManagedModel implements IFederatedModel, JsonSerial
 
 		return $this;
 	}
-
 
 	/**
 	 * @param array $data
@@ -189,7 +177,6 @@ class FederatedShare extends ManagedModel implements IFederatedModel, JsonSerial
 
 		return $this;
 	}
-
 
 	/**
 	 * @return array

@@ -39,7 +39,6 @@ class Env implements TestListener {
 	public const ENV_TEST_USER2 = '_test_circles_user2';
 	public const ENV_TEST_USER3 = '_test_circles_user3';
 
-
 	/** @var array<string> */
 	private $users;
 

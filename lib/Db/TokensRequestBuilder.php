@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-
 namespace OCA\Circles\Db;
 
 use OCA\Circles\Model\SharesToken;
@@ -21,7 +20,6 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
 class TokensRequestBuilder extends DeprecatedRequestBuilder {
 	use TArrayTools;
 
-
 	/**
 	 * Base of the Sql Insert request for Shares
 	 *
@@ -34,7 +32,6 @@ class TokensRequestBuilder extends DeprecatedRequestBuilder {
 		return $qb;
 	}
 
-
 	/**
 	 * Base of the Sql Update request for Groups
 	 *
@@ -46,7 +43,6 @@ class TokensRequestBuilder extends DeprecatedRequestBuilder {
 
 		return $qb;
 	}
-
 
 	/**
 	 * @return IQueryBuilder
@@ -63,7 +59,6 @@ class TokensRequestBuilder extends DeprecatedRequestBuilder {
 		return $qb;
 	}
 
-
 	/**
 	 * Base of the Sql Delete request
 	 *
@@ -75,7 +70,6 @@ class TokensRequestBuilder extends DeprecatedRequestBuilder {
 
 		return $qb;
 	}
-
 
 	/**
 	 * @param array $data

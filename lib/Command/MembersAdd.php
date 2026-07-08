@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Command;
 
@@ -45,7 +43,6 @@ class MembersAdd extends Base {
 		parent::__construct();
 	}
 
-
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:members:add')
@@ -57,7 +54,6 @@ class MembersAdd extends Base {
 			->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception')
 			->addOption('type', '', InputOption::VALUE_REQUIRED, 'type of the user', '0');
 	}
-
 
 	/**
 	 * @param InputInterface $input
@@ -101,7 +97,6 @@ class MembersAdd extends Base {
 
 		return 0;
 	}
-
 
 	/**
 	 * @param string $search

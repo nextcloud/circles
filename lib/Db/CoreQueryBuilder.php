@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Db;
 
@@ -35,7 +33,6 @@ use OCP\Server;
 class CoreQueryBuilder extends ExtendedQueryBuilder {
 	use TArrayTools;
 
-
 	public const SINGLE = 'a';
 	public const CIRCLE = 'b';
 	public const MEMBER = 'c';
@@ -59,7 +56,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 	public const TOKEN = 'u';
 	public const OPTIONS = 'v';
 	public const HELPER = 'w';
-
 
 	public static $SQL_PATH = [
 		self::SINGLE => [
@@ -210,7 +206,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		]
 	];
 
-
 	/** @var ConfigService */
 	private $configService;
 
@@ -226,7 +221,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$this->configService = Server::get(ConfigService::class);
 	}
 
-
 	/**
 	 * @param IFederatedModel $federatedModel
 	 *
@@ -237,7 +231,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 
 		return ($this->configService->isLocalInstance($instance)) ? '' : $instance;
 	}
-
 
 	/**
 	 * @param string $id
@@ -289,7 +282,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$this->limitBitwise('config', $config, $alias);
 	}
 
-
 	/**
 	 * @param string $singleId
 	 */
@@ -297,11 +289,9 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$this->limit('single_id', $singleId, $alias, true);
 	}
 
-
 	public function limitToUserId(string $userId, string $alias = ''): void {
 		$this->limit('user_id', $userId, $alias, true);
 	}
-
 
 	/**
 	 * @param string $itemId
@@ -310,14 +300,12 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$this->limit('item_id', $itemId, '', true);
 	}
 
-
 	/**
 	 * @param string $host
 	 */
 	public function limitToInstance(string $host): void {
 		$this->limit('instance', $host, '', false);
 	}
-
 
 	/**
 	 * @param int $userType
@@ -326,7 +314,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$this->limitInt('user_type', $userType);
 	}
 
-
 	/**
 	 * @param int $shareType
 	 */
@@ -334,14 +321,12 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$this->limitInt('share_type', $shareType);
 	}
 
-
 	/**
 	 * @param string $shareWith
 	 */
 	public function limitToShareWith(string $shareWith): void {
 		$this->limit('share_with', $shareWith, '', true);
 	}
-
 
 	/**
 	 * @param int $nodeId
@@ -381,14 +366,12 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$this->limitInArray('file_source', $files, type: IQueryBuilder::PARAM_INT_ARRAY);
 	}
 
-
 	/**
 	 * @param int $shareId
 	 */
 	public function limitToShareParent(int $shareId): void {
 		$this->limitInt('parent', $shareId);
 	}
-
 
 	/**
 	 * filter result on details (ie. displayName, Description, ...)
@@ -424,7 +407,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		}
 	}
 
-
 	/**
 	 * left join RemoteInstance based on a Member
 	 */
@@ -441,7 +423,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		} catch (RequestBuilderException) {
 		}
 	}
-
 
 	/**
 	 * @param string $alias
@@ -467,7 +448,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$this->limitRemoteVisibility($alias, $filterSensitiveData, $aliasCircle);
 	}
 
-
 	/**
 	 * Left join RemoteInstance based on an incoming request
 	 *
@@ -491,7 +471,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			$expr->eq($aliasRemote . '.instance', $this->createNamedParameter($remoteInstance->getInstance()))
 		);
 	}
-
 
 	/**
 	 * left join members to check memberships of someone from instance
@@ -525,7 +504,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			)
 		);
 	}
-
 
 	/**
 	 * left join circle is member of a circle from remote instance
@@ -572,7 +550,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			)
 		);
 	}
-
 
 	/**
 	 * - global_scale: visibility on all Circles
@@ -633,7 +610,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$this->andWhere($expr->orX(...$orX));
 	}
 
-
 	/**
 	 * @param string $alias
 	 * @param Member $member
@@ -659,7 +635,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 
 		$this->filterDirectMembership($aliasMember, $member);
 	}
-
 
 	/**
 	 * @param string $alias
@@ -689,7 +664,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			)
 		);
 	}
-
 
 	/**
 	 * @param string $aliasMember
@@ -726,7 +700,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 
 		$this->andWhere($expr->andX(...$andX));
 	}
-
 
 	/**
 	 * @param string $alias
@@ -769,7 +742,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$this->leftJoinOwner($aliasCircle);
 	}
 
-
 	/**
 	 * @param string $aliasMember
 	 *
@@ -795,7 +767,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 
 		$this->leftJoinOwner($aliasInvitedBy);
 	}
-
 
 	/**
 	 * @param string $aliasMember
@@ -829,7 +800,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			$this->leftJoinOwner($aliasBasedOn);
 		}
 	}
-
 
 	/**
 	 * @param string $alias
@@ -865,7 +835,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$this->leftJoinBasedOn($aliasMember);
 	}
 
-
 	/**
 	 * @param CircleProbe $probe
 	 * @param string $alias
@@ -899,7 +868,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$this->generateMembershipSelectAlias($aliasMembership)
 			->innerJoin($alias, CoreRequestBuilder::TABLE_MEMBERSHIP, $aliasMembership, $on);
 	}
-
 
 	/**
 	 * @param string $alias
@@ -938,7 +906,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$this->leftJoinRemoteInstance($aliasMember);
 		$this->leftJoinBasedOn($aliasMember);
 	}
-
 
 	/**
 	 * if 'getData' is true, will returns 'inheritanceBy': the Member at the end of a sub-chain of
@@ -984,7 +951,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$this->leftJoinBasedOn($aliasInheritedBy);
 	}
 
-
 	/**
 	 * @throws RequestBuilderException
 	 */
@@ -1004,7 +970,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 
 		$this->andWhere($orX);
 	}
-
 
 	/**
 	 * limit the request to Members and Sub Members of a Circle.
@@ -1030,7 +995,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			);
 		}
 	}
-
 
 	/**
 	 * if 'getData' is true, will returns 'inheritanceFrom': the Circle-As-Member of the Top Circle
@@ -1072,7 +1036,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			);
 	}
 
-
 	/**
 	 * @param string $alias
 	 * @param string $token
@@ -1111,7 +1074,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		);
 	}
 
-
 	/**
 	 * limit the result to the point of view of a FederatedUser
 	 *
@@ -1140,7 +1102,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		return $where;
 	}
 
-
 	/**
 	 * @param string $alias
 	 */
@@ -1161,7 +1122,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		} catch (RequestBuilderException) {
 		}
 	}
-
 
 	/**
 	 * Left join members to filter userId as initiator.
@@ -1197,7 +1157,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 				$expr->eq($aliasMembership . '.circle_id', $helperAlias . '.' . $field)
 			)
 		);
-
 
 		$listMembershipCircleAlias = [$aliasMembership];
 		if ($this->getBool('initiatorDirectMember', $options, false)) {
@@ -1252,7 +1211,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			}
 		}
 
-
 		try {
 			$aliasInitiator = $this->generateAlias($alias, self::INITIATOR, $options);
 			$this->leftJoin(
@@ -1289,7 +1247,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		} catch (RequestBuilderException) {
 		}
 	}
-
 
 	public function completeProbeWithInitiator(
 		string $alias,
@@ -1413,7 +1370,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		return $orX;
 	}
 
-
 	/**
 	 * @param string $aliasCircle
 	 * @param CircleProbe $probe
@@ -1424,7 +1380,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$config = ($filter | $include) - $include;
 		$this->filterBitwise('config', $config, $aliasCircle);
 	}
-
 
 	/**
 	 * Limit visibility on Sensitive information when search for members.
@@ -1448,7 +1403,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			),
 		);
 	}
-
 
 	/**
 	 * Link to storage/filecache
@@ -1485,7 +1439,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			);
 	}
 
-
 	/**
 	 * @param string $aliasShare
 	 * @param string $aliasShareMemberships
@@ -1521,7 +1474,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		return $aliasShareChild;
 	}
 
-
 	/**
 	 * @param string $alias
 	 * @param FederatedUser $federatedUser
@@ -1546,7 +1498,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			);
 		}
 	}
-
 
 	/**
 	 * @param string $aliasMount
@@ -1574,7 +1525,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$this->selectAlias($aliasMountpoint . '.mountpoint_hash', $aliasMountpoint . '_mountpoint_hash');
 	}
 
-
 	/**
 	 * @param list<string> $paths
 	 */
@@ -1599,7 +1549,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 
 		$this->andWhere($orX);
 	}
-
 
 	/**
 	 * @param string $alias
@@ -1635,7 +1584,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		return $this;
 	}
 
-
 	/**
 	 * @param string $alias
 	 * @param array $default
@@ -1658,7 +1606,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		return $this;
 	}
 
-
 	/**
 	 * @param string $alias
 	 * @param array $default
@@ -1676,7 +1623,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		return $this;
 	}
 
-
 	/**
 	 * @param array $path
 	 * @param array $options
@@ -1693,7 +1639,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 
 		return $this;
 	}
-
 
 	/**
 	 * @param string $base
@@ -1728,7 +1673,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		return $base . '_' . $extension;
 	}
 
-
 	/**
 	 * @param string $prefix
 	 *
@@ -1751,7 +1695,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		return $path;
 	}
 
-
 	/**
 	 * @return array
 	 */
@@ -1762,7 +1705,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 
 		return $this->sqlPath;
 	}
-
 
 	/**
 	 * DataProbe uses this to set which data need to be extracted, based on self::$SQL_PATH.

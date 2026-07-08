@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Service;
 
@@ -46,18 +44,15 @@ class InterfaceService {
 		self::IFACE4 => 'iface4',
 	];
 
-
 	use TStringTools;
 	use TArrayTools;
 	use TNCLogger;
-
 
 	/** @var int */
 	private $currentInterface = 0;
 
 	/** @var int */
 	private $outgoingInterface = 0;
-
 
 	/**
 	 * InterfaceService constructor.
@@ -73,7 +68,6 @@ class InterfaceService {
 	) {
 		$this->setup('app', Application::APP_ID);
 	}
-
 
 	/**
 	 * @param int $interface
@@ -101,7 +95,6 @@ class InterfaceService {
 		return ($this->currentInterface !== 0);
 	}
 
-
 	/**
 	 * @return bool
 	 * @throws UnknownInterfaceException
@@ -128,7 +121,6 @@ class InterfaceService {
 			default => false,
 		};
 	}
-
 
 	/**
 	 * @param IRequest $request
@@ -164,7 +156,6 @@ class InterfaceService {
 		}
 	}
 
-
 	/**
 	 * @param string $instance
 	 *
@@ -187,7 +178,6 @@ class InterfaceService {
 		}
 	}
 
-
 	/**
 	 * @param int $interface
 	 *
@@ -202,7 +192,6 @@ class InterfaceService {
 
 		return ($this->configService->getAppValue($config) !== '');
 	}
-
 
 	/**
 	 * @param int $interface
@@ -222,7 +211,6 @@ class InterfaceService {
 			default => throw new UnknownInterfaceException('unknown interface'),
 		};
 	}
-
 
 	/**
 	 * @param bool $useString
@@ -251,7 +239,6 @@ class InterfaceService {
 
 		return $detailed;
 	}
-
 
 	/**
 	 * @param bool $useString
@@ -282,7 +269,6 @@ class InterfaceService {
 		return $detailed;
 	}
 
-
 	/**
 	 * use this only if interface must be defined. If not, use getLocalInstance()
 	 *
@@ -300,7 +286,6 @@ class InterfaceService {
 			default => throw new UnknownInterfaceException('unknown configured interface'),
 		};
 	}
-
 
 	/**
 	 * @throws UnknownInterfaceException
@@ -358,7 +343,6 @@ class InterfaceService {
 		return $base . $this->configService->linkToRoute($route, $args);
 	}
 
-
 	/**
 	 * should be used when unsure about the used Interface
 	 *
@@ -375,7 +359,6 @@ class InterfaceService {
 		return $this->configService->getLoopbackInstance();
 	}
 
-
 	/**
 	 * @param string $route
 	 * @param array $args
@@ -390,7 +373,6 @@ class InterfaceService {
 
 		return rtrim($base, '/') . $this->configService->linkToRoute($route, $args);
 	}
-
 
 	/**
 	 * should be used when trying to generate an address
@@ -446,7 +428,6 @@ class InterfaceService {
 
 		return $this->getLocalPath($route, $args);
 	}
-
 
 	/**
 	 * @return string

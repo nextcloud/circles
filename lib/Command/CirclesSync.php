@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Command;
 
@@ -58,7 +56,6 @@ class CirclesSync extends Base {
 			->addOption('global-scale', '', InputOption::VALUE_NONE, 'Sync GlobalScale');
 	}
 
-
 	/**
 	 * @param InputInterface $input
 	 * @param OutputInterface $output
@@ -101,7 +98,6 @@ class CirclesSync extends Base {
 
 		return 0;
 	}
-
 
 	private function filterSync(InputInterface $input): int {
 		$sync = 0;

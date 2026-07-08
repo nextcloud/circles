@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Tools\Model;
 
@@ -29,7 +27,6 @@ class NCRequest extends Request {
 	/** @var NCRequestResult[] */
 	private $previousResults = [];
 
-
 	/**
 	 * @param IClient $client
 	 *
@@ -47,7 +44,6 @@ class NCRequest extends Request {
 	public function getClient(): IClient {
 		return $this->client;
 	}
-
 
 	/**
 	 * @return array
@@ -67,7 +63,6 @@ class NCRequest extends Request {
 		return $this;
 	}
 
-
 	/**
 	 * @return bool
 	 */
@@ -85,7 +80,6 @@ class NCRequest extends Request {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return bool
@@ -129,7 +123,6 @@ class NCRequest extends Request {
 	public function getAllResults(): array {
 		return array_values(array_merge([$this->getResult()], $this->previousResults));
 	}
-
 
 	/**
 	 * @return array

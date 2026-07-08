@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Tools\Traits;
 
@@ -19,7 +17,6 @@ use Throwable;
 
 trait TNCLogger {
 	use TNCSetup;
-
 
 	public static $EMERGENCY = 4;
 	public static $ALERT = 3;
@@ -60,7 +57,6 @@ trait TNCLogger {
 			);
 	}
 
-
 	/**
 	 * @param Exception $e
 	 * @param array $serializable
@@ -99,7 +95,6 @@ trait TNCLogger {
 				]
 			);
 	}
-
 
 	/**
 	 * @param string $message
@@ -147,7 +142,6 @@ trait TNCLogger {
 		$this->log($debugLevel, $message, ($this->appConfig('debug_trace') === '1'), $serializable);
 	}
 
-
 	/**
 	 * @param int $level
 	 * @param string $message
@@ -165,7 +159,6 @@ trait TNCLogger {
 		$this->logger()
 			->log($level, $message, $opts);
 	}
-
 
 	/**
 	 * @return LoggerInterface

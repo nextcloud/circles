@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\FederatedItems;
 
@@ -31,18 +29,15 @@ class SharedItemsSync implements
 	/** @var CircleEventService */
 	private $circleEventService;
 
-
 	public function __construct(CircleEventService $circleEventService) {
 		$this->circleEventService = $circleEventService;
 	}
-
 
 	/**
 	 * @param FederatedEvent $event
 	 */
 	public function verify(FederatedEvent $event): void {
 	}
-
 
 	/**
 	 * @param FederatedEvent $event
@@ -52,7 +47,6 @@ class SharedItemsSync implements
 
 		$event->setResult(new SimpleDataStore(['shares' => 'ok']));
 	}
-
 
 	/**
 	 * @param FederatedEvent $event

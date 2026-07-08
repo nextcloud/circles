@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Model\GlobalScale;
 
@@ -22,7 +20,6 @@ use OCA\Circles\Tools\Traits\TArrayTools;
 class GSShareMountpoint implements JsonSerializable {
 	use TArrayTools;
 
-
 	/**
 	 * GSShareMountpoint constructor.
 	 *
@@ -36,7 +33,6 @@ class GSShareMountpoint implements JsonSerializable {
 		private string $mountPoint = '',
 	) {
 	}
-
 
 	/**
 	 * @return string
@@ -56,7 +52,6 @@ class GSShareMountpoint implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return int
 	 */
@@ -74,7 +69,6 @@ class GSShareMountpoint implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return string
@@ -94,7 +88,6 @@ class GSShareMountpoint implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @param array $data
 	 *
@@ -107,7 +100,6 @@ class GSShareMountpoint implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return array

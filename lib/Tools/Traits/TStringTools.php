@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Tools\Traits;
 
@@ -16,7 +14,6 @@ use Exception;
 
 trait TStringTools {
 	use TArrayTools;
-
 
 	/**
 	 * @param int $length
@@ -37,7 +34,6 @@ trait TStringTools {
 
 		return $str;
 	}
-
 
 	/**
 	 * Generate uuid: 2b5a7a87-8db1-445f-a17b-405790f91c80
@@ -63,7 +59,6 @@ trait TStringTools {
 
 		return $uuid;
 	}
-
 
 	/**
 	 * @param string $uuid
@@ -117,7 +112,6 @@ trait TStringTools {
 		return substr($str1, 0, $i);
 	}
 
-
 	/**
 	 * @param string $line
 	 * @param array $params
@@ -133,7 +127,6 @@ trait TStringTools {
 		return $line;
 	}
 
-
 	/**
 	 * @param int $words
 	 *
@@ -147,7 +140,6 @@ trait TStringTools {
 
 		return implode(' ', $sentence);
 	}
-
 
 	/**
 	 * @param int $length
@@ -177,7 +169,6 @@ trait TStringTools {
 
 		return (string)round($bytes / (1024 ** $e), 2) . ' ' . $s[$e];
 	}
-
 
 	/**
 	 * @param int $first
@@ -236,10 +227,10 @@ trait TStringTools {
 		}
 
 		return $f->diff($s)->format(
-			'%a ' . $days .
-			', %h ' . $hours .
-			', %i ' . $minutes .
-			' and %s ' . $seconds
+			'%a ' . $days
+			. ', %h ' . $hours
+			. ', %i ' . $minutes
+			. ' and %s ' . $seconds
 		);
 	}
 }

@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Service;
 
@@ -35,7 +33,6 @@ class ContactService {
 	use TStringTools;
 	use TNCLogger;
 
-
 	/**
 	 * ContactService constructor.
 	 *
@@ -47,7 +44,6 @@ class ContactService {
 		private ConfigService $configService,
 	) {
 	}
-
 
 	/**
 	 * @param string $contactPath
@@ -76,7 +72,6 @@ class ContactService {
 		return md5($contactPath);
 	}
 
-
 	/**
 	 * @param string $contactPath
 	 *
@@ -90,7 +85,6 @@ class ContactService {
 
 		return ($this->get('EMAIL', $c) === '') ? [$this->get('EMAIL', $c)] : $this->getArray('EMAIL', $c);
 	}
-
 
 	/**
 	 * @throws ContactFormatException
@@ -128,7 +122,6 @@ class ContactService {
 		return $contacts[0];
 	}
 
-
 	/**
 	 * @param IManager $cm
 	 * @param string $addressBookUri
@@ -146,7 +139,6 @@ class ContactService {
 		throw new ContactAddressBookNotFoundException();
 	}
 
-
 	/**
 	 * @param IManager $cm
 	 * @param string $addressBookKey
@@ -163,7 +155,6 @@ class ContactService {
 
 		throw new ContactAddressBookNotFoundException();
 	}
-
 
 	/**
 	 * @param Member $member

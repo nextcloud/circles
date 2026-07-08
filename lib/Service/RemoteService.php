@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
@@ -59,7 +58,6 @@ class RemoteService extends NCSignature {
 		$this->setup('app', 'circles');
 	}
 
-
 	/**
 	 * @param string $instance
 	 * @param array $data
@@ -92,7 +90,6 @@ class RemoteService extends NCSignature {
 
 		return $circles;
 	}
-
 
 	/**
 	 * @param string $circleId
@@ -128,7 +125,6 @@ class RemoteService extends NCSignature {
 		return $circle;
 	}
 
-
 	/**
 	 * @param string $circleId
 	 * @param string $instance
@@ -162,7 +158,6 @@ class RemoteService extends NCSignature {
 
 		return $members;
 	}
-
 
 	/**
 	 * @param string $circleId
@@ -198,7 +193,6 @@ class RemoteService extends NCSignature {
 		return $members;
 	}
 
-
 	/**
 	 * @param string $circleId
 	 * @param string $instance
@@ -233,7 +227,6 @@ class RemoteService extends NCSignature {
 		return $members;
 	}
 
-
 	/**
 	 * @param Circle $circle
 	 *
@@ -256,13 +249,11 @@ class RemoteService extends NCSignature {
 		//		}
 	}
 
-
 	/**
 	 * @param Circle $circle
 	 */
 	private function syncLocalCircle(Circle $circle): void {
 	}
-
 
 	/**
 	 * @param string $circleId
@@ -308,7 +299,6 @@ class RemoteService extends NCSignature {
 		$this->shareService->syncRemoteShares($circle);
 	}
 
-
 	/**
 	 * @param Circle $circle
 	 *
@@ -331,7 +321,6 @@ class RemoteService extends NCSignature {
 
 		$this->membershipService->onUpdate($circle->getSingleId());
 	}
-
 
 	/**
 	 * @param string $userId

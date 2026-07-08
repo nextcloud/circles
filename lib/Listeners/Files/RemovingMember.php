@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Listeners\Files;
 
@@ -72,7 +70,6 @@ class RemovingMember implements IEventListener {
 		}
 	}
 
-
 	/**
 	 * @param Member $member
 	 * @param string[] $singleIds
@@ -88,7 +85,6 @@ class RemovingMember implements IEventListener {
 			$this->shareTokenService->removeTokens($member->getSingleId(), $singleId);
 		}
 	}
-
 
 	/**
 	 * @param Member $member

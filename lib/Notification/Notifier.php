@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Notification;
 
@@ -54,7 +52,6 @@ class Notifier implements INotifier {
 
 	/** @var ICloudIdManager */
 	protected $cloudIdManager;
-
 
 	public function __construct(
 		private readonly IL10N $l10n,
@@ -123,7 +120,6 @@ class Notifier implements INotifier {
 		return $notification;
 	}
 
-
 	/**
 	 * @param INotification $notification
 	 *
@@ -175,7 +171,6 @@ class Notifier implements INotifier {
 
 		$notification->setParsedSubject($subject);
 	}
-
 
 	/**
 	 * @param INotification $notification

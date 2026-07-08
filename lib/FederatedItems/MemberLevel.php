@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\FederatedItems;
 
@@ -39,7 +37,6 @@ class MemberLevel implements
 	IFederatedItemMemberRequired {
 	use TDeserialize;
 
-
 	/**
 	 * MemberAdd constructor.
 	 *
@@ -55,7 +52,6 @@ class MemberLevel implements
 		private ConfigService $configService,
 	) {
 	}
-
 
 	/**
 	 * @param FederatedEvent $event
@@ -99,7 +95,6 @@ class MemberLevel implements
 		$event->setOutcome($this->serialize($outcomeMember));
 	}
 
-
 	/**
 	 * @param FederatedEvent $event
 	 *
@@ -122,7 +117,6 @@ class MemberLevel implements
 		$this->eventService->memberLevelEditing($event);
 	}
 
-
 	/**
 	 * @param FederatedEvent $event
 	 * @param array $results
@@ -130,7 +124,6 @@ class MemberLevel implements
 	public function result(FederatedEvent $event, array $results): void {
 		$this->eventService->memberLevelEdited($event, $results);
 	}
-
 
 	/**
 	 * @param Member $member

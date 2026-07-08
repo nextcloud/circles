@@ -36,7 +36,6 @@ class Contacts implements ISearch {
 		return $result;
 	}
 
-
 	/**
 	 * @param array $contact
 	 *

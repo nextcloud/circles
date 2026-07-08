@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Model\Federated;
 
@@ -25,12 +23,10 @@ use OCA\Circles\Tools\Traits\TArrayTools;
 class EventWrapper implements IQueryRow, JsonSerializable {
 	use TArrayTools;
 
-
 	public const STATUS_INIT = 0;
 	public const STATUS_FAILED = 1;
 	public const STATUS_DONE = 8;
 	public const STATUS_OVER = 9;
-
 
 	/** @var string */
 	private $token = '';
@@ -59,11 +55,9 @@ class EventWrapper implements IQueryRow, JsonSerializable {
 	/** @var int */
 	private $creation;
 
-
 	public function __construct() {
 		$this->result = new SimpleDataStore();
 	}
-
 
 	/**
 	 * @return string
@@ -82,7 +76,6 @@ class EventWrapper implements IQueryRow, JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return FederatedEvent
@@ -109,7 +102,6 @@ class EventWrapper implements IQueryRow, JsonSerializable {
 		return ($this->event !== null);
 	}
 
-
 	/**
 	 * @param SimpleDataStore $result
 	 *
@@ -127,7 +119,6 @@ class EventWrapper implements IQueryRow, JsonSerializable {
 	public function getResult(): SimpleDataStore {
 		return $this->result;
 	}
-
 
 	/**
 	 * @return string
@@ -147,7 +138,6 @@ class EventWrapper implements IQueryRow, JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return int
 	 */
@@ -165,7 +155,6 @@ class EventWrapper implements IQueryRow, JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return int
@@ -203,7 +192,6 @@ class EventWrapper implements IQueryRow, JsonSerializable {
 		return $this->retry;
 	}
 
-
 	/**
 	 * @return int
 	 */
@@ -222,7 +210,6 @@ class EventWrapper implements IQueryRow, JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return int
 	 */
@@ -240,7 +227,6 @@ class EventWrapper implements IQueryRow, JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @param array $data
@@ -265,7 +251,6 @@ class EventWrapper implements IQueryRow, JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return array
 	 */
@@ -281,7 +266,6 @@ class EventWrapper implements IQueryRow, JsonSerializable {
 			//			'creation' => $this->getCreation()
 		];
 	}
-
 
 	/**
 	 * @param array $data

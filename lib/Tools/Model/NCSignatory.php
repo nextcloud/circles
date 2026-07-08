@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Tools\Model;
 
@@ -17,10 +15,8 @@ use OCA\Circles\Tools\Traits\TArrayTools;
 class NCSignatory implements JsonSerializable {
 	use TArrayTools;
 
-
 	public const SHA256 = 'sha256';
 	public const SHA512 = 'sha512';
-
 
 	/** @var string */
 	private $instance = '';
@@ -46,7 +42,6 @@ class NCSignatory implements JsonSerializable {
 	/** @var string */
 	private $algorithm = self::SHA256;
 
-
 	/**
 	 * NC22Signatory constructor.
 	 *
@@ -55,7 +50,6 @@ class NCSignatory implements JsonSerializable {
 	public function __construct(string $id = '') {
 		$this->id = self::removeFragment($id);
 	}
-
 
 	/**
 	 * @param string $instance
@@ -74,7 +68,6 @@ class NCSignatory implements JsonSerializable {
 	public function getInstance(): string {
 		return $this->instance;
 	}
-
 
 	/**
 	 * @return array
@@ -95,7 +88,6 @@ class NCSignatory implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -113,7 +105,6 @@ class NCSignatory implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @param string $keyId
@@ -133,7 +124,6 @@ class NCSignatory implements JsonSerializable {
 		return $this->keyId;
 	}
 
-
 	/**
 	 * @param string $keyOwner
 	 *
@@ -151,7 +141,6 @@ class NCSignatory implements JsonSerializable {
 	public function getKeyOwner(): string {
 		return $this->keyOwner;
 	}
-
 
 	/**
 	 * @param string $publicKey
@@ -203,7 +192,6 @@ class NCSignatory implements JsonSerializable {
 		return ($this->privateKey !== '');
 	}
 
-
 	/**
 	 * @param string $algorithm
 	 *
@@ -222,7 +210,6 @@ class NCSignatory implements JsonSerializable {
 		return $this->algorithm;
 	}
 
-
 	/**
 	 * @param array $data
 	 *
@@ -240,22 +227,20 @@ class NCSignatory implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return array
 	 */
 	public function jsonSerialize(): array {
 		return [
 			'id' => $this->getId(),
-			'publicKey' =>
-				[
+			'publicKey'
+				=> [
 					'id' => $this->getKeyId(),
 					'owner' => $this->getKeyOwner(),
 					'publicKeyPem' => $this->getPublicKey()
 				]
 		];
 	}
-
 
 	/**
 	 * @param string $id

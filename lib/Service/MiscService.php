@@ -43,14 +43,12 @@ class MiscService {
 		$this->logger->log($level, $message, $data);
 	}
 
-
 	/**
 	 * @param Exception $e
 	 */
 	public function e(Exception $e) {
 		$this->logger->error($e->getMessage(), ['app' => 'circles', 'exception' => $e]);
 	}
-
 
 	/**
 	 * @param array $arr
@@ -68,7 +66,6 @@ class MiscService {
 		return $arr[$k];
 	}
 
-
 	public static function mustContains($data, $arr) {
 		if (!is_array($arr)) {
 			$arr = [$arr];
@@ -80,7 +77,6 @@ class MiscService {
 			}
 		}
 	}
-
 
 	/**
 	 * @param $data
@@ -96,7 +92,6 @@ class MiscService {
 		);
 	}
 
-
 	/**
 	 * @param $data
 	 *
@@ -108,7 +103,6 @@ class MiscService {
 			Http::STATUS_CREATED
 		);
 	}
-
 
 	/**
 	 * return the real userId, with its real case
@@ -133,7 +127,6 @@ class MiscService {
 
 		return $user->getUID();
 	}
-
 
 	/**
 	 * @param string $ident
@@ -169,7 +162,6 @@ class MiscService {
 		}
 	}
 
-
 	/**
 	 * @param string $ident
 	 * @param int $type
@@ -186,7 +178,6 @@ class MiscService {
 
 		return $display;
 	}
-
 
 	/**
 	 * @param string $display
@@ -205,7 +196,6 @@ class MiscService {
 		}
 	}
 
-
 	/**
 	 * @param string $display
 	 * @param string $ident
@@ -222,7 +212,6 @@ class MiscService {
 		}
 		self::getDisplayContactFromArray($display, $contact);
 	}
-
 
 	/**
 	 * @param $ident
@@ -254,7 +243,6 @@ class MiscService {
 		return [];
 	}
 
-
 	/**
 	 * @param string $display
 	 * @param array $contact
@@ -278,7 +266,6 @@ class MiscService {
 			return;
 		}
 	}
-
 
 	/**
 	 * return Display Name if user exists and display name exists.
@@ -305,7 +292,6 @@ class MiscService {
 		return $user->getDisplayName();
 	}
 
-
 	/**
 	 * @param array $options
 	 *
@@ -318,7 +304,6 @@ class MiscService {
 			'connect_timeout' => Application::CLIENT_TIMEOUT
 		];
 	}
-
 
 	/**
 	 * Hacky way to async the rest of the process without keeping client on hold.
@@ -342,7 +327,6 @@ class MiscService {
 		flush();
 	}
 
-
 	/**
 	 * Generate uuid: 2b5a7a87-8db1-445f-a17b-405790f91c80
 	 *
@@ -364,7 +348,6 @@ class MiscService {
 
 		return $str;
 	}
-
 
 	/**
 	 * @param DeprecatedMember $member

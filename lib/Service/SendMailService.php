@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Service;
 
@@ -30,7 +28,6 @@ class SendMailService {
 	use TArrayTools;
 	use TStringTools;
 
-
 	/**
 	 * SendMailService constructor.
 	 *
@@ -48,7 +45,6 @@ class SendMailService {
 		private IManager $shareManager,
 	) {
 	}
-
 
 	/**
 	 * @param string $author
@@ -107,7 +103,6 @@ class SendMailService {
 		}
 	}
 
-
 	/**
 	 * @param string $author
 	 * @param string $circleName
@@ -145,7 +140,6 @@ class SendMailService {
 			);
 		}
 	}
-
 
 	/**
 	 * @param IEMailTemplate $emailTemplate
@@ -258,7 +252,6 @@ class SendMailService {
 		}
 	}
 
-
 	/**
 	 * @param Circle $circle
 	 * @param string $author
@@ -329,7 +322,6 @@ class SendMailService {
 		$message->useTemplate($emailTemplate);
 		$this->mailer->send($message);
 	}
-
 
 	/**
 	 * @param Circle $circle

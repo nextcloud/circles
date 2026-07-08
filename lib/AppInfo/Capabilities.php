@@ -109,8 +109,8 @@ class Capabilities implements ICapability {
 				Circle::CFG_FEDERATED => $this->l10n->t('Federated'),
 				Circle::CFG_MOUNTPOINT => $this->l10n->t('Mount point')
 			],
-			'source' =>
-				[
+			'source'
+				=> [
 					'core' => [
 						Member::TYPE_USER => $this->l10n->t('Nextcloud Account'),
 						Member::TYPE_GROUP => $this->l10n->t('Nextcloud Group'),

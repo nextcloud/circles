@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Service;
 
@@ -44,7 +42,6 @@ class RemoteDownstreamService {
 	use TNCLogger;
 	use TAsync;
 
-
 	/**
 	 * RemoteDownstreamService constructor.
 	 *
@@ -62,7 +59,6 @@ class RemoteDownstreamService {
 	) {
 		$this->setup('app', 'circles');
 	}
-
 
 	//
 	//
@@ -83,7 +79,6 @@ class RemoteDownstreamService {
 	//		$gs->manage($event);
 	//	}
 	//
-
 
 	/**
 	 * @param FederatedEvent $event
@@ -129,7 +124,6 @@ class RemoteDownstreamService {
 		$this->federatedEventService->initBroadcast($event);
 	}
 
-
 	/**
 	 * @param FederatedEvent $event
 	 */
@@ -145,7 +139,6 @@ class RemoteDownstreamService {
 		}
 	}
 
-
 	/**
 	 * @param FederatedEvent $event
 	 * @param bool $full
@@ -157,7 +150,6 @@ class RemoteDownstreamService {
 		$this->confirmCircle($event);
 		$this->confirmMember($event, $full);
 	}
-
 
 	/**
 	 * @param FederatedEvent $event
@@ -232,7 +224,6 @@ class RemoteDownstreamService {
 		return true;
 	}
 
-
 	/**
 	 * @param FederatedEvent $event
 	 * @param bool $full
@@ -278,7 +269,6 @@ class RemoteDownstreamService {
 
 		return true;
 	}
-
 
 	/**
 	 * @param FederatedEvent $event

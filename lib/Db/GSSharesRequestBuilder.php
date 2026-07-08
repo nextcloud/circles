@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-
 namespace OCA\Circles\Db;
 
 use OCA\Circles\Model\GlobalScale\GSShare;
@@ -31,7 +30,6 @@ class GSSharesRequestBuilder extends DeprecatedRequestBuilder {
 		return $qb;
 	}
 
-
 	/**
 	 * Base of the Sql Insert request for Shares Mountpoint
 	 *
@@ -43,7 +41,6 @@ class GSSharesRequestBuilder extends DeprecatedRequestBuilder {
 
 		return $qb;
 	}
-
 
 	/**
 	 * Base of the Sql Update request
@@ -57,7 +54,6 @@ class GSSharesRequestBuilder extends DeprecatedRequestBuilder {
 		return $qb;
 	}
 
-
 	/**
 	 * @return IQueryBuilder
 	 */
@@ -67,7 +63,6 @@ class GSSharesRequestBuilder extends DeprecatedRequestBuilder {
 
 		return $qb;
 	}
-
 
 	/**
 	 * @return IQueryBuilder
@@ -87,7 +82,6 @@ class GSSharesRequestBuilder extends DeprecatedRequestBuilder {
 		return $qb;
 	}
 
-
 	/**
 	 * @return IQueryBuilder
 	 */
@@ -105,7 +99,6 @@ class GSSharesRequestBuilder extends DeprecatedRequestBuilder {
 		return $qb;
 	}
 
-
 	/**
 	 * Base of the Sql Delete request
 	 *
@@ -117,7 +110,6 @@ class GSSharesRequestBuilder extends DeprecatedRequestBuilder {
 
 		return $qb;
 	}
-
 
 	/**
 	 * Base of the Sql Delete request
@@ -131,7 +123,6 @@ class GSSharesRequestBuilder extends DeprecatedRequestBuilder {
 		return $qb;
 	}
 
-
 	/**
 	 * @param array $data
 	 *
@@ -143,7 +134,6 @@ class GSSharesRequestBuilder extends DeprecatedRequestBuilder {
 
 		return $share;
 	}
-
 
 	/**
 	 * @param array $data

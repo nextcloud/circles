@@ -62,7 +62,6 @@ class CirclesConfig extends Base {
 			->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
 	}
 
-
 	/**
 	 * @param InputInterface $input
 	 * @param OutputInterface $output
@@ -138,7 +137,6 @@ class CirclesConfig extends Base {
 		return 0;
 	}
 
-
 	/**
 	 * @param Circle $circle
 	 * @param array $listing
@@ -173,7 +171,6 @@ class CirclesConfig extends Base {
 
 		return $current->getConfig();
 	}
-
 
 	/**
 	 * @param Circle $circle

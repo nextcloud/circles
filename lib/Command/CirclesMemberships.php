@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Command;
 
@@ -94,7 +92,6 @@ class CirclesMemberships extends Base {
 			);
 	}
 
-
 	/**
 	 * @param InputInterface $input
 	 * @param OutputInterface $output
@@ -178,7 +175,6 @@ class CirclesMemberships extends Base {
 		return 0;
 	}
 
-
 	/**
 	 * @param string $id
 	 * @param TreeNode $tree
@@ -208,7 +204,6 @@ class CirclesMemberships extends Base {
 			$this->generateTree($member->getCircleId(), $item, $knownIds);
 		}
 	}
-
 
 	/**
 	 * @param SimpleDataStore $data
@@ -249,8 +244,8 @@ class CirclesMemberships extends Base {
 					if (!$this->configService->isLocalInstance($circle->getInstance())) {
 						$line .= '@' . $circle->getInstance();
 					}
-					$line .= ' (' . ($this->input->getOption('display-name') ?
-							$circle->getDisplayName() : $circle->getName()) . ')';
+					$line .= ' (' . ($this->input->getOption('display-name')
+							? $circle->getDisplayName() : $circle->getName()) . ')';
 					$line .= ' <info>MemberId</info>: ' . $member->getId();
 					$line .= ' <info>Level</info>: ' . Member::$DEF_LEVEL[$member->getLevel()];
 
@@ -276,7 +271,6 @@ class CirclesMemberships extends Base {
 
 		return '';
 	}
-
 
 	/**
 	 * @throws FederatedUserNotFoundException

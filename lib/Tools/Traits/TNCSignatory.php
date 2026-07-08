@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Tools\Traits;
 
@@ -20,7 +18,6 @@ use OCA\Circles\Tools\Model\NCSignatory;
 
 trait TNCSignatory {
 	use TNCRequest;
-
 
 	/**
 	 * return Signatory by its Id from cache or from direct request.
@@ -42,7 +39,6 @@ trait TNCSignatory {
 
 		return $signatory;
 	}
-
 
 	/**
 	 * @param NCSignatory $signatory
@@ -76,7 +72,6 @@ trait TNCSignatory {
 		}
 	}
 
-
 	/**
 	 * @param NCSignatory $signatory
 	 * @param array $json
@@ -105,7 +100,6 @@ trait TNCSignatory {
 		}
 	}
 
-
 	/**
 	 * @param string $keyId
 	 *
@@ -120,7 +114,6 @@ trait TNCSignatory {
 
 		throw new InvalidOriginException('cannot retrieve origin from ' . $keyId);
 	}
-
 
 	/**
 	 * @param NCSignatory $signatory

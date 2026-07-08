@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Db;
 
@@ -24,7 +22,6 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
  */
 class MountRequest extends MountRequestBuilder {
 	use TStringTools;
-
 
 	/**
 	 * @param Mount $mount
@@ -44,7 +41,6 @@ class MountRequest extends MountRequestBuilder {
 		$qb->executeStatement();
 	}
 
-
 	/**
 	 * @param string $token
 	 */
@@ -54,7 +50,6 @@ class MountRequest extends MountRequestBuilder {
 
 		$qb->executeStatement();
 	}
-
 
 	/**
 	 * @param list<string> $paths
@@ -71,7 +66,6 @@ class MountRequest extends MountRequestBuilder {
 		$qb->limitToMountpoints(CoreQueryBuilder::MOUNT, $paths, $forChildren);
 
 		return $this->getItemsFromRequest($qb);
-
 		//		FederatedUser $federatedUser,
 		//		int $nodeId,
 		//		int $offset,

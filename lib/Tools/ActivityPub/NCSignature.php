@@ -7,7 +7,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -33,7 +32,6 @@ declare(strict_types=1);
  *
  */
 
-
 namespace OCA\Circles\Tools\ActivityPub;
 
 use DateTime;
@@ -57,14 +55,11 @@ class NCSignature {
 
 	public const DATE_TTL = 300;
 
-
 	use TNCSignatory;
-
 
 	/** @var int */
 	private $ttl = self::DATE_TTL;
 	private $dateHeader = self::DATE_HEADER;
-
 
 	/**
 	 * @param string $body
@@ -95,7 +90,6 @@ class NCSignature {
 		return $signedRequest;
 	}
 
-
 	/**
 	 * @param NCRequest $request
 	 * @param NCSignatory $signatory
@@ -115,7 +109,6 @@ class NCSignature {
 
 		return $signedRequest;
 	}
-
 
 	/**
 	 * @param NCSignedRequest $signedRequest
@@ -137,7 +130,6 @@ class NCSignature {
 			throw new SignatureException('object is too old');
 		}
 	}
-
 
 	/**
 	 * @param NCSignedRequest $signedRequest
@@ -179,7 +171,6 @@ class NCSignature {
 		$signedRequest->setSignatureHeader(new SimpleDataStore($sign));
 	}
 
-
 	/**
 	 * @param NCSignedRequest $signedRequest
 	 *
@@ -214,7 +205,6 @@ class NCSignature {
 		$signedRequest->setClearSignature(implode("\n", $estimated));
 	}
 
-
 	/**
 	 * @param NCSignedRequest $signedRequest
 	 *
@@ -228,7 +218,6 @@ class NCSignature {
 		$signedRequest->setOrigin($this->getKeyOrigin($data->g('keyId')));
 		$signedRequest->setSignedSignature($data->g('signature'));
 	}
-
 
 	/**
 	 * @param NCSignedRequest $signedRequest
@@ -247,7 +236,6 @@ class NCSignature {
 			$this->verifySignedRequest($signedRequest);
 		}
 	}
-
 
 	/**
 	 * @param NCSignedRequest $signedRequest
@@ -273,7 +261,6 @@ class NCSignature {
 		}
 	}
 
-
 	/**
 	 * @param NCSignedRequest $signedRequest
 	 */
@@ -289,7 +276,6 @@ class NCSignature {
 
 		$signedRequest->setSignatureHeader($data);
 	}
-
 
 	/**
 	 * @param NCSignedRequest $signedRequest
@@ -311,7 +297,6 @@ class NCSignature {
 		$signedRequest->setClearSignature(implode("\n", $signing));
 	}
 
-
 	/**
 	 * @param NCSignedRequest $signedRequest
 	 *
@@ -322,7 +307,6 @@ class NCSignature {
 		$signed = $this->signString($clear, $signedRequest->getSignatory());
 		$signedRequest->setSignedSignature($signed);
 	}
-
 
 	/**
 	 * @param NCSignedRequest $signedRequest
@@ -341,7 +325,6 @@ class NCSignature {
 
 		$signedRequest->getOutgoingRequest()->addHeader('Signature', implode(',', $signatureElements));
 	}
-
 
 	/**
 	 * @param NCSignedRequest $signedRequest
@@ -366,7 +349,6 @@ class NCSignature {
 			default => 'ras-sha256',
 		};
 	}
-
 
 	/**
 	 * @param NCSignatory $signatory

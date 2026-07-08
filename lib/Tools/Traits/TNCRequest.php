@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Tools\Traits;
 
@@ -30,7 +28,6 @@ trait TNCRequest {
 	public function setMaxDownloadSize(int $size) {
 	}
 
-
 	/**
 	 * @param NCRequest $request
 	 *
@@ -43,7 +40,6 @@ trait TNCRequest {
 
 		return $requestResult->getAsArray();
 	}
-
 
 	/**
 	 * @param NCRequest $request
@@ -80,7 +76,6 @@ trait TNCRequest {
 		}
 	}
 
-
 	/**
 	 * @return IClientService
 	 */
@@ -92,7 +87,6 @@ trait TNCRequest {
 			return Server::get(IClientService::class);
 		}
 	}
-
 
 	/**
 	 * @param NCRequest $request
@@ -130,7 +124,6 @@ trait TNCRequest {
 
 		$request->setClientOptions($options);
 	}
-
 
 	/**
 	 * @param NCRequest $request

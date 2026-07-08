@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Model;
 
@@ -82,14 +80,12 @@ class ModelManager {
 		$this->setup('app', Application::APP_ID);
 	}
 
-
 	/**
 	 * @return ConfigService
 	 */
 	public function getConfigService(): ConfigService {
 		return $this->configService;
 	}
-
 
 	/**
 	 * @param Circle $circle
@@ -101,7 +97,6 @@ class ModelManager {
 			// TODO: debug log
 		}
 	}
-
 
 	/**
 	 * @param Circle $circle
@@ -117,7 +112,6 @@ class ModelManager {
 			// TODO: debug log
 		}
 	}
-
 
 	/**
 	 * @param Circle $circle
@@ -148,7 +142,6 @@ class ModelManager {
 		}
 	}
 
-
 	/**
 	 * @param IEntity $member
 	 */
@@ -156,7 +149,6 @@ class ModelManager {
 		$memberships = $this->membershipRequest->getMemberships($member->getSingleId());
 		$member->setMemberships($memberships);
 	}
-
 
 	/**
 	 * @param IEntity $member
@@ -170,7 +162,6 @@ class ModelManager {
 	public function getLink(IEntity $member, string $circleId, bool $detailed = false): Membership {
 		return $this->membershipService->getMembership($circleId, $member->getSingleId(), $detailed);
 	}
-
 
 	/**
 	 * @param ManagedModel $model
@@ -207,7 +198,6 @@ class ModelManager {
 		}
 	}
 
-
 	private function importBasedOnPath(ManagedModel $model, array $data, string $path, string $prefix) {
 		if ($model instanceof Circle) {
 			$this->importIntoCircle($model, $data, $path, $prefix);
@@ -229,7 +219,6 @@ class ModelManager {
 			$this->importIntoMount($model, $data, $path, $prefix);
 		}
 	}
-
 
 	/**
 	 * @param Circle $circle
@@ -267,7 +256,6 @@ class ModelManager {
 				break;
 		}
 	}
-
 
 	/**
 	 * @param Member $member
@@ -335,7 +323,6 @@ class ModelManager {
 		}
 	}
 
-
 	/**
 	 * @param FederatedUser $federatedUser
 	 * @param array $data
@@ -359,7 +346,6 @@ class ModelManager {
 				break;
 		}
 	}
-
 
 	/**
 	 * @param ShareWrapper $shareWrapper
@@ -421,7 +407,6 @@ class ModelManager {
 		}
 	}
 
-
 	/**
 	 * @param Mount $mount
 	 * @param array $data
@@ -464,7 +449,6 @@ class ModelManager {
 		}
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -480,7 +464,6 @@ class ModelManager {
 	public function isLocalInstance(string $instance): bool {
 		return $this->configService->isLocalInstance($instance);
 	}
-
 
 	/**
 	 * @param string $instance
@@ -499,7 +482,6 @@ class ModelManager {
 
 		return $this->interfaceService->getCloudInstance();
 	}
-
 
 	/**
 	 * @param string $singleId
@@ -526,7 +508,6 @@ class ModelManager {
 
 		return $this->urlGenerator->linkToRoute($this->pathLinkGeneration, ['singleId' => $singleId]);
 	}
-
 
 	/**
 	 * @param bool $full

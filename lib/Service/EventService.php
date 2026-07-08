@@ -7,7 +7,6 @@ declare(strict_types=1);
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-
 namespace OCA\Circles\Service;
 
 use OCA\Circles\Events\AddingCircleMemberEvent;
@@ -45,7 +44,6 @@ class EventService {
 	) {
 	}
 
-
 	/**
 	 * @param FederatedEvent $federatedEvent
 	 */
@@ -63,7 +61,6 @@ class EventService {
 		$this->eventDispatcher->dispatchTyped($event);
 		$this->activityService->onCircleCreation($event->getCircle());
 	}
-
 
 	/**
 	 * @param FederatedEvent $federatedEvent
@@ -100,7 +97,6 @@ class EventService {
 		$this->eventDispatcher->dispatchTyped($event);
 	}
 
-
 	/**
 	 * @param FederatedEvent $federatedEvent
 	 */
@@ -129,7 +125,6 @@ class EventService {
 		$this->eventDispatcher->dispatchTyped($event);
 	}
 
-
 	/**
 	 * @param FederatedEvent $federatedEvent
 	 */
@@ -149,7 +144,6 @@ class EventService {
 		$event->setType(CircleGenericEvent::INVITED);
 		$this->eventDispatcher->dispatchTyped($event);
 	}
-
 
 	/**
 	 * @param FederatedEvent $federatedEvent
@@ -171,7 +165,6 @@ class EventService {
 		$this->eventDispatcher->dispatchTyped($event);
 	}
 
-
 	/**
 	 * @param FederatedEvent $federatedEvent
 	 */
@@ -191,7 +184,6 @@ class EventService {
 		$event->setType(CircleGenericEvent::JOINED);
 		$this->eventDispatcher->dispatchTyped($event);
 	}
-
 
 	/**
 	 * @param FederatedEvent $federatedEvent
@@ -215,7 +207,6 @@ class EventService {
 		$this->eventDispatcher->dispatchTyped($event);
 	}
 
-
 	/**
 	 * @param FederatedEvent $federatedEvent
 	 */
@@ -237,7 +228,6 @@ class EventService {
 		$this->eventDispatcher->dispatchTyped($event);
 	}
 
-
 	/**
 	 * @param FederatedEvent $federatedEvent
 	 */
@@ -257,7 +247,6 @@ class EventService {
 		$this->eventDispatcher->dispatchTyped($event);
 		$this->activityService->onMemberRemove($event->getCircle(), $event->getMember(), CircleGenericEvent::REMOVED);
 	}
-
 
 	/**
 	 * @param FederatedEvent $federatedEvent
@@ -279,7 +268,6 @@ class EventService {
 		$this->activityService->onMemberRemove($event->getCircle(), $event->getMember(), CircleGenericEvent::LEFT);
 	}
 
-
 	/**
 	 * @param FederatedEvent $federatedEvent
 	 */
@@ -300,7 +288,6 @@ class EventService {
 		$this->eventDispatcher->dispatchTyped($event);
 	}
 
-
 	/**
 	 * @param FederatedEvent $federatedEvent
 	 * @param SimpleDataStore[] $result
@@ -310,7 +297,6 @@ class EventService {
 		$this->eventDispatcher->dispatchTyped($event);
 		$this->activityService->onShareNew($event->getCircle(), $event->getFederatedEvent());
 	}
-
 
 	/**
 	 * @param Membership[] $new
