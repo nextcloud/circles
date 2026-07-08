@@ -530,7 +530,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		try {
 			$fileCache = new FileCacheWrapper();
 			$this->setFileCache($fileCache->import($this->getArray('fileCache', $data)));
-		} catch (InvalidItemException $e) {
+		} catch (InvalidItemException) {
 		}
 
 		try {

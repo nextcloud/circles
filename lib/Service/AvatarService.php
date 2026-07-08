@@ -34,11 +34,11 @@ use OCP\Security\ISecureRandom;
 
 class AvatarService {
 	public function __construct(
-		private IAppData $appData,
-		private IL10N $l,
-		private ISecureRandom $random,
-		private CircleService $circleService,
-		private FederatedEventService $federatedEventService,
+		private readonly IAppData $appData,
+		private readonly IL10N $l,
+		private readonly ISecureRandom $random,
+		private readonly CircleService $circleService,
+		private readonly FederatedEventService $federatedEventService,
 	) {
 	}
 
@@ -61,7 +61,7 @@ class AvatarService {
 					}
 				}
 			}
-		} catch (NotFoundException $e) {
+		} catch (NotFoundException) {
 		}
 
 		return null;
@@ -191,12 +191,12 @@ class AvatarService {
 	private function getAvatarFolder(string $circleId): ISimpleFolder {
 		try {
 			$folder = $this->appData->getFolder('circle-avatar');
-		} catch (NotFoundException $e) {
+		} catch (NotFoundException) {
 			$folder = $this->appData->newFolder('circle-avatar');
 		}
 		try {
 			$avatarFolder = $folder->getFolder($circleId);
-		} catch (NotFoundException $e) {
+		} catch (NotFoundException) {
 			$avatarFolder = $folder->newFolder($circleId);
 		}
 		return $avatarFolder;
