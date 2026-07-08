@@ -47,6 +47,7 @@ return [
 
 		// AdminController
 		['name' => 'Admin#circles', 'url' => '/admin/{emulated}/circles', 'verb' => 'GET'],
+		['name' => 'Admin#circlesAll', 'url' => '/admin/circlesall', 'verb' => 'GET'],
 		['name' => 'Admin#create', 'url' => '/admin/{emulated}/circles', 'verb' => 'POST'],
 		['name' => 'Admin#destroy', 'url' => '/admin/{emulated}/circles/{circleId}', 'verb' => 'DELETE'],
 		[

@@ -232,6 +232,38 @@ class AdminController extends OCSController {
 	}
 
 	/**
+	 * @throws OCSException
+	 */
+	public function circlesAll(
+		int $limit = 100,
+		int $offset = 0,
+		bool $filterPersonal = true,
+		bool $filterSingle = true,
+		bool $filterSystem = true,
+		bool $filterHidden = true,
+		bool $filterBackend = true,
+	): DataResponse {
+		try {
+			// no need for emulated user since results are not scoped to any specific user
+			$this->setLocalFederatedUser($this->userSession->getUser()->getUID());
+
+			$probe = new CircleProbe();
+			$probe->filterPersonalCircles($filterPersonal)
+				->filterSingleCircles($filterSingle)
+				->filterSystemCircles($filterSystem)
+				->filterHiddenCircles($filterHidden)
+				->filterBackendCircles($filterBackend)
+				->addDetail(BasicProbe::DETAILS_POPULATION)
+				->setItemsLimit($limit)
+				->setItemsOffset($offset);
+
+			return new DataResponse($this->serializeArray($this->circleService->getAllCircles($probe)));
+		} catch (Exception $e) {
+			throw new OCSException($e->getMessage(), (int)$e->getCode());
+		}
+	}
+
+	/**
 	 * @param string $emulated
 	 * @param string $circleId
 	 *

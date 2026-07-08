@@ -201,6 +201,32 @@ class AdminControllerTest extends TestCase {
 		}
 	}
 
+	public function testCirclesAll(): void {
+		$circleService = $this->container->get(CircleService::class);
+
+		$countBeforeWithPersonal = count($this->adminController->circlesAll(filterPersonal: false)->getData());
+		$countBeforeWithoutPersonal = count($this->adminController->circlesAll(filterPersonal: true)->getData());
+
+		$circleData = $circleService->create('test-circle');
+		$circleDataPersonal = $circleService->create('test-circle-personal', personal: true);
+		$this->circlesToCleanup[] = $circleData['id'];
+		$this->circlesToCleanup[] = $circleDataPersonal['id'];
+
+		$result = $this->adminController->circlesAll(filterPersonal: false)->getData();
+
+		$resultIds = array_column($result, 'id');
+		$this->assertCount($countBeforeWithPersonal + 2, $result);
+		$this->assertContains($circleData['id'], $resultIds);
+		$this->assertContains($circleDataPersonal['id'], $resultIds);
+
+		$result = $this->adminController->circlesAll(filterPersonal: true)->getData();
+
+		$resultIds = array_column($result, 'id');
+		$this->assertCount($countBeforeWithoutPersonal + 1, $result);
+		$this->assertContains($circleData['id'], $resultIds);
+		$this->assertNotContains($circleDataPersonal['id'], $resultIds);
+	}
+
 	public function testCircleDetails(): void {
 		$circleService = $this->container->get(CircleService::class);
 
