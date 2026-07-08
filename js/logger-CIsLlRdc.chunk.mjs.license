@@ -98,7 +98,7 @@ This file is generated from multiple sources. Included packages:
 	- version: 8.2.2
 	- license: MIT
 - semver
-	- version: 7.7.2
+	- version: 7.8.5
 	- license: ISC
 - tabbable
 	- version: 6.5.0
