@@ -30,7 +30,6 @@ class DeprecatedMember extends BaseMember {
 		return $this->addMemberToCircle();
 	}
 
-
 	/**
 	 * @param int $circleType
 	 *
@@ -44,7 +43,6 @@ class DeprecatedMember extends BaseMember {
 		};
 	}
 
-
 	/**
 	 * Update status of member like he joined a public circle.
 	 */
@@ -55,7 +53,6 @@ class DeprecatedMember extends BaseMember {
 			$this->setAsAMember(DeprecatedMember::LEVEL_MEMBER);
 		}
 	}
-
 
 	/**
 	 * Update status of member like he joined a closed circle
@@ -74,7 +71,6 @@ class DeprecatedMember extends BaseMember {
 		}
 	}
 
-
 	private function inviteIntoClosedCircle() {
 		switch ($this->getStatus()) {
 			case DeprecatedMember::STATUS_NONMEMBER:
@@ -88,7 +84,6 @@ class DeprecatedMember extends BaseMember {
 		}
 	}
 
-
 	/**
 	 * @throws MemberIsNotModeratorException
 	 */
@@ -99,7 +94,6 @@ class DeprecatedMember extends BaseMember {
 			);
 		}
 	}
-
 
 	/**
 	 * @param $level
@@ -114,7 +108,6 @@ class DeprecatedMember extends BaseMember {
 		}
 	}
 
-
 	/**
 	 * @throws MemberDoesNotExistException
 	 */
@@ -125,7 +118,6 @@ class DeprecatedMember extends BaseMember {
 
 		return true;
 	}
-
 
 	/**
 	 * @throws MemberDoesNotExistException
@@ -138,7 +130,6 @@ class DeprecatedMember extends BaseMember {
 		throw new MemberDoesNotExistException($this->l10n->t('This member does not exist'));
 	}
 
-
 	/**
 	 * @throws MemberIsOwnerException
 	 */
@@ -149,7 +140,6 @@ class DeprecatedMember extends BaseMember {
 			);
 		}
 	}
-
 
 	/**
 	 * return if member already exists
@@ -163,7 +153,6 @@ class DeprecatedMember extends BaseMember {
 		);
 	}
 
-
 	/**
 	 * @param bool $able
 	 */
@@ -171,14 +160,12 @@ class DeprecatedMember extends BaseMember {
 		$this->broadcasting = $able;
 	}
 
-
 	/**
 	 * @return bool
 	 */
 	public function isBroadcasting() {
 		return $this->broadcasting;
 	}
-
 
 	/**
 	 * @throws MemberTypeCantEditLevelException
@@ -190,7 +177,6 @@ class DeprecatedMember extends BaseMember {
 			);
 		}
 	}
-
 
 	/**
 	 * @throws MemberAlreadyExistsException
@@ -209,7 +195,6 @@ class DeprecatedMember extends BaseMember {
 			);
 		}
 	}
-
 
 	/**
 	 * @throws MemberAlreadyExistsException

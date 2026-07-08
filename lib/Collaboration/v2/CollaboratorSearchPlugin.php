@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Collaboration\v2;
 
@@ -33,7 +31,6 @@ use OCP\Share\IShare;
 class CollaboratorSearchPlugin implements ISearchPlugin {
 	use TNCLogger;
 
-
 	/**
 	 * CollaboratorSearchPlugin constructor.
 	 *
@@ -48,7 +45,6 @@ class CollaboratorSearchPlugin implements ISearchPlugin {
 	) {
 		$this->setup('app', Application::APP_ID);
 	}
-
 
 	/**
 	 * @param string $search
@@ -114,7 +110,6 @@ class CollaboratorSearchPlugin implements ISearchPlugin {
 
 		return false;
 	}
-
 
 	/**
 	 * @param Circle $circle

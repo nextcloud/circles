@@ -110,9 +110,9 @@ class NodeEventListener implements IEventListener {
 			}
 
 			$this->logger->debug(
-				'Invalidated cache for node ' . $node->getId() .
-				' affecting ' . count($affectedCircles) . ' circle(s), ' .
-				'traversed ' . count($visitedNodeIds) . ' level(s)'
+				'Invalidated cache for node ' . $node->getId()
+				. ' affecting ' . count($affectedCircles) . ' circle(s), '
+				. 'traversed ' . count($visitedNodeIds) . ' level(s)'
 			);
 		}
 	}

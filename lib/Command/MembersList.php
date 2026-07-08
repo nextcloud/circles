@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Command;
 
@@ -61,7 +59,6 @@ class MembersList extends Base {
 	use TConsoleTree;
 	use TStringTools;
 
-
 	/** @var InputInterface */
 	private $input;
 
@@ -79,7 +76,6 @@ class MembersList extends Base {
 		parent::__construct();
 	}
 
-
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:members:list')
@@ -92,7 +88,6 @@ class MembersList extends Base {
 			->addOption('display-name', '', InputOption::VALUE_NONE, 'display the displayName')
 			->addOption('tree', '', InputOption::VALUE_OPTIONAL, 'display members as a tree', false);
 	}
-
 
 	/**
 	 * @param InputInterface $input
@@ -201,8 +196,8 @@ class MembersList extends Base {
 					$member,
 					$this->input->getOption('display-name')
 				),
-				($level > 0) ? Member::$DEF_LEVEL[$level] :
-					'(' . strtolower($member->getStatus()) . ')',
+				($level > 0) ? Member::$DEF_LEVEL[$level]
+					: '(' . strtolower($member->getStatus()) . ')',
 				($member->hasInvitedBy()) ? $this->configService->displayFederatedUser(
 					$member->getInvitedBy(),
 					$this->input->getOption('display-name')
@@ -215,7 +210,6 @@ class MembersList extends Base {
 
 		return 0;
 	}
-
 
 	/**
 	 * @param string $circleId
@@ -340,7 +334,6 @@ class MembersList extends Base {
 
 		return $members;
 	}
-
 
 	/**
 	 * @param SimpleDataStore $data

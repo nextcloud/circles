@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Model\Helpers;
 
@@ -34,7 +32,6 @@ use OCA\Circles\Tools\Traits\TArrayTools;
 class MemberHelper {
 	use TArrayTools;
 
-
 	/**
 	 * Member constructor.
 	 *
@@ -44,7 +41,6 @@ class MemberHelper {
 		private Member $member,
 	) {
 	}
-
 
 	/**
 	 * @param string $name
@@ -68,7 +64,6 @@ class MemberHelper {
 		throw new MemberHelperException('unknown method call');
 	}
 
-
 	/**
 	 * @param string $levelString
 	 * @param array $arguments
@@ -85,7 +80,6 @@ class MemberHelper {
 
 		$this->mustHaveLevelEqualOrAbove($level);
 	}
-
 
 	/**
 	 * @param string $levelString
@@ -106,7 +100,6 @@ class MemberHelper {
 		}
 	}
 
-
 	/**
 	 * @param int $level
 	 *
@@ -117,7 +110,6 @@ class MemberHelper {
 			throw new MemberLevelException('Insufficient rights');
 		}
 	}
-
 
 	/**
 	 * @param int $level
@@ -130,7 +122,6 @@ class MemberHelper {
 		}
 	}
 
-
 	/**
 	 * @param int $level
 	 *
@@ -141,7 +132,6 @@ class MemberHelper {
 			throw new MemberLevelException('Insufficient rights');
 		}
 	}
-
 
 	/**
 	 * @param Member $compare

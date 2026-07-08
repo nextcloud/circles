@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles;
 
@@ -31,7 +29,6 @@ class CirclesQueryHelper {
 	/** @var CoreQueryBuilder&IQueryBuilder */
 	private $queryBuilder;
 
-
 	/**
 	 * CirclesQueryHelper constructor.
 	 *
@@ -44,7 +41,6 @@ class CirclesQueryHelper {
 	) {
 	}
 
-
 	/**
 	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
@@ -53,7 +49,6 @@ class CirclesQueryHelper {
 
 		return $this->queryBuilder;
 	}
-
 
 	/**
 	 * @param string $alias
@@ -90,7 +85,6 @@ class CirclesQueryHelper {
 			$alias
 		);
 	}
-
 
 	/**
 	 * @param string $alias
@@ -149,7 +143,6 @@ class CirclesQueryHelper {
 		);
 	}
 
-
 	/**
 	 * @param string $field
 	 * @param string $alias
@@ -170,7 +163,6 @@ class CirclesQueryHelper {
 
 		$this->queryBuilder->leftJoinCircle(CoreQueryBuilder::HELPER, null, $field, $alias);
 	}
-
 
 	/**
 	 * @param array $data

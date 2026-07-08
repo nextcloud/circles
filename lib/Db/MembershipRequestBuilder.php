@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Db;
 
@@ -32,7 +30,6 @@ class MembershipRequestBuilder extends CoreRequestBuilder {
 		return $qb;
 	}
 
-
 	/**
 	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
@@ -42,7 +39,6 @@ class MembershipRequestBuilder extends CoreRequestBuilder {
 
 		return $qb;
 	}
-
 
 	/**
 	 * @return CoreQueryBuilder&IQueryBuilder
@@ -58,7 +54,6 @@ class MembershipRequestBuilder extends CoreRequestBuilder {
 		return $qb;
 	}
 
-
 	/**
 	 * Base of the Sql Delete request
 	 *
@@ -70,7 +65,6 @@ class MembershipRequestBuilder extends CoreRequestBuilder {
 
 		return $qb;
 	}
-
 
 	/**
 	 * @param CoreQueryBuilder $qb

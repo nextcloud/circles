@@ -4,6 +4,7 @@
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
+
 namespace OCA\Circles\Activity;
 
 use OCP\Activity\ISetting;
@@ -15,7 +16,6 @@ class SettingAsMember implements ISetting {
 	) {
 	}
 
-
 	/**
 	 * @return string Lowercase a-z and underscore only identifier
 	 * @since 11.0.0
@@ -24,7 +24,6 @@ class SettingAsMember implements ISetting {
 		return 'circles_as_member';
 	}
 
-
 	/**
 	 * @return string A translated string
 	 * @since 11.0.0
@@ -32,7 +31,6 @@ class SettingAsMember implements ISetting {
 	public function getName() {
 		return $this->l10n->t('On events happening in a <strong>team</strong> of which you are a member');
 	}
-
 
 	/**
 	 * @return int whether the filter should be rather on the top or bottom of
@@ -44,7 +42,6 @@ class SettingAsMember implements ISetting {
 		return 60;
 	}
 
-
 	/**
 	 * @return bool True when the option can be changed for the stream
 	 * @since 11.0.0
@@ -52,7 +49,6 @@ class SettingAsMember implements ISetting {
 	public function canChangeStream() {
 		return true;
 	}
-
 
 	/**
 	 * @return bool True when the option can be changed for the stream
@@ -62,7 +58,6 @@ class SettingAsMember implements ISetting {
 		return true;
 	}
 
-
 	/**
 	 * @return bool True when the option can be changed for the mail
 	 * @since 11.0.0
@@ -70,7 +65,6 @@ class SettingAsMember implements ISetting {
 	public function canChangeMail() {
 		return true;
 	}
-
 
 	/**
 	 * @return bool True when the option can be changed for the stream

@@ -15,13 +15,11 @@ use OCA\Circles\Tools\Traits\TArrayTools;
 class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 	use TArrayTools;
 
-
 	/** @var bool */
 	private $fullJson = false;
 
 	/** @var bool */
 	private $lightJson = false;
-
 
 	public function getTypeString() {
 		return match ($this->getType()) {
@@ -38,11 +36,9 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 		return self::typeLongString($this->getType());
 	}
 
-
 	public function getInfo() {
 		return $this->getTypeLongString();
 	}
-
 
 	/**
 	 * @param bool $fullJson
@@ -54,7 +50,6 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	public function jsonSerialize(): array {
 		$json = [
@@ -88,13 +83,11 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 		return $json;
 	}
 
-
 	public function getArray($full = false, $light = false) {
 		$json = $this->getJson($full, $light);
 
 		return json_decode((string)$json, true);
 	}
-
 
 	public function getJson($full = false, $light = false) {
 		$this->fullJson = $full;
@@ -105,7 +98,6 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 
 		return $json;
 	}
-
 
 	/**
 	 * set all infos from an Array.
@@ -139,10 +131,8 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 			$circle->setMembers($members);
 		}
 
-
 		return $circle;
 	}
-
 
 	/**
 	 * @param array $arr
@@ -163,7 +153,6 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 		return null;
 	}
 
-
 	/**
 	 * @param array $arr
 	 *
@@ -177,7 +166,6 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 
 		return $links;
 	}
-
 
 	/**
 	 * @param array $arr
@@ -208,7 +196,6 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 		}
 	}
 
-
 	/**
 	 * @throws FederatedCircleNotAllowedException
 	 */
@@ -235,7 +222,6 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 			default => 'none',
 		};
 	}
-
 
 	/**
 	 * convert old type to new config (nc22)

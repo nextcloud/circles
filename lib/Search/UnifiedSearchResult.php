@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Search;
 
@@ -35,7 +33,6 @@ class UnifiedSearchResult extends SearchResultEntry {
 		parent::__construct($thumbnailUrl, $title, $subline, $resourceUrl, $icon, $rounded);
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -53,7 +50,6 @@ class UnifiedSearchResult extends SearchResultEntry {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return string
@@ -73,7 +69,6 @@ class UnifiedSearchResult extends SearchResultEntry {
 		return $this;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -91,7 +86,6 @@ class UnifiedSearchResult extends SearchResultEntry {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return string
@@ -111,7 +105,6 @@ class UnifiedSearchResult extends SearchResultEntry {
 		return $this;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -129,7 +122,6 @@ class UnifiedSearchResult extends SearchResultEntry {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return bool

@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\FederatedItems;
 
@@ -55,7 +53,6 @@ class CircleJoin implements
 	use TNCLogger;
 	use TDeserialize;
 
-
 	/**
 	 * CircleJoin constructor.
 	 *
@@ -78,7 +75,6 @@ class CircleJoin implements
 		private ConfigService $configService,
 	) {
 	}
-
 
 	/**
 	 * @param FederatedEvent $event
@@ -106,7 +102,6 @@ class CircleJoin implements
 			->setOutcome($this->serialize($member));
 
 		return;
-
 		//
 		//
 		//		$federatedId = $member->getUserId() . '@' . $member->getInstance();
@@ -146,7 +141,6 @@ class CircleJoin implements
 		//
 		//		return;
 
-
 		//		$member = $this->membersRequest->getFreshNewMember(
 		//			$circle->getUniqueId(), $ident, $eventMember->getType(), $eventMember->getInstance()
 		//		);
@@ -175,7 +169,6 @@ class CircleJoin implements
 		//		);
 	}
 
-
 	/**
 	 * @param FederatedEvent $event
 	 *
@@ -201,7 +194,6 @@ class CircleJoin implements
 		$this->membershipService->updatePopulation($event->getCircle());
 	}
 
-
 	/**
 	 * @param FederatedEvent $event
 	 * @param array $results
@@ -214,7 +206,6 @@ class CircleJoin implements
 			$this->eventService->memberJoined($event, $results);
 		}
 	}
-
 
 	/**
 	 * @param Circle $circle
@@ -230,10 +221,8 @@ class CircleJoin implements
 				switch ($knownMember->getStatus()) {
 					case Member::STATUS_BLOCKED:
 						throw new Exception('Blocked');
-
 					case Member::STATUS_REQUEST:
 						throw new MemberAlreadyExistsException(StatusCode::$CIRCLE_JOIN[123], 123);
-
 					case Member::STATUS_INVITED:
 						$member->setId($knownMember->getId());
 						$member->setLevel(Member::LEVEL_MEMBER);

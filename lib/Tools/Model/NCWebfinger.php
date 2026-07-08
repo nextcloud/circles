@@ -7,7 +7,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -33,7 +32,6 @@ declare(strict_types=1);
  *
  */
 
-
 namespace OCA\Circles\Tools\Model;
 
 use JsonSerializable;
@@ -41,7 +39,6 @@ use OCA\Circles\Tools\Traits\TArrayTools;
 
 class NCWebfinger implements JsonSerializable {
 	use TArrayTools;
-
 
 	/** @var string */
 	private $subject = '';
@@ -54,7 +51,6 @@ class NCWebfinger implements JsonSerializable {
 
 	/** @var NCWellKnownLink[] */
 	private $links = [];
-
 
 	/**
 	 * NC22Webfinger constructor.
@@ -70,7 +66,6 @@ class NCWebfinger implements JsonSerializable {
 			$this->addLink(new NCWellKnownLink($link));
 		}
 	}
-
 
 	/**
 	 * @return string
@@ -90,7 +85,6 @@ class NCWebfinger implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return array
 	 */
@@ -108,7 +102,6 @@ class NCWebfinger implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return array
@@ -136,7 +129,6 @@ class NCWebfinger implements JsonSerializable {
 	public function getProperty(string $key): string {
 		return $this->get($key, $this->properties);
 	}
-
 
 	/**
 	 * @return NCWellKnownLink[]

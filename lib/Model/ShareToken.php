@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Model;
 
@@ -21,7 +19,6 @@ use OCP\Share\IShare;
 
 class ShareToken implements IDeserializable, IQueryRow, JsonSerializable {
 	use TArrayTools;
-
 
 	/** @var int */
 	private $dbId = 0;
@@ -50,13 +47,11 @@ class ShareToken implements IDeserializable, IQueryRow, JsonSerializable {
 	/** @var string */
 	private $link = '';
 
-
 	/**
 	 * ShareToken constructor.
 	 */
 	public function __construct() {
 	}
-
 
 	/**
 	 * @param int $dbId
@@ -76,7 +71,6 @@ class ShareToken implements IDeserializable, IQueryRow, JsonSerializable {
 		return $this->dbId;
 	}
 
-
 	/**
 	 * @param int $shareId
 	 *
@@ -94,7 +88,6 @@ class ShareToken implements IDeserializable, IQueryRow, JsonSerializable {
 	public function getShareId(): int {
 		return $this->shareId;
 	}
-
 
 	/**
 	 * @param string $circleId
@@ -114,7 +107,6 @@ class ShareToken implements IDeserializable, IQueryRow, JsonSerializable {
 		return $this->circleId;
 	}
 
-
 	/**
 	 * @param string $singleId
 	 *
@@ -132,7 +124,6 @@ class ShareToken implements IDeserializable, IQueryRow, JsonSerializable {
 	public function getSingleId(): string {
 		return $this->singleId;
 	}
-
 
 	/**
 	 * @param string $memberId
@@ -152,7 +143,6 @@ class ShareToken implements IDeserializable, IQueryRow, JsonSerializable {
 		return $this->memberId;
 	}
 
-
 	/**
 	 * @param string $token
 	 *
@@ -170,7 +160,6 @@ class ShareToken implements IDeserializable, IQueryRow, JsonSerializable {
 	public function getToken(): string {
 		return $this->token;
 	}
-
 
 	/**
 	 * @param string $password
@@ -190,7 +179,6 @@ class ShareToken implements IDeserializable, IQueryRow, JsonSerializable {
 		return $this->password;
 	}
 
-
 	/**
 	 * @param int $accepted
 	 *
@@ -209,7 +197,6 @@ class ShareToken implements IDeserializable, IQueryRow, JsonSerializable {
 		return $this->accepted;
 	}
 
-
 	/**
 	 * @param string $link
 	 *
@@ -227,7 +214,6 @@ class ShareToken implements IDeserializable, IQueryRow, JsonSerializable {
 	public function getLink(): string {
 		return $this->link;
 	}
-
 
 	/**
 	 * @param array $data
@@ -251,7 +237,6 @@ class ShareToken implements IDeserializable, IQueryRow, JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @param array $data

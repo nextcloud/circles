@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Events;
 
@@ -29,7 +27,6 @@ class CircleMemberRequestedEvent extends CircleResultGenericEvent {
 	/** @var int */
 	private $type = 0;
 
-
 	/**
 	 * CircleMemberRequestedEvent constructor.
 	 *
@@ -39,7 +36,6 @@ class CircleMemberRequestedEvent extends CircleResultGenericEvent {
 	public function __construct(FederatedEvent $federatedEvent, array $results) {
 		parent::__construct($federatedEvent, $results);
 	}
-
 
 	/**
 	 * @param int $type

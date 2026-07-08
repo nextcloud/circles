@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Command;
 
@@ -50,7 +48,6 @@ class CirclesJoin extends Base {
 		parent::__construct();
 	}
 
-
 	/**
 	 *
 	 */
@@ -63,7 +60,6 @@ class CirclesJoin extends Base {
 			->addOption('type', '', InputOption::VALUE_REQUIRED, 'type of the initiator', '0')
 			->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
 	}
-
 
 	/**
 	 * @param InputInterface $input

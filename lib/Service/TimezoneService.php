@@ -4,6 +4,7 @@
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
+
 namespace OCA\Circles\Service;
 
 use DateTime;
@@ -12,7 +13,6 @@ use OC\AppFramework\Utility\TimeFactory;
 class TimezoneService {
 	/** @var TimeFactory */
 	private $timeFactory;
-
 
 	/**
 	 * TimezoneService constructor.
@@ -29,7 +29,6 @@ class TimezoneService {
 		$this->timeFactory = $timeFactory;
 	}
 
-
 	/**
 	 * @param string $time
 	 *
@@ -39,11 +38,9 @@ class TimezoneService {
 		return $this->convertTimeForUserId($this->userId, $time);
 	}
 
-
 	public function convertToTimestamp($time) {
 		return strtotime((string)$time);
 	}
-
 
 	/**
 	 * @param string $userId
@@ -63,7 +60,6 @@ class TimezoneService {
 		return $date->format('Y-m-d H:i:s');
 	}
 
-
 	/**
 	 * @param string $time
 	 *
@@ -72,7 +68,6 @@ class TimezoneService {
 	public function getDateTime(string $time = 'now'): DateTime {
 		return $this->timeFactory->getDateTime($time);
 	}
-
 
 	/**
 	 * @return string

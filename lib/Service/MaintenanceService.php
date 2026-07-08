@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Service;
 
@@ -42,8 +40,8 @@ class MaintenanceService {
 	use TNCLogger;
 
 	public const TIMEOUT = 18000;
-	public static $DELAY =
-		[
+	public static $DELAY
+		= [
 			1 => 60,    // every minute
 			2 => 300,   // every 5 minutes
 			3 => 3600,  // every hour
@@ -73,14 +71,12 @@ class MaintenanceService {
 	) {
 	}
 
-
 	/**
 	 * @param OutputInterface $output
 	 */
 	public function setOccOutput(OutputInterface $output): void {
 		$this->output = $output;
 	}
-
 
 	/**
 	 * level=1 -> run every minute
@@ -120,7 +116,6 @@ class MaintenanceService {
 		$this->configService->setAppValue(ConfigService::MAINTENANCE_RUN, '0');
 	}
 
-
 	/**
 	 * @throws MaintenanceException
 	 */
@@ -133,7 +128,6 @@ class MaintenanceService {
 		$this->configService->setAppValue(ConfigService::MAINTENANCE_RUN, (string)time());
 	}
 
-
 	/**
 	 * every minute
 	 */
@@ -144,7 +138,6 @@ class MaintenanceService {
 		} catch (Exception) {
 		}
 	}
-
 
 	/**
 	 * every 10 minutes
@@ -169,7 +162,6 @@ class MaintenanceService {
 		}
 	}
 
-
 	/**
 	 * every hour
 	 */
@@ -180,7 +172,6 @@ class MaintenanceService {
 		} catch (Exception) {
 		}
 	}
-
 
 	/**
 	 * every day
@@ -246,7 +237,6 @@ class MaintenanceService {
 		}
 	}
 
-
 	/**
 	 * @throws InitiatorNotFoundException
 	 * @throws RequestBuilderException
@@ -264,7 +254,6 @@ class MaintenanceService {
 		}
 	}
 
-
 	/**
 	 *
 	 */
@@ -280,11 +269,9 @@ class MaintenanceService {
 		//		}
 	}
 
-
 	private function removeOrphanShares(): void {
 		$this->shareWrapperRequest->removeOrphanShares();
 	}
-
 
 	/**
 	 * @throws RequestBuilderException
@@ -313,7 +300,6 @@ class MaintenanceService {
 			}
 		}
 	}
-
 
 	/**
 	 * @throws InitiatorNotFoundException
@@ -380,7 +366,6 @@ class MaintenanceService {
 		return $displayName;
 	}
 
-
 	/**
 	 * @throws RequestBuilderException
 	 * @throws InitiatorNotFoundException
@@ -395,7 +380,6 @@ class MaintenanceService {
 			$this->memberRequest->updateDisplayName($circle->getSingleId(), $circle->getDisplayName());
 		}
 	}
-
 
 	/**
 	 * should only be called from a BackgroundJob
@@ -421,7 +405,6 @@ class MaintenanceService {
 		$this->configService->setAppValue(ConfigService::MAINTENANCE_UPDATE, json_encode($last));
 	}
 
-
 	/**
 	 * @param int $level
 	 * @param SimpleDataStore $last
@@ -437,7 +420,6 @@ class MaintenanceService {
 
 		return ($timeLastRun + self::$DELAY[$level] < $now);
 	}
-
 
 	/**
 	 * @param string $message

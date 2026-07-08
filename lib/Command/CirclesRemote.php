@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Command;
 
@@ -61,7 +59,6 @@ class CirclesRemote extends Base {
 		$this->setup('app', 'circles');
 	}
 
-
 	/**
 	 *
 	 */
@@ -80,7 +77,6 @@ class CirclesRemote extends Base {
 			->addOption('yes', '', InputOption::VALUE_NONE, 'silently add the remote instance')
 			->addOption('all', '', InputOption::VALUE_NONE, 'display all information');
 	}
-
 
 	/**
 	 * @param InputInterface $input
@@ -103,7 +99,6 @@ class CirclesRemote extends Base {
 
 		return 0;
 	}
-
 
 	/**
 	 * @param string $host
@@ -148,7 +143,6 @@ class CirclesRemote extends Base {
 		$resource = $this->getResourceData($host, Application::APP_SUBJECT, Application::APP_REL);
 		$this->output->writeln(json_encode($resource, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 		$this->output->writeln('');
-
 
 		$tempUid = $resource->g('uid');
 		$this->output->writeln(
@@ -236,7 +230,6 @@ class CirclesRemote extends Base {
 					. ' is already known with this current identity</info>'
 				);
 
-
 				$this->output->writeln('- updating item');
 				$this->remoteStreamService->update($remoteSignatory, RemoteStreamService::UPDATE_ITEM);
 
@@ -274,7 +267,6 @@ class CirclesRemote extends Base {
 		}
 	}
 
-
 	/**
 	 * @param RemoteInstance $remoteSignatory
 	 *
@@ -306,7 +298,6 @@ class CirclesRemote extends Base {
 		}
 	}
 
-
 	/**
 	 * @param RemoteInstance $remoteSignatory
 	 *
@@ -335,7 +326,6 @@ class CirclesRemote extends Base {
 			$this->output->writeln('remote instance updated');
 		}
 	}
-
 
 	/**
 	 * @param string $remote
@@ -386,8 +376,6 @@ class CirclesRemote extends Base {
 		}
 	}
 
-
-
 	private function checkRemoteInstances(): void {
 		$instances = $this->remoteRequest->getAllInstances();
 
@@ -422,7 +410,6 @@ class CirclesRemote extends Base {
 		$table->setRows($rows);
 		$table->render();
 	}
-
 
 	/**
 	 * @throws Exception

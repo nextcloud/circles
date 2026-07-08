@@ -223,7 +223,6 @@ class MigrateCustomGroups extends Base {
 		$this->output->writeln('> ' . ((string)$count) . ' children shares updated');
 	}
 
-
 	private function getSharedIds(string $groupUri): array {
 		$select = $this->connection->getQueryBuilder();
 		$select->select('*')

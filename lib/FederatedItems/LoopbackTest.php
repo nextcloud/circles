@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\FederatedItems;
 
@@ -29,13 +27,11 @@ class LoopbackTest implements
 	public const VERIFY = 17;
 	public const MANAGE = 42;
 
-
 	/**
 	 * LoopbackTest constructor.
 	 */
 	public function __construct() {
 	}
-
 
 	/**
 	 * @param FederatedEvent $event
@@ -44,14 +40,12 @@ class LoopbackTest implements
 		$event->setData(new SimpleDataStore(['verify' => self::VERIFY]));
 	}
 
-
 	/**
 	 * @param FederatedEvent $event
 	 */
 	public function manage(FederatedEvent $event): void {
 		$event->setResult(new SimpleDataStore(['manage' => self::MANAGE]));
 	}
-
 
 	/**
 	 * @param FederatedEvent $event

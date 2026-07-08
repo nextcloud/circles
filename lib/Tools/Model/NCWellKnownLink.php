@@ -7,7 +7,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -33,7 +32,6 @@ declare(strict_types=1);
  *
  */
 
-
 namespace OCA\Circles\Tools\Model;
 
 use JsonSerializable;
@@ -41,7 +39,6 @@ use OCA\Circles\Tools\Traits\TArrayTools;
 
 class NCWellKnownLink implements JsonSerializable {
 	use TArrayTools;
-
 
 	/** @var string */
 	private $rel = '';
@@ -58,7 +55,6 @@ class NCWellKnownLink implements JsonSerializable {
 	/** @var array */
 	private $properties = [];
 
-
 	/**
 	 * NC22WellKnownLink constructor.
 	 *
@@ -71,7 +67,6 @@ class NCWellKnownLink implements JsonSerializable {
 		$this->setTitles($this->getArray('titles', $json));
 		$this->setProperties($this->getArray('properties', $json));
 	}
-
 
 	/**
 	 * @return string
@@ -91,7 +86,6 @@ class NCWellKnownLink implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -110,7 +104,6 @@ class NCWellKnownLink implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -128,7 +121,6 @@ class NCWellKnownLink implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return array
@@ -157,7 +149,6 @@ class NCWellKnownLink implements JsonSerializable {
 		return $this->get($key, $this->properties);
 	}
 
-
 	/**
 	 * @return array
 	 */
@@ -184,7 +175,6 @@ class NCWellKnownLink implements JsonSerializable {
 	public function getProperty(string $key): string {
 		return $this->get($key, $this->properties);
 	}
-
 
 	/**
 	 * @return array

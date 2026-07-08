@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Service;
 
@@ -28,7 +26,6 @@ use OCP\Notification\INotification;
 class NotificationService {
 	use TNCLogger;
 
-
 	/**
 	 * NotificationService constructor.
 	 *
@@ -45,7 +42,6 @@ class NotificationService {
 	) {
 		$this->setup('app', Application::APP_ID);
 	}
-
 
 	/**
 	 * @param Member $member
@@ -76,7 +72,6 @@ class NotificationService {
 
 		$this->notificationManager->notify($notification);
 	}
-
 
 	/**
 	 * @param Member $member
@@ -135,7 +130,6 @@ class NotificationService {
 		}
 	}
 
-
 	/**
 	 * @param string $object
 	 * @param string $objectId
@@ -151,7 +145,6 @@ class NotificationService {
 		//
 		//		$this->notificationManager->markProcessed($notification);
 	}
-
 
 	/**
 	 * @param string $userId

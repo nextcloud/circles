@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Controller;
 
@@ -36,7 +34,6 @@ class EventWrapperController extends Controller {
 	use TStringTools;
 	use TAsync;
 
-
 	/**
 	 * EventWrapperController constructor.
 	 *
@@ -63,7 +60,6 @@ class EventWrapperController extends Controller {
 		$this->setup('app', Application::APP_ID);
 		$this->setupInt(self::$SETUP_TIME_LIMIT, 900);
 	}
-
 
 	/**
 	 * Called locally.

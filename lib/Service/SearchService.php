@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Service;
 
@@ -29,11 +27,9 @@ use OCP\Server;
 class SearchService {
 	use TArrayTools;
 
-
 	public static $SERVICES = [
 		FederatedUsers::class
 	];
-
 
 	/**
 	 * @param IURLGenerator $urlGenerator
@@ -44,7 +40,6 @@ class SearchService {
 		private CircleService $circleService,
 	) {
 	}
-
 
 	/**
 	 * @param string $needle
@@ -63,7 +58,6 @@ class SearchService {
 
 		return $result;
 	}
-
 
 	/**
 	 * @param string $term
@@ -96,7 +90,6 @@ class SearchService {
 
 		return $result;
 	}
-
 
 	/**
 	 * @param string $term

@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Db;
 
@@ -73,7 +71,6 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		return $id;
 	}
 
-
 	/**
 	 * @param ShareWrapper $shareWrapper
 	 */
@@ -112,7 +109,6 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		$qb->executeStatement();
 	}
 
-
 	/**
 	 * @param Membership $membership
 	 */
@@ -124,7 +120,6 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		$qb->executeStatement();
 	}
 
-
 	/**
 	 * @return array
 	 */
@@ -133,7 +128,6 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 
 		return $this->getItemsFromRequest($qb);
 	}
-
 
 	/**
 	 * @param string $circleId
@@ -157,8 +151,8 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		$qb->leftJoinCircle(CoreQueryBuilder::SHARE, null, 'share_with');
 
 		// TODO: filter direct-shares ?
-		$aliasUpstreamMembership =
-			$qb->generateAlias(CoreQueryBuilder::SHARE, CoreQueryBuilder::UPSTREAM_MEMBERSHIPS);
+		$aliasUpstreamMembership
+			= $qb->generateAlias(CoreQueryBuilder::SHARE, CoreQueryBuilder::UPSTREAM_MEMBERSHIPS);
 		$qb->limitToInheritedMemberships(CoreQueryBuilder::SHARE, $circleId, 'share_with');
 
 		//		if (!is_null($shareRecipient)) {
@@ -181,7 +175,6 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		return $this->getItemsFromRequest($qb);
 	}
 
-
 	/**
 	 * @return ShareWrapper[]
 	 * @throws RequestBuilderException
@@ -195,8 +188,6 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		}
 		return $this->getItemsFromRequest($qb);
 	}
-
-
 
 	/**
 	 * @param int $shareId
@@ -221,7 +212,6 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		return $this->getItemFromRequest($qb);
 	}
 
-
 	/**
 	 * @param string $token
 	 * @param FederatedUser|null $federatedUser
@@ -245,7 +235,6 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		return $this->getItemFromRequest($qb);
 	}
 
-
 	/**
 	 * @param FederatedUser $federatedUser
 	 * @param int $shareId
@@ -260,7 +249,6 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 
 		return $this->getItemFromRequest($qb);
 	}
-
 
 	/**
 	 * @param int $fileId
@@ -286,7 +274,6 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 
 		return $this->getItemsFromRequest($qb);
 	}
-
 
 	/**
 	 * returns all share, related to a list of fileids.
@@ -314,7 +301,6 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		}
 		return $this->getItemsFromRequest($qb);
 	}
-
 
 	/**
 	 * @param FederatedUser $federatedUser
@@ -447,7 +433,6 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		return $this->getItemsFromRequest($qb);
 	}
 
-
 	/**
 	 * @param FederatedUser $federatedUser
 	 * @param Folder $node
@@ -480,7 +465,6 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		return $this->getItemsFromRequest($qb);
 	}
 
-
 	/**
 	 * returns the SQL request to get a specific share from the fileId and circleId
 	 *
@@ -503,7 +487,6 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 
 		return $this->getItemFromRequest($qb);
 	}
-
 
 	/**
 	 * @param int $shareId
@@ -540,7 +523,6 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		$this->deleteSharesAndChild($ids);
 	}
 
-
 	public function removeOrphanShares(): void {
 		$qb = $this->getShareSelectSql();
 		$expr = $qb->expr();
@@ -562,7 +544,6 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		$this->deleteSharesAndChild($ids);
 	}
 
-
 	/**
 	 * @param array $ids
 	 */
@@ -577,7 +558,6 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 
 		$qb->executeStatement();
 	}
-
 
 	/**
 	 * Format IAttributes to database format (JSON string)

@@ -205,7 +205,6 @@ class ProviderParser {
 		return (($initiator['type'] ?? 0) === Member::TYPE_USER && ($initiator['userId'] ?? '') === $userId);
 	}
 
-
 	/**
 	 * @param array $member
 	 *

@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Command;
 
@@ -67,7 +65,6 @@ class CirclesList extends Base {
 		parent::__construct();
 	}
 
-
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:manage:list')
@@ -85,7 +82,6 @@ class CirclesList extends Base {
 			->addOption('single', '', InputOption::VALUE_NONE, 'returns only Single Teams')
 			->addOption('all', '', InputOption::VALUE_NONE, 'include all Teams');
 	}
-
 
 	/**
 	 * @param InputInterface $input
@@ -181,7 +177,6 @@ class CirclesList extends Base {
 
 		return 0;
 	}
-
 
 	/**
 	 * @param Circle[] $circles

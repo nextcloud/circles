@@ -288,8 +288,8 @@ class CirclesCheck extends Base {
 		$test = new FederatedEvent(LoopbackTest::class);
 		$this->federatedEventService->newEvent($test);
 		$output->writeln(
-			'<info>' . $test->getWrapperToken() . '</info> ' .
-			'(took ' . ((string)(round(microtime(true) * 1000.0) - $timer)) . 'ms)'
+			'<info>' . $test->getWrapperToken() . '</info> '
+			. '(took ' . ((string)(round(microtime(true) * 1000.0) - $timer)) . 'ms)'
 		);
 
 		$output->writeln('- Waiting for async process to finish (5s)');

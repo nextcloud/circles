@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Model;
 
@@ -39,7 +37,6 @@ class FederatedUser extends ManagedModel implements
 	use TArrayTools;
 	use TDeserialize;
 
-
 	/** @var string */
 	private $singleId = '';
 
@@ -67,13 +64,11 @@ class FederatedUser extends ManagedModel implements
 	/** @var Membership[] */
 	private $memberships = null;
 
-
 	/**
 	 * FederatedUser constructor.
 	 */
 	public function __construct() {
 	}
-
 
 	/**
 	 * @param string $userId
@@ -100,7 +95,6 @@ class FederatedUser extends ManagedModel implements
 		return $this;
 	}
 
-
 	/**
 	 * @param string $singleId
 	 *
@@ -119,7 +113,6 @@ class FederatedUser extends ManagedModel implements
 		return $this->singleId;
 	}
 
-
 	/**
 	 * @param string $userId
 	 *
@@ -137,7 +130,6 @@ class FederatedUser extends ManagedModel implements
 	public function getUserId(): string {
 		return $this->userId;
 	}
-
 
 	/**
 	 * @param int $userType
@@ -175,7 +167,6 @@ class FederatedUser extends ManagedModel implements
 		return $this->displayName;
 	}
 
-
 	/**
 	 * @return bool
 	 */
@@ -201,7 +192,6 @@ class FederatedUser extends ManagedModel implements
 		return $this->basedOn;
 	}
 
-
 	/**
 	 * @param int $config
 	 *
@@ -219,7 +209,6 @@ class FederatedUser extends ManagedModel implements
 	public function getConfig(): int {
 		return $this->config;
 	}
-
 
 	/**
 	 * @param string $instance
@@ -243,7 +232,6 @@ class FederatedUser extends ManagedModel implements
 	public function getInstance(): string {
 		return $this->instance;
 	}
-
 
 	/**
 	 * @return bool
@@ -277,7 +265,6 @@ class FederatedUser extends ManagedModel implements
 		return $this->inheritance;
 	}
 
-
 	/**
 	 * @return bool
 	 */
@@ -307,8 +294,6 @@ class FederatedUser extends ManagedModel implements
 		return $this->memberships;
 	}
 
-
-
 	/**
 	 * @param string $singleId
 	 * @param bool $detailed
@@ -320,7 +305,6 @@ class FederatedUser extends ManagedModel implements
 	public function getLink(string $singleId, bool $detailed = false): Membership {
 		return $this->getManager()->getLink($this, $singleId, $detailed);
 	}
-
 
 	/**
 	 * @param array $data
@@ -357,7 +341,6 @@ class FederatedUser extends ManagedModel implements
 		return $this;
 	}
 
-
 	/**
 	 * @param Circle $circle
 	 *
@@ -393,7 +376,6 @@ class FederatedUser extends ManagedModel implements
 		return $this;
 	}
 
-
 	/**
 	 * @param array $data
 	 * @param string $prefix
@@ -416,7 +398,6 @@ class FederatedUser extends ManagedModel implements
 
 		return $this;
 	}
-
 
 	/**
 	 * @return string[]
@@ -445,7 +426,6 @@ class FederatedUser extends ManagedModel implements
 
 		return $arr;
 	}
-
 
 	/**
 	 * @param IFederatedUser $member

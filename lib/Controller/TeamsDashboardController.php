@@ -65,16 +65,16 @@ class TeamsDashboardController extends OCSController {
 				->setItemsOffset($offset);
 
 			$circles = $this->circleService->probeCircles($probe);
-			
+
 			$teams = [];
 			foreach ($circles as $circle) {
 				$members = [];
 				try {
 					$circleMembers = $this->memberService->getMembers($circle->getSingleId(), false);
-					
+
 					// Limit to 5 members for the dashboard widget
 					$limitedMembers = array_slice($circleMembers, 0, 5);
-					
+
 					foreach ($limitedMembers as $member) {
 						$members[] = [
 							'singleId' => $member->getSingleId(),
@@ -99,7 +99,7 @@ class TeamsDashboardController extends OCSController {
 				} catch (\Exception $e) {
 					$this->logger->warning('Failed to fetch resources for circle ' . $circle->getSingleId() . ': ' . $e->getMessage());
 				}
-				
+
 				$teams[] = [
 					'singleId' => $circle->getSingleId(),
 					'displayName' => $circle->getDisplayName(),

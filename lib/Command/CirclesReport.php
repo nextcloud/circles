@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Command;
 
@@ -57,7 +55,6 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 		parent::__construct();
 	}
 
-
 	/**
 	 *
 	 */
@@ -69,7 +66,6 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 			->addOption('read', '', InputOption::VALUE_REQUIRED, 'File containing the report to read', '');
 	}
 
-
 	/**
 	 * @param InputInterface $input
 	 * @param OutputInterface $output
@@ -80,7 +76,6 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		throw new \Exception('not available');
-
 		$filename = $input->getOption('read');
 		$local = $input->getOption('local');
 		$this->output = $output;
@@ -108,7 +103,6 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 		return 0;
 	}
 
-
 	/**
 	 * @throws InitiatorNotFoundException
 	 * @throws UnknownInterfaceException
@@ -134,7 +128,6 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 		return $report;
 	}
 
-
 	/**
 	 * @param InputInterface $input
 	 * @param Report $report
@@ -158,7 +151,6 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 		$interactiveShell->run();
 	}
 
-
 	/**
 	 * @param string $source
 	 * @param string $field
@@ -171,14 +163,12 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 		return ['abcd', 'abdde', 'erfg'];
 	}
 
-
 	/**
 	 * @param string $command
 	 */
 	public function manageCommand(string $command): void {
 		//		echo $command . "\n";
 	}
-
 
 	/**
 	 * @param Circle $circle
@@ -217,10 +207,8 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 			$circle->setMemberships($memberships);
 		}
 
-
 		return $circle;
 	}
-
 
 	/**
 	 * @param Member $member
@@ -274,7 +262,6 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 		return $member;
 	}
 
-
 	/**
 	 * @param FederatedUser $federatedUser
 	 *
@@ -305,7 +292,6 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 		return $federatedUser;
 	}
 
-
 	/**
 	 * @param Membership $membership
 	 *
@@ -326,7 +312,6 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 		return $membership;
 	}
 
-
 	/**
 	 * @param RemoteInstance $remoteInstance
 	 *
@@ -335,7 +320,6 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 	private function obfuscateRemoteInstance(RemoteInstance $remoteInstance): RemoteInstance {
 		return $remoteInstance;
 	}
-
 
 	/**
 	 * @param string $id
@@ -346,13 +330,12 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 		return substr($id, 0, 5) . '.' . md5(substr($id, 5));
 	}
 
-
 	/**
 	 * @param NC22InteractiveShellSession $session
 	 */
 	public function onNewPrompt(NC22InteractiveShellSession $session): void {
-		$prompt =
-			'Circles Report [<info>' . $this->report->getSource() . '</info>]:<comment>%PATH%</comment>';
+		$prompt
+			= 'Circles Report [<info>' . $this->report->getSource() . '</info>]:<comment>%PATH%</comment>';
 
 		$commands = [];
 		if ($session->getData()->g('currentStatus') === 'write') {
@@ -367,7 +350,6 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 		$session->setGlobalCommands($commands)
 			->setPrompt($prompt);
 	}
-
 
 	/**
 	 * @param NC22InteractiveShellSession $session

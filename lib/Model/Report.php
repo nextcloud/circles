@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Model;
 
@@ -32,13 +30,11 @@ class Report implements IDeserializable, JsonSerializable {
 	/** @var array */
 	private $obfuscated = [];
 
-
 	/**
 	 * Report constructor.
 	 */
 	public function __construct() {
 	}
-
 
 	/**
 	 * @param string $source
@@ -58,7 +54,6 @@ class Report implements IDeserializable, JsonSerializable {
 		return $this->source;
 	}
 
-
 	/**
 	 * @param Circle[] $circles
 	 *
@@ -76,7 +71,6 @@ class Report implements IDeserializable, JsonSerializable {
 	public function getCircles(): array {
 		return $this->circles;
 	}
-
 
 	/**
 	 * @param array $obfuscated
@@ -96,7 +90,6 @@ class Report implements IDeserializable, JsonSerializable {
 		return $this->obfuscated;
 	}
 
-
 	/**
 	 * @param array $data
 	 *
@@ -109,7 +102,6 @@ class Report implements IDeserializable, JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return array

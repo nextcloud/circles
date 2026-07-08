@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Events;
 
@@ -29,7 +27,6 @@ class CircleResultGenericEvent extends Event {
 	/** @var Member */
 	private $member;
 
-
 	/**
 	 * CircleResultGenericEvent constructor.
 	 *
@@ -48,14 +45,12 @@ class CircleResultGenericEvent extends Event {
 		}
 	}
 
-
 	/**
 	 * @return FederatedEvent
 	 */
 	public function getFederatedEvent(): FederatedEvent {
 		return $this->federatedEvent;
 	}
-
 
 	/**
 	 * @return SimpleDataStore[]
@@ -64,14 +59,12 @@ class CircleResultGenericEvent extends Event {
 		return $this->results;
 	}
 
-
 	/**
 	 * @return Circle
 	 */
 	public function getCircle(): Circle {
 		return $this->circle;
 	}
-
 
 	/**
 	 * @return bool

@@ -61,7 +61,6 @@ class ProviderSubjectMember extends ProviderParser {
 		throw new FakeException();
 	}
 
-
 	/**
 	 * @param IEvent $event
 	 * @param array $params
@@ -111,7 +110,6 @@ class ProviderSubjectMember extends ProviderParser {
 		throw new FakeException();
 	}
 
-
 	/**
 	 * @param IEvent $event
 	 * @param array $params
@@ -135,7 +133,6 @@ class ProviderSubjectMember extends ProviderParser {
 
 		throw new FakeException();
 	}
-
 
 	/**
 	 * @param IEvent $event
@@ -162,7 +159,6 @@ class ProviderSubjectMember extends ProviderParser {
 		throw new FakeException();
 	}
 
-
 	/**
 	 * @param IEvent $event
 	 * @param array $params
@@ -187,7 +183,6 @@ class ProviderSubjectMember extends ProviderParser {
 		throw new FakeException();
 	}
 
-
 	/**
 	 * @param IEvent $event
 	 * @param array $params
@@ -211,7 +206,6 @@ class ProviderSubjectMember extends ProviderParser {
 
 		throw new FakeException();
 	}
-
 
 	/**
 	 * @param IEvent $event
@@ -261,7 +255,6 @@ class ProviderSubjectMember extends ProviderParser {
 
 		throw new FakeException();
 	}
-
 
 	/**
 	 * @param IEvent $event
@@ -333,7 +326,6 @@ class ProviderSubjectMember extends ProviderParser {
 		throw new FakeException();
 	}
 
-
 	/**
 	 * @param IEvent $event
 	 * @param array $params
@@ -359,7 +351,6 @@ class ProviderSubjectMember extends ProviderParser {
 
 		throw new FakeException();
 	}
-
 
 	/**
 	 * @param IEvent $event

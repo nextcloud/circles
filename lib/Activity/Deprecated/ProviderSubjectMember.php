@@ -65,7 +65,6 @@ class ProviderSubjectMember extends ProviderParser {
 		throw new FakeException();
 	}
 
-
 	/**
 	 * @param IEvent $event
 	 * @param Circle $circle
@@ -119,7 +118,6 @@ class ProviderSubjectMember extends ProviderParser {
 		throw new FakeException();
 	}
 
-
 	/**
 	 * @param IEvent $event
 	 * @param Circle $circle
@@ -145,7 +143,6 @@ class ProviderSubjectMember extends ProviderParser {
 
 		throw new FakeException();
 	}
-
 
 	/**
 	 * @param IEvent $event
@@ -174,7 +171,6 @@ class ProviderSubjectMember extends ProviderParser {
 		throw new FakeException();
 	}
 
-
 	/**
 	 * @param IEvent $event
 	 * @param Circle $circle
@@ -201,7 +197,6 @@ class ProviderSubjectMember extends ProviderParser {
 		throw new FakeException();
 	}
 
-
 	/**
 	 * @param IEvent $event
 	 * @param Circle $circle
@@ -227,7 +222,6 @@ class ProviderSubjectMember extends ProviderParser {
 
 		throw new FakeException();
 	}
-
 
 	/**
 	 * @param IEvent $event
@@ -281,7 +275,6 @@ class ProviderSubjectMember extends ProviderParser {
 
 		throw new FakeException();
 	}
-
 
 	/**
 	 * @param IEvent $event
@@ -357,7 +350,6 @@ class ProviderSubjectMember extends ProviderParser {
 		throw new FakeException();
 	}
 
-
 	/**
 	 * @param IEvent $event
 	 * @param Circle $circle
@@ -385,7 +377,6 @@ class ProviderSubjectMember extends ProviderParser {
 
 		throw new FakeException();
 	}
-
 
 	/**
 	 * @param IEvent $event

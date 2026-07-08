@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Migration;
 
@@ -29,7 +27,6 @@ class Version0022Date20220703115023 extends SimpleMigrationStep {
 	 */
 	public function __construct(IDBConnection $connection) {
 	}
-
 
 	/**
 	 * @param IOutput $output
@@ -75,7 +72,6 @@ class Version0022Date20220703115023 extends SimpleMigrationStep {
 			}
 		}
 
-
 		if ($schema->hasTable('circles_circle')) {
 			$table = $schema->getTable('circles_circle');
 			if (!$table->hasColumn('sanitized_name')) {
@@ -90,7 +86,6 @@ class Version0022Date20220703115023 extends SimpleMigrationStep {
 				$table->addIndex(['sanitized_name']);
 			}
 		}
-
 
 		if ($schema->hasTable('circles_membership')) {
 			$table = $schema->getTable('circles_membership');
@@ -120,7 +115,6 @@ class Version0022Date20220703115023 extends SimpleMigrationStep {
 			);
 		}
 
-
 		if ($schema->hasTable('circles_mount')) {
 			$table = $schema->getTable('circles_mount');
 			$table->modifyColumn(
@@ -143,7 +137,6 @@ class Version0022Date20220703115023 extends SimpleMigrationStep {
 			);
 		}
 
-
 		if ($schema->hasTable('circles_mountpoint')) {
 			$table = $schema->getTable('circles_mountpoint');
 			$table->modifyColumn(
@@ -160,7 +153,6 @@ class Version0022Date20220703115023 extends SimpleMigrationStep {
 			);
 		}
 
-
 		if ($schema->hasTable('circles_share_lock')) {
 			$table = $schema->getTable('circles_share_lock');
 			$table->modifyColumn(
@@ -176,8 +168,6 @@ class Version0022Date20220703115023 extends SimpleMigrationStep {
 				]
 			);
 		}
-
-
 
 		/**
 		 * CIRCLES_TOKEN
@@ -238,7 +228,6 @@ class Version0022Date20220703115023 extends SimpleMigrationStep {
 			$table->setPrimaryKey(['id']);
 			$table->addUniqueIndex(['share_id', 'circle_id', 'single_id', 'member_id', 'token'], 'sicisimit');
 		}
-
 
 		return $schema;
 	}

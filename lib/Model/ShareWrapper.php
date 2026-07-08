@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Model;
 
@@ -386,7 +384,6 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		return $this->mailSend;
 	}
 
-
 	/**
 	 * @throws IllegalIDChangeException
 	 */
@@ -477,7 +474,6 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		);
 		$share->setSharedWithAvatar($icon);
 	}
-
 
 	/**
 	 * @param array $data
@@ -605,7 +601,6 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		return $this;
 	}
 
-
 	/**
 	 * Load from database format (JSON string) to IAttributes
 	 * based on \OC\Share20\DefaultShareProvider
@@ -628,7 +623,6 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		$this->setHideDownload(!($attributes->getAttribute('permissions', 'download') ?? true));
 		$this->setAttributes($attributes);
 	}
-
 
 	public function jsonSerialize(): array {
 		$arr = [

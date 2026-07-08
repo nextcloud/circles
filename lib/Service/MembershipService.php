@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Service;
 
@@ -33,7 +31,6 @@ use OCA\Circles\Tools\Traits\TNCLogger;
 class MembershipService {
 	use TNCLogger;
 
-
 	/**
 	 * MembershipService constructor.
 	 *
@@ -53,7 +50,6 @@ class MembershipService {
 		private OutputService $outputService,
 	) {
 	}
-
 
 	/**
 	 * @param string $singleId
@@ -84,7 +80,6 @@ class MembershipService {
 		}
 	}
 
-
 	/**
 	 * @param string $singleId
 	 *
@@ -96,7 +91,6 @@ class MembershipService {
 
 		return $this->updateMembershipsDatabase($singleId, $memberships);
 	}
-
 
 	/**
 	 * @param string $circleId
@@ -117,7 +111,6 @@ class MembershipService {
 		return $membership;
 	}
 
-
 	/**
 	 * @param string $singleId
 	 * @param bool $all
@@ -126,14 +119,12 @@ class MembershipService {
 		$this->membershipRequest->removeBySingleId($singleId, $all);
 	}
 
-
 	/**
 	 * @param FederatedUser $federatedUser
 	 */
 	public function deleteFederatedUser(FederatedUser $federatedUser) {
 		$this->membershipRequest->deleteFederatedUser($federatedUser);
 	}
-
 
 	/**
 	 * @param string $singleId
@@ -185,7 +176,6 @@ class MembershipService {
 		return $memberships;
 	}
 
-
 	/**
 	 * @param string $singleId
 	 * @param Membership[] $memberships
@@ -207,7 +197,6 @@ class MembershipService {
 
 		return count($deprecated) + count($new);
 	}
-
 
 	/**
 	 * @param string $id
@@ -232,7 +221,6 @@ class MembershipService {
 		return array_unique($singleIds);
 	}
 
-
 	/**
 	 * @param string $id
 	 * @param array $knownIds
@@ -254,7 +242,6 @@ class MembershipService {
 
 		return array_unique($singleIds);
 	}
-
 
 	/**
 	 * Add the new membership if unknown or Update known membership if:
@@ -285,7 +272,6 @@ class MembershipService {
 		$memberships[$membership->getCircleId()] = $membership;
 	}
 
-
 	/**
 	 * @param Membership[] $memberships
 	 * @param Membership[] $known
@@ -311,7 +297,6 @@ class MembershipService {
 
 		return $deprecated;
 	}
-
 
 	/**
 	 * @param Membership[] $memberships
@@ -342,7 +327,6 @@ class MembershipService {
 
 		return $new;
 	}
-
 
 	/**
 	 * @param Membership[] $list

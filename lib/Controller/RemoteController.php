@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2020 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Controller;
 
@@ -87,7 +85,6 @@ class RemoteController extends Controller {
 		$this->setupArray('enforceSignatureHeaders', ['digest', 'content-length']);
 	}
 
-
 	/**
 	 *
 	 * @param string $test
@@ -111,7 +108,6 @@ class RemoteController extends Controller {
 
 		return new DataResponse($signatory);
 	}
-
 
 	/**
 	 *
@@ -137,7 +133,6 @@ class RemoteController extends Controller {
 		}
 	}
 
-
 	/**
 	 *
 	 * @return DataResponse
@@ -162,7 +157,6 @@ class RemoteController extends Controller {
 		}
 	}
 
-
 	/**
 	 *
 	 * @return DataResponse
@@ -181,7 +175,6 @@ class RemoteController extends Controller {
 			return $this->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
 		}
 	}
-
 
 	/**
 	 *
@@ -215,7 +208,6 @@ class RemoteController extends Controller {
 		}
 	}
 
-
 	/**
 	 *
 	 * @param string $circleId
@@ -240,7 +232,6 @@ class RemoteController extends Controller {
 		}
 	}
 
-
 	/**
 	 *
 	 * @param string $circleId
@@ -264,7 +255,6 @@ class RemoteController extends Controller {
 			return $this->exceptionResponse($e);
 		}
 	}
-
 
 	/**
 	 * ?? TODO: rename /member/ to /federatedUser/ ou /federated/  ?
@@ -304,7 +294,6 @@ class RemoteController extends Controller {
 		}
 	}
 
-
 	/**
 	 *
 	 * @param string $circleId
@@ -328,7 +317,6 @@ class RemoteController extends Controller {
 			return $this->exceptionResponse($e);
 		}
 	}
-
 
 	/**
 	 *
@@ -354,7 +342,6 @@ class RemoteController extends Controller {
 		}
 	}
 
-
 	/**
 	 * @return FederatedEvent
 	 * @throws InvalidItemException
@@ -369,8 +356,8 @@ class RemoteController extends Controller {
 		// will throw exception if instance is not configured for this event.
 		$this->interfaceService->setCurrentInterfaceFromRequest($this->request);
 		$iface = $this->interfaceService->getCurrentInterface();
-		if ($iface === InterfaceService::IFACE_FRONTAL &&
-			!$this->appConfig->getAppValueBool(ConfigLexicon::FEDERATED_TEAMS_ENABLED)) {
+		if ($iface === InterfaceService::IFACE_FRONTAL
+			&& !$this->appConfig->getAppValueBool(ConfigLexicon::FEDERATED_TEAMS_ENABLED)) {
 			throw new FederatedEventException('frontal interface is not enabled');
 		}
 
@@ -383,7 +370,6 @@ class RemoteController extends Controller {
 
 		return $event;
 	}
-
 
 	/**
 	 * @return SimpleDataStore
@@ -434,7 +420,6 @@ class RemoteController extends Controller {
 		return $data;
 	}
 
-
 	/**
 	 * @param NCSignedRequest $signedRequest
 	 *
@@ -461,7 +446,6 @@ class RemoteController extends Controller {
 		return $signatory;
 	}
 
-
 	/**
 	 * @param Exception $e
 	 * @param int $httpErrorCode
@@ -486,7 +470,6 @@ class RemoteController extends Controller {
 		);
 	}
 
-
 	/**
 	 * use this one if a method from a Controller is only PublicPage when remote client asking for Json
 	 *
@@ -509,7 +492,6 @@ class RemoteController extends Controller {
 		}
 	}
 
-
 	/**
 	 * @return bool
 	 */
@@ -522,7 +504,6 @@ class RemoteController extends Controller {
 			]
 		));
 	}
-
 
 	/**
 	 * @param array $needles

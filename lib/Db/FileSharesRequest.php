@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-
 namespace OCA\Circles\Db;
 
 use OCA\Circles\Model\DeprecatedMember;
@@ -35,7 +34,6 @@ class FileSharesRequest extends FileSharesRequestBuilder {
 		$qb->executeStatement();
 	}
 
-
 	/**
 	 * @param string $circleId
 	 */
@@ -50,7 +48,6 @@ class FileSharesRequest extends FileSharesRequestBuilder {
 
 		$qb->executeStatement();
 	}
-
 
 	/**
 	 * @param string $circleId
@@ -72,7 +69,6 @@ class FileSharesRequest extends FileSharesRequestBuilder {
 
 		return $shares;
 	}
-
 
 	/**
 	 * @return array

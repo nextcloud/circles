@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-
 namespace OCA\Circles\Db;
 
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
@@ -42,7 +41,6 @@ class TokensRequest extends TokensRequestBuilder {
 		return $this->parseTokensSelectSql($data);
 	}
 
-
 	/**
 	 * @param string $shareId
 	 * @param string $circleId
@@ -67,7 +65,6 @@ class TokensRequest extends TokensRequestBuilder {
 		return $this->parseTokensSelectSql($data);
 	}
 
-
 	/**
 	 * @param DeprecatedMember $member
 	 *
@@ -87,7 +84,6 @@ class TokensRequest extends TokensRequestBuilder {
 
 		return $shares;
 	}
-
 
 	/**
 	 * @param DeprecatedMember $member
@@ -124,7 +120,6 @@ class TokensRequest extends TokensRequestBuilder {
 		return $this->getTokenFromMember($shareId, $member->getCircleId(), $member->getUserId());
 	}
 
-
 	/**
 	 * @param int $shareId
 	 */
@@ -134,7 +129,6 @@ class TokensRequest extends TokensRequestBuilder {
 
 		$qb->executeStatement();
 	}
-
 
 	/**
 	 * @param DeprecatedMember $member
@@ -146,7 +140,6 @@ class TokensRequest extends TokensRequestBuilder {
 
 		$qb->executeStatement();
 	}
-
 
 	public function updateSinglePassword(string $circleId, string $password) {
 		$qb = $this->getTokensUpdateSql();

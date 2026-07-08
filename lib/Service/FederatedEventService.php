@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
@@ -148,7 +147,6 @@ class FederatedEventService extends NCSignature {
 		return $event->getOutcome();
 	}
 
-
 	/**
 	 * This confirmation is optional, method is just here to avoid going too far away on the process
 	 *
@@ -187,7 +185,6 @@ class FederatedEventService extends NCSignature {
 		}
 	}
 
-
 	/**
 	 * @param FederatedEvent $event
 	 * @param bool $checkLocalOnly
@@ -224,7 +221,6 @@ class FederatedEventService extends NCSignature {
 
 		return $item;
 	}
-
 
 	/**
 	 * Some event might need to bypass some checks
@@ -290,7 +286,6 @@ class FederatedEventService extends NCSignature {
 		}
 	}
 
-
 	/**
 	 * @param FederatedEvent $event
 	 * @param IFederatedItem $item
@@ -317,7 +312,6 @@ class FederatedEventService extends NCSignature {
 		}
 	}
 
-
 	/**
 	 * @param FederatedEvent $event
 	 * @param IFederatedItem $item
@@ -333,7 +327,6 @@ class FederatedEventService extends NCSignature {
 			$event->setDataRequestOnly(true);
 		}
 	}
-
 
 	/**
 	 * async the process, generate a local request that will be closed.
@@ -369,8 +362,8 @@ class FederatedEventService extends NCSignature {
 				break;
 			}
 
-			if ($instance->getInterface() === InterfaceService::IFACE_FRONTAL &&
-				!$this->appConfig->getAppValueBool(ConfigLexicon::FEDERATED_TEAMS_ENABLED)) {
+			if ($instance->getInterface() === InterfaceService::IFACE_FRONTAL
+				&& !$this->appConfig->getAppValueBool(ConfigLexicon::FEDERATED_TEAMS_ENABLED)) {
 				break;
 			}
 
@@ -402,7 +395,6 @@ class FederatedEventService extends NCSignature {
 
 		return true;
 	}
-
 
 	/**
 	 * @param FederatedEvent $event
@@ -452,7 +444,6 @@ class FederatedEventService extends NCSignature {
 
 		return $instances;
 	}
-
 
 	/**
 	 * should be used to manage results from events, like sending mails on user creation

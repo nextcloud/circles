@@ -36,7 +36,6 @@ class AccountUpdated implements IEventListener {
 	) {
 	}
 
-
 	/**
 	 * @param Event $event
 	 */

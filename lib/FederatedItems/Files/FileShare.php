@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\FederatedItems\Files;
 
@@ -40,7 +38,6 @@ class FileShare implements
 	use TStringTools;
 	use TNCLogger;
 
-
 	/**
 	 * FileShare constructor.
 	 *
@@ -55,7 +52,6 @@ class FileShare implements
 	) {
 	}
 
-
 	/**
 	 * @param FederatedEvent $event
 	 */
@@ -65,7 +61,6 @@ class FileShare implements
 
 		$this->eventService->fileSharePreparing($event);
 	}
-
 
 	/**
 	 * @param FederatedEvent $event
@@ -89,7 +84,6 @@ class FileShare implements
 
 		$this->eventService->fileShareCreating($event, $mount);
 	}
-
 
 	/**
 	 * @param FederatedEvent $event

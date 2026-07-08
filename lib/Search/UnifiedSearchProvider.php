@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Search;
 
@@ -26,7 +24,6 @@ class UnifiedSearchProvider implements IProvider {
 	public const PROVIDER_ID = 'circles';
 	public const ORDER = 9;
 
-
 	/**
 	 * @param IL10N $l10n
 	 * @param FederatedUserService $federatedUserService
@@ -39,7 +36,6 @@ class UnifiedSearchProvider implements IProvider {
 	) {
 	}
 
-
 	/**
 	 * return unique id of the provider
 	 */
@@ -47,14 +43,12 @@ class UnifiedSearchProvider implements IProvider {
 		return self::PROVIDER_ID;
 	}
 
-
 	/**
 	 * @return string
 	 */
 	public function getName(): string {
 		return $this->l10n->t('Teams');
 	}
-
 
 	/**
 	 * @param string $route
@@ -65,7 +59,6 @@ class UnifiedSearchProvider implements IProvider {
 	public function getOrder(string $route, array $routeParameters): int {
 		return self::ORDER;
 	}
-
 
 	/**
 	 * @param IUser $user
@@ -90,7 +83,6 @@ class UnifiedSearchProvider implements IProvider {
 			($query->getCursor() ?? 0) + $query->getLimit()
 		);
 	}
-
 
 	/**
 	 * This is temporary, should be handled by core to extract Options from Term

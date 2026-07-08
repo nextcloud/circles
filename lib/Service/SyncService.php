@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Service;
 
@@ -53,7 +51,6 @@ class SyncService {
 	use TStringTools;
 	use TNCLogger;
 
-
 	public const SYNC_APPS = 1;
 	public const SYNC_USERS = 2;
 	public const SYNC_GROUPS = 4;
@@ -61,7 +58,6 @@ class SyncService {
 	public const SYNC_REMOTES = 16;
 	public const SYNC_CONTACTS = 32;
 	public const SYNC_ALL = 63;
-
 
 	/**
 	 * SyncService constructor.
@@ -91,7 +87,6 @@ class SyncService {
 	) {
 		$this->setup('app', Application::APP_ID);
 	}
-
 
 	/**
 	 * @param int $sync
@@ -126,7 +121,6 @@ class SyncService {
 		}
 	}
 
-
 	/**
 	 * @param int $item
 	 * @param int $all
@@ -136,7 +130,6 @@ class SyncService {
 	private function shouldSync(int $item, int $all): bool {
 		return (($item & $all) !== 0);
 	}
-
 
 	/**
 	 */
@@ -150,7 +143,6 @@ class SyncService {
 			$this->e($e);
 		}
 	}
-
 
 	/**
 	 * @return void
@@ -189,7 +181,6 @@ class SyncService {
 
 		return $this->federatedUserService->getLocalFederatedUser($userId, false, true);
 	}
-
 
 	/**
 	 * @return void
@@ -259,7 +250,6 @@ class SyncService {
 		return $circle;
 	}
 
-
 	/**
 	 * @param string $userId
 	 *
@@ -294,7 +284,6 @@ class SyncService {
 
 		$this->federatedUserService->deleteFederatedUser($federatedUser);
 	}
-
 
 	/**
 	 * @param string $groupId
@@ -337,7 +326,6 @@ class SyncService {
 		$this->membershipService->onUpdate($circle->getSingleId());
 	}
 
-
 	/**
 	 * @param Circle $circle
 	 * @param string $userId
@@ -365,7 +353,6 @@ class SyncService {
 
 		return $member;
 	}
-
 
 	/**
 	 * @param string $groupId
@@ -400,7 +387,6 @@ class SyncService {
 		$this->federatedEventService->newEvent($event);
 	}
 
-
 	/**
 	 * @param string $groupId
 	 * @param string $userId
@@ -428,14 +414,12 @@ class SyncService {
 		$this->membershipService->onUpdate($federatedUser->getSingleId());
 	}
 
-
 	/**
 	 * @return void
 	 */
 	public function syncContacts(): void {
 		$this->outputService->output('Syncing Contacts');
 	}
-
 
 	/**
 	 * @return void
@@ -444,14 +428,12 @@ class SyncService {
 		$this->outputService->output('Syncing GlobalScale');
 	}
 
-
 	/**
 	 * @return void
 	 */
 	public function syncRemote(): void {
 		$this->outputService->output('Syncing Remote Instance');
 	}
-
 
 	/**
 	 * @param string $circleId

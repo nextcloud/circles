@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Service;
 
@@ -29,7 +27,6 @@ use OCP\Share\IShare;
 class ShareTokenService {
 	use TStringTools;
 
-
 	/**
 	 * ShareTokenService constructor.
 	 *
@@ -45,7 +42,6 @@ class ShareTokenService {
 		private ConfigService $configService,
 	) {
 	}
-
 
 	/**
 	 * @param ShareWrapper $share
@@ -88,7 +84,6 @@ class ShareTokenService {
 		return $shareToken;
 	}
 
-
 	/**
 	 * @param ShareToken $shareToken
 	 */
@@ -100,7 +95,6 @@ class ShareTokenService {
 
 		$shareToken->setLink($link);
 	}
-
 
 	/**
 	 * update password on files previously shared to circleId

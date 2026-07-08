@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Service;
 
@@ -70,7 +68,6 @@ class CircleService {
 	/** @var ICache $cache */
 	private $cache;
 
-
 	/**
 	 * @param IL10N $l10n
 	 * @param IHasher $hasher
@@ -101,7 +98,6 @@ class CircleService {
 
 		$this->setup('app', Application::APP_ID);
 	}
-
 
 	/**
 	 * @param string $name
@@ -180,7 +176,6 @@ class CircleService {
 		return $event->getOutcome();
 	}
 
-
 	/**
 	 * @param string $circleId
 	 * @param bool $forceSync
@@ -210,7 +205,6 @@ class CircleService {
 
 		return $event->getOutcome();
 	}
-
 
 	/**
 	 * @param string $circleId
@@ -249,7 +243,6 @@ class CircleService {
 
 		return $event->getOutcome();
 	}
-
 
 	/**
 	 * if $value is null, setting is unset
@@ -294,7 +287,6 @@ class CircleService {
 
 		return $event->getOutcome();
 	}
-
 
 	/**
 	 * @param string $circleId
@@ -365,7 +357,6 @@ class CircleService {
 		return $event->getOutcome();
 	}
 
-
 	/**
 	 * @param string $circleId
 	 *
@@ -410,7 +401,6 @@ class CircleService {
 
 		return $event->getOutcome();
 	}
-
 
 	/**
 	 * @param string $circleId
@@ -477,7 +467,6 @@ class CircleService {
 		);
 	}
 
-
 	/**
 	 * @return Circle[]
 	 * @throws InitiatorNotFoundException
@@ -515,7 +504,6 @@ class CircleService {
 
 		return $circles;
 	}
-
 
 	/**
 	 * @param Circle $circle
@@ -560,7 +548,6 @@ class CircleService {
 			$i++;
 		}
 	}
-
 
 	/**
 	 * @param Circle $circle
@@ -614,7 +601,6 @@ class CircleService {
 		return trim($sanitized, ' .');
 	}
 
-
 	/**
 	 * @param Circle $circle
 	 *
@@ -625,7 +611,6 @@ class CircleService {
 			throw new MembersLimitException(StatusCode::$MEMBER_ADD[121], 121);
 		}
 	}
-
 
 	/**
 	 * @param Circle $circle
@@ -652,7 +637,6 @@ class CircleService {
 		return (sizeof($members) >= $limit);
 	}
 
-
 	/**
 	 * @param string $name
 	 *
@@ -663,7 +647,6 @@ class CircleService {
 
 		return trim((string)$name);
 	}
-
 
 	/**
 	 * @param IEntity $entity
@@ -719,11 +702,9 @@ class CircleService {
 		return $this->l10n->t('%s', [Circle::$DEF_SOURCE[$federatedUser->getUserType()]]);
 	}
 
-
 	private function generateGetCirclesCacheKey(FederatedUser $federatedUser, string $probeSum): string {
 		return $federatedUser->getSingleId() . '#' . $probeSum;
 	}
-
 
 	/**
 	 * @param string $circleId

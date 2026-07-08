@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Tools\Traits;
 
@@ -22,7 +20,6 @@ trait TNCWellKnown {
 	use TNCRequest;
 
 	public static $WEBFINGER = '/.well-known/webfinger';
-
 
 	/**
 	 * @param string $host
@@ -47,7 +44,6 @@ trait TNCWellKnown {
 		return new SimpleDataStore($data);
 	}
 
-
 	/**
 	 * @param string $host
 	 * @param string $subject
@@ -60,7 +56,6 @@ trait TNCWellKnown {
 	public function getLink(string $host, string $subject, string $rel): NCWellKnownLink {
 		return $this->extractLink($rel, $this->getWebfinger($host, $subject));
 	}
-
 
 	/**
 	 * @param string $host
@@ -87,7 +82,6 @@ trait TNCWellKnown {
 
 		return new NCWebfinger($result);
 	}
-
 
 	/**
 	 * @param string $rel

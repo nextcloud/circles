@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Tools\Traits;
 
@@ -20,7 +18,6 @@ trait TNCLocalSignatory {
 	use TNCSignatory;
 
 	public static $SIGNATORIES_APP = 'signatories';
-
 
 	/**
 	 * @param NCSignatory $signatory
@@ -50,7 +47,6 @@ trait TNCLocalSignatory {
 		$this->createSimpleSignatory($signatory);
 	}
 
-
 	/**
 	 * @param NCSignatory $signatory
 	 */
@@ -71,7 +67,6 @@ trait TNCLocalSignatory {
 
 		$appConfig->setValueArray($app, 'key_pairs', $signatories);
 	}
-
 
 	/**
 	 * @param NCSignatory $signatory

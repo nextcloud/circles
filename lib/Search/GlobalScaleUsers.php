@@ -29,7 +29,6 @@ class GlobalScaleUsers implements ISearch {
 	use TNCRequest;
 	use TArrayTools;
 
-
 	/**
 	 * GlobalScaleUsers constructor.
 	 *
@@ -78,8 +77,8 @@ class GlobalScaleUsers implements ISearch {
 				continue;
 			}
 
-			$result[] =
-				new SearchResult(
+			$result[]
+				= new SearchResult(
 					$this->get('userid.value', $user), DeprecatedMember::TYPE_USER, $instance,
 					['display' => $this->get('name.value', $user)]
 				);

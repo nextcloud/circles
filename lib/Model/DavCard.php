@@ -1,11 +1,9 @@
 <?php
 
-
 /**
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Model;
 
@@ -20,11 +18,9 @@ use OCA\Circles\Tools\Traits\TArrayTools;
 class DavCard implements JsonSerializable {
 	use TArrayTools;
 
-
 	public const TYPE_CONTACT = 1;
 	public const TYPE_LOCAL = 2;
 	//	const TYPE_FEDERATED = 3;
-
 
 	/** @var int */
 	private $addressBookId = 0;
@@ -56,10 +52,8 @@ class DavCard implements JsonSerializable {
 	/** @var string */
 	private $userId = '';
 
-
 	public function __construct() {
 	}
-
 
 	/**
 	 * @return int
@@ -79,7 +73,6 @@ class DavCard implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -97,7 +90,6 @@ class DavCard implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return string
@@ -117,14 +109,12 @@ class DavCard implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return string
 	 */
 	public function getUniqueId(): string {
 		return $this->getAddressBookId() . '/' . $this->getCardUri();
 	}
-
 
 	/**
 	 * @return string
@@ -144,7 +134,6 @@ class DavCard implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -162,7 +151,6 @@ class DavCard implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return array
@@ -182,7 +170,6 @@ class DavCard implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return array
 	 */
@@ -201,7 +188,6 @@ class DavCard implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return array
 	 */
@@ -219,7 +205,6 @@ class DavCard implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return DeprecatedCircle[]
@@ -250,7 +235,6 @@ class DavCard implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -269,7 +253,6 @@ class DavCard implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @param array $data
 	 */
@@ -285,7 +268,6 @@ class DavCard implements JsonSerializable {
 		$this->setUserId($this->get('userId', $data));
 	}
 
-
 	/**
 	 * @param string $dav
 	 */
@@ -298,7 +280,6 @@ class DavCard implements JsonSerializable {
 		$this->setClouds($this->getArray('CLOUDS', $data));
 		$this->setGroups($this->getArray('CATEGORIES', $data));
 	}
-
 
 	/**
 	 * get essential data from the dav content
@@ -359,7 +340,6 @@ class DavCard implements JsonSerializable {
 
 		return $result;
 	}
-
 
 	/**
 	 * @return array

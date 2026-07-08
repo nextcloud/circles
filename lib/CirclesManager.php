@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles;
 
@@ -73,7 +71,6 @@ class CirclesManager {
 	) {
 	}
 
-
 	/**
 	 * @param string $federatedId
 	 * @param int $type
@@ -121,7 +118,6 @@ class CirclesManager {
 		return $this->getFederatedUser($userId, Member::TYPE_USER);
 	}
 
-
 	/**
 	 * @throws FederatedUserNotFoundException
 	 * @throws SingleCircleNotFoundException
@@ -146,7 +142,6 @@ class CirclesManager {
 		$this->federatedUserService->unsetCurrentUser();
 		$this->federatedUserService->bypassCurrentUserCondition(true);
 	}
-
 
 	/**
 	 * @param string $appId
@@ -196,7 +191,6 @@ class CirclesManager {
 		$this->federatedUserService->commandLineInitiator($userId, $userType, $circleId);
 	}
 
-
 	/**
 	 *
 	 */
@@ -205,7 +199,6 @@ class CirclesManager {
 		$this->federatedUserService->bypassCurrentUserCondition(false);
 		$this->forceSync = false;
 	}
-
 
 	/**
 	 * @return IFederatedUser
@@ -220,14 +213,12 @@ class CirclesManager {
 		return $current;
 	}
 
-
 	/**
 	 * @return CirclesQueryHelper
 	 */
 	public function getQueryHelper(): CirclesQueryHelper {
 		return $this->circlesQueryHelper;
 	}
-
 
 	/**
 	 * @param string $name
@@ -261,7 +252,6 @@ class CirclesManager {
 		return $circle;
 	}
 
-
 	/**
 	 * @param string $singleId
 	 *
@@ -280,7 +270,6 @@ class CirclesManager {
 	public function destroyCircle(string $singleId): void {
 		$this->circleService->destroy($singleId, $this->forceSync);
 	}
-
 
 	/**
 	 * WARNING: This method is not using Cached Memberships meaning that the request can be heavy and should
@@ -305,7 +294,6 @@ class CirclesManager {
 
 		return $this->circleService->getCircles($probe, !$refreshCache);
 	}
-
 
 	/**
 	 * @param string $singleId
@@ -338,7 +326,6 @@ class CirclesManager {
 		return $this->circleService->probeCirclesByIds($ids, $dataProbe);
 	}
 
-
 	/**
 	 * @param Circle $circle
 	 *
@@ -357,7 +344,6 @@ class CirclesManager {
 	public function updateConfig(Circle $circle): void {
 		$this->circleService->updateConfig($circle->getSingleId(), $circle->getConfig());
 	}
-
 
 	/**
 	 * @param string $circleId
@@ -398,7 +384,6 @@ class CirclesManager {
 		$this->circleService->updateConfig($circleId, $config);
 	}
 
-
 	/**
 	 * @param string $circleId
 	 * @param FederatedUser $federatedUser
@@ -431,7 +416,6 @@ class CirclesManager {
 		return $member;
 	}
 
-
 	/**
 	 * @param string $memberId
 	 * @param int $level
@@ -457,7 +441,6 @@ class CirclesManager {
 		return $member;
 	}
 
-
 	/**
 	 * @param string $memberId
 	 *
@@ -476,7 +459,6 @@ class CirclesManager {
 		$this->memberService->removeMember($memberId, $this->forceSync);
 	}
 
-
 	/**
 	 * @param string $circleId
 	 * @param string $singleId
@@ -490,7 +472,6 @@ class CirclesManager {
 		return $this->membershipService->getMembership($circleId, $singleId, $detailed);
 	}
 
-
 	/**
 	 * @param IEntity $circle
 	 *
@@ -499,7 +480,6 @@ class CirclesManager {
 	public function getDefinition(IEntity $circle): string {
 		return $this->circleService->getDefinition($circle);
 	}
-
 
 	/**
 	 * Returns data about Circles based on cached Memberships.
@@ -525,7 +505,6 @@ class CirclesManager {
 		return $this->circleService->probeCircles($circleProbe, $dataProbe);
 	}
 
-
 	/**
 	 * WIP
 	 *
@@ -541,7 +520,6 @@ class CirclesManager {
 	//		$this->federatedUserService->bypassCurrentUserCondition(true);
 	//		$this->memberService->getMemberById($circleId, $singleId);
 	//	}
-
 
 	/**
 	 * WIP

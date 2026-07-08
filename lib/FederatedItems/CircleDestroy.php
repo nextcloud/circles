@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\FederatedItems;
 
@@ -41,7 +39,6 @@ class CircleDestroy implements
 	use TStringTools;
 	use TDeserialize;
 
-
 	/**
 	 * CircleDestroy constructor.
 	 *
@@ -57,7 +54,6 @@ class CircleDestroy implements
 		private MembershipService $membershipService,
 	) {
 	}
-
 
 	/**
 	 * @param FederatedEvent $event
@@ -81,7 +77,6 @@ class CircleDestroy implements
 		$event->setOutcome($this->serialize($circle));
 	}
 
-
 	/**
 	 * @param FederatedEvent $event
 	 *
@@ -102,7 +97,6 @@ class CircleDestroy implements
 			$this->membershipService->updatePopulation($parentCircle);
 		}
 	}
-
 
 	/**
 	 * @param FederatedEvent $event

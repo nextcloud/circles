@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Db;
 
@@ -42,7 +40,6 @@ class MembershipRequest extends MembershipRequestBuilder {
 		$qb->executeStatement();
 	}
 
-
 	/**
 	 * @param Membership $membership
 	 */
@@ -63,7 +60,6 @@ class MembershipRequest extends MembershipRequestBuilder {
 		$qb->executeStatement();
 	}
 
-
 	/**
 	 * @param string $circleId
 	 * @param string $singleId
@@ -79,7 +75,6 @@ class MembershipRequest extends MembershipRequestBuilder {
 
 		return $this->getItemFromRequest($qb);
 	}
-
 
 	/**
 	 * @throws MembershipNotFoundException
@@ -100,7 +95,6 @@ class MembershipRequest extends MembershipRequestBuilder {
 		return $this->getItemFromRequest($qb);
 	}
 
-
 	/**
 	 * @param string $singleId
 	 *
@@ -113,7 +107,6 @@ class MembershipRequest extends MembershipRequestBuilder {
 
 		return $this->getItemsFromRequest($qb);
 	}
-
 
 	/**
 	 * @param string $singleId
@@ -181,7 +174,6 @@ class MembershipRequest extends MembershipRequestBuilder {
 		$qb->executeStatement();
 	}
 
-
 	/**
 	 * @param Membership $membership
 	 */
@@ -192,7 +184,6 @@ class MembershipRequest extends MembershipRequestBuilder {
 
 		$qb->executeStatement();
 	}
-
 
 	/**
 	 * @param FederatedUser $federatedUser

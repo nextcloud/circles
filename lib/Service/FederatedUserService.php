@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Service;
 
@@ -74,7 +72,6 @@ class FederatedUserService {
 	use TNCLogger;
 	use TDeserialize;
 
-
 	public const CACHE_SINGLE_CIRCLE = 'circles/singleCircle';
 	public const CACHE_SINGLE_CIRCLE_TTL = 604800; // one week
 
@@ -83,7 +80,6 @@ class FederatedUserService {
 	public const CONFLICT_003 = 3;
 	public const CONFLICT_004 = 4;
 	public const CONFLICT_005 = 5;
-
 
 	/** @var ICache */
 	private $cache;
@@ -105,7 +101,6 @@ class FederatedUserService {
 
 	/** @var FederatedUser */
 	private $initiatedByAdmin = null;
-
 
 	/**
 	 * FederatedUserService constructor.
@@ -148,7 +143,6 @@ class FederatedUserService {
 		}
 	}
 
-
 	/**
 	 * specify $defaultUser in case a session is not opened but user needs to be emulated (ie. cron)
 	 *
@@ -170,7 +164,6 @@ class FederatedUserService {
 
 		$this->setLocalCurrentUser($user);
 	}
-
 
 	/**
 	 * @param IUser|null $user
@@ -217,7 +210,6 @@ class FederatedUserService {
 	public function setLocalCurrentApp(string $appId, int $appNumber): void {
 		$this->currentApp = $this->getAppInitiator($appId, $appNumber);
 	}
-
 
 	/**
 	 * set a CurrentUser, based on a IFederatedUser.
@@ -297,7 +289,6 @@ class FederatedUserService {
 		throw new SuperSessionException('Must initialise Super Session');
 	}
 
-
 	/**
 	 * @param bool $initiatedByOcc
 	 */
@@ -351,7 +342,6 @@ class FederatedUserService {
 		$this->setInitiatedByAdmin($patron);
 	}
 
-
 	/**
 	 * @param Member $member
 	 *
@@ -375,7 +365,6 @@ class FederatedUserService {
 		}
 	}
 
-
 	/**
 	 * @return FederatedUser|null
 	 */
@@ -389,7 +378,6 @@ class FederatedUserService {
 	public function hasCurrentApp(): bool {
 		return !is_null($this->currentApp);
 	}
-
 
 	/**
 	 * @return FederatedUser|null
@@ -408,7 +396,6 @@ class FederatedUserService {
 	public function hasCurrentEntity(): bool {
 		return !is_null($this->currentApp) || !is_null($this->currentUser);
 	}
-
 
 	/**
 	 * set a RemoteInstance, mostly from a remote request (RemoteController)
@@ -433,7 +420,6 @@ class FederatedUserService {
 	public function hasRemoteInstance(): bool {
 		return !is_null($this->remoteInstance);
 	}
-
 
 	/**
 	 * Get the full FederatedUser for a local user.
@@ -548,7 +534,6 @@ class FederatedUserService {
 		return $federatedUser;
 	}
 
-
 	/**
 	 * some ./occ commands allows to add an Initiator, or force the PoV from the local circles' owner
 	 *
@@ -604,7 +589,6 @@ class FederatedUserService {
 		$this->bypassCurrentUserCondition($bypass);
 	}
 
-
 	/**
 	 * @param string $circleId
 	 *
@@ -618,7 +602,7 @@ class FederatedUserService {
 		$probe = new CircleProbe();
 		$probe->includeSystemCircles()
 			->includePersonalCircles();
-		
+
 		$localCircle = $this->circleRequest->getCircle($circleId, null, $probe);
 		if ($this->configService->isLocalInstance($localCircle->getInstance())) {
 			$this->setCurrentUser($localCircle->getOwner());
@@ -626,7 +610,6 @@ class FederatedUserService {
 			throw new RemoteCircleException();
 		}
 	}
-
 
 	/**
 	 * Works like getFederatedUser, but returns a member.
@@ -666,7 +649,6 @@ class FederatedUserService {
 
 		return $member;
 	}
-
 
 	/**
 	 * get a valid FederatedUser, based on the federatedId (userId@instance) and its type.
@@ -718,7 +700,6 @@ class FederatedUserService {
 		};
 	}
 
-
 	/**
 	 * Generate a FederatedUser based on local data.
 	 * WARNING: There is no confirmation that the returned FederatedUser exists or is valid at this point.
@@ -754,7 +735,6 @@ class FederatedUserService {
 		return $federatedUser;
 	}
 
-
 	/**
 	 * @param FederatedUser $federatedUser
 	 */
@@ -765,7 +745,6 @@ class FederatedUserService {
 
 		$this->cache->remove($this->generateCacheKey($federatedUser));
 	}
-
 
 	/**
 	 * @param string $singleId
@@ -800,7 +779,6 @@ class FederatedUserService {
 		}
 	}
 
-
 	/**
 	 * @param string $userId
 	 * @param string $instance
@@ -833,7 +811,6 @@ class FederatedUserService {
 		}
 	}
 
-
 	/**
 	 * @param string $groupName
 	 * @param string $instance
@@ -864,7 +841,6 @@ class FederatedUserService {
 		}
 	}
 
-
 	/**
 	 * @param string $mailAddress
 	 *
@@ -884,7 +860,6 @@ class FederatedUserService {
 
 		return $federatedUser;
 	}
-
 
 	/**
 	 * @param string $contactPath
@@ -912,7 +887,6 @@ class FederatedUserService {
 		return $federatedUser;
 	}
 
-
 	/**
 	 * extract userID and instance from a federatedId
 	 *
@@ -933,7 +907,6 @@ class FederatedUserService {
 
 		return [$userId, $instance];
 	}
-
 
 	/**
 	 * @param FederatedUser $federatedUser
@@ -959,7 +932,6 @@ class FederatedUserService {
 		}
 		$federatedUser->setBasedOn($circle);
 	}
-
 
 	/**
 	 * get the Single Circle from a local user
@@ -1047,7 +1019,6 @@ class FederatedUserService {
 		return $singleCircle;
 	}
 
-
 	/**
 	 * Confirm that all field of a FederatedUser are filled.
 	 *
@@ -1088,7 +1059,6 @@ class FederatedUserService {
 			}
 		}
 	}
-
 
 	/**
 	 * // TODO: implement this check in a maintenance background job
@@ -1138,7 +1108,6 @@ class FederatedUserService {
 			}
 		}
 	}
-
 
 	/**
 	 * @param IFederatedUser $federatedUser
@@ -1224,7 +1193,6 @@ class FederatedUserService {
 
 		return $circle;
 	}
-
 
 	/**
 	 * @param FederatedUser $federatedUser

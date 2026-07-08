@@ -75,7 +75,6 @@ class BaseCircle {
 	/** @var int */
 	private $contactAddressBook = 0;
 
-
 	/** @var string */
 	private $creation;
 
@@ -116,7 +115,6 @@ class BaseCircle {
 	public function getId() {
 		return $this->id;
 	}
-
 
 	/**
 	 * @param string $uniqueId
@@ -202,7 +200,6 @@ class BaseCircle {
 		return $this;
 	}
 
-
 	/**
 	 * @return DeprecatedMember
 	 */
@@ -221,11 +218,9 @@ class BaseCircle {
 		return $this;
 	}
 
-
 	public function hasViewer(): bool {
 		return ($this->viewer !== null);
 	}
-
 
 	/**
 	 * @return DeprecatedMember
@@ -267,7 +262,6 @@ class BaseCircle {
 		return $this->getViewer();
 	}
 
-
 	/**
 	 * @param string $description
 	 *
@@ -285,7 +279,6 @@ class BaseCircle {
 	public function getDescription() {
 		return $this->description;
 	}
-
 
 	/**
 	 * @param int $contactAddressBook
@@ -305,7 +298,6 @@ class BaseCircle {
 		return $this->contactAddressBook;
 	}
 
-
 	/**
 	 * @param string $contactGroupName
 	 *
@@ -323,7 +315,6 @@ class BaseCircle {
 	public function getContactGroupName() {
 		return $this->contactGroupName;
 	}
-
 
 	/**
 	 * @param string|array $settings
@@ -373,7 +364,6 @@ class BaseCircle {
 		return $settings;
 	}
 
-
 	/**
 	 * @param string $k
 	 * @param mixed $v
@@ -398,7 +388,6 @@ class BaseCircle {
 		}
 	}
 
-
 	/**
 	 * @param string $k
 	 *
@@ -415,7 +404,6 @@ class BaseCircle {
 		return null;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -429,7 +417,6 @@ class BaseCircle {
 	public function setPasswordSingle(string $passwordSingle): void {
 		$this->passwordSingle = $passwordSingle;
 	}
-
 
 	/**
 	 *
@@ -521,7 +508,6 @@ class BaseCircle {
 	public function getLinks() {
 		return $this->links;
 	}
-
 
 	//	public function getRemote() {
 	//		return $this->remote;

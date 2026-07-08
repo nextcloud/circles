@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\FederatedItems;
 
@@ -32,7 +30,6 @@ class CircleConfig implements
 	IFederatedItem {
 	use TDeserialize;
 
-
 	/**
 	 * CircleConfig constructor.
 	 *
@@ -46,7 +43,6 @@ class CircleConfig implements
 		private ConfigService $configService,
 	) {
 	}
-
 
 	/**
 	 * @param FederatedEvent $event
@@ -134,7 +130,6 @@ class CircleConfig implements
 		$event->setOutcome($this->serialize($new));
 	}
 
-
 	/**
 	 * @param FederatedEvent $event
 	 */
@@ -152,7 +147,6 @@ class CircleConfig implements
 
 		$this->circleRequest->updateConfig($circle);
 	}
-
 
 	/**
 	 * @param FederatedEvent $event

@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Tools\Model;
 
@@ -20,12 +18,10 @@ use OCP\Http\Client\IResponse;
 class NCRequestResult implements JsonSerializable {
 	use TArrayTools;
 
-
 	public const TYPE_STRING = 0;
 	public const TYPE_BINARY = 1;
 	public const TYPE_JSON = 2;
 	public const TYPE_XRD = 3;
-
 
 	/** @var int */
 	private $statusCode = 0;
@@ -44,7 +40,6 @@ class NCRequestResult implements JsonSerializable {
 
 	/** @var BadResponseException */
 	private $exception = null;
-
 
 	/**
 	 * NCRequestResult constructor.
@@ -66,7 +61,6 @@ class NCRequestResult implements JsonSerializable {
 		$this->generateMeta();
 	}
 
-
 	/**
 	 * @return int
 	 */
@@ -84,7 +78,6 @@ class NCRequestResult implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return array
@@ -123,7 +116,6 @@ class NCRequestResult implements JsonSerializable {
 		return false;
 	}
 
-
 	/**
 	 * @param string $content
 	 *
@@ -134,7 +126,6 @@ class NCRequestResult implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return string
@@ -159,14 +150,12 @@ class NCRequestResult implements JsonSerializable {
 		return $this->contentAsArray;
 	}
 
-
 	/**
 	 * @return string
 	 */
 	public function getBinary() {
 		return $this->content;
 	}
-
 
 	/**
 	 * @return int
@@ -194,7 +183,6 @@ class NCRequestResult implements JsonSerializable {
 	public function isContentType(int $type): bool {
 		return ($this->contentType === $type);
 	}
-
 
 	/**
 	 *
@@ -252,7 +240,6 @@ class NCRequestResult implements JsonSerializable {
 		}
 	}
 
-
 	/**
 	 * @param BadResponseException $e
 	 *
@@ -278,7 +265,6 @@ class NCRequestResult implements JsonSerializable {
 	public function hasException(): bool {
 		return (!is_null($this->exception));
 	}
-
 
 	/**
 	 * @return array

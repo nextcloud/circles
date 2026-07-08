@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Model\Probes;
 
@@ -44,7 +42,6 @@ class MemberProbe extends BasicProbe {
 		return $this->requestingMembership;
 	}
 
-
 	/**
 	 * @param bool $include
 	 *
@@ -63,7 +60,6 @@ class MemberProbe extends BasicProbe {
 		return $this->initiatorDirectMember;
 	}
 
-
 	/**
 	 * force the generation an initiator if visitor
 	 *
@@ -78,7 +74,6 @@ class MemberProbe extends BasicProbe {
 	public function isEmulatingVisitor(): bool {
 		return $this->emulateVisitor;
 	}
-
 
 	/**
 	 * @return int
@@ -127,7 +122,6 @@ class MemberProbe extends BasicProbe {
 		return $this;
 	}
 
-
 	/**
 	 * @return array
 	 */
@@ -142,7 +136,6 @@ class MemberProbe extends BasicProbe {
 			parent::getAsOptions()
 		);
 	}
-
 
 	/**
 	 * @return array

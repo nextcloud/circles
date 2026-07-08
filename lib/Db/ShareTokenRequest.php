@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Db;
 
@@ -41,7 +39,6 @@ class ShareTokenRequest extends ShareTokenRequestBuilder {
 		$token->setDbId($id);
 	}
 
-
 	/**
 	 * @param ShareToken $shareToken
 	 *
@@ -57,7 +54,6 @@ class ShareTokenRequest extends ShareTokenRequestBuilder {
 		return $this->getItemFromRequest($qb);
 	}
 
-
 	/**
 	 * @param string $token
 	 *
@@ -71,7 +67,6 @@ class ShareTokenRequest extends ShareTokenRequestBuilder {
 		return $this->getItemFromRequest($qb);
 	}
 
-
 	/**
 	 * @param string $circleId
 	 * @param string $hashedPassword
@@ -84,7 +79,6 @@ class ShareTokenRequest extends ShareTokenRequestBuilder {
 
 		$qb->executeStatement();
 	}
-
 
 	/**
 	 * @param string $singleId

@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Db;
 
@@ -43,7 +41,6 @@ class RemoteRequest extends RemoteRequestBuilder {
 		$qb->executeStatement();
 	}
 
-
 	/**
 	 * @param RemoteInstance $remote
 	 *
@@ -62,7 +59,6 @@ class RemoteRequest extends RemoteRequestBuilder {
 		$qb->executeStatement();
 	}
 
-
 	/**
 	 * @param RemoteInstance $remote
 	 *
@@ -77,7 +73,6 @@ class RemoteRequest extends RemoteRequestBuilder {
 
 		$qb->executeStatement();
 	}
-
 
 	/**
 	 * @param RemoteInstance $remote
@@ -94,7 +89,6 @@ class RemoteRequest extends RemoteRequestBuilder {
 		$qb->executeStatement();
 	}
 
-
 	/**
 	 * @param RemoteInstance $remote
 	 *
@@ -110,7 +104,6 @@ class RemoteRequest extends RemoteRequestBuilder {
 		$qb->executeStatement();
 	}
 
-
 	/**
 	 * @param RemoteInstance $remote
 	 *
@@ -125,7 +118,6 @@ class RemoteRequest extends RemoteRequestBuilder {
 
 		$qb->executeStatement();
 	}
-
 
 	/**
 	 * @return RemoteInstance[]
@@ -145,7 +137,6 @@ class RemoteRequest extends RemoteRequestBuilder {
 
 		return $this->getItemsFromRequest($qb);
 	}
-
 
 	/**
 	 * - returns:
@@ -193,7 +184,6 @@ class RemoteRequest extends RemoteRequestBuilder {
 		return $this->getItemsFromRequest($qb);
 	}
 
-
 	/**
 	 * @param string $host
 	 *
@@ -206,7 +196,6 @@ class RemoteRequest extends RemoteRequestBuilder {
 
 		return $this->getItemFromRequest($qb);
 	}
-
 
 	/**
 	 * @param string $href
@@ -221,7 +210,6 @@ class RemoteRequest extends RemoteRequestBuilder {
 		return $this->getItemFromRequest($qb);
 	}
 
-
 	/**
 	 * @param string $status
 	 *
@@ -233,7 +221,6 @@ class RemoteRequest extends RemoteRequestBuilder {
 
 		return $this->getItemsFromRequest($qb);
 	}
-
 
 	/**
 	 * @param RemoteInstance $remoteInstance
@@ -251,7 +238,6 @@ class RemoteRequest extends RemoteRequestBuilder {
 
 		return $this->getItemFromRequest($qb);
 	}
-
 
 	/**
 	 * @param RemoteInstance $remoteInstance

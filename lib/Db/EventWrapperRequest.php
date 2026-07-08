@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Db;
 
@@ -68,7 +66,6 @@ class EventWrapperRequest extends EventWrapperRequestBuilder {
 		$qb->executeStatement();
 	}
 
-
 	/**
 	 * @param string $token
 	 * @param int $status
@@ -81,7 +78,6 @@ class EventWrapperRequest extends EventWrapperRequestBuilder {
 
 		$qb->executeStatement();
 	}
-
 
 	/**
 	 * returns unique token not set as FAILED
@@ -108,7 +104,6 @@ class EventWrapperRequest extends EventWrapperRequestBuilder {
 
 		return $this->getItemsFromRequest($qb);
 	}
-
 
 	/**
 	 * @param string $token

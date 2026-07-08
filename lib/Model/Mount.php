@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Model;
 
@@ -44,13 +42,11 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 	private string $remote = '';
 	private int $remoteShareId = 0;
 
-
 	/**
 	 * Mount constructor.
 	 */
 	public function __construct() {
 	}
-
 
 	/**
 	 * @return int
@@ -64,7 +60,6 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 
 		return $this;
 	}
-
 
 	/**
 	 *
@@ -84,7 +79,6 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 
 		return $this;
 	}
-
 
 	/**
 	 *
@@ -183,7 +177,6 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 		return $this;
 	}
 
-
 	/**
 	 * @return Member
 	 */
@@ -201,7 +194,6 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 
 		return $this;
 	}
-
 
 	/**
 	 * @return bool
@@ -228,7 +220,6 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 		return $this;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -246,7 +237,6 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 
 		return $this;
 	}
-
 
 	/**
 	 * @return string
@@ -266,7 +256,6 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 		return $this;
 	}
 
-
 	/**
 	 * @param ICloudIdManager $cloudIdManager
 	 *
@@ -284,7 +273,6 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 	public function getCloudIdManager(): ICloudIdManager {
 		return $this->cloudIdManager;
 	}
-
 
 	/**
 	 * @param IClientService $httpClientService
@@ -340,7 +328,6 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 		];
 	}
 
-
 	/**
 	 * @param ShareWrapper $wrappedShare
 	 *
@@ -362,7 +349,6 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 		$this->setRemoteShareId((int)$wrappedShare->getId());
 	}
 
-
 	/**
 	 * @param array $data
 	 *
@@ -371,7 +357,6 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 	public function import(array $data): IDeserializable {
 		return $this;
 	}
-
 
 	/**
 	 * @param array $data
@@ -394,7 +379,6 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 
 		return $this;
 	}
-
 
 	/**
 	 * @return array

@@ -1,14 +1,11 @@
 <?php
 
-
 declare(strict_types=1);
-
 
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Exceptions;
 
@@ -33,10 +30,8 @@ class FederatedItemException extends Exception implements JsonSerializable {
 		FederatedItemUnauthorizedException::class
 	];
 
-
 	/** @var int */
 	private $status = Http::STATUS_BAD_REQUEST;
-
 
 	/**
 	 * FederatedItemException constructor.
@@ -48,7 +43,6 @@ class FederatedItemException extends Exception implements JsonSerializable {
 	public function __construct(string $message = '', int $code = 0, ?Throwable $previous = null) {
 		parent::__construct($message, ($code > 0) ? $code : $this->status, $previous);
 	}
-
 
 	/**
 	 * @param int $status
@@ -63,7 +57,6 @@ class FederatedItemException extends Exception implements JsonSerializable {
 	public function getStatus(): int {
 		return $this->status;
 	}
-
 
 	/**
 	 * @return array

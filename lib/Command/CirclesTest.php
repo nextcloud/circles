@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Command;
 
@@ -46,7 +44,6 @@ class CirclesTest extends Base {
 	use TStringTools;
 	use TDeserialize;
 
-
 	public static $INSTANCES = [
 		'global-scale-1',
 		'global-scale-2',
@@ -56,11 +53,9 @@ class CirclesTest extends Base {
 		'trusted'
 	];
 
-
 	public static $TEST_CIRCLES = [
 		'test_001'
 	];
-
 
 	/** @var InputInterface */
 	private $input;
@@ -104,7 +99,6 @@ class CirclesTest extends Base {
 			->addOption('only-setup', '', InputOption::VALUE_NONE, 'Stop after Circles Setup, pre-Sync');
 	}
 
-
 	/**
 	 * @param InputInterface $input
 	 * @param OutputInterface $output
@@ -116,11 +110,9 @@ class CirclesTest extends Base {
 		$this->input = $input;
 		$this->output = $output;
 
-
 		// loading CirclesManager
 		$circlesManager = Server::get(CirclesManager::class);
 		//		$circlesManager->startSuperSession();
-
 
 		$federatedUser = $circlesManager->getFederatedUser('test1', Member::TYPE_USER);
 		$circlesManager->startSession($federatedUser);
@@ -138,7 +130,6 @@ class CirclesTest extends Base {
 		//		$probe->mustBeMember();
 
 		$circles = $circlesManager->getCircles($probe);
-
 
 		// display result
 		$output = new ConsoleOutput();
@@ -169,7 +160,6 @@ class CirclesTest extends Base {
 
 		//		$federatedUser->getMemberships();
 
-
 		// get Circles available to test1
 		$federatedUser = $circlesManager->getFederatedUser('test1', Member::TYPE_USER);
 		$circlesManager->startSession($federatedUser);
@@ -177,7 +167,6 @@ class CirclesTest extends Base {
 			null,
 			null
 		);
-
 
 		$output = new ConsoleOutput();
 		$table = new Table($output->section());
@@ -195,11 +184,8 @@ class CirclesTest extends Base {
 		$table->setRows($rows);
 		$table->render();
 
-
 		// exit
 		return 0;
-
-
 		$members = array_map(
 			fn (Member $member): string => $member->getUserId() . ' ' . $member->getSingleId() . '   - ' . $member->getUserType(),
 			$circle->getInheritedMembers()
@@ -213,12 +199,9 @@ class CirclesTest extends Base {
 		//			return $circle->getDisplayName();
 		//		}, $circlesManager->getCircles());
 		return 0;
-
 		$circlesManager->stopSession();
 
-
 		//echo json_encode($circles, JSON_PRETTY_PRINT);
-
 
 		//		$circle = $circlesManager->createCircle('This is a test2');
 		//
@@ -242,7 +225,6 @@ class CirclesTest extends Base {
 		//
 		//		return 0;
 
-
 		// testing queryHelper;
 
 		$circlesQueryHelper = $circlesManager->getQueryHelper();
@@ -254,7 +236,6 @@ class CirclesTest extends Base {
 			'test.data'
 		)
 			->from('circles_test', 'test');
-
 
 		/** @var FederatedUser $federatedUser */
 		$federatedUser = $circlesManager->getFederatedUser('test1', Member::TYPE_USER);
@@ -279,7 +260,6 @@ class CirclesTest extends Base {
 		//		echo json_encode($items, JSON_PRETTY_PRINT);
 		//
 		//		return 0;
-
 
 		if ($input->getOption('are-you-aware-this-will-delete-all-my-data') === 'yes-i-am') {
 			try {
@@ -313,7 +293,6 @@ class CirclesTest extends Base {
 
 		return 0;
 	}
-
 
 	/**
 	 * @throws CircleNotFoundException
@@ -365,7 +344,6 @@ class CirclesTest extends Base {
 		//
 	}
 
-
 	/**
 	 * @throws ItemNotFoundException
 	 */
@@ -390,7 +368,6 @@ class CirclesTest extends Base {
 		}
 		$this->r(true, $this->local);
 	}
-
 
 	/**
 	 * @throws ItemNotFoundException
@@ -426,7 +403,6 @@ class CirclesTest extends Base {
 		}
 	}
 
-
 	/**
 	 * @throws ItemNotFoundException
 	 */
@@ -444,7 +420,6 @@ class CirclesTest extends Base {
 		$this->r();
 	}
 
-
 	/**
 	 * @throws ItemNotFoundException
 	 */
@@ -458,7 +433,6 @@ class CirclesTest extends Base {
 		}
 		$this->r();
 	}
-
 
 	/**
 	 * @throws ItemNotFoundException
@@ -478,7 +452,6 @@ class CirclesTest extends Base {
 		$this->r();
 	}
 
-
 	/**
 	 * @throws ItemNotFoundException
 	 * @throws Exception
@@ -495,7 +468,6 @@ class CirclesTest extends Base {
 		$this->r();
 	}
 
-
 	/**
 	 * @throws ItemNotFoundException
 	 * @throws Exception
@@ -508,7 +480,6 @@ class CirclesTest extends Base {
 		}
 		$this->r();
 	}
-
 
 	/**
 	 * @throws CircleNotFoundException
@@ -637,7 +608,6 @@ class CirclesTest extends Base {
 		}
 	}
 
-
 	/**
 	 *
 	 */
@@ -653,7 +623,6 @@ class CirclesTest extends Base {
 			$this->r();
 		}
 	}
-
 
 	/**
 	 * @throws InvalidItemException
@@ -685,7 +654,6 @@ class CirclesTest extends Base {
 		}
 	}
 
-
 	/**
 	 * @throws InvalidItemException
 	 * @throws ItemNotFoundException
@@ -696,8 +664,8 @@ class CirclesTest extends Base {
 		$localInstanceId = 'global-scale-1';
 		$name = self::$TEST_CIRCLES[0];
 		$owner = $this->getInstanceUsers($localInstanceId)[1];
-		$dataCreatedCircle001 =
-			$this->occ($localInstanceId, 'circles:manage:create --type user ' . $owner . ' ' . $name);
+		$dataCreatedCircle001
+			= $this->occ($localInstanceId, 'circles:manage:create --type user ' . $owner . ' ' . $name);
 		/** @var Circle $createdCircle */
 		$createdCircle = $this->deserialize($dataCreatedCircle001, Circle::class);
 		$this->circles[$localInstanceId][$createdCircle->getName()] = $createdCircle;
@@ -727,7 +695,6 @@ class CirclesTest extends Base {
 		$this->confirmCircleData($createdCircle, $compareTo, 'circle', true);
 		$this->r();
 
-
 		$this->p('Comparing local stored data');
 		$dataCircle = $this->occ($localInstanceId, 'circle:manage:details ' . $createdCircle->getSingleId());
 
@@ -739,8 +706,8 @@ class CirclesTest extends Base {
 		$links = $this->getConfigArray('global-scale-1', 'remote');
 		foreach ($this->getInstances(false) as $instanceId) {
 			$this->p('Comparing data stored on ' . $instanceId);
-			$dataCircle =
-				$this->occ($instanceId, 'circle:manage:details ' . $createdCircle->getSingleId(), false);
+			$dataCircle
+				= $this->occ($instanceId, 'circle:manage:details ' . $createdCircle->getSingleId(), false);
 
 			if ($instanceId === $localInstanceId || $links[$instanceId] === 'GlobalScale') {
 				/** @var Circle $tmpCircle */
@@ -759,7 +726,6 @@ class CirclesTest extends Base {
 			}
 		}
 	}
-
 
 	/**
 	 * @throws InvalidItemException
@@ -780,7 +746,6 @@ class CirclesTest extends Base {
 		// check test2
 	}
 
-
 	/**
 	 * @throws CircleNotFoundException
 	 * @throws InvalidItemException
@@ -795,8 +760,8 @@ class CirclesTest extends Base {
 		$userId = $this->getInstanceUsers($localInstanceId)[6];
 		$userCircle = $this->getCircleByName($localInstanceId, 'user:' . $userId);
 		$user = $userCircle->getOwner();
-		$dataAddedMember =
-			$this->occ(
+		$dataAddedMember
+			= $this->occ(
 				$localInstanceId, 'circles:members:add ' . $circle->getSingleId() . ' ' . $user->getSingleId()
 			);
 		/** @var Member $addedMember */
@@ -806,7 +771,6 @@ class CirclesTest extends Base {
 
 		// check test6
 	}
-
 
 	private function addLocalMemberUsingMember() {
 		$this->p('Adding local member using local Member');
@@ -819,8 +783,8 @@ class CirclesTest extends Base {
 		$userId = $this->getInstanceUsers($localInstanceId)[6];
 		$userCircle = $this->getCircleByName($localInstanceId, 'user:' . $userId);
 		$user = $userCircle->getOwner();
-		$dataAddedMember =
-			$this->occ(
+		$dataAddedMember
+			= $this->occ(
 				$localInstanceId, 'circles:members:add ' . $circle->getSingleId() . ' ' . $user->getSingleId()
 			);
 		/** @var Member $addedMember */
@@ -884,7 +848,6 @@ class CirclesTest extends Base {
 
 	private function removeLocalMemberUsingRemoteAdmin() {
 	}
-
 
 	private function removeRemoteMemberUsingRemoteMember() {
 		// fail
@@ -991,7 +954,6 @@ class CirclesTest extends Base {
 		}
 	}
 
-
 	/**
 	 * @param string $expected
 	 * @param string $compare
@@ -1023,7 +985,6 @@ class CirclesTest extends Base {
 		}
 	}
 
-
 	/**
 	 * @param bool $localIncluded
 	 *
@@ -1037,7 +998,6 @@ class CirclesTest extends Base {
 
 		return $instances;
 	}
-
 
 	/**
 	 * @param array $circles
@@ -1058,7 +1018,6 @@ class CirclesTest extends Base {
 		throw new CircleNotFoundException('cannot find ' . $userId . ' in the list of Single Team');
 	}
 
-
 	/**
 	 * @param string $instanceId
 	 * @param string $name
@@ -1076,7 +1035,6 @@ class CirclesTest extends Base {
 			'cannot extract \'' . $name . '\' from the list of generated Circles'
 		);
 	}
-
 
 	/**
 	 * @param array $circles
@@ -1096,7 +1054,6 @@ class CirclesTest extends Base {
 			'cannot extract  \'' . $name . '\' from the list of provided Circles'
 		);
 	}
-
 
 	/**
 	 * @param string $instance
@@ -1124,7 +1081,6 @@ class CirclesTest extends Base {
 		return $this->getArray($key, $config);
 	}
 
-
 	/**
 	 * @param string $instance
 	 *
@@ -1141,7 +1097,6 @@ class CirclesTest extends Base {
 		throw new ItemNotFoundException($instance . ' not found');
 	}
 
-
 	/**
 	 * @param $instanceId
 	 *
@@ -1151,7 +1106,6 @@ class CirclesTest extends Base {
 	private function getInstanceUsers($instanceId): array {
 		return $this->getConfigArray($instanceId, 'users');
 	}
-
 
 	/**
 	 * @param string $instance
@@ -1194,12 +1148,9 @@ class CirclesTest extends Base {
 		return $output;
 	}
 
-
-
 	//
 	//
 	//
-
 
 	/**
 	 * @param string $title
@@ -1238,7 +1189,6 @@ class CirclesTest extends Base {
 		}
 	}
 
-
 	/**
 	 * @param string $instanceId
 	 * @param string $circleName
@@ -1253,14 +1203,13 @@ class CirclesTest extends Base {
 	private function processMemberAdd(string $instanceId, string $circleName, string $userId, string $type,
 	): Member {
 		$circle = $this->getCircleByName($instanceId, $circleName);
-		$dataAddedMember =
-			$this->occ(
+		$dataAddedMember
+			= $this->occ(
 				$instanceId,
 				'circles:members:add ' . $circle->getSingleId() . ' ' . $userId . ' --type ' . $type
 			);
 		/** @var Member $addedMember */
 		$addedMember = $this->deserialize($dataAddedMember, Member::class);
-
 
 		echo 'ADDEDMEMBER: ' . json_encode($addedMember, JSON_PRETTY_PRINT) . "\n";
 

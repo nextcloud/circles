@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Service;
 
@@ -59,10 +57,8 @@ class MigrationService {
 	use TStringTools;
 	use TNCLogger;
 
-
 	/** @var FederatedUser */
 	private $appCircle = null;
-
 
 	/**
 	 * MigrationService constructor.
@@ -96,7 +92,6 @@ class MigrationService {
 	) {
 		$this->setup('app', Application::APP_ID);
 	}
-
 
 	/**
 	 * @param bool $force
@@ -132,7 +127,6 @@ class MigrationService {
 		$this->configService->setAppValue(ConfigService::MIGRATION_RUN, '0');
 	}
 
-
 	/**
 	 * @throws RequestBuilderException
 	 */
@@ -159,7 +153,6 @@ class MigrationService {
 
 		$this->configService->setAppValue(ConfigService::MIGRATION_22, '1');
 	}
-
 
 	/**
 	 * run migration if:
@@ -223,7 +216,6 @@ class MigrationService {
 		$this->outputService->finishMigrationProgress();
 	}
 
-
 	/**
 	 *
 	 */
@@ -256,7 +248,6 @@ class MigrationService {
 		$this->outputService->finishMigrationProgress();
 	}
 
-
 	/**
 	 * @param SimpleDataStore $data
 	 *
@@ -287,7 +278,6 @@ class MigrationService {
 		return $circle;
 	}
 
-
 	/**
 	 * @param Circle $circle
 	 * @param int $type
@@ -312,7 +302,6 @@ class MigrationService {
 		}
 	}
 
-
 	/**
 	 * @param Circle $circle
 	 */
@@ -327,7 +316,6 @@ class MigrationService {
 		} catch (RequestBuilderException) {
 		}
 	}
-
 
 	/**
 	 */
@@ -360,7 +348,6 @@ class MigrationService {
 
 		$this->outputService->finishMigrationProgress();
 	}
-
 
 	/**
 	 * @throws CircleNotFoundException
@@ -405,7 +392,6 @@ class MigrationService {
 		return $member;
 	}
 
-
 	/**
 	 * @param Member $member
 	 * @param int $userType
@@ -434,7 +420,6 @@ class MigrationService {
 		}
 	}
 
-
 	private function migrationTo22_1_SubShares(): void {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$expr = $qb->expr();
@@ -450,8 +435,8 @@ class MigrationService {
 			while ($row = $cursor->fetchAssociative()) {
 				try {
 					$data = new SimpleDataStore($row);
-					$federatedUser =
-						$this->federatedUserService->getLocalFederatedUser($data->g('share_with'));
+					$federatedUser
+						= $this->federatedUserService->getLocalFederatedUser($data->g('share_with'));
 					$this->outputService->output(
 						'Migrating child share #' . $data->gInt('id') . ' owner: ' . $data->g('share_with')
 						. ' -> ' . $federatedUser->getSingleId(),
@@ -469,7 +454,6 @@ class MigrationService {
 
 		$this->outputService->finishMigrationProgress();
 	}
-
 
 	/**
 	 * @param SimpleDataStore $data
@@ -504,7 +488,6 @@ class MigrationService {
 		$qb->executeStatement();
 	}
 
-
 	/**
 	 * @param Member $member
 	 *
@@ -521,13 +504,12 @@ class MigrationService {
 		$contact = $cm->search($contactId, ['UID']);
 		if (sizeof($contact) === 1) {
 			$entry = array_shift($contact);
-			$addressBook =
-				$this->contactService->getAddressBoxById($cm, $this->get('addressbook-key', $entry));
+			$addressBook
+				= $this->contactService->getAddressBoxById($cm, $this->get('addressbook-key', $entry));
 
 			$member->setUserId($userId . '/' . $addressBook->getUri() . '/' . $contactId);
 		}
 	}
-
 
 	/**
 	 * @param Member $member
@@ -543,7 +525,6 @@ class MigrationService {
 		} catch (RequestBuilderException) {
 		}
 	}
-
 
 	/**
 	 */
@@ -576,7 +557,6 @@ class MigrationService {
 
 		$this->outputService->finishMigrationProgress();
 	}
-
 
 	/**
 	 * @param SimpleDataStore $data

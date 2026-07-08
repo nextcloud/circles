@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Command;
 
@@ -42,7 +40,6 @@ class CirclesCreate extends Base {
 		parent::__construct();
 	}
 
-
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:manage:create')
@@ -57,7 +54,6 @@ class CirclesCreate extends Base {
 				Member::$TYPE[Member::TYPE_SINGLE]
 			);
 	}
-
 
 	/**
 	 * @param InputInterface $input

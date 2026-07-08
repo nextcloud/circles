@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Events;
 
@@ -34,7 +32,6 @@ class CircleMemberEditedEvent extends CircleResultGenericEvent {
 
 	/** @var string */
 	private $newDisplayName = '';
-
 
 	/**
 	 * CircleMemberEditedEvent constructor.
@@ -64,7 +61,6 @@ class CircleMemberEditedEvent extends CircleResultGenericEvent {
 		return $this->type;
 	}
 
-
 	/**
 	 * @param int $newLevel
 	 *
@@ -82,7 +78,6 @@ class CircleMemberEditedEvent extends CircleResultGenericEvent {
 	public function getNewLevel(): int {
 		return $this->newLevel;
 	}
-
 
 	/**
 	 * @param string $newDisplayName

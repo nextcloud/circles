@@ -19,7 +19,6 @@ use OCP\Share\IShare;
 class SharesToken implements JsonSerializable {
 	use TArrayTools;
 
-
 	/** @var string */
 	private $circleId = '';
 
@@ -38,13 +37,11 @@ class SharesToken implements JsonSerializable {
 	/** @var string */
 	private $token = '';
 
-
 	/**
 	 * SharesToken constructor.
 	 */
 	public function __construct() {
 	}
-
 
 	/**
 	 * @return string
@@ -64,7 +61,6 @@ class SharesToken implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -82,7 +78,6 @@ class SharesToken implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return string
@@ -102,7 +97,6 @@ class SharesToken implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return int
 	 */
@@ -120,7 +114,6 @@ class SharesToken implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return string
@@ -140,7 +133,6 @@ class SharesToken implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return int
 	 */
@@ -159,7 +151,6 @@ class SharesToken implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @param array $data
 	 */
@@ -171,7 +162,6 @@ class SharesToken implements JsonSerializable {
 		$this->setShareId($this->get('share_id', $data, ''));
 		$this->setToken($this->get('token', $data, ''));
 	}
-
 
 	/**
 	 * @return array

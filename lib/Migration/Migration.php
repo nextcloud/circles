@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Migration;
 
@@ -27,7 +25,6 @@ use OCP\Migration\IRepairStep;
 class Migration implements IRepairStep {
 	use TNCLogger;
 
-
 	/**
 	 * Migration constructor.
 	 *
@@ -42,14 +39,12 @@ class Migration implements IRepairStep {
 	) {
 	}
 
-
 	/**
 	 * @return string
 	 */
 	public function getName(): string {
 		return 'Upgrading Circles App';
 	}
-
 
 	/**
 	 * @param IOutput $output
