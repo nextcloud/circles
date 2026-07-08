@@ -33,7 +33,7 @@
   "devDependencies": {
     "@nextcloud/browserslist-config": "^3.1.2",
     "@nextcloud/e2e-test-server": "^0.4.0",
-    "@nextcloud/eslint-config": "^9.0.0-rc.5",
+    "@nextcloud/eslint-config": "^9.0.0",
     "@nextcloud/vite-config": "^2.5.2",
     "@playwright/test": "^1.60.0",
     "@vitejs/plugin-vue": "^6.0.1",
