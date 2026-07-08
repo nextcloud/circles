@@ -2,13 +2,16 @@ SPDX-License-Identifier: (MIT AND BSD-3-Clause)
 SPDX-License-Identifier: (MPL-2.0 OR Apache-2.0)
 SPDX-License-Identifier: AGPL-3.0-or-later
 SPDX-License-Identifier: Apache-2.0
+SPDX-License-Identifier: BSD-3-Clause
 SPDX-License-Identifier: GPL-3.0-or-later
 SPDX-License-Identifier: ISC
 SPDX-License-Identifier: MIT
 SPDX-FileCopyrightText: 
 SPDX-FileCopyrightText: @nextcloud/dialogs developers
 SPDX-FileCopyrightText: Anthony Fu <https://github.com/antfu>
+SPDX-FileCopyrightText: Arnout Kazemier
 SPDX-FileCopyrightText: Austin Andrews
+SPDX-FileCopyrightText: Borys Serebrov
 SPDX-FileCopyrightText: Calvin Metcalf
 SPDX-FileCopyrightText: Calvin Metcalf <calvin.metcalf@gmail.com>
 SPDX-FileCopyrightText: Christoph Wurst
@@ -29,8 +32,10 @@ SPDX-FileCopyrightText: Irakli Gozalishvili <rfobic@gmail.com> (http://jeditoolk
 SPDX-FileCopyrightText: Isaac Z. Schlueter <i@izs.me> (http://blog.izs.me/)
 SPDX-FileCopyrightText: Jacob Clevenger<https://github.com/wheatjs>
 SPDX-FileCopyrightText: James Halliday
+SPDX-FileCopyrightText: Jeff Sagal <sagalbot@gmail.com>
 SPDX-FileCopyrightText: Jordan Harband
 SPDX-FileCopyrightText: Jordan Harband <ljharb@gmail.com>
+SPDX-FileCopyrightText: Jordan Humphreys <jordan@zurb.com>
 SPDX-FileCopyrightText: Joyent
 SPDX-FileCopyrightText: Julian Gruber
 SPDX-FileCopyrightText: Kirill Fomichev <fanatid@ya.ru> (https://github.com/fanatid)
@@ -38,14 +43,20 @@ SPDX-FileCopyrightText: Mathias Buus (@mafintosh)
 SPDX-FileCopyrightText: Matt Zabriskie
 SPDX-FileCopyrightText: Nathan Rajlich <nathan@tootallnate.net> (http://n8.io/)
 SPDX-FileCopyrightText: Nextcloud GmbH and Nextcloud contributors
+SPDX-FileCopyrightText: Nick Frasser (https://nfrasser.com)
 SPDX-FileCopyrightText: Raynos <raynos2@gmail.com>
 SPDX-FileCopyrightText: Roeland Jago Douma
+SPDX-FileCopyrightText: Sindre Sorhus
 SPDX-FileCopyrightText: Varun A P
+SPDX-FileCopyrightText: Vuepic
 SPDX-FileCopyrightText: atomiks
 SPDX-FileCopyrightText: browserify-rsa developers
 SPDX-FileCopyrightText: browserify-sign developers
+SPDX-FileCopyrightText: date-fns developers
+SPDX-FileCopyrightText: debounce developers
 SPDX-FileCopyrightText: escape-html developers
 SPDX-FileCopyrightText: inherits developers
+SPDX-FileCopyrightText: p-queue developers
 SPDX-FileCopyrightText: readable-stream developers
 SPDX-FileCopyrightText: ripemd160 developers
 SPDX-FileCopyrightText: string_decoder developers
@@ -56,6 +67,9 @@ This file is generated from multiple sources. Included packages:
 	- license: MIT
 - @floating-ui/dom
 	- version: 1.1.1
+	- license: MIT
+- @floating-ui/dom
+	- version: 1.7.6
 	- license: MIT
 - @floating-ui/utils
 	- version: 0.2.11
@@ -79,13 +93,16 @@ This file is generated from multiple sources. Included packages:
 	- version: 1.2.0
 	- license: GPL-3.0-or-later
 - @nextcloud/dialogs
-	- version: 7.0.0-rc.1
+	- version: 7.0.1
 	- license: AGPL-3.0-or-later
 - @nextcloud/event-bus
 	- version: 3.3.3
 	- license: GPL-3.0-or-later
 - @nextcloud/initial-state
 	- version: 2.2.0
+	- license: GPL-3.0-or-later
+- @nextcloud/initial-state
+	- version: 3.0.0
 	- license: GPL-3.0-or-later
 - @nextcloud/l10n
 	- version: 3.4.1
@@ -103,16 +120,19 @@ This file is generated from multiple sources. Included packages:
 	- version: 6.0.1
 	- license: MIT
 - @vue/reactivity
-	- version: 3.5.18
+	- version: 3.5.39
 	- license: MIT
 - @vue/runtime-core
-	- version: 3.5.18
+	- version: 3.5.39
 	- license: MIT
 - @vue/runtime-dom
-	- version: 3.5.18
+	- version: 3.5.39
 	- license: MIT
 - @vue/shared
-	- version: 3.5.18
+	- version: 3.5.39
+	- license: MIT
+- @vuepic/vue-datepicker
+	- version: 11.0.2
 	- license: MIT
 - @vueuse/components
 	- version: 13.9.0
@@ -186,6 +206,12 @@ This file is generated from multiple sources. Included packages:
 - crypto-browserify
 	- version: 3.12.1
 	- license: MIT
+- date-fns
+	- version: 4.1.0
+	- license: MIT
+- debounce
+	- version: 2.2.0
+	- license: MIT
 - define-data-property
 	- version: 1.1.4
 	- license: MIT
@@ -204,6 +230,9 @@ This file is generated from multiple sources. Included packages:
 - elliptic
 	- version: 6.6.1
 	- license: MIT
+- emoji-mart-vue-fast
+	- version: 15.0.5
+	- license: BSD-3-Clause
 - es-define-property
 	- version: 1.0.1
 	- license: MIT
@@ -215,6 +244,9 @@ This file is generated from multiple sources. Included packages:
 	- license: MIT
 - escape-html
 	- version: 1.0.3
+	- license: MIT
+- eventemitter3
+	- version: 5.0.4
 	- license: MIT
 - events
 	- version: 3.3.0
@@ -291,6 +323,9 @@ This file is generated from multiple sources. Included packages:
 - isarray
 	- version: 2.0.5
 	- license: MIT
+- linkifyjs
+	- version: 4.3.2
+	- license: MIT
 - math-intrinsics
 	- version: 1.1.0
 	- license: MIT
@@ -305,6 +340,12 @@ This file is generated from multiple sources. Included packages:
 	- license: ISC
 - minimalistic-crypto-utils
 	- version: 1.0.1
+	- license: MIT
+- p-queue
+	- version: 9.3.1
+	- license: MIT
+- p-timeout
+	- version: 7.0.1
 	- license: MIT
 - parse-asn1
 	- version: 5.1.9
@@ -375,6 +416,9 @@ This file is generated from multiple sources. Included packages:
 - toastify-js
 	- version: 1.12.0
 	- license: MIT
+- tributejs
+	- version: 5.1.3
+	- license: MIT
 - typed-array-buffer
 	- version: 1.0.3
 	- license: MIT
@@ -395,6 +439,9 @@ This file is generated from multiple sources. Included packages:
 	- license: MIT
 - vue-router
 	- version: 4.5.1
+	- license: MIT
+- vue-select
+	- version: 4.0.0-beta.6
 	- license: MIT
 - which-typed-array
 	- version: 1.1.19
