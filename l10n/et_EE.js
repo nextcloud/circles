@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s jagas sinuga mitut faili.",
     "Boot up" : "Käivitamisel",
     "Nextcloud Initialization" : "Nextcloudi valmendamine",
-    "Circles App Initialization" : "Tiimide rakenduse valmendamine",
     "Fresh installation status" : "Uue paigalduse olek",
     "Building Local Database" : "Loon kohalikku andmebaasi",
     "Testing Basic Team Creation" : "Testin lihtsa tiimi loomist",
@@ -172,6 +171,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Selles kaustas ei leitud kirjeid",
     "Name" : "Nimi",
     "Size" : "Suurus",
-    "Modified" : "Muudetud"
+    "Modified" : "Muudetud",
+    "Circles App Initialization" : "Tiimide rakenduse valmendamine"
 },
 "nplurals=2; plural=(n != 1);");

@@ -84,7 +84,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "Mae %s wedi rhannu sawl ffeil gyda chi.",
     "Boot up" : "Cychwyn",
     "Nextcloud Initialization" : "Cychwyniad Nextcloud",
-    "Circles App Initialization" : "Cychwyn Ap Cylchoedd",
     "Fresh installation status" : "Statws gosodiad newydd",
     "Building Local Database" : "Adeiladu Cronfa Ddata Lleol",
     "Adding local users and moderators" : "Ychwanegu defnyddwyr a chymedrolwyr lleol",
@@ -109,6 +108,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Ni chanfuwyd unrhyw gofnodion yn y ffolder hwn",
     "Name" : "Enw",
     "Size" : "Maint",
-    "Modified" : "Addaswyd"
+    "Modified" : "Addaswyd",
+    "Circles App Initialization" : "Cychwyn Ap Cylchoedd"
 },
 "nplurals=4; plural=(n==1) ? 0 : (n==2) ? 1 : (n != 8 && n != 11) ? 2 : 3;");

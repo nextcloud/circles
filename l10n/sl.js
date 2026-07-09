@@ -89,7 +89,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s vam omogoči souporabo več datotek.",
     "Boot up" : "Zaganjanje",
     "Nextcloud Initialization" : "Zaganjanje oblaka Nextcloud",
-    "Circles App Initialization" : "Zaganjanje programa Krogi",
     "Fresh installation status" : "Stanje sveže namestitve",
     "Building Local Database" : "Poteka izgradnja krajevne podatkovne zbirke",
     "Adding local users and moderators" : "Dodajanje krajevnih uporabnikov in moderatorjev",
@@ -130,6 +129,7 @@ OC.L10N.register(
     "No entries found in this folder" : "V tej mapi ni datotek in podmap.",
     "Name" : "Ime",
     "Size" : "Velikost",
-    "Modified" : "Spremenjeno"
+    "Modified" : "Spremenjeno",
+    "Circles App Initialization" : "Zaganjanje programa Krogi"
 },
 "nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);");

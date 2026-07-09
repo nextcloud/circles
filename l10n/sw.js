@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s alishiriki faili nyingi nawe. ",
     "Boot up" : "Anzisha",
     "Nextcloud Initialization" : "Uanzishaji wa Nextcloud ",
-    "Circles App Initialization" : "Uanzishaji wa Programu ya Miduara",
     "Fresh installation status" : "Hali mpya ya ufungaji",
     "Building Local Database" : "Kujenga Hifadhidata ya Mitaa",
     "Testing Basic Team Creation" : "Kujaribu Uundaji wa Timu ya Msingi",
@@ -171,6 +170,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Hakuna maingizo yaliyopatikana katika kasha hili",
     "Name" : "Jina",
     "Size" : "Ukubwa",
-    "Modified" : "Boresha"
+    "Modified" : "Boresha",
+    "Circles App Initialization" : "Uanzishaji wa Programu ya Miduara"
 },
 "nplurals=2; plural=(n != 1);");
