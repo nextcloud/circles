@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s 對您共享了多個文件。",
     "Boot up" : "啟動",
     "Nextcloud Initialization" : "初始 Nextcloud",
-    "Circles App Initialization" : "初始 Circles 應用程式",
     "Fresh installation status" : "全新安裝狀態",
     "Building Local Database" : "建立近端數據庫",
     "Testing Basic Team Creation" : "測試基本團隊創建",
@@ -171,6 +170,7 @@ OC.L10N.register(
     "No entries found in this folder" : "此資料夾中無項目",
     "Name" : "名稱",
     "Size" : "大小",
-    "Modified" : "修改日期"
+    "Modified" : "修改日期",
+    "Circles App Initialization" : "初始 Circles 應用程式"
 },
 "nplurals=1; plural=0;");

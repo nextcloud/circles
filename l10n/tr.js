@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s sizinle birkaç dosya paylaştı.",
     "Boot up" : "Başlatma",
     "Nextcloud Initialization" : "Nextcloud başlatılıyor",
-    "Circles App Initialization" : "Takımlar uygulaması başlatılıyor",
     "Fresh installation status" : "Yeni kurulum durumu",
     "Building Local Database" : "Yerel veri tabanı oluşturuluyor",
     "Testing Basic Team Creation" : "Temel takım oluşturma sınanıyor",
@@ -172,6 +171,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Bu klasörde herhangi bir kayıt yok",
     "Name" : "Ad",
     "Size" : "Boyut",
-    "Modified" : "Değiştirilme"
+    "Modified" : "Değiştirilme",
+    "Circles App Initialization" : "Takımlar uygulaması başlatılıyor"
 },
 "nplurals=2; plural=(n > 1);");

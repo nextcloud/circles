@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s több fájlt osztott meg Önnel.",
     "Boot up" : "Rendszerindítás",
     "Nextcloud Initialization" : "A Nextcloud előkészítése",
-    "Circles App Initialization" : "Körök alkalmazás előkészítése",
     "Fresh installation status" : "Friss előkészítési állapot",
     "Building Local Database" : "Helyi adatbázis építése",
     "Testing Basic Team Creation" : "Alapvető csapatlétrehozás tesztelése",
@@ -172,6 +171,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Nincsenek bejegyzések ebben a mappában",
     "Name" : "Név",
     "Size" : "Méret",
-    "Modified" : "Módosítva"
+    "Modified" : "Módosítva",
+    "Circles App Initialization" : "Körök alkalmazás előkészítése"
 },
 "nplurals=2; plural=(n != 1);");

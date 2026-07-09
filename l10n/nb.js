@@ -101,7 +101,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s delte flere filer med deg.",
     "Boot up" : "Start opp",
     "Nextcloud Initialization" : "Nextcloud-initialisering",
-    "Circles App Initialization" : "Initialisering av Circles App",
     "Fresh installation status" : "Status på fersk installasjon",
     "Building Local Database" : "Bygger lokal database",
     "Adding local users and moderators" : "Legger til lokale brukere og moderatorer",
@@ -152,6 +151,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Ingen oppføringer funnet i denne mappen",
     "Name" : "Navn",
     "Size" : "Størrelse",
-    "Modified" : "Endret"
+    "Modified" : "Endret",
+    "Circles App Initialization" : "Initialisering av Circles App"
 },
 "nplurals=2; plural=(n != 1);");

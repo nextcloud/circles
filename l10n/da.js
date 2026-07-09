@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s delte flere filer med dig.",
     "Boot up" : "Start",
     "Nextcloud Initialization" : "Nextcloud initialisering",
-    "Circles App Initialization" : "Cirkler App Initialisering",
     "Fresh installation status" : "Installationsstatus",
     "Building Local Database" : "Opsætning af lokal database",
     "Adding local users and moderators" : "Tilføjelse af lokale brugere og moderatorer",
@@ -156,6 +155,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Intet fundet i denne mappe",
     "Name" : "Navn",
     "Size" : "Størrelse",
-    "Modified" : "Ændret"
+    "Modified" : "Ændret",
+    "Circles App Initialization" : "Cirkler App Initialisering"
 },
 "nplurals=2; plural=(n != 1);");

@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s delade flera filer med dig.",
     "Boot up" : "Uppstart",
     "Nextcloud Initialization" : "Nextcloud-initiering",
-    "Circles App Initialization" : "Cirklar appinitiering",
     "Fresh installation status" : "Nyinstallationsstatus",
     "Building Local Database" : "Bygger lokal databas",
     "Testing Basic Team Creation" : "Testar grundläggande team-skapande",
@@ -171,6 +170,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Inga objekt funna i denna mapp",
     "Name" : "Namn",
     "Size" : "Storlek",
-    "Modified" : "Ändrad"
+    "Modified" : "Ändrad",
+    "Circles App Initialization" : "Cirklar appinitiering"
 },
 "nplurals=2; plural=(n != 1);");

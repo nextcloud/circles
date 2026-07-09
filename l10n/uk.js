@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s поділив(-ла-)ся з вами кількома файлами.",
     "Boot up" : "Завантаження",
     "Nextcloud Initialization" : "Ініціалізація Nextcloud",
-    "Circles App Initialization" : "Ініціалізація застосунка \"Кола\"",
     "Fresh installation status" : "Статус свіжої інсталяції",
     "Building Local Database" : "Створення локальної бази даних",
     "Testing Basic Team Creation" : "Тест основних функції створення команди",
@@ -172,6 +171,7 @@ OC.L10N.register(
     "No entries found in this folder" : "У цьому каталозі нічого немає",
     "Name" : "Ім'я",
     "Size" : "Розмір",
-    "Modified" : "Змінено"
+    "Modified" : "Змінено",
+    "Circles App Initialization" : "Ініціалізація застосунка \"Кола\""
 },
 "nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);");
