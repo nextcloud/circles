@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s bendrino kelis failus su jumis.",
     "Boot up" : "Paleiskite",
     "Nextcloud Initialization" : "„Nextcloud“ inicijavimas",
-    "Circles App Initialization" : "Programėlės „Ratai“ inicijavimas",
     "Fresh installation status" : "Nauja diegimo būsena",
     "Building Local Database" : "Vietinės duomenų bazės kūrimas",
     "Testing Basic Team Creation" : "Pagrindinio komandos kūrimo testavimas",
@@ -172,6 +171,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Šiame aplanke nerasta jokių įrašų",
     "Name" : "Vardas",
     "Size" : "Dydis",
-    "Modified" : "Pakeistas"
+    "Modified" : "Pakeistas",
+    "Circles App Initialization" : "Programėlės „Ratai“ inicijavimas"
 },
 "nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);");

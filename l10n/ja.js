@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%sがあなたと複数のファイルを共有しました。",
     "Boot up" : "起動時",
     "Nextcloud Initialization" : "Nextcloud初期化",
-    "Circles App Initialization" : "Circleアプリの初期化",
     "Fresh installation status" : "フレッシュインストールの状況",
     "Building Local Database" : "ローカルデータベースの構築",
     "Testing Basic Team Creation" : "基本的なチーム作成のテスト",
@@ -172,6 +171,7 @@ OC.L10N.register(
     "No entries found in this folder" : "このフォルダーにはエントリーがありません",
     "Name" : "名前",
     "Size" : "サイズ",
-    "Modified" : "更新日時"
+    "Modified" : "更新日時",
+    "Circles App Initialization" : "Circleアプリの初期化"
 },
 "nplurals=1; plural=0;");

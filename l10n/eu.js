@@ -102,7 +102,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s(e)k fitxategi batzuk partekatu ditu zurekin.",
     "Boot up" : "Abiarazi",
     "Nextcloud Initialization" : "Nextcloud hastapena",
-    "Circles App Initialization" : "Zirkuluak aplikazioaren hastapena",
     "Fresh installation status" : "Instalazio berriaren egoera",
     "Building Local Database" : "Datu-base lokala eraikitzen",
     "Testing Basic Team Creation" : "Oinarrizko lan-taldeen sorkuntza probatzea",
@@ -162,6 +161,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Ez da sarrerarik aurkitu karpeta honetan ",
     "Name" : "Izena",
     "Size" : "Tamaina",
-    "Modified" : "Aldatua"
+    "Modified" : "Aldatua",
+    "Circles App Initialization" : "Zirkuluak aplikazioaren hastapena"
 },
 "nplurals=2; plural=(n != 1);");

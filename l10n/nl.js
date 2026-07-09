@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s deelde meerdere bestanden met jou.",
     "Boot up" : "Opstarten",
     "Nextcloud Initialization" : "Nextcloud Initialisatie",
-    "Circles App Initialization" : "Circles App Initialisatie",
     "Fresh installation status" : "Nieuwe installatiestatus",
     "Building Local Database" : "Aanmaken lokale database",
     "Testing Basic Team Creation" : "Basis teamoprichting testen",
@@ -171,6 +170,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Niets in deze map gevonden",
     "Name" : "Naam",
     "Size" : "Omvang",
-    "Modified" : "Gewijzigd"
+    "Modified" : "Gewijzigd",
+    "Circles App Initialization" : "Circles App Initialisatie"
 },
 "nplurals=2; plural=(n != 1);");

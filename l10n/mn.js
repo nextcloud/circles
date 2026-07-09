@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s танд олон файл хуваалцсан.",
     "Boot up" : "Ачаалах",
     "Nextcloud Initialization" : "Nextcloud эхлүүлэлт",
-    "Circles App Initialization" : "Circles апп эхлүүлэлт",
     "Fresh installation status" : "Шинэ суулгалтын төлөв",
     "Building Local Database" : "Локал өгөгдлийн сан үүсгэж байна",
     "Testing Basic Team Creation" : "Үндсэн баг үүсгэлтийг шалгаж байна",
@@ -171,6 +170,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Энэ хавтаст юм олдсонгүй",
     "Name" : "Нэр",
     "Size" : "Хэмжээ",
-    "Modified" : "Өөрчлөгдсөн"
+    "Modified" : "Өөрчлөгдсөн",
+    "Circles App Initialization" : "Circles апп эхлүүлэлт"
 },
 "nplurals=2; plural=(n != 1);");

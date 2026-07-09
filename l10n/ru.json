@@ -101,7 +101,6 @@
     "%s shared multiple files with you." : "%s предоставил(а) вам доступ к нескольким файлам.",
     "Boot up" : "Загрузка",
     "Nextcloud Initialization" : "Инициализация Nextcloud",
-    "Circles App Initialization" : "Инициализация приложения \"Круги\"",
     "Fresh installation status" : "Статус новой установки",
     "Building Local Database" : "Создание локальной базы данных",
     "Testing Basic Team Creation" : "Проверка базового создания команды",
@@ -170,6 +169,7 @@
     "No entries found in this folder" : "В этой папке ничего нет",
     "Name" : "Имя",
     "Size" : "Размер",
-    "Modified" : "Изменён"
+    "Modified" : "Изменён",
+    "Circles App Initialization" : "Инициализация приложения \"Круги\""
 },"pluralForm" :"nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);"
 }

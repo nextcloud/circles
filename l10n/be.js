@@ -45,7 +45,6 @@ OC.L10N.register(
     "Admin" : "Адміністратар",
     "Owner" : "Уладальнік",
     "%1$s via %2$s" : "%1$s праз %2$s",
-    "Circles App Initialization" : "Ініцыялізацыя праграмы Кругі",
     "Create a new team" : "Стварыць новую каманду",
     "Files" : "Файлы",
     "Accept" : "Прыняць",
@@ -67,6 +66,7 @@ OC.L10N.register(
     "No entries found in this folder" : "У гэтай папцы не знойдзена запісаў",
     "Name" : "Назва",
     "Size" : "Памер",
-    "Modified" : "Зменены"
+    "Modified" : "Зменены",
+    "Circles App Initialization" : "Ініцыялізацыя праграмы Кругі"
 },
 "nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);");

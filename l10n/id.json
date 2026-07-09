@@ -101,7 +101,6 @@
     "%s shared multiple files with you." : "%s membagikan beberapa file kepada Anda.",
     "Boot up" : "Memulai",
     "Nextcloud Initialization" : "Inisialisasi Nextcloud",
-    "Circles App Initialization" : "Inisialisasi Aplikasi Circles",
     "Fresh installation status" : "Status instalasi baru",
     "Building Local Database" : "Membangun Database Lokal",
     "Testing Basic Team Creation" : "Menguji Pembuatan Tim Dasar",
@@ -159,6 +158,7 @@
     "No entries found in this folder" : "Tidak ada entri yang ditemukan dalam folder ini",
     "Name" : "Nama",
     "Size" : "Ukuran",
-    "Modified" : "Dimodifikasi"
+    "Modified" : "Dimodifikasi",
+    "Circles App Initialization" : "Inisialisasi Aplikasi Circles"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

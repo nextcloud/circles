@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s hat mehrere Dateien mit Ihnen geteilt.",
     "Boot up" : "Hochfahren",
     "Nextcloud Initialization" : "Nextcloud-Initialisierung",
-    "Circles App Initialization" : "Initialisierung der Kreise-App",
     "Fresh installation status" : "Aktueller Initialisierungsstatus",
     "Building Local Database" : "Lokale Datenbank wird erstellt",
     "Testing Basic Team Creation" : "Testen der grundlegenden Teamerstellung",
@@ -172,6 +171,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Keine Einträge in diesem Ordner gefunden ",
     "Name" : "Name",
     "Size" : "Größe",
-    "Modified" : "Geändert"
+    "Modified" : "Geändert",
+    "Circles App Initialization" : "Initialisierung der Kreise-App"
 },
 "nplurals=2; plural=(n != 1);");

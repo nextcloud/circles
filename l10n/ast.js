@@ -99,7 +99,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s compartió múltiples ficheros contigo.",
     "Boot up" : "Arrinque",
     "Nextcloud Initialization" : "Aniciu de Nextcloud",
-    "Circles App Initialization" : "Aniciu de l'aplicación Círculos",
     "Fresh installation status" : "Estáu de la instalación nueva",
     "Building Local Database" : "Creando la base de datos llocal",
     "Adding local users and moderators" : "Amestando usuarios y moderadores llocales",
@@ -142,6 +141,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Nun s'atopó nenguna entrada nesta carpeta",
     "Name" : "Nome",
     "Size" : "Tamañu",
-    "Modified" : "Modificóse"
+    "Modified" : "Modificóse",
+    "Circles App Initialization" : "Aniciu de l'aplicación Círculos"
 },
 "nplurals=2; plural=(n != 1);");

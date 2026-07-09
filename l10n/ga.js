@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "Roinn %s comhaid iolracha leat.",
     "Boot up" : "Tosaithe suas",
     "Nextcloud Initialization" : "Túsú Nextcloud",
-    "Circles App Initialization" : "Ciorcail Aip Tosaigh",
     "Fresh installation status" : "Stádas suiteála úr",
     "Building Local Database" : "Bunachar Sonraí Áitiúil a Thógáil",
     "Testing Basic Team Creation" : "Tástáil ar Chruthú Foirne Bunúsach",
@@ -172,6 +171,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Níor aimsíodh aon iontrálacha san fhillteán seo",
     "Name" : "Ainm",
     "Size" : "Méid",
-    "Modified" : "Athraithe"
+    "Modified" : "Athraithe",
+    "Circles App Initialization" : "Ciorcail Aip Tosaigh"
 },
 "nplurals=5; plural=(n==1 ? 0 : n==2 ? 1 : n<7 ? 2 : n<11 ? 3 : 4);");
