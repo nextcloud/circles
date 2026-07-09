@@ -85,7 +85,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s đã chia sẻ tổ hợp tệp với bạn.",
     "Boot up" : "Khởi động lên",
     "Nextcloud Initialization" : "Khởi tạo Nextcloud",
-    "Circles App Initialization" : "Khởi tạo Ứng dụng vòng kết nối",
     "Fresh installation status" : "Trạng thái cài đặt mới",
     "Building Local Database" : "Đang xây dựng cơ sở dữ liệu cục bộ",
     "Adding local users and moderators" : "Đang thêm người dùng và người quản lý",
@@ -118,6 +117,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Chưa có mục nào trong thư mục",
     "Name" : "Tên",
     "Size" : "Kích cỡ",
-    "Modified" : "Thay đổi"
+    "Modified" : "Thay đổi",
+    "Circles App Initialization" : "Khởi tạo Ứng dụng vòng kết nối"
 },
 "nplurals=1; plural=0;");

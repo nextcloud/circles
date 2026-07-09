@@ -101,7 +101,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s ha compartit diversos fitxers amb vós.",
     "Boot up" : "Engegada",
     "Nextcloud Initialization" : "Inicialització del Nextcloud",
-    "Circles App Initialization" : "Inicialització de l'aplicació Cercles",
     "Fresh installation status" : "Estat d'instal·lació nou",
     "Building Local Database" : "S'està creant la base de dades local",
     "Adding local users and moderators" : "S'estan afegint usuaris i moderadors locals",
@@ -148,6 +147,7 @@ OC.L10N.register(
     "No entries found in this folder" : "No s'ha trobat cap entrada en aquesta carpeta",
     "Name" : "Nom",
     "Size" : "Mida",
-    "Modified" : "Data de modificació"
+    "Modified" : "Data de modificació",
+    "Circles App Initialization" : "Inicialització de l'aplicació Cercles"
 },
 "nplurals=2; plural=(n != 1);");

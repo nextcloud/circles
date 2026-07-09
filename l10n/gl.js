@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s compartiu varios ficheiros con Vde.",
     "Boot up" : "Arrancar",
     "Nextcloud Initialization" : "Preparación de Nextcloud",
-    "Circles App Initialization" : "Preparación da aplicación Círculos",
     "Fresh installation status" : "Estado da nova instalación",
     "Building Local Database" : "Creando a base de datos local",
     "Testing Basic Team Creation" : "Proba básica de creación de equipos",
@@ -171,6 +170,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Non foi atopada ningunha entrada neste cartafol",
     "Name" : "Nome",
     "Size" : "Tamaño",
-    "Modified" : "Modificado"
+    "Modified" : "Modificado",
+    "Circles App Initialization" : "Preparación da aplicación Círculos"
 },
 "nplurals=2; plural=(n != 1);");

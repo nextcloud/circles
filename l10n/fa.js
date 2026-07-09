@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s چندین فایل را با شما به اشتراک گذاشت.",
     "Boot up" : "راه‌اندازی",
     "Nextcloud Initialization" : "راه‌اندازی نکست‌کلود",
-    "Circles App Initialization" : "راه‌اندازی اپ حلقه‌ها",
     "Fresh installation status" : "وضعیت نصب تازه",
     "Building Local Database" : "ساخت پایگاه داده محلی",
     "Testing Basic Team Creation" : "تست ایجاد تیم پایه",
@@ -172,6 +171,7 @@ OC.L10N.register(
     "No entries found in this folder" : "هیچ ورودی در این پوشه یافت نشد  ",
     "Name" : "نام  ",
     "Size" : "اندازه  ",
-    "Modified" : "تغییر یافته"
+    "Modified" : "تغییر یافته",
+    "Circles App Initialization" : "راه‌اندازی اپ حلقه‌ها"
 },
 "nplurals=2; plural=(n > 1);");

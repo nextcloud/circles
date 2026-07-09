@@ -83,7 +83,6 @@ OC.L10N.register(
     "%s shared multiple files with \"%s\"." : "%s a partajat mai multe fișiere cu \"%s\".",
     "%s shared multiple files with you." : "%s a partajat mai multe fișiere cu tine.",
     "Nextcloud Initialization" : "Inițializare Nextcloud",
-    "Circles App Initialization" : "Inițializare aplicație Cercuri",
     "Fresh installation status" : "Statusul noii instalări",
     "Building Local Database" : "Se creează baza de date locală",
     "Adding local users and moderators" : "Se adaugă utilizatorii locali și moderatorii",
@@ -113,6 +112,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Nici o intrare găsită în acest folder",
     "Name" : "Nume",
     "Size" : "Mărime",
-    "Modified" : "Modificat"
+    "Modified" : "Modificat",
+    "Circles App Initialization" : "Inițializare aplicație Cercuri"
 },
 "nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));");

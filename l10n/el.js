@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s διαμοίρασε διάφορα αρχεία με σας.",
     "Boot up" : "Εκκίνηση",
     "Nextcloud Initialization" : "Προετοιμασία Nextcloud",
-    "Circles App Initialization" : "Προετοιμασία Εφαρμογής Circles",
     "Fresh installation status" : "Κατάσταση νέας εγκατάστασης",
     "Building Local Database" : "Δημιουργία Τοπικής Βάσης Δεδομένων",
     "Testing Basic Team Creation" : "Δοκιμή βασικής δημιουργίας ομάδας",
@@ -171,6 +170,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Δεν βρέθηκε καταχώρηση σε αυτόν τον φάκελο",
     "Name" : "Όνομα",
     "Size" : "Μέγεθος",
-    "Modified" : "Τροποποιήθηκε"
+    "Modified" : "Τροποποιήθηκε",
+    "Circles App Initialization" : "Προετοιμασία Εφαρμογής Circles"
 },
 "nplurals=2; plural=(n != 1);");

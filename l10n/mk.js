@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s сподели неколку датотеки со тебе.",
     "Boot up" : "Стартување",
     "Nextcloud Initialization" : "Иницијализација на Nextcloud",
-    "Circles App Initialization" : "Иницијализација на апликацијата Circles",
     "Fresh installation status" : "Статус на нова инсталација",
     "Building Local Database" : "Градење на локална база на податоци",
     "Testing Basic Team Creation" : "Тестирање на основно создавање тим",
@@ -159,6 +158,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Нема ништо во оваа папка",
     "Name" : "Име",
     "Size" : "Големина",
-    "Modified" : "Изменето"
+    "Modified" : "Изменето",
+    "Circles App Initialization" : "Иницијализација на апликацијата Circles"
 },
 "nplurals=2; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : 1;");
