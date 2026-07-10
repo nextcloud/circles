@@ -7,7 +7,7 @@
 import type { Team } from '../types.ts'
 
 import { mdiFolderMultipleOutline } from '@mdi/js'
-import { t } from '@nextcloud/l10n'
+import { n, t } from '@nextcloud/l10n'
 import NcAvatar from '@nextcloud/vue/components/NcAvatar'
 import NcIconSvgWrapper from '@nextcloud/vue/components/NcIconSvgWrapper'
 import TeamAvatar from './TeamAvatar.vue'
@@ -52,7 +52,7 @@ const MAX_AVATARS = 5
 
 			<span :class="$style.teamCardResources">
 				<NcIconSvgWrapper :path="mdiFolderMultipleOutline" :size="18" inline />
-				{{ t('circles', '{count} resources', { count: team.resources.length }) }}
+				{{ n('circles', '%n resource', '%n resources', team.resources.length) }}
 			</span>
 		</div>
 	</RouterLink>

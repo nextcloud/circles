@@ -63,6 +63,9 @@ use OCP\Group\Events\GroupCreatedEvent;
 use OCP\Group\Events\GroupDeletedEvent;
 use OCP\Group\Events\UserAddedEvent;
 use OCP\Group\Events\UserRemovedEvent;
+use OCP\INavigationManager;
+use OCP\IURLGenerator;
+use OCP\L10N\IFactory;
 use OCP\Share\IManager as IShareManager;
 use OCP\User\Events\UserChangedEvent;
 use OCP\User\Events\UserCreatedEvent;
@@ -145,6 +148,33 @@ class Application extends App implements IBootstrap {
 		});
 
 		$context->injectFn(Closure::fromCallable([$this, 'registerMountProvider']));
+		$context->injectFn(Closure::fromCallable([$this, 'registerNavigation']));
+	}
+
+	/**
+	 * Register the Teams navigation entry, but only when the frontend is
+	 * enabled. Done here rather than in info.xml so it stays in sync with the
+	 * PageController and dashboard widget, which are gated on the same setting.
+	 */
+	public function registerNavigation(
+		INavigationManager $navigationManager,
+		IURLGenerator $urlGenerator,
+		IFactory $l10nFactory,
+		ConfigService $configService,
+	): void {
+		if (!$configService->getAppValueBool(ConfigService::FRONTEND_ENABLED)) {
+			return;
+		}
+
+		$navigationManager->add(static function () use ($urlGenerator, $l10nFactory) {
+			return [
+				'id' => Application::APP_ID,
+				'order' => 80,
+				'href' => $urlGenerator->linkToRoute('circles.Page.index'),
+				'icon' => $urlGenerator->imagePath(Application::APP_ID, 'circles.svg'),
+				'name' => $l10nFactory->get(Application::APP_ID)->t('Teams'),
+			];
+		});
 	}
 
 	public function registerMountProvider(ContainerInterface $container): void {

@@ -7,6 +7,7 @@ import type { Member, Resource, Team, TeamRole } from './types.ts'
 
 import axios from '@nextcloud/axios'
 import { generateOcsUrl } from '@nextcloud/router'
+import { logger } from '../logger.ts'
 
 /** OCS endpoints require this header. */
 const HEADERS = { 'OCS-APIRequest': 'true' }
@@ -125,13 +126,25 @@ function mapFullMember(raw: RawMember): Member {
  * description, member count, our role) with the members preview and resources.
  */
 export async function fetchTeams(): Promise<Team[]> {
-	const [circlesRes, dashRes] = await Promise.all([
+	const [circlesRes, dashRes] = await Promise.allSettled([
 		axios.get<OcsResponse<RawCircle[]>>(generateOcsUrl('apps/circles/circles') + '?limit=-1', { headers: HEADERS }),
 		axios.get<OcsResponse<RawDashboardTeam[]>>(generateOcsUrl('apps/circles/teams/dashboard/widget') + '?limit=200&offset=0', { headers: HEADERS }),
 	])
 
-	const circles = circlesRes.data.ocs.data ?? []
-	const dashboard = dashRes.data.ocs.data ?? []
+	// The team list is required; without it we have nothing to show.
+	if (circlesRes.status === 'rejected') {
+		throw circlesRes.reason
+	}
+	const circles = circlesRes.value.data.ocs.data ?? []
+
+	// The dashboard only enriches each team with member/resource previews, so
+	// treat a failure there as "no previews" rather than failing the whole page.
+	let dashboard: RawDashboardTeam[] = []
+	if (dashRes.status === 'fulfilled') {
+		dashboard = dashRes.value.data.ocs.data ?? []
+	} else {
+		logger.warn('Failed to load team dashboard previews', { error: dashRes.reason })
+	}
 	const dashboardById = new Map(dashboard.map((team) => [team.singleId, team]))
 
 	return circles.map((circle) => {

@@ -10,10 +10,12 @@ declare(strict_types=1);
 namespace OCA\Circles\Controller;
 
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\Service\ConfigService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Attribute\FrontpageRoute;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
+use OCP\AppFramework\Http\NotFoundResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
 use OCP\Util;
@@ -24,6 +26,7 @@ use OCP\Util;
 class PageController extends Controller {
 	public function __construct(
 		IRequest $request,
+		private ConfigService $configService,
 	) {
 		parent::__construct(Application::APP_ID, $request);
 	}
@@ -31,7 +34,13 @@ class PageController extends Controller {
 	#[NoAdminRequired]
 	#[NoCSRFRequired]
 	#[FrontpageRoute(verb: 'GET', url: '/teams')]
-	public function index(): TemplateResponse {
+	public function index(): TemplateResponse|NotFoundResponse {
+		// The frontend can be disabled by admins; the OCS API the SPA relies on
+		// refuses every request in that case, so don't serve the app shell.
+		if (!$this->configService->getAppValueBool(ConfigService::FRONTEND_ENABLED)) {
+			return new NotFoundResponse();
+		}
+
 		Util::addScript(Application::APP_ID, 'teams-main');
 		Util::addStyle(Application::APP_ID, 'teams-main');
 
@@ -45,7 +54,7 @@ class PageController extends Controller {
 	#[NoAdminRequired]
 	#[NoCSRFRequired]
 	#[FrontpageRoute(verb: 'GET', url: '/teams/{path}', requirements: ['path' => '.*'], defaults: ['path' => ''])]
-	public function indexPath(string $path): TemplateResponse {
+	public function indexPath(string $path): TemplateResponse|NotFoundResponse {
 		return $this->index();
 	}
 }

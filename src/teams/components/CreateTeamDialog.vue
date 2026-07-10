@@ -22,7 +22,6 @@ const emit = defineEmits<{
 const router = useRouter()
 const store = useTeamsStore()
 
-const open = ref(true)
 const name = ref('')
 const description = ref('')
 const submitting = ref(false)
@@ -30,7 +29,8 @@ const submitting = ref(false)
 const canCreate = computed(() => name.value.trim().length > 0 && !submitting.value)
 
 /**
- * Forward the dialog close so the parent can drop this component.
+ * Forward a dialog-initiated close (Esc, backdrop, X) so the parent can
+ * drop this component.
  *
  * @param value - The new open state from NcDialog
  */
@@ -52,7 +52,7 @@ async function submit(): Promise<void> {
 		if (team) {
 			router.push({ name: 'team', params: { teamId: team.id } })
 		}
-		open.value = false
+		emit('close')
 	} catch (error) {
 		logger.error('Failed to create team', { error })
 		showError(t('circles', 'Could not create the team'))
@@ -64,7 +64,6 @@ async function submit(): Promise<void> {
 
 <template>
 	<NcDialog
-		:open="open"
 		:name="t('circles', 'Create a new team')"
 		size="normal"
 		@update:open="onUpdateOpen">
@@ -81,7 +80,7 @@ async function submit(): Promise<void> {
 		</form>
 
 		<template #actions>
-			<NcButton variant="tertiary" @click="open = false">
+			<NcButton variant="tertiary" @click="$emit('close')">
 				{{ t('circles', 'Cancel') }}
 			</NcButton>
 			<NcButton
