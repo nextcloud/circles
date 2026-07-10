@@ -229,11 +229,6 @@
       <code><![CDATA[self]]></code>
     </LessSpecificImplementedReturnType>
   </file>
-  <file src="lib/Model/ModelManager.php">
-    <DeprecatedMethod>
-      <code><![CDATA[isInstalled]]></code>
-    </DeprecatedMethod>
-  </file>
   <file src="lib/Model/Probes/BasicProbe.php">
     <InvalidReturnType>
       <code><![CDATA[$this]]></code>
