@@ -409,4 +409,14 @@
       <code><![CDATA[$s[$e]]]></code>
     </InvalidArrayOffset>
   </file>
+  <file src="lib/Listeners/GroupMemberRemoved.php">
+    <UndefinedClass>
+      <code><![CDATA[\OCA\GroupFolders\Folder\FolderManager]]></code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/Listeners/CircleMemberRemoved.php">
+    <UndefinedClass>
+      <code><![CDATA[\OCA\GroupFolders\Folder\FolderManager]]></code>
+    </UndefinedClass>
+  </file>
 </files>

@@ -39,6 +39,7 @@ use OC;
 use OCA\Circles\Dashboard\TeamDashboardWidget;
 use OCA\Circles\Events\AddingCircleMemberEvent;
 use OCA\Circles\Events\CircleMemberAddedEvent;
+use OCA\Circles\Events\CircleMemberRemovedEvent;
 use OCA\Circles\Events\DestroyingCircleEvent;
 use OCA\Circles\Events\Files\CreatingFileShareEvent;
 use OCA\Circles\Events\Files\FileShareCreatedEvent;
@@ -49,6 +50,7 @@ use OCA\Circles\Events\RequestingCircleMemberEvent;
 use OCA\Circles\FileSharingTeamResourceProvider;
 use OCA\Circles\Handlers\WebfingerHandler;
 use OCA\Circles\Listeners\AccountUpdated;
+use OCA\Circles\Listeners\CircleMemberRemoved;
 use OCA\Circles\Listeners\Files\AddingMemberSendMail as ListenerFilesAddingMemberSendMail;
 use OCA\Circles\Listeners\Files\CreatingShareSendMail as ListenerFilesCreatingShareSendMail;
 use OCA\Circles\Listeners\Files\DestroyingCircle as ListenerFilesDestroyingCircle;
@@ -122,6 +124,9 @@ class Application extends App implements IBootstrap {
 		$context->registerEventListener(UserUpdatedEvent::class, AccountUpdated::class);
 		$context->registerEventListener(UserChangedEvent::class, AccountUpdated::class);
 		$context->registerEventListener(UserDeletedEvent::class, UserDeleted::class);
+
+		// Circle Events
+		$context->registerEventListener(CircleMemberRemovedEvent::class, CircleMemberRemoved::class);
 
 		// Group Events
 		$context->registerEventListener(GroupCreatedEvent::class, GroupCreated::class);
