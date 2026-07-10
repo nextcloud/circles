@@ -212,7 +212,6 @@ class FileCacheWrapper extends ManagedModel implements IQueryRow, IDeserializabl
 		];
 	}
 
-
 	/**
 	 * Returns whether the given database result can be interpreted as
 	 * a share with accessible file (not trashed, not deleted)
@@ -266,7 +265,6 @@ class FileCacheWrapper extends ManagedModel implements IQueryRow, IDeserializabl
 
 		return $this;
 	}
-
 
 	/**
 	 * @param array $data

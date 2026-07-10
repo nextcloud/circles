@@ -10,6 +10,7 @@ namespace OCA\Circles\Command;
 
 use Exception;
 use OC\Core\Command\Base;
+use OC\Memcache\APCu;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\AppInfo\Capabilities;
 use OCA\Circles\Exceptions\FederatedEventException;
@@ -39,6 +40,7 @@ use OCA\Circles\Tools\Traits\TArrayTools;
 use OCA\Circles\Tools\Traits\TNCRequest;
 use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\IAppConfig;
+use OCP\IConfig;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -67,6 +69,7 @@ class CirclesCheck extends Base {
 	public function __construct(
 		private Capabilities $capabilities,
 		private IAppConfig $appConfig,
+		private IConfig $config,
 		private InterfaceService $interfaceService,
 		private FederatedEventService $federatedEventService,
 		private RemoteService $remoteService,
@@ -175,7 +178,7 @@ class CirclesCheck extends Base {
 			}
 
 			return;
-		} catch (Exception $e) {
+		} catch (Exception) {
 		}
 
 		$output->writeln('');
@@ -195,7 +198,7 @@ class CirclesCheck extends Base {
 
 			try {
 				[$scheme, $cloudId, $path] = $this->parseAddress($loopback);
-			} catch (Exception $e) {
+			} catch (Exception) {
 				$output->writeln('<error>format must be http[s]://domain.name[:post][/path]</error>');
 				continue;
 			}
@@ -208,7 +211,7 @@ class CirclesCheck extends Base {
 				$this->saveLoopback($input, $output, $loopback);
 
 				return;
-			} catch (Exception $e) {
+			} catch (Exception) {
 				$output->writeln('');
 			}
 		}
@@ -262,6 +265,17 @@ class CirclesCheck extends Base {
 			return false;
 		}
 
+		$localIsApcu = ltrim($this->config->getSystemValueString('memcache.local'), '\\') === '\OC\Memcache\APCu';
+		if ($localIsApcu) {
+			/*
+			 * APCu cache is not shared between the CLI process and web requests, so freshly
+			 * set values will either be missing or stale and make the check fail.
+			 * The amount of seconds slept here depends on the TTL set by the AppConfig.
+			 */
+			$output->writeln('- Waiting for APCu config cache to refresh (4s)');
+			sleep(4);
+		}
+
 		if (!$this->testRequest(
 			$output, 'POST', 'circles.EventWrapper.asyncBroadcast',
 			['token' => 'test-dummy-token']
@@ -274,8 +288,8 @@ class CirclesCheck extends Base {
 		$test = new FederatedEvent(LoopbackTest::class);
 		$this->federatedEventService->newEvent($test);
 		$output->writeln(
-			'<info>' . $test->getWrapperToken() . '</info> ' .
-			'(took ' . ((string)(round(microtime(true) * 1000.0) - $timer)) . 'ms)'
+			'<info>' . $test->getWrapperToken() . '</info> '
+			. '(took ' . ((string)(round(microtime(true) * 1000.0) - $timer)) . 'ms)'
 		);
 
 		$output->writeln('- Waiting for async process to finish (5s)');
@@ -392,7 +406,7 @@ class CirclesCheck extends Base {
 
 			try {
 				[$scheme, $cloudId, $path] = $this->parseAddress($internal);
-			} catch (Exception $e) {
+			} catch (Exception) {
 				$output->writeln('<error>format must be http[s]://domain.name[:post][/path]</error>');
 				continue;
 			}
@@ -425,7 +439,7 @@ class CirclesCheck extends Base {
 				$output->writeln('paste the result here: ');
 				$question = new Question('', '');
 				$pastedWebfinger = new SimpleDataStore();
-				$pastedWebfinger->json(trim($helper->ask($input, $output, $question)));
+				$pastedWebfinger->json(trim((string)$helper->ask($input, $output, $question)));
 
 				if ($pastedWebfinger->g('subject') !== Application::APP_SUBJECT) {
 					$output->writeln('<error>Cannot extract SUBJECT from the pasted data</error>');
@@ -471,7 +485,7 @@ class CirclesCheck extends Base {
 				$output->writeln('paste the result here: ');
 				$question = new Question('', '');
 				$pastedSignatory = new SimpleDataStore();
-				$pastedSignatory->json(trim($helper->ask($input, $output, $question)));
+				$pastedSignatory->json(trim((string)$helper->ask($input, $output, $question)));
 
 				$this->appConfig->clearCache();
 				$this->interfaceService->setCurrentInterface(InterfaceService::IFACE_TEST);
@@ -572,7 +586,7 @@ class CirclesCheck extends Base {
 
 			try {
 				[$scheme, $cloudId, $path] = $this->parseAddress($frontal);
-			} catch (Exception $e) {
+			} catch (Exception) {
 				$output->writeln('<error>format must be http[s]://domain.name[:post][/path]</error>');
 				continue;
 			}
@@ -605,7 +619,7 @@ class CirclesCheck extends Base {
 				$output->writeln('paste the result here: ');
 				$question = new Question('', '');
 				$pastedWebfinger = new SimpleDataStore();
-				$pastedWebfinger->json(trim($helper->ask($input, $output, $question)));
+				$pastedWebfinger->json(trim((string)$helper->ask($input, $output, $question)));
 
 				if ($pastedWebfinger->g('subject') !== Application::APP_SUBJECT) {
 					$output->writeln('<error>Cannot extract SUBJECT from the pasted data</error>');
@@ -651,7 +665,7 @@ class CirclesCheck extends Base {
 				$output->writeln('paste the result here: ');
 				$question = new Question('', '');
 				$pastedSignatory = new SimpleDataStore();
-				$pastedSignatory->json(trim($helper->ask($input, $output, $question)));
+				$pastedSignatory->json(trim((string)$helper->ask($input, $output, $question)));
 
 				$this->appConfig->clearCache();
 				$this->interfaceService->setCurrentInterface(InterfaceService::IFACE_TEST);
@@ -746,7 +760,7 @@ class CirclesCheck extends Base {
 			if ($result->getStatusCode() === 200) {
 				return true;
 			}
-		} catch (RequestNetworkException $e) {
+		} catch (RequestNetworkException) {
 			$output->writeln('<error>fail</error>');
 		}
 

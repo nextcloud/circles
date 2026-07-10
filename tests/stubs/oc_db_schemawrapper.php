@@ -15,26 +15,22 @@ use OCP\Server;
 use Psr\Log\LoggerInterface;
 
 class SchemaWrapper implements ISchemaWrapper {
-	/** @var Connection */
-	protected $connection;
+	protected Schema $schema;
 
-	/** @var Schema */
-	protected $schema;
+	/** @var array<string, true> */
+	protected array $tablesToDelete = [];
 
-	/** @var array */
-	protected $tablesToDelete = [];
-
-	public function __construct(Connection $connection, ?Schema $schema = null)
- {
- }
+	public function __construct(protected Connection $connection, ?Schema $schema = null)
+    {
+    }
 
 	public function getWrappedSchema()
- {
- }
+    {
+    }
 
-	public function performDropTableCalls()
- {
- }
+	public function performDropTableCalls(): void
+    {
+    }
 
 	/**
 	 * Gets all table names
@@ -42,8 +38,8 @@ class SchemaWrapper implements ISchemaWrapper {
 	 * @return array
 	 */
 	public function getTableNamesWithoutPrefix()
- {
- }
+    {
+    }
 
 	// Overwritten methods
 
@@ -51,8 +47,8 @@ class SchemaWrapper implements ISchemaWrapper {
 	 * @return array
 	 */
 	public function getTableNames()
- {
- }
+    {
+    }
 
 	/**
 	 * @param string $tableName
@@ -61,8 +57,8 @@ class SchemaWrapper implements ISchemaWrapper {
 	 * @throws \Doctrine\DBAL\Schema\SchemaException
 	 */
 	public function getTable($tableName)
- {
- }
+    {
+    }
 
 	/**
 	 * Does this schema have a table with the given name?
@@ -72,8 +68,8 @@ class SchemaWrapper implements ISchemaWrapper {
 	 * @return boolean
 	 */
 	public function hasTable($tableName)
- {
- }
+    {
+    }
 
 	/**
 	 * Creates a new table.
@@ -82,8 +78,8 @@ class SchemaWrapper implements ISchemaWrapper {
 	 * @return \Doctrine\DBAL\Schema\Table
 	 */
 	public function createTable($tableName)
- {
- }
+    {
+    }
 
 	/**
 	 * Drops a table from the schema.
@@ -92,8 +88,8 @@ class SchemaWrapper implements ISchemaWrapper {
 	 * @return \Doctrine\DBAL\Schema\Schema
 	 */
 	public function dropTable($tableName)
- {
- }
+    {
+    }
 
 	/**
 	 * Gets all tables of this schema.
@@ -101,8 +97,8 @@ class SchemaWrapper implements ISchemaWrapper {
 	 * @return \Doctrine\DBAL\Schema\Table[]
 	 */
 	public function getTables()
- {
- }
+    {
+    }
 
 	/**
 	 * Gets the DatabasePlatform for the database.
@@ -112,10 +108,10 @@ class SchemaWrapper implements ISchemaWrapper {
 	 * @throws Exception
 	 */
 	public function getDatabasePlatform()
- {
- }
+    {
+    }
 
 	public function dropAutoincrementColumn(string $table, string $column): void
- {
- }
+    {
+    }
 }

@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Db;
 
@@ -33,7 +31,6 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 		return $qb;
 	}
 
-
 	/**
 	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
@@ -43,7 +40,6 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 
 		return $qb;
 	}
-
 
 	/**
 	 * @param string $alias
@@ -65,7 +61,6 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 		return $qb;
 	}
 
-
 	/**
 	 * Base of the Sql Delete request
 	 *
@@ -78,7 +73,6 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 		return $qb;
 	}
 
-
 	/**
 	 * @param CoreQueryBuilder&IQueryBuilder $qb
 	 *
@@ -89,9 +83,9 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 		/** @var Circle $circle */
 		try {
 			$circle = $qb->asItem(Circle::class);
-		} catch (RowNotFoundException $e) {
+		} catch (RowNotFoundException) {
 			throw new CircleNotFoundException('Circle not found');
-		} catch (\Exception $e) {
+		} catch (\Exception) {
 			throw new \Exception($qb->getSQL());
 		}
 

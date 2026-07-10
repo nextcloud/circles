@@ -101,7 +101,7 @@
     "%s shared multiple files with you." : "%s поділив(-ла-)ся з вами кількома файлами.",
     "Boot up" : "Завантаження",
     "Nextcloud Initialization" : "Ініціалізація Nextcloud",
-    "Circles App Initialization" : "Ініціалізація застосунка \"Кола\"",
+    "Teams App Initialization" : "Ініціалізація застосунку Команди",
     "Fresh installation status" : "Статус свіжої інсталяції",
     "Building Local Database" : "Створення локальної бази даних",
     "Testing Basic Team Creation" : "Тест основних функції створення команди",
@@ -128,10 +128,16 @@
     "Accept" : "Прийняти",
     "Refuse" : "Відмовитися",
     "Leave the team" : "Полишити команду",
+    "No image file provided" : "Файл зображення не надано",
+    "Invalid file provided" : "Надано помилковий файл",
+    "File is too big" : "Файл занадто великий",
+    "Invalid image" : "Недійсне зображення",
+    "Unknown filetype" : "Невідомий тип файлу",
     "%s" : "%s ",
     "Personal team" : "Приватна команда",
     "%s owned by %s" : "%s належить %s",
     "You have no permission to create a new team" : "У вас відсутні дозволи створювати нові команди",
+    "Insufficient permissions to perform this action" : "Недостатні повноваження для виконання цієї дії",
     "%s shared a file with \"%s\"." : "%s поділив(-ла-)ся файлом з \"%s\".",
     "%s shared a file with you." : "%s поділив(-ла-)ся з вами файлом.",
     "%1$s shared %2$s with %3$s" : "%1$s спільний %2$s з %3$s",
@@ -164,6 +170,7 @@
     "No entries found in this folder" : "У цьому каталозі нічого немає",
     "Name" : "Ім'я",
     "Size" : "Розмір",
-    "Modified" : "Змінено"
+    "Modified" : "Змінено",
+    "Circles App Initialization" : "Ініціалізація застосунка \"Кола\""
 },"pluralForm" :"nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);"
 }

@@ -14,15 +14,16 @@ use OCP\AppFramework\Services\IInitialState;
 use OCP\IAppConfig;
 use OCP\IL10N;
 use OCP\Settings\IDelegatedSettings;
+use OCP\Util;
 
 class Admin implements IDelegatedSettings {
 	/**
 	 * Admin constructor.
 	 */
 	public function __construct(
-		private IAppConfig $appConfig,
-		private IL10N $l,
-		private IInitialState $initialState,
+		private readonly IAppConfig $appConfig,
+		private readonly IL10N $l,
+		private readonly IInitialState $initialState,
 	) {
 	}
 
@@ -36,8 +37,8 @@ class Admin implements IDelegatedSettings {
 		$this->initialState->provideInitialState('federatedTeamsEnabled', $federatedTeamsEnabled);
 		$this->initialState->provideInitialState('federatedTeamsFrontal', $federatedTeamsFrontal);
 
-		\OCP\Util::addStyle(Application::APP_ID, 'teams-settings-admin');
-		\OCP\Util::addScript(Application::APP_ID, 'teams-settings-admin');
+		Util::addStyle(Application::APP_ID, 'teams-settings-admin');
+		Util::addScript(Application::APP_ID, 'teams-settings-admin');
 
 		return new TemplateResponse(Application::APP_ID, 'settings-admin', renderAs: '');
 	}

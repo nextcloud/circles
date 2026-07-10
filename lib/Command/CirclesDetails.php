@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Command;
 
@@ -46,43 +44,15 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Command
  */
 class CirclesDetails extends Base {
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var RemoteService */
-	private $remoteService;
-
-	/** @var MemberService */
-	private $memberService;
-
-	/** @var CircleService */
-	private $circleService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
-	/**
-	 * CirclesDetails constructor.
-	 *
-	 * @param FederatedUserService $federatedUserService
-	 * @param RemoteService $remoteService
-	 * @param CircleService $circlesService
-	 * @param MemberService $membersService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
-		FederatedUserService $federatedUserService, RemoteService $remoteService,
-		CircleService $circlesService, MemberService $membersService, ConfigService $configService,
+		private readonly FederatedUserService $federatedUserService,
+		private readonly RemoteService $remoteService,
+		private readonly CircleService $circleService,
+		private readonly MemberService $memberService,
+		private readonly ConfigService $configService,
 	) {
 		parent::__construct();
-		$this->federatedUserService = $federatedUserService;
-		$this->remoteService = $remoteService;
-		$this->circleService = $circlesService;
-		$this->memberService = $membersService;
-		$this->configService = $configService;
 	}
-
 
 	/**
 	 *
@@ -97,7 +67,6 @@ class CirclesDetails extends Base {
 			->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
 			->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
 	}
-
 
 	/**
 	 * @param InputInterface $input
@@ -144,12 +113,11 @@ class CirclesDetails extends Base {
 						true
 					);
 
-
 					$probe = new CircleProbe();
 					$probe->includeNonVisibleCircles();
 
 					$circle = $this->circleService->getCircle($circleId, $probe);
-				} catch (CircleNotFoundException $e) {
+				} catch (CircleNotFoundException) {
 					throw new CircleNotFoundException(
 						'unknown circle, use --instance to retrieve the data from a remote instance'
 					);
@@ -158,7 +126,7 @@ class CirclesDetails extends Base {
 		} catch (FederatedItemException $e) {
 			if ($input->getOption('status-code')) {
 				throw new FederatedItemException(
-					' [' . get_class($e) . ', ' . ((string)$e->getStatus()) . ']' . "\n" . $e->getMessage()
+					' [' . $e::class . ', ' . ((string)$e->getStatus()) . ']' . "\n" . $e->getMessage()
 				);
 			}
 

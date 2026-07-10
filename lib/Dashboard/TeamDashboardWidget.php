@@ -19,12 +19,11 @@ use OCP\Util;
 
 class TeamDashboardWidget implements IIconWidget, IButtonWidget, IConditionalWidget {
 	public function __construct(
-		private IURLGenerator $urlGenerator,
-		private IL10N $l10n,
-		private ConfigService $configService,
+		private readonly IURLGenerator $urlGenerator,
+		private readonly IL10N $l10n,
+		private readonly ConfigService $configService,
 	) {
 	}
-
 
 	/**
 	 * @inheritDoc

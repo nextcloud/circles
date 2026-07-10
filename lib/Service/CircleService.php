@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Service;
 
@@ -67,40 +65,8 @@ class CircleService {
 	public const CACHE_GET_CIRCLES = 'circles/getCircles';
 	public const CACHE_GET_CIRCLES_TTL = 300;
 
-
-	/** @var IL10N */
-	private $l10n;
-
-	/** @var IHasher */
-	private $hasher;
-
 	/** @var ICache $cache */
 	private $cache;
-
-	/** @var CircleRequest */
-	private $circleRequest;
-
-	/** @var MemberRequest */
-	private $memberRequest;
-
-	/** @var RemoteStreamService */
-	private $remoteStreamService;
-
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var FederatedEventService */
-	private $federatedEventService;
-
-	/** @var MemberService */
-	private $memberService;
-
-	/** @var PermissionService */
-	private $permissionService;
-
-	/** @var ConfigService */
-	private $configService;
-
 
 	/**
 	 * @param IL10N $l10n
@@ -115,34 +81,23 @@ class CircleService {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IL10N $l10n,
-		IHasher $hasher,
+		private IL10N $l10n,
+		private IHasher $hasher,
 		ICacheFactory $cacheFactory,
-		CircleRequest $circleRequest,
-		MemberRequest $memberRequest,
-		RemoteStreamService $remoteStreamService,
-		FederatedUserService $federatedUserService,
-		FederatedEventService $federatedEventService,
-		MemberService $memberService,
-		PermissionService $permissionService,
-		ConfigService $configService,
+		private CircleRequest $circleRequest,
+		private MemberRequest $memberRequest,
+		private RemoteStreamService $remoteStreamService,
+		private FederatedUserService $federatedUserService,
+		private FederatedEventService $federatedEventService,
+		private MemberService $memberService,
+		private PermissionService $permissionService,
+		private ConfigService $configService,
 		private readonly IEventDispatcher $eventDispatcher,
 	) {
-		$this->l10n = $l10n;
-		$this->hasher = $hasher;
 		$this->cache = $cacheFactory->createDistributed(self::CACHE_GET_CIRCLES);
-		$this->circleRequest = $circleRequest;
-		$this->memberRequest = $memberRequest;
-		$this->remoteStreamService = $remoteStreamService;
-		$this->federatedUserService = $federatedUserService;
-		$this->federatedEventService = $federatedEventService;
-		$this->memberService = $memberService;
-		$this->permissionService = $permissionService;
-		$this->configService = $configService;
 
 		$this->setup('app', Application::APP_ID);
 	}
-
 
 	/**
 	 * @param string $name
@@ -221,7 +176,6 @@ class CircleService {
 		return $event->getOutcome();
 	}
 
-
 	/**
 	 * @param string $circleId
 	 * @param bool $forceSync
@@ -251,7 +205,6 @@ class CircleService {
 
 		return $event->getOutcome();
 	}
-
 
 	/**
 	 * @param string $circleId
@@ -290,7 +243,6 @@ class CircleService {
 
 		return $event->getOutcome();
 	}
-
 
 	/**
 	 * if $value is null, setting is unset
@@ -335,7 +287,6 @@ class CircleService {
 
 		return $event->getOutcome();
 	}
-
 
 	/**
 	 * @param string $circleId
@@ -406,7 +357,6 @@ class CircleService {
 		return $event->getOutcome();
 	}
 
-
 	/**
 	 * @param string $circleId
 	 *
@@ -451,7 +401,6 @@ class CircleService {
 
 		return $event->getOutcome();
 	}
-
 
 	/**
 	 * @param string $circleId
@@ -518,7 +467,6 @@ class CircleService {
 		);
 	}
 
-
 	/**
 	 * @return Circle[]
 	 * @throws InitiatorNotFoundException
@@ -541,7 +489,7 @@ class CircleService {
 				}
 
 				return $this->deserializeList($cachedData, Circle::class);
-			} catch (InvalidItemException $e) {
+			} catch (InvalidItemException) {
 			}
 		}
 
@@ -556,7 +504,6 @@ class CircleService {
 
 		return $circles;
 	}
-
 
 	/**
 	 * @param Circle $circle
@@ -592,7 +539,7 @@ class CircleService {
 				if ($stored->getSingleId() === $circle->getSingleId()) {
 					throw new CircleNotFoundException();
 				}
-			} catch (CircleNotFoundException $e) {
+			} catch (CircleNotFoundException) {
 				$circle->setDisplayName($testDisplayName);
 
 				return;
@@ -601,7 +548,6 @@ class CircleService {
 			$i++;
 		}
 	}
-
 
 	/**
 	 * @param Circle $circle
@@ -626,7 +572,7 @@ class CircleService {
 				if ($stored->getSingleId() === $circle->getSingleId()) {
 					throw new CircleNotFoundException();
 				}
-			} catch (CircleNotFoundException $e) {
+			} catch (CircleNotFoundException) {
 				$circle->setSanitizedName($testSanitizedName);
 
 				return;
@@ -655,7 +601,6 @@ class CircleService {
 		return trim($sanitized, ' .');
 	}
 
-
 	/**
 	 * @param Circle $circle
 	 *
@@ -666,7 +611,6 @@ class CircleService {
 			throw new MembersLimitException(StatusCode::$MEMBER_ADD[121], 121);
 		}
 	}
-
 
 	/**
 	 * @param Circle $circle
@@ -693,7 +637,6 @@ class CircleService {
 		return (sizeof($members) >= $limit);
 	}
 
-
 	/**
 	 * @param string $name
 	 *
@@ -702,9 +645,8 @@ class CircleService {
 	public function cleanCircleName(string $name): string {
 		$name = preg_replace('/\s+/', ' ', $name);
 
-		return trim($name);
+		return trim((string)$name);
 	}
-
 
 	/**
 	 * @param IEntity $entity
@@ -760,11 +702,9 @@ class CircleService {
 		return $this->l10n->t('%s', [Circle::$DEF_SOURCE[$federatedUser->getUserType()]]);
 	}
 
-
 	private function generateGetCirclesCacheKey(FederatedUser $federatedUser, string $probeSum): string {
 		return $federatedUser->getSingleId() . '#' . $probeSum;
 	}
-
 
 	/**
 	 * @param string $circleId

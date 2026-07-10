@@ -85,7 +85,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%sсподелени множество файлове с вас",
     "Boot up" : "Стартиране",
     "Nextcloud Initialization" : "Инициализация на Nextcloud",
-    "Circles App Initialization" : "Инициализация на приложението Circles /кръгове/",
     "Fresh installation status" : "Състояние на нова инсталация",
     "Building Local Database" : "Изграждане на Локална База Данни",
     "Adding local users and moderators" : "Добавяне на локални потребители и модератори",
@@ -96,6 +95,11 @@ OC.L10N.register(
     "Level cannot be changed for this type of member" : "Нивото не може да се променя за член от този тип ",
     "Accept" : "Приемане",
     "Refuse" : "Отказ",
+    "No image file provided" : "Не е предоставен файл с изображение",
+    "Invalid file provided" : "Предоставен е невалиден файл",
+    "File is too big" : "Файлът е твърде голям",
+    "Invalid image" : "Невалидно изображение",
+    "Unknown filetype" : "Неизвестен тип файл",
     "%s" : "%s",
     "%s owned by %s" : "%s притежаван от  %s",
     "%s shared a file with \"%s\"." : "%s сподели файл с „%s“.",
@@ -113,6 +117,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Папката е празна",
     "Name" : "Име",
     "Size" : "Размер",
-    "Modified" : "Променен на"
+    "Modified" : "Променен на",
+    "Circles App Initialization" : "Инициализация на приложението Circles /кръгове/"
 },
 "nplurals=2; plural=(n != 1);");

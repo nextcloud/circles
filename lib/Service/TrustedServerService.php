@@ -6,6 +6,7 @@ declare(strict_types=1);
  * SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
+
 namespace OCA\Circles\Service;
 
 use OCA\Federation\TrustedServers;
@@ -32,9 +33,9 @@ class TrustedServerService {
 		$trustedServers = [];
 		try {
 			foreach ($this->trustedServers->getServers() as $server) {
-				if (($server['status'] ?? 0) === TrustedServers::STATUS_OK &&
-					str_starts_with($server['url'], 'https://')) {
-					$server['address'] = substr($server['url'], 8);
+				if (($server['status'] ?? 0) === TrustedServers::STATUS_OK
+					&& str_starts_with((string)$server['url'], 'https://')) {
+					$server['address'] = substr((string)$server['url'], 8);
 					$trustedServers[] = $server;
 				}
 			}

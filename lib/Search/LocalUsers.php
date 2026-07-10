@@ -20,14 +20,6 @@ use OCP\Share\IShare;
 class LocalUsers implements ISearch {
 	use TArrayTools;
 
-
-	/** @var ICollaboratorSearch */
-	private $search;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	/**
 	 * LocalUsers constructor.
 	 *
@@ -35,13 +27,10 @@ class LocalUsers implements ISearch {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		ICollaboratorSearch $search,
-		ConfigService $configService,
+		private ICollaboratorSearch $search,
+		private ConfigService $configService,
 	) {
-		$this->search = $search;
-		$this->configService = $configService;
 	}
-
 
 	/**
 	 * {@inheritdoc}
@@ -67,7 +56,6 @@ class LocalUsers implements ISearch {
 		return $result;
 	}
 
-
 	/**
 	 * @param $search
 	 *
@@ -79,8 +67,8 @@ class LocalUsers implements ISearch {
 		$result = array_merge($temp['exact']['users'], $temp['users']);
 		$parsed = [];
 		foreach ($result as $entry) {
-			$parsed[] =
-				new SearchResult(
+			$parsed[]
+				= new SearchResult(
 					$this->get('value.shareWith', $entry),
 					Member::TYPE_USER,
 					'',

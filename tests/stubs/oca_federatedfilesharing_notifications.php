@@ -7,6 +7,7 @@
  */
 namespace OCA\FederatedFileSharing;
 
+use OC\ServerNotAvailableException;
 use OCA\FederatedFileSharing\Events\FederatedShareAddedEvent;
 use OCP\AppFramework\Http;
 use OCP\BackgroundJob\IJobList;
@@ -47,11 +48,11 @@ class Notifications {
 	 * @param int $shareType (can be a remote user or group share)
 	 * @return bool
 	 * @throws HintException
-	 * @throws \OC\ServerNotAvailableException
+	 * @throws ServerNotAvailableException
 	 */
 	public function sendRemoteShare($token, $shareWith, $name, $remoteId, $owner, $ownerFederatedId, $sharedBy, $sharedByFederatedId, $shareType)
- {
- }
+    {
+    }
 
 	/**
 	 * ask owner to re-share the file with the given user
@@ -65,11 +66,11 @@ class Notifications {
 	 * @param string $filename
 	 * @return array|false
 	 * @throws HintException
-	 * @throws \OC\ServerNotAvailableException
+	 * @throws ServerNotAvailableException
 	 */
 	public function requestReShare($token, $id, $shareId, $remote, $shareWith, $permission, $filename, $shareType)
- {
- }
+    {
+    }
 
 	/**
 	 * send server-to-server unshare to remote server
@@ -80,8 +81,8 @@ class Notifications {
 	 * @return bool
 	 */
 	public function sendRemoteUnShare($remote, $id, $token)
- {
- }
+    {
+    }
 
 	/**
 	 * send server-to-server unshare to remote server
@@ -92,8 +93,8 @@ class Notifications {
 	 * @return bool
 	 */
 	public function sendRevokeShare($remote, $id, $token)
- {
- }
+    {
+    }
 
 	/**
 	 * send notification to remote server if the permissions was changed
@@ -105,8 +106,8 @@ class Notifications {
 	 * @return bool
 	 */
 	public function sendPermissionChange($remote, $remoteId, $token, $permissions)
- {
- }
+    {
+    }
 
 	/**
 	 * forward accept reShare to remote server
@@ -116,8 +117,8 @@ class Notifications {
 	 * @param string $token
 	 */
 	public function sendAcceptShare($remote, $remoteId, $token)
- {
- }
+    {
+    }
 
 	/**
 	 * forward decline reShare to remote server
@@ -127,8 +128,8 @@ class Notifications {
 	 * @param string $token
 	 */
 	public function sendDeclineShare($remote, $remoteId, $token)
- {
- }
+    {
+    }
 
 	/**
 	 * inform remote server whether server-to-server share was accepted/declined
@@ -142,8 +143,8 @@ class Notifications {
 	 * @return boolean
 	 */
 	public function sendUpdateToRemote($remote, $remoteId, $token, $action, $data = [], $try = 0)
- {
- }
+    {
+    }
 
 
 	/**
@@ -152,8 +153,8 @@ class Notifications {
 	 * @return int
 	 */
 	protected function getTimestamp()
- {
- }
+    {
+    }
 
 	/**
 	 * try http post with the given protocol, if no protocol is given we pick
@@ -167,8 +168,8 @@ class Notifications {
 	 * @throws \Exception
 	 */
 	protected function tryHttpPostToShareEndpoint($remoteDomain, $urlSuffix, array $fields, $action = 'share')
- {
- }
+    {
+    }
 
 	/**
 	 * try old federated sharing API if the OCM api doesn't work
@@ -180,8 +181,8 @@ class Notifications {
 	 * @throws \Exception
 	 */
 	protected function tryLegacyEndPoint($remoteDomain, $urlSuffix, array $fields)
- {
- }
+    {
+    }
 
 	/**
 	 * send action regarding federated sharing to the remote server using the OCM API
@@ -193,6 +194,6 @@ class Notifications {
 	 * @return array|false
 	 */
 	protected function tryOCMEndPoint($remoteDomain, $fields, $action)
- {
- }
+    {
+    }
 }

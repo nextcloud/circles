@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Tools\Model;
 
@@ -17,16 +15,13 @@ use OCA\Circles\Tools\Traits\TArrayTools;
 class Request implements JsonSerializable {
 	use TArrayTools;
 
-
 	public const TYPE_GET = 0;
 	public const TYPE_POST = 1;
 	public const TYPE_PUT = 2;
 	public const TYPE_DELETE = 3;
 
-
 	public const QS_VAR_DUPLICATE = 1;
 	public const QS_VAR_ARRAY = 2;
-
 
 	/** @var string */
 	private $protocol = '';
@@ -41,16 +36,7 @@ class Request implements JsonSerializable {
 	private $port = 0;
 
 	/** @var string */
-	private $url = '';
-
-	/** @var string */
 	private $baseUrl = '';
-
-	/** @var int */
-	private $type = 0;
-
-	/** @var bool */
-	private $binary = false;
 
 	/** @var bool */
 	private $verifyPeer = true;
@@ -88,7 +74,6 @@ class Request implements JsonSerializable {
 	/** @var string */
 	private $contentType = '';
 
-
 	/**
 	 * Request constructor.
 	 *
@@ -96,12 +81,12 @@ class Request implements JsonSerializable {
 	 * @param int $type
 	 * @param bool $binary
 	 */
-	public function __construct(string $url = '', int $type = 0, bool $binary = false) {
-		$this->url = $url;
-		$this->type = $type;
-		$this->binary = $binary;
+	public function __construct(
+		private string $url = '',
+		private int $type = 0,
+		private bool $binary = false,
+	) {
 	}
-
 
 	/**
 	 * @param string $protocol
@@ -150,7 +135,6 @@ class Request implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return string
 	 * @deprecated - 19 - use getHost();
@@ -189,7 +173,6 @@ class Request implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return int
 	 */
@@ -208,14 +191,13 @@ class Request implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @param string $instance
 	 *
 	 * @return Request
 	 */
 	public function setInstance(string $instance): Request {
-		if (strpos($instance, ':') === false) {
+		if (!str_contains($instance, ':')) {
 			$this->setHost($instance);
 
 			return $this;
@@ -230,7 +212,6 @@ class Request implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -242,7 +223,6 @@ class Request implements JsonSerializable {
 
 		return $instance;
 	}
-
 
 	/**
 	 * @param string $url
@@ -301,7 +281,6 @@ class Request implements JsonSerializable {
 		return $this->binary;
 	}
 
-
 	/**
 	 * @param bool $verifyPeer
 	 *
@@ -319,7 +298,6 @@ class Request implements JsonSerializable {
 	public function isVerifyPeer(): bool {
 		return $this->verifyPeer;
 	}
-
 
 	/**
 	 * @param bool $httpErrorsAllowed
@@ -339,7 +317,6 @@ class Request implements JsonSerializable {
 		return $this->httpErrorsAllowed;
 	}
 
-
 	/**
 	 * @param bool $followLocation
 	 *
@@ -357,7 +334,6 @@ class Request implements JsonSerializable {
 	public function isFollowLocation(): bool {
 		return $this->followLocation;
 	}
-
 
 	/**
 	 * @return string
@@ -394,14 +370,12 @@ class Request implements JsonSerializable {
 		return $url;
 	}
 
-
 	/**
 	 * @return string
 	 */
 	public function getPath(): string {
 		return $this->baseUrl . $this->url;
 	}
-
 
 	/**
 	 * @return string
@@ -410,7 +384,6 @@ class Request implements JsonSerializable {
 	public function getUrl(): string {
 		return $this->getPath();
 	}
-
 
 	/**
 	 * @return string
@@ -421,14 +394,12 @@ class Request implements JsonSerializable {
 		return $this->getUsedProtocol() . '://' . $this->getHost() . $port . $this->getParametersUrl();
 	}
 
-
 	/**
 	 * @return int
 	 */
 	public function getType(): int {
 		return $this->type;
 	}
-
 
 	public function addHeader($key, $value): Request {
 		$header = $this->get($key, $this->headers);
@@ -461,7 +432,6 @@ class Request implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return array
 	 */
@@ -479,7 +449,6 @@ class Request implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @param int $queryStringType
@@ -499,14 +468,12 @@ class Request implements JsonSerializable {
 		return $this->queryStringType;
 	}
 
-
 	/**
 	 * @return array
 	 */
 	public function getData(): array {
 		return $this->data;
 	}
-
 
 	/**
 	 * @param array $data
@@ -519,7 +486,6 @@ class Request implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @param string $data
 	 *
@@ -531,7 +497,6 @@ class Request implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @param JsonSerializable $data
 	 *
@@ -542,7 +507,6 @@ class Request implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return array
@@ -562,7 +526,6 @@ class Request implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @param string $k
 	 * @param string $v
@@ -574,7 +537,6 @@ class Request implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @param string $k
@@ -588,7 +550,6 @@ class Request implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @param string $k
 	 * @param string $v
@@ -601,7 +562,6 @@ class Request implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @param string $k
 	 * @param int $v
@@ -613,7 +573,6 @@ class Request implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return string
@@ -650,7 +609,6 @@ class Request implements JsonSerializable {
 		);
 	}
 
-
 	/**
 	 * @param int $type
 	 *
@@ -661,18 +619,13 @@ class Request implements JsonSerializable {
 			return '';
 		}
 
-		switch ($this->getQueryStringType()) {
-			case self::QS_VAR_ARRAY:
-				return '?' . http_build_query($this->getParams());
-
-			case self::QS_VAR_DUPLICATE:
-			default:
-				return '?' . preg_replace(
-					'/%5B(?:[0-9]|[1-9][0-9]+)%5D=/', '=', http_build_query($this->getParams())
-				);
-		}
+		return match ($this->getQueryStringType()) {
+			self::QS_VAR_ARRAY => '?' . http_build_query($this->getParams()),
+			default => '?' . preg_replace(
+				'/%5B(?:[0-9]|[1-9][0-9]+)%5D=/', '=', http_build_query($this->getParams())
+			),
+		};
 	}
-
 
 	/**
 	 * @return int
@@ -692,7 +645,6 @@ class Request implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -710,7 +662,6 @@ class Request implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return int
@@ -730,7 +681,6 @@ class Request implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -748,7 +698,6 @@ class Request implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return array
@@ -773,40 +722,28 @@ class Request implements JsonSerializable {
 		];
 	}
 
-
 	/**
 	 * @param string $type
 	 *
 	 * @return int
 	 */
 	public static function type(string $type): int {
-		switch (strtoupper($type)) {
-			case 'GET':
-				return self::TYPE_GET;
-			case 'POST':
-				return self::TYPE_POST;
-			case 'PUT':
-				return self::TYPE_PUT;
-			case 'DELETE':
-				return self::TYPE_DELETE;
-		}
-
-		return 0;
+		return match (strtoupper($type)) {
+			'GET' => self::TYPE_GET,
+			'POST' => self::TYPE_POST,
+			'PUT' => self::TYPE_PUT,
+			'DELETE' => self::TYPE_DELETE,
+			default => 0,
+		};
 	}
 
-
 	public static function method(int $type): string {
-		switch ($type) {
-			case self::TYPE_GET:
-				return 'get';
-			case self::TYPE_POST:
-				return 'post';
-			case self::TYPE_PUT:
-				return 'put';
-			case self::TYPE_DELETE:
-				return 'delete';
-		}
-
-		return '';
+		return match ($type) {
+			self::TYPE_GET => 'get',
+			self::TYPE_POST => 'post',
+			self::TYPE_PUT => 'put',
+			self::TYPE_DELETE => 'delete',
+			default => '',
+		};
 	}
 }

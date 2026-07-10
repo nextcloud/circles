@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s shared multiple files with you.",
     "Boot up" : "Boot up",
     "Nextcloud Initialization" : "Nextcloud Initialisation",
-    "Circles App Initialization" : "Circles App Initialisation",
     "Fresh installation status" : "Fresh installation status",
     "Building Local Database" : "Building Local Database",
     "Testing Basic Team Creation" : "Testing Basic Team Creation",
@@ -130,10 +129,16 @@ OC.L10N.register(
     "Accept" : "Accept",
     "Refuse" : "Refuse",
     "Leave the team" : "Leave the team",
+    "No image file provided" : "No image file provided",
+    "Invalid file provided" : "Invalid file provided",
+    "File is too big" : "File is too big",
+    "Invalid image" : "Invalid image",
+    "Unknown filetype" : "Unknown filetype",
     "%s" : "%s",
     "Personal team" : "Personal team",
     "%s owned by %s" : "%s owned by %s",
     "You have no permission to create a new team" : "You have no permission to create a new team",
+    "Insufficient permissions to perform this action" : "Insufficient permissions to perform this action",
     "%s shared a file with \"%s\"." : "%s shared a file with \"%s\".",
     "%s shared a file with you." : "%s shared a file with you.",
     "%1$s shared %2$s with %3$s" : "%1$s shared %2$s with %3$s",
@@ -166,6 +171,7 @@ OC.L10N.register(
     "No entries found in this folder" : "No entries found in this folder",
     "Name" : "Name",
     "Size" : "Size",
-    "Modified" : "Modified"
+    "Modified" : "Modified",
+    "Circles App Initialization" : "Circles App Initialisation"
 },
 "nplurals=2; plural=(n != 1);");

@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\FederatedItems;
 
@@ -38,20 +36,6 @@ class MemberDisplayName implements
 	IFederatedItemMemberEmpty {
 	use TDeserialize;
 
-
-	/** @var MemberRequest */
-	private $memberRequest;
-
-	/** @var MembershipService */
-	private $membershipService;
-
-	/** @var EventService */
-	private $eventService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	/**
 	 * MemberDisplayName constructor.
 	 *
@@ -61,17 +45,12 @@ class MemberDisplayName implements
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		MemberRequest $memberRequest,
-		MembershipService $membershipService,
-		EventService $eventService,
-		ConfigService $configService,
+		private MemberRequest $memberRequest,
+		private MembershipService $membershipService,
+		private EventService $eventService,
+		private ConfigService $configService,
 	) {
-		$this->memberRequest = $memberRequest;
-		$this->membershipService = $membershipService;
-		$this->eventService = $eventService;
-		$this->configService = $configService;
 	}
-
 
 	/**
 	 * @param FederatedEvent $event
@@ -98,7 +77,6 @@ class MemberDisplayName implements
 		$event->setOutcome($this->serialize($outcomeMember));
 	}
 
-
 	/**
 	 * @param FederatedEvent $event
 	 */
@@ -113,7 +91,6 @@ class MemberDisplayName implements
 		$event->setMember($member);
 		$this->eventService->memberNameEditing($event);
 	}
-
 
 	/**
 	 * @param FederatedEvent $event

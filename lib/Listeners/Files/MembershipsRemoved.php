@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Listeners\Files;
 
@@ -39,25 +37,12 @@ use OCP\EventDispatcher\IEventListener;
 class MembershipsRemoved implements IEventListener {
 	use TStringTools;
 
-
-	/** @var CirclesManager */
-	private $circlesManager;
-
-	private ShareWrapperService $shareWrapperService;
-
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
 	public function __construct(
-		CirclesManager $circlesManager,
-		ShareWrapperService $shareWrapperService,
-		FederatedUserService $federatedUserService,
+		private CirclesManager $circlesManager,
+		private ShareWrapperService $shareWrapperService,
+		private FederatedUserService $federatedUserService,
 	) {
-		$this->circlesManager = $circlesManager;
-		$this->shareWrapperService = $shareWrapperService;
-		$this->federatedUserService = $federatedUserService;
 	}
-
 
 	/**
 	 * @throws CircleNotFoundException

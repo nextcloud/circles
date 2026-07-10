@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles;
 
@@ -75,9 +73,9 @@ interface IFederatedUser extends IFederatedModel {
 	public function setBasedOn(?Circle $basedOn): self;
 
 	/**
-	 * @return Circle
+	 * @return ?Circle
 	 */
-	public function getBasedOn(): Circle;
+	public function getBasedOn(): ?Circle;
 
 	/**
 	 * @return bool

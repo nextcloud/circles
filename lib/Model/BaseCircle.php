@@ -75,7 +75,6 @@ class BaseCircle {
 	/** @var int */
 	private $contactAddressBook = 0;
 
-
 	/** @var string */
 	private $creation;
 
@@ -116,7 +115,6 @@ class BaseCircle {
 	public function getId() {
 		return $this->id;
 	}
-
 
 	/**
 	 * @param string $uniqueId
@@ -202,7 +200,6 @@ class BaseCircle {
 		return $this;
 	}
 
-
 	/**
 	 * @return DeprecatedMember
 	 */
@@ -221,11 +218,9 @@ class BaseCircle {
 		return $this;
 	}
 
-
 	public function hasViewer(): bool {
 		return ($this->viewer !== null);
 	}
-
 
 	/**
 	 * @return DeprecatedMember
@@ -267,7 +262,6 @@ class BaseCircle {
 		return $this->getViewer();
 	}
 
-
 	/**
 	 * @param string $description
 	 *
@@ -285,7 +279,6 @@ class BaseCircle {
 	public function getDescription() {
 		return $this->description;
 	}
-
 
 	/**
 	 * @param int $contactAddressBook
@@ -305,7 +298,6 @@ class BaseCircle {
 		return $this->contactAddressBook;
 	}
 
-
 	/**
 	 * @param string $contactGroupName
 	 *
@@ -323,7 +315,6 @@ class BaseCircle {
 	public function getContactGroupName() {
 		return $this->contactGroupName;
 	}
-
 
 	/**
 	 * @param string|array $settings
@@ -373,7 +364,6 @@ class BaseCircle {
 		return $settings;
 	}
 
-
 	/**
 	 * @param string $k
 	 * @param mixed $v
@@ -398,7 +388,6 @@ class BaseCircle {
 		}
 	}
 
-
 	/**
 	 * @param string $k
 	 *
@@ -415,7 +404,6 @@ class BaseCircle {
 		return null;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -430,12 +418,11 @@ class BaseCircle {
 		$this->passwordSingle = $passwordSingle;
 	}
 
-
 	/**
 	 *
 	 * @param string $type
 	 *
-	 * @return \OCA\Circles\Model\BaseCircle
+	 * @return BaseCircle
 	 */
 	public function setType($type) {
 		$this->type = self::typeInt($type);
@@ -453,7 +440,7 @@ class BaseCircle {
 	/**
 	 * @param string $creation
 	 *
-	 * @return \OCA\Circles\Model\BaseCircle
+	 * @return BaseCircle
 	 */
 	public function setCreation($creation) {
 		$this->creation = $creation;
@@ -522,7 +509,6 @@ class BaseCircle {
 		return $this->links;
 	}
 
-
 	//	public function getRemote() {
 	//		return $this->remote;
 	//	}
@@ -560,18 +546,12 @@ class BaseCircle {
 		if (is_numeric($type)) {
 			return (int)$type;
 		}
-
-		switch ($type) {
-			case 'Personal':
-				return self::CIRCLES_PERSONAL;
-			case 'Closed':
-				return self::CIRCLES_CLOSED;
-			case 'Secret':
-				return self::CIRCLES_SECRET;
-			case 'Public':
-				return self::CIRCLES_PUBLIC;
-		}
-
-		return 0;
+		return match ($type) {
+			'Personal' => self::CIRCLES_PERSONAL,
+			'Closed' => self::CIRCLES_CLOSED,
+			'Secret' => self::CIRCLES_SECRET,
+			'Public' => self::CIRCLES_PUBLIC,
+			default => 0,
+		};
 	}
 }

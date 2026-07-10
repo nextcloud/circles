@@ -102,31 +102,31 @@ async function onDelete(): Promise<void> {
 <template>
 	<NcAppNavigationItem :name="team.displayName" :to="to">
 		<template #icon>
-			<TeamAvatar :display-name="team.displayName" :size="32" />
+			<TeamAvatar :displayName="team.displayName" :size="32" />
 		</template>
 		<template #actions>
-			<NcActionButton v-if="canManage" close-after-click @click="onManage">
+			<NcActionButton v-if="canManage" closeAfterClick @click="onManage">
 				<template #icon>
 					<NcIconSvgWrapper :path="mdiCogOutline" :size="20" />
 				</template>
 				{{ t('circles', 'Manage team') }}
 			</NcActionButton>
 
-			<NcActionButton close-after-click @click="onCopyLink">
+			<NcActionButton closeAfterClick @click="onCopyLink">
 				<template #icon>
 					<NcIconSvgWrapper :path="mdiContentCopy" :size="20" />
 				</template>
 				{{ t('circles', 'Copy link') }}
 			</NcActionButton>
 
-			<NcActionButton v-if="canLeave" close-after-click @click="onLeave">
+			<NcActionButton v-if="canLeave" closeAfterClick @click="onLeave">
 				<template #icon>
 					<NcIconSvgWrapper :path="mdiExitToApp" :size="20" />
 				</template>
 				{{ t('circles', 'Leave team') }}
 			</NcActionButton>
 
-			<NcActionButton v-if="canDelete" close-after-click @click="onDelete">
+			<NcActionButton v-if="canDelete" closeAfterClick @click="onDelete">
 				<template #icon>
 					<NcIconSvgWrapper :path="mdiTrashCanOutline" :size="20" />
 				</template>

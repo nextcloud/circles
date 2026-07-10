@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Listeners\Examples;
 
@@ -28,20 +26,10 @@ class ExampleMembershipsRemoved implements IEventListener {
 	use TStringTools;
 	use TNCLogger;
 
-
-	/** @var CirclesManager */
-	private $circlesManager;
-
-	/** @var ConfigService */
-	private $configService;
-
 	public function __construct(
-		CirclesManager $circlesManager,
-		ConfigService $configService,
+		private CirclesManager $circlesManager,
+		private ConfigService $configService,
 	) {
-		$this->circlesManager = $circlesManager;
-		$this->configService = $configService;
-
 		$this->setup('app', Application::APP_ID);
 	}
 
@@ -58,8 +46,8 @@ class ExampleMembershipsRemoved implements IEventListener {
 
 		$memberships = array_map(
 			function (Membership $membership) {
-				$inheritance = ($membership->getInheritanceDepth() > 1) ?
-					'an inherited member' : 'a direct member';
+				$inheritance = ($membership->getInheritanceDepth() > 1)
+					? 'an inherited member' : 'a direct member';
 				try {
 					$federatedUser = $this->circlesManager->getFederatedUser($membership->getSingleId());
 				} catch (Exception $e) {

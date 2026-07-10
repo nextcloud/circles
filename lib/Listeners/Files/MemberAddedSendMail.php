@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Listeners\Files;
 
@@ -28,20 +26,10 @@ class MemberAddedSendMail implements IEventListener {
 	use TStringTools;
 	use TNCLogger;
 
-
-	/** @var ShareWrapperService */
-	private $shareWrapperService;
-
-	/** @var SendMailService */
-	private $sendMailService;
-
 	public function __construct(
-		ShareWrapperService $shareWrapperService,
-		SendMailService $sendMailService,
+		private ShareWrapperService $shareWrapperService,
+		private SendMailService $sendMailService,
 	) {
-		$this->sendMailService = $sendMailService;
-		$this->shareWrapperService = $shareWrapperService;
-
 		$this->setup('app', Application::APP_ID);
 	}
 

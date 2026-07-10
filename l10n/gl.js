@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s compartiu varios ficheiros con Vde.",
     "Boot up" : "Arrancar",
     "Nextcloud Initialization" : "Preparación de Nextcloud",
-    "Circles App Initialization" : "Preparación da aplicación Círculos",
     "Fresh installation status" : "Estado da nova instalación",
     "Building Local Database" : "Creando a base de datos local",
     "Testing Basic Team Creation" : "Proba básica de creación de equipos",
@@ -130,6 +129,11 @@ OC.L10N.register(
     "Accept" : "Aceptar",
     "Refuse" : "Rexeitar",
     "Leave the team" : "Abandonar o equipo",
+    "No image file provided" : "Non se forneceu ningún ficheiro de imaxe",
+    "Invalid file provided" : "O ficheiro fornecido non é válido",
+    "File is too big" : "O ficheiro é grande de máis",
+    "Invalid image" : "Imaxe incorrecta",
+    "Unknown filetype" : "Tipo de ficheiro descoñecido",
     "%s" : "%s",
     "Personal team" : "Equipo persoal",
     "%s owned by %s" : "%s propiedade de %s",
@@ -166,6 +170,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Non foi atopada ningunha entrada neste cartafol",
     "Name" : "Nome",
     "Size" : "Tamaño",
-    "Modified" : "Modificado"
+    "Modified" : "Modificado",
+    "Circles App Initialization" : "Preparación da aplicación Círculos"
 },
 "nplurals=2; plural=(n != 1);");

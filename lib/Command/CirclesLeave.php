@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Command;
 
@@ -31,34 +29,13 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Command
  */
 class CirclesLeave extends Base {
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var CircleService */
-	private $circleService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
-	/**
-	 * CirclesLeave constructor.
-	 *
-	 * @param FederatedUserService $federatedUserService
-	 * @param CircleService $circlesService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
-		FederatedUserService $federatedUserService, CircleService $circlesService,
-		ConfigService $configService,
+		private readonly FederatedUserService $federatedUserService,
+		private readonly CircleService $circleService,
+		private readonly ConfigService $configService,
 	) {
 		parent::__construct();
-
-		$this->federatedUserService = $federatedUserService;
-		$this->circleService = $circlesService;
-		$this->configService = $configService;
 	}
-
 
 	/**
 	 *
@@ -72,7 +49,6 @@ class CirclesLeave extends Base {
 			->addOption('type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
 			->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
 	}
-
 
 	/**
 	 * @param InputInterface $input
@@ -99,14 +75,14 @@ class CirclesLeave extends Base {
 		} catch (FederatedItemException $e) {
 			if ($input->getOption('status-code')) {
 				throw new FederatedItemException(
-					' [' . get_class($e) . ', ' . ((string)$e->getStatus()) . ']' . "\n" . $e->getMessage()
+					' [' . $e::class . ', ' . ((string)$e->getStatus()) . ']' . "\n" . $e->getMessage()
 				);
 			}
 
 			throw $e;
 		}
 
-		if (strtolower($input->getOption('output')) === 'json') {
+		if (strtolower((string)$input->getOption('output')) === 'json') {
 			$output->writeln(json_encode($outcome, JSON_PRETTY_PRINT));
 		}
 

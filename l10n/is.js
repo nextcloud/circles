@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s deildi mörgum skrám með þér.",
     "Boot up" : "Ræsing",
     "Nextcloud Initialization" : "Frumstilling Nextcloud",
-    "Circles App Initialization" : "Frumstilling Circles forrits",
     "Fresh installation status" : "Staða ferskrar uppsetningar",
     "Building Local Database" : "Byggi staðværan gagnagrunn",
     "Adding local users and moderators" : "Bæti við notendum og umsjónarmönnum",
@@ -124,6 +123,10 @@ OC.L10N.register(
     "Accept" : "Samþykkja",
     "Refuse" : "Neita",
     "Leave the team" : "Yfirgefa teymið",
+    "Invalid file provided" : "Ógild skrá gefin",
+    "File is too big" : "Skrá er of stór",
+    "Invalid image" : "Ógild mynd",
+    "Unknown filetype" : "Óþekkt skráategund",
     "%s" : "%s",
     "Personal team" : "Persónulegt teymi",
     "%s owned by %s" : "%s í eigu notandans %s",
@@ -152,6 +155,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Engar færslur fundust í þessari möppu",
     "Name" : "Nafn",
     "Size" : "Stærð",
-    "Modified" : "Breytt"
+    "Modified" : "Breytt",
+    "Circles App Initialization" : "Frumstilling Circles forrits"
 },
 "nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);");

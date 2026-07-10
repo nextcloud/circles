@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s delte flere filer med dig.",
     "Boot up" : "Start",
     "Nextcloud Initialization" : "Nextcloud initialisering",
-    "Circles App Initialization" : "Cirkler App Initialisering",
     "Fresh installation status" : "Installationsstatus",
     "Building Local Database" : "Opsætning af lokal database",
     "Adding local users and moderators" : "Tilføjelse af lokale brugere og moderatorer",
@@ -124,6 +123,10 @@ OC.L10N.register(
     "Accept" : "Accepter",
     "Refuse" : "Afvis",
     "Leave the team" : "Forlad teamet",
+    "Invalid file provided" : "Der er angivet en ugyldig fil",
+    "File is too big" : "Filen er for stor",
+    "Invalid image" : "Ugyldigt billede",
+    "Unknown filetype" : "Ukendt filtype",
     "%s" : "%s",
     "Personal team" : "Personligt team",
     "%s owned by %s" : "%s ejet af %s",
@@ -152,6 +155,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Intet fundet i denne mappe",
     "Name" : "Navn",
     "Size" : "Størrelse",
-    "Modified" : "Ændret"
+    "Modified" : "Ændret",
+    "Circles App Initialization" : "Cirkler App Initialisering"
 },
 "nplurals=2; plural=(n != 1);");

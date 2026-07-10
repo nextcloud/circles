@@ -24,10 +24,10 @@ use UnhandledMatchError;
 
 class ActivityService {
 	public function __construct(
-		private IActivityManager $activityManager,
-		private IUserManager $userManager,
-		private MemberRequest $memberRequest,
-		private ConfigService $configService,
+		private readonly IActivityManager $activityManager,
+		private readonly IUserManager $userManager,
+		private readonly MemberRequest $memberRequest,
+		private readonly ConfigService $configService,
 	) {
 	}
 
@@ -142,7 +142,7 @@ class ActivityService {
 					'member' => $this->shortenMemberData($member),
 				]
 			);
-		} catch (UnhandledMatchError $e) {
+		} catch (UnhandledMatchError) {
 			return;
 		}
 
@@ -183,7 +183,7 @@ class ActivityService {
 					'member' => $this->shortenMemberData($member),
 				]
 			);
-		} catch (UnhandledMatchError $e) {
+		} catch (UnhandledMatchError) {
 			return;
 		}
 
@@ -224,7 +224,7 @@ class ActivityService {
 					'member' => $this->shortenMemberData($member),
 				]
 			);
-		} catch (UnhandledMatchError $e) {
+		} catch (UnhandledMatchError) {
 			return;
 		}
 
@@ -284,7 +284,7 @@ class ActivityService {
 					'member' => $this->shortenMemberData($member),
 				]
 			);
-		} catch (UnhandledMatchError $e) {
+		} catch (UnhandledMatchError) {
 			return;
 		}
 
@@ -320,7 +320,7 @@ class ActivityService {
 					'member' => $this->shortenMemberData($member),
 				]
 			);
-		} catch (UnhandledMatchError $e) {
+		} catch (UnhandledMatchError) {
 			return;
 		}
 

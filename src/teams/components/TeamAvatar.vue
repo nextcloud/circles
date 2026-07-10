@@ -17,10 +17,10 @@ withDefaults(defineProps<{
 <template>
 	<!-- Teams have no user account, so render a generated initials avatar. -->
 	<NcAvatar
-		:display-name="displayName"
-		:is-no-user="true"
+		:displayName="displayName"
+		:isNoUser="true"
 		:size="size"
-		hide-status
-		disable-menu
-		disable-tooltip />
+		hideStatus
+		disableMenu
+		disableTooltip />
 </template>

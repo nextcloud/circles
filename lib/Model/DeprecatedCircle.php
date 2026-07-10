@@ -15,40 +15,30 @@ use OCA\Circles\Tools\Traits\TArrayTools;
 class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 	use TArrayTools;
 
-
 	/** @var bool */
 	private $fullJson = false;
 
 	/** @var bool */
 	private $lightJson = false;
 
-
 	public function getTypeString() {
-		switch ($this->getType()) {
-			case self::CIRCLES_PERSONAL:
-				return 'Personal';
-			case self::CIRCLES_SECRET:
-				return 'Secret';
-			case self::CIRCLES_CLOSED:
-				return 'Closed';
-			case self::CIRCLES_PUBLIC:
-				return 'Public';
-			case self::CIRCLES_ALL:
-				return 'All';
-		}
-
-		return 'none';
+		return match ($this->getType()) {
+			self::CIRCLES_PERSONAL => 'Personal',
+			self::CIRCLES_SECRET => 'Secret',
+			self::CIRCLES_CLOSED => 'Closed',
+			self::CIRCLES_PUBLIC => 'Public',
+			self::CIRCLES_ALL => 'All',
+			default => 'none',
+		};
 	}
 
 	public function getTypeLongString() {
 		return self::typeLongString($this->getType());
 	}
 
-
 	public function getInfo() {
 		return $this->getTypeLongString();
 	}
-
 
 	/**
 	 * @param bool $fullJson
@@ -60,7 +50,6 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	public function jsonSerialize(): array {
 		$json = [
@@ -94,13 +83,11 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 		return $json;
 	}
 
-
 	public function getArray($full = false, $light = false) {
 		$json = $this->getJson($full, $light);
 
-		return json_decode($json, true);
+		return json_decode((string)$json, true);
 	}
-
 
 	public function getJson($full = false, $light = false) {
 		$this->fullJson = $full;
@@ -112,16 +99,10 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 		return $json;
 	}
 
-
 	/**
 	 * set all infos from an Array.
-	 *
-	 * @param $arr
-	 * @param bool $allSettings
-	 *
-	 * @return $this
 	 */
-	public static function fromArray($arr, bool $allSettings = false) {
+	public static function fromArray(?array $arr, bool $allSettings = false): self {
 		if ($arr === null || empty($arr)) {
 			return new DeprecatedCircle();
 		}
@@ -150,10 +131,8 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 			$circle->setMembers($members);
 		}
 
-
 		return $circle;
 	}
-
 
 	/**
 	 * @param array $arr
@@ -174,7 +153,6 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 		return null;
 	}
 
-
 	/**
 	 * @param array $arr
 	 *
@@ -188,7 +166,6 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 
 		return $links;
 	}
-
 
 	/**
 	 * @param array $arr
@@ -204,16 +181,9 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 		return $settings;
 	}
 
-
-	/**
-	 * @param $json
-	 *
-	 * @return DeprecatedCircle
-	 */
-	public static function fromJSON($json) {
+	public static function fromJSON(string $json): self {
 		return self::fromArray(json_decode($json, true));
 	}
-
 
 	/**
 	 * @throws CircleTypeNotValidException
@@ -225,7 +195,6 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 			);
 		}
 	}
-
 
 	/**
 	 * @throws FederatedCircleNotAllowedException
@@ -244,22 +213,15 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 	 * @return string
 	 */
 	public static function typeLongString($type) {
-		switch ($type) {
-			case self::CIRCLES_PERSONAL:
-				return 'Personal circle';
-			case self::CIRCLES_SECRET:
-				return 'Secret circle';
-			case self::CIRCLES_CLOSED:
-				return 'Closed circle';
-			case self::CIRCLES_PUBLIC:
-				return 'Public circle';
-			case self::CIRCLES_ALL:
-				return 'All circles';
-		}
-
-		return 'none';
+		return match ($type) {
+			self::CIRCLES_PERSONAL => 'Personal circle',
+			self::CIRCLES_SECRET => 'Secret circle',
+			self::CIRCLES_CLOSED => 'Closed circle',
+			self::CIRCLES_PUBLIC => 'Public circle',
+			self::CIRCLES_ALL => 'All circles',
+			default => 'none',
+		};
 	}
-
 
 	/**
 	 * convert old type to new config (nc22)
@@ -269,17 +231,12 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 	 * @return int
 	 */
 	public static function convertTypeToConfig(int $type): int {
-		switch ($type) {
-			case DeprecatedCircle::CIRCLES_PERSONAL:
-				return 2;
-			case DeprecatedCircle::CIRCLES_SECRET:
-				return 16;
-			case DeprecatedCircle::CIRCLES_CLOSED:
-				return 120;
-			case DeprecatedCircle::CIRCLES_PUBLIC:
-				return 8;
-		}
-
-		return 0;
+		return match ($type) {
+			DeprecatedCircle::CIRCLES_PERSONAL => 2,
+			DeprecatedCircle::CIRCLES_SECRET => 16,
+			DeprecatedCircle::CIRCLES_CLOSED => 120,
+			DeprecatedCircle::CIRCLES_PUBLIC => 8,
+			default => 0,
+		};
 	}
 }

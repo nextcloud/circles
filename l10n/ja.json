@@ -101,7 +101,6 @@
     "%s shared multiple files with you." : "%sがあなたと複数のファイルを共有しました。",
     "Boot up" : "起動時",
     "Nextcloud Initialization" : "Nextcloud初期化",
-    "Circles App Initialization" : "Circleアプリの初期化",
     "Fresh installation status" : "フレッシュインストールの状況",
     "Building Local Database" : "ローカルデータベースの構築",
     "Testing Basic Team Creation" : "基本的なチーム作成のテスト",
@@ -128,10 +127,16 @@
     "Accept" : "承諾",
     "Refuse" : "拒否する",
     "Leave the team" : "チームを離脱",
+    "No image file provided" : "画像ファイルが提供されていません",
+    "Invalid file provided" : "無効なファイルが提供されました",
+    "File is too big" : "ファイルが大きすぎます",
+    "Invalid image" : "無効な画像",
+    "Unknown filetype" : "不明なファイルタイプ",
     "%s" : "%s",
     "Personal team" : "パーソナルチーム",
     "%s owned by %s" : "%s%sが所有",
     "You have no permission to create a new team" : "新しいチームを作成する権限がありません",
+    "Insufficient permissions to perform this action" : "この操作を実行するための権限が不足しています",
     "%s shared a file with \"%s\"." : "%sは\"%s\"どファイルを共有しました。",
     "%s shared a file with you." : "%sはあなたとファイルを共有しました。",
     "%1$s shared %2$s with %3$s" : "%1$s は %2$s を %3$s と共有しました",
@@ -164,6 +169,7 @@
     "No entries found in this folder" : "このフォルダーにはエントリーがありません",
     "Name" : "名前",
     "Size" : "サイズ",
-    "Modified" : "更新日時"
+    "Modified" : "更新日時",
+    "Circles App Initialization" : "Circleアプリの初期化"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

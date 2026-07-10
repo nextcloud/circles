@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
@@ -23,17 +22,13 @@ use OCP\Migration\SimpleMigrationStep;
  * @package OCA\Circles\Migration
  */
 class Version0022Date20220526111723 extends SimpleMigrationStep {
-	/** @var Connection */
-	private $connection;
-
-
 	/**
 	 * @param Connection $connection
 	 */
-	public function __construct(Connection $connection) {
-		$this->connection = $connection;
+	public function __construct(
+		private readonly Connection $connection,
+	) {
 	}
-
 
 	/**
 	 * @param IOutput $output

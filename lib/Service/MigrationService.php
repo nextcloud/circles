@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Service;
 
@@ -59,47 +57,8 @@ class MigrationService {
 	use TStringTools;
 	use TNCLogger;
 
-
-	/** @var IDBConnection */
-	private $dbConnection;
-
-	/** @var IURLGenerator */
-	private $urlGenerator;
-
-	/** @var CircleRequest */
-	private $circleRequest;
-
-	/** @var MemberRequest */
-	private $memberRequest;
-
-	/** @var ShareTokenRequest */
-	private $shareTokenRequest;
-
-	/** @var MembershipService */
-	private $membershipService;
-
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var CircleService */
-	private $circleService;
-
-	/** @var ContactService */
-	private $contactService;
-
-	/** @var TimezoneService */
-	private $timezoneService;
-
-	/** @var OutputService */
-	private $outputService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	/** @var FederatedUser */
 	private $appCircle = null;
-
 
 	/**
 	 * MigrationService constructor.
@@ -118,35 +77,21 @@ class MigrationService {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IDBConnection $dbConnection,
-		IURLGenerator $urlGenerator,
-		CircleRequest $circleRequest,
-		MemberRequest $memberRequest,
-		ShareTokenRequest $shareTokenRequest,
-		MembershipService $membershipService,
-		FederatedUserService $federatedUserService,
-		CircleService $circleService,
-		ContactService $contactService,
-		TimezoneService $timezoneService,
-		OutputService $outputService,
-		ConfigService $configService,
+		private IDBConnection $dbConnection,
+		private IURLGenerator $urlGenerator,
+		private CircleRequest $circleRequest,
+		private MemberRequest $memberRequest,
+		private ShareTokenRequest $shareTokenRequest,
+		private MembershipService $membershipService,
+		private FederatedUserService $federatedUserService,
+		private CircleService $circleService,
+		private ContactService $contactService,
+		private TimezoneService $timezoneService,
+		private OutputService $outputService,
+		private ConfigService $configService,
 	) {
-		$this->dbConnection = $dbConnection;
-		$this->urlGenerator = $urlGenerator;
-		$this->circleRequest = $circleRequest;
-		$this->memberRequest = $memberRequest;
-		$this->shareTokenRequest = $shareTokenRequest;
-		$this->membershipService = $membershipService;
-		$this->federatedUserService = $federatedUserService;
-		$this->circleService = $circleService;
-		$this->contactService = $contactService;
-		$this->timezoneService = $timezoneService;
-		$this->outputService = $outputService;
-		$this->configService = $configService;
-
 		$this->setup('app', Application::APP_ID);
 	}
-
 
 	/**
 	 * @param bool $force
@@ -182,7 +127,6 @@ class MigrationService {
 		$this->configService->setAppValue(ConfigService::MIGRATION_RUN, '0');
 	}
 
-
 	/**
 	 * @throws RequestBuilderException
 	 */
@@ -210,7 +154,6 @@ class MigrationService {
 		$this->configService->setAppValue(ConfigService::MIGRATION_22, '1');
 	}
 
-
 	/**
 	 * run migration if:
 	 *  - old tables exist.
@@ -226,7 +169,7 @@ class MigrationService {
 		try {
 			$cursor = $qb->executeQuery();
 			$cursor->closeCursor();
-		} catch (\OCP\DB\Exception $e) {
+		} catch (\OCP\DB\Exception) {
 			return false;
 		}
 
@@ -273,7 +216,6 @@ class MigrationService {
 		$this->outputService->finishMigrationProgress();
 	}
 
-
 	/**
 	 *
 	 */
@@ -285,7 +227,7 @@ class MigrationService {
 			$cursor = $qb->executeQuery();
 			$this->outputService->startMigrationProgress($cursor->rowCount());
 
-			while ($row = $cursor->fetch()) {
+			while ($row = $cursor->fetchAssociative()) {
 				try {
 					$data = new SimpleDataStore($row);
 					$this->outputService->output(
@@ -295,17 +237,16 @@ class MigrationService {
 
 					$circle = $this->generateCircleFrom21($data);
 					$this->saveGeneratedCircle($circle);
-				} catch (Exception $e) {
+				} catch (Exception) {
 				}
 			}
 
 			$cursor->closeCursor();
-		} catch (\OCP\DB\Exception $e) {
+		} catch (\OCP\DB\Exception) {
 		}
 
 		$this->outputService->finishMigrationProgress();
 	}
-
 
 	/**
 	 * @param SimpleDataStore $data
@@ -337,7 +278,6 @@ class MigrationService {
 		return $circle;
 	}
 
-
 	/**
 	 * @param Circle $circle
 	 * @param int $type
@@ -362,22 +302,20 @@ class MigrationService {
 		}
 	}
 
-
 	/**
 	 * @param Circle $circle
 	 */
 	private function saveGeneratedCircle(Circle $circle): void {
 		try {
 			$this->circleRequest->getCircle($circle->getSingleId());
-		} catch (CircleNotFoundException $e) {
+		} catch (CircleNotFoundException) {
 			try {
 				$this->circleRequest->save($circle);
-			} catch (InvalidIdException $e) {
+			} catch (InvalidIdException) {
 			}
-		} catch (RequestBuilderException $e) {
+		} catch (RequestBuilderException) {
 		}
 	}
-
 
 	/**
 	 */
@@ -389,7 +327,7 @@ class MigrationService {
 			$cursor = $qb->executeQuery();
 			$this->outputService->startMigrationProgress($cursor->rowCount());
 
-			while ($row = $cursor->fetch()) {
+			while ($row = $cursor->fetchAssociative()) {
 				try {
 					$data = new SimpleDataStore($row);
 					$this->outputService->output(
@@ -400,17 +338,16 @@ class MigrationService {
 
 					$member = $this->generateMemberFrom21($data);
 					$this->saveGeneratedMember($member);
-				} catch (Exception $e) {
+				} catch (Exception) {
 				}
 			}
 
 			$cursor->closeCursor();
-		} catch (\OCP\DB\Exception $e) {
+		} catch (\OCP\DB\Exception) {
 		}
 
 		$this->outputService->finishMigrationProgress();
 	}
-
 
 	/**
 	 * @throws CircleNotFoundException
@@ -455,7 +392,6 @@ class MigrationService {
 		return $member;
 	}
 
-
 	/**
 	 * @param Member $member
 	 * @param int $userType
@@ -484,7 +420,6 @@ class MigrationService {
 		}
 	}
 
-
 	private function migrationTo22_1_SubShares(): void {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$expr = $qb->expr();
@@ -497,11 +432,11 @@ class MigrationService {
 			$cursor = $qb->executeQuery();
 			$this->outputService->startMigrationProgress($cursor->rowCount());
 
-			while ($row = $cursor->fetch()) {
+			while ($row = $cursor->fetchAssociative()) {
 				try {
 					$data = new SimpleDataStore($row);
-					$federatedUser =
-						$this->federatedUserService->getLocalFederatedUser($data->g('share_with'));
+					$federatedUser
+						= $this->federatedUserService->getLocalFederatedUser($data->g('share_with'));
 					$this->outputService->output(
 						'Migrating child share #' . $data->gInt('id') . ' owner: ' . $data->g('share_with')
 						. ' -> ' . $federatedUser->getSingleId(),
@@ -509,17 +444,16 @@ class MigrationService {
 					);
 
 					$this->updateSubShare($data, $federatedUser);
-				} catch (Exception $e) {
+				} catch (Exception) {
 				}
 			}
 
 			$cursor->closeCursor();
-		} catch (\OCP\DB\Exception $e) {
+		} catch (\OCP\DB\Exception) {
 		}
 
 		$this->outputService->finishMigrationProgress();
 	}
-
 
 	/**
 	 * @param SimpleDataStore $data
@@ -554,7 +488,6 @@ class MigrationService {
 		$qb->executeStatement();
 	}
 
-
 	/**
 	 * @param Member $member
 	 *
@@ -571,13 +504,12 @@ class MigrationService {
 		$contact = $cm->search($contactId, ['UID']);
 		if (sizeof($contact) === 1) {
 			$entry = array_shift($contact);
-			$addressBook =
-				$this->contactService->getAddressBoxById($cm, $this->get('addressbook-key', $entry));
+			$addressBook
+				= $this->contactService->getAddressBoxById($cm, $this->get('addressbook-key', $entry));
 
 			$member->setUserId($userId . '/' . $addressBook->getUri() . '/' . $contactId);
 		}
 	}
-
 
 	/**
 	 * @param Member $member
@@ -585,15 +517,14 @@ class MigrationService {
 	private function saveGeneratedMember(Member $member): void {
 		try {
 			$this->memberRequest->getMemberById($member->getId());
-		} catch (MemberNotFoundException $e) {
+		} catch (MemberNotFoundException) {
 			try {
 				$this->memberRequest->save($member);
-			} catch (InvalidIdException $e) {
+			} catch (InvalidIdException) {
 			}
-		} catch (RequestBuilderException $e) {
+		} catch (RequestBuilderException) {
 		}
 	}
-
 
 	/**
 	 */
@@ -605,7 +536,7 @@ class MigrationService {
 			$cursor = $qb->executeQuery();
 			$this->outputService->startMigrationProgress($cursor->rowCount());
 
-			while ($row = $cursor->fetch()) {
+			while ($row = $cursor->fetchAssociative()) {
 				try {
 					$data = new SimpleDataStore($row);
 					$this->outputService->output(
@@ -616,17 +547,16 @@ class MigrationService {
 
 					$shareToken = $this->generateShareTokenFrom21($data);
 					$this->saveGeneratedShareToken($shareToken);
-				} catch (Exception $e) {
+				} catch (Exception) {
 				}
 			}
 
 			$cursor->closeCursor();
-		} catch (\OCP\DB\Exception $e) {
+		} catch (\OCP\DB\Exception) {
 		}
 
 		$this->outputService->finishMigrationProgress();
 	}
-
 
 	/**
 	 * @param SimpleDataStore $data
@@ -661,9 +591,9 @@ class MigrationService {
 	private function saveGeneratedShareToken(ShareToken $shareToken): void {
 		try {
 			$this->shareTokenRequest->getByToken($shareToken->getToken());
-		} catch (ShareTokenNotFoundException $e) {
+		} catch (ShareTokenNotFoundException) {
 			$this->shareTokenRequest->save($shareToken);
-		} catch (RequestBuilderException $e) {
+		} catch (RequestBuilderException) {
 		}
 	}
 }

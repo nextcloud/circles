@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\FederatedItems;
 
@@ -41,20 +39,6 @@ class CircleDestroy implements
 	use TStringTools;
 	use TDeserialize;
 
-
-	/** @var CircleRequest */
-	private $circleRequest;
-
-	/** @var MemberRequest */
-	private $memberRequest;
-
-
-	private $eventService;
-
-	/** @var MembershipService */
-	private $membershipService;
-
-
 	/**
 	 * CircleDestroy constructor.
 	 *
@@ -64,15 +48,12 @@ class CircleDestroy implements
 	 * @param MembershipService $membershipService
 	 */
 	public function __construct(
-		CircleRequest $circleRequest, MemberRequest $memberRequest, EventService $eventService,
-		MembershipService $membershipService,
+		private CircleRequest $circleRequest,
+		private MemberRequest $memberRequest,
+		private EventService $eventService,
+		private MembershipService $membershipService,
 	) {
-		$this->circleRequest = $circleRequest;
-		$this->memberRequest = $memberRequest;
-		$this->eventService = $eventService;
-		$this->membershipService = $membershipService;
 	}
-
 
 	/**
 	 * @param FederatedEvent $event
@@ -96,7 +77,6 @@ class CircleDestroy implements
 		$event->setOutcome($this->serialize($circle));
 	}
 
-
 	/**
 	 * @param FederatedEvent $event
 	 *
@@ -117,7 +97,6 @@ class CircleDestroy implements
 			$this->membershipService->updatePopulation($parentCircle);
 		}
 	}
-
 
 	/**
 	 * @param FederatedEvent $event

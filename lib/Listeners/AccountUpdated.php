@@ -27,15 +27,14 @@ use Psr\Log\LoggerInterface;
 /** @template-implements IEventListener<UserUpdatedEvent|Event> */
 class AccountUpdated implements IEventListener {
 	public function __construct(
-		private CircleRequest $circleRequest,
-		private CircleService $circleService,
-		private FederatedEventService $federatedEventService,
-		private FederatedUserService $federatedUserService,
-		private LoggerInterface $logger,
-		private MemberRequest $memberRequest,
+		private readonly CircleRequest $circleRequest,
+		private readonly CircleService $circleService,
+		private readonly FederatedEventService $federatedEventService,
+		private readonly FederatedUserService $federatedUserService,
+		private readonly LoggerInterface $logger,
+		private readonly MemberRequest $memberRequest,
 	) {
 	}
-
 
 	/**
 	 * @param Event $event

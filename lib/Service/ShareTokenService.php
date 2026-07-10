@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Service;
 
@@ -29,20 +27,6 @@ use OCP\Share\IShare;
 class ShareTokenService {
 	use TStringTools;
 
-
-	/** @var IURLGenerator */
-	private $urlGenerator;
-
-	/** @var ShareTokenRequest */
-	private $shareTokenRequest;
-
-	/** @var ConfigService */
-	private $configService;
-
-	/** @var InterfaceService */
-	private $interfaceService;
-
-
 	/**
 	 * ShareTokenService constructor.
 	 *
@@ -52,17 +36,12 @@ class ShareTokenService {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IURLGenerator $urlGenerator,
-		ShareTokenRequest $shareTokenRequest,
-		InterfaceService $interfaceService,
-		ConfigService $configService,
+		private IURLGenerator $urlGenerator,
+		private ShareTokenRequest $shareTokenRequest,
+		private InterfaceService $interfaceService,
+		private ConfigService $configService,
 	) {
-		$this->urlGenerator = $urlGenerator;
-		$this->shareTokenRequest = $shareTokenRequest;
-		$this->interfaceService = $interfaceService;
-		$this->configService = $configService;
 	}
-
 
 	/**
 	 * @param ShareWrapper $share
@@ -96,7 +75,7 @@ class ShareTokenService {
 		try {
 			$this->shareTokenRequest->search($shareToken);
 			throw new ShareTokenAlreadyExistException();
-		} catch (ShareTokenNotFoundException $e) {
+		} catch (ShareTokenNotFoundException) {
 		}
 
 		$this->shareTokenRequest->save($shareToken);
@@ -104,7 +83,6 @@ class ShareTokenService {
 
 		return $shareToken;
 	}
-
 
 	/**
 	 * @param ShareToken $shareToken
@@ -117,7 +95,6 @@ class ShareTokenService {
 
 		$shareToken->setLink($link);
 	}
-
 
 	/**
 	 * update password on files previously shared to circleId

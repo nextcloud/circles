@@ -101,7 +101,6 @@ class BaseMember implements JsonSerializable {
 		$this->setStatus(DeprecatedMember::STATUS_NONMEMBER);
 	}
 
-
 	/**
 	 * @param string $circleUniqueId
 	 *
@@ -120,7 +119,6 @@ class BaseMember implements JsonSerializable {
 		return $this->circleUniqueId;
 	}
 
-
 	/**
 	 * @return int
 	 */
@@ -132,7 +130,6 @@ class BaseMember implements JsonSerializable {
 		$this->type = (int)$type;
 	}
 
-
 	public function getViewerType() {
 		if ($this->getType() === 2) {
 			return 'group';
@@ -140,7 +137,6 @@ class BaseMember implements JsonSerializable {
 			return 'user';
 		}
 	}
-
 
 	public function setUserId($userId) {
 		$this->userId = $userId;
@@ -152,7 +148,6 @@ class BaseMember implements JsonSerializable {
 		return $this->userId;
 	}
 
-
 	public function setMemberId($memberId) {
 		$this->memberId = $memberId;
 
@@ -162,7 +157,6 @@ class BaseMember implements JsonSerializable {
 	public function getMemberId() {
 		return $this->memberId;
 	}
-
 
 	public function setCachedName($display) {
 		$this->cachedName = $display;
@@ -178,7 +172,6 @@ class BaseMember implements JsonSerializable {
 		return $this->cachedName;
 	}
 
-
 	public function setCachedUpdate(int $time) {
 		$this->cachedUpdate = $time;
 
@@ -188,7 +181,6 @@ class BaseMember implements JsonSerializable {
 	public function getCachedUpdate(): int {
 		return $this->cachedUpdate;
 	}
-
 
 	public function setLevel($level) {
 		$this->level = (int)$level;
@@ -200,7 +192,6 @@ class BaseMember implements JsonSerializable {
 		return $this->level;
 	}
 
-
 	public function setNote($note) {
 		$this->note = $note;
 
@@ -210,7 +201,6 @@ class BaseMember implements JsonSerializable {
 	public function getNote() {
 		return $this->note;
 	}
-
 
 	public function setInstance($instance) {
 		$this->instance = $instance;
@@ -222,7 +212,6 @@ class BaseMember implements JsonSerializable {
 		return $this->instance;
 	}
 
-
 	public function setContactId($contactId) {
 		$this->contactId = $contactId;
 
@@ -232,7 +221,6 @@ class BaseMember implements JsonSerializable {
 	public function getContactId() {
 		return $this->contactId;
 	}
-
 
 	/**
 	 * @param array $contactMeta
@@ -292,7 +280,6 @@ class BaseMember implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @param $status
 	 *
@@ -312,7 +299,6 @@ class BaseMember implements JsonSerializable {
 		return $this->status;
 	}
 
-
 	public function setJoined($joined) {
 		$this->joined = $joined;
 
@@ -323,7 +309,6 @@ class BaseMember implements JsonSerializable {
 		return $this->joined;
 	}
 
-
 	public function getJoinedSince(): int {
 		return $this->joinedSince;
 	}
@@ -332,30 +317,21 @@ class BaseMember implements JsonSerializable {
 		$this->joinedSince = $since;
 	}
 
-
 	public function isLevel($level) {
 		return ($this->getLevel() >= $level);
 	}
-
 
 	public function isAlmostMember() {
 		return ($this->getStatus() === DeprecatedMember::STATUS_INVITED
 				|| $this->getStatus() === DeprecatedMember::STATUS_REQUEST);
 	}
 
-
 	protected function setAsAMember($level = 1) {
 		$this->setStatus(DeprecatedMember::STATUS_MEMBER);
 		$this->setLevel($level);
 	}
 
-
-	/**
-	 * @param $arr
-	 *
-	 * @return null|DeprecatedMember
-	 */
-	public static function fromArray($arr) {
+	public static function fromArray(?array $arr): ?DeprecatedMember {
 		if ($arr === null) {
 			return null;
 		}
@@ -382,16 +358,12 @@ class BaseMember implements JsonSerializable {
 		return $member;
 	}
 
-
 	/**
-	 * @param $json
-	 *
-	 * @return DeprecatedMember
+	 * @throws \JsonException
 	 */
-	public static function fromJSON($json) {
+	public static function fromJSON(string $json): ?DeprecatedMember {
 		return self::fromArray(json_decode($json, true));
 	}
-
 
 	public function jsonSerialize(): array {
 		return [
@@ -411,48 +383,31 @@ class BaseMember implements JsonSerializable {
 	}
 
 	public function getLevelString() {
-		switch ($this->getLevel()) {
-			case self::LEVEL_NONE:
-				return 'Not a member';
-			case self::LEVEL_MEMBER:
-				return 'Member';
-			case self::LEVEL_MODERATOR:
-				return 'Moderator';
-			case self::LEVEL_ADMIN:
-				return 'Admin';
-			case self::LEVEL_OWNER:
-				return 'Owner';
-		}
-
-		return 'none';
+		return match ($this->getLevel()) {
+			self::LEVEL_NONE => 'Not a member',
+			self::LEVEL_MEMBER => 'Member',
+			self::LEVEL_MODERATOR => 'Moderator',
+			self::LEVEL_ADMIN => 'Admin',
+			self::LEVEL_OWNER => 'Owner',
+			default => 'none',
+		};
 	}
 
-
 	public function getTypeString() {
-		switch ($this->getType()) {
-			case self::TYPE_USER:
-				return 'Local Member';
-			case self::TYPE_GROUP:
-				return 'Group';
-			case self::TYPE_MAIL:
-				return 'Mail address';
-			case self::TYPE_CONTACT:
-				return 'Contact';
-		}
-
-		return 'none';
+		return match ($this->getType()) {
+			self::TYPE_USER => 'Local Member',
+			self::TYPE_GROUP => 'Group',
+			self::TYPE_MAIL => 'Mail address',
+			self::TYPE_CONTACT => 'Contact',
+			default => 'none',
+		};
 	}
 
 	public function getTypeName() {
-		switch ($this->getType()) {
-			case self::TYPE_USER:
-			case self::TYPE_MAIL:
-			case self::TYPE_CONTACT:
-				return 'user';
-			case self::TYPE_GROUP:
-				return 'user-group';
-		}
-
-		return 'none';
+		return match ($this->getType()) {
+			self::TYPE_USER, self::TYPE_MAIL, self::TYPE_CONTACT => 'user',
+			self::TYPE_GROUP => 'user-group',
+			default => 'none',
+		};
 	}
 }

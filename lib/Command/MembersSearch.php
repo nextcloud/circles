@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Command;
 
@@ -30,25 +28,12 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Command
  */
 class MembersSearch extends Base {
-	/** @var SearchService */
-	private $searchService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
-	/**
-	 * MembersSearch constructor.
-	 *
-	 * @param SearchService $searchService
-	 * @param ConfigService $configService
-	 */
-	public function __construct(SearchService $searchService, ConfigService $configService) {
+	public function __construct(
+		private readonly SearchService $searchService,
+		private readonly ConfigService $configService,
+	) {
 		parent::__construct();
-		$this->searchService = $searchService;
-		$this->configService = $configService;
 	}
-
 
 	protected function configure() {
 		parent::configure();
@@ -59,7 +44,6 @@ class MembersSearch extends Base {
 			->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
 	}
 
-
 	/**
 	 * @param InputInterface $input
 	 * @param OutputInterface $output
@@ -69,7 +53,7 @@ class MembersSearch extends Base {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$result = $this->searchService->search($input->getArgument('needle'));
 
-		if (strtolower($input->getOption('output')) === 'json') {
+		if (strtolower((string)$input->getOption('output')) === 'json') {
 			$output->writeln(json_encode($result, JSON_PRETTY_PRINT));
 		}
 
@@ -77,7 +61,6 @@ class MembersSearch extends Base {
 
 		return 0;
 	}
-
 
 	/**
 	 * @param list<IFederatedUser|SearchResult> $result

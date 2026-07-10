@@ -102,7 +102,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s(e)k fitxategi batzuk partekatu ditu zurekin.",
     "Boot up" : "Abiarazi",
     "Nextcloud Initialization" : "Nextcloud hastapena",
-    "Circles App Initialization" : "Zirkuluak aplikazioaren hastapena",
     "Fresh installation status" : "Instalazio berriaren egoera",
     "Building Local Database" : "Datu-base lokala eraikitzen",
     "Testing Basic Team Creation" : "Oinarrizko lan-taldeen sorkuntza probatzea",
@@ -129,6 +128,11 @@ OC.L10N.register(
     "Accept" : "Onartu",
     "Refuse" : "Ukatu",
     "Leave the team" : "Utzi lantaldea",
+    "No image file provided" : "Ez da irudi fitxategirik eman",
+    "Invalid file provided" : "Baliogabeko fitxategia eman da",
+    "File is too big" : "Fitxategia handiegia da",
+    "Invalid image" : "Irudi baliogabea",
+    "Unknown filetype" : "Fitxategi mota ezezaguna",
     "%s" : "%s",
     "Personal team" : "Lantalde pertsonala",
     "%s owned by %s" : "%s jabea: %s",
@@ -157,6 +161,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Ez da sarrerarik aurkitu karpeta honetan ",
     "Name" : "Izena",
     "Size" : "Tamaina",
-    "Modified" : "Aldatua"
+    "Modified" : "Aldatua",
+    "Circles App Initialization" : "Zirkuluak aplikazioaren hastapena"
 },
 "nplurals=2; plural=(n != 1);");

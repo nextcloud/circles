@@ -6,6 +6,7 @@ declare(strict_types=1);
  * SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
+
 namespace OCA\Circles\Service;
 
 use Exception;
@@ -16,11 +17,11 @@ use Psr\Log\LoggerInterface;
 class RemoteSyncService {
 
 	public function __construct(
-		private ConfigService $configService,
-		private RemoteRequest $remoteRequest,
-		private TrustedServerService $trustedServerService,
-		private RemoteStreamService $remoteStreamService,
-		private LoggerInterface $logger,
+		private readonly ConfigService $configService,
+		private readonly RemoteRequest $remoteRequest,
+		private readonly TrustedServerService $trustedServerService,
+		private readonly RemoteStreamService $remoteStreamService,
+		private readonly LoggerInterface $logger,
 	) {
 	}
 
@@ -30,9 +31,8 @@ class RemoteSyncService {
 		}
 
 		$known = array_map(
-			static function (RemoteInstance $instance): string {
-				return $instance->getInstance();
-			}, $this->remoteRequest->getFromType(RemoteInstance::TYPE_EXTERNAL)
+			static fn (RemoteInstance $instance): string => $instance->getInstance(),
+			$this->remoteRequest->getFromType(RemoteInstance::TYPE_EXTERNAL)
 		);
 
 		foreach ($this->trustedServerService->getTrustedServers() as $trusted) {

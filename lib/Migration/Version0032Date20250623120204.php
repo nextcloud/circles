@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2024 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Migration;
 
@@ -24,7 +22,7 @@ use Psr\Log\LoggerInterface;
 #[AddColumn('circles_mount', 'remote_id', ColumnType::INTEGER, 'store remote share id for quicker identification')]
 class Version0032Date20250623120204 extends SimpleMigrationStep {
 	public function __construct(
-		private LoggerInterface $logger,
+		private readonly LoggerInterface $logger,
 	) {
 	}
 

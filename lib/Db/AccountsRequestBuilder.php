@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-
 namespace OCA\Circles\Db;
 
 use OCA\Circles\Tools\Traits\TArrayTools;
@@ -19,7 +18,6 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
 class AccountsRequestBuilder extends DeprecatedRequestBuilder {
 	use TArrayTools;
 
-
 	/**
 	 * Base of the Sql Insert request for Accounts
 	 *
@@ -32,7 +30,6 @@ class AccountsRequestBuilder extends DeprecatedRequestBuilder {
 		return $qb;
 	}
 
-
 	/**
 	 * Base of the Sql Update request for Accounts
 	 *
@@ -44,7 +41,6 @@ class AccountsRequestBuilder extends DeprecatedRequestBuilder {
 
 		return $qb;
 	}
-
 
 	/**
 	 * @return IQueryBuilder
@@ -61,7 +57,6 @@ class AccountsRequestBuilder extends DeprecatedRequestBuilder {
 		return $qb;
 	}
 
-
 	/**
 	 * Base of the Sql Delete request
 	 *
@@ -74,14 +69,13 @@ class AccountsRequestBuilder extends DeprecatedRequestBuilder {
 		return $qb;
 	}
 
-
 	/**
 	 * @param array $entry
 	 *
 	 * @return array
 	 */
 	protected function parseAccountsSelectSql(array $entry): array {
-		$data = json_decode($entry['data'], true);
+		$data = json_decode((string)$entry['data'], true);
 		if (!is_array($data)) {
 			$data = [];
 		}

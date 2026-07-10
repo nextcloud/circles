@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Command;
 
@@ -63,77 +61,23 @@ class CirclesMemberships extends Base {
 	use TArrayTools;
 	use TConsoleTree;
 
+	private InputInterface $input;
 
-	/** @var IUserManager */
-	private $userManager;
+	private array $memberships = [];
 
-	/** @var MembershipRequest */
-	private $membershipRequest;
-
-	/** @var MemberRequest */
-	private $memberRequest;
-
-	/** @var CircleRequest */
-	private $circleRequest;
-
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var CircleService */
-	private $circleService;
-
-	/** @var MembershipService */
-	private $membershipService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
-	/** @var InputInterface */
-	private $input;
-
-
-	/** @var array */
-	private $memberships = [];
-
-
-	/**
-	 * CirclesMemberships constructor.
-	 *
-	 * @param IUserManager $userManager
-	 * @param MembershipRequest $membershipRequest
-	 * @param MemberRequest $memberRequest
-	 * @param CircleRequest $circleRequest
-	 * @param FederatedUserService $federatedUserService
-	 * @param CircleService $circleService
-	 * @param MembershipService $membershipService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
-		IUserManager $userManager,
-		MembershipRequest $membershipRequest,
-		MemberRequest $memberRequest,
-		CircleRequest $circleRequest,
-		FederatedUserService $federatedUserService,
-		CircleService $circleService,
-		MembershipService $membershipService,
-		ConfigService $configService,
+		private IUserManager $userManager,
+		private MembershipRequest $membershipRequest,
+		private MemberRequest $memberRequest,
+		private CircleRequest $circleRequest,
+		private FederatedUserService $federatedUserService,
+		private CircleService $circleService,
+		private MembershipService $membershipService,
+		private ConfigService $configService,
 	) {
 		parent::__construct();
-		$this->userManager = $userManager;
-		$this->memberRequest = $memberRequest;
-		$this->membershipRequest = $membershipRequest;
-		$this->circleRequest = $circleRequest;
-		$this->federatedUserService = $federatedUserService;
-		$this->circleService = $circleService;
-		$this->membershipService = $membershipService;
-		$this->configService = $configService;
 	}
 
-
-	/**
-	 *
-	 */
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:memberships')
@@ -147,7 +91,6 @@ class CirclesMemberships extends Base {
 				Member::$TYPE[Member::TYPE_SINGLE]
 			);
 	}
-
 
 	/**
 	 * @param InputInterface $input
@@ -221,7 +164,7 @@ class CirclesMemberships extends Base {
 		$this->generateTree($federatedUser->getSingleId(), $tree);
 
 		$this->drawTree(
-			$tree, [$this, 'displayLeaf'],
+			$tree, $this->displayLeaf(...),
 			[
 				'height' => 3,
 				'node-spacing' => 0,
@@ -231,7 +174,6 @@ class CirclesMemberships extends Base {
 
 		return 0;
 	}
-
 
 	/**
 	 * @param string $id
@@ -262,7 +204,6 @@ class CirclesMemberships extends Base {
 			$this->generateTree($member->getCircleId(), $item, $knownIds);
 		}
 	}
-
 
 	/**
 	 * @param SimpleDataStore $data
@@ -303,8 +244,8 @@ class CirclesMemberships extends Base {
 					if (!$this->configService->isLocalInstance($circle->getInstance())) {
 						$line .= '@' . $circle->getInstance();
 					}
-					$line .= ' (' . ($this->input->getOption('display-name') ?
-							$circle->getDisplayName() : $circle->getName()) . ')';
+					$line .= ' (' . ($this->input->getOption('display-name')
+							? $circle->getDisplayName() : $circle->getName()) . ')';
 					$line .= ' <info>MemberId</info>: ' . $member->getId();
 					$line .= ' <info>Level</info>: ' . Member::$DEF_LEVEL[$member->getLevel()];
 
@@ -325,12 +266,11 @@ class CirclesMemberships extends Base {
 
 				return $line;
 			}
-		} catch (InvalidItemException|ItemNotFoundException|UnknownTypeException $e) {
+		} catch (InvalidItemException|ItemNotFoundException|UnknownTypeException) {
 		}
 
 		return '';
 	}
-
 
 	/**
 	 * @throws FederatedUserNotFoundException

@@ -29,23 +29,16 @@ class GlobalScaleUsers implements ISearch {
 	use TNCRequest;
 	use TArrayTools;
 
-
-	/** @var ConfigService */
-	private $configService;
-
-	/** @var MiscService */
-	private $miscService;
-
-
 	/**
 	 * GlobalScaleUsers constructor.
 	 *
 	 * @param ConfigService $configService
 	 * @param MiscService $miscService
 	 */
-	public function __construct(ConfigService $configService, MiscService $miscService) {
-		$this->configService = $configService;
-		$this->miscService = $miscService;
+	public function __construct(
+		private ConfigService $configService,
+		private MiscService $miscService,
+	) {
 	}
 
 	/**
@@ -71,7 +64,7 @@ class GlobalScaleUsers implements ISearch {
 			RequestResultNotJsonException $e
 		) {
 			$this->miscService->log(
-				'Issue while search users from lookup: ' . get_class($e) . ' ' . $e->getMessage()
+				'Issue while search users from lookup: ' . $e::class . ' ' . $e->getMessage()
 			);
 
 			return [];
@@ -84,8 +77,8 @@ class GlobalScaleUsers implements ISearch {
 				continue;
 			}
 
-			$result[] =
-				new SearchResult(
+			$result[]
+				= new SearchResult(
 					$this->get('userid.value', $user), DeprecatedMember::TYPE_USER, $instance,
 					['display' => $this->get('name.value', $user)]
 				);

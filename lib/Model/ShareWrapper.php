@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Model;
 
@@ -154,7 +152,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 	}
 
 	public function getToken(): string {
-		return $this->token;
+		return $this->shareToken?->getToken() ?? '';
 	}
 
 	public function setStatus(int $status): self {
@@ -386,7 +384,6 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		return $this->mailSend;
 	}
 
-
 	/**
 	 * @throws IllegalIDChangeException
 	 */
@@ -478,7 +475,6 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		$share->setSharedWithAvatar($icon);
 	}
 
-
 	/**
 	 * @param array $data
 	 *
@@ -534,25 +530,25 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		try {
 			$fileCache = new FileCacheWrapper();
 			$this->setFileCache($fileCache->import($this->getArray('fileCache', $data)));
-		} catch (InvalidItemException $e) {
+		} catch (InvalidItemException) {
 		}
 
 		try {
 			$owner = new Member();
 			$this->setOwner($owner->import($this->getArray('owner', $data)));
-		} catch (InvalidItemException $e) {
+		} catch (InvalidItemException) {
 		}
 
 		try {
 			$member = new Member();
 			$this->setInitiator($member->import($this->getArray('viewer', $data)));
-		} catch (InvalidItemException $e) {
+		} catch (InvalidItemException) {
 		}
 
 		try {
 			$shareToken = new ShareToken();
 			$this->setShareToken($shareToken->import($this->getArray('shareToken', $data)));
-		} catch (InvalidItemException $e) {
+		} catch (InvalidItemException) {
 		}
 
 		return $this;
@@ -605,7 +601,6 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		return $this;
 	}
 
-
 	/**
 	 * Load from database format (JSON string) to IAttributes
 	 * based on \OC\Share20\DefaultShareProvider
@@ -628,7 +623,6 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		$this->setHideDownload(!($attributes->getAttribute('permissions', 'download') ?? true));
 		$this->setAttributes($attributes);
 	}
-
 
 	public function jsonSerialize(): array {
 		$arr = [

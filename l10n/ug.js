@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s سىز بىلەن بىر قانچە ھۆججەتنى ئورتاقلاشتى.",
     "Boot up" : "قوزغات",
     "Nextcloud Initialization" : "Nextcloud دەسلەپلەشتۈرۈش",
-    "Circles App Initialization" : "چەمبەر ئەپلىرىنى قوزغىتىش",
     "Fresh installation status" : "يېڭى ئورنىتىش ھالىتى",
     "Building Local Database" : "يەرلىك ساندان قۇرۇش",
     "Testing Basic Team Creation" : "ئادەتتىكى چەمبىرەك قۇرۇشنى سىناش",
@@ -130,6 +129,11 @@ OC.L10N.register(
     "Accept" : "قوبۇل قىلىڭ",
     "Refuse" : "رەت قىلىش",
     "Leave the team" : "كوماندىدىن ئايرىلغىن",
+    "No image file provided" : "رەسىم ھۆججىتى تەمىنلەنمىدى",
+    "Invalid file provided" : "ئىناۋەتسىز ھۆججەت تەمىنلەندى",
+    "File is too big" : "ھۆججەت بەك چوڭ",
+    "Invalid image" : "ئىناۋەتسىز رەسىم",
+    "Unknown filetype" : "نامەلۇم ھۆججەت شەكلى",
     "%s" : "%s",
     "Personal team" : "شەخسىي گۇرۇپپا",
     "%s owned by %s" : "%s ئىگىدارچىلىقىدىكى %s",
@@ -157,6 +161,7 @@ OC.L10N.register(
     "No entries found in this folder" : "بۇ ھۆججەت قىسقۇچتا ھېچقانداق مەزمۇن تېپىلمىدى",
     "Name" : "ئاتى",
     "Size" : "چوڭلۇقى",
-    "Modified" : "ئۆزگەرتكەن"
+    "Modified" : "ئۆزگەرتكەن",
+    "Circles App Initialization" : "چەمبەر ئەپلىرىنى قوزغىتىش"
 },
 "nplurals=2; plural=(n != 1);");

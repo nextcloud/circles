@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s dijeli više datoteka s vama.",
     "Boot up" : "Pokreni",
     "Nextcloud Initialization" : "Nextcloud inicijalizacija",
-    "Circles App Initialization" : "Inicijalizacija aplikacije Krugovi",
     "Fresh installation status" : "Status svježe instalacije",
     "Building Local Database" : "Izgradnja lokalne baze podataka",
     "Testing Basic Team Creation" : "Ispitivanje stvaranja osnovnog tima",
@@ -130,6 +129,11 @@ OC.L10N.register(
     "Accept" : "Prihvati",
     "Refuse" : "Odbij",
     "Leave the team" : "Napusti tim",
+    "No image file provided" : "Nijedna slika nije dobavljena",
+    "Invalid file provided" : "Nevažeća datoteka",
+    "File is too big" : "Datoteka je prevelika",
+    "Invalid image" : "Slika neispravna",
+    "Unknown filetype" : "Vrsta datoteke nepoznata",
     "%s" : "%s",
     "Personal team" : "Osobni tim",
     "%s owned by %s" : "%s u vlasništvu %s",
@@ -166,6 +170,7 @@ OC.L10N.register(
     "No entries found in this folder" : "U ovoj mapi nisu pronađeni nikakvi zapisi",
     "Name" : "Naziv",
     "Size" : "Veličina",
-    "Modified" : "Promijenjeno"
+    "Modified" : "Promijenjeno",
+    "Circles App Initialization" : "Inicijalizacija aplikacije Krugovi"
 },
 "nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;");

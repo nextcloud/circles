@@ -2,17 +2,16 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-
 namespace OCA\Circles\Db;
 
 use OCA\Circles\Model\Federated\EventWrapper;
 use OCP\DB\Exception;
+use OCP\Server;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -47,7 +46,7 @@ class EventWrapperRequest extends EventWrapperRequestBuilder {
 				throw $e;
 			}
 
-			$logger = \OCP\Server::get(LoggerInterface::class);
+			$logger = Server::get(LoggerInterface::class);
 			$logger->warning('issue while storing event', ['exception' => $e]);
 		}
 	}
@@ -67,7 +66,6 @@ class EventWrapperRequest extends EventWrapperRequestBuilder {
 		$qb->executeStatement();
 	}
 
-
 	/**
 	 * @param string $token
 	 * @param int $status
@@ -80,7 +78,6 @@ class EventWrapperRequest extends EventWrapperRequestBuilder {
 
 		$qb->executeStatement();
 	}
-
 
 	/**
 	 * returns unique token not set as FAILED
@@ -107,7 +104,6 @@ class EventWrapperRequest extends EventWrapperRequestBuilder {
 
 		return $this->getItemsFromRequest($qb);
 	}
-
 
 	/**
 	 * @param string $token

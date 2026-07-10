@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\FederatedItems\Files;
 
@@ -40,17 +38,6 @@ class FileShare implements
 	use TStringTools;
 	use TNCLogger;
 
-
-	/** @var MountRequest */
-	private $mountRequest;
-
-	/** @var EventService */
-	private $eventService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	/**
 	 * FileShare constructor.
 	 *
@@ -59,15 +46,11 @@ class FileShare implements
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		MountRequest $mountRequest,
-		EventService $eventService,
-		ConfigService $configService,
+		private MountRequest $mountRequest,
+		private EventService $eventService,
+		private ConfigService $configService,
 	) {
-		$this->mountRequest = $mountRequest;
-		$this->eventService = $eventService;
-		$this->configService = $configService;
 	}
-
 
 	/**
 	 * @param FederatedEvent $event
@@ -78,7 +61,6 @@ class FileShare implements
 
 		$this->eventService->fileSharePreparing($event);
 	}
-
 
 	/**
 	 * @param FederatedEvent $event
@@ -102,7 +84,6 @@ class FileShare implements
 
 		$this->eventService->fileShareCreating($event, $mount);
 	}
-
 
 	/**
 	 * @param FederatedEvent $event

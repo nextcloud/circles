@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\FederatedItems;
 
@@ -33,16 +31,6 @@ class MemberRemove implements
 	IFederatedItemAsyncProcess,
 	IFederatedItemHighSeverity,
 	IFederatedItemMemberRequired {
-	/** @var MemberRequest */
-	private $memberRequest;
-
-	/** @var MembershipService */
-	private $membershipService;
-
-	/** @var EventService */
-	private $eventService;
-
-
 	/**
 	 * MemberAdd constructor.
 	 *
@@ -51,15 +39,11 @@ class MemberRemove implements
 	 * @param EventService $eventService
 	 */
 	public function __construct(
-		MemberRequest $memberRequest,
-		MembershipService $membershipService,
-		EventService $eventService,
+		private readonly MemberRequest $memberRequest,
+		private readonly MembershipService $membershipService,
+		private readonly EventService $eventService,
 	) {
-		$this->memberRequest = $memberRequest;
-		$this->membershipService = $membershipService;
-		$this->eventService = $eventService;
 	}
-
 
 	/**
 	 * @param FederatedEvent $event
@@ -81,7 +65,6 @@ class MemberRemove implements
 		$event->setOutcome([]);
 	}
 
-
 	/**
 	 * @param FederatedEvent $event
 	 *
@@ -97,7 +80,6 @@ class MemberRemove implements
 		$this->eventService->memberRemoving($event);
 		$this->membershipService->updatePopulation($event->getCircle());
 	}
-
 
 	/**
 	 * @param FederatedEvent $event

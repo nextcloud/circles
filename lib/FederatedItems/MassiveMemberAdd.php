@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\FederatedItems;
 
@@ -63,7 +61,6 @@ class MassiveMemberAdd extends SingleMemberAdd implements
 		}
 	}
 
-
 	/**
 	 * @param FederatedEvent $event
 	 */
@@ -80,13 +77,12 @@ class MassiveMemberAdd extends SingleMemberAdd implements
 				} else {
 					$this->eventService->memberAdding($event);
 				}
-			} catch (Exception $e) {
+			} catch (Exception) {
 			}
 		}
 
 		$this->membershipService->updatePopulation($event->getCircle());
 	}
-
 
 	/**
 	 * @param FederatedEvent $event

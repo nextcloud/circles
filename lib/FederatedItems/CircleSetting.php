@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\FederatedItems;
 
@@ -27,20 +25,12 @@ class CircleSetting implements
 	IFederatedItemAsyncProcess {
 	use TDeserialize;
 
-	private CircleRequest $circleRequest;
-	private ShareTokenService $shareTokenService;
-	private ConfigService $configService;
-
 	public function __construct(
-		CircleRequest $circleRequest,
-		ShareTokenService $shareTokenService,
-		ConfigService $configService,
+		private CircleRequest $circleRequest,
+		private ShareTokenService $shareTokenService,
+		private ConfigService $configService,
 	) {
-		$this->circleRequest = $circleRequest;
-		$this->shareTokenService = $shareTokenService;
-		$this->configService = $configService;
 	}
-
 
 	/**
 	 * @param FederatedEvent $event
@@ -83,7 +73,6 @@ class CircleSetting implements
 		$event->setOutcome($this->serialize($new));
 	}
 
-
 	/**
 	 * @param FederatedEvent $event
 	 */
@@ -120,7 +109,6 @@ class CircleSetting implements
 			$this->shareTokenService->removeSharePassword($circle->getSingleId());
 		}
 	}
-
 
 	/**
 	 * @param FederatedEvent $event

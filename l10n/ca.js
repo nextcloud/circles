@@ -101,7 +101,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s ha compartit diversos fitxers amb vós.",
     "Boot up" : "Engegada",
     "Nextcloud Initialization" : "Inicialització del Nextcloud",
-    "Circles App Initialization" : "Inicialització de l'aplicació Cercles",
     "Fresh installation status" : "Estat d'instal·lació nou",
     "Building Local Database" : "S'està creant la base de dades local",
     "Adding local users and moderators" : "S'estan afegint usuaris i moderadors locals",
@@ -122,6 +121,10 @@ OC.L10N.register(
     "Accept" : "Accepta",
     "Refuse" : "Rebutja",
     "Leave the team" : "Deixa l'equip",
+    "No image file provided" : "No s'ha proporcionat cap imatge o fitxer",
+    "Invalid file provided" : "El fitxer proporcionat no és vàlid",
+    "File is too big" : "El fitxer és massa gran",
+    "Unknown filetype" : "Tipus de fitxer desconegut",
     "%s" : "%s",
     "Personal team" : "Equip personal",
     "%s owned by %s" : "%s propietat de %s",
@@ -144,6 +147,7 @@ OC.L10N.register(
     "No entries found in this folder" : "No s'ha trobat cap entrada en aquesta carpeta",
     "Name" : "Nom",
     "Size" : "Mida",
-    "Modified" : "Data de modificació"
+    "Modified" : "Data de modificació",
+    "Circles App Initialization" : "Inicialització de l'aplicació Cercles"
 },
 "nplurals=2; plural=(n != 1);");

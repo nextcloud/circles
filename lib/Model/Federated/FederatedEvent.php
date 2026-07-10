@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Model\Federated;
 
@@ -34,10 +32,6 @@ class FederatedEvent implements JsonSerializable {
 	public const BYPASS_INITIATORMEMBERSHIP = 16;
 
 	use TArrayTools;
-
-
-	/** @var string */
-	private $class;
 
 	/** @var string */
 	private $origin = '';
@@ -87,7 +81,6 @@ class FederatedEvent implements JsonSerializable {
 	/** @var string */
 	private $sender = '';
 
-
 	/** @var string */
 	private $wrapperToken = '';
 
@@ -96,20 +89,19 @@ class FederatedEvent implements JsonSerializable {
 
 	private bool $forceSync = false;
 
-
 	/**
 	 * FederatedEvent constructor.
 	 *
 	 * @param string $class
 	 */
-	public function __construct(string $class = '') {
-		$this->class = $class;
+	public function __construct(
+		private string $class = '',
+	) {
 		$this->params = new SimpleDataStore();
 		$this->internal = new SimpleDataStore();
 		$this->data = new SimpleDataStore();
 		$this->result = new SimpleDataStore();
 	}
-
 
 	/**
 	 * @return string
@@ -128,7 +120,6 @@ class FederatedEvent implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * Origin of the event.
@@ -150,7 +141,6 @@ class FederatedEvent implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return bool
 	 */
@@ -168,7 +158,6 @@ class FederatedEvent implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return bool
@@ -188,7 +177,6 @@ class FederatedEvent implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return bool
 	 */
@@ -206,7 +194,6 @@ class FederatedEvent implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 *
@@ -229,7 +216,6 @@ class FederatedEvent implements JsonSerializable {
 		return $this->sender;
 	}
 
-
 	/**
 	 * @param string $wrapperToken
 	 *
@@ -247,7 +233,6 @@ class FederatedEvent implements JsonSerializable {
 	public function getWrapperToken(): string {
 		return $this->wrapperToken;
 	}
-
 
 	/**
 	 * @return bool
@@ -274,7 +259,6 @@ class FederatedEvent implements JsonSerializable {
 		return $this->circle;
 	}
 
-
 	/**
 	 * @param string $itemId
 	 *
@@ -293,7 +277,6 @@ class FederatedEvent implements JsonSerializable {
 		return $this->itemId;
 	}
 
-
 	/**
 	 * @param string $itemSource
 	 *
@@ -311,7 +294,6 @@ class FederatedEvent implements JsonSerializable {
 	public function getItemSource(): string {
 		return $this->itemSource;
 	}
-
 
 	/**
 	 * @return Member
@@ -338,7 +320,6 @@ class FederatedEvent implements JsonSerializable {
 		return ($this->member !== null);
 	}
 
-
 	/**
 	 * @return Member[]
 	 */
@@ -357,7 +338,6 @@ class FederatedEvent implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @param SimpleDataStore $params
 	 *
@@ -375,7 +355,6 @@ class FederatedEvent implements JsonSerializable {
 	public function getParams(): SimpleDataStore {
 		return $this->params;
 	}
-
 
 	/**
 	 * @param SimpleDataStore $internal
@@ -403,7 +382,6 @@ class FederatedEvent implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @param SimpleDataStore $data
@@ -433,7 +411,6 @@ class FederatedEvent implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return int
 	 */
@@ -452,7 +429,6 @@ class FederatedEvent implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return array
 	 */
@@ -470,7 +446,6 @@ class FederatedEvent implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return SimpleDataStore
@@ -531,7 +506,6 @@ class FederatedEvent implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @param int $flag
 	 *
@@ -563,7 +537,6 @@ class FederatedEvent implements JsonSerializable {
 		return $this->forceSync;
 	}
 
-
 	/**
 	 * @param array $data
 	 *
@@ -584,7 +557,7 @@ class FederatedEvent implements JsonSerializable {
 			$circle = new Circle();
 			$circle->import($this->getArray('circle', $data));
 			$this->setCircle($circle);
-		} catch (InvalidItemException $e) {
+		} catch (InvalidItemException) {
 		}
 
 		if (array_key_exists('member', $data)) {
@@ -602,7 +575,6 @@ class FederatedEvent implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return array

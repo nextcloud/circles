@@ -17,9 +17,12 @@ use Symfony\Component\Console\Formatter\OutputFormatterInterface;
  * OutputInterface is the interface implemented by all Output classes.
  *
  * @author Fabien Potencier <fabien@symfony.com>
+ *
+ * @method bool isSilent()
  */
 interface OutputInterface
 {
+    public const VERBOSITY_SILENT = 8;
     public const VERBOSITY_QUIET = 16;
     public const VERBOSITY_NORMAL = 32;
     public const VERBOSITY_VERBOSE = 64;
@@ -36,10 +39,8 @@ interface OutputInterface
      * @param bool $newline Whether to add a newline
      * @param int  $options A bitmask of options (one of the OUTPUT or VERBOSITY constants),
      *                      0 is considered the same as self::OUTPUT_NORMAL | self::VERBOSITY_NORMAL
-     *
-     * @return void
      */
-    public function write(string|iterable $messages, bool $newline = false, int $options = 0)
+    public function write(string|iterable $messages, bool $newline = false, int $options = 0): void
     {
     }
 
@@ -48,10 +49,8 @@ interface OutputInterface
      *
      * @param int $options A bitmask of options (one of the OUTPUT or VERBOSITY constants),
      *                     0 is considered the same as self::OUTPUT_NORMAL | self::VERBOSITY_NORMAL
-     *
-     * @return void
      */
-    public function writeln(string|iterable $messages, int $options = 0)
+    public function writeln(string|iterable $messages, int $options = 0): void
     {
     }
 
@@ -59,10 +58,8 @@ interface OutputInterface
      * Sets the verbosity of the output.
      *
      * @param self::VERBOSITY_* $level
-     *
-     * @return void
      */
-    public function setVerbosity(int $level)
+    public function setVerbosity(int $level): void
     {
     }
 
@@ -105,10 +102,8 @@ interface OutputInterface
 
     /**
      * Sets the decorated flag.
-     *
-     * @return void
      */
-    public function setDecorated(bool $decorated)
+    public function setDecorated(bool $decorated): void
     {
     }
 
@@ -119,10 +114,7 @@ interface OutputInterface
     {
     }
 
-    /**
-     * @return void
-     */
-    public function setFormatter(OutputFormatterInterface $formatter)
+    public function setFormatter(OutputFormatterInterface $formatter): void
     {
     }
 

@@ -18,7 +18,6 @@ class SettingAsNonMember implements ISetting {
 	) {
 	}
 
-
 	/**
 	 * @return string Lowercase a-z and underscore only identifier
 	 * @since 11.0.0
@@ -27,7 +26,6 @@ class SettingAsNonMember implements ISetting {
 		return 'circles_as_non_member';
 	}
 
-
 	/**
 	 * @return string A translated string
 	 * @since 11.0.0
@@ -35,7 +33,6 @@ class SettingAsNonMember implements ISetting {
 	public function getName() {
 		return $this->l10n->t('On global events happening in any <strong>team</strong>');
 	}
-
 
 	/**
 	 * @return int whether the filter should be rather on the top or bottom of
@@ -47,7 +44,6 @@ class SettingAsNonMember implements ISetting {
 		return 60;
 	}
 
-
 	/**
 	 * @return bool True when the option can be changed for the stream
 	 * @since 11.0.0
@@ -55,7 +51,6 @@ class SettingAsNonMember implements ISetting {
 	public function canChangeStream() {
 		return true;
 	}
-
 
 	/**
 	 * @return bool True when the option can be changed for the stream
@@ -65,7 +60,6 @@ class SettingAsNonMember implements ISetting {
 		return false;
 	}
 
-
 	/**
 	 * @return bool True when the option can be changed for the mail
 	 * @since 11.0.0
@@ -73,7 +67,6 @@ class SettingAsNonMember implements ISetting {
 	public function canChangeMail() {
 		return true;
 	}
-
 
 	/**
 	 * @return bool True when the option can be changed for the stream

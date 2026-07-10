@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s s vami zdieľa súbory.",
     "Boot up" : "Štart",
     "Nextcloud Initialization" : "Inicializácia Nextcloudu",
-    "Circles App Initialization" : "Inicializácia Aplikácie Kruhy",
     "Fresh installation status" : "Stav čistej inštalácie",
     "Building Local Database" : "Vytváram Lokálnu Databázu",
     "Testing Basic Team Creation" : "Testovanie základného vytvárania tímu",
@@ -130,6 +129,11 @@ OC.L10N.register(
     "Accept" : "Prijať",
     "Refuse" : "Odmietnuť",
     "Leave the team" : "Opustiť tím",
+    "No image file provided" : "Súbor obrázku nebol zadaný",
+    "Invalid file provided" : "Zadaný neplatný súbor",
+    "File is too big" : "Súbor je príliš veľký",
+    "Invalid image" : "Chybný obrázok",
+    "Unknown filetype" : "Neznámy typ súboru",
     "%s" : "%s",
     "Personal team" : "Osobný tím",
     "%s owned by %s" : "%s vlastnené %s",
@@ -166,6 +170,7 @@ OC.L10N.register(
     "No entries found in this folder" : "V tomto priečinku sa nič nenašlo",
     "Name" : "Názov",
     "Size" : "Veľkosť",
-    "Modified" : "Upravené"
+    "Modified" : "Upravené",
+    "Circles App Initialization" : "Inicializácia Aplikácie Kruhy"
 },
 "nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);");

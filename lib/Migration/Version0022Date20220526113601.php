@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Migration;
 
@@ -31,7 +29,6 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 	public function __construct(IDBConnection $connection) {
 	}
 
-
 	/**
 	 * @param IOutput $output
 	 * @param Closure $schemaClosure The `\Closure` returns a `ISchemaWrapper`
@@ -43,7 +40,6 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 	public function changeSchema(IOutput $output, Closure $schemaClosure, array $options): ?ISchemaWrapper {
 		/** @var ISchemaWrapper $schema */
 		$schema = $schemaClosure();
-
 
 		/**
 		 * CIRCLES_CIRCLE
@@ -142,7 +138,6 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 			$table->addIndex(['source']);
 			$table->addIndex(['sanitized_name']);
 		}
-
 
 		/**
 		 * CIRCLES_MEMBER
@@ -256,7 +251,6 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 			$table->addIndex(['contact_id']);
 		}
 
-
 		/**
 		 * CIRCLES_REMOTE
 		 */
@@ -318,7 +312,6 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 			$table->addIndex(['uid']);
 			$table->addIndex(['href']);
 		}
-
 
 		/**
 		 * CIRCLES_EVENT
@@ -387,7 +380,6 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 			$table->addUniqueIndex(['token', 'instance']);
 		}
 
-
 		/**
 		 * CIRCLES_MEMBERSHIP
 		 */
@@ -444,7 +436,6 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 				['inheritance_first', 'inheritance_last', 'circle_id'], 'circles_membership_ifilci'
 			);
 		}
-
 
 		/**
 		 * CIRCLES_TOKEN
@@ -506,7 +497,6 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 			$table->addUniqueIndex(['share_id', 'circle_id', 'single_id', 'member_id', 'token'], 'sicisimit');
 		}
 
-
 		/**
 		 * CIRCLES_MOUNT
 		 */
@@ -566,7 +556,6 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 			$table->addIndex(['circle_id', 'mount_id', 'parent', 'token'], 'circles_mount_cimipt');
 		}
 
-
 		/**
 		 * CIRCLES_MOUNTPOINT
 		 */
@@ -607,7 +596,6 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 			$table->setPrimaryKey(['id']);
 			$table->addIndex(['mount_id', 'single_id'], 'circles_mountpoint_ms');
 		}
-
 
 		/**
 		 * CIRCLES_SHARE_LOCK

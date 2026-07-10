@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Db;
 
@@ -24,7 +22,6 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
  */
 class MountRequest extends MountRequestBuilder {
 	use TStringTools;
-
 
 	/**
 	 * @param Mount $mount
@@ -44,7 +41,6 @@ class MountRequest extends MountRequestBuilder {
 		$qb->executeStatement();
 	}
 
-
 	/**
 	 * @param string $token
 	 */
@@ -55,22 +51,21 @@ class MountRequest extends MountRequestBuilder {
 		$qb->executeStatement();
 	}
 
-
 	/**
-	 * @param IFederatedUser $federatedUser
+	 * @param list<string> $paths
 	 *
 	 * @return Mount[]
 	 * @throws RequestBuilderException
 	 */
-	public function getForUser(IFederatedUser $federatedUser): array {
+	public function getForUser(IFederatedUser $federatedUser, array $paths = [], bool $forChildren = false): array {
 		$qb = $this->getMountSelectSql();
 		$qb->setOptions([CoreQueryBuilder::MOUNT], ['getData' => true]);
 		$qb->leftJoinMember(CoreQueryBuilder::MOUNT);
 		$qb->leftJoinMountpoint(CoreQueryBuilder::MOUNT, $federatedUser);
 		$qb->limitToInitiator(CoreQueryBuilder::MOUNT, $federatedUser, 'circle_id');
+		$qb->limitToMountpoints(CoreQueryBuilder::MOUNT, $paths, $forChildren);
 
 		return $this->getItemsFromRequest($qb);
-
 		//		FederatedUser $federatedUser,
 		//		int $nodeId,
 		//		int $offset,

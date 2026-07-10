@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Command;
 
@@ -34,44 +32,15 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Command
  */
 class CirclesSync extends Base {
-	/** @var SyncService */
-	private $syncService;
-
-	/** @var MigrationService */
-	private $migrationService;
-
-	/** @var OutputService */
-	private $outputService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
-	/**
-	 * CirclesSync constructor.
-	 *
-	 * @param SyncService $syncService
-	 * @param OutputService $outputService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
-		SyncService $syncService,
-		MigrationService $migrationService,
-		OutputService $outputService,
-		ConfigService $configService,
+		private readonly SyncService $syncService,
+		private readonly MigrationService $migrationService,
+		private readonly OutputService $outputService,
+		private readonly ConfigService $configService,
 	) {
 		parent::__construct();
-
-		$this->syncService = $syncService;
-		$this->migrationService = $migrationService;
-		$this->outputService = $outputService;
-		$this->configService = $configService;
 	}
 
-
-	/**
-	 *
-	 */
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:sync')
@@ -86,7 +55,6 @@ class CirclesSync extends Base {
 			->addOption('remotes', '', InputOption::VALUE_NONE, 'Sync Remotes')
 			->addOption('global-scale', '', InputOption::VALUE_NONE, 'Sync GlobalScale');
 	}
-
 
 	/**
 	 * @param InputInterface $input
@@ -130,7 +98,6 @@ class CirclesSync extends Base {
 
 		return 0;
 	}
-
 
 	private function filterSync(InputInterface $input): int {
 		$sync = 0;

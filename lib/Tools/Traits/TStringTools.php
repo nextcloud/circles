@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Tools\Traits;
 
@@ -16,7 +14,6 @@ use Exception;
 
 trait TStringTools {
 	use TArrayTools;
-
 
 	/**
 	 * @param int $length
@@ -31,13 +28,12 @@ trait TStringTools {
 		for ($i = 0; $i < $length; $i++) {
 			try {
 				$str .= $chars[random_int(0, $max - 2)];
-			} catch (Exception $e) {
+			} catch (Exception) {
 			}
 		}
 
 		return $str;
 	}
-
 
 	/**
 	 * Generate uuid: 2b5a7a87-8db1-445f-a17b-405790f91c80
@@ -63,7 +59,6 @@ trait TStringTools {
 
 		return $uuid;
 	}
-
 
 	/**
 	 * @param string $uuid
@@ -117,7 +112,6 @@ trait TStringTools {
 		return substr($str1, 0, $i);
 	}
 
-
 	/**
 	 * @param string $line
 	 * @param array $params
@@ -133,7 +127,6 @@ trait TStringTools {
 		return $line;
 	}
 
-
 	/**
 	 * @param int $words
 	 *
@@ -142,12 +135,11 @@ trait TStringTools {
 	public function generateRandomSentence(int $words = 5): string {
 		$sentence = [];
 		for ($i = 0; $i < $words; $i++) {
-			$sentence[] = $this->generateRandomWord(rand(2, 12));
+			$sentence[] = $this->generateRandomWord(random_int(2, 12));
 		}
 
 		return implode(' ', $sentence);
 	}
-
 
 	/**
 	 * @param int $length
@@ -167,23 +159,16 @@ trait TStringTools {
 		return implode('', $word);
 	}
 
-
-	/**
-	 * @param int $bytes
-	 *
-	 * @return string
-	 */
 	public function humanReadable(int $bytes): string {
 		if ($bytes == 0) {
 			return '0.00 B';
 		}
 
 		$s = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
-		$e = floor(log($bytes, 1024));
+		$e = (int)floor(log($bytes, 1024));
 
-		return (string)round((float)$bytes / pow(1024, $e), 2) . ' ' . $s[$e];
+		return (string)round($bytes / (1024 ** $e), 2) . ' ' . $s[$e];
 	}
-
 
 	/**
 	 * @param int $first
@@ -242,10 +227,10 @@ trait TStringTools {
 		}
 
 		return $f->diff($s)->format(
-			'%a ' . $days .
-			', %h ' . $hours .
-			', %i ' . $minutes .
-			' and %s ' . $seconds
+			'%a ' . $days
+			. ', %h ' . $hours
+			. ', %i ' . $minutes
+			. ' and %s ' . $seconds
 		);
 	}
 }

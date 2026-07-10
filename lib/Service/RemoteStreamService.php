@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
@@ -54,26 +53,11 @@ class RemoteStreamService extends NCSignature {
 	use TStringTools;
 	use TNCWellKnown;
 
-
 	public const UPDATE_DATA = 'data';
 	public const UPDATE_ITEM = 'item';
 	public const UPDATE_TYPE = 'type';
 	public const UPDATE_INSTANCE = 'instance';
 	public const UPDATE_HREF = 'href';
-
-
-	/** @var IURLGenerator */
-	private $urlGenerator;
-
-	/** @var RemoteRequest */
-	private $remoteRequest;
-
-	/** @var InterfaceService */
-	private $interfaceService;
-
-	/** @var ConfigService */
-	private $configService;
-
 
 	/**
 	 * RemoteStreamService constructor.
@@ -85,19 +69,13 @@ class RemoteStreamService extends NCSignature {
 	 */
 	public function __construct(
 		private readonly IConfig $config,
-		IURLGenerator $urlGenerator,
-		RemoteRequest $remoteRequest,
-		InterfaceService $interfaceService,
-		ConfigService $configService,
+		private IURLGenerator $urlGenerator,
+		private RemoteRequest $remoteRequest,
+		private InterfaceService $interfaceService,
+		private ConfigService $configService,
 	) {
 		$this->setup('app', 'circles');
-
-		$this->urlGenerator = $urlGenerator;
-		$this->remoteRequest = $remoteRequest;
-		$this->interfaceService = $interfaceService;
-		$this->configService = $configService;
 	}
-
 
 	/**
 	 * Returns the Signatory model for the Circles app.
@@ -168,7 +146,6 @@ class RemoteStreamService extends NCSignature {
 		return $app;
 	}
 
-
 	/**
 	 * Reset the Signatory (and the Identity) for the Circles app.
 	 */
@@ -177,10 +154,9 @@ class RemoteStreamService extends NCSignature {
 			$app = $this->getAppSignatory();
 
 			$this->removeSimpleSignatory($app);
-		} catch (SignatoryException $e) {
+		} catch (SignatoryException) {
 		}
 	}
-
 
 	/**
 	 * shortcut to requestRemoteInstance that return result if available, or exception.
@@ -220,7 +196,6 @@ class RemoteStreamService extends NCSignature {
 
 		throw $this->getFederatedItemExceptionFromResult($result);
 	}
-
 
 	/**
 	 * Send a request to a remote instance, based on:
@@ -275,7 +250,6 @@ class RemoteStreamService extends NCSignature {
 		return $signedRequest;
 	}
 
-
 	/**
 	 * get the value of an entry from the Signatory of the RemoteInstance.
 	 *
@@ -299,7 +273,6 @@ class RemoteStreamService extends NCSignature {
 		return $this->feedStringWithParams($value, $params);
 	}
 
-
 	/**
 	 * get RemoteInstance with confirmed and known identity from database.
 	 *
@@ -317,7 +290,6 @@ class RemoteStreamService extends NCSignature {
 
 		return $remoteInstance;
 	}
-
 
 	/**
 	 * Add a remote instance, based on the address
@@ -340,7 +312,6 @@ class RemoteStreamService extends NCSignature {
 		return $remoteInstance;
 	}
 
-
 	/**
 	 * retrieve Signatory.
 	 *
@@ -355,7 +326,7 @@ class RemoteStreamService extends NCSignature {
 		if (!$refresh) {
 			try {
 				return $this->remoteRequest->getFromHref(NCSignatory::removeFragment($keyId));
-			} catch (RemoteNotFoundException $e) {
+			} catch (RemoteNotFoundException) {
 				throw new SignatoryException();
 			}
 		}
@@ -374,7 +345,6 @@ class RemoteStreamService extends NCSignature {
 
 		return $remoteInstance;
 	}
-
 
 	/**
 	 * Add a remote instance, based on the address
@@ -416,12 +386,11 @@ class RemoteStreamService extends NCSignature {
 			} else {
 				throw new RemoteAlreadyExistsException('instance is already known');
 			}
-		} catch (RemoteNotFoundException $e) {
+		} catch (RemoteNotFoundException) {
 		}
 
 		$this->remoteRequest->save($remoteInstance);
 	}
-
 
 	/**
 	 * @param string $address
@@ -440,7 +409,6 @@ class RemoteStreamService extends NCSignature {
 		throw new RemoteNotFoundException();
 	}
 
-
 	/**
 	 * @param string $instance
 	 * @param string $check
@@ -456,7 +424,6 @@ class RemoteStreamService extends NCSignature {
 
 		return false;
 	}
-
 
 	/**
 	 * Confirm the Auth of a RemoteInstance, based on the result from a request
@@ -485,7 +452,6 @@ class RemoteStreamService extends NCSignature {
 		}
 	}
 
-
 	/**
 	 * @param NCRequestResult $result
 	 *
@@ -502,13 +468,12 @@ class RemoteStreamService extends NCSignature {
 			$test = new ReflectionClass($class);
 			$this->confirmFederatedItemExceptionFromClass($test);
 			$e = $class;
-		} catch (ReflectionException|FederatedItemException $_e) {
+		} catch (ReflectionException|FederatedItemException) {
 			$e = $this->getFederatedItemExceptionFromStatus($result->getStatusCode());
 		}
 
 		return new $e($message, $code);
 	}
-
 
 	/**
 	 * @param ReflectionClass $class
@@ -530,7 +495,6 @@ class RemoteStreamService extends NCSignature {
 		}
 	}
 
-
 	/**
 	 * @param int $statusCode
 	 *
@@ -546,7 +510,6 @@ class RemoteStreamService extends NCSignature {
 		return FederatedItemException::class;
 	}
 
-
 	/**
 	 * TODO: confirm if method is really needed
 	 *
@@ -559,7 +522,7 @@ class RemoteStreamService extends NCSignature {
 	public function confirmValidRemote(RemoteInstance $remote, ?RemoteInstance &$stored = null): void {
 		try {
 			$stored = $this->remoteRequest->getFromHref($remote->getId());
-		} catch (RemoteNotFoundException $e) {
+		} catch (RemoteNotFoundException) {
 			if ($remote->getInstance() === '') {
 				throw new RemoteNotFoundException();
 			}
@@ -571,7 +534,6 @@ class RemoteStreamService extends NCSignature {
 			throw new RemoteUidException();
 		}
 	}
-
 
 	/**
 	 * TODO: check if this method is not useless

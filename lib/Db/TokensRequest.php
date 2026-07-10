@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-
 namespace OCA\Circles\Db;
 
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
@@ -33,7 +32,7 @@ class TokensRequest extends TokensRequestBuilder {
 		$this->limitToToken($qb, $token);
 
 		$cursor = $qb->executeQuery();
-		$data = $cursor->fetch();
+		$data = $cursor->fetchAssociative();
 		$cursor->closeCursor();
 		if ($data === false) {
 			throw new TokenDoesNotExistException('Unknown share token');
@@ -41,7 +40,6 @@ class TokensRequest extends TokensRequestBuilder {
 
 		return $this->parseTokensSelectSql($data);
 	}
-
 
 	/**
 	 * @param string $shareId
@@ -58,7 +56,7 @@ class TokensRequest extends TokensRequestBuilder {
 		$this->limitToCircleId($qb, $circleId);
 
 		$cursor = $qb->executeQuery();
-		$data = $cursor->fetch();
+		$data = $cursor->fetchAssociative();
 		$cursor->closeCursor();
 		if ($data === false) {
 			throw new TokenDoesNotExistException('Unknown share token');
@@ -66,7 +64,6 @@ class TokensRequest extends TokensRequestBuilder {
 
 		return $this->parseTokensSelectSql($data);
 	}
-
 
 	/**
 	 * @param DeprecatedMember $member
@@ -80,14 +77,13 @@ class TokensRequest extends TokensRequestBuilder {
 
 		$shares = [];
 		$cursor = $qb->executeQuery();
-		while ($data = $cursor->fetch()) {
+		while ($data = $cursor->fetchAssociative()) {
 			$shares[] = $this->parseTokensSelectSql($data);
 		}
 		$cursor->closeCursor();
 
 		return $shares;
 	}
-
 
 	/**
 	 * @param DeprecatedMember $member
@@ -124,7 +120,6 @@ class TokensRequest extends TokensRequestBuilder {
 		return $this->getTokenFromMember($shareId, $member->getCircleId(), $member->getUserId());
 	}
 
-
 	/**
 	 * @param int $shareId
 	 */
@@ -134,7 +129,6 @@ class TokensRequest extends TokensRequestBuilder {
 
 		$qb->executeStatement();
 	}
-
 
 	/**
 	 * @param DeprecatedMember $member
@@ -146,7 +140,6 @@ class TokensRequest extends TokensRequestBuilder {
 
 		$qb->executeStatement();
 	}
-
 
 	public function updateSinglePassword(string $circleId, string $password) {
 		$qb = $this->getTokensUpdateSql();

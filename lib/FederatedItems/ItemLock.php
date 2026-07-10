@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\FederatedItems;
 
@@ -30,25 +28,19 @@ class ItemLock implements
 	IFederatedItemDataRequestOnly {
 	use TStringTools;
 
-
 	public const STATUS_LOCKED = 'locked';
 	public const STATUS_ALREADY_LOCKED = 'already_locked';
 	public const STATUS_INSTANCE_LOCKED = 'instance_locked';
-
-
-	/** @var ShareLockRequest */
-	private $shareLockRequest;
-
 
 	/**
 	 * ItemLock constructor.
 	 *
 	 * @param ShareLockRequest $shareLockRequest
 	 */
-	public function __construct(ShareLockRequest $shareLockRequest) {
-		$this->shareLockRequest = $shareLockRequest;
+	public function __construct(
+		private ShareLockRequest $shareLockRequest,
+	) {
 	}
-
 
 	/**
 	 * create lock in db if the lock does not exist for this circle.
@@ -73,7 +65,7 @@ class ItemLock implements
 			} else {
 				$status = self::STATUS_INSTANCE_LOCKED;
 			}
-		} catch (FederatedShareNotFoundException $e) {
+		} catch (FederatedShareNotFoundException) {
 			$share = new FederatedShare();
 			$share->setItemId($itemId);
 			$share->setCircleId($event->getCircle()->getSingleId());
@@ -90,7 +82,6 @@ class ItemLock implements
 		$event->setOutcome(['federatedShare' => $known]);
 	}
 
-
 	/**
 	 * @param FederatedEvent $event
 	 */
@@ -99,7 +90,6 @@ class ItemLock implements
 		//
 		//		$event->setResult(new SimpleDataStore(['shares' => 'ok']));
 	}
-
 
 	/**
 	 * @param FederatedEvent $event

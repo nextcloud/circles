@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s shared multiple files with you.",
     "Boot up" : "Boot up",
     "Nextcloud Initialization" : "Nextcloud Initialization",
-    "Circles App Initialization" : "Circles App Initialization",
     "Fresh installation status" : "Fresh installation status",
     "Building Local Database" : "Building Local Database",
     "Adding local users and moderators" : "Adding local users and moderators",
@@ -124,6 +123,11 @@ OC.L10N.register(
     "Accept" : "ຍອມຮັບ",
     "Refuse" : "Refuse",
     "Leave the team" : "Leave the team",
+    "No image file provided" : "No image file provided",
+    "Invalid file provided" : "ໄຟລ໌ທີ່ໃຫ້ມາບໍ່ຖືກຕ້ອງ",
+    "File is too big" : "ໄຟລ໌ມີຂະໜາດໃຫຍ່ເກີນໄປ",
+    "Invalid image" : "ບໍ່ມີຮູບພາບ",
+    "Unknown filetype" : "ບໍ່ຮູ້ປະເພດຂອງຟາຍ",
     "%s" : "%s",
     "Personal team" : "Personal team",
     "%s owned by %s" : "%s owned by %s",
@@ -151,6 +155,7 @@ OC.L10N.register(
     "No entries found in this folder" : "No entries found in this folder",
     "Name" : "ຊື່",
     "Size" : "ຂະຫນາດ",
-    "Modified" : "\"{name}\" ແມ່ນຊື່ໄຟລ໌ທີ່ບໍ່ຖືກຕ້ອງ."
+    "Modified" : "\"{name}\" ແມ່ນຊື່ໄຟລ໌ທີ່ບໍ່ຖືກຕ້ອງ.",
+    "Circles App Initialization" : "Circles App Initialization"
 },
 "nplurals=1; plural=0;");

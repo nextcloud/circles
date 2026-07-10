@@ -24,7 +24,7 @@ const MAX_AVATARS = 5
 		:class="$style.teamCard"
 		:to="{ name: 'team', params: { teamId: props.team.id } }">
 		<div :class="$style.teamCardHead">
-			<TeamAvatar :display-name="team.displayName" :size="44" />
+			<TeamAvatar :displayName="team.displayName" :size="44" />
 			<span :class="$style.teamCardName">{{ team.displayName }}</span>
 		</div>
 
@@ -40,10 +40,10 @@ const MAX_AVATARS = 5
 					:class="$style.teamCardMember">
 					<NcAvatar
 						:user="member.isUser ? member.id : undefined"
-						:display-name="member.displayName"
-						:is-no-user="!member.isUser"
+						:displayName="member.displayName"
+						:isNoUser="!member.isUser"
 						:size="28"
-						hide-status />
+						hideStatus />
 				</li>
 				<li v-if="team.memberCount > team.members.length" :class="$style.teamCardMemberMore">
 					+{{ team.memberCount - team.members.length }}

@@ -4,6 +4,7 @@
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
+
 namespace OCA\Circles;
 
 use OCA\Circles\Model\DeprecatedCircle;
@@ -16,12 +17,10 @@ interface IBroadcaster {
 	 */
 	public function init();
 
-
 	/**
 	 * Init the broadcaster
 	 */
 	public function end();
-
 
 	/**
 	 * broadcast a creation of a Share to a circle.
@@ -31,7 +30,6 @@ interface IBroadcaster {
 	 */
 	public function createShareToCircle(SharingFrame $frame, DeprecatedCircle $circle);
 
-
 	/**
 	 * broadcast an edition of $share to $circleId.
 	 *
@@ -39,7 +37,6 @@ interface IBroadcaster {
 	 * @param DeprecatedCircle $circle
 	 */
 	public function editShareToCircle(SharingFrame $frame, DeprecatedCircle $circle);
-
 
 	/**
 	 * broadcast a destruction of $share to $circleId.
@@ -49,7 +46,6 @@ interface IBroadcaster {
 	 */
 	public function deleteShareToCircle(SharingFrame $frame, DeprecatedCircle $circle);
 
-
 	/**
 	 * broadcast a creation of a Share to a $userId.
 	 *
@@ -58,7 +54,6 @@ interface IBroadcaster {
 	 */
 	public function createShareToMember(SharingFrame $frame, DeprecatedMember $member);
 
-
 	/**
 	 * broadcast an edition of $share to $userId.
 	 *
@@ -66,7 +61,6 @@ interface IBroadcaster {
 	 * @param DeprecatedMember $member
 	 */
 	public function editShareToMember(SharingFrame $frame, DeprecatedMember $member);
-
 
 	/**
 	 * broadcast a destruction of $share to $userId.

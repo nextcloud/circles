@@ -34,8 +34,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CirclesEdit extends Base {
 	public function __construct(
-		private FederatedUserService $federatedUserService,
-		private CircleService $circleService,
+		private readonly FederatedUserService $federatedUserService,
+		private readonly CircleService $circleService,
 	) {
 		parent::__construct();
 	}
@@ -85,29 +85,22 @@ class CirclesEdit extends Base {
 				false
 			);
 
-			switch ($edit) {
-				case 'displayname':
-					$outcome = $this->circleService->updateName($circleId, $newValue);
-					break;
-
-				case 'description':
-					$outcome = $this->circleService->updateDescription($circleId, $newValue);
-					break;
-
-				default:
-					throw new InvalidArgumentException('edit can only be \'displayName\' or \'description\'');
-			}
+			$outcome = match ($edit) {
+				'displayname' => $this->circleService->updateName($circleId, $newValue),
+				'description' => $this->circleService->updateDescription($circleId, $newValue),
+				default => throw new InvalidArgumentException('edit can only be \'displayName\' or \'description\''),
+			};
 		} catch (FederatedItemException $e) {
 			if ($input->getOption('status-code')) {
 				throw new FederatedItemException(
-					' [' . get_class($e) . ', ' . ((string)$e->getStatus()) . ']' . "\n" . $e->getMessage()
+					' [' . $e::class . ', ' . ((string)$e->getStatus()) . ']' . "\n" . $e->getMessage()
 				);
 			}
 
 			throw $e;
 		}
 
-		if (strtolower($input->getOption('output')) === 'json') {
+		if (strtolower((string)$input->getOption('output')) === 'json') {
 			$output->writeln(json_encode($outcome, JSON_PRETTY_PRINT));
 		}
 

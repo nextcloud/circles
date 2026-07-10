@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Service;
 
@@ -36,7 +34,6 @@ class ConfigService {
 	use TStringTools;
 	use TArrayTools;
 	use TNCLogger;
-
 
 	public const FRONTAL_CLOUD_BASE = 'frontal_cloud_base';
 	public const FRONTAL_CLOUD_ID = 'frontal_cloud_id';
@@ -106,7 +103,6 @@ class ConfigService {
 	public const GS_LOOKUP_INSTANCES = '/instances';
 	public const GS_LOOKUP_USERS = '/users';
 
-
 	// deprecated -- removing in NC25
 	public const CIRCLES_CONTACT_BACKEND = 'contact_backend';
 	public const CIRCLES_ACCOUNTS_ONLY = 'accounts_only'; // only UserType=1
@@ -114,7 +110,6 @@ class ConfigService {
 
 	public const FORCE_NC_BASE = 'force_nc_base';
 	public const TEST_NC_BASE = 'test_nc_base';
-
 
 	private static $defaults = [
 		self::FRONTAL_CLOUD_BASE => '',
@@ -186,11 +181,9 @@ class ConfigService {
 		self::CIRCLES_SEARCH_FROM_COLLABORATOR => '0',
 	];
 
-
 	public const DISPLAY_NONE = 0;
 	public const DISPLAY_AT = 1;
 	public const DISPLAY_PARENTHESIS = 2;
-
 
 	/**
 	 * ConfigService constructor.
@@ -207,7 +200,6 @@ class ConfigService {
 	) {
 		$this->setup('app', Application::APP_ID);
 	}
-
 
 	/**
 	 * Get a value by key
@@ -246,7 +238,6 @@ class ConfigService {
 		return ($this->getAppValueInt($key) === 1);
 	}
 
-
 	/**
 	 * Set a value by key
 	 *
@@ -259,14 +250,12 @@ class ConfigService {
 		$this->appConfig->setAppValueString($key, $value);
 	}
 
-
 	/**
 	 *
 	 */
 	public function unsetAppConfig(): void {
 		$this->appConfig->deleteAppValues();
 	}
-
 
 	/**
 	 * Get available hosts
@@ -276,7 +265,6 @@ class ConfigService {
 	public function getAvailableHosts(): array {
 		return $this->config->getSystemValue('trusted_domains', []);
 	}
-
 
 	/**
 	 * Get a user value by key and user
@@ -293,7 +281,6 @@ class ConfigService {
 		return $this->userConfig->getValueString($userId, 'core', $key, $default);
 	}
 
-
 	/**
 	 * @return bool
 	 * @deprecated
@@ -303,7 +290,6 @@ class ConfigService {
 				&& $this->getAppValue(ConfigService::CIRCLES_CONTACT_BACKEND) !== '');
 	}
 
-
 	/**
 	 * @return int
 	 * @deprecated
@@ -311,7 +297,6 @@ class ConfigService {
 	public function contactsBackendType(): int {
 		return (int)$this->getAppValue(ConfigService::CIRCLES_CONTACT_BACKEND);
 	}
-
 
 	/**
 	 * true if:
@@ -329,7 +314,6 @@ class ConfigService {
 		return (!$this->getBool('password_single_enabled', $circle->getSettings(), false)
 				|| $this->get('password_single', $circle->getSettings()) === '');
 	}
-
 
 	/**
 	 * true if:
@@ -349,7 +333,6 @@ class ConfigService {
 		return ($this->getBool('password_single_enabled', $circle->getSettings(), false)
 				&& $this->get('password_single', $circle->getSettings()) !== '');
 	}
-
 
 	/**
 	 * true if:
@@ -378,7 +361,6 @@ class ConfigService {
 		return $this->getBool('enforce_password', $circle->getSettings(), false);
 	}
 
-
 	/**
 	 * // TODO: fetch data from somewhere else than hard coded...
 	 *
@@ -393,7 +375,6 @@ class ConfigService {
 		];
 	}
 
-
 	/**
 	 * @return bool
 	 */
@@ -404,7 +385,6 @@ class ConfigService {
 
 		return $this->config->getSystemValueBool('gs.enabled', false);
 	}
-
 
 	/**
 	 * @return string
@@ -420,14 +400,12 @@ class ConfigService {
 		return $lookup;
 	}
 
-
 	/**
 	 * @return array
 	 */
 	public function getGSSMockup(): array {
 		return $this->config->getSystemValue('gss.mockup', []);
 	}
-
 
 	/**
 	 * @param string $type
@@ -437,19 +415,12 @@ class ConfigService {
 	public function getGSInfo(string $type): string {
 		$clef = $this->config->getSystemValue('gss.jwt.key', '');
 		$mode = $this->config->getSystemValue('gss.mode', '');
-
-		switch ($type) {
-			case self::GS_MODE:
-				return $mode;
-
-			case self::GS_KEY:
-				return $clef;
-		}
-
-
-		return '';
+		return match ($type) {
+			self::GS_MODE => $mode,
+			self::GS_KEY => $clef,
+			default => '',
+		};
 	}
-
 
 	/**
 	 * @return array
@@ -465,18 +436,14 @@ class ConfigService {
 		];
 	}
 
-
 	/**
 	 * @return array
 	 */
 	public function getTrustedDomains(): array {
 		return array_map(
-			function (string $address) {
-				return strtolower($address);
-			}, $this->config->getSystemValue('trusted_domains', [])
+			strtolower(...), $this->config->getSystemValue('trusted_domains', [])
 		);
 	}
-
 
 	/**
 	 * @return string
@@ -501,7 +468,7 @@ class ConfigService {
 			$cliUrl = $this->config->getSystemValue('overwrite.cli.url', '');
 		}
 
-		$loopback = parse_url($cliUrl);
+		$loopback = parse_url((string)$cliUrl);
 		if (!is_array($loopback) || !array_key_exists('host', $loopback)) {
 			return $cliUrl;
 		}
@@ -555,7 +522,6 @@ class ConfigService {
 		return rtrim($base, '/') . $this->linkToRoute($route, $args);
 	}
 
-
 	/**
 	 * - must be configured using INTERNAL_CLOUD_ID
 	 * - returns host+port, does not specify any protocol
@@ -568,7 +534,6 @@ class ConfigService {
 	public function getInternalInstance(): string {
 		return $this->getAppValue(self::INTERNAL_CLOUD_ID);
 	}
-
 
 	/**
 	 * - must be configured using FRONTAL_CLOUD_ID
@@ -592,29 +557,21 @@ class ConfigService {
 		return $frontalCloudId;
 	}
 
-
 	/**
 	 * @param int $iface
 	 *
 	 * @return string
 	 */
 	public function getIfaceInstance(int $iface): string {
-		switch ($iface) {
-			case InterfaceService::IFACE0:
-				return $this->getAppValue(self::IFACE0_CLOUD_ID);
-			case InterfaceService::IFACE1:
-				return $this->getAppValue(self::IFACE1_CLOUD_ID);
-			case InterfaceService::IFACE2:
-				return $this->getAppValue(self::IFACE2_CLOUD_ID);
-			case InterfaceService::IFACE3:
-				return $this->getAppValue(self::IFACE3_CLOUD_ID);
-			case InterfaceService::IFACE4:
-				return $this->getAppValue(self::IFACE4_CLOUD_ID);
-		}
-
-		return '';
+		return match ($iface) {
+			InterfaceService::IFACE0 => $this->getAppValue(self::IFACE0_CLOUD_ID),
+			InterfaceService::IFACE1 => $this->getAppValue(self::IFACE1_CLOUD_ID),
+			InterfaceService::IFACE2 => $this->getAppValue(self::IFACE2_CLOUD_ID),
+			InterfaceService::IFACE3 => $this->getAppValue(self::IFACE3_CLOUD_ID),
+			InterfaceService::IFACE4 => $this->getAppValue(self::IFACE4_CLOUD_ID),
+			default => '',
+		};
 	}
-
 
 	/**
 	 * @param string $instance
@@ -641,7 +598,6 @@ class ConfigService {
 
 		return (in_array($instance, $this->getTrustedDomains()));
 	}
-
 
 	/**
 	 * @param IFederatedUser $federatedUser
@@ -680,17 +636,12 @@ class ConfigService {
 		if ($this->isLocalInstance($instance)) {
 			return '';
 		}
-
-		switch ($type) {
-			case self::DISPLAY_AT:
-				return '@' . $instance;
-			case self::DISPLAY_PARENTHESIS:
-				return '(' . $instance . ')';
-		}
-
-		return $instance;
+		return match ($type) {
+			self::DISPLAY_AT => '@' . $instance,
+			self::DISPLAY_PARENTHESIS => '(' . $instance . ')',
+			default => $instance,
+		};
 	}
-
 
 	/**
 	 * - Create route using getLoopbackAddress()
@@ -710,7 +661,6 @@ class ConfigService {
 		$request->basedOnUrl($this->getLoopbackPath($route, $args));
 	}
 
-
 	/**
 	 * @param NCRequest $request
 	 */
@@ -722,7 +672,6 @@ class ConfigService {
 		$request->setFollowLocation(true);
 		$request->setTimeout(5);
 	}
-
 
 	/**
 	 * @param string $route
@@ -740,7 +689,7 @@ class ConfigService {
 				$path = $this->config->getSystemValueString('htaccess.RewriteBase', '/') . substr($path, 11);
 			}
 
-			$knownPath = parse_url($this->config->getSystemValue('overwrite.cli.url'), PHP_URL_PATH);
+			$knownPath = parse_url((string)$this->config->getSystemValue('overwrite.cli.url'), PHP_URL_PATH);
 		} else {
 			$knownPath = OC::$WEBROOT;
 		}
@@ -758,7 +707,6 @@ class ConfigService {
 		return $path;
 	}
 
-
 	/**
 	 * Enforce or Block circle's config/type
 	 *
@@ -772,7 +720,7 @@ class ConfigService {
 	}
 
 	public function isFederatedTeamsEnabled(): bool {
-		return $this->appConfig->getAppValueBool(ConfigLexicon::FEDERATED_TEAMS_ENABLED) &&
-			$this->appConfig->hasAppKey(ConfigLexicon::FEDERATED_TEAMS_FRONTAL, true);
+		return $this->appConfig->getAppValueBool(ConfigLexicon::FEDERATED_TEAMS_ENABLED)
+			&& $this->appConfig->hasAppKey(ConfigLexicon::FEDERATED_TEAMS_FRONTAL, true);
 	}
 }

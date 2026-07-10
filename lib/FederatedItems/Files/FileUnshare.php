@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\FederatedItems\Files;
 
@@ -39,17 +37,6 @@ class FileUnshare implements
 	use TStringTools;
 	use TNCLogger;
 
-
-	/** @var MountRequest */
-	private $mountRequest;
-
-	/** @var EventService */
-	private $eventService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	/**
 	 * FileUnshare constructor.
 	 *
@@ -58,15 +45,11 @@ class FileUnshare implements
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		MountRequest $mountRequest,
-		EventService $eventService,
-		ConfigService $configService,
+		private MountRequest $mountRequest,
+		private EventService $eventService,
+		private ConfigService $configService,
 	) {
-		$this->mountRequest = $mountRequest;
-		$this->eventService = $eventService;
-		$this->configService = $configService;
 	}
-
 
 	/**
 	 * @param FederatedEvent $event
@@ -75,7 +58,6 @@ class FileUnshare implements
 		// TODO: check and improve
 		// TODO: Could we use a share lock ?
 	}
-
 
 	/**
 	 * @param FederatedEvent $event
@@ -95,7 +77,6 @@ class FileUnshare implements
 		$this->mountRequest->delete($wrappedShare->getToken());
 		$this->eventService->federatedShareDeleted($wrappedShare);
 	}
-
 
 	/**
 	 * @param FederatedEvent $event

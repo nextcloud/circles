@@ -9,6 +9,8 @@ OC.L10N.register(
     "Admin" : "Administrator",
     "Owner" : "Vlasnik",
     "Accept" : "Prihvati",
+    "Invalid image" : "Nevažeća datoteka",
+    "Unknown filetype" : "Nepoznat tip datoteke",
     "Name" : "Ime",
     "Size" : "Veličina",
     "Modified" : "Izmijenjeno"

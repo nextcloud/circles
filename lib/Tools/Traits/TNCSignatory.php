@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Tools\Traits;
 
@@ -20,7 +18,6 @@ use OCA\Circles\Tools\Model\NCSignatory;
 
 trait TNCSignatory {
 	use TNCRequest;
-
 
 	/**
 	 * return Signatory by its Id from cache or from direct request.
@@ -42,7 +39,6 @@ trait TNCSignatory {
 
 		return $signatory;
 	}
-
 
 	/**
 	 * @param NCSignatory $signatory
@@ -76,7 +72,6 @@ trait TNCSignatory {
 		}
 	}
 
-
 	/**
 	 * @param NCSignatory $signatory
 	 * @param array $json
@@ -100,11 +95,10 @@ trait TNCSignatory {
 				$this->debug('invalid format', ['signatory' => $signatory, 'keyId' => $keyId]);
 				throw new SignatoryException('invalid format');
 			}
-		} catch (InvalidOriginException $e) {
+		} catch (InvalidOriginException) {
 			throw new SignatoryException('invalid origin');
 		}
 	}
-
 
 	/**
 	 * @param string $keyId
@@ -120,7 +114,6 @@ trait TNCSignatory {
 
 		throw new InvalidOriginException('cannot retrieve origin from ' . $keyId);
 	}
-
 
 	/**
 	 * @param NCSignatory $signatory
@@ -149,12 +142,7 @@ trait TNCSignatory {
 		$signatory->setPrivateKey($privateKey);
 	}
 
-
 	/**
-	 * @param string $clear
-	 * @param NCSignatory $signatory
-	 *
-	 * @return string
 	 * @throws SignatoryException
 	 */
 	public function signString(string $clear, NCSignatory $signatory): string {
@@ -168,13 +156,7 @@ trait TNCSignatory {
 		return base64_encode($signed);
 	}
 
-
 	/**
-	 * @param string $clear
-	 * @param string $signed
-	 * @param string $publicKey
-	 * @param string $algo
-	 *
 	 * @throws SignatureException
 	 */
 	public function verifyString(

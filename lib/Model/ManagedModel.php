@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Model;
 
@@ -22,10 +20,8 @@ use OCP\Server;
 class ManagedModel {
 	public const ID_LENGTH = 31;
 
-
 	/** @var ModelManager */
 	private $modelManager;
-
 
 	/**
 	 * @return ModelManager
@@ -37,7 +33,6 @@ class ManagedModel {
 
 		return $this->modelManager;
 	}
-
 
 	/** @noinspection PhpPossiblePolymorphicInvocationInspection */
 	public function importFromIFederatedUser(IFederatedUser $orig): void {

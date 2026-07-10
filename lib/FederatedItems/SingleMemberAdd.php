@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\FederatedItems;
 
@@ -90,7 +88,6 @@ class SingleMemberAdd implements
 	) {
 	}
 
-
 	/**
 	 * @param FederatedEvent $event
 	 *
@@ -119,7 +116,6 @@ class SingleMemberAdd implements
 		$this->eventService->memberPreparing($event);
 	}
 
-
 	/**
 	 * @param FederatedEvent $event
 	 *
@@ -143,7 +139,6 @@ class SingleMemberAdd implements
 		$this->membershipService->updatePopulation($event->getCircle());
 	}
 
-
 	/**
 	 * @param FederatedEvent $event
 	 * @param array $results
@@ -156,7 +151,6 @@ class SingleMemberAdd implements
 			$this->eventService->memberAdded($event, $results);
 		}
 	}
-
 
 	/**
 	 * @param FederatedEvent $event
@@ -192,7 +186,7 @@ class SingleMemberAdd implements
 					$member->getUserType()
 				);
 			}
-		} catch (MemberNotFoundException $e) {
+		} catch (MemberNotFoundException) {
 			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[120], 120);
 		}
 
@@ -229,8 +223,8 @@ class SingleMemberAdd implements
 			}
 
 			$remoteInstance = $this->remoteStreamService->getCachedRemoteInstance($member->getInstance());
-			if (($remoteInstance->getInterface() === InterfaceService::IFACE_FRONTAL) &&
-				!$this->appConfig->getAppValueBool(ConfigLexicon::FEDERATED_TEAMS_ENABLED)) {
+			if (($remoteInstance->getInterface() === InterfaceService::IFACE_FRONTAL)
+				&& !$this->appConfig->getAppValueBool(ConfigLexicon::FEDERATED_TEAMS_ENABLED)) {
 				throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[133], 133);
 			}
 		}
@@ -260,7 +254,6 @@ class SingleMemberAdd implements
 		return $member;
 	}
 
-
 	/**
 	 * @param Circle $circle
 	 * @param Member $member
@@ -281,20 +274,18 @@ class SingleMemberAdd implements
 						}
 
 						return;
-
 					case Member::STATUS_REQUEST:
 						$member->setLevel(Member::LEVEL_MEMBER);
 						$member->setStatus(Member::STATUS_MEMBER);
 
 						return;
-
 					case Member::STATUS_INVITED:
 						throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[123], 123);
 				}
 			}
 
 			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[122], 122);
-		} catch (MemberNotFoundException $e) {
+		} catch (MemberNotFoundException) {
 			$member->setId($this->token(ManagedModel::ID_LENGTH));
 
 			if ($circle->isConfig(Circle::CFG_INVITE)
@@ -307,7 +298,6 @@ class SingleMemberAdd implements
 			}
 		}
 	}
-
 
 	/**
 	 * @param FederatedEvent $event

@@ -3,17 +3,25 @@
 version: 2
 updates:
 - package-ecosystem: composer
-  directory: "/"
+  directories:
+  - /
+  - /vendor-bin/cs-fixer
+  - /vendor-bin/phpunit
+  - /vendor-bin/psalm
+  - /vendor-bin/rector
   schedule:
     interval: weekly
     day: saturday
     time: "03:00"
     timezone: Europe/Paris
+  cooldown:
+    default-days: 10
   labels:
     - "3. to review"
     - "dependencies"
   reviewers:
     - "ArtificialOwl"
+    - "cristianscheid"
 
 - package-ecosystem: npm
   directory: "/"
@@ -22,9 +30,78 @@ updates:
     day: saturday
     time: "03:00"
     timezone: Europe/Paris
+  cooldown:
+    default-days: 10
   open-pull-requests-limit: 10
   labels:
     - "3. to review"
     - "dependencies"
   reviewers:
     - "ArtificialOwl"
+    - "cristianscheid"
+
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: weekly
+    day: saturday
+    time: "03:00"
+    timezone: Europe/Paris
+  cooldown:
+    default-days: 10
+  target-branch: stable34
+  open-pull-requests-limit: 10
+  labels:
+    - "3. to review"
+    - "dependencies"
+  reviewers:
+    - "ArtificialOwl"
+    - "cristianscheid"
+  ignore:
+    # do not do breaking changes on stable branches
+    - dependency-name: "*"
+      update-types: ["version-update:semver-major", "version-update:semver-minor"]
+
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: weekly
+    day: saturday
+    time: "03:00"
+    timezone: Europe/Paris
+  cooldown:
+    default-days: 10
+  target-branch: stable33
+  open-pull-requests-limit: 10
+  labels:
+    - "3. to review"
+    - "dependencies"
+  reviewers:
+    - "ArtificialOwl"
+    - "cristianscheid"
+  ignore:
+    # do not do breaking changes on stable branches
+    - dependency-name: "*"
+      update-types: ["version-update:semver-major", "version-update:semver-minor"]
+
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: weekly
+    day: saturday
+    time: "03:00"
+    timezone: Europe/Paris
+  cooldown:
+    default-days: 10
+  target-branch: stable32
+  open-pull-requests-limit: 10
+  labels:
+    - "3. to review"
+    - "dependencies"
+  reviewers:
+    - "ArtificialOwl"
+    - "cristianscheid"
+  ignore:
+    # do not do breaking changes on stable branches
+    - dependency-name: "*"
+      update-types: ["version-update:semver-major", "version-update:semver-minor"]

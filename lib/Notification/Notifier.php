@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Notification;
 
@@ -40,10 +38,6 @@ use OCP\Notification\UnknownNotificationException;
  * @package OCA\Circles\Notification
  */
 class Notifier implements INotifier {
-	/** @var IL10N */
-	private $l10n;
-
-
 	/** @var IFactory */
 	protected $factory;
 
@@ -59,35 +53,20 @@ class Notifier implements INotifier {
 	/** @var ICloudIdManager */
 	protected $cloudIdManager;
 
-	/** @var MemberService */
-	private $memberService;
-
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	public function __construct(
-		IL10N $l10n,
+		private readonly IL10N $l10n,
 		IFactory $factory,
 		IManager $contactsManager,
 		IURLGenerator $urlGenerator,
 		ICloudIdManager $cloudIdManager,
-		MemberService $memberService,
-		FederatedUserService $federatedUserService,
-		ConfigService $configService,
+		private readonly MemberService $memberService,
+		private readonly FederatedUserService $federatedUserService,
+		private readonly ConfigService $configService,
 	) {
-		$this->l10n = $l10n;
 		$this->factory = $factory;
 		$this->contactsManager = $contactsManager;
 		$this->urlGenerator = $urlGenerator;
 		$this->cloudIdManager = $cloudIdManager;
-
-		$this->federatedUserService = $federatedUserService;
-		$this->memberService = $memberService;
-		$this->configService = $configService;
 	}
 
 	/**
@@ -131,7 +110,7 @@ class Notifier implements INotifier {
 				$this->prepareMemberNotification($notification);
 			} catch (UnknownNotificationException $e) {
 				throw $e;
-			} catch (Exception $e) {
+			} catch (Exception) {
 				throw new AlreadyProcessedException();
 			}
 		}
@@ -140,7 +119,6 @@ class Notifier implements INotifier {
 
 		return $notification;
 	}
-
 
 	/**
 	 * @param INotification $notification
@@ -167,43 +145,32 @@ class Notifier implements INotifier {
 			$probe
 		);
 
-		switch ($notification->getSubject()) {
-			case 'memberAdd':
-				$subject = $this->l10n->t(
-					'You are now a member of the Team "%2$s"',
-					[
-						$member->getCircle()->getDisplayName()
-					]
-				);
-				break;
-
-			case 'invitation':
-				$subject = $this->l10n->t(
-					'You have been invited by %1$s into the Team "%2$s"',
-					[
-						$member->getInvitedBy()->getDisplayName(),
-						$member->getCircle()->getDisplayName()
-					]
-				);
-				break;
-
-			case 'joinRequest':
-				$subject = $this->l10n->t(
-					'%1$s sent a request to be a member of the Team "%2$s"',
-					[
-						$this->configService->displayFederatedUser($member, true),
-						$member->getCircle()->getDisplayName()
-					]
-				);
-				break;
-
-			default:
-				throw new UnknownNotificationException();
-		}
+		$subject = match ($notification->getSubject()) {
+			'memberAdd' => $this->l10n->t(
+				'You are now a member of the Team "%2$s"',
+				[
+					$member->getCircle()->getDisplayName()
+				]
+			),
+			'invitation' => $this->l10n->t(
+				'You have been invited by %1$s into the Team "%2$s"',
+				[
+					$member->getInvitedBy()->getDisplayName(),
+					$member->getCircle()->getDisplayName()
+				]
+			),
+			'joinRequest' => $this->l10n->t(
+				'%1$s sent a request to be a member of the Team "%2$s"',
+				[
+					$this->configService->displayFederatedUser($member, true),
+					$member->getCircle()->getDisplayName()
+				]
+			),
+			default => throw new UnknownNotificationException(),
+		};
 
 		$notification->setParsedSubject($subject);
 	}
-
 
 	/**
 	 * @param INotification $notification

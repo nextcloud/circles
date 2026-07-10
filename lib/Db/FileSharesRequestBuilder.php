@@ -32,7 +32,6 @@ class FileSharesRequestBuilder extends DeprecatedRequestBuilder {
 		return $qb;
 	}
 
-
 	/**
 	 * @return IQueryBuilder
 	 */
@@ -57,7 +56,6 @@ class FileSharesRequestBuilder extends DeprecatedRequestBuilder {
 
 		return $qb;
 	}
-
 
 	/**
 	 * @return IQueryBuilder

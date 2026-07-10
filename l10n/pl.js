@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s udostępnił Tobie wiele plików.",
     "Boot up" : "Uruchom",
     "Nextcloud Initialization" : "Inicjalizacja Nextcloud",
-    "Circles App Initialization" : "Inicjalizacja aplikacji Zespołów",
     "Fresh installation status" : "Stan nowej instalacji",
     "Building Local Database" : "Tworzenie lokalnej bazy danych",
     "Testing Basic Team Creation" : "Testowanie podstawowego tworzenia zespołu",
@@ -130,6 +129,11 @@ OC.L10N.register(
     "Accept" : "Akceptuj",
     "Refuse" : "Odrzuć",
     "Leave the team" : "Opuść zespół",
+    "No image file provided" : "Nie wskazano pliku obrazu",
+    "Invalid file provided" : "Podano nieprawidłowy plik",
+    "File is too big" : "Plik jest za duży",
+    "Invalid image" : "Nieprawidłowy obraz",
+    "Unknown filetype" : "Nieznany typ pliku",
     "%s" : "%s",
     "Personal team" : "Zespół osobisty",
     "%s owned by %s" : "%s należący do %s",
@@ -166,6 +170,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Brak wpisów w tym katalogu",
     "Name" : "Nazwa",
     "Size" : "Rozmiar",
-    "Modified" : "Zmodyfikowano"
+    "Modified" : "Zmodyfikowano",
+    "Circles App Initialization" : "Inicjalizacja aplikacji Zespołów"
 },
 "nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);");

@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Service;
 
@@ -53,7 +51,6 @@ class SyncService {
 	use TStringTools;
 	use TNCLogger;
 
-
 	public const SYNC_APPS = 1;
 	public const SYNC_USERS = 2;
 	public const SYNC_GROUPS = 4;
@@ -61,39 +58,6 @@ class SyncService {
 	public const SYNC_REMOTES = 16;
 	public const SYNC_CONTACTS = 32;
 	public const SYNC_ALL = 63;
-
-
-	/** @var IUserManager */
-	private $userManager;
-
-	/** @var IGroupManager */
-	private $groupManager;
-
-
-	/** @var CircleRequest */
-	private $circleRequest;
-
-	/** @var MemberRequest */
-	private $memberRequest;
-
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var FederatedEventService */
-	private $federatedEventService;
-
-	/** @var CircleService */
-	private $circleService;
-
-	/** @var MembershipService */
-	private $membershipService;
-
-	/** @var OutputService */
-	private $outputService;
-
-	/** @var ConfigService */
-	private $configService;
-
 
 	/**
 	 * SyncService constructor.
@@ -110,31 +74,19 @@ class SyncService {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IUserManager $userManager,
-		IGroupManager $groupManager,
-		CircleRequest $circleRequest,
-		MemberRequest $memberRequest,
-		FederatedUserService $federatedUserService,
-		FederatedEventService $federatedEventService,
-		CircleService $circleService,
-		MembershipService $membershipService,
-		OutputService $outputService,
-		ConfigService $configService,
+		private IUserManager $userManager,
+		private IGroupManager $groupManager,
+		private CircleRequest $circleRequest,
+		private MemberRequest $memberRequest,
+		private FederatedUserService $federatedUserService,
+		private FederatedEventService $federatedEventService,
+		private CircleService $circleService,
+		private MembershipService $membershipService,
+		private OutputService $outputService,
+		private ConfigService $configService,
 	) {
-		$this->userManager = $userManager;
-		$this->groupManager = $groupManager;
-		$this->circleRequest = $circleRequest;
-		$this->memberRequest = $memberRequest;
-		$this->federatedUserService = $federatedUserService;
-		$this->federatedEventService = $federatedEventService;
-		$this->circleService = $circleService;
-		$this->membershipService = $membershipService;
-		$this->outputService = $outputService;
-		$this->configService = $configService;
-
 		$this->setup('app', Application::APP_ID);
 	}
-
 
 	/**
 	 * @param int $sync
@@ -169,7 +121,6 @@ class SyncService {
 		}
 	}
 
-
 	/**
 	 * @param int $item
 	 * @param int $all
@@ -179,7 +130,6 @@ class SyncService {
 	private function shouldSync(int $item, int $all): bool {
 		return (($item & $all) !== 0);
 	}
-
 
 	/**
 	 */
@@ -194,7 +144,6 @@ class SyncService {
 		}
 	}
 
-
 	/**
 	 * @return void
 	 */
@@ -207,7 +156,7 @@ class SyncService {
 		foreach ($users as $user) {
 			try {
 				$this->syncNextcloudUser($user->getUID());
-			} catch (Exception $e) {
+			} catch (Exception) {
 			}
 		}
 
@@ -233,7 +182,6 @@ class SyncService {
 		return $this->federatedUserService->getLocalFederatedUser($userId, false, true);
 	}
 
-
 	/**
 	 * @return void
 	 */
@@ -245,7 +193,7 @@ class SyncService {
 		foreach ($groups as $group) {
 			try {
 				$this->syncNextcloudGroup($group->getGID());
-			} catch (Exception $e) {
+			} catch (Exception) {
 			}
 		}
 
@@ -277,9 +225,10 @@ class SyncService {
 		$circle = $this->federatedUserService->getGroupCircle($groupId);
 		$this->circleService->updateDisplayName($circle->getSingleId(), $this->groupManager->getDisplayName($groupId));
 
-		$members = array_map(function (Member $member): string {
-			return $member->getSingleId();
-		}, $this->memberRequest->getMembers($circle->getSingleId()));
+		$members = array_map(
+			fn (Member $member): string => $member->getSingleId(),
+			$this->memberRequest->getMembers($circle->getSingleId())
+		);
 
 		$group = $this->groupManager->get($groupId);
 		foreach ($group->getUsers() as $user) {
@@ -294,13 +243,12 @@ class SyncService {
 
 			try {
 				$this->federatedEventService->newEvent($event);
-			} catch (Exception $e) {
+			} catch (Exception) {
 			}
 		}
 
 		return $circle;
 	}
-
 
 	/**
 	 * @param string $userId
@@ -316,7 +264,7 @@ class SyncService {
 	public function userDeleted(string $userId): void {
 		try {
 			$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId, false);
-		} catch (SingleCircleNotFoundException $e) {
+		} catch (SingleCircleNotFoundException) {
 			return;
 		}
 
@@ -330,13 +278,12 @@ class SyncService {
 
 			try {
 				$this->circleService->circleLeave($membership->getCircleId(), true);
-			} catch (Exception $e) {
+			} catch (Exception) {
 			}
 		}
 
 		$this->federatedUserService->deleteFederatedUser($federatedUser);
 	}
-
 
 	/**
 	 * @param string $groupId
@@ -369,7 +316,7 @@ class SyncService {
 
 		try {
 			$circle = $this->circleRequest->searchCircle($circle);
-		} catch (CircleNotFoundException $e) {
+		} catch (CircleNotFoundException) {
 			return;
 		}
 
@@ -378,7 +325,6 @@ class SyncService {
 
 		$this->membershipService->onUpdate($circle->getSingleId());
 	}
-
 
 	/**
 	 * @param Circle $circle
@@ -407,7 +353,6 @@ class SyncService {
 
 		return $member;
 	}
-
 
 	/**
 	 * @param string $groupId
@@ -442,7 +387,6 @@ class SyncService {
 		$this->federatedEventService->newEvent($event);
 	}
 
-
 	/**
 	 * @param string $groupId
 	 * @param string $userId
@@ -470,14 +414,12 @@ class SyncService {
 		$this->membershipService->onUpdate($federatedUser->getSingleId());
 	}
 
-
 	/**
 	 * @return void
 	 */
 	public function syncContacts(): void {
 		$this->outputService->output('Syncing Contacts');
 	}
-
 
 	/**
 	 * @return void
@@ -486,14 +428,12 @@ class SyncService {
 		$this->outputService->output('Syncing GlobalScale');
 	}
 
-
 	/**
 	 * @return void
 	 */
 	public function syncRemote(): void {
 		$this->outputService->output('Syncing Remote Instance');
 	}
-
 
 	/**
 	 * @param string $circleId

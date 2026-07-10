@@ -23,12 +23,12 @@ use Psr\Container\ContainerInterface;
 
 class Capabilities implements ICapability {
 	public function __construct(
-		private IL10N $l10n,
-		private IAppManager $appManager,
-		private InterfaceService $interfaceService,
-		private ConfigService $configService,
-		private Coordinator $coordinator,
-		private ContainerInterface $container,
+		private readonly IL10N $l10n,
+		private readonly IAppManager $appManager,
+		private readonly InterfaceService $interfaceService,
+		private readonly ConfigService $configService,
+		private readonly Coordinator $coordinator,
+		private readonly ContainerInterface $container,
 	) {
 	}
 
@@ -109,8 +109,8 @@ class Capabilities implements ICapability {
 				Circle::CFG_FEDERATED => $this->l10n->t('Federated'),
 				Circle::CFG_MOUNTPOINT => $this->l10n->t('Mount point')
 			],
-			'source' =>
-				[
+			'source'
+				=> [
 					'core' => [
 						Member::TYPE_USER => $this->l10n->t('Nextcloud Account'),
 						Member::TYPE_GROUP => $this->l10n->t('Nextcloud Group'),

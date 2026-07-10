@@ -2,16 +2,13 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-
 namespace OCA\Circles\AppInfo;
 
-use Closure;
 use OCA\Circles\ConfigLexicon;
 use OCA\Circles\Dashboard\TeamDashboardWidget;
 use OCA\Circles\Events\AddingCircleMemberEvent;
@@ -147,8 +144,8 @@ class Application extends App implements IBootstrap {
 			$shareManager->registerShareProvider(ShareByCircleProvider::class);
 		});
 
-		$context->injectFn(Closure::fromCallable([$this, 'registerMountProvider']));
-		$context->injectFn(Closure::fromCallable([$this, 'registerNavigation']));
+		$context->injectFn($this->registerMountProvider(...));
+		$context->injectFn($this->registerNavigation(...));
 	}
 
 	/**

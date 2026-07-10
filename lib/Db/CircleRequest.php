@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Db;
 
@@ -54,7 +52,6 @@ class CircleRequest extends CircleRequestBuilder {
 		$qb->executeStatement();
 	}
 
-
 	/**
 	 * @param Circle $circle
 	 */
@@ -86,7 +83,6 @@ class CircleRequest extends CircleRequestBuilder {
 		$qb->executeStatement();
 	}
 
-
 	/**
 	 * @param Circle $circle
 	 *
@@ -96,11 +92,10 @@ class CircleRequest extends CircleRequestBuilder {
 		try {
 			$this->getCircle($circle->getSingleId());
 			$this->update($circle);
-		} catch (CircleNotFoundException $e) {
+		} catch (CircleNotFoundException) {
 			$this->save($circle);
 		}
 	}
-
 
 	/**
 	 * @param string $singleId
@@ -115,7 +110,6 @@ class CircleRequest extends CircleRequestBuilder {
 		$qb->executeStatement();
 	}
 
-
 	/**
 	 * @param Circle $circle
 	 */
@@ -128,7 +122,6 @@ class CircleRequest extends CircleRequestBuilder {
 		$qb->executeStatement();
 	}
 
-
 	/**
 	 * @param Circle $circle
 	 */
@@ -139,7 +132,6 @@ class CircleRequest extends CircleRequestBuilder {
 
 		$qb->executeStatement();
 	}
-
 
 	/**
 	 * @param IFederatedUser|null $initiator
@@ -182,7 +174,6 @@ class CircleRequest extends CircleRequestBuilder {
 
 		return $this->getItemsFromRequest($qb);
 	}
-
 
 	/**
 	 * get data about single Circle.
@@ -320,7 +311,6 @@ class CircleRequest extends CircleRequestBuilder {
 		return $qb;
 	}
 
-
 	/**
 	 * @param array $circleIds
 	 *
@@ -392,7 +382,6 @@ class CircleRequest extends CircleRequestBuilder {
 		return $this->getItemFromRequest($qb);
 	}
 
-
 	/**
 	 * @param string $singleId
 	 *
@@ -408,7 +397,7 @@ class CircleRequest extends CircleRequestBuilder {
 
 		try {
 			$circle = $this->getItemFromRequest($qb);
-		} catch (CircleNotFoundException $e) {
+		} catch (CircleNotFoundException) {
 			throw new FederatedUserNotFoundException('singleId not found');
 		}
 
@@ -417,7 +406,6 @@ class CircleRequest extends CircleRequestBuilder {
 
 		return $federatedUser;
 	}
-
 
 	/**
 	 * method that return the single-user Circle based on a FederatedUser.
@@ -444,11 +432,10 @@ class CircleRequest extends CircleRequestBuilder {
 
 		try {
 			return $this->getItemFromRequest($qb);
-		} catch (CircleNotFoundException $e) {
+		} catch (CircleNotFoundException) {
 			throw new SingleCircleNotFoundException();
 		}
 	}
-
 
 	/**
 	 * @param Circle $circle
@@ -497,7 +484,6 @@ class CircleRequest extends CircleRequestBuilder {
 		return $this->getItemFromRequest($qb);
 	}
 
-
 	/**
 	 * @return Circle[]
 	 * @throws RequestBuilderException
@@ -511,7 +497,6 @@ class CircleRequest extends CircleRequestBuilder {
 		return $this->getItemsFromRequest($qb);
 	}
 
-
 	/**
 	 * @param Circle $circle
 	 */
@@ -521,7 +506,6 @@ class CircleRequest extends CircleRequestBuilder {
 
 		$qb->executeStatement();
 	}
-
 
 	/**
 	 * @param IFederatedUser $federatedUser

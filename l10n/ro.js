@@ -83,7 +83,6 @@ OC.L10N.register(
     "%s shared multiple files with \"%s\"." : "%s a partajat mai multe fișiere cu \"%s\".",
     "%s shared multiple files with you." : "%s a partajat mai multe fișiere cu tine.",
     "Nextcloud Initialization" : "Inițializare Nextcloud",
-    "Circles App Initialization" : "Inițializare aplicație Cercuri",
     "Fresh installation status" : "Statusul noii instalări",
     "Building Local Database" : "Se creează baza de date locală",
     "Adding local users and moderators" : "Se adaugă utilizatorii locali și moderatorii",
@@ -93,6 +92,11 @@ OC.L10N.register(
     "Level cannot be changed for this type of member" : "Nivelul nu poate fi schimbat pentru acest tip de membru",
     "Accept" : "Accept",
     "Refuse" : "Refuză",
+    "No image file provided" : "Nu s-a furnizat un fișier de imagine",
+    "Invalid file provided" : "Numele fișierului pe care l-ai oferit este invalid",
+    "File is too big" : "Fișierul este prea mare",
+    "Invalid image" : "Imagine invalidă",
+    "Unknown filetype" : "Tip fișier necunoscut",
     "%s" : "%s",
     "%s owned by %s" : "%s proprietatea lui %s",
     "%s shared a file with \"%s\"." : "%s a partajat un fișier cu \"%s\".",
@@ -108,6 +112,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Nici o intrare găsită în acest folder",
     "Name" : "Nume",
     "Size" : "Mărime",
-    "Modified" : "Modificat"
+    "Modified" : "Modificat",
+    "Circles App Initialization" : "Inițializare aplicație Cercuri"
 },
 "nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));");

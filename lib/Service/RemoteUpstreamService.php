@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Service;
 
@@ -33,20 +31,6 @@ use OCA\Circles\Tools\Traits\TNCRequest;
 class RemoteUpstreamService {
 	use TNCRequest;
 
-
-	/** @var EventWrapperRequest */
-	private $eventWrapperRequest;
-
-	/** @var RemoteStreamService */
-	private $remoteStreamService;
-
-	/** @var InterfaceService */
-	private $interfaceService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	/**
 	 * RemoteUpstreamService constructor.
 	 *
@@ -56,17 +40,12 @@ class RemoteUpstreamService {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		EventWrapperRequest $eventWrapperRequest,
-		RemoteStreamService $remoteStreamService,
-		InterfaceService $interfaceService,
-		ConfigService $configService,
+		private EventWrapperRequest $eventWrapperRequest,
+		private RemoteStreamService $remoteStreamService,
+		private InterfaceService $interfaceService,
+		private ConfigService $configService,
 	) {
-		$this->eventWrapperRequest = $eventWrapperRequest;
-		$this->remoteStreamService = $remoteStreamService;
-		$this->interfaceService = $interfaceService;
-		$this->configService = $configService;
 	}
-
 
 	/**
 	 * @param string $token
@@ -76,7 +55,6 @@ class RemoteUpstreamService {
 	public function getEventsByToken(string $token): array {
 		return $this->eventWrapperRequest->getByToken($token);
 	}
-
 
 	/**
 	 * @param EventWrapper $wrapper
@@ -102,7 +80,6 @@ class RemoteUpstreamService {
 		$wrapper->getEvent()->setResult(new SimpleDataStore($data));
 	}
 
-
 	/**
 	 * @param FederatedEvent $event
 	 *
@@ -126,7 +103,6 @@ class RemoteUpstreamService {
 		$event->setOutcome($data);
 	}
 
-
 	//
 	//
 	//
@@ -143,7 +119,6 @@ class RemoteUpstreamService {
 	//		$this->removeDeprecatedCircles();
 	//		$this->removeDeprecatedEvents();
 	//	}
-
 
 	//	/**
 	//	 * @param array $circles

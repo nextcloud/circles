@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Tools\Traits;
 
@@ -34,7 +32,6 @@ trait TDeserialize {
 		return json_decode(json_encode($data), true);
 	}
 
-
 	/**
 	 * @param array $data
 	 * @param string $class
@@ -49,7 +46,6 @@ trait TDeserialize {
 
 		return $item;
 	}
-
 
 	/**
 	 * @param array $data
@@ -71,13 +67,12 @@ trait TDeserialize {
 				} else {
 					$arr[] = $this->deserialize($entry, $class);
 				}
-			} catch (InvalidItemException $e) {
+			} catch (InvalidItemException) {
 			}
 		}
 
 		return $arr;
 	}
-
 
 	/**
 	 * @param string $json
@@ -99,8 +94,6 @@ trait TDeserialize {
 
 		return $arr;
 	}
-
-
 
 	/**
 	 * @param string $json

@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s deelde meerdere bestanden met jou.",
     "Boot up" : "Opstarten",
     "Nextcloud Initialization" : "Nextcloud Initialisatie",
-    "Circles App Initialization" : "Circles App Initialisatie",
     "Fresh installation status" : "Nieuwe installatiestatus",
     "Building Local Database" : "Aanmaken lokale database",
     "Testing Basic Team Creation" : "Basis teamoprichting testen",
@@ -130,6 +129,11 @@ OC.L10N.register(
     "Accept" : "Accepteren",
     "Refuse" : "Weigeren",
     "Leave the team" : "Team verlaten",
+    "No image file provided" : "Geen afbeelding opgegeven",
+    "Invalid file provided" : "Ongeldig bestand aangeleverd",
+    "File is too big" : "Bestand te groot",
+    "Invalid image" : "Ongeldige afbeelding",
+    "Unknown filetype" : "Onbekend bestandsformaat",
     "%s" : "%s",
     "Personal team" : "Persoonlijk team",
     "%s owned by %s" : "%s is eigendom van %s",
@@ -166,6 +170,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Niets in deze map gevonden",
     "Name" : "Naam",
     "Size" : "Omvang",
-    "Modified" : "Gewijzigd"
+    "Modified" : "Gewijzigd",
+    "Circles App Initialization" : "Circles App Initialisatie"
 },
 "nplurals=2; plural=(n != 1);");

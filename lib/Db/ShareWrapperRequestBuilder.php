@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Db;
 
@@ -33,7 +31,6 @@ class ShareWrapperRequestBuilder extends CoreRequestBuilder {
 		return $qb;
 	}
 
-
 	/**
 	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
@@ -43,7 +40,6 @@ class ShareWrapperRequestBuilder extends CoreRequestBuilder {
 
 		return $qb;
 	}
-
 
 	/**
 	 * @param string $alias
@@ -58,7 +54,6 @@ class ShareWrapperRequestBuilder extends CoreRequestBuilder {
 		return $qb;
 	}
 
-
 	/**
 	 * Base of the Sql Delete request
 	 *
@@ -72,7 +67,6 @@ class ShareWrapperRequestBuilder extends CoreRequestBuilder {
 		return $qb;
 	}
 
-
 	/**
 	 * @param CoreQueryBuilder $qb
 	 *
@@ -83,13 +77,12 @@ class ShareWrapperRequestBuilder extends CoreRequestBuilder {
 		/** @var ShareWrapper $shareWrapper */
 		try {
 			$shareWrapper = $qb->asItem(ShareWrapper::class);
-		} catch (RowNotFoundException $e) {
+		} catch (RowNotFoundException) {
 			throw new ShareWrapperNotFoundException();
 		}
 
 		return $shareWrapper;
 	}
-
 
 	/**
 	 * @param CoreQueryBuilder $qb

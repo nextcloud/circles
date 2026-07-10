@@ -101,7 +101,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s شارك عدّة ملفّاتٍ معك.",
     "Boot up" : "بدء التشغيل",
     "Nextcloud Initialization" : "بدء تشغيل نكست كلاود",
-    "Circles App Initialization" : "بدء تشغيل تطبيق الدوائر Circles App",
     "Fresh installation status" : "حالة التنصيب الجديدة",
     "Building Local Database" : "بناء قاعدة بياناتٍ محلّيّةٍ",
     "Adding local users and moderators" : "إضافة مستخدمين محليين ومشرفين",
@@ -122,6 +121,11 @@ OC.L10N.register(
     "Accept" : "قبول",
     "Refuse" : "رفض",
     "Leave the team" : "مغادرة الفريق",
+    "No image file provided" : "لم يتم توفير صورة ملف",
+    "Invalid file provided" : "تمّ تقديم ملف غير صالح",
+    "File is too big" : "الملف كبير جدًا",
+    "Invalid image" : "الصورة غير صالحة",
+    "Unknown filetype" : "نوع الملف غير معروف",
     "%s" : "%s",
     "Personal team" : "فريق شخصي",
     "%s owned by %s" : "%s يملكها %s",
@@ -144,6 +148,7 @@ OC.L10N.register(
     "No entries found in this folder" : "لا يوجد مدخلات في هذا المجلد ",
     "Name" : "الاسم",
     "Size" : "الحجم",
-    "Modified" : "آخر تعديل"
+    "Modified" : "آخر تعديل",
+    "Circles App Initialization" : "بدء تشغيل تطبيق الدوائر Circles App"
 },
 "nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;");

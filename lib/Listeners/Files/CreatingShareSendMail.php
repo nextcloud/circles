@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Listeners\Files;
 
@@ -37,33 +35,14 @@ class CreatingShareSendMail implements IEventListener {
 	use TStringTools;
 	use TNCLogger;
 
-
-	/** @var ShareWrapperService */
-	private $shareWrapperService;
-
-	/** @var ShareTokenService */
-	private $shareTokenService;
-
-	/** @var ConfigService */
-	private $configService;
-
-	/** @var ContactService */
-	private $contactService;
-
 	public function __construct(
-		ShareWrapperService $shareWrapperService,
-		ShareTokenService $shareTokenService,
-		ContactService $contactService,
-		ConfigService $configService,
+		private ShareWrapperService $shareWrapperService,
+		private ShareTokenService $shareTokenService,
+		private ContactService $contactService,
+		private ConfigService $configService,
 	) {
-		$this->shareWrapperService = $shareWrapperService;
-		$this->shareTokenService = $shareTokenService;
-		$this->contactService = $contactService;
-		$this->configService = $configService;
-
 		$this->setup('app', Application::APP_ID);
 	}
-
 
 	/**
 	 * @throws FederatedItemException
@@ -108,7 +87,7 @@ class CreatingShareSendMail implements IEventListener {
 					);
 
 					$share->setShareToken($shareToken);
-				} catch (Exception $e) {
+				} catch (Exception) {
 					$share = null;
 				}
 			}

@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Service;
 
@@ -25,17 +23,14 @@ class OutputService {
 	use TStringTools;
 	use TNCLogger;
 
-
 	/** @var IOutput */
 	private $migrationOutput;
 
 	/** @var OutputInterface */
 	private $occOutput;
 
-
 	public function __construct() {
 	}
-
 
 	/**
 	 * @param OutputInterface $output
@@ -50,7 +45,6 @@ class OutputService {
 	public function setMigrationOutput(IOutput $output): void {
 		$this->migrationOutput = $output;
 	}
-
 
 	/**
 	 * @param string $message
@@ -70,7 +64,6 @@ class OutputService {
 		}
 	}
 
-
 	/**
 	 * @param int $int
 	 */
@@ -81,7 +74,6 @@ class OutputService {
 
 		$this->migrationOutput->startProgress($int);
 	}
-
 
 	/**
 	 *

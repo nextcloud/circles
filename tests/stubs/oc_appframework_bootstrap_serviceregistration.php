@@ -16,14 +16,14 @@ class ServiceRegistration extends ARegistration {
 	/**
 	 * @psalm-param class-string<T> $service
 	 */
-	public function __construct(string $appId, string $service)
- {
- }
+	public function __construct(string $appId, private string $service)
+    {
+    }
 
 	/**
 	 * @psalm-return class-string<T>
 	 */
 	public function getService(): string
- {
- }
+    {
+    }
 }

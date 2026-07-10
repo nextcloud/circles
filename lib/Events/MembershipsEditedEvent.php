@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Events;
 
@@ -20,21 +18,16 @@ use OCP\EventDispatcher\Event;
  * @package OCA\Circles\Events
  */
 class MembershipsEditedEvent extends Event {
-	/** @var Membership[] */
-	private $memberships;
-
-
 	/**
 	 * MembershipsEditedEvent constructor.
 	 *
 	 * @param Membership[] $memberships
 	 */
-	public function __construct(array $memberships) {
+	public function __construct(
+		private readonly array $memberships,
+	) {
 		parent::__construct();
-
-		$this->memberships = $memberships;
 	}
-
 
 	/**
 	 * @return Membership[]

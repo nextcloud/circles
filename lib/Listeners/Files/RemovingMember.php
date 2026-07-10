@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Listeners\Files;
 
@@ -27,21 +25,12 @@ use Psr\Log\LoggerInterface;
 class RemovingMember implements IEventListener {
 	use TStringTools;
 
-	private LoggerInterface $logger;
-	private MemberService $memberService;
-	private ShareTokenService $shareTokenService;
-	private ShareWrapperService $shareWrapperService;
-
 	public function __construct(
-		LoggerInterface $logger,
-		MemberService $memberService,
-		ShareTokenService $shareTokenService,
-		ShareWrapperService $shareWrapperService,
+		private LoggerInterface $logger,
+		private MemberService $memberService,
+		private ShareTokenService $shareTokenService,
+		private ShareWrapperService $shareWrapperService,
 	) {
-		$this->logger = $logger;
-		$this->memberService = $memberService;
-		$this->shareTokenService = $shareTokenService;
-		$this->shareWrapperService = $shareWrapperService;
 	}
 
 	public function handle(Event $event): void {
@@ -61,9 +50,8 @@ class RemovingMember implements IEventListener {
 		$singleIds = array_merge(
 			[$circle->getSingleId()],
 			array_map(
-				function (Membership $membership) {
-					return $membership->getCircleId();
-				}, $circle->getMemberships()
+				fn (Membership $membership) => $membership->getCircleId(),
+				$circle->getMemberships()
 			)
 		);
 
@@ -82,7 +70,6 @@ class RemovingMember implements IEventListener {
 		}
 	}
 
-
 	/**
 	 * @param Member $member
 	 * @param string[] $singleIds
@@ -92,13 +79,12 @@ class RemovingMember implements IEventListener {
 			try {
 				$member->getLink($singleId);
 				continue;
-			} catch (MembershipNotFoundException $e) {
+			} catch (MembershipNotFoundException) {
 			}
 
 			$this->shareTokenService->removeTokens($member->getSingleId(), $singleId);
 		}
 	}
-
 
 	/**
 	 * @param Member $member

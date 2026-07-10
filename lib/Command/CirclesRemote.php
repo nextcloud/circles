@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Command;
 
@@ -61,7 +59,6 @@ class CirclesRemote extends Base {
 		$this->setup('app', 'circles');
 	}
 
-
 	/**
 	 *
 	 */
@@ -75,12 +72,11 @@ class CirclesRemote extends Base {
 			)
 			->addOption(
 				'iface', '', InputOption::VALUE_REQUIRED, 'set interface to use to contact remote',
-				InterfaceService::$LIST_IFACE[InterfaceService::IFACE_FRONTAL]
+				InterfaceService::LIST_IFACE[InterfaceService::IFACE_FRONTAL]
 			)
 			->addOption('yes', '', InputOption::VALUE_NONE, 'silently add the remote instance')
 			->addOption('all', '', InputOption::VALUE_NONE, 'display all information');
 	}
-
 
 	/**
 	 * @param InputInterface $input
@@ -103,7 +99,6 @@ class CirclesRemote extends Base {
 
 		return 0;
 	}
-
 
 	/**
 	 * @param string $host
@@ -149,7 +144,6 @@ class CirclesRemote extends Base {
 		$this->output->writeln(json_encode($resource, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 		$this->output->writeln('');
 
-
 		$tempUid = $resource->g('uid');
 		$this->output->writeln(
 			'- Confirming UID=' . $tempUid . ' from parsed Signatory at <info>' . $host . '</info>'
@@ -181,7 +175,7 @@ class CirclesRemote extends Base {
 
 		try {
 			$localSignatory = $this->remoteStreamService->getAppSignatory();
-		} catch (SignatoryException $e) {
+		} catch (SignatoryException) {
 			$this->output->writeln(
 				'<error>Federated Circles not enabled locally. Please run ./occ circles:remote:init</error>'
 			);
@@ -236,7 +230,6 @@ class CirclesRemote extends Base {
 					. ' is already known with this current identity</info>'
 				);
 
-
 				$this->output->writeln('- updating item');
 				$this->remoteStreamService->update($remoteSignatory, RemoteStreamService::UPDATE_ITEM);
 
@@ -266,14 +259,13 @@ class CirclesRemote extends Base {
 					);
 					$this->remoteStreamService->update($remoteSignatory, RemoteStreamService::UPDATE_HREF);
 				}
-			} catch (RemoteUidException $e) {
+			} catch (RemoteUidException) {
 				$this->updateRemote($remoteSignatory);
-			} catch (RemoteNotFoundException $e) {
+			} catch (RemoteNotFoundException) {
 				$this->saveRemote($remoteSignatory);
 			}
 		}
 	}
-
 
 	/**
 	 * @param RemoteInstance $remoteSignatory
@@ -291,7 +283,7 @@ class CirclesRemote extends Base {
 		$question = new ConfirmationQuestion(
 			'Would you like to identify this remote instance as \'<comment>' . $remoteSignatory->getType()
 			. '</comment>\' using interface \'<comment>'
-			. InterfaceService::$LIST_IFACE[$remoteSignatory->getInterface()]
+			. InterfaceService::LIST_IFACE[$remoteSignatory->getInterface()]
 			. '</comment>\' ? (y/N) ',
 			false,
 			'/^(y|Y)/i'
@@ -305,7 +297,6 @@ class CirclesRemote extends Base {
 			$this->output->writeln('<info>remote instance saved</info>');
 		}
 	}
-
 
 	/**
 	 * @param RemoteInstance $remoteSignatory
@@ -335,7 +326,6 @@ class CirclesRemote extends Base {
 			$this->output->writeln('remote instance updated');
 		}
 	}
-
 
 	/**
 	 * @param string $remote
@@ -376,9 +366,8 @@ class CirclesRemote extends Base {
 	private function verifyGSInstances(): void {
 		$instances = $this->globalScaleService->getGlobalScaleInstances();
 		$known = array_map(
-			function (RemoteInstance $instance): string {
-				return $instance->getInstance();
-			}, $this->remoteRequest->getFromType(RemoteInstance::TYPE_GLOBALSCALE)
+			fn (RemoteInstance $instance): string => $instance->getInstance(),
+			$this->remoteRequest->getFromType(RemoteInstance::TYPE_GLOBALSCALE)
 		);
 
 		$missing = array_diff($instances, $known);
@@ -386,8 +375,6 @@ class CirclesRemote extends Base {
 			$this->remoteSyncService->syncRemoteInstance($instance, RemoteInstance::TYPE_GLOBALSCALE, InterfaceService::IFACE_INTERNAL);
 		}
 	}
-
-
 
 	private function checkRemoteInstances(): void {
 		$instances = $this->remoteRequest->getAllInstances();
@@ -413,7 +400,7 @@ class CirclesRemote extends Base {
 			$rows[] = [
 				$instance->getInstance(),
 				$instance->getType(),
-				InterfaceService::$LIST_IFACE[$instance->getInterface()],
+				InterfaceService::LIST_IFACE[$instance->getInterface()],
 				$instance->getUid(),
 				$currentUid,
 				json_encode($instance->getAliases())
@@ -424,30 +411,29 @@ class CirclesRemote extends Base {
 		$table->render();
 	}
 
-
 	/**
 	 * @throws Exception
 	 */
 	private function getRemoteType(): string {
-		foreach (RemoteInstance::$LIST_TYPE as $type) {
-			if (strtolower($this->input->getOption('type')) === strtolower($type)) {
+		foreach (RemoteInstance::LIST_TYPE as $type) {
+			if (strtolower((string)$this->input->getOption('type')) === strtolower($type)) {
 				return $type;
 			}
 		}
 
-		throw new Exception('Unknown type: ' . implode(', ', RemoteInstance::$LIST_TYPE));
+		throw new Exception('Unknown type: ' . implode(', ', RemoteInstance::LIST_TYPE));
 	}
 
 	/**
 	 * @throws Exception
 	 */
 	private function getRemoteInterface(): int {
-		foreach (InterfaceService::$LIST_IFACE as $iface => $def) {
-			if (strtolower($this->input->getOption('iface')) === strtolower($def)) {
+		foreach (InterfaceService::LIST_IFACE as $iface => $def) {
+			if (strtolower((string)$this->input->getOption('iface')) === $def) {
 				return $iface;
 			}
 		}
 
-		throw new Exception('Unknown interface: ' . implode(', ', InterfaceService::$LIST_IFACE));
+		throw new Exception('Unknown interface: ' . implode(', ', InterfaceService::LIST_IFACE));
 	}
 }

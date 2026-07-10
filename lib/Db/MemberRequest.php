@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Db;
 
@@ -56,7 +54,6 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->executeStatement();
 	}
 
-
 	/**
 	 * @param Member $member
 	 *
@@ -80,7 +77,6 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->executeStatement();
 	}
 
-
 	/**
 	 * @param Member $member
 	 *
@@ -91,11 +87,10 @@ class MemberRequest extends MemberRequestBuilder {
 		try {
 			$this->searchMember($member);
 			$this->update($member);
-		} catch (MemberNotFoundException $e) {
+		} catch (MemberNotFoundException) {
 			$this->save($member);
 		}
 	}
-
 
 	/**
 	 * @param string $singleId
@@ -115,7 +110,6 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->executeStatement();
 	}
 
-
 	/**
 	 * @param Member $member
 	 */
@@ -126,7 +120,6 @@ class MemberRequest extends MemberRequestBuilder {
 
 		$qb->executeStatement();
 	}
-
 
 	/**
 	 * @param IFederatedUser $federatedUser
@@ -140,7 +133,6 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->executeStatement();
 	}
 
-
 	/**
 	 * @param IFederatedUser $federatedUser
 	 * @param Circle $circle
@@ -152,7 +144,6 @@ class MemberRequest extends MemberRequestBuilder {
 
 		$qb->executeStatement();
 	}
-
 
 	/**
 	 *
@@ -170,7 +161,6 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->executeStatement();
 	}
 
-
 	/**
 	 * @param Member $member
 	 */
@@ -185,11 +175,13 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->executeStatement();
 	}
 
-
 	/**
 	 * @param string $singleId
 	 * @param IFederatedUser|null $initiator
 	 * @param MemberProbe|null $probe
+	 * @param int $limit
+	 * @param bool $fullDetails
+	 * @param string $search
 	 *
 	 * @return Member[]
 	 * @throws RequestBuilderException
@@ -200,6 +192,8 @@ class MemberRequest extends MemberRequestBuilder {
 		?MemberProbe $probe = null,
 		int $limit = 0,
 		bool $fullDetails = false,
+		string $search = '',
+		?int $role = null,
 	): array {
 		if (is_null($probe)) {
 			$probe = new MemberProbe();
@@ -207,6 +201,11 @@ class MemberRequest extends MemberRequestBuilder {
 
 		$qb = $this->getMemberSelectSql($initiator);
 		$qb->limitToCircleId($singleId);
+
+		if (!empty($search)) {
+			$qb->searchInDBField('user_id', '%' . $search . '%');
+		}
+
 		if ($limit > 0) {
 			$qb->chunk(0, $limit);
 		}
@@ -248,12 +247,15 @@ class MemberRequest extends MemberRequestBuilder {
 			$qb->filterDirectMembership(CoreQueryBuilder::MEMBER, $probe->getFilterMember());
 		}
 
+		if ($role !== null) {
+			$qb->andWhere($qb->expr()->eq($qb->getDefaultSelectAlias() . '.level', $qb->createNamedParameter($role)));
+		}
+
 		$qb->orderBy($qb->getDefaultSelectAlias() . '.level', 'desc');
 		$qb->addOrderBy($qb->getDefaultSelectAlias() . '.cached_name', 'asc');
 
 		return $this->getItemsFromRequest($qb);
 	}
-
 
 	/**
 	 * @param string $singleId
@@ -279,7 +281,6 @@ class MemberRequest extends MemberRequestBuilder {
 		return $this->getItemsFromRequest($qb);
 	}
 
-
 	/**
 	 * @param string $circleId
 	 * @param string $singleId
@@ -300,7 +301,6 @@ class MemberRequest extends MemberRequestBuilder {
 
 		return $this->getItemFromRequest($qb);
 	}
-
 
 	/**
 	 * @param string $memberId
@@ -331,6 +331,17 @@ class MemberRequest extends MemberRequestBuilder {
 		return $this->getItemFromRequest($qb);
 	}
 
+	/**
+	 * @throws MemberNotFoundException
+	 * @throws RequestBuilderException
+	 */
+	public function getMemberByUserId(string $circleId, string $userId): Member {
+		$qb = $this->getMemberSelectSql();
+		$qb->limitToCircleId($circleId);
+		$qb->limitToUserId($userId);
+
+		return $this->getItemFromRequest($qb);
+	}
 
 	/**
 	 * @param string $circleId
@@ -345,12 +356,10 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->andwhere($qb->expr()->nonEmptyString(CoreQueryBuilder::MEMBER . '.instance'));
 
 		return array_map(
-			function (Member $member): string {
-				return $member->getInstance();
-			}, $this->getItemsFromRequest($qb)
+			fn (Member $member): string => $member->getInstance(),
+			$this->getItemsFromRequest($qb)
 		);
 	}
-
 
 	/**
 	 * @param string $singleId
@@ -366,7 +375,6 @@ class MemberRequest extends MemberRequestBuilder {
 
 		return $this->getItemsFromRequest($qb);
 	}
-
 
 	/**
 	 * @param Member $member
@@ -386,7 +394,6 @@ class MemberRequest extends MemberRequestBuilder {
 		return $this->getItemFromRequest($qb);
 	}
 
-
 	/**
 	 * @param string $needle
 	 *
@@ -399,7 +406,6 @@ class MemberRequest extends MemberRequestBuilder {
 
 		return $this->getItemsFromRequest($qb, true);
 	}
-
 
 	/**
 	 * @param IFederatedUser $federatedUser

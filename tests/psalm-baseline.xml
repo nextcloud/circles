@@ -46,12 +46,6 @@
       <code><![CDATA[retrieveJson]]></code>
     </UndefinedMethod>
   </file>
-  <file src="lib/Command/MigrateCustomGroups.php">
-    <DeprecatedMethod>
-      <code><![CDATA[getAppValue]]></code>
-      <code><![CDATA[setAppValue]]></code>
-    </DeprecatedMethod>
-  </file>
   <file src="lib/Db/AccountsRequest.php">
     <DeprecatedClass>
       <code><![CDATA[new MemberDoesNotExistException()]]></code>
@@ -160,14 +154,6 @@
       <code><![CDATA[(array)self::CIRCLES_SETTINGS_DEFAULT]]></code>
     </RedundantCast>
   </file>
-  <file src="lib/Model/BaseMember.php">
-    <InvalidNullableReturnType>
-      <code><![CDATA[DeprecatedMember]]></code>
-    </InvalidNullableReturnType>
-    <NullableReturnStatement>
-      <code><![CDATA[self::fromArray(json_decode($json, true))]]></code>
-    </NullableReturnStatement>
-  </file>
   <file src="lib/Model/Circle.php">
     <LessSpecificImplementedReturnType>
       <code><![CDATA[self]]></code>
@@ -248,14 +234,6 @@
       <code><![CDATA[isInstalled]]></code>
     </DeprecatedMethod>
   </file>
-  <file src="lib/Model/Mount.php">
-    <DeprecatedClass>
-      <code><![CDATA[CircleMountManager]]></code>
-      <code><![CDATA[CircleMountManager]]></code>
-      <code><![CDATA[CircleMountManager]]></code>
-      <code><![CDATA[CircleMountManager]]></code>
-    </DeprecatedClass>
-  </file>
   <file src="lib/Model/Probes/BasicProbe.php">
     <InvalidReturnType>
       <code><![CDATA[$this]]></code>
@@ -295,32 +273,15 @@
       <code><![CDATA[null]]></code>
     </NullableReturnStatement>
   </file>
-  <file src="lib/MountManager/CircleMount.php">
-    <UndefinedClass>
-      <code><![CDATA[MoveableMount]]></code>
-    </UndefinedClass>
-  </file>
-  <file src="lib/MountManager/CircleMountManager.php">
-    <DeprecatedClass>
-      <code><![CDATA[GSSharesRequest]]></code>
-      <code><![CDATA[GSSharesRequest]]></code>
-    </DeprecatedClass>
-  </file>
-  <file src="lib/MountManager/CircleMountProvider.php">
-    <DeprecatedClass>
-      <code><![CDATA[private]]></code>
-    </DeprecatedClass>
-    <MissingDependency>
-      <code><![CDATA[CircleMount]]></code>
-    </MissingDependency>
-    <UndefinedClass>
-      <code><![CDATA[ExternalStorage]]></code>
-    </UndefinedClass>
-  </file>
   <file src="lib/Search/LocalUsers.php">
     <DeprecatedMethod>
       <code><![CDATA[search]]></code>
     </DeprecatedMethod>
+  </file>
+  <file src="lib/Service/AvatarService.php">
+    <MissingDependency>
+      <code><![CDATA[\OCP\Image]]></code>
+    </MissingDependency>
   </file>
   <file src="lib/Service/FederatedShareService.php">
     <InvalidMethodCall>
@@ -465,14 +426,6 @@
       <code><![CDATA[$item]]></code>
     </InvalidReturnStatement>
   </file>
-  <file src="lib/Tools/Model/TreeNode.php">
-    <InvalidNullableReturnType>
-      <code><![CDATA[TreeNode]]></code>
-    </InvalidNullableReturnType>
-    <NullableReturnStatement>
-      <code><![CDATA[$this->currentChild]]></code>
-    </NullableReturnStatement>
-  </file>
   <file src="lib/Tools/Traits/TArrayTools.php">
     <TooManyArguments>
       <code><![CDATA[getArray]]></code>
@@ -498,10 +451,5 @@
     <UndefinedMethod>
       <code><![CDATA[getOpenSSLAlgo]]></code>
     </UndefinedMethod>
-  </file>
-  <file src="lib/Tools/Traits/TStringTools.php">
-    <InvalidArrayOffset>
-      <code><![CDATA[$s[$e]]]></code>
-    </InvalidArrayOffset>
   </file>
 </files>

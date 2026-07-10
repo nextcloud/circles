@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Db;
 
@@ -138,7 +136,6 @@ class CoreRequestBuilder {
 		self::TABLE_GSSHARES_MOUNTPOINT => []
 	];
 
-
 	public static $outsideTables = [
 		self::TABLE_SHARE => [
 			'id',
@@ -190,7 +187,6 @@ class CoreRequestBuilder {
 	/** @var ConfigService */
 	protected $configService;
 
-
 	/**
 	 * CoreQueryBuilder constructor.
 	 *
@@ -202,7 +198,6 @@ class CoreRequestBuilder {
 		$this->configService = $configService;
 	}
 
-
 	/**
 	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
@@ -211,7 +206,6 @@ class CoreRequestBuilder {
 		$qb = new CoreQueryBuilder();
 		return $qb;
 	}
-
 
 	/**
 	 * @param array $ids
@@ -235,7 +229,6 @@ class CoreRequestBuilder {
 		}
 	}
 
-
 	/**
 	 * @param bool $shares
 	 */
@@ -245,7 +238,7 @@ class CoreRequestBuilder {
 			try {
 				$qb->delete($table);
 				$qb->executeStatement();
-			} catch (Exception $e) {
+			} catch (Exception) {
 			}
 		}
 
@@ -257,7 +250,6 @@ class CoreRequestBuilder {
 			$qb->executeStatement();
 		}
 	}
-
 
 	public function uninstall(): void {
 		$this->uninstallAppTables();
@@ -281,7 +273,6 @@ class CoreRequestBuilder {
 
 		$schema->performDropTableCalls();
 	}
-
 
 	/**
 	 *

@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Service;
 
@@ -42,8 +40,8 @@ class MaintenanceService {
 	use TNCLogger;
 
 	public const TIMEOUT = 18000;
-	public static $DELAY =
-		[
+	public static $DELAY
+		= [
 			1 => 60,    // every minute
 			2 => 300,   // every 5 minutes
 			3 => 3600,  // every hour
@@ -73,14 +71,12 @@ class MaintenanceService {
 	) {
 	}
 
-
 	/**
 	 * @param OutputInterface $output
 	 */
 	public function setOccOutput(OutputInterface $output): void {
 		$this->output = $output;
 	}
-
 
 	/**
 	 * level=1 -> run every minute
@@ -120,7 +116,6 @@ class MaintenanceService {
 		$this->configService->setAppValue(ConfigService::MAINTENANCE_RUN, '0');
 	}
 
-
 	/**
 	 * @throws MaintenanceException
 	 */
@@ -133,7 +128,6 @@ class MaintenanceService {
 		$this->configService->setAppValue(ConfigService::MAINTENANCE_RUN, (string)time());
 	}
 
-
 	/**
 	 * every minute
 	 */
@@ -141,10 +135,9 @@ class MaintenanceService {
 		try {
 			$this->output('Remove circles with no owner');
 			$this->removeCirclesWithNoOwner();
-		} catch (Exception $e) {
+		} catch (Exception) {
 		}
 	}
-
 
 	/**
 	 * every 10 minutes
@@ -153,22 +146,21 @@ class MaintenanceService {
 		try {
 			$this->output('Remove members with no circles');
 			$this->removeMembersWithNoCircles();
-		} catch (Exception $e) {
+		} catch (Exception) {
 		}
 
 		try {
 			$this->output('Retry failed FederatedEvents (asap)');
 			$this->eventWrapperService->retry(EventWrapperService::RETRY_ASAP);
-		} catch (Exception $e) {
+		} catch (Exception) {
 		}
 
 		try {
 			$this->output('Sync unknown trusted server');
 			$this->remoteSyncService->syncTrustedServers();
-		} catch (Exception $e) {
+		} catch (Exception) {
 		}
 	}
-
 
 	/**
 	 * every hour
@@ -177,10 +169,9 @@ class MaintenanceService {
 		try {
 			$this->output('Retry failed FederatedEvents (hourly)');
 			$this->eventWrapperService->retry(EventWrapperService::RETRY_HOURLY);
-		} catch (Exception $e) {
+		} catch (Exception) {
 		}
 	}
-
 
 	/**
 	 * every day
@@ -222,30 +213,29 @@ class MaintenanceService {
 		try {
 			$this->output('Update memberships');
 			$this->updateAllMemberships();
-		} catch (Exception $e) {
+		} catch (Exception) {
 		}
 
 		try {
 			$this->output('refresh members\' display name');
 			$this->refreshDisplayName($forceRefresh);
-		} catch (Exception $e) {
+		} catch (Exception) {
 		}
 
 		try {
 			// Can be removed in NC27.
 			$this->output('Remove orphan shares');
 			$this->removeOrphanShares();
-		} catch (Exception $e) {
+		} catch (Exception) {
 		}
 
 		try {
 			// Can be removed in NC27.
 			$this->output('fix sub-circle display name');
 			$this->fixSubCirclesDisplayName();
-		} catch (Exception $e) {
+		} catch (Exception) {
 		}
 	}
-
 
 	/**
 	 * @throws InitiatorNotFoundException
@@ -264,7 +254,6 @@ class MaintenanceService {
 		}
 	}
 
-
 	/**
 	 *
 	 */
@@ -280,11 +269,9 @@ class MaintenanceService {
 		//		}
 	}
 
-
 	private function removeOrphanShares(): void {
 		$this->shareWrapperRequest->removeOrphanShares();
 	}
-
 
 	/**
 	 * @throws RequestBuilderException
@@ -296,16 +283,14 @@ class MaintenanceService {
 			->includeSystemCircles();
 
 		$circles = array_map(
-			function (Circle $circle) {
-				return $circle->getSingleId();
-			}, $this->circleRequest->getCircles(null, $probe)
+			fn (Circle $circle) => $circle->getSingleId(),
+			$this->circleRequest->getCircles(null, $probe)
 		);
 
 		$shares = array_unique(
 			array_map(
-				function (ShareWrapper $share) {
-					return $share->getSharedWith();
-				}, $this->shareWrapperRequest->getShares()
+				fn (ShareWrapper $share) => $share->getSharedWith(),
+				$this->shareWrapperRequest->getShares()
 			)
 		);
 
@@ -315,7 +300,6 @@ class MaintenanceService {
 			}
 		}
 	}
-
 
 	/**
 	 * @throws InitiatorNotFoundException
@@ -382,7 +366,6 @@ class MaintenanceService {
 		return $displayName;
 	}
 
-
 	/**
 	 * @throws RequestBuilderException
 	 * @throws InitiatorNotFoundException
@@ -398,7 +381,6 @@ class MaintenanceService {
 		}
 	}
 
-
 	/**
 	 * should only be called from a BackgroundJob
 	 *
@@ -413,7 +395,7 @@ class MaintenanceService {
 			if ($this->canRunLevel($i, $last)) {
 				try {
 					$this->runMaintenance($i);
-				} catch (MaintenanceException $e) {
+				} catch (MaintenanceException) {
 					continue;
 				}
 				$last->sInt((string)$i, time());
@@ -422,7 +404,6 @@ class MaintenanceService {
 
 		$this->configService->setAppValue(ConfigService::MAINTENANCE_UPDATE, json_encode($last));
 	}
-
 
 	/**
 	 * @param int $level
@@ -439,7 +420,6 @@ class MaintenanceService {
 
 		return ($timeLastRun + self::$DELAY[$level] < $now);
 	}
-
 
 	/**
 	 * @param string $message

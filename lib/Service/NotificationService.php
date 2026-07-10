@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Service;
 
@@ -28,20 +26,6 @@ use OCP\Notification\INotification;
 class NotificationService {
 	use TNCLogger;
 
-
-	/** @var IURLGenerator */
-	private $urlGenerator;
-
-	/** @var INotificationManager */
-	private $notificationManager;
-
-	/** @var MemberRequest */
-	private $memberRequest;
-
-	/** @var TimezoneService */
-	private $timezoneService;
-
-
 	/**
 	 * NotificationService constructor.
 	 *
@@ -51,19 +35,13 @@ class NotificationService {
 	 * @param TimezoneService $timezoneService
 	 */
 	public function __construct(
-		IURLGenerator $urlGenerator,
-		INotificationManager $notificationManager,
-		MemberRequest $memberRequest,
-		TimezoneService $timezoneService,
+		private IURLGenerator $urlGenerator,
+		private INotificationManager $notificationManager,
+		private MemberRequest $memberRequest,
+		private TimezoneService $timezoneService,
 	) {
-		$this->urlGenerator = $urlGenerator;
-		$this->notificationManager = $notificationManager;
-		$this->memberRequest = $memberRequest;
-		$this->timezoneService = $timezoneService;
-
 		$this->setup('app', Application::APP_ID);
 	}
-
 
 	/**
 	 * @param Member $member
@@ -94,7 +72,6 @@ class NotificationService {
 
 		$this->notificationManager->notify($notification);
 	}
-
 
 	/**
 	 * @param Member $member
@@ -153,7 +130,6 @@ class NotificationService {
 		}
 	}
 
-
 	/**
 	 * @param string $object
 	 * @param string $objectId
@@ -169,7 +145,6 @@ class NotificationService {
 		//
 		//		$this->notificationManager->markProcessed($notification);
 	}
-
 
 	/**
 	 * @param string $userId

@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
@@ -27,7 +26,6 @@ class EventWrapperService extends NCSignature {
 	use TNCRequest;
 	use TStringTools;
 
-
 	public const RETRY_ASAP = 'asap';
 	public const RETRY_HOURLY = 'hourly';
 	public const RETRY_DAILY = 'daily';
@@ -38,20 +36,6 @@ class EventWrapperService extends NCSignature {
 		'daily' => [150, 300]
 	];
 
-
-	/** @var EventWrapperRequest */
-	private $eventWrapperRequest;
-
-	/** @var FederatedEventService */
-	private $federatedEventService;
-
-	/** @var RemoteUpstreamService */
-	private $remoteUpstreamService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
 	/**
 	 * EventWrapperService constructor.
 	 *
@@ -61,17 +45,12 @@ class EventWrapperService extends NCSignature {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		EventWrapperRequest $eventWrapperRequest,
-		FederatedEventService $federatedEventService,
-		RemoteUpstreamService $remoteUpstreamService,
-		ConfigService $configService,
+		private EventWrapperRequest $eventWrapperRequest,
+		private FederatedEventService $federatedEventService,
+		private RemoteUpstreamService $remoteUpstreamService,
+		private ConfigService $configService,
 	) {
-		$this->eventWrapperRequest = $eventWrapperRequest;
-		$this->federatedEventService = $federatedEventService;
-		$this->remoteUpstreamService = $remoteUpstreamService;
-		$this->configService = $configService;
 	}
-
 
 	/**
 	 * @param string $token
@@ -82,8 +61,8 @@ class EventWrapperService extends NCSignature {
 
 		foreach ($wrappers as $wrapper) {
 			$status = $wrapper->getStatus();
-			if ($refresh && ($status === EventWrapper::STATUS_FAILED ||
-							 $status === EventWrapper::STATUS_INIT)) {
+			if ($refresh && ($status === EventWrapper::STATUS_FAILED
+							 || $status === EventWrapper::STATUS_INIT)) {
 				$wrapper->setStatus(EventWrapper::STATUS_INIT);
 				$this->eventWrapperRequest->update($wrapper);
 				$status = $this->manageWrapper($wrapper);
@@ -97,7 +76,6 @@ class EventWrapperService extends NCSignature {
 		$this->federatedEventService->manageResults($token);
 		$this->eventWrapperRequest->updateAll($token, EventWrapper::STATUS_OVER);
 	}
-
 
 	/**
 	 * @param EventWrapper $wrapper
@@ -119,7 +97,7 @@ class EventWrapperService extends NCSignature {
 				$this->remoteUpstreamService->broadcastEvent($wrapper);
 			}
 			$status = EventWrapper::STATUS_DONE;
-		} catch (Exception $e) {
+		} catch (Exception) {
 			$retry++;
 		}
 
@@ -136,7 +114,6 @@ class EventWrapperService extends NCSignature {
 		return $status;
 	}
 
-
 	/**
 	 * @param string $retry
 	 */
@@ -147,7 +124,6 @@ class EventWrapperService extends NCSignature {
 		}
 	}
 
-
 	/**
 	 * @param array $retryRange
 	 *
@@ -155,9 +131,8 @@ class EventWrapperService extends NCSignature {
 	 */
 	private function getFailedEvents(array $retryRange): array {
 		$token = array_map(
-			function (EventWrapper $event): string {
-				return $event->getToken();
-			}, $this->eventWrapperRequest->getFailedEvents($retryRange)
+			fn (EventWrapper $event): string => $event->getToken(),
+			$this->eventWrapperRequest->getFailedEvents($retryRange)
 		);
 
 		return array_values(array_unique($token));

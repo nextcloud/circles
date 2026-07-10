@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s је поделио више фајлова са Вама.",
     "Boot up" : "Подизање система",
     "Nextcloud Initialization" : "Nextcloud иницијализација",
-    "Circles App Initialization" : "Иницијализација апликације Кругови",
     "Fresh installation status" : "Статус свеже инсталације",
     "Building Local Database" : "Изградња локалне базе података",
     "Adding local users and moderators" : "Додавање локалних корисника и модератора",
@@ -124,6 +123,11 @@ OC.L10N.register(
     "Accept" : "Прихвати",
     "Refuse" : "Одбиј",
     "Leave the team" : "Напусти тим",
+    "No image file provided" : "Није понуђен фајл слике",
+    "Invalid file provided" : "Дати фајл је неисправан",
+    "File is too big" : "Фајл је превелики",
+    "Invalid image" : "Неисправна слика",
+    "Unknown filetype" : "Непознат тип фајла",
     "%s" : "%s",
     "Personal team" : "Лични тим",
     "%s owned by %s" : "%s поседује %s",
@@ -152,6 +156,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Нема резултата у овој фасцикли",
     "Name" : "Назив",
     "Size" : "Величина",
-    "Modified" : "Измењен"
+    "Modified" : "Измењен",
+    "Circles App Initialization" : "Иницијализација апликације Кругови"
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");

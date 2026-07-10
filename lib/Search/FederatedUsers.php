@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Search;
 
@@ -20,15 +18,14 @@ use OCA\Circles\ISearch;
  * @package OCA\Circles\Search
  */
 class FederatedUsers implements ISearch {
-	private MemberRequest $memberRequest;
-
 	/**
 	 * LocalUsers constructor.
 	 *
 	 * @param MemberRequest $memberRequest
 	 */
-	public function __construct(MemberRequest $memberRequest) {
-		$this->memberRequest = $memberRequest;
+	public function __construct(
+		private readonly MemberRequest $memberRequest,
+	) {
 	}
 
 	/**

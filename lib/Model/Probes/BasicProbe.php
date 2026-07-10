@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Model\Probes;
 
@@ -25,7 +23,6 @@ class BasicProbe implements IQueryProbe {
 	public const DETAILS_NONE = 0;
 	public const DETAILS_POPULATION = 32;
 	public const DETAILS_ALL = 127;
-
 
 	/** @var int */
 	private $itemsOffset = 0;
@@ -48,7 +45,6 @@ class BasicProbe implements IQueryProbe {
 	/** @var array */
 	private $options = [];
 
-
 	/**
 	 * @param int $itemsOffset
 	 *
@@ -67,7 +63,6 @@ class BasicProbe implements IQueryProbe {
 		return $this->itemsOffset;
 	}
 
-
 	/**
 	 * @param int $itemsLimit
 	 *
@@ -85,7 +80,6 @@ class BasicProbe implements IQueryProbe {
 	public function getItemsLimit(): int {
 		return $this->itemsLimit;
 	}
-
 
 	/**
 	 * @param int $details
@@ -123,7 +117,6 @@ class BasicProbe implements IQueryProbe {
 		return (($this->getDetails() & $detail) !== 0);
 	}
 
-
 	/**
 	 * @param Circle $filterCircle
 	 *
@@ -148,7 +141,6 @@ class BasicProbe implements IQueryProbe {
 	public function hasFilterCircle(): bool {
 		return !is_null($this->filterCircle);
 	}
-
 
 	/**
 	 * @param Member $filterMember
@@ -175,7 +167,6 @@ class BasicProbe implements IQueryProbe {
 		return !is_null($this->filterMember);
 	}
 
-
 	/**
 	 * @param RemoteInstance $filterRemoteInstance
 	 *
@@ -200,7 +191,6 @@ class BasicProbe implements IQueryProbe {
 	public function hasFilterRemoteInstance(): bool {
 		return !is_null($this->filterRemoteInstance);
 	}
-
 
 	/**
 	 * @param string $key
@@ -252,7 +242,6 @@ class BasicProbe implements IQueryProbe {
 			]
 		);
 	}
-
 
 	/**
 	 * @return array

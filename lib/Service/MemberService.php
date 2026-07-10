@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Service;
 
@@ -59,26 +57,6 @@ class MemberService {
 	use TStringTools;
 	use TNCLogger;
 
-
-	/** @var CircleRequest */
-	private $circleRequest;
-
-	/** @var MemberRequest */
-	private $memberRequest;
-
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var MembershipService */
-	private $membershipService;
-
-	/** @var FederatedEventService */
-	private $federatedEventService;
-
-	/** @var RemoteStreamService */
-	private $remoteStreamService;
-
-
 	/**
 	 * MemberService constructor.
 	 *
@@ -89,21 +67,15 @@ class MemberService {
 	 * @param RemoteStreamService $remoteStreamService
 	 */
 	public function __construct(
-		CircleRequest $circleRequest,
-		MemberRequest $memberRequest,
-		FederatedUserService $federatedUserService,
-		MembershipService $membershipService,
-		FederatedEventService $federatedEventService,
-		RemoteStreamService $remoteStreamService,
+		private CircleRequest $circleRequest,
+		private MemberRequest $memberRequest,
+		private FederatedUserService $federatedUserService,
+		private MembershipService $membershipService,
+		private FederatedEventService $federatedEventService,
+		private RemoteStreamService $remoteStreamService,
 		private readonly IEventDispatcher $eventDispatcher,
 		private readonly IUserManager $userManager,
 	) {
-		$this->circleRequest = $circleRequest;
-		$this->memberRequest = $memberRequest;
-		$this->federatedUserService = $federatedUserService;
-		$this->membershipService = $membershipService;
-		$this->federatedEventService = $federatedEventService;
-		$this->remoteStreamService = $remoteStreamService;
 	}
 
 	//
@@ -117,7 +89,6 @@ class MemberService {
 	//		$this->memberRequest->save($member);
 	//	}
 	//
-
 
 	/**
 	 * @param string $memberId
@@ -149,15 +120,18 @@ class MemberService {
 		return $member;
 	}
 
-
 	/**
 	 * @param string $circleId
+	 * @param bool $fullDetails
+	 * @param int $limit
+	 * @param string $search
+	 * @param ?int $role
 	 *
 	 * @return Member[]
 	 * @throws InitiatorNotFoundException
 	 * @throws RequestBuilderException
 	 */
-	public function getMembers(string $circleId, bool $fullDetails = false): array {
+	public function getMembers(string $circleId, bool $fullDetails = false, int $limit = 0, string $search = '', ?int $role = null): array {
 		$this->federatedUserService->mustHaveCurrentUser();
 
 		$probe = new MemberProbe();
@@ -171,10 +145,12 @@ class MemberService {
 			$circleId,
 			$this->federatedUserService->getCurrentUser(),
 			$probe,
-			fullDetails: $fullDetails
+			$limit,
+			$fullDetails,
+			$search,
+			$role,
 		);
 	}
-
 
 	/**
 	 * @param string $circleId
@@ -220,7 +196,6 @@ class MemberService {
 		return $event->getOutcome();
 	}
 
-
 	/**
 	 * @param string $circleId
 	 * @param IFederatedUser[] $members
@@ -265,11 +240,10 @@ class MemberService {
 
 		$this->federatedEventService->newEvent($event);
 
-		$this->eventDispatcher->dispatchTyped(new UserShareAccessUpdatedEvent(array_merge(...array_map(fn (Member $member) => $this->collectShareAccessUpdateUsers($member), array_values($members)))));
+		$this->eventDispatcher->dispatchTyped(new UserShareAccessUpdatedEvent(array_merge(...array_map($this->collectShareAccessUpdateUsers(...), array_values($members)))));
 
 		return $event->getOutcome();
 	}
-
 
 	/**
 	 * @param string $memberId
@@ -305,7 +279,6 @@ class MemberService {
 
 		return $event->getOutcome();
 	}
-
 
 	/**
 	 * @return list<IUser>
@@ -343,8 +316,8 @@ class MemberService {
 	 */
 	public function memberLevel(string $memberId, int $level): array {
 		$this->federatedUserService->mustHaveCurrentUser();
-		$member =
-			$this->memberRequest->getMemberById($memberId, $this->federatedUserService->getCurrentUser());
+		$member
+			= $this->memberRequest->getMemberById($memberId, $this->federatedUserService->getCurrentUser());
 
 		$event = new FederatedEvent(MemberLevel::class);
 		$event->setCircle($member->getCircle());
@@ -355,7 +328,6 @@ class MemberService {
 
 		return $event->getOutcome();
 	}
-
 
 	/**
 	 * @param Member $member

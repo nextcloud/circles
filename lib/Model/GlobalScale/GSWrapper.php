@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Model\GlobalScale;
 
@@ -24,12 +22,10 @@ use OCA\Circles\Tools\Traits\TArrayTools;
 class GSWrapper implements JsonSerializable {
 	use TArrayTools;
 
-
 	public const STATUS_INIT = 0;
 	public const STATUS_FAILED = 1;
 	public const STATUS_DONE = 8;
 	public const STATUS_OVER = 9;
-
 
 	/** @var string */
 	private $token = '';
@@ -49,10 +45,8 @@ class GSWrapper implements JsonSerializable {
 	/** @var int */
 	private $creation;
 
-
 	public function __construct() {
 	}
-
 
 	/**
 	 * @return string
@@ -71,7 +65,6 @@ class GSWrapper implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return GSEvent
@@ -98,7 +91,6 @@ class GSWrapper implements JsonSerializable {
 		return ($this->event !== null);
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -116,7 +108,6 @@ class GSWrapper implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return int
@@ -136,7 +127,6 @@ class GSWrapper implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return int
 	 */
@@ -154,7 +144,6 @@ class GSWrapper implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return int
@@ -174,11 +163,7 @@ class GSWrapper implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
-	 * @param array $data
-	 *
-	 * @return GSWrapper
 	 * @throws JsonException
 	 * @throws ModelException
 	 */
@@ -197,7 +182,6 @@ class GSWrapper implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return array

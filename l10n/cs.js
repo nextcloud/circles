@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s vám nasdílel(a) vícero souborů.",
     "Boot up" : "Nastartovat",
     "Nextcloud Initialization" : "Inicializace Nextcloud",
-    "Circles App Initialization" : "Inicializace aplikace okruhy",
     "Fresh installation status" : "Stav čisté instalace",
     "Building Local Database" : "Vytváří se místní databáze",
     "Testing Basic Team Creation" : "Zkouší se vytvoření základního týmu",
@@ -130,6 +129,11 @@ OC.L10N.register(
     "Accept" : "Přijmout",
     "Refuse" : "Odmítnout",
     "Leave the team" : "Opustit tým",
+    "No image file provided" : "Neposkytnut žádný soubor, obsahující obrázek",
+    "Invalid file provided" : "Poskytnut neplatný soubor",
+    "File is too big" : "Soubor je příliš velký",
+    "Invalid image" : "Neplatný obrázek",
+    "Unknown filetype" : "Neznámý typ souboru",
     "%s" : "%s",
     "Personal team" : "Osobní tým",
     "%s owned by %s" : "%s vlastněné uživ. %s",
@@ -166,6 +170,7 @@ OC.L10N.register(
     "No entries found in this folder" : "V této složce nebyly nalezeny žádné položky",
     "Name" : "Název",
     "Size" : "Velikost",
-    "Modified" : "Změněno"
+    "Modified" : "Změněno",
+    "Circles App Initialization" : "Inicializace aplikace okruhy"
 },
 "nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;");

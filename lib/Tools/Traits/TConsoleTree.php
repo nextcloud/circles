@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Tools\Traits;
 
@@ -81,7 +79,7 @@ trait TConsoleTree {
 			if ($p < $prec) {
 				for ($i = 0; $i < $config['node-spacing']; $i++) {
 					$spacing = substr($empty, 0, -3);
-					if (substr($spacing, -1) === ' ') {
+					if (str_ends_with($spacing, ' ')) {
 						$spacing = substr($spacing, 0, -1) . '│';
 					}
 					$output->writeln($spacing);

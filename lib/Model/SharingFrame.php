@@ -50,7 +50,6 @@ class SharingFrame implements \JsonSerializable {
 		$this->type = (string)$type;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -79,7 +78,6 @@ class SharingFrame implements \JsonSerializable {
 		return $this->circle;
 	}
 
-
 	/**
 	 * @param string $author
 	 */
@@ -94,7 +92,6 @@ class SharingFrame implements \JsonSerializable {
 		return $this->author;
 	}
 
-
 	/**
 	 * @param string $cloudId
 	 */
@@ -108,7 +105,6 @@ class SharingFrame implements \JsonSerializable {
 	public function getCloudId() {
 		return $this->cloudId;
 	}
-
 
 	/**
 	 * @param string $uniqueId
@@ -158,7 +154,6 @@ class SharingFrame implements \JsonSerializable {
 		return $this->payload;
 	}
 
-
 	/**
 	 * @param array $headers
 	 */
@@ -178,7 +173,6 @@ class SharingFrame implements \JsonSerializable {
 
 		return $this->headers;
 	}
-
 
 	/**
 	 * @param string $k
@@ -206,7 +200,6 @@ class SharingFrame implements \JsonSerializable {
 		$this->headers[(string)$k] = $v;
 	}
 
-
 	/**
 	 * @param int $creation
 	 */
@@ -225,14 +218,12 @@ class SharingFrame implements \JsonSerializable {
 		return $this->creation;
 	}
 
-
 	/**
 	 * @return bool
 	 */
 	public function isLocal() {
 		return ($this->getCloudId() === null);
 	}
-
 
 	/**
 	 * @return bool
@@ -250,7 +241,6 @@ class SharingFrame implements \JsonSerializable {
 		}
 	}
 
-
 	public function jsonSerialize(): array {
 		return [
 			'unique_id' => $this->getUniqueId(),
@@ -266,14 +256,13 @@ class SharingFrame implements \JsonSerializable {
 		];
 	}
 
-	public static function fromJSON($json) {
+	public static function fromJSON(string $json): ?self {
 		$arr = json_decode($json, true);
 
 		return self::fromArray($arr);
 	}
 
-
-	public static function fromArray($arr) {
+	public static function fromArray(?array $arr): ?self {
 		if (!is_array($arr) || !key_exists('source', $arr)) {
 			return null;
 		}
@@ -293,7 +282,6 @@ class SharingFrame implements \JsonSerializable {
 		return $share;
 	}
 
-
 	/**
 	 * @param array $arr
 	 *
@@ -307,7 +295,6 @@ class SharingFrame implements \JsonSerializable {
 
 		return $headers;
 	}
-
 
 	/**
 	 * @param array $arr

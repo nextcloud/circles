@@ -101,7 +101,6 @@
     "%s shared multiple files with you." : "%s a partagé plusieurs fichiers avec vous.",
     "Boot up" : "Démarrage",
     "Nextcloud Initialization" : "Initialisation de Nexctcloud",
-    "Circles App Initialization" : "Initialisation de l'application Cercles",
     "Fresh installation status" : "Statut de l'installation",
     "Building Local Database" : "Construction de la base de données locale",
     "Testing Basic Team Creation" : "Test de création d'une Équipe basique",
@@ -128,10 +127,16 @@
     "Accept" : "Accepter",
     "Refuse" : "Refuser",
     "Leave the team" : "Quitter l'équipe",
+    "No image file provided" : "Aucun fichier image fourni",
+    "Invalid file provided" : "Fichier fourni invalide",
+    "File is too big" : "Le fichier est trop gros",
+    "Invalid image" : "Image invalide",
+    "Unknown filetype" : "Type de fichier inconnu",
     "%s" : "%s",
     "Personal team" : "Équipe personnelle",
     "%s owned by %s" : "%s appartenant à %s",
     "You have no permission to create a new team" : "Vous n'avez pas l'autorisation de créer une nouvelle équipe",
+    "Insufficient permissions to perform this action" : "Autorisations insuffisantes pour effectuer cette action.",
     "%s shared a file with \"%s\"." : "%s a partagé un fichier avec « %s ».",
     "%s shared a file with you." : "%s a partagé un fichier avec vous.",
     "%1$s shared %2$s with %3$s" : "%1$s a partagé %2$s avec %3$s",
@@ -164,6 +169,7 @@
     "No entries found in this folder" : "Aucune entrée trouvée dans ce dossier",
     "Name" : "Nom",
     "Size" : "Taille",
-    "Modified" : "Modifié"
+    "Modified" : "Modifié",
+    "Circles App Initialization" : "Initialisation de l'application Cercles"
 },"pluralForm" :"nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }

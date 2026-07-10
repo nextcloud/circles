@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2020 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Controller;
 
@@ -50,6 +48,8 @@ use OCA\Circles\Tools\Traits\TDeserialize;
 use OCA\Circles\Tools\Traits\TNCLocalSignatory;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
+use OCP\AppFramework\Http\Attribute\PublicPage;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Services\IAppConfig;
 use OCP\IRequest;
@@ -85,10 +85,7 @@ class RemoteController extends Controller {
 		$this->setupArray('enforceSignatureHeaders', ['digest', 'content-length']);
 	}
 
-
 	/**
-	 * @PublicPage
-	 * @NoCSRFRequired
 	 *
 	 * @param string $test
 	 *
@@ -97,10 +94,12 @@ class RemoteController extends Controller {
 	 * @throws SignatoryException
 	 * @throws UnknownInterfaceException
 	 */
+	#[PublicPage]
+	#[NoCSRFRequired]
 	public function appService(string $test = ''): DataResponse {
 		try {
 			$this->publicPageJsonLimited();
-		} catch (JsonNotRequestedException $e) {
+		} catch (JsonNotRequestedException) {
 			return new DataResponse();
 		}
 
@@ -110,13 +109,12 @@ class RemoteController extends Controller {
 		return new DataResponse($signatory);
 	}
 
-
 	/**
-	 * @PublicPage
-	 * @NoCSRFRequired
 	 *
 	 * @return DataResponse
 	 */
+	#[PublicPage]
+	#[NoCSRFRequired]
 	public function event(): DataResponse {
 		try {
 			$event = $this->extractEventFromRequest();
@@ -135,13 +133,12 @@ class RemoteController extends Controller {
 		}
 	}
 
-
 	/**
-	 * @PublicPage
-	 * @NoCSRFRequired
 	 *
 	 * @return DataResponse
 	 */
+	#[PublicPage]
+	#[NoCSRFRequired]
 	public function incoming(): DataResponse {
 		try {
 			$event = $this->extractEventFromRequest();
@@ -160,13 +157,12 @@ class RemoteController extends Controller {
 		}
 	}
 
-
 	/**
-	 * @PublicPage
-	 * @NoCSRFRequired
 	 *
 	 * @return DataResponse
 	 */
+	#[PublicPage]
+	#[NoCSRFRequired]
 	public function test(): DataResponse {
 		try {
 			$this->interfaceService->setCurrentInterfaceFromRequest($this->request);
@@ -180,13 +176,12 @@ class RemoteController extends Controller {
 		}
 	}
 
-
 	/**
-	 * @PublicPage
-	 * @NoCSRFRequired
 	 *
 	 * @return DataResponse
 	 */
+	#[PublicPage]
+	#[NoCSRFRequired]
 	public function circles(): DataResponse {
 		try {
 			$data = $this->extractDataFromFromRequest();
@@ -213,15 +208,14 @@ class RemoteController extends Controller {
 		}
 	}
 
-
 	/**
-	 * @PublicPage
-	 * @NoCSRFRequired
 	 *
 	 * @param string $circleId
 	 *
 	 * @return DataResponse
 	 */
+	#[PublicPage]
+	#[NoCSRFRequired]
 	public function circle(string $circleId): DataResponse {
 		try {
 			$this->extractDataFromFromRequest();
@@ -238,15 +232,14 @@ class RemoteController extends Controller {
 		}
 	}
 
-
 	/**
-	 * @PublicPage
-	 * @NoCSRFRequired
 	 *
 	 * @param string $circleId
 	 *
 	 * @return DataResponse
 	 */
+	#[PublicPage]
+	#[NoCSRFRequired]
 	public function members(string $circleId): DataResponse {
 		try {
 			$this->extractDataFromFromRequest();
@@ -263,18 +256,17 @@ class RemoteController extends Controller {
 		}
 	}
 
-
 	/**
 	 * ?? TODO: rename /member/ to /federatedUser/ ou /federated/  ?
 	 *
-	 * @PublicPage
-	 * @NoCSRFRequired
 	 *
 	 * @param string $type
 	 * @param string $userId
 	 *
 	 * @return DataResponse
 	 */
+	#[PublicPage]
+	#[NoCSRFRequired]
 	public function member(string $type, string $userId): DataResponse {
 		try {
 			$this->extractDataFromFromRequest();
@@ -302,15 +294,14 @@ class RemoteController extends Controller {
 		}
 	}
 
-
 	/**
-	 * @PublicPage
-	 * @NoCSRFRequired
 	 *
 	 * @param string $circleId
 	 *
 	 * @return DataResponse
 	 */
+	#[PublicPage]
+	#[NoCSRFRequired]
 	public function inherited(string $circleId): DataResponse {
 		try {
 			$this->extractDataFromFromRequest();
@@ -327,15 +318,14 @@ class RemoteController extends Controller {
 		}
 	}
 
-
 	/**
-	 * @PublicPage
-	 * @NoCSRFRequired
 	 *
 	 * @param string $circleId
 	 *
 	 * @return DataResponse
 	 */
+	#[PublicPage]
+	#[NoCSRFRequired]
 	public function memberships(string $circleId): DataResponse {
 		try {
 			$this->extractDataFromFromRequest();
@@ -352,7 +342,6 @@ class RemoteController extends Controller {
 		}
 	}
 
-
 	/**
 	 * @return FederatedEvent
 	 * @throws InvalidItemException
@@ -367,8 +356,8 @@ class RemoteController extends Controller {
 		// will throw exception if instance is not configured for this event.
 		$this->interfaceService->setCurrentInterfaceFromRequest($this->request);
 		$iface = $this->interfaceService->getCurrentInterface();
-		if ($iface === InterfaceService::IFACE_FRONTAL &&
-			!$this->appConfig->getAppValueBool(ConfigLexicon::FEDERATED_TEAMS_ENABLED)) {
+		if ($iface === InterfaceService::IFACE_FRONTAL
+			&& !$this->appConfig->getAppValueBool(ConfigLexicon::FEDERATED_TEAMS_ENABLED)) {
 			throw new FederatedEventException('frontal interface is not enabled');
 		}
 
@@ -381,7 +370,6 @@ class RemoteController extends Controller {
 
 		return $event;
 	}
-
 
 	/**
 	 * @return SimpleDataStore
@@ -412,26 +400,25 @@ class RemoteController extends Controller {
 				throw new InvalidRemoteInstanceException('Initiator instance does not match remote instance');
 			}
 			$this->federatedUserService->setCurrentUser($initiator);
-		} catch (InvalidItemException|ItemNotFoundException $e) {
+		} catch (InvalidItemException|ItemNotFoundException) {
 		}
 
 		try {
 			/** @var FederatedUser $initiator */
 			$filterMember = $store->gObj('filterMember', Member::class);
 			$data->aObj('filterMember', $filterMember);
-		} catch (InvalidItemException|ItemNotFoundException $e) {
+		} catch (InvalidItemException|ItemNotFoundException) {
 		}
 
 		try {
 			/** @var FederatedUser $initiator */
 			$filterCircle = $store->gObj('filterCircle', Circle::class);
 			$data->aObj('filterCircle', $filterCircle);
-		} catch (InvalidItemException|ItemNotFoundException $e) {
+		} catch (InvalidItemException|ItemNotFoundException) {
 		}
 
 		return $data;
 	}
-
 
 	/**
 	 * @param NCSignedRequest $signedRequest
@@ -459,7 +446,6 @@ class RemoteController extends Controller {
 		return $signatory;
 	}
 
-
 	/**
 	 * @param Exception $e
 	 * @param int $httpErrorCode
@@ -484,7 +470,6 @@ class RemoteController extends Controller {
 		);
 	}
 
-
 	/**
 	 * use this one if a method from a Controller is only PublicPage when remote client asking for Json
 	 *
@@ -507,7 +492,6 @@ class RemoteController extends Controller {
 		}
 	}
 
-
 	/**
 	 * @return bool
 	 */
@@ -521,14 +505,13 @@ class RemoteController extends Controller {
 		));
 	}
 
-
 	/**
 	 * @param array $needles
 	 *
 	 * @return bool
 	 */
 	private function areWithinAcceptHeader(array $needles): bool {
-		$accepts = array_map([$this, 'trimHeader'], explode(',', $this->request->getHeader('Accept')));
+		$accepts = array_map($this->trimHeader(...), explode(',', $this->request->getHeader('Accept')));
 
 		foreach ($accepts as $accept) {
 			if (in_array($accept, $needles)) {

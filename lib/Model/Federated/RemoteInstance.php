@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Model\Federated;
 
@@ -32,7 +30,7 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 	public const TYPE_TRUSTED = 'Trusted';    // everything about Federated Circles are broadcasted.
 	public const TYPE_GLOBALSCALE = 'GlobalScale';  // every Circle is broadcasted,
 
-	public static $LIST_TYPE = [
+	public const LIST_TYPE = [
 		self::TYPE_UNKNOWN,
 		self::TYPE_PASSIVE,
 		self::TYPE_EXTERNAL,
@@ -105,7 +103,6 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 	/** @var bool */
 	private $identityAuthed = false;
 
-
 	/**
 	 * @param int $dbId
 	 *
@@ -123,7 +120,6 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 	public function getDbId(): int {
 		return $this->dbId;
 	}
-
 
 	/**
 	 * @param string $type
@@ -143,7 +139,6 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 		return $this->type;
 	}
 
-
 	/**
 	 * @param int $interface
 	 *
@@ -161,7 +156,6 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 	public function getInterface(): int {
 		return $this->interface;
 	}
-
 
 	/**
 	 * @param array $aliases
@@ -181,7 +175,6 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 		return $this->aliases;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -199,7 +192,6 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 
 		return $this;
 	}
-
 
 	/**
 	 * @return string
@@ -219,7 +211,6 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 		return $this;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -237,7 +228,6 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 
 		return $this;
 	}
-
 
 	/**
 	 * @param string $test
@@ -257,7 +247,6 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 		return $this->test;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -275,7 +264,6 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 
 		return $this;
 	}
-
 
 	/**
 	 * @return string
@@ -295,7 +283,6 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 		return $this;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -313,7 +300,6 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 
 		return $this;
 	}
-
 
 	/**
 	 * @return string
@@ -333,7 +319,6 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 		return $this;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -352,7 +337,6 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 		return $this;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -370,7 +354,6 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 
 		return $this;
 	}
-
 
 	/**
 	 * @return $this
@@ -405,7 +388,6 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 		return $this->uid;
 	}
 
-
 	/**
 	 * @param string $authSigned
 	 *
@@ -423,7 +405,6 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 	public function getAuthSigned(): string {
 		return $this->authSigned;
 	}
-
 
 	/**
 	 * @param bool $identityAuthed
@@ -451,7 +432,6 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 			throw new RemoteUidException('identity not authed');
 		}
 	}
-
 
 	/**
 	 * @param array $data
@@ -486,7 +466,6 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 		return $this;
 	}
 
-
 	/**
 	 * @return array
 	 */
@@ -515,7 +494,6 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 
 		return array_filter(array_merge($data, parent::jsonSerialize()));
 	}
-
 
 	/**
 	 * @param array $data

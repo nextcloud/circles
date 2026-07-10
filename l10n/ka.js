@@ -83,7 +83,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s shared multiple files with you.",
     "Boot up" : "Boot up",
     "Nextcloud Initialization" : "Nextcloud Initialization",
-    "Circles App Initialization" : "Circles App Initialization",
     "Fresh installation status" : "Fresh installation status",
     "Building Local Database" : "Building Local Database",
     "Adding local users and moderators" : "Adding local users and moderators",
@@ -94,6 +93,11 @@ OC.L10N.register(
     "Level cannot be changed for this type of member" : "Level cannot be changed for this type of member",
     "Accept" : "Accept",
     "Refuse" : "Refuse",
+    "No image file provided" : "No image file provided",
+    "Invalid file provided" : "მითითებული ფაილი არასწორია",
+    "File is too big" : "ფაილი ძალიან დიდია",
+    "Invalid image" : "არასწორი გამოსახულება",
+    "Unknown filetype" : "უცნობი ფაილის ტიპი",
     "%s" : "%s",
     "%s owned by %s" : "%s owned by %s",
     "%s shared a file with \"%s\"." : "%s shared a file with \"%s\".",
@@ -109,6 +113,7 @@ OC.L10N.register(
     "No entries found in this folder" : "No entries found in this folder",
     "Name" : "Name",
     "Size" : "Size",
-    "Modified" : "Modified"
+    "Modified" : "Modified",
+    "Circles App Initialization" : "Circles App Initialization"
 },
 "nplurals=2; plural=(n!=1);");

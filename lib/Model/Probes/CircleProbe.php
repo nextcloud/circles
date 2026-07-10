@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Model\Probes;
 
@@ -30,7 +28,6 @@ class CircleProbe extends MemberProbe {
 	 */
 	public function __construct() {
 	}
-
 
 	/**
 	 * Configure whether personal circles are included in the probe
@@ -139,7 +136,6 @@ class CircleProbe extends MemberProbe {
 		return $this->includeNonVisible;
 	}
 
-
 	/**
 	 * Configure whether single circles are visited in the probe
 	 *
@@ -162,7 +158,6 @@ class CircleProbe extends MemberProbe {
 		return $this->visitSingleCircles;
 	}
 
-
 	/**
 	 * Return the include value
 	 *
@@ -182,7 +177,6 @@ class CircleProbe extends MemberProbe {
 	public function isIncluded(int $config): bool {
 		return (($this->included() & $config) !== 0);
 	}
-
 
 	/**
 	 * limit to a specific config
@@ -204,7 +198,6 @@ class CircleProbe extends MemberProbe {
 	public function getLimitConfig(): int {
 		return $this->limitConfig;
 	}
-
 
 	/**
 	 * Configure whether personal circles are filtered in the probe
@@ -291,7 +284,6 @@ class CircleProbe extends MemberProbe {
 		return $this;
 	}
 
-
 	/**
 	 * Add a config to the probe filter
 	 *
@@ -309,7 +301,6 @@ class CircleProbe extends MemberProbe {
 
 		return $this;
 	}
-
 
 	/**
 	 * Return the filtered value
@@ -330,7 +321,6 @@ class CircleProbe extends MemberProbe {
 	public function isFiltered(int $config): bool {
 		return (($this->filtered() & $config) !== 0);
 	}
-
 
 	/**
 	 * Return an array with includes as options
@@ -359,7 +349,6 @@ class CircleProbe extends MemberProbe {
 			parent::getAsOptions()
 		);
 	}
-
 
 	/**
 	 * @return string

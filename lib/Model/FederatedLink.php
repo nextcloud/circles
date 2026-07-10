@@ -57,7 +57,6 @@ class FederatedLink implements \JsonSerializable {
 	public function __construct() {
 	}
 
-
 	/**
 	 * @param int $id
 	 *
@@ -75,7 +74,6 @@ class FederatedLink implements \JsonSerializable {
 	public function getId() {
 		return $this->id;
 	}
-
 
 	/**
 	 * @param $token
@@ -101,7 +99,6 @@ class FederatedLink implements \JsonSerializable {
 		return substr($this->token, 0, FederatedLink::SHORT_UNIQUE_ID_LENGTH);
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -111,7 +108,6 @@ class FederatedLink implements \JsonSerializable {
 
 		return $token;
 	}
-
 
 	/**
 	 * @param string $address
@@ -131,7 +127,6 @@ class FederatedLink implements \JsonSerializable {
 		return $this->address;
 	}
 
-
 	/**
 	 * @param string $address
 	 *
@@ -149,7 +144,6 @@ class FederatedLink implements \JsonSerializable {
 	public function getLocalAddress() {
 		return $this->localAddress;
 	}
-
 
 	/**
 	 * @param string $circleUniqueId
@@ -175,7 +169,6 @@ class FederatedLink implements \JsonSerializable {
 		return substr($this->circleUniqueId, 0, DeprecatedCircle::SHORT_UNIQUE_ID_LENGTH);
 	}
 
-
 	/**
 	 * @param string $uniqueId
 	 *
@@ -200,7 +193,6 @@ class FederatedLink implements \JsonSerializable {
 		return substr($this->uniqueId, 0, FederatedLink::SHORT_UNIQUE_ID_LENGTH);
 	}
 
-
 	/**
 	 * @param string $circleName
 	 *
@@ -218,7 +210,6 @@ class FederatedLink implements \JsonSerializable {
 	public function getRemoteCircleName() {
 		return $this->remoteCircleName;
 	}
-
 
 	/**
 	 * @param string $circleName
@@ -238,7 +229,6 @@ class FederatedLink implements \JsonSerializable {
 		return $this->localCircleName;
 	}
 
-
 	/**
 	 * @param int $status
 	 *
@@ -256,7 +246,6 @@ class FederatedLink implements \JsonSerializable {
 	public function getStatus() {
 		return $this->status;
 	}
-
 
 	/**
 	 * @param int $creation
@@ -280,18 +269,16 @@ class FederatedLink implements \JsonSerializable {
 		return $this->creation;
 	}
 
-
 	public function hasToBeValidStatusUpdate($status) {
 		try {
 			$this->hasToBeValidStatusUpdateWhileLinkDown($status);
 			$this->hasToBeValidStatusUpdateWhileRequestDeclined($status);
 			$this->hasToBeValidStatusUpdateWhileLinkRequested($status);
 			$this->hasToBeValidStatusUpdateWhileRequestSent($status);
-		} catch (FederatedCircleStatusUpdateException $e) {
+		} catch (FederatedCircleStatusUpdateException) {
 			throw new FederatedCircleStatusUpdateException('The status could not be updated');
 		}
 	}
-
 
 	/**
 	 * @param $status
@@ -307,7 +294,6 @@ class FederatedLink implements \JsonSerializable {
 			throw new FederatedCircleStatusUpdateException();
 		}
 	}
-
 
 	/**
 	 * @param $status
@@ -325,7 +311,6 @@ class FederatedLink implements \JsonSerializable {
 		}
 	}
 
-
 	/**
 	 * @param $status
 	 *
@@ -340,7 +325,6 @@ class FederatedLink implements \JsonSerializable {
 			throw new FederatedCircleStatusUpdateException();
 		}
 	}
-
 
 	/**
 	 * @param $status
@@ -359,7 +343,6 @@ class FederatedLink implements \JsonSerializable {
 		}
 	}
 
-
 	public function jsonSerialize(): array {
 		return [
 			'id' => $this->getId(),
@@ -372,7 +355,6 @@ class FederatedLink implements \JsonSerializable {
 		];
 	}
 
-
 	public function getJson($full = false) {
 		$this->fullJson = $full;
 		$json = json_encode($this);
@@ -381,8 +363,7 @@ class FederatedLink implements \JsonSerializable {
 		return $json;
 	}
 
-
-	public static function fromArray($arr) {
+	public static function fromArray(?array $arr): ?self {
 		if ($arr === null) {
 			return null;
 		}
@@ -400,8 +381,7 @@ class FederatedLink implements \JsonSerializable {
 		return $link;
 	}
 
-
-	public static function fromJSON($json) {
+	public static function fromJSON(string $json): ?self {
 		return self::fromArray(json_decode($json, true));
 	}
 }

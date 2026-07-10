@@ -12,14 +12,15 @@ namespace OC\AppFramework\Bootstrap;
  * @psalm-immutable
  */
 abstract class ARegistration {
-	public function __construct(string $appId)
- {
- }
+	public function __construct(
+		private string $appId,
+	) {
+	}
 
 	/**
 	 * @return string
 	 */
 	public function getAppId(): string
- {
- }
+    {
+    }
 }

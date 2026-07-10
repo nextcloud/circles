@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Service;
 
@@ -29,31 +27,19 @@ use OCP\Server;
 class SearchService {
 	use TArrayTools;
 
-
 	public static $SERVICES = [
 		FederatedUsers::class
 	];
-
-
-	/** @var IURLGenerator */
-	private $urlGenerator;
-
-	/** @var CircleService */
-	private $circleService;
-
 
 	/**
 	 * @param IURLGenerator $urlGenerator
 	 * @param CircleService $circleService
 	 */
 	public function __construct(
-		IURLGenerator $urlGenerator,
-		CircleService $circleService,
+		private IURLGenerator $urlGenerator,
+		private CircleService $circleService,
 	) {
-		$this->urlGenerator = $urlGenerator;
-		$this->circleService = $circleService;
 	}
-
 
 	/**
 	 * @param string $needle
@@ -73,7 +59,6 @@ class SearchService {
 		return $result;
 	}
 
-
 	/**
 	 * @param string $term
 	 * @param array $options
@@ -87,7 +72,7 @@ class SearchService {
 
 		try {
 			$circles = $this->circleService->getCircles($probe);
-		} catch (InitiatorNotFoundException $e) {
+		} catch (InitiatorNotFoundException) {
 			return [];
 		}
 
@@ -105,7 +90,6 @@ class SearchService {
 
 		return $result;
 	}
-
 
 	/**
 	 * @param string $term

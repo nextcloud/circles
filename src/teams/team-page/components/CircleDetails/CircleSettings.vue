@@ -15,8 +15,8 @@
 					<NcCheckboxRadioSwitch
 						v-for="(label, config) in configs"
 						:key="'circle-config' + config"
-						:model-value="isChecked(config)"
-						:loading="loading === config"
+						:model-value="isChecked(Number(config))"
+						:loading="loading === Number(config)"
 						:disabled="loading !== false"
 						wrapper-element="li"
 						@update:model-value="onChange(Number(config), $event)">

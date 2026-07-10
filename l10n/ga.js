@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "Roinn %s comhaid iolracha leat.",
     "Boot up" : "Tosaithe suas",
     "Nextcloud Initialization" : "Túsú Nextcloud",
-    "Circles App Initialization" : "Ciorcail Aip Tosaigh",
     "Fresh installation status" : "Stádas suiteála úr",
     "Building Local Database" : "Bunachar Sonraí Áitiúil a Thógáil",
     "Testing Basic Team Creation" : "Tástáil ar Chruthú Foirne Bunúsach",
@@ -130,10 +129,16 @@ OC.L10N.register(
     "Accept" : "Glac",
     "Refuse" : "Diúltaigh",
     "Leave the team" : "Fág an fhoireann",
+    "No image file provided" : "Níor soláthraíodh aon chomhad íomhá",
+    "Invalid file provided" : "Comhad neamhbhailí curtha ar fáil",
+    "File is too big" : "Tá an comhad ró-mhór",
+    "Invalid image" : "Íomhá neamhbhailí",
+    "Unknown filetype" : "Cineál comhaid anaithnid",
     "%s" : "%s",
     "Personal team" : "Foireann phearsanta",
     "%s owned by %s" : "%s ar úinéireacht ag %s",
     "You have no permission to create a new team" : "Níl aon chead agat foireann nua a chruthú",
+    "Insufficient permissions to perform this action" : "Gan dóthain ceadanna chun an gníomh seo a dhéanamh",
     "%s shared a file with \"%s\"." : "Roinn %s comhad le \"%s\".",
     "%s shared a file with you." : "Roinn%s comhad leat.",
     "%1$s shared %2$s with %3$s" : "%1$s roinnte %2$s le %3$s",
@@ -166,6 +171,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Níor aimsíodh aon iontrálacha san fhillteán seo",
     "Name" : "Ainm",
     "Size" : "Méid",
-    "Modified" : "Athraithe"
+    "Modified" : "Athraithe",
+    "Circles App Initialization" : "Ciorcail Aip Tosaigh"
 },
 "nplurals=5; plural=(n==1 ? 0 : n==2 ? 1 : n<7 ? 2 : n<11 ? 3 : 4);");

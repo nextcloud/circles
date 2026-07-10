@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
@@ -56,6 +55,7 @@ use OCA\Circles\Tools\Traits\TNCRequest;
 use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\AppFramework\Services\IAppConfig;
 use OCP\Server;
+use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use ReflectionException;
 
@@ -147,7 +147,6 @@ class FederatedEventService extends NCSignature {
 		return $event->getOutcome();
 	}
 
-
 	/**
 	 * This confirmation is optional, method is just here to avoid going too far away on the process
 	 *
@@ -186,7 +185,6 @@ class FederatedEventService extends NCSignature {
 		}
 	}
 
-
 	/**
 	 * @param FederatedEvent $event
 	 * @param bool $checkLocalOnly
@@ -223,7 +221,6 @@ class FederatedEventService extends NCSignature {
 
 		return $item;
 	}
-
 
 	/**
 	 * Some event might need to bypass some checks
@@ -279,7 +276,7 @@ class FederatedEventService extends NCSignature {
 			&& !($item instanceof IFederatedItemMemberRequired)
 			&& !($item instanceof IFederatedItemMemberOptional)) {
 			throw new FederatedEventException(
-				get_class($item)
+				$item::class
 				. ' does not implements IFederatedItemMemberOptional nor IFederatedItemMemberRequired'
 			);
 		}
@@ -288,7 +285,6 @@ class FederatedEventService extends NCSignature {
 			throw new FederatedEventException('FederatedItem must be executed locally');
 		}
 	}
-
 
 	/**
 	 * @param FederatedEvent $event
@@ -316,7 +312,6 @@ class FederatedEventService extends NCSignature {
 		}
 	}
 
-
 	/**
 	 * @param FederatedEvent $event
 	 * @param IFederatedItem $item
@@ -332,7 +327,6 @@ class FederatedEventService extends NCSignature {
 			$event->setDataRequestOnly(true);
 		}
 	}
-
 
 	/**
 	 * async the process, generate a local request that will be closed.
@@ -368,13 +362,13 @@ class FederatedEventService extends NCSignature {
 				break;
 			}
 
-			if ($instance->getInterface() === InterfaceService::IFACE_FRONTAL &&
-				!$this->appConfig->getAppValueBool(ConfigLexicon::FEDERATED_TEAMS_ENABLED)) {
+			if ($instance->getInterface() === InterfaceService::IFACE_FRONTAL
+				&& !$this->appConfig->getAppValueBool(ConfigLexicon::FEDERATED_TEAMS_ENABLED)) {
 				break;
 			}
 
 			if (in_array($instance->getInstance(), $avoidDuplicate, true)) {
-				Server::get(\Psr\Log\LoggerInterface::class)->warning('duplicate instance, please verify the setup of Federated Teams', ['duplicate' => $avoidDuplicate, 'loopback' => $this->configService->getLoopbackInstance(), 'instance' => $instance->getInstance(), 'interface' => $instance->getInterface()]);
+				Server::get(LoggerInterface::class)->warning('duplicate instance, please verify the setup of Federated Teams', ['duplicate' => $avoidDuplicate, 'loopback' => $this->configService->getLoopbackInstance(), 'instance' => $instance->getInstance(), 'interface' => $instance->getInterface()]);
 				continue;
 			}
 
@@ -401,7 +395,6 @@ class FederatedEventService extends NCSignature {
 
 		return true;
 	}
-
 
 	/**
 	 * @param FederatedEvent $event
@@ -437,22 +430,20 @@ class FederatedEventService extends NCSignature {
 		if ($event->hasMember()
 			&& !$this->configService->isLocalInstance($event->getMember()->getInstance())) {
 			$currentInstances = array_map(
-				function (RemoteInstance $instance): string {
-					return $instance->getInstance();
-				}, $instances
+				fn (RemoteInstance $instance): string => $instance->getInstance(),
+				$instances
 			);
 
 			if (!in_array($event->getMember()->getInstance(), $currentInstances)) {
 				try {
 					$instances[] = $this->remoteRequest->getFromInstance($event->getMember()->getInstance());
-				} catch (RemoteNotFoundException $e) {
+				} catch (RemoteNotFoundException) {
 				}
 			}
 		}
 
 		return $instances;
 	}
-
 
 	/**
 	 * should be used to manage results from events, like sending mails on user creation
@@ -483,7 +474,7 @@ class FederatedEventService extends NCSignature {
 		try {
 			$gs = $this->getFederatedItem($event, false);
 			$gs->result($event, $results);
-		} catch (FederatedEventException $e) {
+		} catch (FederatedEventException) {
 		}
 	}
 }

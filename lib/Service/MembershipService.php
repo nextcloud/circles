@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Service;
 
@@ -33,25 +31,6 @@ use OCA\Circles\Tools\Traits\TNCLogger;
 class MembershipService {
 	use TNCLogger;
 
-
-	/** @var MembershipRequest */
-	private $membershipRequest;
-
-	/** @var CircleRequest */
-	private $circleRequest;
-
-	/** @var MemberRequest */
-	private $memberRequest;
-
-	/** @var EventService */
-	private $eventService;
-
-	private ShareWrapperService $shareWrapperService;
-
-	/** @var OutputService */
-	private $outputService;
-
-
 	/**
 	 * MembershipService constructor.
 	 *
@@ -63,21 +42,14 @@ class MembershipService {
 	 * @param OutputService $outputService
 	 */
 	public function __construct(
-		MembershipRequest $membershipRequest,
-		CircleRequest $circleRequest,
-		MemberRequest $memberRequest,
-		EventService $eventService,
-		ShareWrapperService $shareWrapperService,
-		OutputService $outputService,
+		private MembershipRequest $membershipRequest,
+		private CircleRequest $circleRequest,
+		private MemberRequest $memberRequest,
+		private EventService $eventService,
+		private ShareWrapperService $shareWrapperService,
+		private OutputService $outputService,
 	) {
-		$this->membershipRequest = $membershipRequest;
-		$this->circleRequest = $circleRequest;
-		$this->memberRequest = $memberRequest;
-		$this->eventService = $eventService;
-		$this->shareWrapperService = $shareWrapperService;
-		$this->outputService = $outputService;
 	}
-
 
 	/**
 	 * @param string $singleId
@@ -91,7 +63,7 @@ class MembershipService {
 
 		try {
 			$this->circleRequest->getFederatedUserBySingleId($singleId);
-		} catch (FederatedUserNotFoundException|OwnerNotFoundException $e) {
+		} catch (FederatedUserNotFoundException|OwnerNotFoundException) {
 			$this->membershipRequest->removeBySingleId($singleId);
 		}
 
@@ -108,7 +80,6 @@ class MembershipService {
 		}
 	}
 
-
 	/**
 	 * @param string $singleId
 	 *
@@ -120,7 +91,6 @@ class MembershipService {
 
 		return $this->updateMembershipsDatabase($singleId, $memberships);
 	}
-
 
 	/**
 	 * @param string $circleId
@@ -141,7 +111,6 @@ class MembershipService {
 		return $membership;
 	}
 
-
 	/**
 	 * @param string $singleId
 	 * @param bool $all
@@ -150,14 +119,12 @@ class MembershipService {
 		$this->membershipRequest->removeBySingleId($singleId, $all);
 	}
 
-
 	/**
 	 * @param FederatedUser $federatedUser
 	 */
 	public function deleteFederatedUser(FederatedUser $federatedUser) {
 		$this->membershipRequest->deleteFederatedUser($federatedUser);
 	}
-
 
 	/**
 	 * @param string $singleId
@@ -209,7 +176,6 @@ class MembershipService {
 		return $memberships;
 	}
 
-
 	/**
 	 * @param string $singleId
 	 * @param Membership[] $memberships
@@ -232,7 +198,6 @@ class MembershipService {
 		return count($deprecated) + count($new);
 	}
 
-
 	/**
 	 * @param string $id
 	 * @param array $knownIds
@@ -242,9 +207,8 @@ class MembershipService {
 	 */
 	private function getChildrenMembers(string $id, array &$knownIds = []): array {
 		$singleIds = array_map(
-			function (Member $item): string {
-				return $item->getSingleId();
-			}, $this->memberRequest->getMembers($id)
+			fn (Member $item): string => $item->getSingleId(),
+			$this->memberRequest->getMembers($id)
 		);
 
 		foreach ($singleIds as $singleId) {
@@ -257,7 +221,6 @@ class MembershipService {
 		return array_unique($singleIds);
 	}
 
-
 	/**
 	 * @param string $id
 	 * @param array $knownIds
@@ -266,9 +229,8 @@ class MembershipService {
 	 */
 	private function getChildrenMemberships(string $id, array &$knownIds = []): array {
 		$singleIds = array_map(
-			function (Membership $item): string {
-				return $item->getSingleId();
-			}, $this->membershipRequest->getInherited($id)
+			fn (Membership $item): string => $item->getSingleId(),
+			$this->membershipRequest->getInherited($id)
 		);
 
 		foreach ($singleIds as $singleId) {
@@ -280,7 +242,6 @@ class MembershipService {
 
 		return array_unique($singleIds);
 	}
-
 
 	/**
 	 * Add the new membership if unknown or Update known membership if:
@@ -311,7 +272,6 @@ class MembershipService {
 		$memberships[$membership->getCircleId()] = $membership;
 	}
 
-
 	/**
 	 * @param Membership[] $memberships
 	 * @param Membership[] $known
@@ -320,9 +280,8 @@ class MembershipService {
 	 */
 	private function removeDeprecatedMemberships(array $memberships, array $known): array {
 		$circleIds = array_map(
-			function (Membership $membership): string {
-				return $membership->getCircleId();
-			}, $memberships
+			fn (Membership $membership): string => $membership->getCircleId(),
+			$memberships
 		);
 
 		$deprecated = [];
@@ -338,7 +297,6 @@ class MembershipService {
 
 		return $deprecated;
 	}
-
 
 	/**
 	 * @param Membership[] $memberships
@@ -358,7 +316,7 @@ class MembershipService {
 				} elseif ($item->getInheritancePath() !== $membership->getInheritancePath()) {
 					$this->membershipRequest->update($membership);
 				}
-			} catch (ItemNotFoundException $e) {
+			} catch (ItemNotFoundException) {
 				$this->membershipRequest->insert($membership);
 				$new[] = $membership;
 			}
@@ -369,7 +327,6 @@ class MembershipService {
 
 		return $new;
 	}
-
 
 	/**
 	 * @param Membership[] $list

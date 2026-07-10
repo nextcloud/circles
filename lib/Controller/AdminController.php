@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Controller;
 
@@ -47,28 +45,8 @@ class AdminController extends OCSController {
 	use TDeserialize;
 	use TNCLogger;
 
-
-	/** @var IUserSession */
-	private $userSession;
-
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var CircleService */
-	private $circleService;
-
-	/** @var MemberService */
-	private $memberService;
-
-	/** @var MembershipService */
-	private $membershipService;
-
-	/** @var SearchService */
-	private $searchService;
-
 	/** @var ConfigService */
 	protected $configService;
-
 
 	/**
 	 * LocalController constructor.
@@ -86,26 +64,19 @@ class AdminController extends OCSController {
 	public function __construct(
 		string $appName,
 		IRequest $request,
-		IUserSession $userSession,
-		FederatedUserService $federatedUserService,
-		CircleService $circleService,
-		MemberService $memberService,
-		MembershipService $membershipService,
-		SearchService $searchService,
+		private IUserSession $userSession,
+		private FederatedUserService $federatedUserService,
+		private CircleService $circleService,
+		private MemberService $memberService,
+		private MembershipService $membershipService,
+		private SearchService $searchService,
 		ConfigService $configService,
 	) {
 		parent::__construct($appName, $request);
-		$this->userSession = $userSession;
-		$this->federatedUserService = $federatedUserService;
-		$this->circleService = $circleService;
-		$this->memberService = $memberService;
-		$this->membershipService = $membershipService;
-		$this->searchService = $searchService;
 		$this->configService = $configService;
 
 		$this->setup('app', 'circles');
 	}
-
 
 	/**
 	 * @param string $emulated
@@ -140,7 +111,6 @@ class AdminController extends OCSController {
 		}
 	}
 
-
 	/**
 	 * @param string $emulated
 	 * @param string $circleId
@@ -159,7 +129,6 @@ class AdminController extends OCSController {
 			throw new OCSException($e->getMessage(), (int)$e->getCode());
 		}
 	}
-
 
 	/**
 	 * @param string $emulated
@@ -201,7 +170,6 @@ class AdminController extends OCSController {
 		}
 	}
 
-
 	/**
 	 * @param string $emulated
 	 * @param string $circleId
@@ -238,7 +206,6 @@ class AdminController extends OCSController {
 		}
 	}
 
-
 	/**
 	 * @param string $emulated
 	 * @param int $limit
@@ -264,7 +231,6 @@ class AdminController extends OCSController {
 		}
 	}
 
-
 	/**
 	 * @param string $emulated
 	 * @param string $circleId
@@ -286,7 +252,6 @@ class AdminController extends OCSController {
 		}
 	}
 
-
 	/**
 	 * @param string $emulated
 	 * @param string $circleId
@@ -306,7 +271,6 @@ class AdminController extends OCSController {
 		}
 	}
 
-
 	/**
 	 * @param string $emulated
 	 * @param string $circleId
@@ -325,7 +289,6 @@ class AdminController extends OCSController {
 			throw new OCSException($e->getMessage(), (int)$e->getCode());
 		}
 	}
-
 
 	/**
 	 * @param string $emulated
@@ -352,7 +315,6 @@ class AdminController extends OCSController {
 		}
 	}
 
-
 	/**
 	 * @param string $emulated
 	 * @param string $circleId
@@ -375,7 +337,6 @@ class AdminController extends OCSController {
 		}
 	}
 
-
 	/**
 	 * @param string $emulated
 	 * @param string $circleId
@@ -393,7 +354,6 @@ class AdminController extends OCSController {
 			throw new OCSException($e->getMessage(), (int)$e->getCode());
 		}
 	}
-
 
 	/**
 	 * @param string $emulated
@@ -416,7 +376,6 @@ class AdminController extends OCSController {
 		}
 	}
 
-
 	/**
 	 * @param string $emulated
 	 * @param string $circleId
@@ -437,7 +396,6 @@ class AdminController extends OCSController {
 			throw new OCSException($e->getMessage(), (int)$e->getCode());
 		}
 	}
-
 
 	/**
 	 * @param string $emulated
@@ -461,10 +419,6 @@ class AdminController extends OCSController {
 		}
 	}
 
-
-
-
-
 	/**
 	 * @param string $emulated
 	 * @param string $circleId
@@ -486,7 +440,6 @@ class AdminController extends OCSController {
 		}
 	}
 
-
 	/**
 	 * @param string $emulated
 	 * @param string $circleId
@@ -506,7 +459,6 @@ class AdminController extends OCSController {
 			throw new OCSException($e->getMessage(), (int)$e->getCode());
 		}
 	}
-
 
 	/**
 	 * @param string $emulated

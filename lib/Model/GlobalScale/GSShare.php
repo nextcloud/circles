@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2017 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Model\GlobalScale;
 
@@ -22,12 +20,8 @@ use OCA\Circles\Tools\Traits\TArrayTools;
 class GSShare implements JsonSerializable {
 	use TArrayTools;
 
-
 	/** @var int */
 	private $id = 0;
-
-	/** @var string */
-	private $circleId = '';
 
 	/** @var string */
 	private $defaultMountPoint = '';
@@ -45,11 +39,7 @@ class GSShare implements JsonSerializable {
 	private $instance = '';
 
 	/** @var string */
-	private $token = '';
-
-	/** @var string */
 	private $password = '';
-
 
 	/**
 	 * GSShare constructor.
@@ -57,11 +47,11 @@ class GSShare implements JsonSerializable {
 	 * @param string $circleId
 	 * @param string $token
 	 */
-	public function __construct(string $circleId = '', string $token = '') {
-		$this->circleId = $circleId;
-		$this->token = $token;
+	public function __construct(
+		private string $circleId = '',
+		private string $token = '',
+	) {
 	}
-
 
 	/**
 	 * @return int
@@ -75,7 +65,6 @@ class GSShare implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 *
@@ -96,7 +85,6 @@ class GSShare implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -114,7 +102,6 @@ class GSShare implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @param string $userId
@@ -146,7 +133,6 @@ class GSShare implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return int
 	 */
@@ -164,7 +150,6 @@ class GSShare implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return string
@@ -184,7 +169,6 @@ class GSShare implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -203,14 +187,12 @@ class GSShare implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @return string
 	 */
 	public function getToken(): string {
 		return $this->token;
 	}
-
 
 	/**
 	 * @param string $token
@@ -222,7 +204,6 @@ class GSShare implements JsonSerializable {
 
 		return $this;
 	}
-
 
 	/**
 	 * @return string
@@ -242,7 +223,6 @@ class GSShare implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @param array $data
 	 *
@@ -261,7 +241,6 @@ class GSShare implements JsonSerializable {
 		return $this;
 	}
 
-
 	/**
 	 * @param string $userId
 	 * @param string $protocol
@@ -278,7 +257,6 @@ class GSShare implements JsonSerializable {
 			'mountpoint' => $this->getMountPoint($userId)
 		];
 	}
-
 
 	/**
 	 * @return array

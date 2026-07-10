@@ -19,7 +19,7 @@ onMounted(() => store.loadTeams())
 </script>
 
 <template>
-	<NcContent app-name="teams">
+	<NcContent appName="teams">
 		<GlobalNavigation />
 
 		<NcAppContent>

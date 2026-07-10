@@ -85,7 +85,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s đã chia sẻ tổ hợp tệp với bạn.",
     "Boot up" : "Khởi động lên",
     "Nextcloud Initialization" : "Khởi tạo Nextcloud",
-    "Circles App Initialization" : "Khởi tạo Ứng dụng vòng kết nối",
     "Fresh installation status" : "Trạng thái cài đặt mới",
     "Building Local Database" : "Đang xây dựng cơ sở dữ liệu cục bộ",
     "Adding local users and moderators" : "Đang thêm người dùng và người quản lý",
@@ -96,6 +95,11 @@ OC.L10N.register(
     "Level cannot be changed for this type of member" : "Cấp độ không thể được thay đổi cho kiểu loại của thành viên này",
     "Accept" : "Đồng ý",
     "Refuse" : "Từ chối",
+    "No image file provided" : "Không có tệp ảnh nào được cung cấp",
+    "Invalid file provided" : "Tệp đã cung cấp không hợp lệ",
+    "File is too big" : "Tệp quá lớn",
+    "Invalid image" : "Ảnh không hợp lệ",
+    "Unknown filetype" : "Loại tệp không xác định",
     "%s" : "%s",
     "%s owned by %s" : "%s được sở hữu bởi %s",
     "%s shared a file with \"%s\"." : "%s đã chia sẻ một tệp tin với \"%s\".",
@@ -113,6 +117,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Chưa có mục nào trong thư mục",
     "Name" : "Tên",
     "Size" : "Kích cỡ",
-    "Modified" : "Thay đổi"
+    "Modified" : "Thay đổi",
+    "Circles App Initialization" : "Khởi tạo Ứng dụng vòng kết nối"
 },
 "nplurals=1; plural=0;");

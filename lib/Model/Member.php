@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Model;
 
@@ -43,7 +41,6 @@ class Member extends ManagedModel implements
 	use TArrayTools;
 	use TDeserialize;
 
-
 	public const LEVEL_NONE = 0;
 	public const LEVEL_MEMBER = 1;
 	public const LEVEL_MODERATOR = 4;
@@ -63,7 +60,6 @@ class Member extends ManagedModel implements
 	public const APP_CIRCLES = 10001;
 	public const APP_OCC = 10002;
 	public const APP_DEFAULT = 11000;
-
 
 	public static $TYPE = [
 		0 => 'single',
@@ -85,7 +81,6 @@ class Member extends ManagedModel implements
 	public const STATUS_MEMBER = 'Member';
 	public const STATUS_BLOCKED = 'Blocked';
 
-
 	/**
 	 * Note: When editing those values, update lib/Application/Capabilities.php
 	 *
@@ -99,9 +94,7 @@ class Member extends ManagedModel implements
 		9 => 'Owner'
 	];
 
-
 	public static $DEF_TYPE_MAX = 31;
-
 
 	/** @var string */
 	private $id = '';
@@ -118,7 +111,7 @@ class Member extends ManagedModel implements
 	/** @var int */
 	private $userType = 0;
 
-	/** @var Circle */
+	/** @var ?Circle */
 	private $basedOn;
 
 	/** @var Member */
@@ -169,13 +162,11 @@ class Member extends ManagedModel implements
 	/** @var Membership[] */
 	private $memberships = null;
 
-
 	/**
 	 * Member constructor.
 	 */
 	public function __construct() {
 	}
-
 
 	/**
 	 * @param string $id
@@ -195,7 +186,6 @@ class Member extends ManagedModel implements
 		return $this->id;
 	}
 
-
 	/**
 	 * @param string $circleId
 	 *
@@ -213,7 +203,6 @@ class Member extends ManagedModel implements
 	public function getCircleId(): string {
 		return $this->circleId;
 	}
-
 
 	/**
 	 * This should replace user_id, user_type and instance; and will use the data from Circle with
@@ -236,7 +225,6 @@ class Member extends ManagedModel implements
 		return $this->singleId;
 	}
 
-
 	/**
 	 * @param string $userId
 	 *
@@ -257,7 +245,6 @@ class Member extends ManagedModel implements
 	public function getUserId(): string {
 		return $this->userId;
 	}
-
 
 	/**
 	 * @param int $userType
@@ -285,7 +272,6 @@ class Member extends ManagedModel implements
 		return $this->getUserType();
 	}
 
-
 	/**
 	 * @param string $instance
 	 *
@@ -304,14 +290,12 @@ class Member extends ManagedModel implements
 		return $this->instance;
 	}
 
-
 	/**
 	 * @return bool
 	 */
 	public function isLocal(): bool {
 		return $this->getManager()->isLocalInstance($this->getInstance());
 	}
-
 
 	/**
 	 * @param FederatedUser $invitedBy
@@ -338,7 +322,6 @@ class Member extends ManagedModel implements
 		return !is_null($this->invitedBy);
 	}
 
-
 	/**
 	 * @return bool
 	 */
@@ -364,7 +347,6 @@ class Member extends ManagedModel implements
 		return $this->remoteInstance;
 	}
 
-
 	/**
 	 * @return bool
 	 */
@@ -384,12 +366,11 @@ class Member extends ManagedModel implements
 	}
 
 	/**
-	 * @return Circle
+	 * @return ?Circle
 	 */
-	public function getBasedOn(): Circle {
+	public function getBasedOn(): ?Circle {
 		return $this->basedOn;
 	}
-
 
 	/**
 	 * @return bool
@@ -416,7 +397,6 @@ class Member extends ManagedModel implements
 		return $this->inheritedBy;
 	}
 
-
 	/**
 	 * @return bool
 	 */
@@ -442,7 +422,6 @@ class Member extends ManagedModel implements
 		return $this->inheritanceFrom;
 	}
 
-
 	/**
 	 * @param int $level
 	 *
@@ -460,7 +439,6 @@ class Member extends ManagedModel implements
 	public function getLevel(): int {
 		return $this->level;
 	}
-
 
 	/**
 	 * @param string $status
@@ -480,7 +458,6 @@ class Member extends ManagedModel implements
 		return $this->status;
 	}
 
-
 	/**
 	 * @param array $notes
 	 *
@@ -498,7 +475,6 @@ class Member extends ManagedModel implements
 	public function getNotes(): array {
 		return $this->notes;
 	}
-
 
 	/**
 	 * @param string $key
@@ -554,7 +530,6 @@ class Member extends ManagedModel implements
 		return $this;
 	}
 
-
 	/**
 	 * @param string $displayName
 	 *
@@ -567,7 +542,6 @@ class Member extends ManagedModel implements
 
 		return $this;
 	}
-
 
 	/**
 	 * @param int $displayUpdate
@@ -587,14 +561,12 @@ class Member extends ManagedModel implements
 		return $this->displayUpdate;
 	}
 
-
 	/**
 	 * @return string
 	 */
 	public function getDisplayName(): string {
 		return $this->displayName;
 	}
-
 
 	/**
 	 * @param string $contactId
@@ -614,7 +586,6 @@ class Member extends ManagedModel implements
 		return $this->contactId;
 	}
 
-
 	/**
 	 * @param string $contactMeta
 	 *
@@ -632,7 +603,6 @@ class Member extends ManagedModel implements
 	public function getContactMeta(): string {
 		return $this->contactMeta;
 	}
-
 
 	/**
 	 * @param Circle $circle
@@ -659,7 +629,6 @@ class Member extends ManagedModel implements
 		return (!is_null($this->circle));
 	}
 
-
 	/**
 	 * @param int $joined
 	 *
@@ -677,7 +646,6 @@ class Member extends ManagedModel implements
 	public function getJoined(): int {
 		return $this->joined;
 	}
-
 
 	/**
 	 * @return bool
@@ -708,7 +676,6 @@ class Member extends ManagedModel implements
 		return $this->memberships;
 	}
 
-
 	/**
 	 * @param string $singleId
 	 * @param bool $detailed
@@ -721,7 +688,7 @@ class Member extends ManagedModel implements
 		if ($singleId !== '') {
 			$this->getManager()->getLink($this, $singleId, $detailed);
 		}
-		
+
 		throw new MembershipNotFoundException();
 	}
 
@@ -737,7 +704,6 @@ class Member extends ManagedModel implements
 	public function getMembership(string $circleId, bool $detailed = false): Membership {
 		return $this->getLink($circleId, $detailed);
 	}
-
 
 	/**
 	 * @param Member $member
@@ -763,7 +729,6 @@ class Member extends ManagedModel implements
 
 		return true;
 	}
-
 
 	/**
 	 * @param array $data
@@ -795,33 +760,32 @@ class Member extends ManagedModel implements
 			/** @var Circle $circle */
 			$circle = $this->deserialize($this->getArray('circle', $data), Circle::class);
 			$this->setCircle($circle);
-		} catch (InvalidItemException $e) {
+		} catch (InvalidItemException) {
 		}
 
 		try {
 			/** @var Circle $circle */
 			$circle = $this->deserialize($this->getArray('basedOn', $data), Circle::class);
 			$this->setBasedOn($circle);
-		} catch (InvalidItemException $e) {
+		} catch (InvalidItemException) {
 		}
 
 		try {
 			/** @var FederatedUser $invitedBy */
 			$invitedBy = $this->deserialize($this->getArray('invitedBy', $data), FederatedUser::class);
 			$this->setInvitedBy($invitedBy);
-		} catch (InvalidItemException $e) {
+		} catch (InvalidItemException) {
 		}
 
 		try {
 			/** @var FederatedUSer $inheritedBy */
 			$inheritedBy = $this->deserialize($this->getArray('inheritedBy', $data), Membership::class);
 			$this->setInheritedBy($inheritedBy);
-		} catch (InvalidItemException $e) {
+		} catch (InvalidItemException) {
 		}
 
 		return $this;
 	}
-
 
 	/**
 	 * @param array $data
@@ -871,14 +835,13 @@ class Member extends ManagedModel implements
 				try {
 					$invitedBy = new FederatedUser();
 					$this->setInvitedBy($invitedBy->import($invitedByArray));
-				} catch (InvalidItemException $e) {
+				} catch (InvalidItemException) {
 				}
 			}
 		}
 
 		return $this;
 	}
-
 
 	/**
 	 * @return string[]
@@ -934,7 +897,6 @@ class Member extends ManagedModel implements
 		return $arr;
 	}
 
-
 	/**
 	 * @param int $level
 	 *
@@ -949,7 +911,6 @@ class Member extends ManagedModel implements
 
 		return $level;
 	}
-
 
 	/**
 	 * @param string $levelString

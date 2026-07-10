@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s több fájlt osztott meg Önnel.",
     "Boot up" : "Rendszerindítás",
     "Nextcloud Initialization" : "A Nextcloud előkészítése",
-    "Circles App Initialization" : "Körök alkalmazás előkészítése",
     "Fresh installation status" : "Friss előkészítési állapot",
     "Building Local Database" : "Helyi adatbázis építése",
     "Testing Basic Team Creation" : "Alapvető csapatlétrehozás tesztelése",
@@ -130,10 +129,16 @@ OC.L10N.register(
     "Accept" : "Elfogadás",
     "Refuse" : "Elutasítás",
     "Leave the team" : "Csapat elhagyása",
+    "No image file provided" : "Nincs képfájl megadva",
+    "Invalid file provided" : "Érvénytelen fájl van megadva",
+    "File is too big" : "A fájl túl nagy",
+    "Invalid image" : "Érvénytelen kép",
+    "Unknown filetype" : "Ismeretlen fájltípus",
     "%s" : "%s",
     "Personal team" : "Személyes csapat",
     "%s owned by %s" : "a(z) %s tulajdonosa %s",
     "You have no permission to create a new team" : "Nincs jogosultsága új csapat létrehozásához",
+    "Insufficient permissions to perform this action" : "Nincs elegendő jogosultsága a művelet végrehajtásához",
     "%s shared a file with \"%s\"." : "%s megosztott egy fájlt a következővel: „%s”.",
     "%s shared a file with you." : "%s megosztott egy fájlt Önnel.",
     "%1$s shared %2$s with %3$s" : "%1$s megosztotta ezt: %2$s, vele: %3$s",
@@ -166,6 +171,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Nincsenek bejegyzések ebben a mappában",
     "Name" : "Név",
     "Size" : "Méret",
-    "Modified" : "Módosítva"
+    "Modified" : "Módosítva",
+    "Circles App Initialization" : "Körök alkalmazás előkészítése"
 },
 "nplurals=2; plural=(n != 1);");

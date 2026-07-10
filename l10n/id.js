@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s membagikan beberapa file kepada Anda.",
     "Boot up" : "Memulai",
     "Nextcloud Initialization" : "Inisialisasi Nextcloud",
-    "Circles App Initialization" : "Inisialisasi Aplikasi Circles",
     "Fresh installation status" : "Status instalasi baru",
     "Building Local Database" : "Membangun Database Lokal",
     "Testing Basic Team Creation" : "Menguji Pembuatan Tim Dasar",
@@ -130,6 +129,10 @@ OC.L10N.register(
     "Accept" : "Terima",
     "Refuse" : "Tolak",
     "Leave the team" : "Tinggalkan tim",
+    "Invalid file provided" : "File yang disediakan tidak valid",
+    "File is too big" : "File terlalu besar",
+    "Invalid image" : "Gambar tidak valid",
+    "Unknown filetype" : "Tipe berkas tak dikenal",
     "%s" : "%s",
     "Personal team" : "Tim pribadi",
     "%s owned by %s" : "%s dimiliki oleh %s",
@@ -157,6 +160,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Tidak ada entri yang ditemukan dalam folder ini",
     "Name" : "Nama",
     "Size" : "Ukuran",
-    "Modified" : "Dimodifikasi"
+    "Modified" : "Dimodifikasi",
+    "Circles App Initialization" : "Inisialisasi Aplikasi Circles"
 },
 "nplurals=1; plural=0;");

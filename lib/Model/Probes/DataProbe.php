@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2022 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Model\Probes;
 
@@ -27,13 +25,10 @@ class DataProbe extends BasicProbe {
 	public const INITIATOR = CoreQueryBuilder::INITIATOR;
 	public const INHERITED_BY = CoreQueryBuilder::INHERITED_BY;
 
-
 	private array $path = [];
-
 
 	public function __construct() {
 	}
-
 
 	/**
 	 * @param string $key
@@ -47,7 +42,6 @@ class DataProbe extends BasicProbe {
 		return $this;
 	}
 
-
 	/**
 	 * @param string $key
 	 *
@@ -57,14 +51,12 @@ class DataProbe extends BasicProbe {
 		return (array_key_exists($key, $this->path));
 	}
 
-
 	/**
 	 * @return array
 	 */
 	public function getPath(): array {
 		return $this->path;
 	}
-
 
 	/**
 	 * Return an array with includes as options

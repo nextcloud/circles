@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Db;
 
@@ -32,7 +30,6 @@ class ShareLockRequestBuilder extends CoreRequestBuilder {
 		return $qb;
 	}
 
-
 	/**
 	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
@@ -46,7 +43,6 @@ class ShareLockRequestBuilder extends CoreRequestBuilder {
 		return $qb;
 	}
 
-
 	/**
 	 * @return CoreQueryBuilder&IQueryBuilder
 	 */
@@ -56,7 +52,6 @@ class ShareLockRequestBuilder extends CoreRequestBuilder {
 
 		return $qb;
 	}
-
 
 	/**
 	 * @return CoreQueryBuilder&IQueryBuilder
@@ -68,7 +63,6 @@ class ShareLockRequestBuilder extends CoreRequestBuilder {
 		return $qb;
 	}
 
-
 	/**
 	 * @param CoreQueryBuilder $qb
 	 *
@@ -79,7 +73,7 @@ class ShareLockRequestBuilder extends CoreRequestBuilder {
 		/** @var FederatedShare $circle */
 		try {
 			$circle = $qb->asItem(FederatedShare::class);
-		} catch (RowNotFoundException $e) {
+		} catch (RowNotFoundException) {
 			throw new FederatedShareNotFoundException();
 		}
 

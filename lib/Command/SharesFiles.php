@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-
 /**
  * SPDX-FileCopyrightText: 2021 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 
 namespace OCA\Circles\Command;
 
@@ -40,42 +38,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 class SharesFiles extends Base {
 	use TArrayTools;
 
+	private int $fileId = 0;
 
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var ShareWrapperService */
-	private $shareWrapperService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
-	/** @var int */
-	private $fileId = 0;
-
-
-	/**
-	 * SharesFilesList constructor.
-	 *
-	 * @param FederatedUserService $federatedUserService
-	 * @param ShareWrapperService $shareWrapperService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
-		FederatedUserService $federatedUserService, ShareWrapperService $shareWrapperService,
-		ConfigService $configService,
+		private FederatedUserService $federatedUserService,
+		private ShareWrapperService $shareWrapperService,
+		private ConfigService $configService,
 	) {
 		parent::__construct();
-		$this->federatedUserService = $federatedUserService;
-		$this->shareWrapperService = $shareWrapperService;
-		$this->configService = $configService;
 	}
 
-
-	/**
-	 *
-	 */
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:shares:files')
@@ -86,7 +58,6 @@ class SharesFiles extends Base {
 			->addOption('by', '', InputOption::VALUE_REQUIRED, 'get files shared BY USERID', '')
 			->addOption('all', '', InputOption::VALUE_NONE, 'get all data about the shares');
 	}
-
 
 	/**
 	 * @param InputInterface $input
@@ -101,7 +72,7 @@ class SharesFiles extends Base {
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$this->fileId = (int)$input->getArgument('file_id');
-		$json = (strtolower($input->getOption('output')) === 'json');
+		$json = (strtolower((string)$input->getOption('output')) === 'json');
 
 		$this->displayShares(
 			(int)$input->getArgument('file_id'),
@@ -144,7 +115,6 @@ class SharesFiles extends Base {
 		//			return 0;
 		//		}
 	}
-
 
 	/**
 	 * @param int $fileId
@@ -236,7 +206,6 @@ class SharesFiles extends Base {
 		$table->setRows($rows);
 		$table->render();
 	}
-
 
 	/**
 	 * @param int $fileId

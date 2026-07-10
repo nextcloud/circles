@@ -43,14 +43,12 @@ class MiscService {
 		$this->logger->log($level, $message, $data);
 	}
 
-
 	/**
 	 * @param Exception $e
 	 */
 	public function e(Exception $e) {
 		$this->logger->error($e->getMessage(), ['app' => 'circles', 'exception' => $e]);
 	}
-
 
 	/**
 	 * @param array $arr
@@ -68,7 +66,6 @@ class MiscService {
 		return $arr[$k];
 	}
 
-
 	public static function mustContains($data, $arr) {
 		if (!is_array($arr)) {
 			$arr = [$arr];
@@ -80,7 +77,6 @@ class MiscService {
 			}
 		}
 	}
-
 
 	/**
 	 * @param $data
@@ -96,7 +92,6 @@ class MiscService {
 		);
 	}
 
-
 	/**
 	 * @param $data
 	 *
@@ -108,7 +103,6 @@ class MiscService {
 			Http::STATUS_CREATED
 		);
 	}
-
 
 	/**
 	 * return the real userId, with its real case
@@ -134,7 +128,6 @@ class MiscService {
 		return $user->getUID();
 	}
 
-
 	/**
 	 * @param string $ident
 	 *
@@ -157,7 +150,7 @@ class MiscService {
 			$contact = $cm->search($contactId, ['UID']);
 
 			$entries = array_shift($contact);
-		} catch (Exception $e) {
+		} catch (Exception) {
 		}
 
 		if (key_exists('FN', $entries) && $entries['FN'] !== '') {
@@ -168,7 +161,6 @@ class MiscService {
 			return $entries['EMAIL'];
 		}
 	}
-
 
 	/**
 	 * @param string $ident
@@ -187,7 +179,6 @@ class MiscService {
 		return $display;
 	}
 
-
 	/**
 	 * @param string $display
 	 * @param string $ident
@@ -204,7 +195,6 @@ class MiscService {
 			$display = $user->getDisplayName();
 		}
 	}
-
 
 	/**
 	 * @param string $display
@@ -223,7 +213,6 @@ class MiscService {
 		self::getDisplayContactFromArray($display, $contact);
 	}
 
-
 	/**
 	 * @param $ident
 	 *
@@ -232,11 +221,11 @@ class MiscService {
 	 *
 	 */
 	public static function getContactData($ident) {
-		if (!class_exists(ContactsManager::class) || !strpos($ident, ':')) {
+		if (!class_exists(ContactsManager::class) || !strpos((string)$ident, ':')) {
 			return [];
 		}
 
-		[$userId, $contactId] = explode(':', $ident);
+		[$userId, $contactId] = explode(':', (string)$ident);
 
 		try {
 			/** @var ContactsManager $cManager */
@@ -248,12 +237,11 @@ class MiscService {
 			$contact = $cm->search($contactId, ['UID']);
 
 			return array_shift($contact);
-		} catch (Exception $e) {
+		} catch (Exception) {
 		}
 
 		return [];
 	}
-
 
 	/**
 	 * @param string $display
@@ -278,7 +266,6 @@ class MiscService {
 			return;
 		}
 	}
-
 
 	/**
 	 * return Display Name if user exists and display name exists.
@@ -305,7 +292,6 @@ class MiscService {
 		return $user->getDisplayName();
 	}
 
-
 	/**
 	 * @param array $options
 	 *
@@ -318,7 +304,6 @@ class MiscService {
 			'connect_timeout' => Application::CLIENT_TIMEOUT
 		];
 	}
-
 
 	/**
 	 * Hacky way to async the rest of the process without keeping client on hold.
@@ -342,7 +327,6 @@ class MiscService {
 		flush();
 	}
 
-
 	/**
 	 * Generate uuid: 2b5a7a87-8db1-445f-a17b-405790f91c80
 	 *
@@ -358,13 +342,12 @@ class MiscService {
 		for ($i = 0; $i <= $length; $i++) {
 			try {
 				$str .= $chars[random_int(0, $max)];
-			} catch (Exception $e) {
+			} catch (Exception) {
 			}
 		}
 
 		return $str;
 	}
-
 
 	/**
 	 * @param DeprecatedMember $member

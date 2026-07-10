@@ -103,7 +103,6 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s танд олон файл хуваалцсан.",
     "Boot up" : "Ачаалах",
     "Nextcloud Initialization" : "Nextcloud эхлүүлэлт",
-    "Circles App Initialization" : "Circles апп эхлүүлэлт",
     "Fresh installation status" : "Шинэ суулгалтын төлөв",
     "Building Local Database" : "Локал өгөгдлийн сан үүсгэж байна",
     "Testing Basic Team Creation" : "Үндсэн баг үүсгэлтийг шалгаж байна",
@@ -130,6 +129,11 @@ OC.L10N.register(
     "Accept" : "Хүлээн зөвшөөрөх",
     "Refuse" : "Татгалзах",
     "Leave the team" : "Багаас гарах",
+    "No image file provided" : "Зургийн файл өгөгдөөгүй",
+    "Invalid file provided" : "–ë—É—Ä—É—É —Ñ–∞–π–ª –±–∞–π–Ω–∞",
+    "File is too big" : "–§–∞–π–ª—ã–Ω —Ö—ç–º–∂—ç—ç —Ö—ç—Ç –∏—Ö –±–∞–π–Ω–∞",
+    "Invalid image" : "–±—É—Ä—É—É –∑—É—Ä–∞–≥",
+    "Unknown filetype" : "“Æ–ª –º—ç–¥—ç–≥–¥—ç—Ö —Ñ–∞–π–ª—ã–Ω —Ç”©—Ä”©–ª",
     "%s" : "%s",
     "Personal team" : "Хувийн баг",
     "%s owned by %s" : "%s-н эзэмшилд байгаа %s",
@@ -166,6 +170,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Энэ хавтаст юм олдсонгүй",
     "Name" : "Нэр",
     "Size" : "Хэмжээ",
-    "Modified" : "Өөрчлөгдсөн"
+    "Modified" : "Өөрчлөгдсөн",
+    "Circles App Initialization" : "Circles апп эхлүүлэлт"
 },
 "nplurals=2; plural=(n != 1);");
