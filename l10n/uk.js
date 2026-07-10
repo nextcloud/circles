@@ -103,6 +103,7 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s поділив(-ла-)ся з вами кількома файлами.",
     "Boot up" : "Завантаження",
     "Nextcloud Initialization" : "Ініціалізація Nextcloud",
+    "Teams App Initialization" : "Ініціалізація застосунку Команди",
     "Fresh installation status" : "Статус свіжої інсталяції",
     "Building Local Database" : "Створення локальної бази даних",
     "Testing Basic Team Creation" : "Тест основних функції створення команди",

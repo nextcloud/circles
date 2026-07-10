@@ -103,6 +103,7 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%s jagas sinuga mitut faili.",
     "Boot up" : "Käivitamisel",
     "Nextcloud Initialization" : "Nextcloudi valmendamine",
+    "Teams App Initialization" : "Tiimide rakenduse valmendamine",
     "Fresh installation status" : "Uue paigalduse olek",
     "Building Local Database" : "Loon kohalikku andmebaasi",
     "Testing Basic Team Creation" : "Testin lihtsa tiimi loomist",
