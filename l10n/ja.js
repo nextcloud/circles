@@ -103,6 +103,7 @@ OC.L10N.register(
     "%s shared multiple files with you." : "%sがあなたと複数のファイルを共有しました。",
     "Boot up" : "起動時",
     "Nextcloud Initialization" : "Nextcloud初期化",
+    "Teams App Initialization" : "Teamsアプリの初期設定",
     "Fresh installation status" : "フレッシュインストールの状況",
     "Building Local Database" : "ローカルデータベースの構築",
     "Testing Basic Team Creation" : "基本的なチーム作成のテスト",
