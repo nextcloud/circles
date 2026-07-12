@@ -103,6 +103,7 @@ OC.L10N.register(
     "%s shared multiple files with you." : "Roinn %s comhaid iolracha leat.",
     "Boot up" : "Tosaithe suas",
     "Nextcloud Initialization" : "Túsú Nextcloud",
+    "Teams App Initialization" : "Túsú Aip Foirne",
     "Fresh installation status" : "Stádas suiteála úr",
     "Building Local Database" : "Bunachar Sonraí Áitiúil a Thógáil",
     "Testing Basic Team Creation" : "Tástáil ar Chruthú Foirne Bunúsach",
