@@ -65,7 +65,7 @@ This file is generated from multiple sources. Included packages:
 	- version: 9.8.2
 	- license: AGPL-3.0-or-later
 - @vitejs/plugin-vue
-	- version: 6.0.1
+	- version: 6.0.7
 	- license: MIT
 - @vue/reactivity
 	- version: 3.5.22
