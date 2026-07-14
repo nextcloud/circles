@@ -506,6 +506,37 @@ class CircleService {
 	}
 
 	/**
+	 * @return Circle[]
+	 * @throws InitiatorNotFoundException
+	 * @throws RequestBuilderException
+	 */
+	public function getAllCircles(CircleProbe $probe, bool $caching = false): array {
+		$this->federatedUserService->mustHaveCurrentUser();
+
+		$key = '';
+		if ($caching) {
+			$key = '#' . $probe->getChecksum();
+			$cachedData = $this->cache->get($key);
+			try {
+				if (!is_string($cachedData)) {
+					throw new InvalidItemException();
+				}
+				return $this->deserializeList($cachedData, Circle::class);
+			} catch (InvalidItemException) {
+			}
+		}
+
+		// pass null as initiator to skip user filtering and get all circles
+		$circles = $this->circleRequest->getCircles(null, $probe);
+
+		if ($caching) {
+			$this->cache->set($key, json_encode($circles), self::CACHE_GET_CIRCLES_TTL);
+		}
+
+		return $circles;
+	}
+
+	/**
 	 * @param Circle $circle
 	 *
 	 * @throws RequestBuilderException
