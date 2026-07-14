@@ -484,7 +484,7 @@ class ModelManager {
 	 * @return string
 	 */
 	public function generateLinkToCircle(string $singleId): string {
-		return $this->urlGenerator->linkToRoute('circles.Page.index') . '/team/' . $singleId;
+		return $this->urlGenerator->linkToRouteAbsolute('circles.Page.index') . '/team/' . $singleId;
 	}
 
 	/**
