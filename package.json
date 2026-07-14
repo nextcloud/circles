@@ -43,7 +43,7 @@
     "@nextcloud/eslint-config": "^9.0.0",
     "@nextcloud/vite-config": "^2.5.2",
     "@playwright/test": "^1.60.0",
-    "@vitejs/plugin-vue": "^6.0.1",
+    "@vitejs/plugin-vue": "^6.0.7",
     "@vitest/coverage-v8": "^4.1.6",
     "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.9.1",
