@@ -36,7 +36,6 @@ use OCA\Circles\Service\InterfaceService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\Service\RemoteService;
 use OCA\Circles\Tools\Traits\TNCLogger;
-use OCP\App\IAppManager;
 use OCP\IURLGenerator;
 
 /**
@@ -48,14 +47,11 @@ class ModelManager {
 	use TNCLogger;
 
 	private bool $fullDetails = false;
-	private bool $pathLinkGenerated = false;
-	private string $pathLinkGeneration = '';
 
 	/**
 	 * ModelManager constructor.
 	 *
 	 * @param IURLGenerator $urlGenerator
-	 * @param IAppManager $appManager
 	 * @param CoreQueryBuilder $coreRequestBuilder
 	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
@@ -67,7 +63,6 @@ class ModelManager {
 	 */
 	public function __construct(
 		private IURLGenerator $urlGenerator,
-		private IAppManager $appManager,
 		private CoreQueryBuilder $coreRequestBuilder,
 		private CircleRequest $circleRequest,
 		private MemberRequest $memberRequest,
@@ -489,24 +484,7 @@ class ModelManager {
 	 * @return string
 	 */
 	public function generateLinkToCircle(string $singleId): string {
-		if (!$this->pathLinkGenerated) {
-			$this->pathLinkGenerated = true;
-			$path = $this->configService->getAppValue(ConfigService::ROUTE_TO_CIRCLE);
-			$pos = strpos($path, '.');
-			if (!$pos) {
-				return '';
-			}
-
-			if ($this->appManager->isInstalled(substr($path, 0, $pos))) {
-				$this->pathLinkGeneration = $path;
-			}
-		}
-
-		if ($this->pathLinkGeneration === '') {
-			return '';
-		}
-
-		return $this->urlGenerator->linkToRoute($this->pathLinkGeneration, ['singleId' => $singleId]);
+		return $this->urlGenerator->linkToRoute('circles.Page.index') . '/team/' . $singleId;
 	}
 
 	/**

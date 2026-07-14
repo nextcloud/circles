@@ -5,4 +5,10 @@
 
 import { recommended } from '@nextcloud/eslint-config'
 
-export default [...recommended]
+export default [
+	...recommended,
+	{
+		// Ported team-page code, kept verbatim — not linted while it's modernized.
+		ignores: ['src/teams/team-page/**'],
+	},
+]

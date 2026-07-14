@@ -9,7 +9,6 @@ namespace OCA\Circles\Dashboard;
 
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Service\ConfigService;
-use OCP\App\IAppManager;
 use OCP\Dashboard\IButtonWidget;
 use OCP\Dashboard\IConditionalWidget;
 use OCP\Dashboard\IIconWidget;
@@ -23,7 +22,6 @@ class TeamDashboardWidget implements IIconWidget, IButtonWidget, IConditionalWid
 		private readonly IURLGenerator $urlGenerator,
 		private readonly IL10N $l10n,
 		private readonly ConfigService $configService,
-		private readonly IAppManager $appManager,
 	) {
 	}
 
@@ -91,12 +89,11 @@ class TeamDashboardWidget implements IIconWidget, IButtonWidget, IConditionalWid
 
 	private function getTeamPage(): string {
 		return $this->urlGenerator->getAbsoluteURL(
-			$this->urlGenerator->linkToRoute('contacts.page.index')
+			$this->urlGenerator->linkToRoute('circles.Page.index')
 		);
 	}
 
 	public function isEnabled(): bool {
-		return $this->appManager->isEnabledForUser('contacts')
-			&& $this->configService->getAppValueBool(ConfigService::FRONTEND_ENABLED);
+		return $this->configService->getAppValueBool(ConfigService::FRONTEND_ENABLED);
 	}
 }

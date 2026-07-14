@@ -22,13 +22,20 @@
   "dependencies": {
     "@mdi/js": "^7.4.47",
     "@nextcloud/axios": "^2.5.1",
+    "@nextcloud/cdav-library": "^2.6.2",
     "@nextcloud/dialogs": "^7.4.0",
     "@nextcloud/l10n": "^3.4.1",
     "@nextcloud/logger": "^3.0.2",
     "@nextcloud/password-confirmation": "^6.0.2",
     "@nextcloud/router": "^3.0.1",
     "@nextcloud/typings": "^1.10.0",
-    "@nextcloud/vue": "^9.5.0"
+    "@nextcloud/vue": "^9.8.2",
+    "pinia": "^3.0.4",
+    "virtua": "^0.49.1",
+    "vue-cropperjs": "^5.0.0",
+    "vue-material-design-icons": "^5.3.1",
+    "vue-router": "^4.6.4",
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
     "@nextcloud/browserslist-config": "^3.1.2",
