@@ -46,7 +46,7 @@
     "@vitejs/plugin-vue": "^6.0.1",
     "@vitest/coverage-v8": "^4.1.6",
     "@vue/test-utils": "^2.4.6",
-    "@vue/tsconfig": "^0.8.1",
+    "@vue/tsconfig": "^0.9.1",
     "eslint": "^10.6.0",
     "jsdom": "^29.1.1",
     "typescript": "^5.9.3",
