@@ -1,8 +1,4 @@
 { "translations": {
-    "Cancel" : "Poništi",
-    "New folder" : "Nova fascikla",
-    "Folder name" : "Naziv fascikle",
-    "Conversation name" : "Naziv razgovora",
     "Password protected" : "Zaštćeno lozinkom",
     "Federated" : "Federated",
     "Moderator" : "Moderator",
@@ -12,8 +8,20 @@
     "File is too big" : "Fajl je preveliki",
     "Invalid image" : "Neispravna slika",
     "Unknown filetype" : "Nepoznati tip fajla",
+    "Cancel" : "Poništi",
+    "Copy link" : "Kopiraj vezu",
+    "Save" : "Sačuvaj",
+    "Close" : "Zatvori",
+    "New folder" : "Nova fascikla",
+    "Folder name" : "Naziv fascikle",
+    "Conversation name" : "Naziv razgovora",
+    "Edit" : "Izmeni",
+    "No results" : "Nema rezultata",
+    "Add {type}" : "Dodaj {type}",
+    "Add to {team}" : "Dodaj u {team}",
     "Loading…" : "Učitavam…",
     "User" : "Korisnik",
+    "Groups" : "Grupe",
     "Name" : "naziv"
 },"pluralForm" :"nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);"
 }

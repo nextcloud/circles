@@ -1,9 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Cancel" : "Cancel",
-    "Calendar" : "Kalendar",
-    "New calendar" : "Kalendar baru",
     "Personal" : "Peribadi",
     "Federated" : "Federated",
     "Admin" : "Admin",
@@ -11,7 +8,17 @@ OC.L10N.register(
     "Open »%s«" : "Buka %s",
     "Files" : "Fail-fail",
     "Open %s" : "Buka%s",
+    "Cancel" : "Cancel",
+    "Save" : "Save",
+    "Close" : "Tutup",
+    "Folder" : "Folder",
+    "Calendar" : "Kalendar",
+    "New calendar" : "Kalendar baru",
+    "Edit" : "Sunting",
+    "User" : "User",
+    "Email" : "Email",
     "Users" : "Pengguna",
+    "Groups" : "Kumpulan",
     "Name" : "Nama",
     "Size" : "Saiz",
     "Modified" : "Dimodifikasi"
