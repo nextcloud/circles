@@ -1,6 +1,8 @@
 OC.L10N.register(
     "circles",
     {
+    "Members" : "Miembros",
+    "Apply" : "Aplicar",
     "Personal" : "Personal",
     "System" : "Sistema",
     "Visible" : "Visible",

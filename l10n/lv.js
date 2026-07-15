@@ -1,6 +1,13 @@
 OC.L10N.register(
     "circles",
     {
+    "Cancel" : "Cancel",
+    "New folder" : "Jauna mape",
+    "Folder name" : "Mapes nosaukums",
+    "Conversation name" : "Sarunas nosaukums",
+    "New calendar" : "Jauns kalendārs",
+    "Members" : "Dalībnieki",
+    "Apply" : "Apstiprināt",
     "You created the team {circle}" : "Tu izveidoji komandu {circle}",
     "You deleted {circle}" : "Tu izdzēsi {circle}",
     "You removed {member} from {circle}" : "Tu noņēmi {member} no {circle}",
@@ -39,6 +46,7 @@ OC.L10N.register(
     "Open %s" : "Atvērt %s",
     "No teams found" : "Netika atrasta neviena komanda",
     "Loading…" : "Ielādē…",
+    "Users" : "Lietotāji",
     "No files in here" : "Šeit nav datņu",
     "No entries found in this folder" : "Šajā mapē nekas nav atrasts",
     "Name" : "Vārds",

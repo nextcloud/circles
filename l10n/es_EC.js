@@ -1,6 +1,9 @@
 OC.L10N.register(
     "circles",
     {
+    "Create" : "Crear",
+    "Members" : "Miembros",
+    "Apply" : "Aplicar",
     "You deleted {circle}" : "Borraste el círculo {circle}",
     "{author} deleted {circle}" : "{author} borró {circle}",
     "You removed {member} from {circle}" : "Eliminaste a {member} de {circle}",
@@ -112,6 +115,7 @@ OC.L10N.register(
     "https://…" : "https://…",
     "Try again" : "Reintentar",
     "Loading…" : "Cargando",
+    "groups" : "grupos",
     "No files in here" : "No hay archivos aquí",
     "No entries found in this folder" : "No se encontraron elementos en esta carpeta",
     "Name" : "Nombre",

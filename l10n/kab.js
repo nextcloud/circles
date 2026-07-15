@@ -1,6 +1,12 @@
 OC.L10N.register(
     "circles",
     {
+    "Copied" : "Yettwanɣel",
+    "New folder" : "Akaram amaynut",
+    "Folder name" : "Isem n ukaram",
+    "Create" : "Snulfu-d",
+    "Members" : "Imedrawen",
+    "Apply" : "Snes",
     "You deleted {circle}" : "Tekkseḍ {circle}",
     "Teams" : "Tirebbuyaɛ",
     "Personal" : "Udmawan",
@@ -26,6 +32,8 @@ OC.L10N.register(
     "Open %s" : "Ldi %s",
     "Try again" : "Ɛreḍ tikkelt nniḍen.",
     "Loading…" : "Asali...",
+    "Users" : "Iseqdacen",
+    "groups" : "igrawen",
     "No files in here" : "Ulac ifuyla da",
     "No entries found in this folder" : "Ulac inekcumen i yettwafen deg ukaram-a",
     "Name" : "Nom",

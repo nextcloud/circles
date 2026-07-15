@@ -1,6 +1,11 @@
 OC.L10N.register(
     "circles",
     {
+    "New folder" : "ახალი დირექტორია",
+    "Folder name" : "დირექტორიის სახელი",
+    "Conversation name" : "საუბრის სახელწოდება",
+    "Members" : "წევრები",
+    "Apply" : "გამოყენება",
     "You deleted {circle}" : "თქვენ წაშალეთ {circle}",
     "{author} deleted {circle}" : "{author} მომხმარებელმა წაშალა {circle}",
     "You removed {member} from {circle}" : "თქვენ ამოშალეთ {member} {circle} წრიდან",
@@ -70,6 +75,7 @@ OC.L10N.register(
     "Unknown filetype" : "ამოუცნობი ფაილის ტიპი",
     "%s" : "%s",
     "Try again" : "სცადეთ ახლიდან",
+    "Users" : "მომხმარებლები",
     "No files in here" : "აქ ფაილები არაა",
     "No entries found in this folder" : "ამ დირექტორიაში შენატანები ვერ იქნა ნაპოვნი",
     "Name" : "სახელი",

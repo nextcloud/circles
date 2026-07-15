@@ -1,6 +1,8 @@
 OC.L10N.register(
     "circles",
     {
+    "Members" : "Membroj",
+    "Apply" : "Validigi",
     "You deleted {circle}" : "Vi forigis la rondon {circle}",
     "{author} deleted {circle}" : "{author} forigis la rondon {circle}",
     "You removed {member} from {circle}" : "Vi forigis {member} el {circle}",
