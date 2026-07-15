@@ -1,6 +1,8 @@
 OC.L10N.register(
     "circles",
     {
+    "Cancel" : "Cancel",
+    "New folder" : "نوی فولډر",
     "Personal" : "شخصي",
     "Open" : "پرانيستل",
     "Admin" : "ستر کارن",
@@ -8,6 +10,7 @@ OC.L10N.register(
     "File is too big" : "د فایل وزن ډېر دی",
     "Invalid image" : "انځور سم نه دی",
     "Unknown filetype" : "د فایل ډول نامعلوم دی",
+    "Users" : "کارنان",
     "No files in here" : "دلته فایلونه نشته",
     "No entries found in this folder" : "په دې فولډر کې څه نشته",
     "Name" : "نوم",
