@@ -3,27 +3,27 @@
 declare(strict_types=1);
 
 /**
- * SPDX-FileCopyrightText: 2020 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
 namespace OCA\Circles\Listeners;
 
 use Exception;
-use OCA\Circles\Service\SyncService;
+use OCA\Circles\Events\CircleMemberRemovedEvent;
 use OCP\App\IAppManager;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\Files\Config\IMountProviderCollection;
 use OCP\Files\Config\IUserMountCache;
-use OCP\Group\Events\UserRemovedEvent;
+use OCP\IUserManager;
 use OCP\Server;
 use Psr\Log\LoggerInterface;
 
-/** @template-implements IEventListener<UserRemovedEvent> */
-class GroupMemberRemoved implements IEventListener {
+/** @template-implements IEventListener<CircleMemberRemovedEvent> */
+class CircleMemberRemoved implements IEventListener {
 	public function __construct(
-		private readonly SyncService $syncService,
+		private readonly IUserManager $userManager,
 		private readonly IAppManager $appManager,
 		private readonly IUserMountCache $userMountCache,
 		private readonly IMountProviderCollection $mountProviderCollection,
@@ -33,19 +33,22 @@ class GroupMemberRemoved implements IEventListener {
 
 	#[\Override]
 	public function handle(Event $event): void {
-		if (!($event instanceof UserRemovedEvent)) {
+		if (!($event instanceof CircleMemberRemovedEvent)) {
 			return;
 		}
 
-		$user = $event->getUser();
-		$group = $event->getGroup();
-
-		try {
-			$this->syncService->groupMemberRemoved($group->getGID(), $user->getUID());
-		} catch (Exception) {
+		$member = $event->getMember();
+		if ($member === null) {
+			return;
 		}
 
-		if (!$this->groupHasAssociatedGroupFolder($group->getGID())) {
+		$user = $this->userManager->get($member->getUserId());
+		if ($user === null) {
+			return;
+		}
+
+		$circle = $event->getCircle();
+		if (!$this->circleHasAssociatedGroupFolder($circle->getSingleId())) {
 			return;
 		}
 
@@ -59,16 +62,16 @@ class GroupMemberRemoved implements IEventListener {
 		}
 	}
 
-	private function groupHasAssociatedGroupFolder(string $groupId): bool {
+	private function circleHasAssociatedGroupFolder(string $circleId): bool {
 		if (!$this->appManager->isEnabledForUser('groupfolders')) {
 			return false;
 		}
 
 		try {
 			$folderManager = Server::get(\OCA\GroupFolders\Folder\FolderManager::class);
-			return $folderManager->hasFolderForGroup($groupId);
+			return $folderManager->hasFolderForCircle($circleId);
 		} catch (Exception $e) {
-			$this->logger->debug('Failed to check if group ' . $groupId . ' has an associated team folder', ['exception' => $e]);
+			$this->logger->debug('Failed to check if circle ' . $circleId . ' has an associated team folder', ['exception' => $e]);
 			return false;
 		}
 	}
