@@ -1,0 +1,25 @@
+OC.L10N.register(
+    "circles",
+    {
+    "Files" : "Faidhlichean",
+    "Invalid file provided" : "Chaidh faidhle mì-dhligheach a thoirt seachad",
+    "File is too big" : "Tha am faidhle ro mhòr",
+    "Invalid image" : "Dealbh mì-dhligheach",
+    "Unknown filetype" : "Seòrsa faidhle nach aithne dhuinn",
+    "Cancel" : "Cancel",
+    "Copy link" : "Dèan lethbhreac dhen cheangal",
+    "Save" : "Save",
+    "Close" : "Dùin",
+    "New folder" : "Pasgan ùr",
+    "Folder name" : "Ainm a’ phasgain",
+    "Edit" : "Deasaich",
+    "Create" : "Cruthaich",
+    "No results" : "Gun toradh",
+    "Add to {team}" : "Cuir ri {team}",
+    "Loading…" : "’Ga luchdadh…",
+    "User" : "Cleachdaiche",
+    "Email" : "Post-d",
+    "Privacy" : "Prìobhaideachd",
+    "Name" : "Ainm"
+},
+"nplurals=4; plural=(n==1 || n==11) ? 0 : (n==2 || n==12) ? 1 : (n > 2 && n < 20) ? 2 : 3;");
