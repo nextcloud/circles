@@ -1,6 +1,12 @@
 OC.L10N.register(
     "circles",
     {
+    "Cancel" : "Cancel",
+    "Folder" : "බහාලුම",
+    "New folder" : "නව බහාලුම",
+    "Folder name" : "බහාලුමේ නම",
+    "Calendar" : "දින දර්ශනය",
+    "Create" : "සාදන්න",
     "Personal" : "පුද්ගලික",
     "System" : "පද්ධතිය",
     "Open" : "විවෘත",
@@ -13,6 +19,8 @@ OC.L10N.register(
     "Invalid image" : "වලංගු නොවන පින්තූරයකි",
     "%s" : "%s",
     "Loading…" : "පූරණය වෙමින්…",
+    "Privacy" : "පෞද්ගලිකත්වය",
+    "Users" : "පරිශීලකයින්",
     "Name" : "නම",
     "Size" : "ප්‍රමාණය"
 },

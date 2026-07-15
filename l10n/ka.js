@@ -1,6 +1,14 @@
 OC.L10N.register(
     "circles",
     {
+    "Remove {type}" : "Remove {type}",
+    "Copied" : "Copied",
+    "New folder" : "New folder",
+    "Folder name" : "Folder name",
+    "Conversation name" : "Conversation name",
+    "Please select a valid png or jpg file" : "Please select a valid png or jpg file",
+    "Create" : "Create",
+    "Members" : "Members",
     "You deleted {circle}" : "You deleted {circle}",
     "{author} deleted {circle}" : "{author} deleted {circle}",
     "You removed {member} from {circle}" : "You removed {member} from {circle}",
@@ -109,6 +117,8 @@ OC.L10N.register(
     "Password to access content" : "Password to access content",
     "Bring cloud-users closer together." : "Bring cloud-users closer together.",
     "Loading…" : "Loading…",
+    "Not grouped" : "Not grouped",
+    "Users" : "Users",
     "No files in here" : "No files in here",
     "No entries found in this folder" : "No entries found in this folder",
     "Name" : "Name",

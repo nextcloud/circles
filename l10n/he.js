@@ -1,6 +1,12 @@
 OC.L10N.register(
     "circles",
     {
+    "Remove {type}" : "להסיר את {type}",
+    "Folder name" : "שם התיקייה",
+    "Conversation name" : "שם דיון",
+    "Create" : "יצירה",
+    "Members" : "חברים",
+    "Apply" : "החלה",
     "You deleted {circle}" : "מחקת את {circle}",
     "{author} deleted {circle}" : "{circle} נמחק על ידי {author}",
     "You removed {member} from {circle}" : "הסרת את {member} מהמעגל {circle}",
@@ -71,6 +77,7 @@ OC.L10N.register(
     "https://…" : "https://…‎",
     "Try again" : "ניסיון חוזר",
     "Loading…" : "בטעינה…",
+    "Users" : "משתמשים",
     "No files in here" : "אין כאן קבצים",
     "No entries found in this folder" : "לא נמצאו רשומות בתיקייה הזאת",
     "Name" : "שם",

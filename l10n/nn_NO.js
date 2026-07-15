@@ -1,6 +1,13 @@
 OC.L10N.register(
     "circles",
     {
+    "Cancel" : "Cancel",
+    "New folder" : "Ny mappe",
+    "Folder name" : "Mappenamn",
+    "Conversation name" : "Samtale namn",
+    "Calendar" : "Kalendar",
+    "New calendar" : "Ny kalender",
+    "Apply" : "Anvend",
     "Personal" : "Personleg",
     "System" : "System",
     "Password protected" : "Passordverna",
@@ -18,6 +25,7 @@ OC.L10N.register(
     "Unknown filetype" : "Ukjend filtype",
     "Open %s" : "Opne{filnamn}",
     "Loading…" : "Lastar...",
+    "Users" : "Brukarare",
     "No files in here" : "Ingen filer her",
     "No entries found in this folder" : "Ingen oppføringar funne i denne mappa",
     "Name" : "Namn",
