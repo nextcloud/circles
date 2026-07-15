@@ -1,8 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Cancel" : "Cancel",
-    "New folder" : "﻿ಹೊಸ ಕೋಶ",
     "Personal" : "﻿ವೈಯಕ್ತಿಕ",
     "Open" : "ತೆರೆಯಿರಿ",
     "Password protected" : "ಗುಪ್ತಪದದಿಂದ ರಕ್ಷಿಸಲಾಗಿದೆ",
@@ -13,7 +11,17 @@ OC.L10N.register(
     "Files" : "﻿ಕಡತಗಳು",
     "Invalid image" : "ಅಸಾಮರ್ಥ್ಯ ಚಿತ್ರ",
     "Unknown filetype" : "﻿ಅಪರಿಚಿತ ಕಡತ ಮಾದರಿ",
+    "Cancel" : "Cancel",
+    "Save" : "Save",
+    "Close" : "ಮುಚ್ಚು",
+    "Folder" : "ಕೋಶ",
+    "New folder" : "﻿ಹೊಸ ಕೋಶ",
+    "Edit" : "ಸಂಪಾದಿಸು",
+    "User" : "User",
+    "Group" : "﻿ಗುಂಪು",
+    "Email" : "﻿ಇ-ಅಂಚೆ",
     "Users" : "﻿ಬಳಕೆದಾರರು",
+    "Groups" : "﻿ಗುಂಪುಗಳು",
     "Name" : "﻿ಹೆಸರು",
     "Size" : "﻿ ಗಾತ್ರ",
     "Modified" : "﻿ಬದಲಾಯಿಸಿದ"
