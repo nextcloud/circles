@@ -1,6 +1,10 @@
 OC.L10N.register(
     "circles",
     {
+    "Folder name" : "Nombre de la carpeta",
+    "Conversation name" : "Nombre de la conversación",
+    "Members" : "Miembros",
+    "Apply" : "Aplicar",
     "You deleted {circle}" : "Borraste el círculo {circle}",
     "{author} deleted {circle}" : "{author} borró {circle}",
     "You removed {member} from {circle}" : "Eliminaste a {member} de {circle}",

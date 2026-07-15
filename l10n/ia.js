@@ -1,6 +1,10 @@
 OC.L10N.register(
     "circles",
     {
+    "New folder" : "Nove dossier",
+    "Folder name" : "Nomine de dossier",
+    "Members" : "Membros",
+    "Apply" : "Applicar",
     "Personal" : "Personal",
     "System" : "Systema",
     "Visible" : "Visibile",
@@ -16,6 +20,7 @@ OC.L10N.register(
     "Unknown filetype" : "Typo de file incognite",
     "%s" : "%s",
     "Loading…" : "Cargante...",
+    "Users" : "Usatores",
     "No files in here" : "Nulle files ci",
     "No entries found in this folder" : "Nulle entratas trovate in iste dossier",
     "Name" : "Nomine",

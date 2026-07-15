@@ -1,6 +1,11 @@
 OC.L10N.register(
     "circles",
     {
+    "Cancel" : "Cancel",
+    "New folder" : "Neien Dossier",
+    "Folder name" : "Dossiers Numm:",
+    "New calendar" : "Neie Kalenner",
+    "Apply" : "Uwenden",
     "Personal" : "Perséinlech",
     "Visible" : "Visibel",
     "Password protected" : "Passwuertgeschützt",
@@ -12,6 +17,7 @@ OC.L10N.register(
     "Invalid image" : "Ongülteg d'Bild",
     "Unknown filetype" : "Onbekannten Fichier Typ",
     "Loading…" : "Et gëtt gelueden",
+    "Users" : "Benotzer",
     "No files in here" : "Keng Dokumenter hei",
     "No entries found in this folder" : "Keng Elementer an dësem Dossier fonnt",
     "Name" : "Numm",
