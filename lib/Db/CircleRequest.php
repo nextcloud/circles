@@ -308,10 +308,15 @@ class CircleRequest extends CircleRequestBuilder {
 					$aliasMembership
 				)
 			);
-			$qb->completeProbeWithInitiator(CoreQueryBuilder::CIRCLE, 'single_id', $aliasMembership);
+			$aliasInitiator = $qb->completeProbeWithInitiator(CoreQueryBuilder::CIRCLE, 'single_id', $aliasMembership);
 		}
 
 		$qb->andWhere($limit);
+		if (!is_null($aliasInitiator)) {
+			// ensure initiator is not null (desync memberships/members)
+			$qb->filterNull('single_id', alias: $aliasInitiator);
+		}
+
 		$qb->resetSqlPath();
 
 		return $qb;
