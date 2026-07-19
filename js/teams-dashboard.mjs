@@ -1,2 +1,331 @@
-import{d as f,o as t,e as l,f as m,am as R,aK as $,i as c,u as s,h as v,j as b,L as k,T as O,R as M,y as g,q as E,E as r,B as F,v as y,p as q,c as B,H,x as P,J as x,I as W,z as u,aj as G,$ as U,g as C,M as Q}from"./logger-CluupGqv.chunk.mjs";import{l as V,n as X,c as K,j as Y}from"./NcActionRouter-vYFtIOzD-D5t6sF1c.chunk.mjs";import{N as Z}from"./NcAvatar-DX-Nk9Es-De5ckqJQ.chunk.mjs";import"./colors-BDeMBgfq-Dp_LtIId.chunk.mjs";const ee={class:"team-members"},se={class:"team-members__list"},ae={key:0,class:"team-members__more"},te=f({__name:"TeamMembers",props:{members:{}},setup(e){return(d,i)=>(t(),l("div",ee,[m("ul",se,[(t(!0),l(R,null,$(e.members.slice(0,5),a=>(t(),l("li",{key:a.userId||a.singleId,class:"team-members__item"},[c(s(Z),{user:a.isUser?a.userId:void 0,displayName:a.displayName,isNoUser:!a.isUser,size:36,class:"team-members__avatar"},null,8,["user","displayName","isNoUser"]),e.members.length>5?(t(),l("span",ae," +"+v(e.members.length-5),1)):b("",!0)]))),128))])]))}}),le=k(te,[["__scopeId","data-v-e4d9bc6e"]]),re={class:"team-resources"},me={class:"team-resources__list"},ie=["title"],ce=["href"],oe=["src","alt"],ne={key:0,class:"team-resources__box"},ue=["href"],de={class:"team-resources__link-more"},_e=f({__name:"TeamResources",props:{resources:{},teamUrl:{}},setup(e){return(d,i)=>(t(),l("div",re,[m("ul",me,[(t(!0),l(R,null,$(e.resources.slice(0,5),a=>(t(),l("li",{key:a.id,class:"team-resources__box",title:a.name,style:O({"--fallback-icon":`url('${a.fallbackIcon}')`})},[m("a",{href:a.url,class:"team-resources__link"},[m("img",{src:a.iconUrl,class:"team-resources__icon",alt:a.name},null,8,oe)],8,ce)],12,ie))),128)),e.resources.length>5?(t(),l("li",ne,[m("a",{href:e.teamUrl,class:"team-resources__link"},[m("div",de,"+"+v(e.resources.length-5),1)],8,ue)])):b("",!0)])]))}}),pe=k(_e,[["__scopeId","data-v-10c6babe"]]),he={class:"teams-list-item"},ve={class:"teams-list-item__header"},be=["href"],ge={class:"teams-list-item__header-name"},ye={key:1,class:"teams-list-item__spacer"},fe=f({__name:"TeamsListItem",props:{team:{}},setup(e){return(d,i)=>(t(),l("li",he,[m("div",ve,[m("a",{href:e.team.url,class:"teams-list-item__header-link"},[m("h3",ge,v(e.team.displayName),1),c(s(M),{class:"teams-list-item__header-icon",inline:"",path:s(V)},null,8,["path"])],8,be)]),e.team.members&&e.team.members.length>0?(t(),g(le,{key:0,members:e.team.members},null,8,["members"])):b("",!0),e.team.members?.length&&e.team.resources?.length?(t(),l("div",ye)):b("",!0),e.team.resources&&e.team.resources.length>0?(t(),g(pe,{key:2,resources:e.team.resources,teamUrl:e.team.url},null,8,["resources","teamUrl"])):b("",!0)]))}}),ke=k(fe,[["__scopeId","data-v-7bb9088d"]]),we=["aria-label"],Ie=f({__name:"TeamsList",props:{teams:{}},setup(e,{expose:d}){d({scrollTop:a});const i=E("teamsList");function a(){i.value&&(i.value.scrollTop=0)}return(o,w)=>(t(),l("ul",{ref:"teamsList","aria-label":s(r)("circles","Teams"),class:"teams-list"},[(t(!0),l(R,null,$(e.teams,_=>(t(),g(ke,{key:_.id,team:_},null,8,["team"]))),128))],8,we))}}),Ne=k(Ie,[["__scopeId","data-v-f5172c72"]]),Le={class:"teams-dashboard-widget"},Te={key:3,class:"teams-dashboard-widget__container"},Ue={key:0,class:"teams-dashboard-widget__actions"},I=3,Ce=f({__name:"DashboardTeamsWidget",setup(e){const d=F("/apps/circles/teams"),i=E("teamsListKey"),a=y([]),o=y(!1),w=y(!1),_=y(0),N=y(!0);q(()=>L());async function L(T=!1){o.value=!0,w.value=!1;try{const p=new URLSearchParams({limit:I.toString(),offset:_.value.toString()}),{data:j}=await B.get(H(`apps/circles/teams/dashboard/widget?${p}`)),z=j.ocs.data||[],D=z.map(h=>({id:h.singleId,displayName:h.displayName||h.name,url:h.url,members:(h.members||[]).map(n=>({userId:n.userId||n.singleId,displayName:n.displayName,type:n.type,isUser:n.type===1,url:F(`/u/${n.userId||n.singleId}`)})),resources:h.resources||[]}));T?(a.value.push(...D),_.value+=I):(a.value=D,_.value=I,P(()=>{i.value&&i.value.scrollTop()})),N.value=z.length===I}catch(p){w.value=!0,x.error("Failed to load teams",{error:p}),W(r("circles","Failed to load teams")),T||(a.value=[])}finally{o.value=!1}}async function J(){!N.value||o.value||await L(!0)}return(T,p)=>(t(),l("div",Le,[o.value?(t(),g(s(G),{key:0,size:48})):w.value?(t(),g(s(K),{key:1,name:s(r)("circles","Failed to load teams")},{icon:u(()=>[c(s(M),{path:s(X)},null,8,["path"])]),action:u(()=>[c(s(U),{onClick:p[0]||(p[0]=j=>L())},{default:u(()=>[C(v(s(r)("circles","Try again")),1)]),_:1})]),_:1},8,["name"])):a.value.length===0?(t(),g(s(K),{key:2,name:s(r)("circles","No teams found"),description:s(r)("circles","Join or create teams to see them here.")},{icon:u(()=>[c(s(M),{path:s(Y)},null,8,["path"])]),action:u(()=>[c(s(U),{href:s(d)},{default:u(()=>[C(v(s(r)("circles","Create your first team")),1)]),_:1},8,["href"])]),_:1},8,["name","description"])):(t(),l("div",Te,[c(Ne,{ref:"teamsListKey",teams:a.value},null,8,["teams"]),N.value?(t(),l("div",Ue,[c(s(U),{class:"teams-dashboard-widget__show-more",disabled:o.value,variant:"secondary",wide:"",onClick:J},{default:u(()=>[C(v(o.value?s(r)("circles","Loading…"):s(r)("circles","More teams")),1)]),_:1},8,["disabled"])])):b("",!0)]))]))}}),Me=k(Ce,[["__scopeId","data-v-3a381e15"]]),S=Q(Me);let A=!1;window.addEventListener("DOMContentLoaded",()=>{x.debug("Registering teams widget with dashboard"),window.OCA.Dashboard.register("circles",e=>{x.debug("Mounting teams widget to element",{element:e}),e.style.height="100%",A&&S.unmount(),S.mount(e),A=!0})});
+const appName = "teams";
+const appVersion = "35.0.0-dev.0";
+import { d as defineComponent, o as openBlock, e as createElementBlock, f as createBaseVNode, am as Fragment, aK as renderList, i as createVNode, u as unref, h as toDisplayString, j as createCommentVNode, L as _export_sfc, T as normalizeStyle, R as NcIconSvgWrapper, y as createBlock, q as useTemplateRef, E as translate, B as generateUrl, v as ref, p as onMounted, c as cancelableClient, H as generateOcsUrl, x as nextTick, J as logger, I as showError, z as withCtx, aj as NcLoadingIcon, $ as NcButton, g as createTextVNode, M as createApp } from "./logger-BmumIVPY.chunk.mjs";
+import { l as mdiOpenInNew, n as mdiAlertCircleOutline, c as NcEmptyContent, j as mdiAccountGroupOutline } from "./NcActionRouter-vYFtIOzD-CZ3pYYDb.chunk.mjs";
+import { N as NcAvatar } from "./NcAvatar-DX-Nk9Es-BG2npiEg.chunk.mjs";
+import "./colors-BDeMBgfq-DzLyYZ86.chunk.mjs";
+const _hoisted_1$4 = { class: "team-members" };
+const _hoisted_2$3 = { class: "team-members__list" };
+const _hoisted_3$3 = {
+  key: 0,
+  class: "team-members__more"
+};
+const _sfc_main$4 = /* @__PURE__ */ defineComponent({
+  __name: "TeamMembers",
+  props: {
+    members: {}
+  },
+  setup(__props) {
+    return (_ctx, _cache) => {
+      return openBlock(), createElementBlock("div", _hoisted_1$4, [
+        createBaseVNode("ul", _hoisted_2$3, [
+          (openBlock(true), createElementBlock(Fragment, null, renderList(__props.members.slice(0, 5), (member) => {
+            return openBlock(), createElementBlock("li", {
+              key: member.userId || member.singleId,
+              class: "team-members__item"
+            }, [
+              createVNode(unref(NcAvatar), {
+                user: member.isUser ? member.userId : void 0,
+                displayName: member.displayName,
+                isNoUser: !member.isUser,
+                size: 36,
+                class: "team-members__avatar"
+              }, null, 8, ["user", "displayName", "isNoUser"]),
+              __props.members.length > 5 ? (openBlock(), createElementBlock("span", _hoisted_3$3, " +" + toDisplayString(__props.members.length - 5), 1)) : createCommentVNode("", true)
+            ]);
+          }), 128))
+        ])
+      ]);
+    };
+  }
+});
+const TeamMembers = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["__scopeId", "data-v-e4d9bc6e"]]);
+const _hoisted_1$3 = { class: "team-resources" };
+const _hoisted_2$2 = { class: "team-resources__list" };
+const _hoisted_3$2 = ["title"];
+const _hoisted_4$1 = ["href"];
+const _hoisted_5$1 = ["src", "alt"];
+const _hoisted_6 = {
+  key: 0,
+  class: "team-resources__box"
+};
+const _hoisted_7 = ["href"];
+const _hoisted_8 = { class: "team-resources__link-more" };
+const _sfc_main$3 = /* @__PURE__ */ defineComponent({
+  __name: "TeamResources",
+  props: {
+    resources: {},
+    teamUrl: {}
+  },
+  setup(__props) {
+    return (_ctx, _cache) => {
+      return openBlock(), createElementBlock("div", _hoisted_1$3, [
+        createBaseVNode("ul", _hoisted_2$2, [
+          (openBlock(true), createElementBlock(Fragment, null, renderList(__props.resources.slice(0, 5), (resource) => {
+            return openBlock(), createElementBlock("li", {
+              key: resource.id,
+              class: "team-resources__box",
+              title: resource.name,
+              style: normalizeStyle({ "--fallback-icon": `url('${resource.fallbackIcon}')` })
+            }, [
+              createBaseVNode("a", {
+                href: resource.url,
+                class: "team-resources__link"
+              }, [
+                createBaseVNode("img", {
+                  src: resource.iconUrl,
+                  class: "team-resources__icon",
+                  alt: resource.name
+                }, null, 8, _hoisted_5$1)
+              ], 8, _hoisted_4$1)
+            ], 12, _hoisted_3$2);
+          }), 128)),
+          __props.resources.length > 5 ? (openBlock(), createElementBlock("li", _hoisted_6, [
+            createBaseVNode("a", {
+              href: __props.teamUrl,
+              class: "team-resources__link"
+            }, [
+              createBaseVNode("div", _hoisted_8, "+" + toDisplayString(__props.resources.length - 5), 1)
+            ], 8, _hoisted_7)
+          ])) : createCommentVNode("", true)
+        ])
+      ]);
+    };
+  }
+});
+const TeamResources = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["__scopeId", "data-v-10c6babe"]]);
+const _hoisted_1$2 = { class: "teams-list-item" };
+const _hoisted_2$1 = { class: "teams-list-item__header" };
+const _hoisted_3$1 = ["href"];
+const _hoisted_4 = { class: "teams-list-item__header-name" };
+const _hoisted_5 = {
+  key: 1,
+  class: "teams-list-item__spacer"
+};
+const _sfc_main$2 = /* @__PURE__ */ defineComponent({
+  __name: "TeamsListItem",
+  props: {
+    team: {}
+  },
+  setup(__props) {
+    return (_ctx, _cache) => {
+      return openBlock(), createElementBlock("li", _hoisted_1$2, [
+        createBaseVNode("div", _hoisted_2$1, [
+          createBaseVNode("a", {
+            href: __props.team.url,
+            class: "teams-list-item__header-link"
+          }, [
+            createBaseVNode("h3", _hoisted_4, toDisplayString(__props.team.displayName), 1),
+            createVNode(unref(NcIconSvgWrapper), {
+              class: "teams-list-item__header-icon",
+              inline: "",
+              path: unref(mdiOpenInNew)
+            }, null, 8, ["path"])
+          ], 8, _hoisted_3$1)
+        ]),
+        __props.team.members && __props.team.members.length > 0 ? (openBlock(), createBlock(TeamMembers, {
+          key: 0,
+          members: __props.team.members
+        }, null, 8, ["members"])) : createCommentVNode("", true),
+        __props.team.members?.length && __props.team.resources?.length ? (openBlock(), createElementBlock("div", _hoisted_5)) : createCommentVNode("", true),
+        __props.team.resources && __props.team.resources.length > 0 ? (openBlock(), createBlock(TeamResources, {
+          key: 2,
+          resources: __props.team.resources,
+          teamUrl: __props.team.url
+        }, null, 8, ["resources", "teamUrl"])) : createCommentVNode("", true)
+      ]);
+    };
+  }
+});
+const TeamsListItem = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["__scopeId", "data-v-7bb9088d"]]);
+const _hoisted_1$1 = ["aria-label"];
+const _sfc_main$1 = /* @__PURE__ */ defineComponent({
+  __name: "TeamsList",
+  props: {
+    teams: {}
+  },
+  setup(__props, { expose: __expose }) {
+    __expose({ scrollTop });
+    const teamsListElement = useTemplateRef("teamsList");
+    function scrollTop() {
+      if (teamsListElement.value) {
+        teamsListElement.value.scrollTop = 0;
+      }
+    }
+    return (_ctx, _cache) => {
+      return openBlock(), createElementBlock("ul", {
+        ref: "teamsList",
+        "aria-label": unref(translate)("circles", "Teams"),
+        class: "teams-list"
+      }, [
+        (openBlock(true), createElementBlock(Fragment, null, renderList(__props.teams, (team) => {
+          return openBlock(), createBlock(TeamsListItem, {
+            key: team.id,
+            team
+          }, null, 8, ["team"]);
+        }), 128))
+      ], 8, _hoisted_1$1);
+    };
+  }
+});
+const TeamsList = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-f5172c72"]]);
+const _hoisted_1 = { class: "teams-dashboard-widget" };
+const _hoisted_2 = {
+  key: 3,
+  class: "teams-dashboard-widget__container"
+};
+const _hoisted_3 = {
+  key: 0,
+  class: "teams-dashboard-widget__actions"
+};
+const LOADING_LIMIT = 3;
+const _sfc_main = /* @__PURE__ */ defineComponent({
+  __name: "DashboardTeamsWidget",
+  setup(__props) {
+    const createTeamHref = generateUrl("/apps/circles/teams");
+    const teamsList = useTemplateRef("teamsListKey");
+    const shownTeams = ref([]);
+    const loading = ref(false);
+    const hasError = ref(false);
+    const currentApiOffset = ref(0);
+    const hasMoreTeams = ref(true);
+    onMounted(() => loadTeams());
+    async function loadTeams(isLoadMore = false) {
+      loading.value = true;
+      hasError.value = false;
+      try {
+        const params = new URLSearchParams({
+          limit: LOADING_LIMIT.toString(),
+          offset: currentApiOffset.value.toString()
+        });
+        const { data } = await cancelableClient.get(generateOcsUrl(`apps/circles/teams/dashboard/widget?${params}`));
+        const teams = data.ocs.data || [];
+        const processedTeams = teams.map((team) => ({
+          id: team.singleId,
+          displayName: team.displayName || team.name,
+          url: team.url,
+          // @ts-expect-error TODO: we should add types to the ocs response
+          members: (team.members || []).map((member) => ({
+            userId: member.userId || member.singleId,
+            displayName: member.displayName,
+            type: member.type,
+            isUser: member.type === 1,
+            // TYPE_USER = 1
+            url: generateUrl(`/u/${member.userId || member.singleId}`)
+          })),
+          resources: team.resources || []
+        }));
+        if (isLoadMore) {
+          shownTeams.value.push(...processedTeams);
+          currentApiOffset.value += LOADING_LIMIT;
+        } else {
+          shownTeams.value = processedTeams;
+          currentApiOffset.value = LOADING_LIMIT;
+          nextTick(() => {
+            if (teamsList.value) {
+              teamsList.value.scrollTop();
+            }
+          });
+        }
+        hasMoreTeams.value = teams.length === LOADING_LIMIT;
+      } catch (error) {
+        hasError.value = true;
+        logger.error("Failed to load teams", { error });
+        showError(translate("circles", "Failed to load teams"));
+        if (!isLoadMore) {
+          shownTeams.value = [];
+        }
+      } finally {
+        loading.value = false;
+      }
+    }
+    async function loadMoreTeams() {
+      if (!hasMoreTeams.value || loading.value) {
+        return;
+      }
+      await loadTeams(true);
+    }
+    return (_ctx, _cache) => {
+      return openBlock(), createElementBlock("div", _hoisted_1, [
+        loading.value ? (openBlock(), createBlock(unref(NcLoadingIcon), {
+          key: 0,
+          size: 48
+        })) : hasError.value ? (openBlock(), createBlock(unref(NcEmptyContent), {
+          key: 1,
+          name: unref(translate)("circles", "Failed to load teams")
+        }, {
+          icon: withCtx(() => [
+            createVNode(unref(NcIconSvgWrapper), { path: unref(mdiAlertCircleOutline) }, null, 8, ["path"])
+          ]),
+          action: withCtx(() => [
+            createVNode(unref(NcButton), {
+              onClick: _cache[0] || (_cache[0] = ($event) => loadTeams())
+            }, {
+              default: withCtx(() => [
+                createTextVNode(toDisplayString(unref(translate)("circles", "Try again")), 1)
+              ]),
+              _: 1
+            })
+          ]),
+          _: 1
+        }, 8, ["name"])) : shownTeams.value.length === 0 ? (openBlock(), createBlock(unref(NcEmptyContent), {
+          key: 2,
+          name: unref(translate)("circles", "No teams found"),
+          description: unref(translate)("circles", "Join or create teams to see them here.")
+        }, {
+          icon: withCtx(() => [
+            createVNode(unref(NcIconSvgWrapper), { path: unref(mdiAccountGroupOutline) }, null, 8, ["path"])
+          ]),
+          action: withCtx(() => [
+            createVNode(unref(NcButton), { href: unref(createTeamHref) }, {
+              default: withCtx(() => [
+                createTextVNode(toDisplayString(unref(translate)("circles", "Create your first team")), 1)
+              ]),
+              _: 1
+            }, 8, ["href"])
+          ]),
+          _: 1
+        }, 8, ["name", "description"])) : (openBlock(), createElementBlock("div", _hoisted_2, [
+          createVNode(TeamsList, {
+            ref: "teamsListKey",
+            teams: shownTeams.value
+          }, null, 8, ["teams"]),
+          hasMoreTeams.value ? (openBlock(), createElementBlock("div", _hoisted_3, [
+            createVNode(unref(NcButton), {
+              class: "teams-dashboard-widget__show-more",
+              disabled: loading.value,
+              variant: "secondary",
+              wide: "",
+              onClick: loadMoreTeams
+            }, {
+              default: withCtx(() => [
+                createTextVNode(toDisplayString(loading.value ? unref(translate)("circles", "Loading…") : unref(translate)("circles", "More teams")), 1)
+              ]),
+              _: 1
+            }, 8, ["disabled"])
+          ])) : createCommentVNode("", true)
+        ]))
+      ]);
+    };
+  }
+});
+const DashboardTeamsWidget = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-3a381e15"]]);
+/*!
+ * SPDX-FileCopyrightText: 2025 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+const app = createApp(DashboardTeamsWidget);
+let mounted = false;
+window.addEventListener("DOMContentLoaded", () => {
+  logger.debug("Registering teams widget with dashboard");
+  window.OCA.Dashboard.register("circles", (el) => {
+    logger.debug("Mounting teams widget to element", { element: el });
+    el.style.height = "100%";
+    if (mounted) {
+      app.unmount();
+    }
+    app.mount(el);
+    mounted = true;
+  });
+});
 //# sourceMappingURL=teams-dashboard.mjs.map
