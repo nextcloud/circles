@@ -23,6 +23,9 @@ import logger from '../services/logger.js'
 const state = {
 	/** @type {Object<string>} Circle */
 	circles: {},
+
+	/** Whether the circle member list is currently being fetched */
+	loadingCircleMembers: false,
 }
 
 const mutations = {
@@ -41,6 +44,16 @@ const mutations = {
 	},
 
 	/**
+	 * Set the circle members loading state
+	 *
+	 * @param {object} state the store data
+	 * @param {boolean} value the loading state
+	 */
+	setLoadingCircleMembers(state, value) {
+		state.loadingCircleMembers = value
+	},
+
+	/**
 	 * Delete circle
 	 *
 	 * @param {object} state the store data
@@ -51,6 +64,16 @@ const mutations = {
 			logger.warn('Skipping deletion of unknown circle', { circle })
 		}
 		delete state.circles[circle.id]
+	},
+
+	/**
+	 * Reset circle members
+	 *
+	 * @param {object} state the store data
+	 * @param {string} circleId the circle id
+	 */
+	resetCircleMembers(state, circleId) {
+		state.circles[circleId].members = {}
 	},
 
 	/**
@@ -108,6 +131,7 @@ const mutations = {
 const getters = {
 	getCircles: (state) => Object.values(state.circles),
 	getCircle: (state) => (id) => state.circles[id],
+	isLoadingCircleMembers: (state) => state.loadingCircleMembers,
 }
 
 const actions = {
@@ -164,18 +188,29 @@ const actions = {
 	 * Retrieve and commit circle members
 	 *
 	 * @param {object} context the store mutations
-	 * @param {string} circleId the circle id
+	 * @param {object} data destructuring object
+	 * @param {string} data.circleId the circle id
+	 * @param {string} data.search the search query
+	 * @param {string} data.role the role
+	 * @param {number} data.limit the limit
 	 */
-	async getCircleMembers(context, circleId) {
+	async getCircleMembers(context, { circleId, search, role, limit }) {
 		const circle = context.getters.getCircle(circleId)
 		// skip if current user is not a member (e.g. visible circle)
 		if (!circle.isMember) {
 			return
 		}
-		const members = await getCircleMembers(circleId)
 
-		logger.debug(`${circleId} have ${members.length} member(s)`, { members })
-		context.commit('appendMembersToCircle', members.map((member) => new Member(member, circle)))
+		context.commit('setLoadingCircleMembers', true)
+		try {
+			const members = await getCircleMembers(circleId, search, role, limit)
+
+			logger.debug(`${circleId} have ${members.length} member(s)`, { members })
+			context.commit('resetCircleMembers', circle.id)
+			context.commit('appendMembersToCircle', members.map((member) => new Member(member, circle)))
+		} finally {
+			context.commit('setLoadingCircleMembers', false)
+		}
 	},
 
 	/**
