@@ -197,6 +197,7 @@ OC.L10N.register(
     "More teams" : "Fler team",
     "Copied" : "Kopierat",
     "All contacts" : "Alla kontakter",
+    "Not grouped" : "Ogrupperade",
     "User" : "Användare",
     "Group" : "Grupp",
     "Email" : "E-post",
