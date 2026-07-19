@@ -30,6 +30,7 @@ use OCP\Files\NotPermittedException;
 use OCP\Files\SimpleFS\ISimpleFile;
 use OCP\Files\SimpleFS\ISimpleFolder;
 use OCP\IL10N;
+use OCP\Image;
 use OCP\Security\ISecureRandom;
 
 class AvatarService {
@@ -142,7 +143,7 @@ class AvatarService {
 
 		$content = file_get_contents($file['tmp_name']);
 		unlink($file['tmp_name']);
-		$image = new \OCP\Image();
+		$image = new Image();
 		$image->loadFromData($content);
 		$image->readExif($content);
 

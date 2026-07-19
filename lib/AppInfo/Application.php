@@ -168,15 +168,13 @@ class Application extends App implements IBootstrap {
 			return;
 		}
 
-		$navigationManager->add(static function () use ($urlGenerator, $l10nFactory) {
-			return [
-				'id' => Application::APP_ID,
-				'order' => 80,
-				'href' => $urlGenerator->linkToRoute('circles.Page.index'),
-				'icon' => $urlGenerator->imagePath(Application::APP_ID, 'circles.svg'),
-				'name' => $l10nFactory->get(Application::APP_ID)->t('Teams'),
-			];
-		});
+		$navigationManager->add(static fn () => [
+			'id' => Application::APP_ID,
+			'order' => 80,
+			'href' => $urlGenerator->linkToRoute('circles.Page.index'),
+			'icon' => $urlGenerator->imagePath(Application::APP_ID, 'circles.svg'),
+			'name' => $l10nFactory->get(Application::APP_ID)->t('Teams'),
+		]);
 	}
 
 	public function registerMountProvider(ContainerInterface $container): void {
