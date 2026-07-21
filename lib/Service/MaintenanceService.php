@@ -358,10 +358,8 @@ class MaintenanceService {
 		}
 
 		$displayName = $user->getDisplayName();
-		if ($displayName !== '') {
-			$this->memberRequest->updateDisplayName($federatedUser->getSingleId(), $displayName);
-			$this->circleRequest->updateDisplayName($federatedUser->getSingleId(), $displayName);
-		}
+		$this->memberRequest->updateDisplayName($federatedUser->getSingleId(), $displayName);
+		$this->circleRequest->updateDisplayName($federatedUser->getSingleId(), $displayName);
 
 		return $displayName;
 	}
