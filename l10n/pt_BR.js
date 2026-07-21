@@ -292,7 +292,7 @@ OC.L10N.register(
     "Unable to delete the team" : "Não foi possível excluir a equipe",
     "Could not copy link to the clipboard." : "Não foi possível copiar o link para a área de transferência.",
     "All contacts" : "Todos os contatos",
-    "Not grouped" : "Não agrupado",
+    "Not grouped" : "Não agrupados",
     "Organization chart" : "Organograma",
     "Contacts settings" : "Configurações de contatos",
     "Create your own teams for sharing. Add Nextcloud users, contacts, or anyone via email." : "Crie suas próprias equipes para compartilhar. Adicione usuários do Nextcloud, contatos ou qualquer pessoa por e-mail.",
