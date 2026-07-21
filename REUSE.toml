@@ -70,3 +70,9 @@ path = ["tests/stubs/stecman_component_**"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "none"
 SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = ".l10nignore"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Nextcloud GmbH and Nextcloud contributors"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
