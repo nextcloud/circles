@@ -11,6 +11,7 @@ export default (env) => createAppConfig({
 	dashboard: join(import.meta.dirname, 'src/dashboard.ts'),
 	'settings-admin': join(import.meta.dirname, 'src/settings-admin.ts'),
 	'settings-team-folders': join(import.meta.dirname, 'src/settings-team-folders.ts'),
+	'settings-personal': join(import.meta.dirname, 'src/settings-personal.ts'),
 }, {
 	appName: 'teams',
 	emptyOutputDirectory: { additionalDirectories: ['css'] },

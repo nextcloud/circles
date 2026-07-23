@@ -108,7 +108,8 @@ class Capabilities implements ICapability {
 				Circle::CFG_CIRCLE_INVITE => $this->l10n->t('Team invite'),
 				Circle::CFG_FEDERATED => $this->l10n->t('Federated'),
 				Circle::CFG_MOUNTPOINT => $this->l10n->t('Mount point'),
-				Circle::CFG_APP => $this->l10n->t('App')
+				Circle::CFG_APP => $this->l10n->t('App'),
+				Circle::CFG_THIRD_PARTY => $this->l10n->t('Third party'),
 			],
 			'source'
 				=> [
