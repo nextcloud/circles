@@ -1273,15 +1273,15 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		string $alias,
 		string $field = 'single_id',
 		string $helperAlias = '',
-	): void {
+	): ?string {
 		if ($this->getType() !== QueryBuilder::SELECT) {
-			return;
+			return null;
 		}
 
 		try {
 			$aliasInitiator = $this->generateAlias($alias, self::INITIATOR);
 		} catch (RequestBuilderException $e) {
-			return;
+			return null;
 		}
 
 		$helperAlias = ($helperAlias === '') ? $alias : $helperAlias;
@@ -1295,8 +1295,8 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 					$expr->eq($aliasInitiator . '.' . $field, $helperAlias . '.inheritance_first'),
 				)
 			);
-		//
-		//		$this->leftJoinBasedOn($aliasInitiator);
+
+		return $aliasInitiator;
 	}
 
 	/**
