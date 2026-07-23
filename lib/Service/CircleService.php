@@ -672,15 +672,23 @@ class CircleService {
 
 		$members = $this->memberRequest->getMembers($circle->getSingleId(), null, $probe);
 
-		$limit = $this->getInt('members_limit', $circle->getSettings());
-		if ($limit === 0) {
-			$limit = $this->configService->getAppValueInt(ConfigService::MEMBERS_LIMIT);
-		}
-		if ($limit === -1) {
-			return false;
-		}
+		$instanceLimit = $this->configService->getAppValueInt(ConfigService::MEMBERS_LIMIT);
+		$circleLimit = $this->getInt('members_limit', $circle->getSettings(), $instanceLimit);
+		$memberCount = sizeof($members);
 
-		return (sizeof($members) >= $limit);
+		if ($instanceLimit === -1) {
+			if ($circleLimit === -1) {
+				return false;
+			} else {
+				return $memberCount >= $circleLimit;
+			}
+		} else {
+			if ($circleLimit === -1) {
+				return $memberCount >= $instanceLimit;
+			} else {
+				return $memberCount >= $instanceLimit || $memberCount >= $circleLimit;
+			}
+		}
 	}
 
 
