@@ -100,6 +100,10 @@ return [
 		['name' => 'Remote#member', 'url' => '/member/{type}/{userId}/', 'verb' => 'GET'],
 		['name' => 'Remote#inherited', 'url' => '/inherited/{circleId}/', 'verb' => 'GET'],
 		['name' => 'Remote#memberships', 'url' => '/memberships/{circleId}/', 'verb' => 'GET'],
+		['name' => 'Remote#moderator', 'url' => '/moderator/', 'verb' => 'POST'],
+
+		['name' => 'Oidc#connect', 'url' => '/oidc/connect', 'verb' => 'GET'],
+		['name' => 'Oidc#callback', 'url' => '/oidc/callback', 'verb' => 'GET'],
 
 		['name' => 'Deprecated#listing', 'url' => '/listing', 'verb' => 'GET'],
 	]

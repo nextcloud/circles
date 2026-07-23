@@ -90,7 +90,8 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	public const CFG_FEDERATED = 32768;         // Federated
 	public const CFG_MOUNTPOINT = 65536;        // Generate a Files folder for this Circle
 	public const CFG_APP = 131072;          // Some features are not available to the OCS API (ie. destroying Circle)
-	public static $DEF_CFG_MAX = 262143;
+	public const CFG_THIRD_PARTY = 262144;  // Circle is managed by a third-party system (e.g. SCIM), not manually
+	public static $DEF_CFG_MAX = 524287;
 
 	/**
 	 * Note: When editing those values, update lib/Application/Capabilities.php
@@ -116,7 +117,8 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		16384 => 'CI|Circle Invite',
 		32768 => 'F|Federated',
 		65536 => 'M|Nountpoint',
-		131072 => 'A|App'
+		131072 => 'A|App',
+		262144 => 'TP|Third Party'
 	];
 
 	/**

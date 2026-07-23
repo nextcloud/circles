@@ -36,6 +36,31 @@ trait TStringTools {
 	}
 
 	/**
+	 * the same given source string always returns the same generated value
+	 * useful for generating a circle ID from an external identifier
+	 * (e.g. "urn:geant:company.co:group:my_group#login.company.co")
+	 *
+	 * @param string $source identifier to generate a circle ID from
+	 */
+	protected function generateCircleIdFromString(string $source): string {
+		$chars = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890';
+		$max = strlen($chars);
+		$length = \OCA\Circles\Model\ManagedModel::ID_LENGTH;
+
+		$bytes = '';
+		for ($i = 0; strlen($bytes) < $length; $i++) {
+			$bytes .= hash('sha256', $source . '|' . $i, true);
+		}
+
+		$str = '';
+		for ($i = 0; $i < $length; $i++) {
+			$str .= $chars[ord($bytes[$i]) % $max];
+		}
+
+		return $str;
+	}
+
+	/**
 	 * Generate uuid: 2b5a7a87-8db1-445f-a17b-405790f91c80
 	 *
 	 * @param int $length
