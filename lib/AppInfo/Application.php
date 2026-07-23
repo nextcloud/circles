@@ -44,6 +44,7 @@ use OCA\Circles\Listeners\Notifications\RequestingMember as ListenerNotification
 use OCA\Circles\Listeners\TeamFolderLifecycleListener;
 use OCA\Circles\Listeners\UserCreated;
 use OCA\Circles\Listeners\UserDeleted;
+use OCA\Circles\Listeners\UserLoggedIn;
 use OCA\Circles\MountManager\CircleMountProvider;
 use OCA\Circles\Notification\Notifier;
 use OCA\Circles\Search\UnifiedSearchProvider;
@@ -71,6 +72,7 @@ use OCP\Share\IManager as IShareManager;
 use OCP\User\Events\UserChangedEvent;
 use OCP\User\Events\UserCreatedEvent;
 use OCP\User\Events\UserDeletedEvent;
+use OCP\User\Events\UserLoggedInEvent;
 use Psr\Container\ContainerInterface;
 use Throwable;
 
@@ -105,6 +107,7 @@ class Application extends App implements IBootstrap {
 		$context->registerEventListener(UserUpdatedEvent::class, AccountUpdated::class);
 		$context->registerEventListener(UserChangedEvent::class, AccountUpdated::class);
 		$context->registerEventListener(UserDeletedEvent::class, UserDeleted::class);
+		$context->registerEventListener(UserLoggedInEvent::class, UserLoggedIn::class);
 
 		// Circle Events
 		$context->registerEventListener(CircleMemberRemovedEvent::class, CircleMemberRemoved::class);
