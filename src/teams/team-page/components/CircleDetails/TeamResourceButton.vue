@@ -11,10 +11,12 @@
 		<template #trigger>
 			<NcButton
 				variant="secondary"
+				:disabled="loading"
 				:aria-describedby="`tooltip-${resourceType.id}`"
 				@click="openPopover">
 				<template #icon>
-					<slot name="icon" />
+					<NcLoadingIcon v-if="loading" :size="20" />
+					<slot v-else name="icon" />
 				</template>
 				{{ resourceType.label }}
 			</NcButton>
@@ -58,7 +60,7 @@
 
 <script>
 // @ts-nocheck
-import { NcButton, NcNoteCard, NcPopover, NcTextField } from '@nextcloud/vue'
+import { NcButton, NcLoadingIcon, NcNoteCard, NcPopover, NcTextField } from '@nextcloud/vue'
 import CheckOutlineIcon from 'vue-material-design-icons/Check.vue'
 import CloseOutlineIcon from 'vue-material-design-icons/Close.vue'
 
@@ -67,6 +69,7 @@ export default {
 
 	components: {
 		NcButton,
+		NcLoadingIcon,
 		NcNoteCard,
 		NcPopover,
 		NcTextField,
@@ -86,6 +89,11 @@ export default {
 		},
 
 		isOpen: {
+			type: Boolean,
+			default: false,
+		},
+
+		loading: {
 			type: Boolean,
 			default: false,
 		},

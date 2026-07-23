@@ -104,6 +104,7 @@ watchDebounced(federatedTeamsFrontal, async (value) => {
 	await updateAppConfig('federated_teams_frontal', value)
 	showSuccess(t('circles', 'Changed frontal cloud URL'))
 }, { debounce: 500 })
+
 </script>
 
 <template>

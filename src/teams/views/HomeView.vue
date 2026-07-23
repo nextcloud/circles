@@ -16,7 +16,7 @@ import { useTeamsStore } from '../store.ts'
 
 const store = useTeamsStore()
 const { teams, loading, loadError } = storeToRefs(store)
-const { loadTeams, openCreateTeamDialog } = store
+const { loadTeams, openCreateTeamWizard } = store
 </script>
 
 <template>
@@ -56,7 +56,7 @@ const { loadTeams, openCreateTeamDialog } = store
 				<NcIconSvgWrapper :path="mdiAccountGroupOutline" />
 			</template>
 			<template #action>
-				<NcButton variant="primary" @click="openCreateTeamDialog()">
+				<NcButton variant="primary" @click="openCreateTeamWizard()">
 					{{ t('circles', 'Create your first team') }}
 				</NcButton>
 			</template>
