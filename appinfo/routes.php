@@ -41,6 +41,9 @@ return [
 		['name' => 'Local#uploadAvatar', 'url' => '/circles/{circleId}/avatar', 'verb' => 'POST'],
 		['name' => 'Local#removeAvatar', 'url' => '/circles/{circleId}/avatar', 'verb' => 'DELETE'],
 		['name' => 'Local#link', 'url' => '/link/{circleId}/{singleId}', 'verb' => 'GET'],
+		['name' => 'TeamFolder#getTeamFolder', 'url' => '/teams/{circleId}/folder', 'verb' => 'GET'],
+		['name' => 'TeamFolder#unlinkTeamFolder', 'url' => '/teams/{circleId}/folder', 'verb' => 'DELETE'],
+		['name' => 'TeamFolder#upgradeTeamFolder', 'url' => '/teams/{circleId}/folder', 'verb' => 'POST'],
 
 		// Teams Dashboard widget endpoint
 		['name' => 'TeamsDashboard#getCompleteTeamsData', 'url' => '/teams/dashboard/widget', 'verb' => 'GET'],

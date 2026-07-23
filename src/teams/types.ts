@@ -46,3 +46,20 @@ export interface Team {
 	members: Member[]
 	resources: Resource[]
 }
+
+/**
+ * A candidate member surfaced by the sharee autocompletion search (users,
+ * groups, emails, contacts, other teams…), before they have been added to a
+ * team. Used by the team creation wizard's member selection step.
+ */
+export interface MemberCandidate {
+	/** Unique key across all suggestion types, safe to use as a list `:key`. */
+	key: string
+	/** The raw id expected by the "add members" endpoint. */
+	shareWith: string
+	/** The sharee share type, see `@nextcloud/sharing`'s `ShareType`. */
+	shareType: number
+	displayName: string
+	/** Whether this candidate is a real Nextcloud user (controls avatar rendering). */
+	isUser: boolean
+}

@@ -1558,13 +1558,51 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 	 */
 	private function generateCircleSelectAlias(string $alias, array $default = []): self {
 		$this->generateSelectAlias(
-			CoreRequestBuilder::$tables[CoreRequestBuilder::TABLE_CIRCLE],
+			$this->filterExistingCircleColumns(CoreRequestBuilder::$tables[CoreRequestBuilder::TABLE_CIRCLE]),
 			$alias,
 			$alias,
 			$default
 		);
 
 		return $this;
+	}
+
+	/**
+	 * @param list<string> $fields
+	 * @return list<string>
+	 */
+	private function filterExistingCircleColumns(array $fields): array {
+		static $columns = null;
+
+		if ($columns === null) {
+			$columns = false;
+			try {
+				$connection = $this->getConnection();
+				$tableName = CoreRequestBuilder::TABLE_CIRCLE;
+				if ($connection instanceof \OC\DB\Connection) {
+					$tableName = $connection->getPrefix() . $tableName;
+				}
+				$schema = $connection->createSchema();
+				if ($schema->hasTable($tableName)) {
+					$columns = array_map(
+						static fn ($column): string => strtolower($column->getName()),
+						$schema->getTable($tableName)->getColumns()
+					);
+				}
+			} catch (\Throwable) {
+				// Preserve the original query behavior if introspection is unavailable.
+				$columns = false;
+			}
+		}
+
+		if ($columns === false) {
+			return $fields;
+		}
+
+		return array_values(array_filter(
+			$fields,
+			static fn (string $field): bool => in_array(strtolower($field), $columns, true)
+		));
 	}
 
 	/**

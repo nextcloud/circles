@@ -8,12 +8,12 @@ import { storeToRefs } from 'pinia'
 import { onMounted } from 'vue'
 import NcAppContent from '@nextcloud/vue/components/NcAppContent'
 import NcContent from '@nextcloud/vue/components/NcContent'
-import CreateTeamDialog from './components/CreateTeamDialog.vue'
 import GlobalNavigation from './components/GlobalNavigation.vue'
+import TeamCreationWizard from './components/TeamCreationWizard.vue'
 import { useTeamsStore } from './store.ts'
 
 const store = useTeamsStore()
-const { createDialogOpen } = storeToRefs(store)
+const { createWizardOpen } = storeToRefs(store)
 
 onMounted(() => store.loadTeams())
 </script>
@@ -28,7 +28,7 @@ onMounted(() => store.loadTeams())
 			</div>
 		</NcAppContent>
 
-		<CreateTeamDialog v-if="createDialogOpen" @close="createDialogOpen = false" />
+		<TeamCreationWizard v-if="createWizardOpen" @close="createWizardOpen = false" />
 	</NcContent>
 </template>
 

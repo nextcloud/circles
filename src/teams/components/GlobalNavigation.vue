@@ -22,7 +22,7 @@ import { useTeamsStore } from '../store.ts'
 
 const store = useTeamsStore()
 const { loading } = storeToRefs(store)
-const { openCreateTeamDialog } = store
+const { openCreateTeamWizard } = store
 
 const route = useRoute()
 const query = ref('')
@@ -39,7 +39,7 @@ const isOverviewActive = computed(() => route.name === 'home')
 		<template #default>
 			<NcAppNavigationNew
 				:text="t('circles', 'New team')"
-				@click="openCreateTeamDialog()">
+				@click="openCreateTeamWizard()">
 				<template #icon>
 					<NcIconSvgWrapper :path="mdiPlus" :size="20" />
 				</template>

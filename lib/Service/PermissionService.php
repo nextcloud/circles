@@ -21,6 +21,7 @@ use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Model\Member;
+use OCP\IGroupManager;
 use OCP\IL10N;
 
 class PermissionService {
@@ -31,6 +32,7 @@ class PermissionService {
 		private readonly ConfigService $configService,
 		private readonly MemberRequest $memberRequest,
 		private readonly MembershipRequest $membershipRequest,
+		private readonly IGroupManager $groupManager,
 	) {
 	}
 
@@ -205,5 +207,35 @@ class PermissionService {
 				$this->l10n->t('Insufficient permissions to perform this action')
 			);
 		}
+	}
+
+	/**
+	 * Returns true if the given user id is a Nextcloud server admin (member
+	 * of the `admin` group). Server admins are allowed to bypass per-team
+	 * permission checks for administrative operations such as creating a
+	 * team folder.
+	 *
+	 * @param string $userId
+	 * @return bool
+	 */
+	public function isServerAdmin(string $userId): bool {
+		return $this->groupManager->isAdmin($userId);
+	}
+
+	/**
+	 * Require the current user to be at least a team admin (level ADMIN) of
+	 * the given circle, or a Nextcloud server admin.
+	 *
+	 * @param string $userId
+	 * @param string $circleId
+	 * @throws InsufficientPermissionException
+	 */
+	public function userMustBeAtLeastTeamAdminOrServerAdmin(string $userId, string $circleId): void {
+		if ($this->isServerAdmin($userId)) {
+			return;
+		}
+
+		$member = $this->userMustBeMember($userId, $circleId);
+		$this->memberMustBeAtLeastAdmin($member);
 	}
 }

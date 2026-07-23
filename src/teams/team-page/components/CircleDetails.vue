@@ -6,48 +6,27 @@
 <template>
 	<div class="circle-details-container">
 		<div class="circle-details-grid" :class="{ 'is-editing': isEditing }">
-			<div class="circle-details__header-wrapper">
-				<div class="circle-details-grid__avatar">
-					<NcLoadingIcon v-if="loadingAvatar" :size="75" />
-					<Avatar
-						v-else
-						:disable-tooltip="true"
-						:display-name="circle.displayName"
-						:is-no-user="true"
-						:url="displayAvatarUrl"
-						:size="75" />
+			<div class="circle-details__header">
+				<div v-if="isEditing" class="circle-name-wrapper">
+					<NcTextField
+						v-model="circle.displayName"
+						:placeholder="t('circles', 'Team name')"
+						:label="t('circles', 'Team name')" />
 				</div>
-				<div class="circle-details__header">
-					<div class="circle-name-wrapper">
-						<h2 v-if="!isEditing" class="circle-name">
-							<span :title="circle.displayName">{{ circle.displayName }}</span>
-							<NcLoadingIcon v-if="loadingName" :size="24" />
-						</h2>
-						<NcTextField
-							v-else
-							v-model="circle.displayName"
-							:placeholder="t('circles', 'Team name')"
-							label="Team name" />
+				<div v-if="showDescription" class="circle-description-wrapper">
+					<div v-if="!isEditing" class="circle-description">
+						{{ circle.description }}
 					</div>
-					<div v-if="!isEditing" class="subtitle">
-						<span>{{ t('circles', 'Team owner') }}</span> <UserBubble
-							:user="circle.owner.userId"
-							:display-name="circle.isOwner ? 'you' : circle.owner.displayName" />
-					</div>
-					<div v-if="showDescription" class="circle-description-wrapper">
-						<div v-if="!isEditing" class="circle-description">
-							{{ circle.description }}
-						</div>
-						<NcTextArea
-							v-else
-							v-model="circle.description"
-							:placeholder="descriptionPlaceholder"
-							label="Description"
-							:maxlength="1024" />
-					</div>
-					<div v-if="avatarSupported" class="circle-avatar-buttons-wrapper">
-						<NcButton
-							v-if="isEditing"
+					<NcTextArea
+						v-else
+						v-model="circle.description"
+						:placeholder="descriptionPlaceholder"
+						:label="t('circles', 'Description')"
+						:maxlength="1024" />
+				</div>
+				<div v-if="avatarSupported" class="circle-avatar-buttons-wrapper">
+					<NcButton
+						v-if="isEditing"
 							:disabled="loadingAvatar"
 							@click="openLocalFilePicker">
 							<template #icon>
@@ -174,6 +153,7 @@
 									:value="resourceInputs[resourceType.id] || ''"
 									:is-open="activePopover === resourceType.id"
 									:helper-text="resourceType.helperText"
+									:loading="resourceType.id === 'teamfolder' && creatingTeamFolder"
 									@update:value="updateResourceInput(resourceType.id, $event)"
 									@update:is-open="setActivePopover(resourceType.id, $event)"
 									@create="handleResourceCreation">
@@ -185,9 +165,8 @@
 						</div>
 					</div>
 				</div>
-			</div>
 
-			<!-- Main content now a direct child of the grid -->
+				<!-- Main content now a direct child of the grid -->
 			<div class="circle-details__main-content">
 				<!-- not a member -->
 				<template v-if="!circle.isMember">
@@ -285,7 +264,6 @@ import { FilePickerClosed, FilePickerType, getFilePickerBuilder, showError, show
 import { encodePath } from '@nextcloud/paths'
 import { generateOcsUrl, generateRemoteUrl, generateUrl } from '@nextcloud/router'
 import {
-	NcAvatar as Avatar,
 	NcListItem as ListItem,
 	NcActionButton,
 	NcActions,
@@ -296,7 +274,6 @@ import {
 	NcPopover,
 	NcTextArea,
 	NcTextField,
-	NcUserBubble as UserBubble,
 } from '@nextcloud/vue'
 import { useElementSize } from '@vueuse/core'
 import { reactive, ref } from 'vue'
@@ -311,6 +288,7 @@ import CopyIcon from 'vue-material-design-icons/ContentCopy.vue'
 import FileDocumentOutline from 'vue-material-design-icons/FileDocumentOutline.vue'
 import FolderIcon from 'vue-material-design-icons/Folder.vue'
 import FolderOutlineIcon from 'vue-material-design-icons/FolderOutline.vue'
+import FolderPlusOutlineIcon from 'vue-material-design-icons/FolderPlusOutline.vue'
 import LoginIcon from 'vue-material-design-icons/Login.vue'
 import LogoutIcon from 'vue-material-design-icons/Logout.vue'
 import MessageIcon from 'vue-material-design-icons/MessageOutline.vue'
@@ -324,6 +302,7 @@ import TeamResourceButton from './CircleDetails/TeamResourceButton.vue'
 import MemberList from './MemberList/MemberList.vue'
 import CircleActionsMixin from '../mixins/CircleActionsMixin.js'
 import { CircleEdit, editCircle } from '../services/circles.ts'
+import { getTeamFolder, upgradeTeamFolder } from '../../api.ts'
 
 import 'cropperjs/dist/cropper.css'
 
@@ -346,7 +325,6 @@ export default {
 
 	components: {
 		AccountPlusIcon,
-		Avatar,
 		NcButton,
 		NcDialog,
 		ContentHeading,
@@ -364,12 +342,12 @@ export default {
 		NcLoadingIcon,
 		NcPopover,
 		PencilIcon,
-		UserBubble,
 		NcTextField,
 		NcTextArea,
 		NcActions,
 		NcActionButton,
 		FolderOutlineIcon,
+		FolderPlusOutlineIcon,
 		MessageIcon,
 		CalendarIcon,
 		ViewDashboardIcon,
@@ -415,6 +393,11 @@ export default {
 			createdCalendar: null,
 			showCalendarSuccessNotification: false,
 			createdCalendarName: '',
+
+			// Team folder
+			teamFolder: null,
+			loadingTeamFolder: false,
+			creatingTeamFolder: false,
 
 			// Avatar
 			avatarUrl: undefined,
@@ -480,6 +463,10 @@ export default {
 			return (this.circle.isOwner || this.circle.isAdmin) && !this.circle.isPersonal
 		},
 
+		canCreateTeamFolder() {
+			return this.canManageTeam || Boolean(getCurrentUser()?.isAdmin)
+		},
+
 		teamHasCollective() {
 			return this.resourcesForProvider('collectives').length > 0
 		},
@@ -530,11 +517,22 @@ export default {
 
 			return [
 				{
+					id: 'teamfolder',
+					label: t('circles', 'Team space'),
+					inputLabel: null,
+					placeholder: null,
+					helperText: t('circles', 'Create a shared team space for this team.'),
+					icon: 'FolderPlusOutlineIcon',
+					apiPath: null,
+					enabled: this.canCreateTeamFolder && !this.teamFolder && !this.loadingTeamFolder,
+					noInput: true,
+				},
+				{
 					id: 'folder',
 					label: t('circles', 'Folder'),
 					inputLabel: t('circles', 'New folder'),
 					placeholder: t('circles', 'Folder name'),
-					helperText: t('circles', 'This will create a regular folder shared with the team. To create a Team Folder, please contact your {productName} administrator', { productName: OC.theme.name }),
+					helperText: t('circles', 'This will create a regular folder shared with the team.'),
 					icon: 'FolderOutlineIcon',
 					apiPath: 'files',
 					enabled: enabledApps.files !== undefined,
@@ -576,6 +574,7 @@ export default {
 			handler() {
 				this.isEditing = false
 				this.fetchTeamResources()
+				this.loadTeamFolder()
 				if (this.avatarSupported) {
 					this.cancelSetAvatar()
 					this.clearPendingAvatar()
@@ -609,11 +608,52 @@ export default {
 			this.resourceInputs[resourceId] = value
 		},
 
+		async loadTeamFolder() {
+			this.loadingTeamFolder = true
+			this.teamFolder = null
+			try {
+				this.teamFolder = await getTeamFolder(this.circle.id)
+			} catch (error) {
+				// A 404 means the team has no linked folder yet, which is the
+				// expected state for teams created before auto-creation.
+				if (error?.response?.status === 404) {
+					this.teamFolder = null
+					return
+				}
+				console.error('Could not load team folder', { error, circleId: this.circle.id })
+				showError(t('circles', 'Could not load team space'))
+				this.teamFolder = null
+			} finally {
+				this.loadingTeamFolder = false
+			}
+		},
+
+		async createTeamFolder() {
+			this.creatingTeamFolder = true
+			try {
+				this.teamFolder = await upgradeTeamFolder(this.circle.id)
+				this.$router.push({
+					name: 'team',
+					params: { teamId: this.circle.id },
+				})
+			} catch (error) {
+				console.error('Could not create team folder', { error, circleId: this.circle.id })
+				showError(t('circles', 'Could not create the team space'))
+			} finally {
+				this.creatingTeamFolder = false
+			}
+		},
+
 		async handleResourceCreation({ resourceType, name }) {
 			try {
 				let resourceId
 
 				switch (resourceType.id) {
+					case 'teamfolder': {
+						await this.createTeamFolder()
+						return
+					}
+
 					case 'folder': {
 						const folderPath = `/remote.php/dav/files/${getCurrentUser().uid}/${name}`
 						await axios.request({
@@ -1049,19 +1089,8 @@ export default {
 			}
 		}
 
-		.circle-details__header-wrapper {
-			display: grid;
-			grid-template-columns: auto 1fr;
-			align-items: center;
-			gap: 24px;
-		}
-
 		.circle-details__main-content {
-			margin-inline-start: 99px;
-
-			@media (max-width: 768px) {
-				margin-inline-start: 0;
-			}
+			margin-inline-start: 0;
 		}
 	}
 
@@ -1076,17 +1105,6 @@ export default {
 
 		.circle-description-wrapper {
 			margin-bottom: 4px;
-		}
-
-		.circle-name {
-			font-size: 1.5rem;
-			font-weight: bold;
-			margin: 0;
-			margin-bottom: 2px;
-		}
-
-		.subtitle {
-			color: var(--color-text-maxcontrast);
 		}
 
 		.actions {
