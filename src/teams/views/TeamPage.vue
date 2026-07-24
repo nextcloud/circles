@@ -12,7 +12,7 @@ import { useStore } from 'vuex'
 import NcEmptyContent from '@nextcloud/vue/components/NcEmptyContent'
 import NcIconSvgWrapper from '@nextcloud/vue/components/NcIconSvgWrapper'
 import NcLoadingIcon from '@nextcloud/vue/components/NcLoadingIcon'
-import CircleDetails from '../team-page/components/CircleDetails.vue'
+import TeamHeader from '../components/TeamHeader.vue'
 import { logger } from '../../logger.ts'
 
 const props = defineProps<{
@@ -57,6 +57,33 @@ watch(() => props.teamId, loadCircle, { immediate: true })
 			</template>
 		</NcEmptyContent>
 
-		<CircleDetails v-else :circle="circle" />
+		<template v-else>
+			<TeamHeader :circle="circle" />
+			<div class="team-page__content">
+				<router-view />
+			</div>
+		</template>
 	</div>
 </template>
+
+<style lang="scss" scoped>
+.team-page {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+
+	&__loading,
+	&__missing {
+		flex: 1 1 auto;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	&__content {
+		flex: 1 1 auto;
+		min-height: 0;
+		overflow: hidden;
+	}
+}
+</style>

@@ -53,7 +53,7 @@ class StatusCode {
 	];
 
 	public static $CIRCLE_DESTROY = [
-		120 => 'Team is managed from an other app'
+		120 => 'Team is managed from an other app',
 	];
 
 	public static $MEMBER_LEVEL = [

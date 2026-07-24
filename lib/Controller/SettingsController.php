@@ -40,6 +40,20 @@ class SettingsController extends OCSController {
 			return $this->getValues();
 		}
 
+		if ($key === ConfigLexicon::TEAM_FOLDER_AUTO_CREATE) {
+			$this->appConfig->setAppValueBool(ConfigLexicon::TEAM_FOLDER_AUTO_CREATE, $value === 'yes');
+			return $this->getValues();
+		}
+
+		if ($key === ConfigLexicon::TEAM_FOLDER_DEFAULT_QUOTA) {
+			if (!is_numeric($value) || (int)$value < 0) {
+				return new DataResponse(['data' => ['message' => 'quota must be a non-negative integer']], Http::STATUS_BAD_REQUEST);
+			}
+
+			$this->appConfig->setAppValueInt(ConfigLexicon::TEAM_FOLDER_DEFAULT_QUOTA, (int)$value);
+			return $this->getValues();
+		}
+
 		return new DataResponse(['data' => ['message' => 'unsupported key']], Http::STATUS_BAD_REQUEST);
 	}
 
@@ -47,6 +61,8 @@ class SettingsController extends OCSController {
 		return new DataResponse([
 			ConfigLexicon::FEDERATED_TEAMS_FRONTAL => $this->getFrontalValue() ?? '',
 			ConfigLexicon::FEDERATED_TEAMS_ENABLED => $this->appConfig->getAppValueBool(ConfigLexicon::FEDERATED_TEAMS_ENABLED),
+			ConfigLexicon::TEAM_FOLDER_AUTO_CREATE => $this->appConfig->getAppValueBool(ConfigLexicon::TEAM_FOLDER_AUTO_CREATE, true),
+			ConfigLexicon::TEAM_FOLDER_DEFAULT_QUOTA => $this->appConfig->getAppValueInt(ConfigLexicon::TEAM_FOLDER_DEFAULT_QUOTA, 0),
 		]);
 	}
 

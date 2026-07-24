@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import type { Member, Team } from './types.ts'
+import type { Member, MemberCandidate, Team } from './types.ts'
 
 import { defineStore } from 'pinia'
 import { logger } from '../logger.ts'
@@ -16,8 +16,8 @@ interface TeamsState {
 	loading: boolean
 	/** Whether the last teams load failed. */
 	loadError: boolean
-	/** Whether the "create a new team" dialog is open (shared across the app). */
-	createDialogOpen: boolean
+	/** Whether the "create a new team" wizard is open (shared across the app). */
+	createWizardOpen: boolean
 }
 
 /**
@@ -30,7 +30,7 @@ export const useTeamsStore = defineStore('teams', {
 		teams: [],
 		loading: false,
 		loadError: false,
-		createDialogOpen: false,
+		createWizardOpen: false,
 	}),
 
 	getters: {
@@ -48,9 +48,9 @@ export const useTeamsStore = defineStore('teams', {
 	},
 
 	actions: {
-		/** Open the "create a new team" dialog. */
-		openCreateTeamDialog(): void {
-			this.createDialogOpen = true
+		/** Open the "create a new team" wizard. */
+		openCreateTeamWizard(): void {
+			this.createWizardOpen = true
 		},
 
 		/** Load (or reload) the list of teams from the backend. */
@@ -95,6 +95,27 @@ export const useTeamsStore = defineStore('teams', {
 			}
 			await this.loadTeams()
 			return this.getTeam(id)
+		},
+
+		/**
+		 * Search for potential new members while creating a team (users,
+		 * groups, emails, contacts, other teams…).
+		 *
+		 * @param term - The search query
+		 */
+		searchMemberCandidates(term: string): Promise<MemberCandidate[]> {
+			return api.searchMemberCandidates(term)
+		},
+
+		/**
+		 * Add initial members to a freshly created team.
+		 *
+		 * @param teamId - The team id
+		 * @param candidates - The candidates picked in the wizard's member step
+		 * @return The number of candidates that were actually added.
+		 */
+		addTeamMembers(teamId: string, candidates: MemberCandidate[]): Promise<number> {
+			return api.addTeamMembers(teamId, candidates)
 		},
 
 		/**

@@ -116,7 +116,7 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		16384 => 'CI|Circle Invite',
 		32768 => 'F|Federated',
 		65536 => 'M|Nountpoint',
-		131072 => 'A|App'
+		131072 => 'A|App',
 	];
 
 	/**
@@ -141,7 +141,7 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	public static $DEF_CFG_CORE_FILTER = [
 		1,
 		2,
-		4
+		4,
 	];
 
 	public static $DEF_CFG_SYSTEM_FILTER = [
@@ -801,7 +801,7 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 			'description' => $this->getDescription(),
 			'url' => $this->getUrl(),
 			'creation' => $this->getCreation(),
-			'initiator' => ($this->hasInitiator()) ? $this->getInitiator() : null
+			'initiator' => ($this->hasInitiator()) ? $this->getInitiator() : null,
 		];
 
 		if ($this->hasOwner()) {
