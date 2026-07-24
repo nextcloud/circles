@@ -11,8 +11,10 @@ namespace OCA\Circles\Controller;
 
 use Exception;
 use OC\AppFramework\Middleware\Security\Exceptions\NotLoggedInException;
+use OCA\Circles\AppInfo\Application;
 use OCA\Circles\ConfigLexicon;
 use OCA\Circles\Db\CircleRequest;
+use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserException;
@@ -33,6 +35,7 @@ use OCA\Circles\Service\InterfaceService;
 use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\Service\RemoteDownstreamService;
+use OCA\Circles\Service\RemoteModCircleService;
 use OCA\Circles\Service\RemoteStreamService;
 use OCA\Circles\Tools\Exceptions\InvalidItemException;
 use OCA\Circles\Tools\Exceptions\InvalidOriginException;
@@ -71,6 +74,7 @@ class RemoteController extends Controller {
 		private readonly IAppConfig $appConfig,
 		private readonly RemoteStreamService $remoteStreamService,
 		private readonly RemoteDownstreamService $remoteDownstreamService,
+		private readonly RemoteModCircleService $remoteModCircleService,
 		private readonly FederatedUserService $federatedUserService,
 		private readonly CircleService $circleService,
 		private readonly MemberService $memberService,
@@ -337,6 +341,43 @@ class RemoteController extends Controller {
 			$circle = $this->circleService->getCircle($circleId);
 
 			return new DataResponse($circle->getMemberships());
+		} catch (Exception $e) {
+			return $this->exceptionResponse($e);
+		}
+	}
+
+	#[PublicPage]
+	#[NoCSRFRequired]
+	public function moderator(): DataResponse {
+		try {
+			$this->extractDataFromFromRequest();
+		} catch (Exception $e) {
+			return $this->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
+		}
+
+		try {
+			$circleId = $this->appConfig->getAppValueString(ConfigLexicon::REMOTE_MOD_CIRCLE_LOCAL_ID, '');
+			if ($circleId !== '') {
+				try {
+					$circle = $this->circleRequest->getCircle($circleId);
+					if ($circle->getOwner()->getUserId() !== Application::APP_ID || $circle->getOwner()->getUserType() !== Member::TYPE_APP) {
+						$circleId = '';
+					}
+				} catch (CircleNotFoundException) {
+					$circleId = '';
+				}
+			}
+
+			if ($circleId === '') {
+				$outcome = $this->remoteModCircleService->createCircle('remote-mod-circle');
+				$circleId = $outcome['id'];
+				$this->appConfig->setAppValueString(ConfigLexicon::REMOTE_MOD_CIRCLE_LOCAL_ID, $circleId);
+			}
+
+			return new DataResponse([
+				'circleId' => $circleId,
+				'instance' => $this->interfaceService->getLocalInstance(),
+			]);
 		} catch (Exception $e) {
 			return $this->exceptionResponse($e);
 		}
