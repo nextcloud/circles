@@ -175,8 +175,8 @@ export default {
 				return levels
 			}
 
-			// From MODERATOR, you can set ADMIN
-			if (this.currentUserLevel >= MemberLevels.MODERATOR && this.member.level !== MemberLevels.ADMIN) {
+			// From ADMIN, you can set ADMIN
+			if (this.currentUserLevel >= MemberLevels.ADMIN && this.member.level !== MemberLevels.ADMIN) {
 				levels.push(MemberLevels.ADMIN)
 			}
 
@@ -204,7 +204,7 @@ export default {
 		 * @return {boolean}
 		 */
 		isCurrentUser() {
-			return this.member.id === this.currentUserId
+			return this.member.singleId === this.currentUserId
 		},
 
 		/**
@@ -235,8 +235,9 @@ export default {
 		 */
 		canDelete() {
 			return this.circle.canManageMembers
-				&& this.member.level <= this.currentUserLevel
+				&& this.member.level < this.currentUserLevel
 				&& !this.isCurrentUser
+				&& this.member.level !== MemberLevels.OWNER
 		},
 
 		/**
@@ -340,7 +341,7 @@ export default {
 				// If we changed an owner, let's refresh the whole dataset to update all ownership & memberships
 				if (level === MemberLevels.OWNER) {
 					await this.$store.dispatch('getCircle', this.circle.id)
-					await this.$store.dispatch('getCircleMembers', this.circle.id)
+					await this.$store.dispatch('getCircleMembers', { circleId: this.circle.id })
 					return
 				}
 

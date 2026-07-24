@@ -29,7 +29,7 @@ async function loadCircle(): Promise<void> {
 	loading.value = true
 	try {
 		await store.dispatch('getCircle', props.teamId)
-		await store.dispatch('getCircleMembers', props.teamId)
+		await store.dispatch('getCircleMembers', { circleId: props.teamId })
 	} catch (error) {
 		logger.error('Could not load the team', { error })
 		showError(t('circles', 'Could not load the team'))
