@@ -902,7 +902,7 @@ export default {
 		},
 
 		async loadAvatarUrl() {
-			if (!this.avatarSupported) {
+			if (!this.avatarSupported || !this.circle.isMember) {
 				return
 			}
 			try {
