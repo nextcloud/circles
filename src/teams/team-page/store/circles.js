@@ -10,6 +10,7 @@ import {
 	acceptMember,
 	addMembers,
 	createCircle,
+	createInvitationLink,
 	deleteCircle,
 	deleteMember,
 	editCircleSetting,
@@ -17,6 +18,7 @@ import {
 	getCircleMembers,
 	getCircles,
 	leaveCircle,
+	revokeInvitationLink,
 } from '../services/circles.ts'
 import logger from '../services/logger.js'
 
@@ -113,6 +115,18 @@ const mutations = {
 
 	setCircleSettings(state, { circleId, settings }) {
 		state.circles[circleId]._data.settings = settings
+	},
+
+	/**
+	 * Update the invitation code of a circle
+	 *
+	 * @param {object} state the store data
+	 * @param {object} data destructuring object
+	 * @param {string} data.circleId the circle to update
+	 * @param {string} data.invitationCode the new invitation code
+	 */
+	setInvitationCode(state, { circleId, invitationCode }) {
+		state.circles[circleId]._data.invitationCode = invitationCode
 	},
 
 	/**
@@ -346,6 +360,36 @@ const actions = {
 		await context.commit('setCircleSettings', {
 			circleId,
 			settings,
+		})
+	},
+
+	/**
+	 * Create an invitation link for a circle
+	 *
+	 * @param {object} context the store mutations
+	 * @param {object} data destructuring object
+	 * @param {string} data.circleId the circle to create an invitation for
+	 */
+	async createInvitationLink(context, { circleId }) {
+		const { invitationCode } = await createInvitationLink(circleId)
+		await context.commit('setInvitationCode', {
+			circleId,
+			invitationCode,
+		})
+	},
+
+	/**
+	 * Revoke the invitation link of a circle
+	 *
+	 * @param {object} context the store mutations
+	 * @param {object} data destructuring object
+	 * @param {string} data.circleId the circle to revoke the invitation for
+	 */
+	async revokeInvitationLink(context, { circleId }) {
+		const { invitationCode } = await revokeInvitationLink(circleId)
+		await context.commit('setInvitationCode', {
+			circleId,
+			invitationCode,
 		})
 	},
 

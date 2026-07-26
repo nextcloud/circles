@@ -210,3 +210,47 @@ export async function editCircleSetting(circleId: string, setting: CircleSetting
 	)
 	return response.data.ocs.data
 }
+
+/**
+ * Get a specific invitation
+ *
+ * @param invitationCode
+ * @return
+ */
+export async function getInvitation(invitationCode: string) {
+	const response = await axios.get(generateOcsUrl('apps/circles/invitations/{invitationCode}', { invitationCode }))
+	return response.data.ocs.data
+}
+
+/**
+ * Join a circle using an invitation
+ *
+ * @param invitationCode
+ * @return
+ */
+export async function joinInvitation(invitationCode: string) {
+	const response = await axios.post(generateOcsUrl('apps/circles/invitations/{invitationCode}', { invitationCode }))
+	return response.data.ocs.data
+}
+
+/**
+ * Create an invitation link for a circle
+ *
+ * @param circleId
+ * @return
+ */
+export async function createInvitationLink(circleId: string) {
+	const response = await axios.put(generateOcsUrl('apps/circles/circles/{circleId}/invitation', { circleId }))
+	return response.data.ocs.data
+}
+
+/**
+ * Revoke the invitation link of a circle
+ *
+ * @param circleId
+ * @return
+ */
+export async function revokeInvitationLink(circleId: string) {
+	const response = await axios.delete(generateOcsUrl('apps/circles/circles/{circleId}/invitation', { circleId }))
+	return response.data.ocs.data
+}

@@ -311,6 +311,14 @@ export default class Circle {
 		}
 	}
 
+	get invitationCode() {
+		return this._data.invitationCode
+	}
+
+	set invitationCode(invitationCode: string) {
+		this._data.invitationCode = invitationCode
+	}
+
 	/**
 	 * Default javascript fallback
 	 * Used for sorting as well
