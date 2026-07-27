@@ -260,6 +260,7 @@ OC.L10N.register(
     "Unable to get the results" : "Αδυναμία λήψης των αποτελεσμάτων",
     "Some members could not be added" : "Ορισμένα μέλη δεν μπόρεσαν να προστεθούν",
     "There was an issue adding members to the team" : "Παρουσιάστηκε πρόβλημα κατά την προσθήκη μελών στην ομάδα",
+    "Loading members list …" : "Φόρτωση λίστας μελών …",
     "The list of members is only visible to members of this team" : "Η λίστα των μελών είναι ορατή μόνο στα μέλη αυτής της ομάδας",
     "You currently have no access to the member list" : "Προς το παρόν δεν έχετε πρόσβαση στη λίστα μελών",
     "Add to {team}" : "Προσθήκη στην ομάδα {team}",
