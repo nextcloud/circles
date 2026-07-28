@@ -15,6 +15,7 @@ OC.L10N.register(
     "Calendar" : "Kalendar",
     "New calendar" : "Kalendar baru",
     "Edit" : "Sunting",
+    "Pending" : "Dalam proses",
     "User" : "User",
     "Email" : "Email",
     "Users" : "Pengguna",

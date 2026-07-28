@@ -135,6 +135,8 @@ OC.L10N.register(
     "Loading …" : "Đang tải …",
     "No results" : "Không có kết quả",
     "Add {type}" : "Thêm {type}",
+    "Pending" : "Đang dừng",
+    "Role" : "Vai trò",
     "Add to {team}" : "Thêm vào {team}",
     "Try again" : "Thử lại",
     "Loading…" : "Đang tải…",

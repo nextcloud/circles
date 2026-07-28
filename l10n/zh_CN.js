@@ -190,6 +190,8 @@ OC.L10N.register(
     "Loading …" : "正在加载 …",
     "No results" : "没有结果",
     "Add {type}" : "添加 {type}",
+    "Pending" : "待执行",
+    "Role" : "角色",
     "Add to {team}" : "添加{team}",
     "Try again" : "请重试",
     "Create your first team" : "创建您的第一个团队",

@@ -15,6 +15,7 @@ OC.L10N.register(
     "Edit" : "Deasaich",
     "Create" : "Cruthaich",
     "No results" : "Gun toradh",
+    "Pending" : "Ri dhèiligeadh",
     "Add to {team}" : "Cuir ri {team}",
     "Loading…" : "’Ga luchdadh…",
     "User" : "Cleachdaiche",

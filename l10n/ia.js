@@ -27,6 +27,7 @@ OC.L10N.register(
     "New calendar" : "Nove calendario",
     "Edit" : "Modificar",
     "Apply" : "Applicar",
+    "Pending" : "Pendente",
     "Loading…" : "Cargante...",
     "User" : "User",
     "Group" : "Gruppo",

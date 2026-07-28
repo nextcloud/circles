@@ -44,6 +44,7 @@ OC.L10N.register(
     "Loading …" : "Yuklanmoqda...",
     "No results" : "Natija yo'q",
     "Add {type}" : " {type} ni qo'shish",
+    "Pending" : "Kutilmoqda",
     "Add to {team}" : " {team}ni qo`shish",
     "Loading…" : "Yuklanmoqda...",
     "All contacts" : "Barcha kontaktlar",

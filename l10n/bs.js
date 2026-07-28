@@ -21,6 +21,7 @@ OC.L10N.register(
     "New calendar" : "Novi kalendar",
     "Edit" : "Izmjeni",
     "Create" : "Kreiraj",
+    "Pending" : "Na čekanju",
     "User" : "User",
     "Group" : "Grupa",
     "Email" : "E-pošta",

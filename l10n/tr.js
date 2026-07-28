@@ -192,6 +192,8 @@ OC.L10N.register(
     "No results" : "Herhangi bir sonuç bulunamadı",
     "Add {type}" : "{type} ekle",
     "Remove member" : "Üyeyi kaldır",
+    "Pending" : "Bekliyor",
+    "Role" : "Rol",
     "Add to {team}" : "{team} içine ekle",
     "Try again" : "Yeniden dene",
     "Create your first team" : "İlk takımınızı oluşturun",

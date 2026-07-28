@@ -50,6 +50,8 @@ OC.L10N.register(
     "Apply" : "Aplicar",
     "Search {types}" : "Buscar {types}",
     "No results" : "No hay resultados",
+    "Pending" : "Pendiente",
+    "Role" : "Rol",
     "Add to {team}" : "Añadir {team}",
     "Try again" : "Inténtalo de nuevo",
     "Loading…" : "Cargando…",

@@ -83,6 +83,7 @@ OC.L10N.register(
     "Apply" : "გამოყენება",
     "Search {types}" : "{types} ძებნა",
     "No results" : "შედეგები არაა",
+    "Pending" : "მოლოდინში",
     "Try again" : "სცადეთ ახლიდან",
     "User" : "მომხმარებელი",
     "Federation" : "ფედერაცია",
