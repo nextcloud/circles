@@ -88,6 +88,7 @@ OC.L10N.register(
     "Edit" : "Modifi",
     "Apply" : "Validigi",
     "Search {types}" : "Serĉi {types}",
+    "Pending" : "Pritraktota",
     "Add to {team}" : "Aldoni al {team}",
     "Loading…" : "Ŝargado...",
     "User" : "Uzanto",

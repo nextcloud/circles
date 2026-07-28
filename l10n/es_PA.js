@@ -84,6 +84,7 @@ OC.L10N.register(
     "Apply" : "Aplicar",
     "Search {types}" : "Buscar {types}",
     "No results" : "No hay resultados",
+    "Pending" : "Pendiente",
     "Try again" : "Reintentar",
     "User" : "Usuario",
     "Group" : "Grupo",

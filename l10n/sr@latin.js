@@ -20,6 +20,7 @@ OC.L10N.register(
     "Edit" : "Izmeni",
     "No results" : "Nema rezultata",
     "Add {type}" : "Dodaj {type}",
+    "Pending" : "Na čekanju",
     "Add to {team}" : "Dodaj u {team}",
     "Loading…" : "Učitavam…",
     "User" : "Korisnik",

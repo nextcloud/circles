@@ -170,6 +170,8 @@ OC.L10N.register(
     "Loading …" : "ກຳລັງໂຫຼດ …",
     "No results" : "ບໍ່ມີຜົນ",
     "Add {type}" : "ເພີ່ມ {type}",
+    "Pending" : "ກຳລັງລໍຖ້າ",
+    "Role" : "ບົດບາດ",
     "Add to {team}" : "ເພີ່ມໃສ່ {team}",
     "Try again" : "Try again",
     "Create your first team" : "Create your first team",

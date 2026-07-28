@@ -24,6 +24,7 @@ OC.L10N.register(
     "New calendar" : "নতুন দিনপঞ্জী",
     "Edit" : "সম্পাদনা",
     "Add" : "যোগ কর",
+    "Pending" : "মুলতুবি",
     "User" : "User",
     "Group" : "গোষ্ঠীসমূহ",
     "Email" : "ইমেইল",

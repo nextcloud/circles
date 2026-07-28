@@ -187,6 +187,8 @@ OC.L10N.register(
     "Loading …" : "Učitavanje …",
     "No results" : "Nema rezultata",
     "Add {type}" : "Dodaj {type}",
+    "Pending" : "Na čekanju",
+    "Role" : "Uloga",
     "Add to {team}" : "Dodaj u {team}",
     "Try again" : "Pokušajte ponovno",
     "Create your first team" : "Stvori svoj prvi tim",

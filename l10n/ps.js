@@ -13,6 +13,7 @@ OC.L10N.register(
     "Save" : "Save",
     "Close" : "بندول",
     "New folder" : "نوی فولډر",
+    "Pending" : "د انتظار په حال کې",
     "Users" : "کارنان",
     "Groups" : "ګروپونه",
     "No files in here" : "دلته فایلونه نشته",

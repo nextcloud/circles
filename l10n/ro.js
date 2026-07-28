@@ -127,6 +127,7 @@ OC.L10N.register(
     "Remove {type}" : "Șterge {type}",
     "No results" : "Niciun rezultat",
     "Add {type}" : "Adaugă {type}",
+    "Pending" : "În așteptare",
     "Add to {team}" : "Adaugă la 1 {team}",
     "Loading…" : "Se încarcă...",
     "Copied" : "Copiat",

@@ -169,6 +169,7 @@ OC.L10N.register(
     "Loading …" : "Hleð inn…",
     "No results" : "Engar niðurstöður",
     "Add {type}" : "Bæta við {0:s}",
+    "Pending" : "Í bið",
     "Add to {team}" : "Bæta í {team}",
     "Try again" : "Reyndu aftur",
     "Create your first team" : "Útbúðu fyrsta teymið þitt",

@@ -41,6 +41,8 @@ OC.L10N.register(
     "Apply" : "Snes",
     "Search {types}" : "Nadi deg {types}",
     "No results" : "Ulac igmad",
+    "Pending" : "Yegguni",
+    "Role" : "Tamlilt",
     "Add to {team}" : "Rnu ɣer {team}",
     "Try again" : "Ɛreḍ tikkelt nniḍen.",
     "Loading…" : "Asali...",

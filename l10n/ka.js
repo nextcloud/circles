@@ -130,6 +130,8 @@ OC.L10N.register(
     "Remove {type}" : "Remove {type}",
     "No results" : "No results",
     "Add {type}" : "Add {type}",
+    "Pending" : "Pending",
+    "Role" : "Role",
     "Add to {team}" : "Add to {team}",
     "Loading…" : "Loading…",
     "Copied" : "Copied",

@@ -35,6 +35,7 @@ OC.L10N.register(
     "Apply" : "นำไปใช้",
     "Remove {type}" : "ลบ {type} ออก",
     "No results" : "ไม่มีผลลัพธ์",
+    "Pending" : "รอดำเนินการ",
     "Add to {team}" : "เพิ่มไปยัง {team}",
     "Loading…" : "กำลังโหลด…",
     "User" : "ผู้ใช้",

@@ -132,6 +132,8 @@
     "Remove {type}" : "Премахване на {type}",
     "No results" : "Няма резултат",
     "Add {type}" : "Добавяне {type}",
+    "Pending" : "Чакащо",
+    "Role" : "Роля",
     "Add to {team}" : "Добавяне към  {team}",
     "Try again" : "Опитай отново",
     "Loading…" : "Зареждане…",

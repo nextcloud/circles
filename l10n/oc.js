@@ -41,6 +41,8 @@ OC.L10N.register(
     "Loading …" : "Cargament …",
     "No results" : "Cap de resultat",
     "Add {type}" : "Apondre {type}",
+    "Pending" : "En espèra",
+    "Role" : "Ròtle",
     "Loading…" : "Telecargament…",
     "Copied" : "Copiat",
     "User" : "Utilizator",

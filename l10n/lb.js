@@ -23,6 +23,7 @@ OC.L10N.register(
     "Edit" : "Änneren",
     "Add" : "Dobäisetzen",
     "Apply" : "Uwenden",
+    "Pending" : "Ausstoend",
     "Add to {team}" : "derbäi ze {team}",
     "Loading…" : "Et gëtt gelueden",
     "User" : "User",

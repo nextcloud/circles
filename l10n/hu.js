@@ -188,6 +188,8 @@ OC.L10N.register(
     "Loading …" : "Betöltés…",
     "No results" : "Nincs találat",
     "Add {type}" : "{type} hozzáadása",
+    "Pending" : "Folyamatban",
+    "Role" : "Szerepkör",
     "Add to {team}" : "Hozzáadás ehhez: {team}",
     "Try again" : "Próbálja újra",
     "Create your first team" : "Hozza létre az első csapatát",
