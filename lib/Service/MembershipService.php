@@ -285,15 +285,19 @@ class MembershipService {
 		);
 
 		$deprecated = [];
+		$clear = [];
 		foreach ($known as $item) {
 			if (!in_array($item->getCircleId(), $circleIds)) {
 				$deprecated[] = $item;
 				$this->membershipRequest->delete($item);
 
-				// clearing the getSharedWith() cache for singleId related to the membership
-				$this->shareWrapperService->clearCache($item->getSingleId());
+				if (!in_array($item->getSingleId(), $clear, true)) {
+					$clear[] = $item->getSingleId();
+				}
 			}
 		}
+
+		$this->shareWrapperService->clearCacheList($clear);
 
 		return $deprecated;
 	}
@@ -306,24 +310,31 @@ class MembershipService {
 	 */
 	private function createNewMemberships(array $memberships, array $known): array {
 		$new = [];
+		$clear = [];
 		foreach ($memberships as $membership) {
+			$updated = false;
 			try {
 				$item = $this->getMembershipsFromList($known, $membership->getCircleId());
 				if ($item->getLevel() !== $membership->getLevel()
 					|| $item->getInheritanceDepth() !== $membership->getInheritanceDepth()) {
 					$this->membershipRequest->update($membership);
 					$new[] = $item;
+					$updated = true;
 				} elseif ($item->getInheritancePath() !== $membership->getInheritancePath()) {
 					$this->membershipRequest->update($membership);
+					$updated = true;
 				}
 			} catch (ItemNotFoundException) {
 				$this->membershipRequest->insert($membership);
 				$new[] = $membership;
 			}
 
-			// clearing the getSharedWith() cache for singleId related to the membership
-			$this->shareWrapperService->clearCache($membership->getSingleId());
+			if ($updated && !in_array($membership->getSingleId(), $clear, true)) {
+				$clear[] = $membership->getSingleId();
+			}
 		}
+
+		$this->shareWrapperService->clearCacheList($clear);
 
 		return $new;
 	}
