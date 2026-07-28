@@ -34,6 +34,7 @@ OC.L10N.register(
     "Edit" : "Embann",
     "Apply" : "Lakaat",
     "No results" : "Disoc'h ebet",
+    "Pending" : "O c'hortoz",
     "Add to {team}" : "Ouzhpennañ da {team}",
     "Loading…" : "O kargañ...",
     "User" : "Implijer",

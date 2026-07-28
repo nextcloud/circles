@@ -130,6 +130,8 @@ OC.L10N.register(
     "No results" : "Ei tuloksia",
     "Add {type}" : "Lisää {type}",
     "Remove member" : "Poista jäsen",
+    "Pending" : "Odottaa",
+    "Role" : "Rooli",
     "Add to {team}" : "Lisää kohteeseen {team}",
     "Try again" : "Yritä uudelleen",
     "Create your first team" : "Luo ensimmäinen tiimisi",

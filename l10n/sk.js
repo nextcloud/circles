@@ -188,6 +188,8 @@ OC.L10N.register(
     "Loading …" : "Načítava sa …",
     "No results" : "Žiadne výsledky",
     "Add {type}" : "Pridať {type}",
+    "Pending" : "Čakajúce",
+    "Role" : "Rola",
     "Add to {team}" : "Pridať do {team}",
     "Try again" : "Skúste znovu",
     "Create your first team" : "Vytvoriť svoj prvý tím",

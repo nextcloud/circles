@@ -192,6 +192,8 @@ OC.L10N.register(
     "No results" : "Žádné výsledky",
     "Add {type}" : "Přidat {type}",
     "Remove member" : "Odebrat člena",
+    "Pending" : "Čeká",
+    "Role" : "Role",
     "Add to {team}" : "Přidat do {team}",
     "Try again" : "Zkusit znovu",
     "Create your first team" : "Vytvořte svůj první tým",

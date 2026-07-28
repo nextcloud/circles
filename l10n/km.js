@@ -21,6 +21,7 @@ OC.L10N.register(
     "Edit" : "កែប្រែ",
     "Add" : "បន្ថែម",
     "Apply" : "អនុវត្ត",
+    "Pending" : "កំពុង​រង់ចាំ",
     "User" : "User",
     "Email" : "អ៊ីមែល",
     "Users" : "អ្នកប្រើ",

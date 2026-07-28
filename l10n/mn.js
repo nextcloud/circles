@@ -185,6 +185,8 @@ OC.L10N.register(
     "Add guest" : "Зочин нэмэх",
     "Loading …" : "Ачаалж байна …",
     "No results" : "Ò®Ñ€ Ð´Ò¯Ð½ Ð±Ð°Ð¹Ñ…Ð³Ò¯Ð¹",
+    "Pending" : "–•“Ø–ª—ç—ç–≥–¥—ç–∂ –±–∞–π–≥–∞–∞",
+    "Role" : "Үүрэг",
     "Add to {team}" : "{team}-т нэмэх",
     "Try again" : "Дахин оролдох",
     "Create your first team" : "Эхний багаа үүсгэх",

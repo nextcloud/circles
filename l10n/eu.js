@@ -175,6 +175,8 @@ OC.L10N.register(
     "Loading …" : "Kargatzen …",
     "No results" : "Emaitzarik ez",
     "Add {type}" : "Gehitu {type}",
+    "Pending" : "Zain",
+    "Role" : "Zeregina",
     "Add to {team}" : "Gehitu hona: {team}",
     "Try again" : "Saiatu berriz",
     "Create your first team" : "Sortu zure lehenengo lantaldea",

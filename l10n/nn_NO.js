@@ -30,6 +30,7 @@ OC.L10N.register(
     "New calendar" : "Ny kalender",
     "Edit" : "Rediger",
     "Apply" : "Anvend",
+    "Pending" : "Ventar",
     "Add to {team}" : "Legg til {team}",
     "Loading…" : "Lastar...",
     "User" : "Bruker",

@@ -166,6 +166,8 @@ OC.L10N.register(
     "Search {types}" : "Søk i {types}",
     "No results" : "Ingen resultater",
     "Add {type}" : "Legg til{type}",
+    "Pending" : "Venter",
+    "Role" : "Rolle",
     "Add to {team}" : "Legg til {team}",
     "Try again" : "Prøv igjen",
     "Create your first team" : "Opprett ditt første lag",

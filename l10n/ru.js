@@ -189,6 +189,8 @@ OC.L10N.register(
     "Loading …" : "Загрузка…",
     "No results" : "Нет результатов",
     "Add {type}" : "Добавить {type} ",
+    "Pending" : "В очереди",
+    "Role" : "Роль",
     "Add to {team}" : "Добавить в {team}",
     "Try again" : "Попытаться снова",
     "Create your first team" : "Создайте свою первую команду",
