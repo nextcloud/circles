@@ -184,6 +184,8 @@ OC.L10N.register(
     "Loading …" : "Inapakia  …",
     "No results" : "Hakuna matokeo",
     "Add {type}" : "Ongeza {type}",
+    "Pending" : "Inasubiri",
+    "Role" : "Role",
     "Add to {team}" : "Ongeza kwenye {team}",
     "Try again" : "Jaribu tena",
     "Create your first team" : "Unda timu yako ya kwanza",

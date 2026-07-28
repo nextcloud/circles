@@ -173,6 +173,8 @@ OC.L10N.register(
     "Loading …" : "Memuat …",
     "No results" : "Tidak ada hasil",
     "Add {type}" : "Tambah {type}",
+    "Pending" : "Tertunda",
+    "Role" : "Peran",
     "Add to {team}" : "Tambahkan ke {team}",
     "Try again" : "Coba lagi",
     "Create your first team" : "Buat tim pertama Anda",

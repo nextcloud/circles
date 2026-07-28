@@ -189,6 +189,8 @@ OC.L10N.register(
     "No results" : "Sem resultados",
     "Add {type}" : "Adicionar {type}",
     "Remove member" : "Remover membro",
+    "Pending" : "Pendente",
+    "Role" : "Função",
     "Add to {team}" : "Adicionar a {team}",
     "Try again" : "Tentar novamente",
     "Create your first team" : "Crie sua primeira equipe",

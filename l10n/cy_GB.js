@@ -111,6 +111,7 @@ OC.L10N.register(
     "Calendar" : "Calendr",
     "New calendar" : "Calendr newydd",
     "Edit" : "Golygu",
+    "Pending" : "I ddod",
     "Add to {team}" : "Ychwanegu at {team}",
     "Loading…" : "Yn llwytho…",
     "User" : "Defnyddwyr",

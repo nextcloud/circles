@@ -70,6 +70,7 @@ OC.L10N.register(
     "Apply" : "Apliko",
     "Search {types}" : "Kërko {types}",
     "No results" : "Asnjë rezultat",
+    "Pending" : "Në Pritje të Konfirmimit",
     "Add to {team}" : "Shtojeni tek {team}",
     "Try again" : "Provo përsëri",
     "Loading…" : "Duke u ngarkuar…",

@@ -148,6 +148,8 @@ OC.L10N.register(
     "Search {types}" : "Preišči kategorijo {types}",
     "No results" : "Ni zadetkov",
     "Add {type}" : "Dodaj {type}",
+    "Pending" : "Na čakanju",
+    "Role" : "Vloga",
     "Add to {team}" : "Dodaj k {cilju}",
     "Loading…" : "Poteka nalaganje …",
     "Copied" : "Kopirano",

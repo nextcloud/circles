@@ -55,6 +55,8 @@ OC.L10N.register(
     "Apply" : "Apstiprināt",
     "Search {types}" : "Meklēt {types}",
     "No results" : "Nav iznākuma",
+    "Pending" : "Gaida",
+    "Role" : "Loma",
     "Add to {team}" : "Pievienot {team}",
     "Loading…" : "Ielādē…",
     "User" : "Lietotājs",

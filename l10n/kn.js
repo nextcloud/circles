@@ -17,6 +17,7 @@ OC.L10N.register(
     "Folder" : "ಕೋಶ",
     "New folder" : "﻿ಹೊಸ ಕೋಶ",
     "Edit" : "ಸಂಪಾದಿಸು",
+    "Pending" : "﻿ಬಾಕಿ ಇದೆ",
     "User" : "User",
     "Group" : "﻿ಗುಂಪು",
     "Email" : "﻿ಇ-ಅಂಚೆ",

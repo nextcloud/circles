@@ -176,6 +176,8 @@ OC.L10N.register(
     "Loading …" : "يۈكلەۋاتىدۇ ...",
     "No results" : "ھېچقانداق نەتىجە يوق",
     "Add {type}" : "{type} نى قوشۇڭ",
+    "Pending" : "ساقلىنىۋاتىدۇ",
+    "Role" : "رولى",
     "Add to {team}" : "{team} غا قوشۇڭ",
     "Try again" : "قايتا سىناڭ",
     "Create your first team" : "تۇنجى ئەتىرىتىڭىزنى قۇرۇڭ",

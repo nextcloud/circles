@@ -173,6 +173,8 @@ OC.L10N.register(
     "Loading …" : "Се вчитува …",
     "No results" : "Нема резултати",
     "Add {type}" : "Додади {type}",
+    "Pending" : "Чекање",
+    "Role" : "Улога",
     "Add to {team}" : "Додај до {team}",
     "Try again" : "Обиди се повторно",
     "Create your first team" : "Создај го твојот прв тим",

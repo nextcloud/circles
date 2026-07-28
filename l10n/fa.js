@@ -193,6 +193,8 @@ OC.L10N.register(
     "No results" : "نتیجه‌ای یافت نشد",
     "Add {type}" : "افزودن {type}",
     "Remove member" : "حذف عضو",
+    "Pending" : "در انتظار",
+    "Role" : "نقش",
     "Add to {team}" : "افزودن به {team}",
     "Try again" : "دوباره تلاش کنید  ",
     "Create your first team" : "اولین تیم خود را ایجاد کنید  ",

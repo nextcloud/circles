@@ -15,6 +15,7 @@ OC.L10N.register(
     "New calendar" : "புதிய நாட்காட்டி",
     "Edit" : "தொகுக்க",
     "Add" : "சேர்க்க",
+    "Pending" : "நிலுவையிலுள்ள",
     "Copied" : "நகலெடுக்கப்பட்டது",
     "User" : "User",
     "Group" : "Group",

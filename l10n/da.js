@@ -169,6 +169,8 @@ OC.L10N.register(
     "Loading …" : "Indlæser …",
     "No results" : "Ingen resultater",
     "Add {type}" : "Tilføj {type}",
+    "Pending" : "Afventer",
+    "Role" : "Rolle",
     "Add to {team}" : "Føj til {team}",
     "Try again" : "Prøv igen",
     "Create your first team" : "Opret dit første team",

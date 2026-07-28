@@ -187,6 +187,8 @@ OC.L10N.register(
     "Loading …" : "Cargando…",
     "No results" : "Sen resultados",
     "Add {type}" : "Engadir {type}",
+    "Pending" : "Pendente",
+    "Role" : "Rol",
     "Add to {team}" : "Engadir a {team}",
     "Try again" : "Ténteo de novo",
     "Create your first team" : "Crear o seu primeiro equipo",

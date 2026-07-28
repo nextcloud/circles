@@ -79,6 +79,8 @@ OC.L10N.register(
     "Loading …" : "Загрузка …",
     "No results" : "Няма вынікаў",
     "Add {type}" : "Дадаць {type}",
+    "Pending" : "У чаканні",
+    "Role" : "Роля",
     "Add to {team}" : "Дадаць у {team}",
     "Try again" : "Паспрабаваць яшчэ раз",
     "Create your first team" : "Стварыце сваю першую каманду",
