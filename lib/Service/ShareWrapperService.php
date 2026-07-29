@@ -276,6 +276,15 @@ class ShareWrapperService {
 	}
 
 	/**
+	 * @param list<string> $clear
+	 */
+	public function clearCacheList(array $clear): void {
+		foreach ($clear as $item) {
+			$this->cache->clear($item);
+		}
+	}
+
+	/**
 	 * Clear cache for all members of a circle
 	 * This is a fallback when we can't determine specific affected users
 	 */
