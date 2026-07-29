@@ -158,6 +158,8 @@ OC.L10N.register(
     "Remove {type}" : "Quitar «{type}»",
     "No results" : "Nun hai nengún resultáu",
     "Add {type}" : "Amestar «{type}»",
+    "Pending" : "Pendiente",
+    "Role" : "Rol",
     "Add to {team}" : "Amestar a {team}",
     "Try again" : "Retentar",
     "Loading…" : "Cargando…",

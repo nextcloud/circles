@@ -164,6 +164,8 @@ OC.L10N.register(
     "Remove {type}" : "إزالة {type}",
     "No results" : "لا توجد أي نتيجة",
     "Add {type}" : "إضافة {type}",
+    "Pending" : "مُعلّق",
+    "Role" : "الوظيفة",
     "Add to {team}" : "إضافة إلى {team}",
     "Try again" : "عاود المحاولة",
     "Loading…" : "التحميل جارٍ ...",

@@ -26,6 +26,7 @@ OC.L10N.register(
     "Calendar" : "Kalender",
     "New calendar" : "Nuwe kalender",
     "Add" : "Voeg toe",
+    "Pending" : "Hangend",
     "Add to {team}" : "Voeg by {team}",
     "Loading…" : "Laai…",
     "User" : "Gebruiker",
