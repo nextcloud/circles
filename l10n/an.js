@@ -15,6 +15,7 @@ OC.L10N.register(
     "New folder" : "Nueva carpeta",
     "Folder name" : "Nombre de carpeta",
     "Create" : "Crear",
+    "Pending" : "Pendient",
     "Loading…" : "Cargando...",
     "Group" : "Grupo",
     "Email" : "Correu electronico",

@@ -165,6 +165,7 @@ OC.L10N.register(
     "Search {types}" : "Cerca {types}",
     "No results" : "Sense resultats",
     "Add {type}" : "Afegeix {type}",
+    "Role" : "Rol",
     "Add to {team}" : "Afegeix a {team}",
     "Try again" : "Torneu-ho a provar",
     "Loading…" : "S'està carregant…",
