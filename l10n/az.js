@@ -29,6 +29,7 @@ OC.L10N.register(
     "Please select a valid png or jpg file" : "Zəhmət olmasa düzgün png və ya jpg fayl seçin",
     "Edit" : "Dəyişiklik et",
     "No results" : "Nəticə yoxdur",
+    "Pending" : "Gözləmə",
     "User" : "User",
     "Group" : "Qrup",
     "Email" : "Email",
