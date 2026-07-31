@@ -190,6 +190,7 @@ class CirclesList extends Base {
 		);
 
 		$displayName = $this->input->getOption('display-name');
+		$defaultMembersLimit = $this->configService->getAppValueInt(ConfigService::MEMBERS_LIMIT);
 		$display = ($this->input->getOption('def') ? Circle::FLAGS_LONG : Circle::FLAGS_SHORT);
 		$rows = [];
 		foreach ($circles as $circle) {
@@ -202,7 +203,7 @@ class CirclesList extends Base {
 				$this->cut($displayName ? $owner->getDisplayName() : $owner->getUserId(), 40),
 				$this->configService->displayInstance($owner->getInstance()),
 				((string)$circle->getPopulation()) . '/'
-				. ((string)$this->getInt('members_limit', $circle->getSettings(), -1))
+				. ((string)$this->getInt('members_limit', $circle->getSettings(), $defaultMembersLimit))
 				. ' (' . ((string)$circle->getPopulationInherited()) . ')'
 			];
 		}
