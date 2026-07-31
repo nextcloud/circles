@@ -7,6 +7,7 @@
 import { mdiAccountGroupOutline, mdiAlertCircleOutline } from '@mdi/js'
 import { t } from '@nextcloud/l10n'
 import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
 import NcButton from '@nextcloud/vue/components/NcButton'
 import NcEmptyContent from '@nextcloud/vue/components/NcEmptyContent'
 import NcIconSvgWrapper from '@nextcloud/vue/components/NcIconSvgWrapper'
@@ -15,8 +16,12 @@ import TeamCard from '../components/TeamCard.vue'
 import { useTeamsStore } from '../store.ts'
 
 const store = useTeamsStore()
-const { teams, loading, loadError } = storeToRefs(store)
+const { teams, loading, loadError, canCreateTeam } = storeToRefs(store)
 const { loadTeams, openCreateTeamDialog } = store
+
+const emptyTeamsDescription = computed(() => canCreateTeam.value
+	? t('circles', 'Create your first team to start collaborating.')
+	: t('circles', 'You have not been added to any teams yet.'))
 </script>
 
 <template>
@@ -51,12 +56,12 @@ const { loadTeams, openCreateTeamDialog } = store
 		<NcEmptyContent
 			v-else-if="teams.length === 0"
 			:name="t('circles', 'No teams yet')"
-			:description="t('circles', 'Create your first team to start collaborating.')">
+			:description="emptyTeamsDescription">
 			<template #icon>
 				<NcIconSvgWrapper :path="mdiAccountGroupOutline" />
 			</template>
 			<template #action>
-				<NcButton variant="primary" @click="openCreateTeamDialog()">
+				<NcButton v-if="canCreateTeam" variant="primary" @click="openCreateTeamDialog()">
 					{{ t('circles', 'Create your first team') }}
 				</NcButton>
 			</template>

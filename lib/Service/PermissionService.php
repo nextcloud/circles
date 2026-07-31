@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
+use OCA\Circles\ConfigLexicon;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\MembershipRequest;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
@@ -21,7 +22,10 @@ use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Model\Member;
+use OCP\IGroupManager;
 use OCP\IL10N;
+use OCP\IUser;
+use OCP\IUserSession;
 
 class PermissionService {
 
@@ -31,7 +35,49 @@ class PermissionService {
 		private readonly ConfigService $configService,
 		private readonly MemberRequest $memberRequest,
 		private readonly MembershipRequest $membershipRequest,
+		private readonly IGroupManager $groupManager,
+		private readonly IUserSession $userSession,
 	) {
+	}
+
+	/**
+	 * @return string[]
+	 */
+	public function getAllowedCreationGroups(): array {
+		$raw = $this->configService->getAppValue(ConfigLexicon::TEAM_CREATION_ALLOWED_GROUPS);
+		if ($raw === '') {
+			return [];
+		}
+
+		$decoded = json_decode($raw, true);
+		if (!is_array($decoded)) {
+			return [];
+		}
+
+		return array_values(array_filter($decoded, static fn ($groupId): bool => is_string($groupId) && $groupId !== ''));
+	}
+
+	public function canUserCreateTeams(?IUser $user = null): bool {
+		$user ??= $this->userSession->getUser();
+		if ($user === null) {
+			return false;
+		}
+
+		if ($this->groupManager->isAdmin($user->getUID())) {
+			return true;
+		}
+
+		$allowedGroups = $this->getAllowedCreationGroups();
+		if ($allowedGroups === []) {
+			return $this->canPassLegacyCircleCreationLimit();
+		}
+
+		$userGroups = $this->groupManager->getUserGroupIds($user);
+		if (array_intersect($allowedGroups, $userGroups) === []) {
+			return false;
+		}
+
+		return $this->canPassLegacyCircleCreationLimit();
 	}
 
 	/**
@@ -40,12 +86,50 @@ class PermissionService {
 	 * @throws InsufficientPermissionException
 	 */
 	public function confirmCircleCreation(): void {
+		$user = $this->userSession->getUser();
+		if ($user !== null && $this->groupManager->isAdmin($user->getUID())) {
+			return;
+		}
+
+		$allowedGroups = $this->getAllowedCreationGroups();
+		if ($allowedGroups !== []) {
+			if ($user === null) {
+				throw new InsufficientPermissionException(
+					$this->l10n->t('You have no permission to create a new team')
+				);
+			}
+
+			$userGroups = $this->groupManager->getUserGroupIds($user);
+			if (array_intersect($allowedGroups, $userGroups) === []) {
+				throw new InsufficientPermissionException(
+					$this->l10n->t('You have no permission to create a new team')
+				);
+			}
+		}
+
 		try {
 			$this->confirm(ConfigService::LIMIT_CIRCLE_CREATION);
 		} catch (InsufficientPermissionException) {
 			throw new InsufficientPermissionException(
 				$this->l10n->t('You have no permission to create a new team')
 			);
+		}
+	}
+
+	private function canPassLegacyCircleCreationLimit(): bool {
+		$singleId = $this->configService->getAppValue(ConfigService::LIMIT_CIRCLE_CREATION);
+		if ($singleId === '') {
+			return true;
+		}
+
+		try {
+			$this->federatedUserService->mustHaveCurrentUser();
+			$federatedUser = $this->federatedUserService->getCurrentUser();
+			$federatedUser->getLink($singleId);
+
+			return true;
+		} catch (InitiatorNotFoundException|MembershipNotFoundException|RequestBuilderException) {
+			return false;
 		}
 	}
 

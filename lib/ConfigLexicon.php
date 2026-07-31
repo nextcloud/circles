@@ -24,6 +24,7 @@ class ConfigLexicon implements ILexicon {
 	public const FEDERATED_TEAMS_ENABLED = 'federated_teams_enabled';
 	public const FEDERATED_TEAMS_FRONTAL = 'federated_teams_frontal';
 	public const REMOVE_SHARE_TOKENS_DONE = 'remove_share_tokens_done';
+	public const TEAM_CREATION_ALLOWED_GROUPS = 'team_creation_allowed_groups';
 
 	public function getStrictness(): Strictness {
 		return Strictness::IGNORE;
@@ -34,6 +35,7 @@ class ConfigLexicon implements ILexicon {
 			new Entry(key: self::FEDERATED_TEAMS_ENABLED, type: ValueType::BOOL, defaultRaw: false, definition: 'disable/enable Federated Teams', lazy: true),
 			new Entry(key: self::FEDERATED_TEAMS_FRONTAL, type: ValueType::STRING, defaultRaw: '', definition: 'domain name used to auth public request', lazy: true),
 			new Entry(key: self::REMOVE_SHARE_TOKENS_DONE, type: ValueType::BOOL, defaultRaw: false, definition: 'whether the remove share tokens repair step has already been executed', lazy: true),
+			new Entry(key: self::TEAM_CREATION_ALLOWED_GROUPS, type: ValueType::STRING, defaultRaw: '[]', definition: 'JSON array of group GIDs allowed to create teams (empty = all users)', lazy: true),
 		];
 	}
 

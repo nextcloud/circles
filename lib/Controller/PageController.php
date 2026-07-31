@@ -11,12 +11,14 @@ namespace OCA\Circles\Controller;
 
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\PermissionService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Attribute\FrontpageRoute;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\NotFoundResponse;
 use OCP\AppFramework\Http\TemplateResponse;
+use OCP\AppFramework\Services\IInitialState;
 use OCP\IRequest;
 use OCP\Util;
 
@@ -27,6 +29,8 @@ class PageController extends Controller {
 	public function __construct(
 		IRequest $request,
 		private ConfigService $configService,
+		private PermissionService $permissionService,
+		private IInitialState $initialState,
 	) {
 		parent::__construct(Application::APP_ID, $request);
 	}
@@ -40,6 +44,8 @@ class PageController extends Controller {
 		if (!$this->configService->getAppValueBool(ConfigService::FRONTEND_ENABLED)) {
 			return new NotFoundResponse();
 		}
+
+		$this->initialState->provideInitialState('canCreateTeam', $this->permissionService->canUserCreateTeams());
 
 		Util::addScript(Application::APP_ID, 'teams-main');
 		Util::addStyle(Application::APP_ID, 'teams-main');

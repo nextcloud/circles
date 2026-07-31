@@ -21,7 +21,7 @@ import TeamNavigationItem from './TeamNavigationItem.vue'
 import { useTeamsStore } from '../store.ts'
 
 const store = useTeamsStore()
-const { loading } = storeToRefs(store)
+const { loading, canCreateTeam } = storeToRefs(store)
 const { openCreateTeamDialog } = store
 
 const route = useRoute()
@@ -38,6 +38,7 @@ const isOverviewActive = computed(() => route.name === 'home')
 	<NcAppNavigation :aria-label="t('circles', 'Teams')">
 		<template #default>
 			<NcAppNavigationNew
+				v-if="canCreateTeam"
 				:text="t('circles', 'New team')"
 				@click="openCreateTeamDialog()">
 				<template #icon>

@@ -5,6 +5,7 @@
 
 import type { Member, Team } from './types.ts'
 
+import { loadState } from '@nextcloud/initial-state'
 import { defineStore } from 'pinia'
 import { logger } from '../logger.ts'
 import * as api from './api.ts'
@@ -18,6 +19,8 @@ interface TeamsState {
 	loadError: boolean
 	/** Whether the "create a new team" dialog is open (shared across the app). */
 	createDialogOpen: boolean
+	/** Whether the current user may create top-level teams. */
+	canCreateTeam: boolean
 }
 
 /**
@@ -31,6 +34,7 @@ export const useTeamsStore = defineStore('teams', {
 		loading: false,
 		loadError: false,
 		createDialogOpen: false,
+		canCreateTeam: loadState<boolean>('circles', 'canCreateTeam', true),
 	}),
 
 	getters: {
