@@ -162,6 +162,7 @@ OC.L10N.register(
     "Add" : "إضافة ",
     "Apply" : "حفظ",
     "Remove {type}" : "إزالة {type}",
+    "Search {types}" : "بحث {types}",
     "No results" : "لا توجد أي نتيجة",
     "Add {type}" : "إضافة {type}",
     "Pending" : "مُعلّق",
