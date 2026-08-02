@@ -11,6 +11,7 @@ namespace OCA\Circles\Listeners;
 
 use Exception;
 use OCA\Circles\Events\CircleMemberRemovedEvent;
+use OCA\GroupFolders\Folder\FolderManager;
 use OCP\App\IAppManager;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
@@ -68,7 +69,7 @@ class CircleMemberRemoved implements IEventListener {
 		}
 
 		try {
-			$folderManager = Server::get(\OCA\GroupFolders\Folder\FolderManager::class);
+			$folderManager = Server::get(FolderManager::class);
 			return $folderManager->hasFolderForCircle($circleId);
 		} catch (Exception $e) {
 			$this->logger->debug('Failed to check if circle ' . $circleId . ' has an associated team folder', ['exception' => $e]);

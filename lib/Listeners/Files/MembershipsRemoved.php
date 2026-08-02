@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace OCA\Circles\Listeners\Files;
 
 use OCA\Circles\CirclesManager;
-use OCA\Circles\Db\ShareWrapperRequest;
 use OCA\Circles\Events\MembershipsRemovedEvent;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedItemException;
