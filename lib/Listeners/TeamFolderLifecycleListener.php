@@ -11,7 +11,7 @@ namespace OCA\Circles\Listeners;
 
 use OCA\Circles\Events\CreatingCircleEvent;
 use OCA\Circles\Events\DestroyingCircleEvent;
-use OCA\Circles\Service\TeamFolderPolicy;
+use OCA\Circles\Service\ITeamFolderPolicy;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\Teams\ITeamManager;
@@ -24,7 +24,7 @@ use Psr\Log\LoggerInterface;
 class TeamFolderLifecycleListener implements IEventListener {
 	public function __construct(
 		private readonly ITeamManager $teamManager,
-		private readonly TeamFolderPolicy $policy,
+		private readonly ITeamFolderPolicy $policy,
 		private readonly LoggerInterface $logger,
 	) {
 	}
@@ -37,8 +37,12 @@ class TeamFolderLifecycleListener implements IEventListener {
 				return;
 			}
 
+			// The circle (team) is being destroyed entirely, so remove the
+			// team folder and its contents rather than unlinking it. Unlinking
+			// would leave an orphaned folder that no team owns anymore and
+			// that is hard for an admin to discover and clean up.
 			$circle = $event->getCircle();
-			$provider->unlinkTeamFolder($circle->getSingleId());
+			$provider->removeTeamFolder($circle->getSingleId());
 			return;
 		}
 

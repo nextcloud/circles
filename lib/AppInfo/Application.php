@@ -48,8 +48,8 @@ use OCA\Circles\MountManager\CircleMountProvider;
 use OCA\Circles\Notification\Notifier;
 use OCA\Circles\Search\UnifiedSearchProvider;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\ITeamFolderPolicy;
 use OCA\Circles\Service\TeamFolderPolicy;
-use OCA\Circles\Service\TeamFolderService;
 use OCA\Circles\ShareByCircleProvider;
 use OCP\Accounts\UserUpdatedEvent;
 use OCP\AppFramework\App;
@@ -148,7 +148,7 @@ class Application extends App implements IBootstrap {
 
 		// The lifecycle listener resolves this policy locally before invoking an
 		// optional core Teams folder provider.
-		$context->registerServiceAlias(TeamFolderPolicy::class, TeamFolderService::class);
+		$context->registerServiceAlias(ITeamFolderPolicy::class, TeamFolderPolicy::class);
 	}
 
 	/**

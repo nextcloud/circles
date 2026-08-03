@@ -4,6 +4,8 @@
 -->
 
 <script setup lang="ts">
+import type { INode } from '@nextcloud/files'
+
 import { mdiFileOutline, mdiFolderOutline, mdiOpenInNew, mdiViewGridOutline, mdiViewListOutline } from '@mdi/js'
 import { showError } from '@nextcloud/dialogs'
 import { FileType, formatFileSize } from '@nextcloud/files'
@@ -17,25 +19,6 @@ import NcEmptyContent from '@nextcloud/vue/components/NcEmptyContent'
 import NcIconSvgWrapper from '@nextcloud/vue/components/NcIconSvgWrapper'
 import NcLoadingIcon from '@nextcloud/vue/components/NcLoadingIcon'
 import { logger } from '../../logger.ts'
-
-/**
- * Minimal node shape needed by the widget.
- *
- * The `@nextcloud/files` Node class exposes the same public interface, but
- * TypeScript requires us to keep the private fields when using the class
- * type directly. Using our own interface keeps the template code simple.
- */
-interface TeamFolderNode {
-	source: string
-	basename: string
-	displayname: string
-	type: FileType
-	mime?: string
-	size?: number
-	mtime?: Date
-	fileid?: number
-	attributes: Record<string, unknown>
-}
 
 const props = defineProps<{
 	mountPoint: string
@@ -51,7 +34,7 @@ const client = getClient()
 const rootPath = defaultRootPath
 
 const currentPath = ref(props.folderPath ?? '')
-const nodes = ref<TeamFolderNode[]>([])
+const nodes = ref<INode[]>([])
 const currentFolderFileId = ref<number | undefined>(props.rootFolderId)
 const loading = ref(false)
 const error = ref<string | null>(null)
@@ -122,7 +105,7 @@ function encodeDir(dir: string): string {
  *
  * @param node - The team folder node
  */
-function getNodeUrl(node: TeamFolderNode): string {
+function getNodeUrl(node: INode): string {
 	const dir = node.type === FileType.Folder
 		? `${currentDir.value}/${node.basename}`
 		: currentDir.value
@@ -138,7 +121,7 @@ function getNodeUrl(node: TeamFolderNode): string {
  *
  * @param node - The team folder node
  */
-function nodeIconPath(node: TeamFolderNode): string {
+function nodeIconPath(node: INode): string {
 	return node.type === FileType.Folder ? mdiFolderOutline : mdiFileOutline
 }
 
@@ -148,7 +131,7 @@ function nodeIconPath(node: TeamFolderNode): string {
  * @param node - The team folder node
  * @param size - The preview size in pixels
  */
-function nodePreviewUrl(node: TeamFolderNode, size = 128): string | undefined {
+function nodePreviewUrl(node: INode, size = 128): string | undefined {
 	if (node.type === FileType.Folder) {
 		return undefined
 	}
@@ -180,7 +163,7 @@ function nodePreviewUrl(node: TeamFolderNode, size = 128): string | undefined {
  * @param node - The team folder node
  * @param event - The click event
  */
-function onNodeClick(node: TeamFolderNode, event: MouseEvent): void {
+function onNodeClick(node: INode, event: MouseEvent): void {
 	if (node.type !== FileType.Folder) {
 		return
 	}
@@ -232,28 +215,13 @@ async function loadContents(): Promise<void> {
 		// folder id is not the same as the DAV file id.
 		const currentEntry = data[0]
 		if (currentEntry) {
-			const currentNode = resultToNode(currentEntry, rootPath) as TeamFolderNode
+			const currentNode = resultToNode(currentEntry, rootPath)
 			currentFolderFileId.value = currentNode.fileid ?? props.rootFolderId
 		}
 
 		nodes.value = data
 			.slice(1)
-			.map((entry) => {
-				const node = resultToNode(entry, rootPath) as TeamFolderNode
-				// resultToNode returns a @nextcloud/files Node instance whose
-				// `attributes` property is read-only, so build a plain object.
-				return {
-					source: node.source,
-					basename: node.basename,
-					displayname: node.displayname,
-					type: node.type,
-					mime: node.mime,
-					size: node.size,
-					mtime: node.mtime,
-					fileid: node.fileid,
-					attributes: entry.props ? { ...entry.props } : {},
-				} as TeamFolderNode
-			})
+			.map((entry) => resultToNode(entry, rootPath))
 			.sort((a, b) => {
 				if (a.type === b.type) {
 					return a.basename.localeCompare(b.basename)

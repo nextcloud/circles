@@ -9,33 +9,65 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
+use OCA\Circles\ConfigLexicon;
 use OCA\Circles\Model\Circle;
+use OCP\AppFramework\Services\IAppConfig;
 
 /**
- * Policy interface for team folder creation.
+ * Policy for team folders owned by teams (circles).
  *
- * The circles app owns the *policy* (auto-create toggle, default quota, which
- * circle types qualify); the groupfolders app owns the *orchestration*
- * (creating, unlinking, removing folders) and consumes this interface to ask
- * circles whether a given circle should get a team folder and what quota to
- * assign, without duplicating the policy logic. The circles app keeps no
- * reference to the groupfolders app.
+ * This class owns the *policy* for team-folder creation:
+ *  - the `team_folder_auto_create` app config toggle,
+ *  - the `team_folder_default_quota` app config value,
+ *  - the circle-type eligibility rules (personal/hidden/system/backend circles
+ *    are excluded).
  *
- * Implementation: {@see TeamFolderService} in the circles app.
+ * The *orchestration* (creating, unlinking, removing folders) is owned by the
+ * groupfolders app, which consumes this policy via the
+ * {@see ITeamFolderPolicy} interface. The circles app keeps no reference to
+ * the groupfolders app.
+ *
+ * The Groupfolders provider owns the durable `team_circle_id` linkage. Circles
+ * never persists a Groupfolders identifier.
  */
-interface TeamFolderPolicy {
-	/**
-	 * Whether a team folder should be auto-created for the given circle.
-	 *
-	 * Personal, hidden, system, and backend circles are excluded; the
-	 * `team_folder_auto_create` app config must be enabled.
-	 */
-	public function shouldCreateTeamFolder(Circle $circle): bool;
+class TeamFolderPolicy implements ITeamFolderPolicy {
+	public function __construct(
+		private IAppConfig $appConfig,
+	) {
+	}
 
 	/**
-	 * The configured default quota in bytes for auto-created team folders.
-	 *
-	 * A value of 0 or less means unlimited.
+	 * {@inheritDoc}
 	 */
-	public function getDefaultQuota(): int;
+	public function shouldCreateTeamFolder(Circle $circle): bool {
+		$autoCreate = $this->appConfig->getAppValueBool(ConfigLexicon::TEAM_FOLDER_AUTO_CREATE, true);
+		if (!$autoCreate) {
+			return false;
+		}
+
+		if ($circle->isConfig(Circle::CFG_PERSONAL)) {
+			return false;
+		}
+
+		if ($circle->isConfig(Circle::CFG_HIDDEN)) {
+			return false;
+		}
+
+		if ($circle->isConfig(Circle::CFG_SYSTEM)) {
+			return false;
+		}
+
+		if ($circle->isConfig(Circle::CFG_BACKEND)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getDefaultQuota(): int {
+		return $this->appConfig->getAppValueInt(ConfigLexicon::TEAM_FOLDER_DEFAULT_QUOTA, 0);
+	}
 }

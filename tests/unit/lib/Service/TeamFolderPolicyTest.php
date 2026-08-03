@@ -9,13 +9,13 @@ namespace OCA\Circles\Tests\Unit\Service;
 
 use OCA\Circles\ConfigLexicon;
 use OCA\Circles\Model\Circle;
-use OCA\Circles\Service\TeamFolderService;
+use OCA\Circles\Service\TeamFolderPolicy;
 use OCP\AppFramework\Services\IAppConfig;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class TeamFolderServiceTest extends TestCase {
-	private TeamFolderService $service;
+class TeamFolderPolicyTest extends TestCase {
+	private TeamFolderPolicy $service;
 	private IAppConfig&MockObject $appConfig;
 
 	protected function setUp(): void {
@@ -23,7 +23,7 @@ class TeamFolderServiceTest extends TestCase {
 
 		$this->appConfig = $this->createMock(IAppConfig::class);
 
-		$this->service = new TeamFolderService(
+		$this->service = new TeamFolderPolicy(
 			$this->appConfig,
 		);
 	}

@@ -12,14 +12,14 @@ namespace OCA\Circles\Controller;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\InsufficientPermissionException;
+use OCA\Circles\Service\ITeamFolderPolicy;
 use OCA\Circles\Service\PermissionService;
-use OCA\Circles\Service\TeamFolderPolicy;
 use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\OCS\OCSException;
 use OCP\AppFramework\OCS\OCSNotFoundException;
 use OCP\AppFramework\OCSController;
-use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\IRequest;
 use OCP\IUser;
 use OCP\IUserSession;
@@ -31,7 +31,7 @@ class TeamFolderController extends OCSController {
 		string $appName,
 		IRequest $request,
 		private readonly ITeamManager $teamManager,
-		private readonly TeamFolderPolicy $policy,
+		private readonly ITeamFolderPolicy $policy,
 		private readonly CircleRequest $circleRequest,
 		private readonly PermissionService $permissionService,
 		private readonly IUserSession $userSession,
@@ -41,7 +41,7 @@ class TeamFolderController extends OCSController {
 
 	#[NoAdminRequired]
 	public function getTeamFolder(string $circleId): DataResponse {
-		$this->requireMember($circleId);
+		$this->assertAuthenticatedUserIsMember($circleId);
 		$folder = $this->getProvider()->getTeamFolder($circleId);
 		if ($folder === null) {
 			throw new OCSNotFoundException('No team folder linked to this team');
@@ -53,7 +53,7 @@ class TeamFolderController extends OCSController {
 	#[NoAdminRequired]
 	public function upgradeTeamFolder(string $circleId): DataResponse {
 		$circle = $this->getCircle($circleId);
-		$this->requireTeamAdmin($circleId);
+		$this->assertAuthenticatedUserIsTeamAdmin($circleId);
 		$folder = $this->getProvider()->createTeamFolder(
 			new Team(
 				teamId: $circle->getSingleId(),
@@ -72,7 +72,7 @@ class TeamFolderController extends OCSController {
 
 	#[NoAdminRequired]
 	public function unlinkTeamFolder(string $circleId, bool $deleteFolder = false): DataResponse {
-		$this->requireTeamOwner($circleId);
+		$this->assertAuthenticatedUserIsTeamOwner($circleId);
 		$provider = $this->getProvider();
 		if ($deleteFolder) {
 			$changed = $provider->removeTeamFolder($circleId);
@@ -103,7 +103,7 @@ class TeamFolderController extends OCSController {
 		}
 	}
 
-	private function requireMember(string $circleId): void {
+	private function assertAuthenticatedUserIsMember(string $circleId): void {
 		try {
 			$this->permissionService->userMustBeMember($this->getAuthenticatedUser()->getUID(), $circleId);
 		} catch (InsufficientPermissionException $e) {
@@ -111,7 +111,7 @@ class TeamFolderController extends OCSController {
 		}
 	}
 
-	private function requireTeamAdmin(string $circleId): void {
+	private function assertAuthenticatedUserIsTeamAdmin(string $circleId): void {
 		try {
 			$this->permissionService->userMustBeAtLeastTeamAdminOrServerAdmin($this->getAuthenticatedUser()->getUID(), $circleId);
 		} catch (InsufficientPermissionException $e) {
@@ -119,7 +119,7 @@ class TeamFolderController extends OCSController {
 		}
 	}
 
-	private function requireTeamOwner(string $circleId): void {
+	private function assertAuthenticatedUserIsTeamOwner(string $circleId): void {
 		try {
 			$member = $this->permissionService->userMustBeMember($this->getAuthenticatedUser()->getUID(), $circleId);
 			$this->permissionService->memberMustBeOwner($member);
