@@ -1,41 +1,81 @@
 <!--
- - SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
- - SPDX-License-Identifier: AGPL-3.0-or-later
--->
+  - SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+  - SPDX-License-Identifier: AGPL-3.0-or-later
+  -->
 
 <script setup lang="ts">
 import type { OCSResponse } from '@nextcloud/typings/ocs'
 
 import axios from '@nextcloud/axios'
 import { showError, showSuccess } from '@nextcloud/dialogs'
+import { formatFileSize, parseFileSize } from '@nextcloud/files'
 import { loadState } from '@nextcloud/initial-state'
 import { t } from '@nextcloud/l10n'
 import { confirmPassword } from '@nextcloud/password-confirmation'
 import { generateOcsUrl } from '@nextcloud/router'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import NcButton from '@nextcloud/vue/components/NcButton'
 import NcCheckboxRadioSwitch from '@nextcloud/vue/components/NcCheckboxRadioSwitch'
+import NcSelect from '@nextcloud/vue/components/NcSelect'
 import NcSettingsSection from '@nextcloud/vue/components/NcSettingsSection'
-import NcTextField from '@nextcloud/vue/components/NcTextField'
 import { logger } from '../logger.ts'
 
-const BYTES_PER_MB = 1024 * 1024
-
-/**
- * Convert a byte quota to a human-readable MB string.
- *
- * @param bytes - The quota in bytes
- */
-function bytesToMb(bytes: number): string {
-	if (bytes === 0) {
-		return '0'
-	}
-	const mb = bytes / BYTES_PER_MB
-	return String(parseFloat(mb.toFixed(2)))
+interface QuotaOption {
+	id: string
+	label: string
 }
 
+const unlimitedQuota: QuotaOption = {
+	id: '0',
+	label: t('circles', 'Unlimited'),
+}
+
+const quotaPreset: QuotaOption[] = [
+	{ id: '1 GB', label: '1 GB' },
+	{ id: '5 GB', label: '5 GB' },
+	{ id: '10 GB', label: '10 GB' },
+]
+
 const teamFolderAutoCreate = ref(Boolean(loadState('circles', 'teamFolderAutoCreate', true)))
-const teamFolderDefaultQuota = ref(bytesToMb(Number(loadState('circles', 'teamFolderDefaultQuota', 0))))
+
+const teamFolderDefaultQuotaBytes = Number(loadState('circles', 'teamFolderDefaultQuota', 0))
+
+const quotaOptions = computed<QuotaOption[]>(() => {
+	const options = [...quotaPreset]
+	if (teamFolderDefaultQuotaBytes <= 0) {
+		options.unshift(unlimitedQuota)
+		return options
+	}
+	const label = formatFileSize(teamFolderDefaultQuotaBytes)
+	const option = { id: label, label }
+	if (!options.some((q) => q.id === label)) {
+		options.unshift(option)
+	} else {
+		options.unshift(unlimitedQuota)
+	}
+	return options
+})
+
+const selectedQuota = ref<QuotaOption>(
+	teamFolderDefaultQuotaBytes <= 0
+		? unlimitedQuota
+		: { id: formatFileSize(teamFolderDefaultQuotaBytes), label: formatFileSize(teamFolderDefaultQuotaBytes) },
+)
+
+/**
+ * Normalize a user-entered quota string into a quota option.
+ *
+ * @param quota - Raw quota string entered by the user (e.g. "4 GB")
+ * @return Normalized quota option
+ */
+function validateQuota(quota: string): QuotaOption {
+	const parsed = parseFileSize(quota, true)
+	if (parsed !== null && parsed >= 0) {
+		const label = formatFileSize(parsed)
+		return { id: label, label }
+	}
+	return unlimitedQuota
+}
 
 /**
  * Update app configuration
@@ -82,17 +122,24 @@ function onToggleTeamFolderAutoCreate() {
 /**
  * Save the default team folder quota.
  *
- * The user enters the value in MB; it is stored as bytes on the server.
+ * The selected option id is a human-readable size string (e.g. "5 GB") or
+ * "0" for unlimited; it is parsed back to bytes before being stored.
  */
 async function onSaveQuota() {
-	const quotaMb = Number(teamFolderDefaultQuota.value)
-	if (Number.isNaN(quotaMb) || quotaMb < 0) {
+	if (selectedQuota.value.id === unlimitedQuota.id) {
+		if (await updateAppConfig('team_folder_default_quota', '0')) {
+			showSuccess(t('circles', 'Changed default team space quota'))
+		}
+		return
+	}
+
+	const bytes = parseFileSize(selectedQuota.value.id, true)
+	if (bytes === null || bytes < 0) {
 		showError(t('circles', 'Quota must be a non-negative number.'))
 		return
 	}
 
-	const quotaBytes = Math.round(quotaMb * BYTES_PER_MB)
-	if (await updateAppConfig('team_folder_default_quota', quotaBytes.toString())) {
+	if (await updateAppConfig('team_folder_default_quota', String(Math.round(bytes)))) {
 		showSuccess(t('circles', 'Changed default team space quota'))
 	}
 }
@@ -113,13 +160,14 @@ async function onSaveQuota() {
 			v-show="teamFolderAutoCreate"
 			class="team-folders__sub-section">
 			<div class="team-folders__input-row">
-				<NcTextField
-					v-model="teamFolderDefaultQuota"
-					:label="t('circles', 'Default quota (in MB)')"
-					:placeholder="t('circles', '0 for unlimited')"
-					type="number"
-					min="0"
-					step="1"
+				<NcSelect
+					v-model="selectedQuota"
+					:clearable="false"
+					:create-option="validateQuota"
+					:input-label="t('circles', 'Default quota')"
+					:options="quotaOptions"
+					:placeholder="t('circles', 'Select default quota')"
+					taggable
 					class="team-folders__input" />
 				<NcButton
 					variant="primary"
