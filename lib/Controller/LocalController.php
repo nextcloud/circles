@@ -207,13 +207,12 @@ class LocalController extends OCSController {
 				$this->permissionService->memberMustBeAtLeastModerator($memberUser);
 			}
 
-			// exception in Contact
 			if ($type === Member::TYPE_CONTACT) {
 				$currentUser = $this->federatedUserService->getCurrentUser();
 				if (!$this->configService->isLocalInstance($currentUser->getInstance())) {
 					throw new OCSException('works only from local instance', 404);
 				}
-
+				// prefix with current user id to scope contact lookup to this user
 				$userId = $currentUser->getUserId() . '/' . $userId;
 			}
 
@@ -251,6 +250,15 @@ class LocalController extends OCSController {
 			foreach ($members as $member) {
 				$userId = $this->get('id', $member);
 				$type = $this->getInt('type', $member);
+
+				if ($type === Member::TYPE_CONTACT) {
+					$currentUser = $this->federatedUserService->getCurrentUser();
+					if (!$this->configService->isLocalInstance($currentUser->getInstance())) {
+						throw new OCSException('works only from local instance', 404);
+					}
+					// prefix with current user id to scope contact lookup to this user
+					$userId = $currentUser->getUserId() . '/' . $userId;
+				}
 
 				if ($type === Member::TYPE_CIRCLE) {
 					$this->circleService->getCircle($userId);
