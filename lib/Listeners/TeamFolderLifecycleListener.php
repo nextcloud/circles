@@ -11,7 +11,7 @@ namespace OCA\Circles\Listeners;
 
 use OCA\Circles\Events\CreatingCircleEvent;
 use OCA\Circles\Events\DestroyingCircleEvent;
-use OCA\Circles\Service\ITeamFolderPolicy;
+use OCA\Circles\Service\TeamFolderPolicy;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\Teams\ITeamManager;
@@ -24,7 +24,7 @@ use Psr\Log\LoggerInterface;
 class TeamFolderLifecycleListener implements IEventListener {
 	public function __construct(
 		private readonly ITeamManager $teamManager,
-		private readonly ITeamFolderPolicy $policy,
+		private readonly TeamFolderPolicy $policy,
 		private readonly LoggerInterface $logger,
 	) {
 	}

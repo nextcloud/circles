@@ -56,11 +56,9 @@ const quotaOptions = computed<QuotaOption[]>(() => {
 	return options
 })
 
-const selectedQuota = ref<QuotaOption>(
-	teamFolderDefaultQuotaBytes <= 0
-		? unlimitedQuota
-		: { id: formatFileSize(teamFolderDefaultQuotaBytes), label: formatFileSize(teamFolderDefaultQuotaBytes) },
-)
+const selectedQuota = ref<QuotaOption>(teamFolderDefaultQuotaBytes <= 0
+	? unlimitedQuota
+	: { id: formatFileSize(teamFolderDefaultQuotaBytes), label: formatFileSize(teamFolderDefaultQuotaBytes) })
 
 /**
  * Normalize a user-entered quota string into a quota option.
@@ -163,8 +161,8 @@ async function onSaveQuota() {
 				<NcSelect
 					v-model="selectedQuota"
 					:clearable="false"
-					:create-option="validateQuota"
-					:input-label="t('circles', 'Default quota')"
+					:createOption="validateQuota"
+					:inputLabel="t('circles', 'Default quota')"
 					:options="quotaOptions"
 					:placeholder="t('circles', 'Select default quota')"
 					taggable

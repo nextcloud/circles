@@ -197,6 +197,18 @@ class PermissionService {
 		}
 	}
 
+	/**
+	 * @throws InsufficientPermissionException
+	 */
+	public function userMustBeTeamOwnerOrServerAdmin(string $userId, string $circleId): void {
+		if ($this->groupManager->isAdmin($userId)) {
+			return;
+		}
+
+		$member = $this->userMustBeMember($userId, $circleId);
+		$this->memberMustBeOwner($member);
+	}
+
 	public function memberMustBeHigherLevelThan(Member $memberUser, string $targetMemberId): void {
 		$targetMember = $this->memberRequest->getMemberById($targetMemberId);
 		$memberHelper = new MemberHelper($memberUser);
@@ -209,33 +221,4 @@ class PermissionService {
 		}
 	}
 
-	/**
-	 * Returns true if the given user id is a Nextcloud server admin (member
-	 * of the `admin` group). Server admins are allowed to bypass per-team
-	 * permission checks for administrative operations such as creating a
-	 * team folder.
-	 *
-	 * @param string $userId
-	 * @return bool
-	 */
-	public function isServerAdmin(string $userId): bool {
-		return $this->groupManager->isAdmin($userId);
-	}
-
-	/**
-	 * Require the current user to be at least a team admin (level ADMIN) of
-	 * the given circle, or a Nextcloud server admin.
-	 *
-	 * @param string $userId
-	 * @param string $circleId
-	 * @throws InsufficientPermissionException
-	 */
-	public function userMustBeAtLeastTeamAdminOrServerAdmin(string $userId, string $circleId): void {
-		if ($this->isServerAdmin($userId)) {
-			return;
-		}
-
-		$member = $this->userMustBeMember($userId, $circleId);
-		$this->memberMustBeAtLeastAdmin($member);
-	}
 }

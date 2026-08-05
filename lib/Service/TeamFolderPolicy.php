@@ -23,22 +23,17 @@ use OCP\AppFramework\Services\IAppConfig;
  *    are excluded).
  *
  * The *orchestration* (creating, unlinking, removing folders) is owned by the
- * groupfolders app, which consumes this policy via the
- * {@see ITeamFolderPolicy} interface. The circles app keeps no reference to
- * the groupfolders app.
+ * groupfolders app. The circles app keeps no reference to the groupfolders app.
  *
  * The Groupfolders provider owns the durable `team_circle_id` linkage. Circles
  * never persists a Groupfolders identifier.
  */
-class TeamFolderPolicy implements ITeamFolderPolicy {
+class TeamFolderPolicy {
 	public function __construct(
 		private IAppConfig $appConfig,
 	) {
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function shouldCreateTeamFolder(Circle $circle): bool {
 		$autoCreate = $this->appConfig->getAppValueBool(ConfigLexicon::TEAM_FOLDER_AUTO_CREATE, true);
 		if (!$autoCreate) {
@@ -64,9 +59,6 @@ class TeamFolderPolicy implements ITeamFolderPolicy {
 		return true;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public function getDefaultQuota(): int {
 		return $this->appConfig->getAppValueInt(ConfigLexicon::TEAM_FOLDER_DEFAULT_QUOTA, 0);
 	}
