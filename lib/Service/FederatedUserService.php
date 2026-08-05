@@ -1288,7 +1288,7 @@ class FederatedUserService {
 		} catch (CircleNotFoundException $e) {
 		}
 
-		$circle->setDisplayName($groupId);
+		$circle->setDisplayName($group->getDisplayName());
 
 		$event = new FederatedEvent(CircleCreate::class);
 		$event->setCircle($circle);
