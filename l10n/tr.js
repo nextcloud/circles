@@ -186,7 +186,7 @@ OC.L10N.register(
     "Add" : "Topla",
     "Apply" : "Uygula",
     "Remove {type}" : "{type} sil",
-    "Search {types}" : "{types} arama",
+    "Search {types}" : "{types} ara",
     "Add guest" : "Konuk ekle",
     "Loading …" : "Yükleniyor…",
     "No results" : "Herhangi bir sonuç bulunamadı",
