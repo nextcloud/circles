@@ -230,7 +230,7 @@ OC.L10N.register(
     "Edit" : "Redaguoti",
     "Request to join" : "Prašyti prisijungti",
     "Create" : "Sukurti",
-    "Show in Calendar" : "Rodyti kalendoriuje",
+    "Show in Calendar" : "Rodyti „Kalendoriuje“",
     "Your request to join this team is pending approval" : "Jūsų užklausa prisijungti prie šios komandos laukia patvirtinimo",
     "You are not a member of {circle}" : "Jūs nesate rato {circle} narys",
     "Add" : "Pridėti",
