@@ -40,6 +40,15 @@ class SettingsController extends OCSController {
 			return $this->getValues();
 		}
 
+		if ($key === ConfigLexicon::TEAM_CREATION_ALLOWED_GROUPS) {
+			if (!$this->isValidAllowedGroupsValue($value)) {
+				return new DataResponse(['data' => ['message' => 'allowed groups must be a JSON array of group ids']], Http::STATUS_BAD_REQUEST);
+			}
+
+			$this->appConfig->setAppValueString(ConfigLexicon::TEAM_CREATION_ALLOWED_GROUPS, $value);
+			return $this->getValues();
+		}
+
 		return new DataResponse(['data' => ['message' => 'unsupported key']], Http::STATUS_BAD_REQUEST);
 	}
 
@@ -47,7 +56,26 @@ class SettingsController extends OCSController {
 		return new DataResponse([
 			ConfigLexicon::FEDERATED_TEAMS_FRONTAL => $this->getFrontalValue() ?? '',
 			ConfigLexicon::FEDERATED_TEAMS_ENABLED => $this->appConfig->getAppValueBool(ConfigLexicon::FEDERATED_TEAMS_ENABLED),
+			ConfigLexicon::TEAM_CREATION_ALLOWED_GROUPS => $this->appConfig->getAppValueString(
+				ConfigLexicon::TEAM_CREATION_ALLOWED_GROUPS,
+				'[]',
+			),
 		]);
+	}
+
+	private function isValidAllowedGroupsValue(string $value): bool {
+		$decoded = json_decode($value, true);
+		if (!is_array($decoded)) {
+			return false;
+		}
+
+		foreach ($decoded as $groupId) {
+			if (!is_string($groupId) || $groupId === '') {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	private function setFrontalValue(string $url): bool {
@@ -66,7 +94,7 @@ class SettingsController extends OCSController {
 
 	private function getFrontalValue(): ?string {
 		if ($this->appConfig->hasAppKey(ConfigLexicon::FEDERATED_TEAMS_FRONTAL)) {
-			return $this->appConfig->getAppValueString(ConfigLExicon::FEDERATED_TEAMS_FRONTAL);
+			return $this->appConfig->getAppValueString(ConfigLexicon::FEDERATED_TEAMS_FRONTAL);
 		}
 
 		if (!$this->appConfig->hasAppKey(ConfigService::FRONTAL_CLOUD_SCHEME)
