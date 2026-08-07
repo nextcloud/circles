@@ -9,7 +9,6 @@ namespace OCA\Circles\Model;
 
 use JsonSerializable;
 use OCA\Circles\AppInfo\Application;
-use OCA\Circles\Service\MiscService;
 use OCP\IL10N;
 use OCP\L10N\IFactory;
 use OCP\Server;

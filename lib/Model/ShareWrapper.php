@@ -524,7 +524,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		try {
 			$circle = new Circle();
 			$this->setCircle($circle->import($this->getArray('circle', $data)));
-		} catch (InvalidItemException $e) {
+		} catch (InvalidItemException) {
 		}
 
 		try {

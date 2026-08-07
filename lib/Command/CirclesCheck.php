@@ -10,7 +10,6 @@ namespace OCA\Circles\Command;
 
 use Exception;
 use OC\Core\Command\Base;
-use OC\Memcache\APCu;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\AppInfo\Capabilities;
 use OCA\Circles\Exceptions\FederatedEventException;
