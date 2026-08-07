@@ -210,7 +210,7 @@ class ShareWrapperService {
 	 * @throws RequestBuilderException
 	 */
 	public function getSharesInFolder(
-		FederatedUser $federatedUser,
+		?FederatedUser $federatedUser,
 		Folder $node,
 		bool $reshares,
 		bool $shallow = true,

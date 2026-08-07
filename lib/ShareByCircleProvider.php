@@ -32,6 +32,7 @@ use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\FederatedItems\Files\FileShare;
 use OCA\Circles\FederatedItems\Files\FileUnshare;
 use OCA\Circles\Model\Federated\FederatedEvent;
+use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\Probes\DataProbe;
@@ -58,6 +59,7 @@ use OCP\Share\Exceptions\IllegalIDChangeException;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IShare;
 use OCP\Share\IShareProvider;
+use OCP\Share\IShareProviderSupportsAllSharesInFolder;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -65,7 +67,7 @@ use Psr\Log\LoggerInterface;
  *
  * @package OCA\Circles
  */
-class ShareByCircleProvider implements IShareProvider {
+class ShareByCircleProvider implements IShareProvider, IShareProviderSupportsAllSharesInFolder {
 	use TArrayTools;
 	use TStringTools;
 	use TNCLogger;
@@ -322,7 +324,7 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @param bool $reshares
 	 * @param bool $shallow Whether the method should stop at the first level, or look into sub-folders.
 	 *
-	 * @return array
+	 * @return array<int, list<IShare>>
 	 * @throws ContactAddressBookNotFoundException
 	 * @throws ContactFormatException
 	 * @throws ContactNotFoundException
@@ -337,12 +339,47 @@ class ShareByCircleProvider implements IShareProvider {
 	 */
 	public function getSharesInFolder($userId, Folder $node, $reshares, $shallow = true): array {
 		$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId);
-		$wrappedShares = $this->shareWrapperService->getSharesInFolder(
-			$federatedUser,
-			$node,
-			$reshares,
-			$shallow
-		);
+
+		return $this->getSharesInFolderInternal($federatedUser, $node, $reshares, $shallow);
+	}
+
+	/**
+	 * Get all shares in a folder, regardless of the share owner or initiator.
+	 * Used for ownerless mounts (e.g. groupfolders) where there is no single
+	 * user to filter shares by.
+	 *
+	 * @return array<int, list<IShare>>
+	 * @throws ContactAddressBookNotFoundException
+	 * @throws ContactFormatException
+	 * @throws ContactNotFoundException
+	 * @throws InvalidIdException
+	 * @throws InvalidPathException
+	 * @throws NotFoundException
+	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
+	 */
+	public function getAllSharesInFolder(Folder $node): array {
+		return $this->getSharesInFolderInternal(null, $node, false);
+	}
+
+	/**
+	 * @return array<int, list<IShare>>
+	 * @throws ContactAddressBookNotFoundException
+	 * @throws ContactFormatException
+	 * @throws ContactNotFoundException
+	 * @throws InvalidIdException
+	 * @throws InvalidPathException
+	 * @throws NotFoundException
+	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
+	 */
+	private function getSharesInFolderInternal(
+		?FederatedUser $federatedUser,
+		Folder $node,
+		bool $reshares,
+		bool $shallow = true,
+	): array {
+		$wrappedShares = $this->shareWrapperService->getSharesInFolder($federatedUser, $node, $reshares, $shallow);
 
 		$result = [];
 		foreach ($wrappedShares as $wrappedShare) {
@@ -350,8 +387,10 @@ class ShareByCircleProvider implements IShareProvider {
 				$result[$wrappedShare->getFileSource()] = [];
 			}
 			if ($wrappedShare->getFileCache()->isAccessible()) {
-				$result[$wrappedShare->getFileSource()][] =
-					$wrappedShare->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
+				$share = $wrappedShare->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
+				if ($share !== null) {
+					$result[$wrappedShare->getFileSource()][] = $share;
+				}
 			} else {
 				$this->logger->debug('shared document is not available anymore', ['wrappedShare' => $wrappedShare]);
 				if ($wrappedShare->getFileCache()->getPath() === '') {

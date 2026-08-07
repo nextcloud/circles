@@ -260,9 +260,6 @@
       <code><![CDATA[IShare]]></code>
       <code><![CDATA[IShare]]></code>
     </InvalidNullableReturnType>
-    <LessSpecificImplementedReturnType>
-      <code><![CDATA[array]]></code>
-    </LessSpecificImplementedReturnType>
     <NullableReturnStatement>
       <code><![CDATA[$wrappedShare->getShare($this->rootFolder, $this->userManager, $this->urlGenerator)]]></code>
       <code><![CDATA[$wrappedShare->getShare($this->rootFolder, $this->userManager, $this->urlGenerator)]]></code>
