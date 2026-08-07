@@ -382,7 +382,6 @@
       <code><![CDATA[IShare]]></code>
     </InvalidNullableReturnType>
     <LessSpecificImplementedReturnType>
-      <code><![CDATA[array]]></code>
       <code><![CDATA[iterable]]></code>
     </LessSpecificImplementedReturnType>
     <NullableReturnStatement>
