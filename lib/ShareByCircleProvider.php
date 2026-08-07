@@ -386,8 +386,10 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 				$result[$wrappedShare->getFileSource()] = [];
 			}
 			if ($wrappedShare->getFileCache()->isAccessible()) {
-				$result[$wrappedShare->getFileSource()][]
-					= $wrappedShare->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
+				$share = $wrappedShare->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
+				if ($share !== null) {
+					$result[$wrappedShare->getFileSource()][] = $share;
+				}
 			} else {
 				$this->logger->debug('shared document is not available anymore', ['wrappedShare' => $wrappedShare]);
 				if ($wrappedShare->getFileCache()->getPath() === '') {
