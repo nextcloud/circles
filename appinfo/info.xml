@@ -100,5 +100,7 @@ Those groups of people can then be used by any other app for sharing purpose.
 
 	<settings>
 		<admin>OCA\Circles\Settings\Admin</admin>
+		<admin>OCA\Circles\Settings\AdminTeamFolders</admin>
+		<admin-section>OCA\Circles\Settings\AdminSection</admin-section>
 	</settings>
 </info>

@@ -21,6 +21,7 @@ use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Model\Member;
+use OCP\IGroupManager;
 use OCP\IL10N;
 
 class PermissionService {
@@ -31,6 +32,7 @@ class PermissionService {
 		private readonly ConfigService $configService,
 		private readonly MemberRequest $memberRequest,
 		private readonly MembershipRequest $membershipRequest,
+		private readonly IGroupManager $groupManager,
 	) {
 	}
 
@@ -195,6 +197,18 @@ class PermissionService {
 		}
 	}
 
+	/**
+	 * @throws InsufficientPermissionException
+	 */
+	public function userMustBeTeamOwnerOrServerAdmin(string $userId, string $circleId): void {
+		if ($this->groupManager->isAdmin($userId)) {
+			return;
+		}
+
+		$member = $this->userMustBeMember($userId, $circleId);
+		$this->memberMustBeOwner($member);
+	}
+
 	public function memberMustBeHigherLevelThan(Member $memberUser, string $targetMemberId): void {
 		$targetMember = $this->memberRequest->getMemberById($targetMemberId);
 		$memberHelper = new MemberHelper($memberUser);
@@ -206,4 +220,5 @@ class PermissionService {
 			);
 		}
 	}
+
 }

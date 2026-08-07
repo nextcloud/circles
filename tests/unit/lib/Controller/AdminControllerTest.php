@@ -39,6 +39,20 @@ class AdminControllerTest extends TestCase {
 	private array $circlesToCleanup = [];
 	private static array $usersToCleanup = [];
 
+	private function setCurrentUser(string $userId): void {
+		$user = $this->userManager->get($userId);
+		$this->container->get(IUserSession::class)->setUser($user);
+		$this->container->get(FederatedUserService::class)->setLocalCurrentUser($user);
+	}
+
+	private function createCircle(string $name, bool $personal = false): array {
+		$this->setCurrentUser(self::TEST_USER_1);
+		$circle = $this->container->get(CircleService::class)->create($name, personal: $personal);
+		$this->setCurrentUser(self::TEST_USER_1);
+
+		return $circle;
+	}
+
 	public static function setUpBeforeClass(): void {
 		parent::setUpBeforeClass();
 
@@ -64,9 +78,7 @@ class AdminControllerTest extends TestCase {
 		$userSession = $this->container->get(IUserSession::class);
 		$federatedUserService = $this->container->get(FederatedUserService::class);
 
-		$user1 = $this->userManager->get(self::TEST_USER_1);
-		$userSession->setUser($user1);
-		$federatedUserService->setLocalCurrentUser($user1);
+		$this->setCurrentUser(self::TEST_USER_1);
 
 		$this->adminController = new AdminController(
 			Application::APP_ID,
@@ -99,6 +111,7 @@ class AdminControllerTest extends TestCase {
 
 		foreach ($this->circlesToCleanup as $circleId) {
 			try {
+				$this->setCurrentUser(self::TEST_USER_1);
 				$circleService->destroy($circleId);
 			} catch (\Throwable) {
 				// continue cleanup
@@ -121,9 +134,10 @@ class AdminControllerTest extends TestCase {
 	public function testDestroy(): void {
 		$circleService = $this->container->get(CircleService::class);
 
-		$circleData = $circleService->create('test-circle');
+		$circleData = $this->createCircle('test-circle');
 
 		$this->adminController->destroy(self::TEST_USER_1, $circleData['id']);
+		$this->setCurrentUser(self::TEST_USER_1);
 
 		$this->expectException(CircleNotFoundException::class);
 
@@ -133,7 +147,7 @@ class AdminControllerTest extends TestCase {
 	public function testMemberAdd(): void {
 		$circleService = $this->container->get(CircleService::class);
 
-		$circleData = $circleService->create('test-circle');
+		$circleData = $this->createCircle('test-circle');
 		$this->circlesToCleanup[] = $circleData['id'];
 
 		$result = $this->adminController->memberAdd(self::TEST_USER_1, $circleData['id'], self::TEST_USER_2, Member::TYPE_USER)->getData();
@@ -148,7 +162,7 @@ class AdminControllerTest extends TestCase {
 		$federatedUserService = $this->container->get(FederatedUserService::class);
 		$memberService = $this->container->get(MemberService::class);
 
-		$circleData = $circleService->create('test-circle');
+		$circleData = $this->createCircle('test-circle');
 		$this->circlesToCleanup[] = $circleData['id'];
 
 		$user2 = $federatedUserService->generateFederatedUser(self::TEST_USER_2, Member::TYPE_USER);
@@ -170,9 +184,9 @@ class AdminControllerTest extends TestCase {
 		 */
 		$countBefore = count($this->adminController->circles(self::TEST_USER_1)->getData());
 
-		$circleData = $circleService->create('test-circle');
-		$circleData2 = $circleService->create('test-circle-2');
-		$circleData3 = $circleService->create('test-circle-3');
+		$circleData = $this->createCircle('test-circle');
+		$circleData2 = $this->createCircle('test-circle-2');
+		$circleData3 = $this->createCircle('test-circle-3');
 		$this->circlesToCleanup[] = $circleData['id'];
 		$this->circlesToCleanup[] = $circleData2['id'];
 		$this->circlesToCleanup[] = $circleData3['id'];
@@ -207,8 +221,8 @@ class AdminControllerTest extends TestCase {
 		$countBeforeWithPersonal = count($this->adminController->circlesAll(filterPersonal: false)->getData());
 		$countBeforeWithoutPersonal = count($this->adminController->circlesAll(filterPersonal: true)->getData());
 
-		$circleData = $circleService->create('test-circle');
-		$circleDataPersonal = $circleService->create('test-circle-personal', personal: true);
+		$circleData = $this->createCircle('test-circle');
+		$circleDataPersonal = $this->createCircle('test-circle-personal', personal: true);
 		$this->circlesToCleanup[] = $circleData['id'];
 		$this->circlesToCleanup[] = $circleDataPersonal['id'];
 
@@ -230,7 +244,7 @@ class AdminControllerTest extends TestCase {
 	public function testCircleDetails(): void {
 		$circleService = $this->container->get(CircleService::class);
 
-		$circleData = $circleService->create('test-circle');
+		$circleData = $this->createCircle('test-circle');
 		$this->circlesToCleanup[] = $circleData['id'];
 
 		$result = $this->adminController->circleDetails(self::TEST_USER_1, $circleData['id'])->getData();
@@ -247,7 +261,7 @@ class AdminControllerTest extends TestCase {
 		$circleService = $this->container->get(CircleService::class);
 		$memberService = $this->container->get(MemberService::class);
 
-		$circleData = $circleService->create('test-circle');
+		$circleData = $this->createCircle('test-circle');
 		$this->circlesToCleanup[] = $circleData['id'];
 
 		// circle is visible to everyone and anyone can join
@@ -271,16 +285,14 @@ class AdminControllerTest extends TestCase {
 		$federatedUserService = $this->container->get(FederatedUserService::class);
 		$memberService = $this->container->get(MemberService::class);
 
-		$circleData = $circleService->create('test-circle');
+		$circleData = $this->createCircle('test-circle');
 		$this->circlesToCleanup[] = $circleData['id'];
 
 		// circle is visible to everyone and anyone can join
 		$circleConfig = Circle::CFG_VISIBLE + Circle::CFG_OPEN;
 		$circleService->updateConfig($circleData['id'], $circleConfig);
 
-		$user2 = $this->userManager->get(self::TEST_USER_2);
-
-		$federatedUserService->setLocalCurrentUser($user2);
+		$this->setCurrentUser(self::TEST_USER_2);
 		$memberData = $circleService->circleJoin($circleData['id']);
 
 		$this->adminController->circleLeave(self::TEST_USER_2, $circleData['id'])->getData();
@@ -294,20 +306,17 @@ class AdminControllerTest extends TestCase {
 		$circleService = $this->container->get(CircleService::class);
 		$federatedUserService = $this->container->get(FederatedUserService::class);
 
-		$circleData = $circleService->create('test-circle');
+		$circleData = $this->createCircle('test-circle');
 		$this->circlesToCleanup[] = $circleData['id'];
 
 		// circle is visible to everyone but requires approval to join
 		$circleConfig = Circle::CFG_VISIBLE + Circle::CFG_OPEN + Circle::CFG_REQUEST;
 		$circleService->updateConfig($circleData['id'], $circleConfig);
 
-		$user1 = $this->userManager->get(self::TEST_USER_1);
-		$user2 = $this->userManager->get(self::TEST_USER_2);
-
-		$federatedUserService->setLocalCurrentUser($user2);
+		$this->setCurrentUser(self::TEST_USER_2);
 		$memberData = $circleService->circleJoin($circleData['id']);
 
-		$federatedUserService->setLocalCurrentUser($user1);
+		$this->setCurrentUser(self::TEST_USER_1);
 
 		// as TEST_USER_1, allow TEST_USER_2 to be a member of the team
 		$result = $this->adminController->memberConfirm(self::TEST_USER_1, $circleData['id'], $memberData['id'])->getData();
@@ -324,7 +333,7 @@ class AdminControllerTest extends TestCase {
 		$federatedUserService = $this->container->get(FederatedUserService::class);
 		$memberService = $this->container->get(MemberService::class);
 
-		$circleData = $circleService->create('test-circle');
+		$circleData = $this->createCircle('test-circle');
 		$this->circlesToCleanup[] = $circleData['id'];
 
 		$user2 = $federatedUserService->generateFederatedUser(self::TEST_USER_2, Member::TYPE_USER);
@@ -342,7 +351,7 @@ class AdminControllerTest extends TestCase {
 		$federatedUserService = $this->container->get(FederatedUserService::class);
 		$memberService = $this->container->get(MemberService::class);
 
-		$circleData = $circleService->create('test-circle');
+		$circleData = $this->createCircle('test-circle');
 		$this->circlesToCleanup[] = $circleData['id'];
 
 		$user2 = $federatedUserService->generateFederatedUser(self::TEST_USER_2, Member::TYPE_USER);
@@ -365,7 +374,7 @@ class AdminControllerTest extends TestCase {
 	public function testEditName(): void {
 		$circleService = $this->container->get(CircleService::class);
 
-		$circleData = $circleService->create('test-circle');
+		$circleData = $this->createCircle('test-circle');
 		$this->circlesToCleanup[] = $circleData['id'];
 
 		$result = $this->adminController->editName(self::TEST_USER_1, $circleData['id'], 'test-cricle-new-name')->getData();
@@ -377,7 +386,7 @@ class AdminControllerTest extends TestCase {
 	public function testEditDescription(): void {
 		$circleService = $this->container->get(CircleService::class);
 
-		$circleData = $circleService->create('test-circle');
+		$circleData = $this->createCircle('test-circle');
 		$this->circlesToCleanup[] = $circleData['id'];
 
 		$result = $this->adminController->editDescription(self::TEST_USER_1, $circleData['id'], 'test-cricle-new-description')->getData();
@@ -389,7 +398,7 @@ class AdminControllerTest extends TestCase {
 	public function testEditSetting(): void {
 		$circleService = $this->container->get(CircleService::class);
 
-		$circleData = $circleService->create('test-circle');
+		$circleData = $this->createCircle('test-circle');
 		$this->circlesToCleanup[] = $circleData['id'];
 
 		$result = $this->adminController->editSetting(self::TEST_USER_1, $circleData['id'], ConfigService::MEMBERS_LIMIT, '25')->getData();
@@ -401,7 +410,7 @@ class AdminControllerTest extends TestCase {
 	public function testEditConfig(): void {
 		$circleService = $this->container->get(CircleService::class);
 
-		$circleData = $circleService->create('test-circle');
+		$circleData = $this->createCircle('test-circle');
 		$this->circlesToCleanup[] = $circleData['id'];
 
 		$result = $this->adminController->editConfig(self::TEST_USER_1, $circleData['id'], 128)->getData();
@@ -415,7 +424,7 @@ class AdminControllerTest extends TestCase {
 		$federatedUserService = $this->container->get(FederatedUserService::class);
 		$memberService = $this->container->get(MemberService::class);
 
-		$circleData = $circleService->create('test-circle');
+		$circleData = $this->createCircle('test-circle');
 		$this->circlesToCleanup[] = $circleData['id'];
 
 		$user2 = $federatedUserService->generateFederatedUser(self::TEST_USER_2, Member::TYPE_USER);

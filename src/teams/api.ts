@@ -3,11 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import type { Member, Resource, Team, TeamRole } from './types.ts'
+import type { Member, MemberCandidate, Resource, Team, TeamRole } from './types.ts'
 
 import axios from '@nextcloud/axios'
 import { generateOcsUrl } from '@nextcloud/router'
 import { logger } from '../logger.ts'
+import { SHARES_TYPES_MEMBER_MAP } from './team-page/models/constants.ts'
+import { getRecommendations, getSuggestions } from './team-page/services/collaborationAutocompletion.js'
+
+/** `SHARES_TYPES_MEMBER_MAP` is built dynamically, so type its shape explicitly. */
+const shareTypeToMemberType = SHARES_TYPES_MEMBER_MAP as Record<number, number>
 
 /** OCS endpoints require this header. */
 const HEADERS = { 'OCS-APIRequest': 'true' }
@@ -52,6 +57,15 @@ interface RawDashboardTeam {
 	singleId: string
 	members: RawMember[]
 	resources: RawResource[]
+}
+
+/** Raw sharee suggestion, as returned by the files_sharing autocompletion helper. */
+interface RawSuggestion {
+	id: string
+	label: string
+	shareWith: string
+	shareType: number
+	user?: string | null
 }
 
 /**
@@ -225,4 +239,99 @@ export async function deleteTeam(teamId: string): Promise<void> {
 		generateOcsUrl('apps/circles/circles/{circleId}', { circleId: teamId }),
 		{ headers: HEADERS },
 	)
+}
+
+/**
+ * The team folder linked to a team.
+ */
+export interface TeamFolder {
+	id: number
+	mountPoint: string
+}
+
+/**
+ * Fetch the team folder linked to a team.
+ *
+ * The Circles app exposes the team-folder lifecycle through the core Teams
+ * contract. The active provider is discovered server-side.
+ *
+ * @param teamId - The team single id
+ * @return The linked team folder, or null if none exists.
+ */
+export async function getTeamFolder(teamId: string): Promise<TeamFolder | null> {
+	try {
+		const { data } = await axios.get<OcsResponse<TeamFolder>>(
+			generateOcsUrl('apps/circles/teams/{circleId}/folder', { circleId: teamId }),
+			{ headers: HEADERS },
+		)
+		return data.ocs.data
+	} catch (error) {
+		if (error && typeof error === 'object'
+			&& 'response' in error
+			&& (error.response as { status?: number })?.status === 404) {
+			return null
+		}
+		throw error
+	}
+}
+
+/**
+ * Create a team folder for a team that predates the auto-create feature.
+ *
+ * Idempotent: if the team already owns a folder, the existing folder is
+ * returned. Requires team owner privileges.
+ *
+ * @param teamId - The team single id
+ * @return The created (or existing) team folder.
+ */
+export async function upgradeTeamFolder(teamId: string): Promise<TeamFolder> {
+	const { data } = await axios.post<OcsResponse<{ folderId: number, folder: TeamFolder }>>(
+		generateOcsUrl('apps/circles/teams/{circleId}/folder', { circleId: teamId }),
+		{},
+		{ headers: HEADERS },
+	)
+	return data.ocs.data.folder
+}
+
+/**
+ * Search for potential new members (users, groups, emails, contacts, other
+ * teams…) using the same sharee autocompletion endpoint as file sharing.
+ * This restores the legacy "add members while creating a team" feature for
+ * the team creation wizard.
+ *
+ * @param term - The search query. An empty term returns curated recommendations.
+ */
+export async function searchMemberCandidates(term: string): Promise<MemberCandidate[]> {
+	const suggestions: RawSuggestion[] = term.trim()
+		? await getSuggestions(term)
+		: await getRecommendations()
+
+	return suggestions.map((suggestion) => ({
+		key: suggestion.id,
+		shareWith: suggestion.shareWith,
+		shareType: suggestion.shareType,
+		displayName: suggestion.label,
+		isUser: suggestion.user !== null && suggestion.user !== undefined,
+	}))
+}
+
+/**
+ * Add a batch of picked candidates as members of a team, typically right
+ * after creating it from the wizard.
+ *
+ * @param teamId - The team single id
+ * @param candidates - The candidates picked in the wizard's member step
+ * @return The number of candidates that were actually added.
+ */
+export async function addTeamMembers(teamId: string, candidates: MemberCandidate[]): Promise<number> {
+	const members = candidates.map((candidate) => ({
+		id: candidate.shareWith,
+		type: shareTypeToMemberType[candidate.shareType],
+	}))
+	const res = await axios.post<OcsResponse<Record<string, unknown>>>(
+		generateOcsUrl('apps/circles/circles/{circleId}/members/multi', { circleId: teamId }),
+		{ members },
+		{ headers: HEADERS },
+	)
+	return Object.keys(res.data.ocs.data ?? {}).length
 }

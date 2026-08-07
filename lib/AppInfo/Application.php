@@ -14,6 +14,7 @@ use OCA\Circles\Dashboard\TeamDashboardWidget;
 use OCA\Circles\Events\AddingCircleMemberEvent;
 use OCA\Circles\Events\CircleMemberAddedEvent;
 use OCA\Circles\Events\CircleMemberRemovedEvent;
+use OCA\Circles\Events\CreatingCircleEvent;
 use OCA\Circles\Events\DestroyingCircleEvent;
 use OCA\Circles\Events\Files\CreatingFileShareEvent;
 use OCA\Circles\Events\Files\FileShareCreatedEvent;
@@ -40,6 +41,7 @@ use OCA\Circles\Listeners\GroupMemberAdded;
 use OCA\Circles\Listeners\GroupMemberRemoved;
 use OCA\Circles\Listeners\NodeEventListener;
 use OCA\Circles\Listeners\Notifications\RequestingMember as ListenerNotificationsRequestingMember;
+use OCA\Circles\Listeners\TeamFolderLifecycleListener;
 use OCA\Circles\Listeners\UserCreated;
 use OCA\Circles\Listeners\UserDeleted;
 use OCA\Circles\MountManager\CircleMountProvider;
@@ -113,6 +115,8 @@ class Application extends App implements IBootstrap {
 		$context->registerEventListener(GroupDeletedEvent::class, GroupDeleted::class);
 		$context->registerEventListener(UserAddedEvent::class, GroupMemberAdded::class);
 		$context->registerEventListener(UserRemovedEvent::class, GroupMemberRemoved::class);
+		$context->registerEventListener(CreatingCircleEvent::class, TeamFolderLifecycleListener::class);
+		$context->registerEventListener(DestroyingCircleEvent::class, TeamFolderLifecycleListener::class);
 
 		// Local Events (for Files/Shares/Notifications management)
 		$context->registerEventListener(PreparingCircleMemberEvent::class, ListenerFilesPreparingMemberSendMail::class);

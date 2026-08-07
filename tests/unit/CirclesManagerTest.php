@@ -73,11 +73,14 @@ class CirclesManagerTest extends TestCase {
 		$this->assertEquals($federatedUser->getSingleId(), $circle->getInitiator()->getSingleId());
 
 		// Created circle returned by probeCircle()
+		$this->startSession();
 		$circles = $this->circlesManager->probeCircles();
 		$this->assertCount(1, array_filter($circles, fn (Circle $c) => $c->getName() === $this->circleName));
 
 		// Destroyed circle not returned by probeCircle()
+		$this->startSession();
 		$this->circlesManager->destroyCircle($circle->getSingleId());
+		$this->startSession();
 		$circles = $this->circlesManager->probeCircles();
 		$this->assertCount(0, array_filter($circles, fn (Circle $c) => $c->getName() === $this->circleName));
 	}
@@ -86,6 +89,7 @@ class CirclesManagerTest extends TestCase {
 		// Create circle as user 'admin' and add test user as member
 		$this->startSession('admin');
 		$adminCircle = $this->circlesManager->createCircle($this->circleName);
+		$this->startSession('admin');
 		$this->circlesManager->addMember($adminCircle->getSingleId(), $this->circlesManager->getLocalFederatedUser($this->userId));
 
 		// Get circles as test user
@@ -111,6 +115,7 @@ class CirclesManagerTest extends TestCase {
 		// Create circle as user 'admin' and add test user as member
 		$this->startSession('admin');
 		$adminCircle = $this->circlesManager->createCircle($this->circleName);
+		$this->startSession('admin');
 		$this->circlesManager->addMember($adminCircle->getSingleId(), $this->circlesManager->getLocalFederatedUser($this->userId));
 
 		// Probe circles as test user
@@ -138,6 +143,7 @@ class CirclesManagerTest extends TestCase {
 		// Create circle as user 'admin' and add test group as member
 		$this->startSession('admin');
 		$adminCircle = $this->circlesManager->createCircle($this->circleName);
+		$this->startSession('admin');
 		$federatedGroup = $this->circlesManager->getFederatedUser($this->groupId, Member::TYPE_GROUP);
 		$this->circlesManager->addMember($adminCircle->getSingleId(), $federatedGroup);
 
