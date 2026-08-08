@@ -42,11 +42,12 @@ class ConfigLexicon implements ILexicon {
 	public const SCIM_ENABLED = 'scim_enabled';
 	public const SCIM_ENDPOINT = 'scim_endpoint';
 	public const SCIM_TOKEN = 'scim_token';
+	public const SCIM_ALLOW_FEDERATED_MODERATOR = 'scim_allow_federated_moderator';
+	public const SCIM_FEDERATED_MODERATOR_INSTANCES = 'scim_federated_moderator_instances';
 
-	// Remote moderator circle
-	public const REMOTE_MOD_CIRCLE_INSTANCES = 'remote_mod_circle_instances'; // without http/https
-	public const REMOTE_MOD_CIRCLE_MAPPING = 'remote_mod_circle_mapping';
-	public const REMOTE_MOD_CIRCLE_LOCAL_ID = 'remote_mod_circle_local_id';
+	// Federation agent
+	public const FEDERATION_AGENT_ENABLED = 'federation_agent_enabled';
+	public const FEDERATION_AGENT_LOCAL_ID = 'federation_agent_local_id';
 
 	public function getStrictness(): Strictness {
 		return Strictness::IGNORE;
@@ -73,10 +74,11 @@ class ConfigLexicon implements ILexicon {
 			new Entry(key: self::SCIM_ENABLED, type: ValueType::BOOL, defaultRaw: false, definition: 'disable/enable SCIM integration', lazy: true),
 			new Entry(key: self::SCIM_ENDPOINT, type: ValueType::STRING, defaultRaw: '', definition: 'SCIM server endpoint for group discovery', lazy: true),
 			new Entry(key: self::SCIM_TOKEN, type: ValueType::STRING, defaultRaw: '', definition: 'bearer token used to authenticate against the SCIM server', lazy: true),
-			// Remote moderator circle
-			new Entry(key: self::REMOTE_MOD_CIRCLE_INSTANCES, type: ValueType::ARRAY, defaultRaw: [], definition: 'list of remote instances to sync a moderator circle from', lazy: true),
-			new Entry(key: self::REMOTE_MOD_CIRCLE_MAPPING, type: ValueType::ARRAY, defaultRaw: [], definition: 'map of instance => circle id for known remote moderator circles', lazy: true),
-			new Entry(key: self::REMOTE_MOD_CIRCLE_LOCAL_ID, type: ValueType::STRING, defaultRaw: '', definition: 'circle id of the local circle acting as a moderator in remote circles', lazy: true),
+			new Entry(key: self::SCIM_ALLOW_FEDERATED_MODERATOR, type: ValueType::BOOL, defaultRaw: true, definition: 'whether circles created from SCIM groups accept a federated moderator', lazy: true),
+			new Entry(key: self::SCIM_FEDERATED_MODERATOR_INSTANCES, type: ValueType::ARRAY, defaultRaw: [], definition: 'list of remote instances whose federation agent is trusted as a moderator on this instance\'s SCIM circles', lazy: true),
+			// Federation agent
+			new Entry(key: self::FEDERATION_AGENT_ENABLED, type: ValueType::BOOL, defaultRaw: false, definition: 'disable/enable the federation agent, used to grant remote instances moderator rights via SCIM/OIDC-based mechanisms', lazy: true),
+			new Entry(key: self::FEDERATION_AGENT_LOCAL_ID, type: ValueType::STRING, defaultRaw: '', definition: "single ID of this instance's own federated moderator circle", lazy: true),
 		];
 	}
 

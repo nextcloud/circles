@@ -10,25 +10,25 @@ declare(strict_types=1);
 namespace OCA\Circles\Command;
 
 use OC\Core\Command\Base;
-use OCA\Circles\Service\RemoteModCircleService;
+use OCA\Circles\Service\OidcService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class CirclesRemoteModSync extends Base {
+class CirclesOidcSyncMemberships extends Base {
 	public function __construct(
-		private readonly RemoteModCircleService $remoteModCircleService,
+		private readonly OidcService $oidcService,
 	) {
 		parent::__construct();
 	}
 
 	protected function configure() {
 		parent::configure();
-		$this->setName('circles:remotemod:sync')
-			->setDescription('ensure every discovered remote moderator circle is a member of every third-party circle');
+		$this->setName('circles:oidc:sync-memberships')
+			->setDescription('sync circle memberships from OIDC server');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		$this->remoteModCircleService->syncModeratorCircles();
+		$this->oidcService->syncMemberships();
 
 		$output->writeln('<info>done</info>');
 

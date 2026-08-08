@@ -20,8 +20,8 @@ use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\ManagedModel;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Tools\Traits\TStringTools;
+use OCP\AppFramework\Services\IAppConfig;
 use OCP\Http\Client\IClientService;
-use OCP\IAppConfig;
 use Psr\Log\LoggerInterface;
 
 class ScimService {
@@ -36,6 +36,7 @@ class ScimService {
 		private readonly FederatedEventService $federatedEventService,
 		private readonly CircleService $circleService,
 		private readonly CircleRequest $circleRequest,
+		private readonly FederationAgentService $federationAgentService,
 	) {
 	}
 
@@ -66,8 +67,8 @@ class ScimService {
 			}
 		}
 
-		// destroy third-party circles no longer present in SCIM server
-		foreach ($this->circleRequest->getThirdParty() as $circle) {
+		// destroy SCIM circles no longer present in SCIM server
+		foreach ($this->circleRequest->getScim() as $circle) {
 			if (in_array($circle->getSingleId(), $desiredCircleIds, true)) {
 				continue;
 			}
@@ -80,6 +81,24 @@ class ScimService {
 		}
 	}
 
+	public function syncFederatedModerators(): void {
+		$remoteInstances = $this->appConfig->getAppValueArray(ConfigLexicon::SCIM_FEDERATED_MODERATOR_INSTANCES);
+		if ($remoteInstances === []) {
+			return;
+		}
+
+		$circleIds = array_map(
+			fn ($circle) => $circle->getSingleId(),
+			$this->circleRequest->getScim()
+		);
+
+		if ($circleIds === []) {
+			return;
+		}
+
+		$this->federationAgentService->ensureFederationAgentsAsModerators($circleIds, $remoteInstances);
+	}
+
 	/**
 	 * TODO: this method needs more work before it's usable. It hasn't been
 	 * tested against a SCIM server yet. For this first development
@@ -88,8 +107,8 @@ class ScimService {
 	 * SCIM server is available.
 	 */
 	private function fetchCircles(): ?array {
-		$endpoint = $this->appConfig->getValueString(Application::APP_ID, ConfigLexicon::SCIM_ENDPOINT, '');
-		$token = $this->appConfig->getValueString(Application::APP_ID, ConfigLexicon::SCIM_TOKEN, '');
+		$endpoint = $this->appConfig->getAppValueString(ConfigLexicon::SCIM_ENDPOINT);
+		$token = $this->appConfig->getAppValueString(ConfigLexicon::SCIM_TOKEN);
 
 		$client = $this->clientService->newClient();
 		try {
@@ -121,7 +140,7 @@ class ScimService {
 	public function createCircle(string $singleId, string $name): void {
 		$owner = $this->federatedUserService->getCurrentApp();
 
-		$config = Circle::CFG_ROOT + Circle::CFG_FEDERATED + Circle::CFG_THIRD_PARTY;
+		$config = Circle::CFG_ROOT + Circle::CFG_FEDERATED + Circle::CFG_SCIM;
 
 		$circle = new Circle();
 		$circle->setName($this->circleService->cleanCircleName($name))

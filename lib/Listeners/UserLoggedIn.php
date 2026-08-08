@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Listeners;
 
-use OCA\Circles\BackgroundJob\OidcSyncUser;
+use OCA\Circles\BackgroundJob\OidcSyncMembershipsUser;
 use OCA\Circles\ConfigLexicon;
 use OCP\AppFramework\Services\IAppConfig;
 use OCP\BackgroundJob\IJobList;
@@ -35,6 +35,6 @@ class UserLoggedIn implements IEventListener {
 			return;
 		}
 
-		$this->jobList->add(OidcSyncUser::class, ['userId' => $event->getUser()->getUID()]);
+		$this->jobList->add(OidcSyncMembershipsUser::class, ['userId' => $event->getUser()->getUID()]);
 	}
 }

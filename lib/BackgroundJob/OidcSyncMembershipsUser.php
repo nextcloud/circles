@@ -9,31 +9,31 @@ declare(strict_types=1);
 
 namespace OCA\Circles\BackgroundJob;
 
-use Exception;
+use OCA\Circles\ConfigLexicon;
 use OCA\Circles\Service\OidcService;
+use OCP\AppFramework\Services\IAppConfig;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\BackgroundJob\QueuedJob;
-use Psr\Log\LoggerInterface;
 
-class OidcSyncUser extends QueuedJob {
+class OidcSyncMembershipsUser extends QueuedJob {
 	public function __construct(
 		ITimeFactory $time,
+		private readonly IAppConfig $appConfig,
 		private readonly OidcService $oidcService,
-		private readonly LoggerInterface $logger,
 	) {
 		parent::__construct($time);
 	}
 
 	protected function run($argument) {
+		if (!$this->appConfig->getAppValueBool(ConfigLexicon::OIDC_ENABLED)) {
+			return;
+		}
+
 		$userId = $argument['userId'] ?? null;
 		if ($userId === null) {
 			return;
 		}
 
-		try {
-			$this->oidcService->syncMembershipsForUser($userId);
-		} catch (Exception $e) {
-			$this->logger->warning('could not sync OIDC memberships on login', ['userId' => $userId, 'exception' => $e]);
-		}
+		$this->oidcService->syncMembershipsForUser($userId);
 	}
 }

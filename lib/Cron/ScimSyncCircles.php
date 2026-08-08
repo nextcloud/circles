@@ -10,33 +10,28 @@ declare(strict_types=1);
 namespace OCA\Circles\Cron;
 
 use OCA\Circles\ConfigLexicon;
-use OCA\Circles\Service\OidcService;
+use OCA\Circles\Service\ScimService;
 use OCP\AppFramework\Services\IAppConfig;
 use OCP\AppFramework\Utility\ITimeFactory;
-use OCP\BackgroundJob\IJob;
 use OCP\BackgroundJob\TimedJob;
 
-class OidcSync extends TimedJob {
+class ScimSyncCircles extends TimedJob {
 	public function __construct(
 		ITimeFactory $time,
 		private readonly IAppConfig $appConfig,
-		private readonly OidcService $oidcService,
+		private readonly ScimService $scimService,
 	) {
 		parent::__construct($time);
 
-		// run once a day
-		$this->setInterval(24 * 3600);
-		// delay until low-load time
-		$this->setTimeSensitivity(IJob::TIME_INSENSITIVE);
-		// only run one instance of this job at a time
-		$this->setAllowParallelRuns(false);
+		// run twice a day
+		$this->setInterval(12 * 3600);
 	}
 
 	protected function run($argument) {
-		if (!$this->appConfig->getAppValueBool(ConfigLexicon::OIDC_ENABLED)) {
+		if (!$this->appConfig->getAppValueBool(ConfigLexicon::SCIM_ENABLED)) {
 			return;
 		}
 
-		$this->oidcService->syncMemberships();
+		$this->scimService->syncCircles();
 	}
 }

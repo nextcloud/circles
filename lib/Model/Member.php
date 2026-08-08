@@ -676,6 +676,15 @@ class Member extends ManagedModel implements
 		return $this->memberships;
 	}
 
+	public function setManagedBy(string $managedBy): self {
+		$this->setNote('managedBy', $managedBy);
+		return $this;
+	}
+
+	public function getManagedBy(): string {
+		return $this->getNote('managedBy');
+	}
+
 	/**
 	 * @param string $singleId
 	 * @param bool $detailed

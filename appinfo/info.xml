@@ -36,11 +36,10 @@ Those groups of people can then be used by any other app for sharing purpose.
 	<default_enable/>
 	<background-jobs>
 		<job>OCA\Circles\Cron\Maintenance</job>
-		<job>OCA\Circles\Cron\ScimSync</job>
-		<job>OCA\Circles\Cron\RemoteModDiscover</job>
-		<job>OCA\Circles\Cron\OidcSync</job>
-		<job>OCA\Circles\BackgroundJob\RemoteModSync</job>
-		<job>OCA\Circles\BackgroundJob\OidcSyncUser</job>
+		<job>OCA\Circles\Cron\ScimSyncCircles</job>
+		<job>OCA\Circles\Cron\ScimSyncFederatedModerators</job>
+		<job>OCA\Circles\Cron\OidcSyncMemberships</job>
+		<job>OCA\Circles\BackgroundJob\OidcSyncMembershipsUser</job>
 	</background-jobs>
 
 	<repair-steps>
@@ -82,10 +81,9 @@ Those groups of people can then be used by any other app for sharing purpose.
 
 		<command>OCA\Circles\Command\MigrateCustomGroups</command>
 
-		<command>OCA\Circles\Command\CirclesScimSync</command>
-		<command>OCA\Circles\Command\CirclesRemoteModDiscover</command>
-		<command>OCA\Circles\Command\CirclesRemoteModSync</command>
-		<command>OCA\Circles\Command\CirclesOidcSync</command>
+		<command>OCA\Circles\Command\CirclesScimSyncCircles</command>
+		<command>OCA\Circles\Command\CirclesScimSyncFederatedModerators</command>
+		<command>OCA\Circles\Command\CirclesOidcSyncMemberships</command>
 	</commands>
 
 		<activity>
