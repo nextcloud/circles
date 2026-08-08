@@ -13,9 +13,10 @@ use OCA\Circles\ConfigLexicon;
 use OCA\Circles\Service\ScimService;
 use OCP\AppFramework\Services\IAppConfig;
 use OCP\AppFramework\Utility\ITimeFactory;
+use OCP\BackgroundJob\IJob;
 use OCP\BackgroundJob\TimedJob;
 
-class ScimSync extends TimedJob {
+class ScimSyncFederatedModerators extends TimedJob {
 	public function __construct(
 		ITimeFactory $time,
 		private readonly IAppConfig $appConfig,
@@ -25,6 +26,10 @@ class ScimSync extends TimedJob {
 
 		// run twice a day
 		$this->setInterval(12 * 3600);
+		// delay until low-load time
+		$this->setTimeSensitivity(IJob::TIME_INSENSITIVE);
+		// only run one instance of this job at a time
+		$this->setAllowParallelRuns(false);
 	}
 
 	protected function run($argument) {
@@ -32,6 +37,6 @@ class ScimSync extends TimedJob {
 			return;
 		}
 
-		$this->scimService->syncCircles();
+		$this->scimService->syncFederatedModerators();
 	}
 }

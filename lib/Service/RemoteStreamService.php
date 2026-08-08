@@ -73,6 +73,7 @@ class RemoteStreamService extends NCSignature {
 		private RemoteRequest $remoteRequest,
 		private InterfaceService $interfaceService,
 		private ConfigService $configService,
+		private readonly FederationAgentService $federationAgentService,
 	) {
 		$this->setup('app', 'circles');
 	}
@@ -136,6 +137,7 @@ class RemoteStreamService extends NCSignature {
 				)
 			)
 		);
+		$app->setFederationAgentId($this->federationAgentService->getOrCreateFederationAgentId());
 
 		if ($this->interfaceService->isCurrentInterfaceInternal()) {
 			$app->setAliases(array_values(array_filter($this->interfaceService->getInterfaces(false))));

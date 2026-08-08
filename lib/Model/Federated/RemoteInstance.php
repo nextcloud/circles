@@ -51,6 +51,7 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 	public const INHERITED = 'inherited';
 	public const UID = 'uid';
 	public const AUTH_SIGNED = 'auth-signed';
+	public const FEDERATION_AGENT_ID = 'federation-agent-id';
 
 	/** @var int */
 	private $dbId = 0;
@@ -99,6 +100,9 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 
 	/** @var string */
 	private $authSigned = '';
+
+	/** @var string */
+	private $federationAgentId = '';
 
 	/** @var bool */
 	private $identityAuthed = false;
@@ -433,6 +437,16 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 		}
 	}
 
+	public function getFederationAgentId(): string {
+		return $this->federationAgentId;
+	}
+
+	public function setFederationAgentId(string $federationAgentId): self {
+		$this->federationAgentId = $federationAgentId;
+
+		return $this;
+	}
+
 	/**
 	 * @param array $data
 	 *
@@ -452,7 +466,8 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 			->setMember($this->get(self::MEMBER, $data))
 			->setInherited($this->get(self::INHERITED, $data))
 			->setMemberships($this->get(self::MEMBERSHIPS, $data))
-			->setUid($this->get(self::UID, $data));
+			->setUid($this->get(self::UID, $data))
+			->setFederationAgentId($this->get(self::FEDERATION_AGENT_ID, $data));
 
 		$algo = '';
 		$authSigned = trim($this->get(self::AUTH_SIGNED, $data), ':');
@@ -481,7 +496,8 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 			self::MEMBERS => $this->getMembers(),
 			self::MEMBER => $this->getMember(),
 			self::INHERITED => $this->getInherited(),
-			self::MEMBERSHIPS => $this->getMemberships()
+			self::MEMBERSHIPS => $this->getMemberships(),
+			self::FEDERATION_AGENT_ID => $this->getFederationAgentId()
 		];
 
 		if ($this->getAuthSigned() !== '') {

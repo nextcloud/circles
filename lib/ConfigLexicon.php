@@ -42,11 +42,11 @@ class ConfigLexicon implements ILexicon {
 	public const SCIM_ENABLED = 'scim_enabled';
 	public const SCIM_ENDPOINT = 'scim_endpoint';
 	public const SCIM_TOKEN = 'scim_token';
+	public const SCIM_FEDERATED_MODERATOR_INSTANCES = 'scim_federated_moderator_instances';
 
-	// Remote moderator circle
-	public const REMOTE_MOD_CIRCLE_INSTANCES = 'remote_mod_circle_instances'; // without http/https
-	public const REMOTE_MOD_CIRCLE_MAPPING = 'remote_mod_circle_mapping';
-	public const REMOTE_MOD_CIRCLE_LOCAL_ID = 'remote_mod_circle_local_id';
+	// Federation agent
+	public const FEDERATION_AGENT_ENABLED = 'federation_agent_enabled';
+	public const FEDERATION_AGENT_LOCAL_ID = 'federation_agent_local_id';
 
 	public function getStrictness(): Strictness {
 		return Strictness::IGNORE;
@@ -61,22 +61,22 @@ class ConfigLexicon implements ILexicon {
 			new Entry(key: self::TEAM_FOLDER_DEFAULT_QUOTA, type: ValueType::INT, defaultRaw: 0, definition: 'default quota in bytes for auto-created team folders (0 means unlimited)', lazy: true),
 			// OIDC
 			new Entry(key: self::OIDC_ENABLED, type: ValueType::BOOL, defaultRaw: false, definition: 'disable/enable OIDC integration', lazy: true),
-			new Entry(key: self::OIDC_ISSUER, type: ValueType::STRING, defaultRaw: '', definition: 'OIDC provider issuer URL', lazy: true),
-			new Entry(key: self::OIDC_CLIENT_ID, type: ValueType::STRING, defaultRaw: '', definition: 'OIDC client id', lazy: true),
-			new Entry(key: self::OIDC_CLIENT_SECRET, type: ValueType::STRING, defaultRaw: '', definition: 'OIDC client secret', lazy: true),
-			new Entry(key: self::OIDC_AUTHORIZATION_ENDPOINT, type: ValueType::STRING, defaultRaw: '', definition: 'OIDC authorization endpoint', lazy: true),
-			new Entry(key: self::OIDC_TOKEN_ENDPOINT, type: ValueType::STRING, defaultRaw: '', definition: 'OIDC token endpoint', lazy: true),
-			new Entry(key: self::OIDC_USERINFO_ENDPOINT, type: ValueType::STRING, defaultRaw: '', definition: 'OIDC userinfo endpoint', lazy: true),
-			new Entry(key: self::OIDC_SCOPE, type: ValueType::STRING, defaultRaw: 'openid', definition: 'OIDC scope(s) requested during authorization', lazy: true),
+			new Entry(key: self::OIDC_ISSUER, type: ValueType::STRING, defaultRaw: '', definition: 'provider issuer URL', lazy: true),
+			new Entry(key: self::OIDC_CLIENT_ID, type: ValueType::STRING, defaultRaw: '', definition: 'client id', lazy: true),
+			new Entry(key: self::OIDC_CLIENT_SECRET, type: ValueType::STRING, defaultRaw: '', definition: 'client secret', lazy: true),
+			new Entry(key: self::OIDC_AUTHORIZATION_ENDPOINT, type: ValueType::STRING, defaultRaw: '', definition: 'authorization endpoint', lazy: true),
+			new Entry(key: self::OIDC_TOKEN_ENDPOINT, type: ValueType::STRING, defaultRaw: '', definition: 'token endpoint', lazy: true),
+			new Entry(key: self::OIDC_USERINFO_ENDPOINT, type: ValueType::STRING, defaultRaw: '', definition: 'userinfo endpoint', lazy: true),
+			new Entry(key: self::OIDC_SCOPE, type: ValueType::STRING, defaultRaw: 'openid', definition: 'scope(s) requested during authorization', lazy: true),
 			new Entry(key: self::OIDC_MEMBERSHIP_CLAIM, type: ValueType::STRING, defaultRaw: '', definition: 'claim name containing group membership information', lazy: true),
 			// SCIM
 			new Entry(key: self::SCIM_ENABLED, type: ValueType::BOOL, defaultRaw: false, definition: 'disable/enable SCIM integration', lazy: true),
-			new Entry(key: self::SCIM_ENDPOINT, type: ValueType::STRING, defaultRaw: '', definition: 'SCIM server endpoint for group discovery', lazy: true),
-			new Entry(key: self::SCIM_TOKEN, type: ValueType::STRING, defaultRaw: '', definition: 'bearer token used to authenticate against the SCIM server', lazy: true),
-			// Remote moderator circle
-			new Entry(key: self::REMOTE_MOD_CIRCLE_INSTANCES, type: ValueType::ARRAY, defaultRaw: [], definition: 'list of remote instances to sync a moderator circle from', lazy: true),
-			new Entry(key: self::REMOTE_MOD_CIRCLE_MAPPING, type: ValueType::ARRAY, defaultRaw: [], definition: 'map of instance => circle id for known remote moderator circles', lazy: true),
-			new Entry(key: self::REMOTE_MOD_CIRCLE_LOCAL_ID, type: ValueType::STRING, defaultRaw: '', definition: 'circle id of the local circle acting as a moderator in remote circles', lazy: true),
+			new Entry(key: self::SCIM_ENDPOINT, type: ValueType::STRING, defaultRaw: '', definition: 'server endpoint for group discovery', lazy: true),
+			new Entry(key: self::SCIM_TOKEN, type: ValueType::STRING, defaultRaw: '', definition: 'bearer token used to authenticate against the server', lazy: true),
+			new Entry(key: self::SCIM_FEDERATED_MODERATOR_INSTANCES, type: ValueType::ARRAY, defaultRaw: [], definition: "list of remote instances whose federation agent is trusted as a moderator on this instance's SCIM circles", lazy: true),
+			// Federation agent
+			new Entry(key: self::FEDERATION_AGENT_ENABLED, type: ValueType::BOOL, defaultRaw: false, definition: "disable/enable this instance's federation agent, used to act on behalf of this instance on remote circles", lazy: true),
+			new Entry(key: self::FEDERATION_AGENT_LOCAL_ID, type: ValueType::STRING, defaultRaw: '', definition: "single ID of this instance's own federation agent circle", lazy: true),
 		];
 	}
 

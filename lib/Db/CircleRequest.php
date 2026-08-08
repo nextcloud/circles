@@ -506,9 +506,9 @@ class CircleRequest extends CircleRequestBuilder {
 	 * @return Circle[]
 	 * @throws RequestBuilderException
 	 */
-	public function getThirdParty(): array {
+	public function getScim(): array {
 		$qb = $this->getCircleSelectSql();
-		$qb->limitToConfigFlag(Circle::CFG_THIRD_PARTY, CoreQueryBuilder::CIRCLE);
+		$qb->limitToConfigFlag(Circle::CFG_SCIM, CoreQueryBuilder::CIRCLE);
 
 		$qb->leftJoinOwner(CoreQueryBuilder::CIRCLE);
 

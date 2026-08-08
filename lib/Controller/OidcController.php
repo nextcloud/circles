@@ -16,8 +16,8 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\RedirectResponse;
+use OCP\AppFramework\Services\IAppConfig;
 use OCP\Http\Client\IClientService;
-use OCP\IAppConfig;
 use OCP\IRequest;
 use OCP\ISession;
 use OCP\IURLGenerator;
@@ -36,11 +36,11 @@ class OidcController extends Controller {
 		private readonly IUserSession $userSession,
 		private readonly ISession $session,
 		private readonly ISecureRandom $random,
-		private readonly IClientService $clientService,
 		private readonly IURLGenerator $urlGenerator,
+		private readonly IClientService $clientService,
 		private readonly ICredentialsManager $credentialsManager,
-		private readonly LoggerInterface $logger,
 		private readonly OidcService $oidcService,
+		private readonly LoggerInterface $logger,
 	) {
 		parent::__construct(Application::APP_ID, $request);
 	}
@@ -48,7 +48,7 @@ class OidcController extends Controller {
 	#[NoAdminRequired]
 	#[NoCSRFRequired]
 	public function connect(): RedirectResponse {
-		if (!$this->appConfig->getValueBool(Application::APP_ID, ConfigLexicon::OIDC_ENABLED, false)) {
+		if (!$this->appConfig->getAppValueBool(ConfigLexicon::OIDC_ENABLED)) {
 			return $this->redirectToPersonalSettings('disabled');
 		}
 
@@ -61,9 +61,9 @@ class OidcController extends Controller {
 		$this->session->set(self::SESSION_USER_ID, $userId);
 		$this->session->close();
 
-		$authorizationEndpoint = $this->appConfig->getValueString(Application::APP_ID, ConfigLexicon::OIDC_AUTHORIZATION_ENDPOINT);
-		$clientId = $this->appConfig->getValueString(Application::APP_ID, ConfigLexicon::OIDC_CLIENT_ID);
-		$scope = $this->appConfig->getValueString(Application::APP_ID, ConfigLexicon::OIDC_SCOPE, 'openid');
+		$authorizationEndpoint = $this->appConfig->getAppValueString(ConfigLexicon::OIDC_AUTHORIZATION_ENDPOINT);
+		$clientId = $this->appConfig->getAppValueString(ConfigLexicon::OIDC_CLIENT_ID);
+		$scope = $this->appConfig->getAppValueString(ConfigLexicon::OIDC_SCOPE);
 		$redirectUri = $this->urlGenerator->linkToRouteAbsolute(Application::APP_ID . '.Oidc.callback');
 
 		$authorizationUrl = $this->buildAuthorizationUrl($authorizationEndpoint, [
@@ -84,25 +84,25 @@ class OidcController extends Controller {
 	#[NoCSRFRequired]
 	public function callback(string $state = '', string $code = '', string $error = '', string $error_description = ''): RedirectResponse {
 		if ($error !== '') {
-			$this->logger->warning('OIDC provider returned an error: ' . $error . ' - ' . $error_description);
+			$this->logger->error('OIDC provider returned an error: ' . $error . ' - ' . $error_description);
 			return $this->redirectToPersonalSettings('error');
 		}
 
 		if ($state === '' || $state !== $this->session->get(self::SESSION_STATE)) {
-			$this->logger->warning('OIDC callback state mismatch');
+			$this->logger->error('OIDC callback state mismatch');
 			return $this->redirectToPersonalSettings('error');
 		}
 		$userId = $this->userSession->getUser()?->getUID();
 		if ($userId === null || $userId !== $this->session->get(self::SESSION_USER_ID)) {
-			$this->logger->warning('OIDC callback user mismatch: started as ' . $this->session->get(self::SESSION_USER_ID) . ', completed as ' . $userId);
+			$this->logger->error('OIDC callback user mismatch: started as ' . $this->session->get(self::SESSION_USER_ID) . ', completed as ' . $userId);
 			return $this->redirectToPersonalSettings('error');
 		}
 		$this->session->remove(self::SESSION_STATE);
 		$this->session->remove(self::SESSION_USER_ID);
 
-		$tokenEndpoint = $this->appConfig->getValueString(Application::APP_ID, ConfigLexicon::OIDC_TOKEN_ENDPOINT);
-		$clientId = $this->appConfig->getValueString(Application::APP_ID, ConfigLexicon::OIDC_CLIENT_ID);
-		$clientSecret = $this->appConfig->getValueString(Application::APP_ID, ConfigLexicon::OIDC_CLIENT_SECRET);
+		$tokenEndpoint = $this->appConfig->getAppValueString(ConfigLexicon::OIDC_TOKEN_ENDPOINT);
+		$clientId = $this->appConfig->getAppValueString(ConfigLexicon::OIDC_CLIENT_ID);
+		$clientSecret = $this->appConfig->getAppValueString(ConfigLexicon::OIDC_CLIENT_SECRET);
 		$redirectUri = $this->urlGenerator->linkToRouteAbsolute(Application::APP_ID . '.Oidc.callback');
 
 		$client = $this->clientService->newClient();
@@ -138,10 +138,9 @@ class OidcController extends Controller {
 	}
 
 	private function redirectToPersonalSettings(string $result): RedirectResponse {
-		return new RedirectResponse(
-			$this->urlGenerator->linkToRoute('settings.PersonalSettings.index', ['section' => 'circles'])
-				. '?oidcResult=' . $result
-		);
+		$url = $this->urlGenerator->linkToRoute('settings.PersonalSettings.index', ['section' => 'circles']);
+
+		return new RedirectResponse($url . '?oidcResult=' . $result);
 	}
 
 	private function buildAuthorizationUrl(string $authorizationEndpoint, array $params): string {

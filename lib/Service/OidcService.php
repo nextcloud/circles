@@ -16,10 +16,11 @@ use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
-use OCA\Circles\Model\FederatedUser;
+use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Tools\Traits\TStringTools;
+use OCP\AppFramework\Services\IAppConfig;
 use OCP\Http\Client\IClientService;
-use OCP\IAppConfig;
 use OCP\IUser;
 use OCP\IUserManager;
 use OCP\Security\ICredentialsManager;
@@ -29,30 +30,30 @@ class OidcService {
 	use TStringTools;
 
 	public const CREDENTIAL_REFRESH_TOKEN = 'circles_oidc_refresh_token';
+	private const MANAGED_BY_OIDC = 'oidc';
 
 	public function __construct(
 		private readonly IAppConfig $appConfig,
-		private readonly IClientService $clientService,
-		private readonly LoggerInterface $logger,
 		private readonly IUserManager $userManager,
 		private readonly ICredentialsManager $credentialsManager,
+		private readonly IClientService $clientService,
 		private readonly CircleRequest $circleRequest,
-		private readonly FederatedUserService $federatedUserService,
-		private readonly MemberService $memberService,
 		private readonly MemberRequest $memberRequest,
+		private readonly ConfigService $configService,
+		private readonly FederatedUserService $federatedUserService,
+		private readonly FederationAgentService $federationAgentService,
+		private readonly MemberService $memberService,
+		private readonly LoggerInterface $logger,
 	) {
 	}
 
 	public function syncMemberships(): void {
-		$moderatorSingleId = $this->appConfig->getValueString(Application::APP_ID, ConfigLexicon::REMOTE_MOD_CIRCLE_LOCAL_ID, '');
-		$moderator = $this->circleRequest->getFederatedUserBySingleId($moderatorSingleId);
-
-		$this->userManager->callForSeenUsers(function (IUser $user) use ($moderator): void {
-			$this->syncMembershipsForUser($user->getUID(), moderator: $moderator);
+		$this->userManager->callForSeenUsers(function (IUser $user): void {
+			$this->syncMembershipsForUser($user->getUID());
 		});
 	}
 
-	public function syncMembershipsForUser(string $userId, ?string $accessToken = null, ?FederatedUser $moderator = null): void {
+	public function syncMembershipsForUser(string $userId, ?string $accessToken = null): void {
 		if ($accessToken === null) {
 			$refreshToken = $this->credentialsManager->retrieve($userId, self::CREDENTIAL_REFRESH_TOKEN);
 			if (empty($refreshToken)) {
@@ -73,55 +74,51 @@ class OidcService {
 			return;
 		}
 
-		if ($moderator === null) {
-			$moderatorSingleId = $this->appConfig->getValueString(Application::APP_ID, ConfigLexicon::REMOTE_MOD_CIRCLE_LOCAL_ID, '');
-			if ($moderatorSingleId === '') {
-				$this->logger->warning('remote_mod_circle_local_id not set yet, please run circles:remotemod:discover on the instance that owns the third party circles');
-				return;
-			}
-			try {
-				$moderator = $this->circleRequest->getFederatedUserBySingleId($moderatorSingleId);
-			} catch (Exception $e) {
-				$this->logger->error('could not find remote moderator circle on this instance', ['moderatorSingleId' => $moderatorSingleId, 'exception' => $e]);
-				return;
-			}
-		}
-		$this->federatedUserService->setCurrentUser($moderator);
-
 		// ensure user is a member of circles matching OIDC memberships
 		$desiredCircleIds = [];
 		foreach ($rawMemberships as $rawMembership) {
 			$circleId = $this->generateCircleIdFromString($rawMembership);
 			$desiredCircleIds[] = $circleId;
-			$this->ensureMember($userId, $circleId);
+			$this->ensureMember($userId, $circleId, $rawMembership);
 		}
 
-		// remove user from third-party circles not present in the current OIDC memberships
-		$currentCircleIds = $this->getThirdPartyCirclesForUser($userId);
-		foreach ($currentCircleIds as $circleId) {
-			if (in_array($circleId, $desiredCircleIds, true)) {
+		// remove user from circles they were added to via OIDC but no longer belong to
+		foreach ($this->memberRequest->getMembersByUserId($userId) as $member) {
+			if ($member->getManagedBy() !== self::MANAGED_BY_OIDC) {
 				continue;
 			}
-			$this->removeMember($userId, $circleId);
+			if (in_array($member->getCircleId(), $desiredCircleIds, true)) {
+				continue;
+			}
+			$this->removeMember($userId, $member->getCircleId());
 		}
 	}
 
-	private function ensureMember(string $userId, string $circleId): void {
+	private function ensureMember(string $userId, string $circleId, string $rawMembership): void {
 		try {
-			$this->circleRequest->getCircle($circleId);
+			$circle = $this->circleRequest->getCircle($circleId);
 		} catch (CircleNotFoundException) {
+			$this->logger->debug('circle not found, skipping', ['circleId' => $circleId, 'rawMembership' => $rawMembership]);
 			return;
 		}
 
 		try {
 			$this->memberRequest->getMemberByUserId($circleId, $userId);
+			// already a member
 			return;
 		} catch (MemberNotFoundException) {
 		}
 
 		try {
+			$this->setInitiatorForCircle($circle);
+
 			$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId);
 			$this->memberService->addMember($circleId, $federatedUser);
+
+			// mark this membership as managed by OIDC
+			$member = $this->memberRequest->getMemberByUserId($circleId, $userId);
+			$member->setManagedBy(self::MANAGED_BY_OIDC);
+			$this->memberRequest->update($member);
 		} catch (Exception $e) {
 			$this->logger->error('could not add user to circle', ['userId' => $userId, 'circleId' => $circleId, 'exception' => $e]);
 		}
@@ -129,7 +126,17 @@ class OidcService {
 
 	private function removeMember(string $userId, string $circleId): void {
 		try {
+			$circle = $this->circleRequest->getCircle($circleId);
+		} catch (CircleNotFoundException) {
+			$this->logger->debug('circle not found, skipping', ['circleId' => $circleId]);
+			return;
+		}
+
+		try {
 			$member = $this->memberRequest->getMemberByUserId($circleId, $userId);
+
+			$this->setInitiatorForCircle($circle);
+
 			$this->memberService->removeMember($member->getId());
 		} catch (Exception $e) {
 			$this->logger->error('could not remove user from circle', ['userId' => $userId, 'circleId' => $circleId, 'exception' => $e]);
@@ -137,12 +144,27 @@ class OidcService {
 	}
 
 	/**
+	 * sets the correct initiator to act on the given circle
+	 * - local circle is managed by 'app:circles:{singleId}'
+	 * - remote circle is managed by 'app:federation_agent:{singleId}'
+	 */
+	private function setInitiatorForCircle(Circle $circle): void {
+		if ($this->configService->isLocalInstance($circle->getInstance())) {
+			$this->federatedUserService->setLocalCurrentApp(Application::APP_ID, Member::APP_CIRCLES);
+			$currentApp = $this->federatedUserService->getCurrentApp();
+			$this->federatedUserService->setCurrentUser($currentApp);
+		} else {
+			$this->federationAgentService->setFederationAgentAsCurrentUser();
+		}
+	}
+
+	/**
 	 * @return string|null fresh access token or null on failure
 	 */
 	private function refreshAccessToken(string $userId, string $refreshToken): ?string {
-		$tokenEndpoint = $this->appConfig->getValueString(Application::APP_ID, ConfigLexicon::OIDC_TOKEN_ENDPOINT, '');
-		$clientId = $this->appConfig->getValueString(Application::APP_ID, ConfigLexicon::OIDC_CLIENT_ID, '');
-		$clientSecret = $this->appConfig->getValueString(Application::APP_ID, ConfigLexicon::OIDC_CLIENT_SECRET, '');
+		$tokenEndpoint = $this->appConfig->getAppValueString(ConfigLexicon::OIDC_TOKEN_ENDPOINT);
+		$clientId = $this->appConfig->getAppValueString(ConfigLexicon::OIDC_CLIENT_ID);
+		$clientSecret = $this->appConfig->getAppValueString(ConfigLexicon::OIDC_CLIENT_SECRET);
 
 		$client = $this->clientService->newClient();
 		try {
@@ -172,8 +194,8 @@ class OidcService {
 	 *                           null if the request failed
 	 */
 	private function fetchMemberships(string $accessToken): ?array {
-		$userinfoEndpoint = $this->appConfig->getValueString(Application::APP_ID, ConfigLexicon::OIDC_USERINFO_ENDPOINT, '');
-		$membershipClaim = $this->appConfig->getValueString(Application::APP_ID, ConfigLexicon::OIDC_MEMBERSHIP_CLAIM, '');
+		$userinfoEndpoint = $this->appConfig->getAppValueString(ConfigLexicon::OIDC_USERINFO_ENDPOINT);
+		$membershipClaim = $this->appConfig->getAppValueString(ConfigLexicon::OIDC_MEMBERSHIP_CLAIM);
 
 		$client = $this->clientService->newClient();
 		try {
@@ -196,21 +218,5 @@ class OidcService {
 		$this->logger->debug('OIDC raw memberships (' . $membershipClaim . '): ' . json_encode($rawMemberships));
 
 		return $rawMemberships;
-	}
-
-	/**
-	 * @return list<string> circleIds of third-party circles the user currently belongs to
-	 */
-	private function getThirdPartyCirclesForUser(string $userId): array {
-		$circleIds = [];
-		foreach ($this->circleRequest->getThirdParty() as $circle) {
-			try {
-				$this->memberRequest->getMemberByUserId($circle->getSingleId(), $userId);
-				$circleIds[] = $circle->getSingleId();
-			} catch (MemberNotFoundException) {
-			}
-		}
-
-		return $circleIds;
 	}
 }

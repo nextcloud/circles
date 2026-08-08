@@ -9,26 +9,23 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Cron;
 
-use OCA\Circles\BackgroundJob\RemoteModSync;
 use OCA\Circles\ConfigLexicon;
-use OCA\Circles\Service\RemoteModCircleService;
+use OCA\Circles\Service\OidcService;
 use OCP\AppFramework\Services\IAppConfig;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\BackgroundJob\IJob;
-use OCP\BackgroundJob\IJobList;
 use OCP\BackgroundJob\TimedJob;
 
-class RemoteModDiscover extends TimedJob {
+class OidcSyncMemberships extends TimedJob {
 	public function __construct(
 		ITimeFactory $time,
 		private readonly IAppConfig $appConfig,
-		private readonly RemoteModCircleService $remoteModCircleService,
-		private readonly IJobList $jobList,
+		private readonly OidcService $oidcService,
 	) {
 		parent::__construct($time);
 
-		// run twice a day
-		$this->setInterval(12 * 3600);
+		// run once a day
+		$this->setInterval(24 * 3600);
 		// delay until low-load time
 		$this->setTimeSensitivity(IJob::TIME_INSENSITIVE);
 		// only run one instance of this job at a time
@@ -36,14 +33,10 @@ class RemoteModDiscover extends TimedJob {
 	}
 
 	protected function run($argument) {
-		$remoteModCircleInstances = $this->appConfig->getAppValueArray(ConfigLexicon::REMOTE_MOD_CIRCLE_INSTANCES);
-		if ($remoteModCircleInstances === []) {
+		if (!$this->appConfig->getAppValueBool(ConfigLexicon::OIDC_ENABLED)) {
 			return;
 		}
 
-		$this->remoteModCircleService->discoverModeratorCircles();
-
-		// once discovery is done, run RemoteModSync right after
-		$this->jobList->scheduleAfter(RemoteModSync::class, time() + 60);
+		$this->oidcService->syncMemberships();
 	}
 }
