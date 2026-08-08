@@ -425,6 +425,17 @@ class MemberRequest extends MemberRequestBuilder {
 	}
 
 	/**
+	 * @return Member[]
+	 * @throws RequestBuilderException
+	 */
+	public function getMembersByUserId(string $userId): array {
+		$qb = $this->getMemberSelectSql();
+		$qb->limitToUserId($userId);
+
+		return $this->getItemsFromRequest($qb);
+	}
+
+	/**
 	 * @param Member $member
 	 * @param FederatedUser|null $initiator
 	 *

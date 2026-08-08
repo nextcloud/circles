@@ -74,23 +74,24 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	public const CFG_PERSONAL = 2;      // Personal circle, only the owner can see it.
 
 	// bitwise
-	public const CFG_SYSTEM = 4;            // System Circle (not managed by the official front-end). Meaning some config are limited
-	public const CFG_VISIBLE = 8;           // Visible to everyone, if not visible, people have to know its name to be able to find it
-	public const CFG_OPEN = 16;             // Circle is open, people can join
-	public const CFG_INVITE = 32;           // Adding a member generate an invitation that needs to be accepted
-	public const CFG_REQUEST = 64;          // Request to join Circles needs to be confirmed by a moderator
-	public const CFG_FRIEND = 128;          // Members of the circle can invite their friends
-	public const CFG_PROTECTED = 256;       // Password protected to join/request
-	public const CFG_NO_OWNER = 512;        // no owner, only members
-	public const CFG_HIDDEN = 1024;         // hidden from listing, but available as a share entity
-	public const CFG_BACKEND = 2048;            // Fully hidden, only backend Circles
-	public const CFG_LOCAL = 4096;              // Local even on GlobalScale
-	public const CFG_ROOT = 8192;               // Circle cannot be inside another Circle
-	public const CFG_CIRCLE_INVITE = 16384;     // Circle must confirm when invited in another circle
-	public const CFG_FEDERATED = 32768;         // Federated
-	public const CFG_MOUNTPOINT = 65536;        // Generate a Files folder for this Circle
-	public const CFG_APP = 131072;          // Some features are not available to the OCS API (ie. destroying Circle)
-	public static $DEF_CFG_MAX = 262143;
+	public const CFG_SYSTEM = 4;                      // System Circle (not managed by the official front-end). Meaning some config are limited
+	public const CFG_VISIBLE = 8;                     // Visible to everyone, if not visible, people have to know its name to be able to find it
+	public const CFG_OPEN = 16;                       // Circle is open, people can join
+	public const CFG_INVITE = 32;                     // Adding a member generate an invitation that needs to be accepted
+	public const CFG_REQUEST = 64;                    // Request to join Circles needs to be confirmed by a moderator
+	public const CFG_FRIEND = 128;                    // Members of the circle can invite their friends
+	public const CFG_PROTECTED = 256;                 // Password protected to join/request
+	public const CFG_NO_OWNER = 512;                  // no owner, only members
+	public const CFG_HIDDEN = 1024;                   // hidden from listing, but available as a share entity
+	public const CFG_BACKEND = 2048;                  // Fully hidden, only backend Circles
+	public const CFG_LOCAL = 4096;                    // Local even on GlobalScale
+	public const CFG_ROOT = 8192;                     // Circle cannot be inside another Circle
+	public const CFG_CIRCLE_INVITE = 16384;           // Circle must confirm when invited in another circle
+	public const CFG_FEDERATED = 32768;               // Federated
+	public const CFG_MOUNTPOINT = 65536;              // Generate a Files folder for this Circle
+	public const CFG_APP = 131072;                    // Some features are not available to the OCS API (ie. destroying Circle)
+	public const CFG_SCIM = 262144;                   // Circle is managed by a SCIM server, not manually
+	public static $DEF_CFG_MAX = 524287;
 
 	/**
 	 * Note: When editing those values, update lib/Application/Capabilities.php
@@ -115,8 +116,9 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		8192 => 'T|Root',
 		16384 => 'CI|Circle Invite',
 		32768 => 'F|Federated',
-		65536 => 'M|Nountpoint',
+		65536 => 'M|Mountpoint',
 		131072 => 'A|App',
+		262144 => 'SC|SCIM',
 	];
 
 	/**
