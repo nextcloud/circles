@@ -11,6 +11,7 @@ OC.L10N.register(
     "Open %s" : "Ubrir %s",
     "Save" : "Save",
     "Cancel" : "Cancel",
+    "Back" : "Ta zaga",
     "Close" : "Zarrar",
     "New folder" : "Nueva carpeta",
     "Folder name" : "Nombre de carpeta",
