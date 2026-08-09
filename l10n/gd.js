@@ -8,6 +8,7 @@ OC.L10N.register(
     "Unknown filetype" : "Seòrsa faidhle nach aithne dhuinn",
     "Save" : "Save",
     "Cancel" : "Cancel",
+    "Back" : "Air ais",
     "Copy link" : "Dèan lethbhreac dhen cheangal",
     "Close" : "Dùin",
     "New folder" : "Pasgan ùr",
