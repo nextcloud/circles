@@ -200,6 +200,7 @@ OC.L10N.register(
     "Search for people to add" : "Pesquisar pessoas para adicionar",
     "You can always add or remove members later from the team page." : "Você sempre pode adicionar ou remover membros posteriormente na página da equipe.",
     "Could not load folder contents" : "Não foi possível carregar o conteúdo da pasta",
+    "Team space breadcrumbs" : "Navegação estrutural para o espaço de equipe",
     "Switch to list view" : "Mudar para a visualização em lista",
     "Switch to grid view" : "Mudar para a visualização em grade",
     "Open folder in Files" : "Abrir pasta em Arquivos",
