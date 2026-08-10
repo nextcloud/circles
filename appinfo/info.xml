@@ -36,9 +36,9 @@ Those groups of people can then be used by any other app for sharing purpose.
 	<default_enable/>
 	<background-jobs>
 		<job>OCA\Circles\Cron\Maintenance</job>
-		<job>OCA\Circles\Cron\ScimSyncCircles</job>
-		<job>OCA\Circles\Cron\ScimSyncFederatedModerators</job>
-		<job>OCA\Circles\Cron\OidcSyncMemberships</job>
+		<job>OCA\Circles\BackgroundJob\ScimSyncCircles</job>
+		<job>OCA\Circles\BackgroundJob\ScimSyncFederatedModerators</job>
+		<job>OCA\Circles\BackgroundJob\OidcSyncMemberships</job>
 		<job>OCA\Circles\BackgroundJob\OidcSyncMembershipsUser</job>
 	</background-jobs>
 

@@ -21,7 +21,7 @@ class CirclesOidcSyncMemberships extends Base {
 		parent::__construct();
 	}
 
-	protected function configure() {
+	protected function configure(): void {
 		parent::configure();
 		$this->setName('circles:oidc:sync-memberships')
 			->setDescription('sync circle memberships from OIDC server');

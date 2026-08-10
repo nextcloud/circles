@@ -7,36 +7,36 @@ declare(strict_types=1);
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-namespace OCA\Circles\Cron;
+namespace OCA\Circles\BackgroundJob;
 
 use OCA\Circles\ConfigLexicon;
-use OCA\Circles\Service\ScimService;
+use OCA\Circles\Service\OidcService;
 use OCP\AppFramework\Services\IAppConfig;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\BackgroundJob\IJob;
 use OCP\BackgroundJob\TimedJob;
 
-class ScimSyncFederatedModerators extends TimedJob {
+class OidcSyncMemberships extends TimedJob {
 	public function __construct(
 		ITimeFactory $time,
 		private readonly IAppConfig $appConfig,
-		private readonly ScimService $scimService,
+		private readonly OidcService $oidcService,
 	) {
 		parent::__construct($time);
 
-		// run twice a day
-		$this->setInterval(12 * 3600);
+		// run once a day
+		$this->setInterval(24 * 3600);
 		// delay until low-load time
 		$this->setTimeSensitivity(IJob::TIME_INSENSITIVE);
 		// only run one instance of this job at a time
 		$this->setAllowParallelRuns(false);
 	}
 
-	protected function run($argument) {
-		if (!$this->appConfig->getAppValueBool(ConfigLexicon::SCIM_ENABLED)) {
+	protected function run($argument): void {
+		if (!$this->appConfig->getAppValueBool(ConfigLexicon::OIDC_ENABLED)) {
 			return;
 		}
 
-		$this->scimService->syncFederatedModerators();
+		$this->oidcService->syncMemberships();
 	}
 }

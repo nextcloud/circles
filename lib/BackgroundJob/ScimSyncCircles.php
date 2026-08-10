@@ -10,30 +10,28 @@ declare(strict_types=1);
 namespace OCA\Circles\BackgroundJob;
 
 use OCA\Circles\ConfigLexicon;
-use OCA\Circles\Service\OidcService;
+use OCA\Circles\Service\ScimService;
 use OCP\AppFramework\Services\IAppConfig;
 use OCP\AppFramework\Utility\ITimeFactory;
-use OCP\BackgroundJob\QueuedJob;
+use OCP\BackgroundJob\TimedJob;
 
-class OidcSyncMembershipsUser extends QueuedJob {
+class ScimSyncCircles extends TimedJob {
 	public function __construct(
 		ITimeFactory $time,
 		private readonly IAppConfig $appConfig,
-		private readonly OidcService $oidcService,
+		private readonly ScimService $scimService,
 	) {
 		parent::__construct($time);
+
+		// run twice a day
+		$this->setInterval(12 * 3600);
 	}
 
 	protected function run($argument): void {
-		if (!$this->appConfig->getAppValueBool(ConfigLexicon::OIDC_ENABLED)) {
+		if (!$this->appConfig->getAppValueBool(ConfigLexicon::SCIM_ENABLED)) {
 			return;
 		}
 
-		$userId = $argument['userId'] ?? null;
-		if ($userId === null) {
-			return;
-		}
-
-		$this->oidcService->syncMembershipsForUser($userId);
+		$this->scimService->syncCircles();
 	}
 }

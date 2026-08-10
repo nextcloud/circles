@@ -21,7 +21,7 @@ class CirclesScimSyncFederatedModerators extends Base {
 		parent::__construct();
 	}
 
-	protected function configure() {
+	protected function configure(): void {
 		parent::configure();
 		$this->setName('circles:scim:sync-federated-moderators')
 			->setDescription('sync federated moderators for SCIM circles');

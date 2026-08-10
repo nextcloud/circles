@@ -21,7 +21,7 @@ class CirclesScimSyncCircles extends Base {
 		parent::__construct();
 	}
 
-	protected function configure() {
+	protected function configure(): void {
 		parent::configure();
 		$this->setName('circles:scim:sync-circles')
 			->setDescription('sync circles from SCIM server');
