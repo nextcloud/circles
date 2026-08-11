@@ -154,9 +154,7 @@ async function onSaveQuota() {
 			{{ t('circles', 'Automatically create a team space') }}
 		</NcCheckboxRadioSwitch>
 
-		<div
-			v-show="teamFolderAutoCreate"
-			class="team-folders__sub-section">
+		<div class="team-folders__sub-section">
 			<div class="team-folders__input-row">
 				<NcSelect
 					v-model="selectedQuota"
@@ -184,7 +182,6 @@ async function onSaveQuota() {
 <style scoped>
 .team-folders__sub-section {
 	margin-top: 12px;
-	margin-left: 44px;
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
