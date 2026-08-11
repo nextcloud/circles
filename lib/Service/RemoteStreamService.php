@@ -136,6 +136,9 @@ class RemoteStreamService extends NCSignature {
 				)
 			)
 		);
+		// use Server::get() to avoid circular dependency
+		$federationAgentService = \OCP\Server::get(FederationAgentService::class);
+		$app->setFederationAgentId($federationAgentService->getOrCreateFederationAgentId());
 
 		if ($this->interfaceService->isCurrentInterfaceInternal()) {
 			$app->setAliases(array_values(array_filter($this->interfaceService->getInterfaces(false))));

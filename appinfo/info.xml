@@ -36,6 +36,10 @@ Those groups of people can then be used by any other app for sharing purpose.
 	<default_enable/>
 	<background-jobs>
 		<job>OCA\Circles\Cron\Maintenance</job>
+		<job>OCA\Circles\BackgroundJob\ScimSyncCircles</job>
+		<job>OCA\Circles\BackgroundJob\ScimSyncFederatedModerators</job>
+		<job>OCA\Circles\BackgroundJob\OidcSyncMemberships</job>
+		<job>OCA\Circles\BackgroundJob\OidcSyncMembershipsUser</job>
 	</background-jobs>
 
 	<repair-steps>
@@ -76,6 +80,10 @@ Those groups of people can then be used by any other app for sharing purpose.
 		<command>OCA\Circles\Command\MembersRemove</command>
 
 		<command>OCA\Circles\Command\MigrateCustomGroups</command>
+
+		<command>OCA\Circles\Command\CirclesScimSyncCircles</command>
+		<command>OCA\Circles\Command\CirclesScimSyncFederatedModerators</command>
+		<command>OCA\Circles\Command\CirclesOidcSyncMemberships</command>
 	</commands>
 
 		<activity>
@@ -102,5 +110,7 @@ Those groups of people can then be used by any other app for sharing purpose.
 		<admin>OCA\Circles\Settings\Admin</admin>
 		<admin>OCA\Circles\Settings\AdminTeamFolders</admin>
 		<admin-section>OCA\Circles\Settings\AdminSection</admin-section>
+		<personal>OCA\Circles\Settings\Personal</personal>
+		<personal-section>OCA\Circles\Settings\PersonalSection</personal-section>
 	</settings>
 </info>

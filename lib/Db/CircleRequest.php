@@ -503,6 +503,19 @@ class CircleRequest extends CircleRequestBuilder {
 	}
 
 	/**
+	 * @return Circle[]
+	 * @throws RequestBuilderException
+	 */
+	public function getScim(): array {
+		$qb = $this->getCircleSelectSql();
+		$qb->limitToConfigFlag(Circle::CFG_SCIM, CoreQueryBuilder::CIRCLE);
+
+		$qb->leftJoinOwner(CoreQueryBuilder::CIRCLE);
+
+		return $this->getItemsFromRequest($qb);
+	}
+
+	/**
 	 * @param Circle $circle
 	 */
 	public function delete(Circle $circle): void {
