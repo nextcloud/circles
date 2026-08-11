@@ -61,7 +61,7 @@ This file is generated from multiple sources. Included packages:
 	- version: 14.3.0
 	- license: MIT
 - axios
-	- version: 1.19.0
+	- version: 1.16.0
 	- license: MIT
 - floating-vue
 	- version: 5.2.2
