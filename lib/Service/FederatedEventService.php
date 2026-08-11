@@ -27,6 +27,8 @@ use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\FederatedItems\CircleCreate;
+use OCA\Circles\FederatedItems\CircleEdit;
+use OCA\Circles\FederatedItems\MemberLevel;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\IFederatedItemCircleCheckNotRequired;
@@ -123,15 +125,24 @@ class FederatedEventService extends NCSignature {
 				$federatedItem->manage($event);
 			}
 
-			if (!$this->initBroadcast($event)
-				&& $event->getClass() === CircleCreate::class) {
-				// Circle Creation is done in a different way as there is no Circle nor Members yet to
-				// base the broadcast to other instances, unless in GlobalScale. And the fact that we do
-				// not want to async the process.
-				// The result is that in a single instance setup, the CircleCreatedEvent is not trigger
-				// the usual (async) way.
-				// In case of no instances yet available for that circle, we call the event manually.
-				$this->eventService->circleCreated($event, [$event->getResult()]);
+			if (!$this->initBroadcast($event)) {
+				if ($event->getClass() === CircleCreate::class) {
+					// Circle Creation is done in a different way as there is no Circle nor Members yet to
+					// base the broadcast to other instances, unless in GlobalScale. And the fact that we do
+					// not want to async the process.
+					// The result is that in a single instance setup, the CircleCreatedEvent is not trigger
+					// the usual (async) way.
+					// In case of no instances yet available for that circle, we call the event manually.
+					$this->eventService->circleCreated($event, [$event->getResult()]);
+				} elseif ($event->getClass() === CircleEdit::class) {
+					// Circle Edit is processed synchronously and has no async result callback when
+					// there is no downstream broadcast target. Trigger the final edited event manually.
+					$this->eventService->circleEdited($event, [$event->getResult()]);
+				} elseif ($event->getClass() === MemberLevel::class) {
+					// Member level edits are processed synchronously and have no async result callback
+					// when there is no downstream broadcast target. Trigger the final edited event manually.
+					$this->eventService->memberLevelEdited($event, [$event->getResult()]);
+				}
 			}
 		} else {
 			$this->remoteUpstreamService->confirmEvent($event);

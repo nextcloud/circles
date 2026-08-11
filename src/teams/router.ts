@@ -9,6 +9,7 @@ import { generateUrl } from '@nextcloud/router'
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from './views/HomeView.vue'
 import JoinInvitation from './views/JoinInvitation.vue'
+import TeamActivityView from './views/TeamActivityView.vue'
 import TeamDashboardView from './views/TeamDashboardView.vue'
 import TeamPage from './views/TeamPage.vue'
 import TeamSettingsView from './views/TeamSettingsView.vue'
@@ -40,6 +41,12 @@ const routes: RouteRecordRaw[] = [
 				name: 'team-settings',
 				path: 'settings',
 				component: TeamSettingsView,
+				props: true,
+			},
+			{
+				name: 'team-activity',
+				path: 'activity',
+				component: TeamActivityView,
 				props: true,
 			},
 		],

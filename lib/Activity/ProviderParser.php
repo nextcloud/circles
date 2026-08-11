@@ -225,11 +225,13 @@ class ProviderParser {
 	 * @return array<string,string|integer>
 	 */
 	protected function generateCircleParameter(array $circle): array {
+		$quotedName = '"' . $circle['name'] . '"';
+
 		return [
 			'type' => 'circle',
 			'id' => $circle['singleId'],
-			'name' => $circle['name'],
-			'_parsed' => $circle['name'],
+			'name' => $quotedName,
+			'_parsed' => $quotedName,
 			'link' => $this->url->getAbsoluteURL($circle['url']),
 		];
 	}

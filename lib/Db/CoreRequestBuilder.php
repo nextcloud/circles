@@ -51,6 +51,7 @@ class CoreRequestBuilder {
 	/** @var array */
 	public static $tables = [
 		self::TABLE_CIRCLE => [
+			'id',
 			'unique_id',
 			'name',
 			'display_name',

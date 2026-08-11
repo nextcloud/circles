@@ -77,6 +77,7 @@ class EventService {
 	public function circleEdited(FederatedEvent $federatedEvent, array $results): void {
 		$event = new CircleEditedEvent($federatedEvent, $results);
 		$this->eventDispatcher->dispatchTyped($event);
+		$this->activityService->onCircleEdited($event->getCircle());
 	}
 
 	/**
@@ -85,7 +86,6 @@ class EventService {
 	public function circleDestroying(FederatedEvent $federatedEvent): void {
 		$event = new DestroyingCircleEvent($federatedEvent);
 		$this->eventDispatcher->dispatchTyped($event);
-		$this->activityService->onCircleDestruction($event->getCircle());
 	}
 
 	/**
@@ -95,6 +95,7 @@ class EventService {
 	public function circleDestroyed(FederatedEvent $federatedEvent, array $results): void {
 		$event = new CircleDestroyedEvent($federatedEvent, $results);
 		$this->eventDispatcher->dispatchTyped($event);
+		$this->activityService->onCircleDestruction($event->getCircle());
 	}
 
 	/**
@@ -112,7 +113,6 @@ class EventService {
 		$event = new AddingCircleMemberEvent($federatedEvent);
 		$event->setType(CircleGenericEvent::ADDED);
 		$this->eventDispatcher->dispatchTyped($event);
-		$this->activityService->onMemberNew($event->getCircle(), $event->getMember(), CircleGenericEvent::ADDED);
 	}
 
 	/**
@@ -123,6 +123,7 @@ class EventService {
 		$event = new CircleMemberAddedEvent($federatedEvent, $results);
 		$event->setType(CircleGenericEvent::ADDED);
 		$this->eventDispatcher->dispatchTyped($event);
+		$this->activityService->onMemberNew($event->getCircle(), $event->getMember(), CircleGenericEvent::ADDED);
 	}
 
 	/**
@@ -172,7 +173,6 @@ class EventService {
 		$event = new AddingCircleMemberEvent($federatedEvent);
 		$event->setType(CircleGenericEvent::JOINED);
 		$this->eventDispatcher->dispatchTyped($event);
-		$this->activityService->onMemberNew($event->getCircle(), $event->getMember(), CircleGenericEvent::JOINED);
 	}
 
 	/**
@@ -183,6 +183,7 @@ class EventService {
 		$event = new CircleMemberAddedEvent($federatedEvent, $results);
 		$event->setType(CircleGenericEvent::JOINED);
 		$this->eventDispatcher->dispatchTyped($event);
+		$this->activityService->onMemberNew($event->getCircle(), $event->getMember(), CircleGenericEvent::JOINED);
 	}
 
 	/**
@@ -193,7 +194,6 @@ class EventService {
 		$event->setLevel($federatedEvent->getData()->gInt('level'));
 		$event->setType(CircleGenericEvent::LEVEL);
 		$this->eventDispatcher->dispatchTyped($event);
-		$this->activityService->onMemberLevel($event->getCircle(), $event->getMember(), $event->getLevel());
 	}
 
 	/**
@@ -205,6 +205,7 @@ class EventService {
 		$event->setNewLevel($federatedEvent->getData()->gInt('level'));
 		$event->setType(CircleGenericEvent::LEVEL);
 		$this->eventDispatcher->dispatchTyped($event);
+		$this->activityService->onMemberLevel($event->getCircle(), $event->getMember(), $event->getNewLevel());
 	}
 
 	/**

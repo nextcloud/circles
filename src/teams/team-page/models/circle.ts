@@ -56,6 +56,13 @@ export default class Circle {
 	}
 
 	/**
+	 * Numeric database id for activity object filters.
+	 */
+	get circleId(): number {
+		return this._data.circleId
+	}
+
+	/**
 	 * Formatted display name
 	 */
 	get displayName(): string {

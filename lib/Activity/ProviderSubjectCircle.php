@@ -46,4 +46,24 @@ class ProviderSubjectCircle extends ProviderParser {
 
 		throw new FakeException();
 	}
+
+	/**
+	 * @param IEvent $event
+	 * @param array $params
+	 *
+	 * @throws FakeException
+	 */
+	public function parseSubjectCircleEdit(IEvent $event, array $params): void {
+		if ($event->getSubject() !== 'circle_edit') {
+			return;
+		}
+
+		$this->parseCircleEvent(
+			$event, $params,
+			$this->l10n->t('You edited the team {circle}'),
+			$this->l10n->t('{author} edited the team {circle}')
+		);
+
+		throw new FakeException();
+	}
 }

@@ -1066,6 +1066,9 @@ export default {
 .circle-details-container {
 	padding-inline: 20px;
 	margin-top: 1rem;
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 0;
 
 	.circle-details-grid {
 		display: grid;

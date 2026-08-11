@@ -23,9 +23,12 @@ import { useTeamsStore } from '../store.ts'
 export function useTeamActions(getTeam: () => Team | undefined) {
 	const router = useRouter()
 	const store = useTeamsStore()
+	const appsWebroots = ((window as typeof window & { OC?: { appswebroots?: Record<string, string> } }).OC?.appswebroots) ?? {}
 
 	const to = computed(() => ({ name: 'team', params: { teamId: getTeam()?.id } }))
 	const settingsTo = computed(() => ({ name: 'team-settings', params: { teamId: getTeam()?.id } }))
+	const activityTo = computed(() => ({ name: 'team-activity', params: { teamId: getTeam()?.id } }))
+	const activityAppEnabled = computed(() => appsWebroots.activity !== undefined)
 	const isOwner = computed(() => getTeam()?.myRole === 'owner')
 	const canManage = computed(() => {
 		const team = getTeam()
@@ -37,6 +40,15 @@ export function useTeamActions(getTeam: () => Team | undefined) {
 	/** Open the team's Settings page. */
 	async function onManage(): Promise<void> {
 		await router.push(settingsTo.value)
+	}
+
+	/** Open the team's Activity page. */
+	async function onActivity(): Promise<void> {
+		if (!activityAppEnabled.value) {
+			return
+		}
+
+		await router.push(activityTo.value)
 	}
 
 	/** Copy a direct link to the team. */
@@ -110,11 +122,14 @@ export function useTeamActions(getTeam: () => Team | undefined) {
 	return {
 		to,
 		settingsTo,
+		activityTo,
+		activityAppEnabled,
 		isOwner,
 		canManage,
 		canLeave,
 		canDelete,
 		onManage,
+		onActivity,
 		onCopyLink,
 		onLeave,
 		onDelete,

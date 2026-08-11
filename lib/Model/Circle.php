@@ -156,6 +156,9 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	private $singleId = '';
 
 	/** @var int */
+	private $circleId = 0;
+
+	/** @var int */
 	private $config = 0;
 
 	/** @var string */
@@ -243,6 +246,24 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	 */
 	public function getSingleId(): string {
 		return $this->singleId;
+	}
+
+	/**
+	 * @param int $circleId
+	 *
+	 * @return self
+	 */
+	public function setCircleId(int $circleId): self {
+		$this->circleId = $circleId;
+
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getCircleId(): int {
+		return $this->circleId;
 	}
 
 	/**
@@ -820,6 +841,7 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	 */
 	public function jsonSerialize(): array {
 		$arr = [
+			'circleId' => $this->getCircleId(),
 			'id' => $this->getSingleId(),
 			'name' => $this->getName(),
 			'displayName' => $this->getDisplayName(),
@@ -876,7 +898,8 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 			throw new CircleNotFoundException();
 		}
 
-		$this->setSingleId($this->get($prefix . 'unique_id', $data))
+		$this->setCircleId($this->getInt($prefix . 'id', $data))
+			->setSingleId($this->get($prefix . 'unique_id', $data))
 			->setName($this->get($prefix . 'name', $data))
 			->setDisplayName($this->get($prefix . 'display_name', $data))
 			->setSanitizedName($this->get($prefix . 'sanitized_name', $data))

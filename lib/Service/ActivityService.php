@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Events\CircleGenericEvent;
 use OCA\Circles\IFederatedUser;
@@ -27,6 +28,7 @@ class ActivityService {
 		private readonly IActivityManager $activityManager,
 		private readonly IUserManager $userManager,
 		private readonly MemberRequest $memberRequest,
+		private readonly CircleRequest $circleRequest,
 		private readonly ConfigService $configService,
 	) {
 	}
@@ -40,13 +42,14 @@ class ActivityService {
 			return;
 		}
 
-		$event = $this->generateEvent('circles_as_non_member');
+		$event = $this->generateEvent('circles_as_non_member', $circle);
+		$this->setActivityAuthor($event, $circle);
 		$event->setSubject(
 			'circle_create',
 			[
 				'ver' => 2,
 				'circle' => $this->shortenCircleData($circle),
-				'initiator' => ($circle->hasInitiator() ? $this->shortenMemberData($circle->getInitiator()) : null),
+				'initiator' => $this->getActivityInitiatorData($circle),
 			]
 		);
 
@@ -66,19 +69,48 @@ class ActivityService {
 			return;
 		}
 
-		$event = $this->generateEvent('circles_as_member');
+		$event = $this->generateEvent('circles_as_member', $circle);
+		$this->setActivityAuthor($event, $circle);
 		$event->setSubject(
 			'circle_delete',
 			[
 				'ver' => 2,
 				'circle' => $this->shortenCircleData($circle),
-				'initiator' => ($circle->hasInitiator() ? $this->shortenMemberData($circle->getInitiator()) : null),
+				'initiator' => $this->getActivityInitiatorData($circle),
 			]
 		);
 		$this->publishEvent(
 			$event,
 			$this->memberRequest->getInheritedMembers($circle->getSingleId(), false, Member::LEVEL_MEMBER)
 		);
+	}
+
+	/**
+	 * @param Circle $circle
+	 */
+	public function onCircleEdited(Circle $circle): void {
+		if ($circle->isConfig(Circle::CFG_PERSONAL)) {
+			return;
+		}
+
+		$event = $this->generateEvent('circles_as_member', $circle);
+		$this->setActivityAuthor($event, $circle);
+		$event->setSubject(
+			'circle_edit',
+			[
+				'ver' => 2,
+				'circle' => $this->shortenCircleData($circle),
+				'initiator' => $this->getActivityInitiatorData($circle),
+			]
+		);
+		$users = $this->memberRequest->getInheritedMembers($circle->getSingleId(), false, Member::LEVEL_MEMBER);
+		if (empty($users)
+			&& $circle->hasInitiator()
+			&& $circle->getInitiator()->getUserType() === Member::TYPE_USER) {
+			$users[] = $circle->getInitiator();
+		}
+
+		$this->publishEvent($event, $users);
 	}
 
 	/**
@@ -127,7 +159,9 @@ class ActivityService {
 		Member $member,
 		int $eventType,
 	): void {
-		$event = $this->generateEvent('circles_as_member');
+		$event = $this->generateEvent('circles_as_member', $circle);
+		$event->setObject('circles', $this->getActivityObjectId($circle), $circle->getName());
+		$this->setActivityAuthor($event, $circle);
 
 		try {
 			$event->setSubject(
@@ -138,7 +172,7 @@ class ActivityService {
 				[
 					'ver' => 2,
 					'circle' => $this->shortenCircleData($circle),
-					'initiator' => ($circle->hasInitiator() ? $this->shortenMemberData($circle->getInitiator()) : null),
+					'initiator' => $this->getActivityInitiatorData($circle),
 					'member' => $this->shortenMemberData($member),
 				]
 			);
@@ -168,7 +202,9 @@ class ActivityService {
 		Member $member,
 		int $eventType = CircleGenericEvent::JOINED,
 	): void {
-		$event = $this->generateEvent('circles_as_member');
+		$event = $this->generateEvent('circles_as_member', $circle);
+		$event->setObject('circles', $this->getActivityObjectId($circle), $circle->getName());
+		$this->setActivityAuthor($event, $circle);
 
 		try {
 			$event->setSubject(
@@ -179,7 +215,7 @@ class ActivityService {
 				[
 					'ver' => 2,
 					'circle' => $this->shortenCircleData($circle),
-					'initiator' => ($circle->hasInitiator() ? $this->shortenMemberData($circle->getInitiator()) : null),
+					'initiator' => $this->getActivityInitiatorData($circle),
 					'member' => $this->shortenMemberData($member),
 				]
 			);
@@ -209,7 +245,8 @@ class ActivityService {
 			return; // only if almost-member is a local account
 		}
 
-		$event = $this->generateEvent('circles_as_moderator');
+		$event = $this->generateEvent('circles_as_moderator', $circle);
+		$event->setObject('circles', $this->getActivityObjectId($circle), $circle->getName());
 
 		try {
 			$event->setSubject(
@@ -220,7 +257,7 @@ class ActivityService {
 				[
 					'ver' => 2,
 					'circle' => $this->shortenCircleData($circle),
-					'initiator' => ($circle->hasInitiator() ? $this->shortenMemberData($circle->getInitiator()) : null),
+					'initiator' => $this->getActivityInitiatorData($circle),
 					'member' => $this->shortenMemberData($member),
 				]
 			);
@@ -269,7 +306,9 @@ class ActivityService {
 		Member $member,
 		int $eventType,
 	): void {
-		$event = $this->generateEvent('circles_as_member');
+		$event = $this->generateEvent('circles_as_member', $circle);
+		$event->setObject('circles', $this->getActivityObjectId($circle), $circle->getName());
+		$this->setActivityAuthor($event, $circle);
 
 		try {
 			$event->setSubject(
@@ -280,7 +319,7 @@ class ActivityService {
 				[
 					'ver' => 2,
 					'circle' => $this->shortenCircleData($circle),
-					'initiator' => ($circle->hasInitiator() ? $this->shortenMemberData($circle->getInitiator()) : null),
+					'initiator' => $this->getActivityInitiatorData($circle),
 					'member' => $this->shortenMemberData($member),
 				]
 			);
@@ -305,7 +344,9 @@ class ActivityService {
 		Member $member,
 		int $eventType = CircleGenericEvent::JOINED,
 	): void {
-		$event = $this->generateEvent('circles_as_member');
+		$event = $this->generateEvent('circles_as_member', $circle);
+		$event->setObject('circles', $this->getActivityObjectId($circle), $circle->getName());
+		$this->setActivityAuthor($event, $circle);
 
 		try {
 			$event->setSubject(
@@ -316,7 +357,7 @@ class ActivityService {
 				[
 					'ver' => 2,
 					'circle' => $this->shortenCircleData($circle),
-					'initiator' => ($circle->hasInitiator() ? $this->shortenMemberData($circle->getInitiator()) : null),
+					'initiator' => $this->getActivityInitiatorData($circle),
 					'member' => $this->shortenMemberData($member),
 				]
 			);
@@ -348,13 +389,15 @@ class ActivityService {
 			return;
 		}
 
-		$event = $this->generateEvent('circles_as_moderator');
+		$event = $this->generateEvent('circles_as_moderator', $circle);
+		$event->setObject('circles', $this->getActivityObjectId($circle), $circle->getName());
+		$this->setActivityAuthor($event, $circle);
 		$event->setSubject(
 			'member_level',
 			[
 				'ver' => 2,
 				'circle' => $this->shortenCircleData($circle),
-				'initiator' => ($circle->hasInitiator() ? $this->shortenMemberData($circle->getInitiator()) : null),
+				'initiator' => $this->getActivityInitiatorData($circle),
 				'member' => $this->shortenMemberData($member),
 				'level' => $level
 			]
@@ -373,13 +416,15 @@ class ActivityService {
 	 * @param Member $member
 	 */
 	public function onMemberOwner(Circle $circle, Member $member): void {
-		$event = $this->generateEvent('circles_as_moderator');
+		$event = $this->generateEvent('circles_as_moderator', $circle);
+		$event->setObject('circles', $this->getActivityObjectId($circle), $circle->getName());
+		$this->setActivityAuthor($event, $circle);
 		$event->setSubject(
 			'member_owner',
 			[
 				'ver' => 2,
 				'circle' => $this->shortenCircleData($circle),
-				'initiator' => ($circle->hasInitiator() ? $this->shortenMemberData($circle->getInitiator()) : null),
+				'initiator' => $this->getActivityInitiatorData($circle),
 				'member' => $this->shortenMemberData($member),
 			]
 		);
@@ -398,15 +443,76 @@ class ActivityService {
 	 * Create an Activity Event with the basic settings for the app.
 	 *
 	 * @param string $type
+	 * @param ?Circle $circle
 	 *
 	 * @return IEvent
 	 */
-	private function generateEvent(string $type): IEvent {
+	private function generateEvent(string $type, ?Circle $circle = null): IEvent {
 		$event = $this->activityManager->generateEvent();
 		$event->setApp(Application::APP_ID)
 			->setType($type);
 
+		if ($circle !== null) {
+			$event->setObject('circles', $this->getActivityObjectId($circle), $circle->getName());
+		}
+
 		return $event;
+	}
+
+	/**
+	 * Populate activity author/user when available so oc_activity.user is not empty.
+	 */
+	private function setActivityAuthor(IEvent $event, Circle $circle): void {
+		$authorUserId = null;
+
+		if ($circle->hasInitiator()) {
+			$initiator = $circle->getInitiator();
+			if ($initiator->getUserType() === Member::TYPE_USER
+				&& $initiator->getUserId() !== '') {
+				$authorUserId = $initiator->getUserId();
+			}
+		}
+
+		if ($authorUserId === null) {
+			return;
+		}
+
+		if (method_exists($event, 'setAuthor')) {
+			call_user_func([$event, 'setAuthor'], $authorUserId);
+			return;
+		}
+
+		if (method_exists($event, 'setUser')) {
+			call_user_func([$event, 'setUser'], $authorUserId);
+		}
+	}
+
+	/**
+	 * Subject metadata should also use the acting user rather than persistent circle initiator.
+	 */
+	private function getActivityInitiatorData(Circle $circle): ?array {
+		if ($circle->hasInitiator()) {
+			return $this->shortenMemberData($circle->getInitiator());
+		}
+
+		return null;
+	}
+
+	/**
+	 * Resolve the numeric DB id used as activity object_id.
+	 * Some event payloads only carry the circle singleId.
+	 */
+	private function getActivityObjectId(Circle $circle): int {
+		if ($circle->getCircleId() > 0) {
+			return $circle->getCircleId();
+		}
+
+		try {
+			$dbCircle = $this->circleRequest->getCircle($circle->getSingleId());
+			return $dbCircle->getCircleId();
+		} catch (\Throwable) {
+			return 0;
+		}
 	}
 
 	/**

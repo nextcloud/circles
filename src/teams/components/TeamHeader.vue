@@ -6,7 +6,7 @@
 <script setup lang="ts">
 import type Circle from '../team-page/models/circle.ts'
 
-import { mdiCogOutline, mdiContentCopy, mdiExitToApp, mdiTrashCanOutline } from '@mdi/js'
+import { mdiCogOutline, mdiContentCopy, mdiExitToApp, mdiLightningBolt, mdiTrashCanOutline } from '@mdi/js'
 import { t } from '@nextcloud/l10n'
 import { computed } from 'vue'
 import NcActionButton from '@nextcloud/vue/components/NcActionButton'
@@ -24,7 +24,7 @@ const props = defineProps<{
 const store = useTeamsStore()
 const team = computed(() => store.getTeam(props.circle.id))
 
-const { canManage, canLeave, canDelete, onManage, onCopyLink, onLeave, onDelete } = useTeamActions(() => team.value)
+const { canManage, canLeave, canDelete, activityAppEnabled, onManage, onActivity, onCopyLink, onLeave, onDelete } = useTeamActions(() => team.value)
 </script>
 
 <template>
@@ -52,6 +52,13 @@ const { canManage, canLeave, canDelete, onManage, onCopyLink, onLeave, onDelete 
 					<NcIconSvgWrapper :path="mdiCogOutline" :size="20" />
 				</template>
 				{{ t('circles', 'Manage team') }}
+			</NcActionButton>
+
+			<NcActionButton v-if="activityAppEnabled" closeAfterClick @click="onActivity">
+				<template #icon>
+					<NcIconSvgWrapper :path="mdiLightningBolt" :size="20" />
+				</template>
+				{{ t('circles', 'Team activity') }}
 			</NcActionButton>
 
 			<NcActionButton closeAfterClick @click="onCopyLink">
