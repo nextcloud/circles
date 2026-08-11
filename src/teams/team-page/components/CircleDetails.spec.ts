@@ -18,6 +18,10 @@ import CircleDetails from './CircleDetails.vue'
 const loadState = vi.hoisted(() => vi.fn((app: string, key: string, fallback: unknown) => fallback))
 const getTeamFolder = vi.hoisted(() => vi.fn<(teamId: string) => Promise<TeamFolder | null>>(async () => null))
 const upgradeTeamFolder = vi.hoisted(() => vi.fn<(teamId: string) => Promise<TeamFolder>>(async () => ({ id: 1, mountPoint: 'Team' })))
+const showError = vi.hoisted(() => vi.fn())
+const showSuccess = vi.hoisted(() => vi.fn())
+const axiosGet = vi.hoisted(() => vi.fn(async () => ({ data: { ocs: { data: { resources: [] } } } })))
+const axiosPost = vi.hoisted(() => vi.fn(async () => ({ data: { ocs: { data: {} } } })))
 
 vi.mock('@nextcloud/initial-state', () => ({ loadState }))
 vi.mock('@nextcloud/auth', () => ({
@@ -34,8 +38,8 @@ vi.mock('@nextcloud/router', async (importOriginal) => {
 })
 vi.mock('@nextcloud/axios', () => ({
 	default: {
-		get: vi.fn(async () => ({ data: { ocs: { data: { resources: [] } } } })),
-		post: vi.fn(async () => ({ data: { ocs: { data: {} } } })),
+		get: axiosGet,
+		post: axiosPost,
 		request: vi.fn(async () => ({ data: {} })),
 	},
 }))
@@ -45,8 +49,8 @@ vi.mock('@nextcloud/dialogs', () => ({
 	getFilePickerBuilder: () => ({
 		setMultiSelect: () => ({ setMimeTypeFilter: () => ({ setType: () => ({ allowDirectories: () => ({ build: () => ({}) }) }) }) }),
 	}),
-	showError: vi.fn(),
-	showSuccess: vi.fn(),
+	showError,
+	showSuccess,
 }))
 vi.mock('@nextcloud/event-bus', () => ({ emit: vi.fn() }))
 vi.mock('../../api.ts', () => ({ getTeamFolder, upgradeTeamFolder }))
@@ -149,6 +153,72 @@ describe('CircleDetails folder button', () => {
 	})
 })
 
+describe('CircleDetails team resources', () => {
+	beforeEach(() => {
+		vi.clearAllMocks()
+	})
+
+	it('creates and shares a Talk conversation with the team', async () => {
+		const wrapper = mountDetails()
+		const resourceInputs = wrapper.vm.resourceInputs as Record<string, string>
+		const state = wrapper.vm as { activePopover: string | null }
+		axiosPost
+			.mockResolvedValueOnce({ data: { ocs: { data: { token: 'room-token' } } } })
+			.mockResolvedValueOnce({ data: { ocs: { data: {} } } })
+		resourceInputs.talk = 'Team chat'
+		state.activePopover = 'talk'
+
+		await wrapper.vm.handleResourceCreation({
+			resourceType: { id: 'talk', label: 'Talk conversation' },
+			name: 'Team chat',
+		})
+
+		expect(axiosPost).toHaveBeenNthCalledWith(1, '/apps/spreed/api/v4/room', {
+			roomName: 'Team chat',
+			roomType: 2,
+		})
+		expect(axiosPost).toHaveBeenNthCalledWith(2, '/apps/spreed/api/v4/room/room-token/participants', {
+			source: 'circles',
+			newParticipant: 'team-1',
+		})
+		expect(resourceInputs.talk).toBe('')
+		expect(state.activePopover).toBeNull()
+		expect(showSuccess).toHaveBeenCalledWith('Talk conversation "Team chat" created and shared with team')
+	})
+
+	it('reports unsupported resource types without making a request', async () => {
+		const wrapper = mountDetails()
+
+		await wrapper.vm.handleResourceCreation({
+			resourceType: { id: 'unsupported', label: 'Unsupported' },
+			name: 'Ignored',
+		})
+
+		expect(axiosPost).not.toHaveBeenCalled()
+		expect(showError).toHaveBeenCalledWith('Unknown resource type')
+	})
+
+	it('clears resources when their request fails', async () => {
+		const wrapper = mountDetails()
+		wrapper.vm.resources = [{ id: 'resource-1' }] as never[]
+		const error = new Error('Network error')
+		const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
+		axiosGet.mockRejectedValueOnce(error)
+
+		await wrapper.vm.fetchTeamResources()
+
+		expect(axiosGet).toHaveBeenLastCalledWith('/teams/team-1/resources')
+		expect(wrapper.vm.resources).toEqual([])
+		expect(consoleError).toHaveBeenCalledWith('[ERROR] teams: Could not fetch team resources', {
+			app: 'teams',
+			error,
+			circleId: 'team-1',
+			level: 2,
+		})
+		consoleError.mockRestore()
+	})
+})
+
 describe('CircleDetails team folder upgrade banner', () => {
 	beforeEach(() => {
 		vi.clearAllMocks()
@@ -182,6 +252,13 @@ describe('CircleDetails team folder upgrade banner', () => {
 		expect(html).not.toContain('Create team folder')
 	})
 
+	it('does not render the banner for non-members', async () => {
+		const wrapper = mountDetails({ initiator: null }, { autoCreate: true, providerAvailable: true })
+		await vi.waitFor(() => expect(wrapper.vm.loadingTeamFolder).toBe(false))
+
+		expect(wrapper.html()).not.toContain('This team does not have a team folder yet.')
+	})
+
 	it('hides the banner when a team folder exists', async () => {
 		const wrapper = mountDetails({}, {
 			autoCreate: true,
@@ -209,5 +286,60 @@ describe('CircleDetails team folder upgrade banner', () => {
 		const html = wrapper.html()
 		expect(html).toContain('Create one to share files with the whole team.')
 		expect(html).toContain('Create team folder')
+	})
+
+	it('keeps the banner visible when loading finds no linked folder', async () => {
+		getTeamFolder.mockRejectedValueOnce({ response: { status: 404 } })
+		const wrapper = mountDetails()
+		await vi.waitFor(() => expect(wrapper.vm.loadingTeamFolder).toBe(false))
+
+		expect(wrapper.vm.teamFolder).toBeNull()
+		expect(wrapper.vm.showTeamFolderBanner).toBe(true)
+		expect(showError).not.toHaveBeenCalled()
+	})
+
+	it('reports an unexpected team-folder loading error', async () => {
+		getTeamFolder.mockRejectedValueOnce(new Error('Network error'))
+		const wrapper = mountDetails()
+		await vi.waitFor(() => expect(wrapper.vm.loadingTeamFolder).toBe(false))
+
+		expect(wrapper.vm.teamFolder).toBeNull()
+		expect(showError).toHaveBeenCalledWith('Could not load team space')
+	})
+
+	it('creates a team folder and navigates to the team', async () => {
+		const wrapper = mountDetails()
+		await vi.waitFor(() => expect(wrapper.vm.loadingTeamFolder).toBe(false))
+
+		await wrapper.vm.createTeamFolder()
+
+		expect(upgradeTeamFolder).toHaveBeenCalledWith('team-1')
+		expect(wrapper.vm.teamFolder).toEqual({ id: 1, mountPoint: 'Team' })
+		expect(wrapper.vm.$router.push).toHaveBeenCalledWith({
+			name: 'team',
+			params: { teamId: 'team-1' },
+		})
+		expect(wrapper.vm.creatingTeamFolder).toBe(false)
+	})
+
+	it('creates a team folder from the banner action', async () => {
+		const wrapper = mountDetails()
+		await vi.waitFor(() => expect(wrapper.vm.loadingTeamFolder).toBe(false))
+
+		await wrapper.get('.team-folder-banner__action').trigger('click')
+
+		expect(upgradeTeamFolder).toHaveBeenCalledWith('team-1')
+		expect(wrapper.vm.$router.push).toHaveBeenCalled()
+	})
+
+	it('reports a team-folder creation error and clears its loading state', async () => {
+		upgradeTeamFolder.mockRejectedValueOnce(new Error('Network error'))
+		const wrapper = mountDetails()
+		await vi.waitFor(() => expect(wrapper.vm.loadingTeamFolder).toBe(false))
+
+		await wrapper.vm.createTeamFolder()
+
+		expect(showError).toHaveBeenCalledWith('Could not create the team space')
+		expect(wrapper.vm.creatingTeamFolder).toBe(false)
 	})
 })

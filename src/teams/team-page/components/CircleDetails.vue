@@ -922,7 +922,7 @@ export default {
 				this.resources = Array.isArray(data) ? data : []
 				logger.debug('Team resources', { resources: this.resources })
 			} catch (error) {
-				console.error('Could not fetch team resources', { error, circleId: this.circle.id })
+				logger.error('Could not fetch team resources', { error, circleId: this.circle.id })
 				this.resources = []
 			}
 		},
