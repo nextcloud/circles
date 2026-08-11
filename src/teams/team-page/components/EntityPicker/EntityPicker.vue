@@ -121,6 +121,7 @@ import IconAccountPlusOutline from 'vue-material-design-icons/AccountPlusOutline
 import IconSearch from 'vue-material-design-icons/Magnify.vue'
 import EntityBubble from './EntityBubble.vue'
 import EntitySearchResult from './EntitySearchResult.vue'
+import { logger } from '../../../../logger.ts'
 
 export default {
 	name: 'EntityPicker',
@@ -153,7 +154,7 @@ export default {
 			validator: (types) => {
 				const invalidTypes = types.filter((type) => !type.id && !type.label)
 				if (invalidTypes.length > 0) {
-					console.error('The following types MUST have a proper id and label key', invalidTypes)
+					logger.error('The following types MUST have a proper id and label key', { invalidTypes })
 					return false
 				}
 				return true
@@ -169,7 +170,7 @@ export default {
 			validator: (data) => {
 				data.forEach((source) => {
 					if (!source.id || !source.label) {
-						console.error('The following source MUST have a proper id and label key', source)
+						logger.error('The following source MUST have a proper id and label key', { source })
 					}
 				})
 				return true
@@ -376,7 +377,7 @@ export default {
 		 */
 		onDelete(entity) {
 			delete this.selectionSet[entity.id]
-			console.debug('Removing entity from selection', entity)
+			logger.debug('Removing entity from selection', { entity })
 		},
 
 		/**
@@ -387,12 +388,12 @@ export default {
 		onClick(entity) {
 			if (entity.id in this.selectionSet) {
 				delete this.selectionSet[entity.id]
-				console.debug('Removed entity to selection', entity)
+				logger.debug('Removed entity to selection', { entity })
 				return
 			}
 
 			this.selectionSet[entity.id] = entity
-			console.debug('Added entity to selection', entity)
+			logger.debug('Added entity to selection', { entity })
 		},
 
 		/**

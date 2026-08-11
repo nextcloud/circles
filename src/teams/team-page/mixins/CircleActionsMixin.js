@@ -8,6 +8,7 @@ import Circle from '../models/circle.ts'
 import Member from '../models/member.ts'
 import { joinCircle } from '../services/circles.ts'
 import CopyToClipboardMixin from './CopyToClipboardMixin.js'
+import { logger } from '../../../logger.ts'
 
 export default {
 
@@ -80,7 +81,7 @@ export default {
 				// Reset initiator
 				this.circle.initiator = null
 			} catch (error) {
-				console.error('Could not leave the circle', member, error)
+				logger.error('Could not leave the circle', { member, error })
 				showError(t('circles', 'Could not leave the team {displayName}', this.circle))
 			} finally {
 				this.loadingAction = false
@@ -100,7 +101,7 @@ export default {
 				member.circle.addMember(member)
 			} catch (error) {
 				showError(t('circles', 'Unable to join the team'))
-				console.error('Unable to join the circle', error)
+				logger.error('Unable to join the circle', { error })
 			} finally {
 				this.loadingJoin = false
 			}
@@ -142,7 +143,7 @@ export default {
 				// Avoid VueRouter NavigationDuplicated
 				await this.$router.push(this.circle.router)
 			} catch (error) {
-				console.error('Could not open circle member picker', error)
+				logger.error('Could not open circle member picker', { error })
 			}
 			emit('contacts:circles:append', this.circle.id)
 		},

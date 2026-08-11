@@ -6,6 +6,7 @@
 
 import { CircleConfigs, MemberLevels, ROUTE_CIRCLE } from './constants.ts'
 import Member from './member.ts'
+import { logger } from '../../../logger.ts'
 
 type MemberList = Record<string, Member>
 
@@ -168,7 +169,7 @@ export default class Circle {
 
 		const singleId = member.singleId
 		if (this._members[singleId]) {
-			console.warn('Replacing existing member data', member)
+			logger.warn('Replacing existing member data', { member })
 		}
 		this._members[singleId] = member
 	}
@@ -185,7 +186,7 @@ export default class Circle {
 
 		const singleId = member.singleId
 		if (!this._members[singleId]) {
-			console.warn('The member was not in this circle. Nothing was done.', member)
+			logger.warn('The member was not in this circle. Nothing was done.', { member })
 		}
 
 		// Delete and clear memory

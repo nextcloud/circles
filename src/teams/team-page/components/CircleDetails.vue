@@ -289,6 +289,7 @@ import FileDocumentOutline from 'vue-material-design-icons/FileDocumentOutline.v
 import FolderIcon from 'vue-material-design-icons/Folder.vue'
 import FolderOutlineIcon from 'vue-material-design-icons/FolderOutline.vue'
 import FolderPlusOutlineIcon from 'vue-material-design-icons/FolderPlusOutline.vue'
+import { logger } from '../../../logger.ts'
 import LoginIcon from 'vue-material-design-icons/Login.vue'
 import LogoutIcon from 'vue-material-design-icons/Logout.vue'
 import MessageIcon from 'vue-material-design-icons/MessageOutline.vue'
@@ -620,7 +621,7 @@ export default {
 					this.teamFolder = null
 					return
 				}
-				console.error('Could not load team folder', { error, circleId: this.circle.id })
+				logger.error('Could not load team folder', { error, circleId: this.circle.id })
 				showError(t('circles', 'Could not load team space'))
 				this.teamFolder = null
 			} finally {
@@ -637,7 +638,7 @@ export default {
 					params: { teamId: this.circle.id },
 				})
 			} catch (error) {
-				console.error('Could not create team folder', { error, circleId: this.circle.id })
+				logger.error('Could not create team folder', { error, circleId: this.circle.id })
 				showError(t('circles', 'Could not create the team space'))
 			} finally {
 				this.creatingTeamFolder = false
@@ -716,7 +717,7 @@ export default {
 						} catch (calendarError) {
 							// Since cdav-library doesn't expose HTTP status properly,
 							// assume MKCOL errors on calendar paths are name conflicts (405)
-							console.error('Calendar creation failed for name:', name)
+							logger.error('Calendar creation failed for name:', name)
 							throw new Error(`CALENDAR_EXISTS:${name}`)
 						}
 						break
@@ -750,7 +751,7 @@ export default {
 					this.fetchTeamResources()
 				}
 			} catch (error) {
-				console.error('Failed to create resource:', error)
+				logger.error('Failed to create resource:', { error })
 
 				// Check for calendar exists error
 				if (error.message && error.message.startsWith('CALENDAR_EXISTS:')) {
@@ -829,7 +830,7 @@ export default {
 				}
 				reader.readAsDataURL(file)
 			} catch (error) {
-				console.error('Error picking avatar file', error)
+				logger.error('Error picking avatar file', { error })
 				showError(t('circles', 'Error picking team picture'))
 			}
 		},
@@ -855,7 +856,7 @@ export default {
 				if (error instanceof FilePickerClosed) {
 					return
 				}
-				console.error('Error picking avatar file', error)
+				logger.error('Error picking avatar file', { error })
 				showError(t('circles', 'Error picking team picture'))
 			}
 		},
@@ -938,7 +939,7 @@ export default {
 		async fetchTeamResources() {
 			const response = await axios.get(generateOcsUrl(`/teams/${this.circle.id}/resources`))
 			this.resources = response.data.ocs.data.resources
-			console.debug('Team resources', this.resources)
+			logger.debug('Team resources', { resources: this.resources })
 		},
 
 		async loadAvatarUrl() {
@@ -988,7 +989,7 @@ export default {
 					await editCircle(this.circle.id, CircleEdit.Name, this.circle.displayName)
 					this.originalDisplayName = this.circle.displayName
 				} catch (error) {
-					console.error('Unable to edit name', this.circle.displayName, error)
+					logger.error('Unable to edit name', { displayName: this.circle.displayName, error })
 					errors.push('name')
 					this.circle.displayName = this.originalDisplayName
 				} finally {
@@ -1003,7 +1004,7 @@ export default {
 					await editCircle(this.circle.id, CircleEdit.Description, this.circle.description)
 					this.originalDescription = this.circle.description
 				} catch (error) {
-					console.error('Unable to edit team description', this.circle.description, error)
+					logger.error('Unable to edit team description', { description: this.circle.description, error })
 					errors.push('description')
 					this.circle.description = this.originalDescription
 				} finally {
@@ -1021,7 +1022,7 @@ export default {
 					this.clearPendingAvatar()
 					await this.loadAvatarUrl()
 				} catch {
-					console.error('Unable to save avatar picture')
+					logger.error('Unable to save avatar picture')
 					errors.push('avatar')
 				} finally {
 					this.loadingAvatar = false
@@ -1036,7 +1037,7 @@ export default {
 					this.clearPendingAvatar()
 					await this.loadAvatarUrl()
 				} catch {
-					console.error('Unable to remove avatar')
+					logger.error('Unable to remove avatar')
 					errors.push('avatar')
 				} finally {
 					this.loadingAvatar = false
