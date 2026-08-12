@@ -73,6 +73,7 @@ OC.L10N.register(
     "Unlimited" : "ულიმიტო",
     "Default quota" : "საწყისი კვოტა",
     "Save" : "Save",
+    "Connect" : "დაკავშირება",
     "Overview" : "ზოგადი მიმოხილვა",
     "Members" : "წევრები",
     "Cancel" : "Cancel",

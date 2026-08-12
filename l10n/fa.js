@@ -165,6 +165,8 @@ OC.L10N.register(
     "Default quota" : "سهمیه پیش‌فرض",
     "Select default quota" : "انتخاب سهمیه پیش‌فرض",
     "Save" : "ذخیره",
+    "Reconnect" : "اتصال مجدد",
+    "Connect" : "متصل شدن",
     "Overview" : "نمای کلی",
     "No teams found" : "هیچ تیمی یافت نشد  ",
     "Members" : "اعضا",

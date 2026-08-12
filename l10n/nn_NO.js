@@ -21,6 +21,7 @@ OC.L10N.register(
     "Open %s" : "Opne{filnamn}",
     "Unlimited" : "Ubegrensa",
     "Save" : "Save",
+    "Connect" : "Kople til",
     "Overview" : "Oversyn",
     "Members" : "Medlemmar",
     "Cancel" : "Cancel",

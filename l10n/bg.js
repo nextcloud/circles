@@ -116,6 +116,8 @@ OC.L10N.register(
     "Default quota" : "Стандартна квота",
     "Select default quota" : "Изберете стандартна квота",
     "Save" : "Save",
+    "Reconnect" : "Повторно свързване",
+    "Connect" : "Свързване",
     "Overview" : "Преглед",
     "Members" : "Членове",
     "Cancel" : "Cancel",

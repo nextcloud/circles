@@ -164,6 +164,8 @@ OC.L10N.register(
     "Default quota" : "Predvolená kvóta",
     "Select default quota" : "Vybrať predvolenú kvótu",
     "Save" : "Save",
+    "Reconnect" : "Pripojiť znova",
+    "Connect" : "Pripojiť",
     "Overview" : "Prehľad",
     "No teams found" : "Žiadne tímy sa nenašli",
     "Members" : "Členovia",

@@ -173,6 +173,8 @@ OC.L10N.register(
     "Select default quota" : "Varsayılan kota değerini seçin",
     "Save" : "Kaydet",
     "Default storage quota applied to each auto-created team space. Use 0 for unlimited storage." : "Otomatik olarak oluşturulan her takım alanına uygulanacak varsayılan depolama kotası. Depolama alanının sınırsız olması için 0 yazın.",
+    "Reconnect" : "Yeniden bağlantı kur",
+    "Connect" : "Bağlan",
     "New team" : "Yeni takım",
     "Search teams" : "Takım ara",
     "Overview" : "Özet",

@@ -173,6 +173,8 @@ OC.L10N.register(
     "Select default quota" : "Pasirinkite numatytą leidžiamą duomenų kiekį ",
     "Save" : "Išsaugoti",
     "Default storage quota applied to each auto-created team space. Use 0 for unlimited storage." : "Numatytoji saugyklos kvota, taikoma kiekvienai automatiškai sukurtai komandos erdvei. Nurodykite 0, jei norite neribotos saugyklos.",
+    "Reconnect" : "Jungtis iš naujo",
+    "Connect" : "Prisijungti",
     "New team" : "Nauja komanda",
     "Search teams" : "Ieškoti komandų",
     "Overview" : "Apžvalga",

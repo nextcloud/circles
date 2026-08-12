@@ -11,6 +11,7 @@ OC.L10N.register(
     "Invalid image" : "Neispravna slika",
     "Unknown filetype" : "Nepoznati tip fajla",
     "Save" : "Sačuvaj",
+    "Connect" : "Poveži se",
     "Cancel" : "Poništi",
     "Copy link" : "Kopiraj vezu",
     "Close" : "Zatvori",

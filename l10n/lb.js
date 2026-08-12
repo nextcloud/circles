@@ -12,6 +12,7 @@ OC.L10N.register(
     "Invalid image" : "Ongülteg d'Bild",
     "Unknown filetype" : "Onbekannten Fichier Typ",
     "Save" : "Save",
+    "Connect" : "Verbannen",
     "Cancel" : "Cancel",
     "Folder" : "Dossier",
     "Copy link" : "Link kopéieren",

@@ -166,6 +166,8 @@ OC.L10N.register(
     "Default quota" : "Standardkvot",
     "Select default quota" : "Välj standardkvot",
     "Save" : "Spara",
+    "Reconnect" : "Återanslut",
+    "Connect" : "Anslut",
     "New team" : "Nytt team",
     "Search teams" : "Sök efter team",
     "Overview" : "Översikt",

@@ -15,6 +15,7 @@ OC.L10N.register(
     "Unknown filetype" : "অজানা প্রকৃতির ফাইল",
     "Unlimited" : "অসীম",
     "Save" : "Save",
+    "Connect" : "সংযুক্ত হও",
     "Cancel" : "Cancel",
     "Folder" : "ফোল্ডার",
     "you" : "তুমি",

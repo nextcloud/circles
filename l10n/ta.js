@@ -7,6 +7,7 @@ OC.L10N.register(
     "Owner" : "Owner",
     "Open %s" : "திற {கோப்பின் பெயர்}",
     "Save" : "Save",
+    "Connect" : "இணைக்க",
     "Cancel" : "Cancel",
     "Back" : "பின்னுக்கு",
     "Folder" : "கோப்புறை",

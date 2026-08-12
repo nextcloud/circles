@@ -107,6 +107,8 @@ OC.L10N.register(
     "Default quota" : "Oletuskiintiö",
     "Select default quota" : "Valitse oletuskiintiö",
     "Save" : "Save",
+    "Reconnect" : "Yhdistä uudelleen",
+    "Connect" : "Yhdistä",
     "Overview" : "Yleiskuvaus",
     "No teams found" : "Tiimejä ei löytynyt",
     "Members" : "Jäsenet",

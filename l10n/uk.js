@@ -167,6 +167,8 @@ OC.L10N.register(
     "Default quota" : "Типова квота",
     "Select default quota" : "Встановити типову квоту",
     "Save" : "Save",
+    "Reconnect" : "Повторне підключення",
+    "Connect" : "Підключення",
     "Overview" : "Огляд",
     "No teams found" : "Жодної команди не знайдено",
     "Members" : "Учасники",

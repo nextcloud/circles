@@ -166,6 +166,8 @@ OC.L10N.register(
     "Default quota" : "Квота по умолчанию",
     "Select default quota" : "Квота по умолчанию",
     "Save" : "Save",
+    "Reconnect" : "Переподключиться ",
+    "Connect" : "Подключиться",
     "New team" : "Новая команда",
     "Search teams" : "Поиск команд",
     "Overview" : "Общие сведения",

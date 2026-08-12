@@ -162,6 +162,8 @@ OC.L10N.register(
     "Default quota" : "Cuota predeterminada",
     "Select default quota" : "Seleccionar cuota predeterminada",
     "Save" : "Guardar",
+    "Reconnect" : "Reconectar",
+    "Connect" : "Conectar",
     "Overview" : "Vista general",
     "No teams found" : "No se encontraron equipos",
     "Members" : "Miembros",

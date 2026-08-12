@@ -57,6 +57,7 @@ OC.L10N.register(
     "Unlimited" : "E palimituar",
     "Default quota" : "Kuota Parazgjedhje",
     "Save" : "Save",
+    "Connect" : "Lidhu",
     "Members" : "Anëtar",
     "Cancel" : "Cancel",
     "Next" : "I ardhshëm",

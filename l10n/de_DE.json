@@ -171,6 +171,8 @@
     "Select default quota" : "Standardkontingent auswählen",
     "Save" : "Speichern",
     "Default storage quota applied to each auto-created team space. Use 0 for unlimited storage." : "Für jeden automatisch erstellten Team-Bereich wird ein Standard-Speicherkontingent angewandt. 0 für unbegrenzten Speicherplatz verwenden.",
+    "Reconnect" : "Wiederverbinden",
+    "Connect" : "Verbinden",
     "New team" : "Neues Team",
     "Search teams" : "Teams suchen",
     "Overview" : "Übersicht",

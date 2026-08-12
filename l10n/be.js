@@ -61,6 +61,7 @@ OC.L10N.register(
     "Default quota" : "Прадвызначаная квота",
     "Select default quota" : "Выберыце прадвызначаную квоту",
     "Save" : "Save",
+    "Reconnect" : "Перазлучыцца",
     "Overview" : "Агляд",
     "No teams found" : "Каманд не знойдзена",
     "Members" : "Удзельнікі",

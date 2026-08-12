@@ -128,6 +128,8 @@ OC.L10N.register(
     "Default quota" : "Privzeta omejitev",
     "Select default quota" : "Izbor količinske omejitve",
     "Save" : "Save",
+    "Reconnect" : "Ponovno poveži",
+    "Connect" : "Poveži",
     "Overview" : "Splošni pregled",
     "No teams found" : "Ni oblikovanih skupin",
     "Members" : "Člani",
