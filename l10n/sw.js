@@ -162,6 +162,7 @@ OC.L10N.register(
     "The public URL used by other instances to discover and connect to your teams." : "URL ya umma inayotumiwa na matukio mengine kugundua na kuunganisha kwa timu zako.",
     "Unlimited" : "Isiyo na kikomo",
     "Save" : "Hifadhi",
+    "Connect" : "Unganisha",
     "Overview" : "Muhtasari",
     "No teams found" : "Hakuna timu zilizopatikana",
     "Members" : "Wanachama",

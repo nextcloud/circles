@@ -171,6 +171,8 @@
     "Select default quota" : "Selecionar a cota padrão",
     "Save" : "Salvar",
     "Default storage quota applied to each auto-created team space. Use 0 for unlimited storage." : "Cota de armazenamento padrão aplicada a cada espaço de equipe criado automaticamente. Use 0 para armazenamento ilimitado.",
+    "Reconnect" : "Reconectar",
+    "Connect" : "Conectar",
     "New team" : "Nova equipe",
     "Search teams" : "Pesquisar equipes",
     "Overview" : "Visão geral",

@@ -116,6 +116,8 @@ OC.L10N.register(
     "Default quota" : "Hạn ngạch mặc định",
     "Select default quota" : "Chọn hạn ngạch mặc định",
     "Save" : "Save",
+    "Reconnect" : "Kết nối lại",
+    "Connect" : "Kết nối",
     "Overview" : "Tổng quan",
     "Members" : "Thành viên",
     "Cancel" : "Cancel",

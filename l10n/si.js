@@ -15,6 +15,7 @@ OC.L10N.register(
     "%s" : "%s",
     "Unlimited" : "අසීමිත",
     "Save" : "Save",
+    "Connect" : "සම්බන්ධ කරන්න",
     "Cancel" : "Cancel",
     "Back" : "ආපසු",
     "Folder" : "බහාලුම",

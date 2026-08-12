@@ -166,6 +166,8 @@ OC.L10N.register(
     "Default quota" : "默認儲存容量限制",
     "Select default quota" : "選擇預設容量限制",
     "Save" : "儲存",
+    "Reconnect" : "重新連接",
+    "Connect" : "連線",
     "New team" : "新增團隊",
     "Search teams" : "搜尋團隊",
     "Overview" : "概覽",

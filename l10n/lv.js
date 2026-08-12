@@ -41,6 +41,7 @@ OC.L10N.register(
     "Unlimited" : "Neierobežota",
     "Default quota" : "Apjoms pēc noklusējuma",
     "Save" : "Save",
+    "Connect" : "Savienoties",
     "Overview" : "Pārskats",
     "No teams found" : "Netika atrasta neviena komanda",
     "Members" : "Dalībnieki",

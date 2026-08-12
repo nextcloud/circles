@@ -155,6 +155,8 @@ OC.L10N.register(
     "Default quota" : "سۈكۈتتىكى نورما",
     "Select default quota" : "سۈكۈتتىكى نورمىنى تاللاڭ",
     "Save" : "Save",
+    "Reconnect" : "قايتا ئۇلاڭ",
+    "Connect" : "ئۇلاڭ",
     "Overview" : "ئومۇمىي چۈشەنچە",
     "No teams found" : "ھېچقانداق كوماندا تېپىلمىدى",
     "Members" : "ئەزالار",

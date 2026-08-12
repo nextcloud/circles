@@ -164,6 +164,8 @@ OC.L10N.register(
     "Default quota" : "Өгөгдмөл квот",
     "Select default quota" : "Өгөгдмөл квот сонгох",
     "Save" : "–•–∞–¥–≥–∞–ª–∞—Ö",
+    "Reconnect" : "Дахин холбогдох",
+    "Connect" : "—Ö–æ–ª–±–æ—Ö",
     "Overview" : "Тойм",
     "No teams found" : "Баг олдсонгүй",
     "Members" : "–ì–∏—à“Ø“Ø–¥",

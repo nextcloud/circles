@@ -166,6 +166,8 @@ OC.L10N.register(
     "Default quota" : "Standaard quota",
     "Select default quota" : "Selecteer standaardquotum",
     "Save" : "Save",
+    "Reconnect" : "Opnieuw verbinden",
+    "Connect" : "Verbinden",
     "New team" : "Nieuw team",
     "Search teams" : "Teams zoeken",
     "Overview" : "Overzicht",

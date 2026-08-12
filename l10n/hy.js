@@ -10,6 +10,7 @@ OC.L10N.register(
     "Unknown filetype" : "Անհայտ նիշքի տեսակ",
     "Open %s" : "Բացել {նիշքիանուն}",
     "Save" : "Save",
+    "Connect" : "միացնել",
     "Cancel" : "Cancel",
     "Folder" : "Պանակ",
     "Copy link" : "Պատճենել հղումը",
