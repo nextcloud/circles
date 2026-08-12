@@ -149,6 +149,8 @@ OC.L10N.register(
     "Default quota" : "Default quota",
     "Select default quota" : "Select default quota",
     "Save" : "Save",
+    "Reconnect" : "ເຊື່ອມຕໍ່ໃໝ່",
+    "Connect" : "ເຊື່ອມຕໍ່",
     "Overview" : "ພາບລວມ",
     "No teams found" : "No teams found",
     "Members" : "ສະມາຊິກ",

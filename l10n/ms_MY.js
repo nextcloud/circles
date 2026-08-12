@@ -9,6 +9,7 @@ OC.L10N.register(
     "Files" : "Fail-fail",
     "Open %s" : "Buka%s",
     "Save" : "Save",
+    "Connect" : "Berhubung",
     "Cancel" : "Cancel",
     "Folder" : "Folder",
     "Close" : "Tutup",

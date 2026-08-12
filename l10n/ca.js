@@ -145,6 +145,8 @@ OC.L10N.register(
     "Default quota" : "Quota per defecte",
     "Select default quota" : "Seleccioneu la quota per defecte",
     "Save" : "Desa",
+    "Reconnect" : "Torna a connectar",
+    "Connect" : "Connecta",
     "Overview" : "Resum",
     "No teams found" : "No s'ha trobat cap equip",
     "Members" : "Membres",

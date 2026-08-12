@@ -79,6 +79,7 @@ OC.L10N.register(
     "Default quota" : "Defaŭlta kvoto",
     "Select default quota" : "Elekti defaŭltan kvoton",
     "Save" : "Save",
+    "Connect" : "Konekti",
     "Overview" : "Superrigardo",
     "Members" : "Membroj",
     "Cancel" : "Cancel",

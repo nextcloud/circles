@@ -150,6 +150,8 @@ OC.L10N.register(
     "Default quota" : "Подразумевана квота",
     "Select default quota" : "Одаберите подразумевану квоту",
     "Save" : "Save",
+    "Reconnect" : "Поново повежи",
+    "Connect" : "Повежи се",
     "Overview" : "Преглед",
     "No teams found" : "Није пронађен ниједан тим",
     "Members" : "Чланови",

@@ -26,6 +26,7 @@ OC.L10N.register(
     "Default quota" : "ค่าโควต้าเริ่มต้น",
     "Select default quota" : "เลือกค่าโควต้าเริ่มต้น",
     "Save" : "Save",
+    "Connect" : "เชื่อมต่อ",
     "Cancel" : "Cancel",
     "Next" : "ถัดไป",
     "Folder" : "โฟลเดอร์",

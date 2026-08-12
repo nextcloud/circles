@@ -27,6 +27,7 @@ OC.L10N.register(
     "Open %s" : "Ldi %s",
     "Unlimited" : "War talast",
     "Save" : "Sekles",
+    "Connect" : "Qqen",
     "Overview" : "Tamuɣli",
     "Members" : "Imedrawen",
     "Cancel" : "Semmet",

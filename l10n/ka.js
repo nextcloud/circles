@@ -113,6 +113,7 @@ OC.L10N.register(
     "Default quota" : "Default quota",
     "Select default quota" : "Select default quota",
     "Save" : "Save",
+    "Connect" : "Connect",
     "Overview" : "მიმოხილვა",
     "Members" : "Members",
     "Cancel" : "გაუქმება",

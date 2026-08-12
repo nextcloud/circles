@@ -110,6 +110,8 @@ OC.L10N.register(
     "Default quota" : "Cuota predefinida",
     "Select default quota" : "Seletziona cuota predefinida",
     "Save" : "Save",
+    "Reconnect" : "Torra a connètere",
+    "Connect" : "Connete",
     "Overview" : "Panoràmica",
     "Members" : "Membros",
     "Cancel" : "Cancel",

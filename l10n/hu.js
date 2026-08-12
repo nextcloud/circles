@@ -165,6 +165,8 @@ OC.L10N.register(
     "Default quota" : "Alapértelmezett kvóta",
     "Select default quota" : "Válasszon alapértelmezett kvótát",
     "Save" : "Save",
+    "Reconnect" : "Újrakapcsolódás",
+    "Connect" : "Kapcsolódás",
     "Overview" : "Áttekintés",
     "No teams found" : "Nem találhatók csapatok",
     "Members" : "Tagok",

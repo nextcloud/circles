@@ -173,6 +173,8 @@ OC.L10N.register(
     "Select default quota" : "選取預設容量限制",
     "Save" : "儲存",
     "Default storage quota applied to each auto-created team space. Use 0 for unlimited storage." : "適用於每個自動建立的團隊空間的預設儲存配額。若要啟用無限儲存空間，請設定為 0。",
+    "Reconnect" : "重新連接",
+    "Connect" : "連線",
     "New team" : "新團隊",
     "Search teams" : "搜尋團隊",
     "Overview" : "概覽",

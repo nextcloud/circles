@@ -11,6 +11,7 @@ OC.L10N.register(
     "Open %s" : "បើក %s",
     "Unlimited" : "មិន​កំណត់",
     "Save" : "Save",
+    "Connect" : "ភ្ជាប់",
     "Cancel" : "Cancel",
     "Folder" : "ថត",
     "you" : "អ្នក​",

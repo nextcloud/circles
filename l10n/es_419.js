@@ -74,6 +74,7 @@ OC.L10N.register(
     "Unlimited" : "Ilimitado",
     "Default quota" : "Cuota predeterminada",
     "Save" : "Save",
+    "Connect" : "Conectar",
     "Overview" : "Resumen",
     "Members" : "Miembros",
     "Cancel" : "Cancel",
