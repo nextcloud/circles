@@ -105,6 +105,7 @@ OC.L10N.register(
     "Password to access content" : "Cyfrinair i gyrchu cynnwys",
     "Bring cloud-users closer together." : "Dod â defnyddwyr cwmwl yn nes at ei gilydd.",
     "Save" : "Save",
+    "Connect" : "Cysylltu",
     "Cancel" : "Cancel",
     "Folder" : "Plygell",
     "Close" : "Cau",

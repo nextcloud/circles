@@ -166,6 +166,8 @@ OC.L10N.register(
     "Default quota" : "Quota par défaut",
     "Select default quota" : "Sélectionner le quota par défaut",
     "Save" : "Enregistrer",
+    "Reconnect" : "Se reconnecter",
+    "Connect" : "Se connecter",
     "New team" : "Nouvelle équipe",
     "Search teams" : "Rechercher des équipes",
     "Overview" : "Vue d'ensemble",

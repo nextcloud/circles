@@ -110,6 +110,7 @@ OC.L10N.register(
     "Bring cloud-users closer together." : "Adu utilizatorii cloud-ului mai aproape.",
     "Unlimited" : "Nelimitată",
     "Save" : "Save",
+    "Connect" : "Conectare",
     "Overview" : "Prezentare generală",
     "Members" : "Membri",
     "Cancel" : "Cancel",

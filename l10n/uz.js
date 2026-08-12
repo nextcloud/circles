@@ -29,6 +29,7 @@ OC.L10N.register(
     "https://…" : "https://…",
     "Unlimited" : "Unlimited",
     "Save" : "Saqlash",
+    "Connect" : "Connect",
     "Overview" : "Umumiy koʻrinish",
     "Cancel" : "Bekor qilish",
     "Next" : "Keyingisi",

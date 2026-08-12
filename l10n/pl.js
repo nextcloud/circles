@@ -166,6 +166,8 @@ OC.L10N.register(
     "Default quota" : "Domyślny limit",
     "Select default quota" : "Wybierz domyślny limit",
     "Save" : "Zapisz",
+    "Reconnect" : "Połącz ponownie",
+    "Connect" : "Połącz",
     "New team" : "Nowy zespół",
     "Search teams" : "Wyszukaj zespoły",
     "Overview" : "Przegląd",

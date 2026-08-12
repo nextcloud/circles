@@ -167,6 +167,8 @@ OC.L10N.register(
     "Default quota" : "Vaikimisi mahupiir",
     "Select default quota" : "Vali vaikimisi andmemahu piir",
     "Save" : "Salvesta",
+    "Reconnect" : "Ühenda uuesti",
+    "Connect" : "Ühenda",
     "New team" : "Uus tiim",
     "Search teams" : "Otsi tiime",
     "Overview" : "Ülevaade",

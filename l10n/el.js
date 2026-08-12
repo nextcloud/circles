@@ -166,6 +166,8 @@ OC.L10N.register(
     "Default quota" : "Προεπιλεγμένη χωρητικότητα",
     "Select default quota" : "Επιλογή προεπιλεγμένης χωρητικότητας",
     "Save" : "Αποθήκευση",
+    "Reconnect" : "Επανασύνδεση",
+    "Connect" : "Σύνδεση",
     "New team" : "Νέα ομάδα",
     "Search teams" : "Αναζήτηση ομάδων",
     "Overview" : "Επισκόπηση",

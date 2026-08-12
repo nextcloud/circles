@@ -165,6 +165,8 @@ OC.L10N.register(
     "Default quota" : "默认配额",
     "Select default quota" : "选择默认存储限额",
     "Save" : "Save",
+    "Reconnect" : "重新连接",
+    "Connect" : "连接",
     "Overview" : "概览",
     "No teams found" : "未找到任何团队",
     "Members" : "成员",

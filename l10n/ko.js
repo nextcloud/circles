@@ -106,6 +106,8 @@ OC.L10N.register(
     "Default quota" : "기본 할당량",
     "Select default quota" : "기본 할당량 설정",
     "Save" : "Save",
+    "Reconnect" : "재연결",
+    "Connect" : "연결",
     "Overview" : "개요",
     "Members" : "구성원",
     "Cancel" : "Cancel",

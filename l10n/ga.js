@@ -173,6 +173,8 @@ OC.L10N.register(
     "Select default quota" : "Roghnaigh cuóta réamhshocraithe",
     "Save" : "Sábháil",
     "Default storage quota applied to each auto-created team space. Use 0 for unlimited storage." : "Cuóta stórála réamhshocraithe curtha i bhfeidhm ar gach spás foirne a cruthaíodh go huathoibríoch. Úsáid 0 le haghaidh stórála gan teorainn.",
+    "Reconnect" : "Athcheangail",
+    "Connect" : "Ceangal",
     "New team" : "Foireann nua",
     "Search teams" : "Foirne cuardaigh",
     "Overview" : "Forbhreathnú",

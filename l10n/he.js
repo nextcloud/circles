@@ -74,6 +74,8 @@ OC.L10N.register(
     "Default quota" : "מיכסת בררת מחדל",
     "Select default quota" : "בחירת מכסת בררת מחדל",
     "Save" : "Save",
+    "Reconnect" : "התחבר מחדש",
+    "Connect" : "התחברות",
     "Overview" : "סקירה",
     "Members" : "חברים",
     "Cancel" : "Cancel",

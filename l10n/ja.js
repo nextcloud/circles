@@ -166,6 +166,8 @@ OC.L10N.register(
     "Default quota" : "デフォルトのクオータ",
     "Select default quota" : "デフォルトのクオータを選択",
     "Save" : "保存する",
+    "Reconnect" : "再接続",
+    "Connect" : "接続",
     "New team" : "新しいチーム",
     "Search teams" : "チームを検索",
     "Overview" : "概要",

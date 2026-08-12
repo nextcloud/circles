@@ -24,6 +24,7 @@ OC.L10N.register(
     "Default quota" : "Quota dre ziouer",
     "Select default quota" : "Choaz ar c'hota dre ziouer",
     "Save" : "Save",
+    "Connect" : "Kenstagañ",
     "Overview" : "Taol-lagad",
     "Cancel" : "Cancel",
     "Next" : "War-lerc'h",

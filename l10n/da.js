@@ -149,6 +149,8 @@ OC.L10N.register(
     "Default quota" : "Standard kvote",
     "Select default quota" : "Vælg standardkvote",
     "Save" : "Save",
+    "Reconnect" : "Tilslut igen",
+    "Connect" : "Forbind",
     "Overview" : "Overblik",
     "No teams found" : "Ingen teams fundet",
     "Members" : "Medlemmer",

@@ -155,6 +155,8 @@ OC.L10N.register(
     "Default quota" : "Kuota lehenetsia",
     "Select default quota" : "Aukeratu lehenetsitako kuota",
     "Save" : "Save",
+    "Reconnect" : "Berriro konektatu",
+    "Connect" : "Konektatu",
     "Overview" : "Ikuspegi orokorra",
     "No teams found" : "Ez da lantalderik aurkitu",
     "Members" : "Partaideak",
