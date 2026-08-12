@@ -20,7 +20,7 @@ export default (env) => createAppConfig({
 	},
 	config: {
 		build: {
-			watch: env.mode === 'development'
+			watch: process.argv.includes('--watch')
 				? { allowInputInsideOutputPath: true }
 				: undefined,
 		},

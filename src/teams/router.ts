@@ -25,7 +25,6 @@ const routes: RouteRecordRaw[] = [
 		component: JoinInvitation,
 	},
 	{
-		name: 'team',
 		path: '/team/:teamId',
 		component: TeamPage,
 		props: true,
