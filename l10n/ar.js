@@ -146,6 +146,8 @@ OC.L10N.register(
     "Default quota" : "الحصة الافتراضية",
     "Select default quota" : "تعيين الحصة الافتراضية",
     "Save" : "Save",
+    "Reconnect" : "أعد الاتصال",
+    "Connect" : "اتصال",
     "Overview" : "نظرة عامة",
     "No teams found" : "لا يوجد أي فريق",
     "Members" : "الاعضاء",
