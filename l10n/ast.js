@@ -138,6 +138,8 @@ OC.L10N.register(
     "Unlimited" : "Ensin llende",
     "Default quota" : "Cuota predeterminada",
     "Save" : "Save",
+    "Reconnect" : "Volver conectar",
+    "Connect" : "Coneutar",
     "Overview" : "Vista xeneral",
     "No teams found" : "Nun s'atopó nengún equipu",
     "Members" : "Miembros",
