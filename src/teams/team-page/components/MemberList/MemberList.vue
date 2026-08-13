@@ -107,6 +107,7 @@ import {
 	SHARES_TYPES_MEMBER_MAP,
 } from '../../models/constants.ts'
 import { getRecommendations, getSuggestions } from '../../services/collaborationAutocompletion.js'
+import { logger } from '../../../../logger.ts'
 
 export default defineComponent({
 	name: 'MemberList',
@@ -294,7 +295,7 @@ export default defineComponent({
 				this.recommendations = results
 				this.pickerData = results
 			} catch (error) {
-				console.error('Unable to get the recommendations list', error)
+				logger.error('Unable to get the recommendations list', { error })
 				// Do not show the error, let the user search
 				// showError(t('circles', 'Unable to get the recommendations list'))
 			} finally {
@@ -320,7 +321,7 @@ export default defineComponent({
 				const results = await getSuggestions(term, this.circle)
 				this.pickerData = results
 			} catch (error) {
-				console.error('Unable to get the results', error)
+				logger.error('Unable to get the results', { error })
 				showError(t('circles', 'Unable to get the results'))
 			} finally {
 				this.pickerLoading = false
@@ -357,7 +358,7 @@ export default defineComponent({
 				}
 			} catch (error) {
 				showError(t('circles', 'There was an issue adding members to the team'))
-				console.error('There was an issue adding members to the circle', this.pickerCircle, error)
+				logger.error('There was an issue adding members to the circle', { pickerCircle: this.pickerCircle, error })
 			} finally {
 				this.pickerLoading = false
 			}

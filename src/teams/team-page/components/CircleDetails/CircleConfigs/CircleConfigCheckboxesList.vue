@@ -26,7 +26,7 @@ import { ref } from 'vue'
 import Circle from '../../../models/circle.ts'
 import { CircleConfigs } from '../../../models/constants.ts'
 import { CircleEdit, editCircle } from '../../../services/circles.ts'
-import logger from '../../../services/logger.js'
+import { logger } from '../../../../../logger.ts'
 
 const props = defineProps<{
 	circle: Circle

@@ -25,7 +25,10 @@ const { canManage, canLeave, canDelete, onManage, onCopyLink, onLeave, onDelete 
 </script>
 
 <template>
-	<NcAppNavigationItem :name="team.displayName" :to="to">
+	<NcAppNavigationItem :name="team.displayName" :to="to" :forceMenu="true">
+		<!-- force-menu avoids a Tab-trap in NcAppNavigationItem/NcActions when only
+			one action (copy link) is available: their Tab handler focuses a menu
+			trigger button that isn't rendered in single-inline-action mode. -->
 		<template #icon>
 			<TeamAvatar :displayName="team.displayName" :size="32" />
 		</template>

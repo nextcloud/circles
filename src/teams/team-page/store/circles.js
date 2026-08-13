@@ -20,7 +20,7 @@ import {
 	leaveCircle,
 	revokeInvitationLink,
 } from '../services/circles.ts'
-import logger from '../services/logger.js'
+import { logger } from '../../../logger.ts'
 
 const state = {
 	/** @type {Object<string>} Circle */
@@ -171,7 +171,7 @@ const actions = {
 		})
 
 		if (failure) {
-			showError(t('circles', 'An error has occurred in team(s). Check the console for more details.'))
+			showError(t('circles', 'An error has occurred in team(s). Check the log for more details.'))
 		}
 
 		return circles
@@ -246,7 +246,7 @@ const actions = {
 			context.dispatch('updateCirclesPopulationCount')
 			return circle
 		} catch (error) {
-			console.error(error)
+			logger.error(error)
 			showError(t('circles', 'Unable to create team {circleName}', { circleName }))
 		}
 	},
@@ -265,7 +265,7 @@ const actions = {
 			logger.debug('Deleted circle', { circleId })
 			context.dispatch('updateCirclesPopulationCount')
 		} catch (error) {
-			console.error(error)
+			logger.error(error)
 			showError(t('circles', 'Unable to delete team {circleId}', { circleId }))
 		}
 	},

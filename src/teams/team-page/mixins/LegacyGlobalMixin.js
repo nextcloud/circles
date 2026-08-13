@@ -4,7 +4,7 @@
  */
 
 import { n, t } from '@nextcloud/l10n'
-import logger from '../services/logger.js'
+import { logger } from '../../../logger.ts'
 
 /**
  * Mixin for translations and legacy stuff.

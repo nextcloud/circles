@@ -6,7 +6,7 @@
 
 import type { MemberLevel, MemberType } from './constants.ts'
 
-import logger from '../services/logger.js'
+import { logger } from '../../../logger.ts'
 import Circle from './circle.ts'
 import { MemberLevels, MemberTypes } from './constants.ts'
 
