@@ -434,7 +434,11 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 	}
 
 	/**
-	 * @param FederatedUser $federatedUser
+	 * A null $federatedUser returns the shares of every owner and initiator. This
+	 * is needed for ownerless mounts (e.g. groupfolders), where no single user can
+	 * be used to filter the shares.
+	 *
+	 * @param FederatedUser|null $federatedUser
 	 * @param Folder $node
 	 * @param bool $reshares
 	 * @param bool $shallow Whether the method should stop at the first level, or look into sub-folders.
@@ -443,7 +447,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 	 * @throws RequestBuilderException
 	 */
 	public function getSharesInFolder(
-		FederatedUser $federatedUser,
+		?FederatedUser $federatedUser,
 		Folder $node,
 		bool $reshares,
 		bool $shallow = true,
@@ -451,7 +455,9 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		$qb = $this->getShareSelectSql();
 
 		$qb->leftJoinCircle(CoreQueryBuilder::SHARE, null, 'share_with');
-		$qb->limitToShareOwner(CoreQueryBuilder::SHARE, $federatedUser, $reshares);
+		if ($federatedUser !== null) {
+			$qb->limitToShareOwner(CoreQueryBuilder::SHARE, $federatedUser, $reshares);
+		}
 		$qb->leftJoinFileCache(CoreQueryBuilder::SHARE);
 
 		$aliasFileCache = $qb->generateAlias(CoreQueryBuilder::SHARE, CoreQueryBuilder::FILE_CACHE);
