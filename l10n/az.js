@@ -19,6 +19,7 @@ OC.L10N.register(
     "Open %s" : "%s faylını açın",
     "Unlimited" : "Limitsiz",
     "Save" : "Save",
+    "Connect" : "Qoşul",
     "Overview" : "İcmal",
     "Cancel" : "Cancel",
     "Back" : "Geri",

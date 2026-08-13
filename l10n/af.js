@@ -22,6 +22,8 @@ OC.L10N.register(
     "Unlimited" : "Onbeperkte",
     "Default quota" : "Verstekkwota",
     "Save" : "Save",
+    "Reconnect" : "Herverbind",
+    "Connect" : "Verbind",
     "Cancel" : "Cancel",
     "Folder" : "Vouer",
     "you" : "u",
