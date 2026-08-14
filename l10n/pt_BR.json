@@ -384,7 +384,6 @@
     "Email addresses" : "Endereços de e-mail",
     "contacts" : "contatos",
     "Contacts" : "Contatos",
-    "An error has occurred in team(s). Check the console for more details." : "Ocorreu um erro na(s) equipe(s). Verifique o console para obter mais detalhes.",
     "Unable to create team {circleName}" : "Não é possível criar a equipe {circleName}",
     "Unable to delete team {circleId}" : "Não é possível excluir a equipe {circleId}",
     "No files in here" : "Nenhum arquivo aqui",

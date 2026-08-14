@@ -386,7 +386,6 @@ OC.L10N.register(
     "Email addresses" : "Seoltaí ríomhphoist",
     "contacts" : "teagmhálacha",
     "Contacts" : "Teagmhálaithe",
-    "An error has occurred in team(s). Check the console for more details." : "Tharla earráid i bhfoirne/foirne. Seiceáil an consól le haghaidh tuilleadh sonraí.",
     "Unable to create team {circleName}" : "Ní féidir an fhoireann {circleName} a chruthú",
     "Unable to delete team {circleId}" : "Ní féidir an fhoireann {circleId} a scriosadh",
     "No files in here" : "Níl aon chomhaid istigh anseo",

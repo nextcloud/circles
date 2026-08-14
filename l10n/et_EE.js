@@ -368,7 +368,6 @@ OC.L10N.register(
     "Email addresses" : "E-posti aadressid",
     "contacts" : "kontaktid",
     "Contacts" : "Kontaktid",
-    "An error has occurred in team(s). Check the console for more details." : "Tiimi(de)s tekkis viga. Lisateavet palun vaata konsoolilt.",
     "Unable to create team {circleName}" : "„{circleName}“ tiimi loomine pole võimalik",
     "Unable to delete team {circleId}" : "„{circleId}“ tiimi kustutamine pole võimalik",
     "No files in here" : "Siin ei ole faile",

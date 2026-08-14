@@ -388,7 +388,6 @@
     "Email addresses" : "El. pašto adresai",
     "contacts" : "kontaktai",
     "Contacts" : "Kontaktai",
-    "An error has occurred in team(s). Check the console for more details." : "Komandoje (-ose) įvyko klaida. Daugiau informacijos rasite konsolėje.",
     "Unable to create team {circleName}" : "Nepavyko sukurti komandos {circleName}",
     "Unable to delete team {circleId}" : "Nepavyko ištrinti komandos {circleId}",
     "No files in here" : "Čia failų nėra",
