@@ -7,6 +7,7 @@
   "type": "module",
   "scripts": {
     "build": "vite --mode production build",
+    "dev": "NODE_ENV=development vite --mode development build",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "start:nextcloud": "node playwright/start-nextcloud-server.mjs",
@@ -14,7 +15,7 @@
     "test:coverage": "LANG=C vitest run --coverage",
     "test:e2e": "playwright test",
     "ts:check": "vue-tsc --noEmit",
-    "watch": "vite --mode development build --watch"
+    "watch": "NODE_ENV=development vite --mode development build --watch"
   },
   "overrides": {
     "vite-plugin-node-polyfills": "^0.24.0"
