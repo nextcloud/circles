@@ -341,7 +341,6 @@ OC.L10N.register(
     "Email addresses" : "メールアドレス",
     "contacts" : "連絡先",
     "Contacts" : "連絡先",
-    "An error has occurred in team(s). Check the console for more details." : "チームでエラーが発生しました。詳細については、コンソールを確認してください。",
     "Unable to create team {circleName}" : "チーム{circleName}を作成できません",
     "Unable to delete team {circleId}" : "チーム {circleId} を削除できません",
     "No files in here" : "ファイルがありません",

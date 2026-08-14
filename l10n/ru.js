@@ -342,7 +342,6 @@ OC.L10N.register(
     "Email addresses" : "Адреса электронной почты",
     "contacts" : "контакты",
     "Contacts" : "Контакты",
-    "An error has occurred in team(s). Check the console for more details." : "Произошла ошибка в команде(ах). Проверьте консоль для получения более подробной информации.",
     "Unable to create team {circleName}" : "Невозможно создать команду {circleName}",
     "Unable to delete team {circleId}" : "Невозможно удалить команду {circleId}",
     "No files in here" : "Здесь нет файлов",
