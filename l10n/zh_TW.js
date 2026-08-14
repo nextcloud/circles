@@ -390,7 +390,6 @@ OC.L10N.register(
     "Email addresses" : "電子郵件地址",
     "contacts" : "聯絡人",
     "Contacts" : "聯絡人",
-    "An error has occurred in team(s). Check the console for more details." : "團隊中出現錯誤。請檢查主控台以取得更多詳細資訊。",
     "Unable to create team {circleName}" : "無法建立團隊 {circleName}",
     "Unable to delete team {circleId}" : "無法刪除團隊 {circleId}",
     "No files in here" : "沒有檔案在這裡。",

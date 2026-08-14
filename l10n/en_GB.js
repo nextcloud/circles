@@ -343,7 +343,6 @@ OC.L10N.register(
     "Email addresses" : "Email addresses",
     "contacts" : "contacts",
     "Contacts" : "Contacts",
-    "An error has occurred in team(s). Check the console for more details." : "An error has occurred in team(s). Check the console for more details.",
     "Unable to create team {circleName}" : "Unable to create team {circleName}",
     "Unable to delete team {circleId}" : "Unable to delete team {circleId}",
     "No files in here" : "No files in here",

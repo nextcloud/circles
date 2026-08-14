@@ -335,7 +335,6 @@
     "Email addresses" : "Adresy e-mail",
     "contacts" : "kontakty",
     "Contacts" : "Kontakty",
-    "An error has occurred in team(s). Check the console for more details." : "Wystąpił błąd w zespole (lub zespołach). Sprawdź konsolę, aby uzyskać więcej szczegółów.",
     "Unable to create team {circleName}" : "Nie udało się utworzyć zespołu {circleName}",
     "Unable to delete team {circleId}" : "Nie udało się usunąć zespołu {circleId}",
     "No files in here" : "Brak plików tutaj",
