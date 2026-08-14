@@ -44,11 +44,21 @@ class WebfingerHandler implements IHandler {
 
 		$request = $context->getHttpRequest();
 		$subject = $request->getParam('resource', '');
+		// In some local network use cases, params might not be available in the request.
+		// We extract them manually and feed the $fallback array
+		if ($subject === '') {
+			$params = substr($request->getRequestUri(), strlen($request->getPathInfo()));
+			if (str_starts_with($params, '?')) {
+				parse_str(substr($params, 1), $fallback);
+				$subject = $fallback['resource'] ?? '';
+			}
+		}
+
 		if ($subject !== Application::APP_SUBJECT) {
 			return $previousResponse;
 		}
 
-		$token = $request->getParam('check', '');
+		$token = $request->getParam('check', $fallback['check'] ?? '');
 
 		$response = $previousResponse;
 		if (!($response instanceof JrdResponse)) {
@@ -56,7 +66,7 @@ class WebfingerHandler implements IHandler {
 		}
 
 		try {
-			$this->interfaceService->setCurrentInterfaceFromRequest($request, $request->getParam('test', ''));
+			$this->interfaceService->setCurrentInterfaceFromRequest($request, $request->getParam('test', $fallback['test'] ?? ''));
 			$this->remoteStreamService->getAppSignatory();
 			$href = $this->interfaceService->getCloudPath('circles.Remote.appService');
 			$info = [
