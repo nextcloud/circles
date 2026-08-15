@@ -390,6 +390,7 @@ OC.L10N.register(
     "Email addresses" : "E-Mail-Adressen",
     "contacts" : "Kontakte",
     "Contacts" : "Kontakte",
+    "An error has occurred in team(s). Check the log for more details." : "Es ist ein Fehler in Team(s) aufgetreten. Bitte das Protokoll für weitere Einzelheiten prüfen.",
     "Unable to create team {circleName}" : "Team {circleName} konnte nicht erstellt werden",
     "Unable to delete team {circleId}" : "Team {circleId} konnte nicht gelöscht werden",
     "No files in here" : "Keine Dateien vorhanden",
