@@ -153,7 +153,7 @@ trait TNCSignatory {
 
 		openssl_sign($clear, $signed, $privateKey, $this->getOpenSSLAlgo($signatory));
 
-		return base64_encode($signed);
+		return base64_encode((string)$signed);
 	}
 
 	/**

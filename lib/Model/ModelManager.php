@@ -261,7 +261,7 @@ class ModelManager {
 					$circleInvitation = new CircleInvitation();
 					$circleInvitation->importFromDatabase($data, $prefix);
 					$circle->setCircleInvitation($circleInvitation);
-				} catch (CircleInvitationNotFoundException $e) {
+				} catch (CircleInvitationNotFoundException) {
 				}
 				break;
 		}

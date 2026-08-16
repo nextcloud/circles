@@ -803,7 +803,7 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 			/** @var CircleInvitation $circleInvitation */
 			$circleInvitation = $this->deserialize($this->getArray('invitation', $data), CircleInvitation::class);
 			$this->setCircleInvitation($circleInvitation);
-		} catch (InvalidItemException $e) {
+		} catch (InvalidItemException) {
 		}
 
 		return $this;

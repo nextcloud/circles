@@ -847,7 +847,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 
 		try {
 			$aliasInvitation = $this->generateAlias($alias, self::INVITATION, $options);
-		} catch (RequestBuilderException $e) {
+		} catch (RequestBuilderException) {
 			return;
 		}
 
@@ -1407,7 +1407,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 
 		try {
 			$aliasInvitation = $this->generateAlias($alias, self::INVITATION, $options);
-		} catch (RequestBuilderException $e) {
+		} catch (RequestBuilderException) {
 			return;
 		}
 

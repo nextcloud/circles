@@ -30,7 +30,7 @@ use OCP\IDBConnection;
 class MemberRequest extends MemberRequestBuilder {
 
 	public function __construct(
-		private IDBConnection $db,
+		private readonly IDBConnection $db,
 		TimezoneService $timezoneService,
 		ConfigService $configService,
 	) {

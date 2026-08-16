@@ -16,15 +16,16 @@ use OCP\AppFramework\Services\IInitialState;
 use OCP\IAppConfig;
 use OCP\IL10N;
 use OCP\Settings\IDelegatedSettings;
+use OCP\Util;
 
 class AdminTeamFolders implements IDelegatedSettings {
 	/**
 	 * AdminTeamFolders constructor.
 	 */
 	public function __construct(
-		private IAppConfig $appConfig,
-		private IL10N $l,
-		private IInitialState $initialState,
+		private readonly IAppConfig $appConfig,
+		private readonly IL10N $l,
+		private readonly IInitialState $initialState,
 	) {
 	}
 
@@ -38,8 +39,8 @@ class AdminTeamFolders implements IDelegatedSettings {
 		$this->initialState->provideInitialState('teamFolderAutoCreate', $teamFolderAutoCreate);
 		$this->initialState->provideInitialState('teamFolderDefaultQuota', $teamFolderDefaultQuota);
 
-		\OCP\Util::addStyle(Application::APP_ID, 'teams-settings-team-folders');
-		\OCP\Util::addScript(Application::APP_ID, 'teams-settings-team-folders');
+		Util::addStyle(Application::APP_ID, 'teams-settings-team-folders');
+		Util::addScript(Application::APP_ID, 'teams-settings-team-folders');
 
 		return new TemplateResponse(Application::APP_ID, 'settings-team-folders', renderAs: '');
 	}
