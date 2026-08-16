@@ -33,8 +33,6 @@ class ShareByCircleProviderTest extends TestCase {
 	private FederatedUserService&MockObject $federatedUserService;
 
 	protected function setUp(): void {
-		parent::setUp();
-
 		$this->shareWrapperService = $this->createMock(ShareWrapperService::class);
 		$this->federatedUserService = $this->createMock(FederatedUserService::class);
 

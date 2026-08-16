@@ -19,8 +19,6 @@ class TeamFolderPolicyTest extends TestCase {
 	private IAppConfig&MockObject $appConfig;
 
 	protected function setUp(): void {
-		parent::setUp();
-
 		$this->appConfig = $this->createMock(IAppConfig::class);
 
 		$this->service = new TeamFolderPolicy(
@@ -96,9 +94,7 @@ class TeamFolderPolicyTest extends TestCase {
 	private function createCircle(int $config = Circle::CFG_CIRCLE): Circle&MockObject {
 		$circle = $this->createMock(Circle::class);
 		$circle->method('isConfig')
-			->willReturnCallback(function (int $flag) use ($config): bool {
-				return ($config & $flag) === $flag;
-			});
+			->willReturnCallback(fn (int $flag): bool => ($config & $flag) === $flag);
 
 		return $circle;
 	}

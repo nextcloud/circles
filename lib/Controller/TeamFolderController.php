@@ -12,6 +12,7 @@ namespace OCA\Circles\Controller;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\InsufficientPermissionException;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Service\PermissionService;
 use OCA\Circles\Service\TeamFolderPolicy;
 use OCP\AppFramework\Http;
@@ -23,6 +24,7 @@ use OCP\AppFramework\OCSController;
 use OCP\IRequest;
 use OCP\IUser;
 use OCP\IUserSession;
+use OCP\Teams\ITeamFolderProvider;
 use OCP\Teams\ITeamManager;
 use OCP\Teams\Team;
 
@@ -86,7 +88,7 @@ class TeamFolderController extends OCSController {
 		return new DataResponse(['success' => true]);
 	}
 
-	private function getProvider(): \OCP\Teams\ITeamFolderProvider {
+	private function getProvider(): ITeamFolderProvider {
 		$provider = $this->teamManager->getTeamFolderProvider();
 		if ($provider === null) {
 			throw new OCSNotFoundException('No team folder provider is enabled');
@@ -95,7 +97,7 @@ class TeamFolderController extends OCSController {
 		return $provider;
 	}
 
-	private function getCircle(string $circleId): \OCA\Circles\Model\Circle {
+	private function getCircle(string $circleId): Circle {
 		try {
 			return $this->circleRequest->getCircle($circleId);
 		} catch (CircleNotFoundException) {

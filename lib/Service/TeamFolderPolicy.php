@@ -30,7 +30,7 @@ use OCP\AppFramework\Services\IAppConfig;
  */
 class TeamFolderPolicy {
 	public function __construct(
-		private IAppConfig $appConfig,
+		private readonly IAppConfig $appConfig,
 	) {
 	}
 

@@ -39,6 +39,7 @@ use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\AppFramework\Http;
 use OCP\IConfig;
 use OCP\IURLGenerator;
+use OCP\Server;
 use ReflectionClass;
 use ReflectionException;
 
@@ -137,7 +138,7 @@ class RemoteStreamService extends NCSignature {
 			)
 		);
 		// use Server::get() to avoid circular dependency
-		$federationAgentService = \OCP\Server::get(FederationAgentService::class);
+		$federationAgentService = Server::get(FederationAgentService::class);
 		$app->setFederationAgentId($federationAgentService->getOrCreateFederationAgentId());
 
 		if ($this->interfaceService->isCurrentInterfaceInternal()) {

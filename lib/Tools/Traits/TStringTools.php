@@ -11,6 +11,7 @@ namespace OCA\Circles\Tools\Traits;
 
 use DateTime;
 use Exception;
+use OCA\Circles\Model\ManagedModel;
 
 trait TStringTools {
 	use TArrayTools;
@@ -45,7 +46,7 @@ trait TStringTools {
 	protected function generateCircleIdFromString(string $source): string {
 		$chars = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890';
 		$max = strlen($chars);
-		$length = \OCA\Circles\Model\ManagedModel::ID_LENGTH;
+		$length = ManagedModel::ID_LENGTH;
 
 		$bytes = '';
 		for ($i = 0; strlen($bytes) < $length; $i++) {
