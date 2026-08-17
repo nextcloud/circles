@@ -29,7 +29,10 @@ const { canManage, canLeave, canDelete, onManage, onCopyLink, onLeave, onDelete 
 
 <template>
 	<div class="team-header">
-		<TeamAvatar :displayName="circle.displayName" :size="48" />
+		<TeamAvatar
+			:displayName="circle.displayName"
+			:circleId="circle.id"
+			:size="48" />
 		<div class="team-header__info">
 			<h2 class="team-header__name" :title="circle.displayName">
 				{{ circle.displayName }}
