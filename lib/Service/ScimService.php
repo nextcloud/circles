@@ -13,6 +13,7 @@ use Exception;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\ConfigLexicon;
 use OCA\Circles\Db\CircleRequest;
+use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\FederatedItems\CircleCreate;
 use OCA\Circles\Model\Circle;
@@ -31,7 +32,9 @@ class ScimService {
 		private readonly IAppConfig $appConfig,
 		private readonly IClientService $clientService,
 		private readonly CircleRequest $circleRequest,
+		private readonly MemberRequest $memberRequest,
 		private readonly CircleService $circleService,
+		private readonly MemberService $memberService,
 		private readonly PermissionService $permissionService,
 		private readonly FederatedUserService $federatedUserService,
 		private readonly FederatedEventService $federatedEventService,
@@ -83,7 +86,7 @@ class ScimService {
 	}
 
 	public function syncFederatedModerators(): void {
-		$remoteInstances = $this->appConfig->getAppValueArray(ConfigLexicon::SCIM_FEDERATED_MODERATOR_INSTANCES);
+		$remoteInstances = $this->appConfig->getAppValueArray(ConfigLexicon::SCIM_REMOTE_INSTANCES);
 		if ($remoteInstances === []) {
 			$this->logger->debug('no remote instance configured for SCIM federated moderators, skipping sync');
 			return;
@@ -100,6 +103,43 @@ class ScimService {
 		}
 
 		$this->federationAgentService->ensureFederationAgentsAsModerators($circleIds, $remoteInstances);
+	}
+
+	/**
+	 * Removes members belonging to the given remote instance from every SCIM circle
+	 */
+	public function removeRemoteInstanceMembers(string $remoteInstance): void {
+		$circleIds = array_map(
+			fn ($circle) => $circle->getSingleId(),
+			$this->circleRequest->getScim()
+		);
+
+		if ($circleIds === []) {
+			$this->logger->debug('no SCIM circle known, skipping instance member removal');
+			return;
+		}
+
+		$this->federatedUserService->setLocalCurrentApp(Application::APP_ID, Member::APP_CIRCLES);
+		$currentApp = $this->federatedUserService->getCurrentApp();
+		$this->federatedUserService->setCurrentUser($currentApp);
+
+		foreach ($circleIds as $circleId) {
+			try {
+				$members = $this->memberRequest->getMembersByCircleIdAndInstance($circleId, $remoteInstance);
+			} catch (Exception $e) {
+				$this->logger->error('could not list members for revoked instance', ['circleId' => $circleId, 'instance' => $remoteInstance, 'exception' => $e]);
+				continue;
+			}
+
+			foreach ($members as $member) {
+				try {
+					$this->memberService->removeMember($member->getId());
+					$this->logger->debug('member from revoked instance removed from circle', ['circleId' => $circleId, 'memberId' => $member->getId(), 'instance' => $remoteInstance]);
+				} catch (Exception $e) {
+					$this->logger->error('could not remove member from revoked instance', ['circleId' => $circleId, 'memberId' => $member->getId(), 'instance' => $remoteInstance, 'exception' => $e]);
+				}
+			}
+		}
 	}
 
 	/**

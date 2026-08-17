@@ -41,7 +41,8 @@ class RemovingMember implements IEventListener {
 		$member = $event->getMember();
 
 		if ($member->getUserType() === Member::TYPE_CIRCLE) {
-			$members = $member->getBasedOn()->getInheritedMembers();
+			$basedOn = $member->getBasedOn();
+			$members = $basedOn !== null ? $basedOn->getInheritedMembers() : [];
 		} else {
 			$members = [$member];
 		}
