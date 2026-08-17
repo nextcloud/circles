@@ -390,6 +390,7 @@ OC.L10N.register(
     "Email addresses" : "E-posta adresleri",
     "contacts" : "kişi",
     "Contacts" : "Kişiler",
+    "An error has occurred in team(s). Check the log for more details." : "Takımlarda bir sorun çıktı. Ayrıntılı bilgi almak için günlük kayıtlarına bakabilirsiniz.",
     "Unable to create team {circleName}" : "{circleName} takımı oluşturulamadı",
     "Unable to delete team {circleId}" : "{circleId} takımı silinemedi",
     "No files in here" : "Burada herhangi bir dosya yok",
