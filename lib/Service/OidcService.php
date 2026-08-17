@@ -84,7 +84,7 @@ class OidcService {
 
 		// remove user from circles they were added to via OIDC but no longer belong to
 		foreach ($this->memberRequest->getMembersByUserId($userId) as $member) {
-			if ($member->getManagedBy() !== self::MANAGED_BY_OIDC) {
+			if ($member->getNote(Member::NOTE_MANAGED_BY) !== self::MANAGED_BY_OIDC) {
 				continue;
 			}
 			if (in_array($member->getCircleId(), $desiredCircleIds, true)) {
@@ -117,7 +117,7 @@ class OidcService {
 
 			// mark this membership as managed by OIDC
 			$member = $this->memberRequest->getMemberByUserId($circleId, $userId);
-			$member->setManagedBy(self::MANAGED_BY_OIDC);
+			$member->setNote(Member::NOTE_MANAGED_BY, self::MANAGED_BY_OIDC);
 			$this->memberRequest->update($member);
 		} catch (Exception $e) {
 			$this->logger->error('could not add user to circle', ['userId' => $userId, 'circleId' => $circleId, 'exception' => $e]);

@@ -61,7 +61,7 @@ class ScimService {
 			} catch (CircleNotFoundException) {
 			}
 			try {
-				$this->createCircle($circleId, $circle['displayName']);
+				$this->createCircle($circleId, $circle['displayName'], $circle['id']);
 				$this->logger->debug('circle created from SCIM group', ['scimGroupId' => $circle['id'], 'circleId' => $circleId, 'displayName' => $circle['displayName']]);
 			} catch (Exception $e) {
 				$this->logger->error('could not create circle from SCIM group', ['scimGroupId' => $circle['id'], 'exception' => $e]);
@@ -140,7 +140,7 @@ class ScimService {
 	/**
 	 * @throws Exception
 	 */
-	public function createCircle(string $singleId, string $name): void {
+	public function createCircle(string $singleId, string $name, string $externalId): void {
 		$owner = $this->federatedUserService->getCurrentApp();
 
 		$config = Circle::CFG_ROOT + Circle::CFG_FEDERATED + Circle::CFG_SCIM;
@@ -149,7 +149,8 @@ class ScimService {
 		$circle->setName($this->circleService->cleanCircleName($name))
 			->setSingleId($singleId)
 			->setSource(Member::APP_CIRCLES)
-			->setConfig($config);
+			->setConfig($config)
+			->setSettings([Circle::SETTING_EXTERNAL_ID => $externalId]);
 
 		$this->circleService->confirmName($circle);
 		$this->permissionService->confirmAllowedCircleTypes($circle);
