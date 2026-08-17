@@ -17,6 +17,7 @@ use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Service\EventService;
 use OCA\Circles\Tools\Traits\TDeserialize;
 use OCP\Security\ISecureRandom;
+use Random\Randomizer;
 
 class CircleCreateInvitation implements IFederatedItem {
 	use TDeserialize;
@@ -24,7 +25,6 @@ class CircleCreateInvitation implements IFederatedItem {
 	public function __construct(
 		private CircleInvitationRequest $circleInvitationRequest,
 		private EventService $eventService,
-		private ISecureRandom $random,
 	) {
 	}
 
@@ -36,7 +36,7 @@ class CircleCreateInvitation implements IFederatedItem {
 
 		$new = clone $circle;
 
-		$invitationCode = $this->random->generate(16, ISecureRandom::CHAR_HUMAN_READABLE);
+		$invitationCode = (new Randomizer())->getBytesFromString(ISecureRandom::CHAR_HUMAN_READABLE, 16);
 
 		$circleInvitation = new CircleInvitation();
 		$circleInvitation->setCircleId($circle->getSingleId());
