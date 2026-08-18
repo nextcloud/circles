@@ -16,6 +16,7 @@ use OCP\AppFramework\Services\IInitialState;
 use OCP\IAppConfig;
 use OCP\IL10N;
 use OCP\Settings\IDelegatedSettings;
+use OCP\Util;
 
 class AdminTeamFolders implements IDelegatedSettings {
 	/**
@@ -32,14 +33,12 @@ class AdminTeamFolders implements IDelegatedSettings {
 	 * @return TemplateResponse
 	 */
 	public function getForm(): TemplateResponse {
-		$teamFolderAutoCreate = $this->appConfig->getValueBool(Application::APP_ID, ConfigLexicon::TEAM_FOLDER_AUTO_CREATE, true);
 		$teamFolderDefaultQuota = $this->appConfig->getValueInt(Application::APP_ID, ConfigLexicon::TEAM_FOLDER_DEFAULT_QUOTA, 0);
 
-		$this->initialState->provideInitialState('teamFolderAutoCreate', $teamFolderAutoCreate);
 		$this->initialState->provideInitialState('teamFolderDefaultQuota', $teamFolderDefaultQuota);
 
-		\OCP\Util::addStyle(Application::APP_ID, 'teams-settings-team-folders');
-		\OCP\Util::addScript(Application::APP_ID, 'teams-settings-team-folders');
+		Util::addStyle(Application::APP_ID, 'teams-settings-team-folders');
+		Util::addScript(Application::APP_ID, 'teams-settings-team-folders');
 
 		return new TemplateResponse(Application::APP_ID, 'settings-team-folders', renderAs: '');
 	}
@@ -69,7 +68,6 @@ class AdminTeamFolders implements IDelegatedSettings {
 	public function getAuthorizedAppConfig(): array {
 		return [
 			Application::APP_ID => [
-				ConfigLexicon::TEAM_FOLDER_AUTO_CREATE,
 				ConfigLexicon::TEAM_FOLDER_DEFAULT_QUOTA,
 			],
 		];

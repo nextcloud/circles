@@ -15,7 +15,6 @@ import { confirmPassword } from '@nextcloud/password-confirmation'
 import { generateOcsUrl } from '@nextcloud/router'
 import { computed, ref } from 'vue'
 import NcButton from '@nextcloud/vue/components/NcButton'
-import NcCheckboxRadioSwitch from '@nextcloud/vue/components/NcCheckboxRadioSwitch'
 import NcSelect from '@nextcloud/vue/components/NcSelect'
 import NcSettingsSection from '@nextcloud/vue/components/NcSettingsSection'
 import { logger } from '../logger.ts'
@@ -35,8 +34,6 @@ const quotaPreset: QuotaOption[] = [
 	{ id: '5 GB', label: '5 GB' },
 	{ id: '10 GB', label: '10 GB' },
 ]
-
-const teamFolderAutoCreate = ref(Boolean(loadState('circles', 'teamFolderAutoCreate', true)))
 
 const teamFolderDefaultQuotaBytes = Number(loadState('circles', 'teamFolderDefaultQuota', 0))
 
@@ -110,14 +107,6 @@ async function updateAppConfig(key: string, value: string): Promise<boolean> {
 }
 
 /**
- * Toggle automatic team folder creation
- */
-function onToggleTeamFolderAutoCreate() {
-	const value = teamFolderAutoCreate.value ? 'yes' : 'no'
-	updateAppConfig('team_folder_auto_create', value)
-}
-
-/**
  * Save the default team folder quota.
  *
  * The selected option id is a human-readable size string (e.g. "5 GB") or
@@ -146,50 +135,31 @@ async function onSaveQuota() {
 <template>
 	<NcSettingsSection
 		:name="t('circles', 'Team spaces')"
-		:description="t('circles', 'Automatically create a shared team space when a new team is created. Requires the Team Folders app to be installed and enabled.')">
-		<NcCheckboxRadioSwitch
-			v-model="teamFolderAutoCreate"
-			type="switch"
-			@update:modelValue="onToggleTeamFolderAutoCreate">
-			{{ t('circles', 'Automatically create a team space') }}
-		</NcCheckboxRadioSwitch>
-
-		<div
-			v-show="teamFolderAutoCreate"
-			class="team-folders__sub-section">
-			<div class="team-folders__input-row">
-				<NcSelect
-					v-model="selectedQuota"
-					:clearable="false"
-					:createOption="validateQuota"
-					:inputLabel="t('circles', 'Default quota')"
-					:options="quotaOptions"
-					:placeholder="t('circles', 'Select default quota')"
-					taggable
-					class="team-folders__input" />
-				<NcButton
-					variant="primary"
-					@click="onSaveQuota">
-					{{ t('circles', 'Save') }}
-				</NcButton>
-			</div>
-
-			<p class="team-folders__hint">
-				{{ t('circles', 'Default storage quota applied to each auto-created team space. Use 0 for unlimited storage.') }}
-			</p>
+		:description="t('circles', 'Configure the default storage quota for team spaces. Requires the Team Folders app to be installed and enabled.')">
+		<div class="team-folders__input-row">
+			<NcSelect
+				v-model="selectedQuota"
+				:clearable="false"
+				:createOption="validateQuota"
+				:inputLabel="t('circles', 'Default quota')"
+				:options="quotaOptions"
+				:placeholder="t('circles', 'Select default quota')"
+				taggable
+				class="team-folders__input" />
+			<NcButton
+				variant="primary"
+				@click="onSaveQuota">
+				{{ t('circles', 'Save') }}
+			</NcButton>
 		</div>
+
+		<p class="team-folders__hint">
+			{{ t('circles', 'Default storage quota applied to each auto-created team space. Use 0 for unlimited storage.') }}
+		</p>
 	</NcSettingsSection>
 </template>
 
 <style scoped>
-.team-folders__sub-section {
-	margin-top: 12px;
-	margin-left: 44px;
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-}
-
 .team-folders__input-row {
 	display: flex;
 	gap: 8px;
@@ -204,6 +174,6 @@ async function onSaveQuota() {
 .team-folders__hint {
 	color: var(--color-text-maxcontrast);
 	font-size: 14px;
-	margin: 0;
+	margin: 12px 0 0;
 }
 </style>
