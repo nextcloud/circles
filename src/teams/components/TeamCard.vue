@@ -42,17 +42,11 @@ const MAX_AVATARS = 5
 					:key="member.id"
 					:class="$style.teamCardMember">
 					<NcAvatar
-						v-if="member.isUser"
-						:user="member.userId ?? undefined"
+						:user="member.isUser ? member.userId : undefined"
 						:displayName="member.displayName"
 						:isNoUser="!member.isUser"
 						:size="28"
 						hideStatus />
-					<TeamAvatar
-						v-else
-						:displayName="member.displayName"
-						:circleId="member.id"
-						:size="28" />
 				</li>
 				<li v-if="team.memberCount > team.members.length" :class="$style.teamCardMemberMore">
 					+{{ team.memberCount - team.members.length }}

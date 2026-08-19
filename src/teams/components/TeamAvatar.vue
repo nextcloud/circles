@@ -9,7 +9,7 @@ import type { Event } from '@nextcloud/event-bus'
 import axios from '@nextcloud/axios'
 import { subscribe, unsubscribe } from '@nextcloud/event-bus'
 import { generateOcsUrl } from '@nextcloud/router'
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import NcAvatar from '@nextcloud/vue/components/NcAvatar'
 
 const props = withDefaults(defineProps<{
@@ -55,6 +55,10 @@ function onAvatarUpdated(circleId: Event) {
 		loadAvatarUrl()
 	}
 }
+
+watch(() => props.circleId, () => {
+	loadAvatarUrl()
+})
 
 onMounted(() => {
 	loadAvatarUrl()
