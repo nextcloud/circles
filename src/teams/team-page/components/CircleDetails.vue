@@ -276,6 +276,7 @@ import {
 	NcTextField,
 } from '@nextcloud/vue'
 import { useElementSize } from '@vueuse/core'
+import { emit } from '@nextcloud/event-bus'
 import { reactive, ref } from 'vue'
 import VueCropper from 'vue-cropperjs'
 import IconAccountGroup from 'vue-material-design-icons/AccountGroupOutline.vue'
@@ -1021,6 +1022,7 @@ export default {
 					await axios.post(generateOcsUrl(`/apps/circles/circles/${this.circle.id}/avatar`), formData)
 					this.clearPendingAvatar()
 					await this.loadAvatarUrl()
+					emit('circles:avatar:updated', this.circle.id)
 				} catch {
 					logger.error('Unable to save avatar picture')
 					errors.push('avatar')
@@ -1036,6 +1038,7 @@ export default {
 					await axios.delete(generateOcsUrl(`/apps/circles/circles/${this.circle.id}/avatar`))
 					this.clearPendingAvatar()
 					await this.loadAvatarUrl()
+					emit('circles:avatar:updated', this.circle.id)
 				} catch {
 					logger.error('Unable to remove avatar')
 					errors.push('avatar')

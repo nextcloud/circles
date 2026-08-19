@@ -30,7 +30,10 @@ const { canManage, canLeave, canDelete, onManage, onCopyLink, onLeave, onDelete 
 			one action (copy link) is available: their Tab handler focuses a menu
 			trigger button that isn't rendered in single-inline-action mode. -->
 		<template #icon>
-			<TeamAvatar :displayName="team.displayName" :size="32" />
+			<TeamAvatar
+				:displayName="team.displayName"
+				:circleId="team.id"
+				:size="32" />
 		</template>
 		<template #actions>
 			<NcActionButton v-if="canManage" closeAfterClick @click="onManage">

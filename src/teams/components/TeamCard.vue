@@ -24,7 +24,10 @@ const MAX_AVATARS = 5
 		:class="$style.teamCard"
 		:to="{ name: 'team', params: { teamId: props.team.id } }">
 		<div :class="$style.teamCardHead">
-			<TeamAvatar :displayName="team.displayName" :size="44" />
+			<TeamAvatar
+				:displayName="team.displayName"
+				:circleId="team.id"
+				:size="44" />
 			<span :class="$style.teamCardName">{{ team.displayName }}</span>
 		</div>
 
@@ -39,7 +42,7 @@ const MAX_AVATARS = 5
 					:key="member.id"
 					:class="$style.teamCardMember">
 					<NcAvatar
-						:user="member.isUser ? member.id : undefined"
+						:user="member.isUser ? member.userId : undefined"
 						:displayName="member.displayName"
 						:isNoUser="!member.isUser"
 						:size="28"
