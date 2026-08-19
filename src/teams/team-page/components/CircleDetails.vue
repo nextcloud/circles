@@ -164,6 +164,24 @@
 							</template>
 						</div>
 					</div>
+
+				<!-- Team folder upgrade notice -->
+				<NcNoteCard
+					v-if="circle.isMember && showTeamFolderBanner"
+					:type="teamFolderProviderAvailable ? 'info' : 'warning'"
+					class="team-folder-banner">
+					<span v-if="!teamFolderProviderAvailable">{{ t('circles', 'This team does not have a team folder yet. Ask your administrator to enable the Team Folders app.') }}</span>
+					<span v-else-if="canCreateTeamFolder">{{ t('circles', 'This team does not have a team folder yet. Create one to share files with the whole team.') }}</span>
+					<span v-else>{{ t('circles', 'This team does not have a team folder yet. Ask a team owner to create one.') }}</span>
+					<NcButton
+						v-if="teamFolderProviderAvailable && canCreateTeamFolder"
+						variant="primary"
+						size="small"
+						class="team-folder-banner__action"
+						@click="createTeamFolder">
+						{{ t('circles', 'Create team folder') }}
+					</NcButton>
+				</NcNoteCard>
 				</div>
 
 				<!-- Main content now a direct child of the grid -->
@@ -261,6 +279,7 @@
 import { getCurrentUser } from '@nextcloud/auth'
 import axios from '@nextcloud/axios'
 import { FilePickerClosed, FilePickerType, getFilePickerBuilder, showError, showSuccess } from '@nextcloud/dialogs'
+import { loadState } from '@nextcloud/initial-state'
 import { encodePath } from '@nextcloud/paths'
 import { generateOcsUrl, generateRemoteUrl, generateUrl } from '@nextcloud/router'
 import {
@@ -271,6 +290,7 @@ import {
 	NcDialog,
 	NcEmptyContent,
 	NcLoadingIcon,
+	NcNoteCard,
 	NcPopover,
 	NcTextArea,
 	NcTextField,
@@ -288,8 +308,6 @@ import CogIcon from 'vue-material-design-icons/CogOutline.vue'
 import CopyIcon from 'vue-material-design-icons/ContentCopy.vue'
 import FileDocumentOutline from 'vue-material-design-icons/FileDocumentOutline.vue'
 import FolderIcon from 'vue-material-design-icons/Folder.vue'
-import FolderOutlineIcon from 'vue-material-design-icons/FolderOutline.vue'
-import FolderPlusOutlineIcon from 'vue-material-design-icons/FolderPlusOutline.vue'
 import { logger } from '../../../logger.ts'
 import LoginIcon from 'vue-material-design-icons/Login.vue'
 import LogoutIcon from 'vue-material-design-icons/Logout.vue'
@@ -342,14 +360,13 @@ export default {
 		TeamResourceButton,
 		NcEmptyContent,
 		NcLoadingIcon,
+		NcNoteCard,
 		NcPopover,
 		PencilIcon,
 		NcTextField,
 		NcTextArea,
 		NcActions,
 		NcActionButton,
-		FolderOutlineIcon,
-		FolderPlusOutlineIcon,
 		MessageIcon,
 		CalendarIcon,
 		ViewDashboardIcon,
@@ -396,10 +413,12 @@ export default {
 			showCalendarSuccessNotification: false,
 			createdCalendarName: '',
 
-			// Team folder
-			teamFolder: null,
-			loadingTeamFolder: false,
-			creatingTeamFolder: false,
+		// Team folder
+		teamFolder: null,
+		loadingTeamFolder: false,
+		creatingTeamFolder: false,
+		teamFolderAutoCreate: Boolean(loadState('circles', 'teamFolderAutoCreate', true)),
+		teamFolderProviderAvailable: Boolean(loadState('circles', 'teamFolderProviderAvailable', true)),
 
 			// Avatar
 			avatarUrl: undefined,
@@ -469,6 +488,14 @@ export default {
 			return this.canManageTeam || Boolean(getCurrentUser()?.isAdmin)
 		},
 
+		folderButtonType() {
+			return null
+		},
+
+		showTeamFolderBanner() {
+			return !this.teamFolder && !this.loadingTeamFolder && !this.creatingTeamFolder
+		},
+
 		teamHasCollective() {
 			return this.resourcesForProvider('collectives').length > 0
 		},
@@ -518,27 +545,7 @@ export default {
 			const enabledApps = window.OC?.appswebroots || {}
 
 			return [
-				{
-					id: 'teamfolder',
-					label: t('circles', 'Team space'),
-					inputLabel: null,
-					placeholder: null,
-					helperText: t('circles', 'Create a shared team space for this team.'),
-					icon: 'FolderPlusOutlineIcon',
-					apiPath: null,
-					enabled: this.canCreateTeamFolder && !this.teamFolder && !this.loadingTeamFolder,
-					noInput: true,
-				},
-				{
-					id: 'folder',
-					label: t('circles', 'Folder'),
-					inputLabel: t('circles', 'New folder'),
-					placeholder: t('circles', 'Folder name'),
-					helperText: t('circles', 'This will create a regular folder shared with the team.'),
-					icon: 'FolderOutlineIcon',
-					apiPath: 'files',
-					enabled: enabledApps.files !== undefined,
-				},
+				this.folderButtonType,
 				{
 					id: 'talk',
 					label: t('circles', 'Talk conversation'),
@@ -567,7 +574,7 @@ export default {
 					apiPath: 'calendar',
 					enabled: enabledApps.calendar !== undefined,
 				},
-			].filter((resource) => resource.enabled)
+			].filter((resource) => resource !== null && resource.enabled)
 		},
 	},
 
@@ -650,139 +657,110 @@ export default {
 			try {
 				let resourceId
 
-				switch (resourceType.id) {
-					case 'teamfolder': {
-						await this.createTeamFolder()
-						return
-					}
-
-					case 'folder': {
-						const folderPath = `/remote.php/dav/files/${getCurrentUser().uid}/${name}`
-						await axios.request({
-							method: 'MKCOL',
-							url: folderPath,
-							headers: {
-								'Content-Type': 'application/xml',
-							},
-						})
-						resourceId = name
-						break
-					}
-
-					case 'talk': {
-						const talkUrl = generateOcsUrl('/apps/spreed/api/v4/room')
-						const talkResponse = await axios.post(talkUrl, {
-							roomName: name,
-							roomType: 2,
-						})
-						resourceId = talkResponse.data.ocs.data.token
-						break
-					}
-
-					case 'collective': {
-						const collectiveName = this.circle.sanitizedName || this.circle.name || this.circle.displayName
-
-						if (!collectiveName) {
-							throw new Error('Cannot create collective: team has no valid name')
-						}
-
-						const collectiveUrl = generateOcsUrl('/apps/collectives/api/v1.0/collectives')
-						const collectiveResponse = await axios.post(collectiveUrl, {
-							name: collectiveName,
-						})
-						resourceId = collectiveResponse.data.ocs.data.collective.id
-
-						if (!resourceId) {
-							throw new Error('Failed to get collective ID from creation response')
-						}
-						break
-					}
-
-					case 'calendar': {
-						const DavClient = (await import('@nextcloud/cdav-library')).default
-
-						const client = new DavClient({
-							rootUrl: generateRemoteUrl('dav'),
-							defaultHeaders: {
-								'X-NC-CalDAV-Webcal-Caching': 'On',
-							},
-						})
-						await client.connect({ enableCalDAV: true })
-
-						const calendarHome = client.calendarHomes[0]
-
-						try {
-							const davCalendar = await calendarHome.createCalendarCollection(name, '#0082c9', ['VEVENT', 'VTODO'], 0)
-							this.createdCalendar = davCalendar
-							resourceId = davCalendar.url
-						} catch (calendarError) {
-							// Since cdav-library doesn't expose HTTP status properly,
-							// assume MKCOL errors on calendar paths are name conflicts (405)
-							logger.error('Calendar creation failed for name:', name)
-							throw new Error(`CALENDAR_EXISTS:${name}`)
-						}
-						break
-					}
-
-					default: {
-						showError(t('circles', 'Unknown resource type'))
-						return
-					}
-				}
-
-				await this.shareResourceWithTeam(resourceType, resourceId)
-
-				this.resourceInputs[resourceType.id] = ''
-				this.activePopover = null
-				if (resourceType.id === 'calendar') {
-					this.createdCalendar = null
-					showSuccess(t('circles', 'Team calendar "{resourceName}" created and shared with team', {
-						resourceName: name,
-					}))
-					this.createdCalendarName = name
-					this.showCalendarSuccessNotification = true
-					setTimeout(() => {
-						this.showCalendarSuccessNotification = false
-					}, 10000)
-				} else {
-					showSuccess(t('circles', '{resourceType} "{resourceName}" created and shared with team', {
-						resourceType: resourceType.label,
-						resourceName: name,
-					}))
-					this.fetchTeamResources()
-				}
-			} catch (error) {
-				logger.error('Failed to create resource:', { error })
-
-				// Check for calendar exists error
-				if (error.message && error.message.startsWith('CALENDAR_EXISTS:')) {
-					const calendarName = error.message.replace('CALENDAR_EXISTS:', '')
-					showError(t('circles', 'A calendar named "{name}" already exists. Please choose a different name.', {
-						name: calendarName,
-					}))
-				} else {
-					showError(t('circles', 'Failed to create {resourceType}: {error}', {
-						resourceType: resourceType.label.toLowerCase(),
-						error: error.response?.data?.ocs?.data?.message || error.response?.data?.message || error.message,
-					}))
-				}
-			}
-		},
-
-		async shareResourceWithTeam(resourceType, resourceId) {
-			switch (resourceType.id) {
-				case 'folder': {
-					const shareUrl = generateOcsUrl('/apps/files_sharing/api/v1/shares')
-					await axios.post(shareUrl, {
-						path: `/${resourceId}`,
-						shareType: 7,
-						shareWith: this.circle.id,
-						permissions: 31,
+		switch (resourceType.id) {
+			case 'talk': {
+					const talkUrl = generateOcsUrl('/apps/spreed/api/v4/room')
+					const talkResponse = await axios.post(talkUrl, {
+						roomName: name,
+						roomType: 2,
 					})
+					resourceId = talkResponse.data.ocs.data.token
 					break
 				}
 
-				case 'talk': {
+				case 'collective': {
+					const collectiveName = this.circle.sanitizedName || this.circle.name || this.circle.displayName
+
+					if (!collectiveName) {
+						throw new Error('Cannot create collective: team has no valid name')
+					}
+
+					const collectiveUrl = generateOcsUrl('/apps/collectives/api/v1.0/collectives')
+					const collectiveResponse = await axios.post(collectiveUrl, {
+						name: collectiveName,
+					})
+					resourceId = collectiveResponse.data.ocs.data.collective.id
+
+					if (!resourceId) {
+						throw new Error('Failed to get collective ID from creation response')
+					}
+					break
+				}
+
+				case 'calendar': {
+					const DavClient = (await import('@nextcloud/cdav-library')).default
+
+					const client = new DavClient({
+						rootUrl: generateRemoteUrl('dav'),
+						defaultHeaders: {
+							'X-NC-CalDAV-Webcal-Caching': 'On',
+						},
+					})
+					await client.connect({ enableCalDAV: true })
+
+					const calendarHome = client.calendarHomes[0]
+
+					try {
+						const davCalendar = await calendarHome.createCalendarCollection(name, '#0082c9', ['VEVENT', 'VTODO'], 0)
+						this.createdCalendar = davCalendar
+						resourceId = davCalendar.url
+					} catch (calendarError) {
+						// Since cdav-library doesn't expose HTTP status properly,
+						// assume MKCOL errors on calendar paths are name conflicts (405)
+						logger.error('Calendar creation failed for name:', name)
+						throw new Error(`CALENDAR_EXISTS:${name}`)
+					}
+					break
+				}
+
+				default: {
+					showError(t('circles', 'Unknown resource type'))
+					return
+				}
+			}
+
+			await this.shareResourceWithTeam(resourceType, resourceId)
+
+			this.resourceInputs[resourceType.id] = ''
+			this.activePopover = null
+			if (resourceType.id === 'calendar') {
+				this.createdCalendar = null
+				showSuccess(t('circles', 'Team calendar "{resourceName}" created and shared with team', {
+					resourceName: name,
+				}))
+				this.createdCalendarName = name
+				this.showCalendarSuccessNotification = true
+				setTimeout(() => {
+					this.showCalendarSuccessNotification = false
+				}, 10000)
+			} else {
+				showSuccess(t('circles', '{resourceType} "{resourceName}" created and shared with team', {
+					resourceType: resourceType.label,
+					resourceName: name,
+				}))
+				this.fetchTeamResources()
+			}
+	} catch (error) {
+		logger.error('Failed to create resource:', { error })
+
+		// Check for calendar exists error
+		if (error.message && error.message.startsWith('CALENDAR_EXISTS:')) {
+			const calendarName = error.message.replace('CALENDAR_EXISTS:', '')
+			showError(t('circles', 'A calendar named "{name}" already exists. Please choose a different name.', {
+				name: calendarName,
+			}))
+		} else {
+			showError(t('circles', 'Failed to create {resourceType}: {error}', {
+				resourceType: resourceType.label.toLowerCase(),
+				error: error.response?.data?.ocs?.data?.message || error.response?.data?.message || error.message,
+			}))
+		}
+	}
+},
+
+	async shareResourceWithTeam(resourceType, resourceId) {
+		switch (resourceType.id) {
+			case 'talk': {
 					const participantUrl = generateOcsUrl(`/apps/spreed/api/v4/room/${resourceId}/participants`)
 					await axios.post(participantUrl, {
 						source: 'circles',
@@ -938,9 +916,15 @@ export default {
 		},
 
 		async fetchTeamResources() {
-			const response = await axios.get(generateOcsUrl(`/teams/${this.circle.id}/resources`))
-			this.resources = response.data.ocs.data.resources
-			logger.debug('Team resources', { resources: this.resources })
+			try {
+				const response = await axios.get(generateOcsUrl(`/teams/${this.circle.id}/resources`))
+				const data = response.data?.ocs?.data?.resources
+				this.resources = Array.isArray(data) ? data : []
+				logger.debug('Team resources', { resources: this.resources })
+			} catch (error) {
+				logger.error('Could not fetch team resources', { error, circleId: this.circle.id })
+				this.resources = []
+			}
 		},
 
 		async loadAvatarUrl() {
@@ -1067,6 +1051,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.team-folder-banner {
+	margin-top: calc(var(--default-grid-baseline) * 2);
+
+	:deep(.notecard__main) {
+		display: flex;
+		align-items: center;
+		gap: var(--default-grid-baseline);
+	}
+
+	.team-folder-banner__action {
+		white-space: nowrap;
+	}
+}
+
 .circle-details-container {
 	padding-inline: 20px;
 	margin-top: 1rem;

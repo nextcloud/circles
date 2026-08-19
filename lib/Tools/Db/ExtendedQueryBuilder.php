@@ -42,6 +42,18 @@ class ExtendedQueryBuilder extends QueryBuilder {
 		);
 	}
 
+	public function orderBy($sort, $order = null): self {
+		parent::orderBy($sort, $order);
+
+		return $this;
+	}
+
+	public function addOrderBy($sort, $order = null): self {
+		parent::addOrderBy($sort, $order);
+
+		return $this;
+	}
+
 	/**
 	 * @param string $alias
 	 *

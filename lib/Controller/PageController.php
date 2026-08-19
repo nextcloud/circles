@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Controller;
 
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\ConfigLexicon;
 use OCA\Circles\Service\ConfigService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Attribute\FrontpageRoute;
@@ -17,7 +18,10 @@ use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\NotFoundResponse;
 use OCP\AppFramework\Http\TemplateResponse;
+use OCP\AppFramework\Services\IAppConfig;
+use OCP\AppFramework\Services\IInitialState;
 use OCP\IRequest;
+use OCP\Teams\ITeamManager;
 use OCP\Util;
 
 /**
@@ -27,6 +31,9 @@ class PageController extends Controller {
 	public function __construct(
 		IRequest $request,
 		private ConfigService $configService,
+		private IAppConfig $appConfig,
+		private IInitialState $initialState,
+		private ITeamManager $teamManager,
 	) {
 		parent::__construct(Application::APP_ID, $request);
 	}
@@ -40,6 +47,14 @@ class PageController extends Controller {
 		if (!$this->configService->getAppValueBool(ConfigService::FRONTEND_ENABLED)) {
 			return new NotFoundResponse();
 		}
+
+		$this->initialState->provideInitialState(
+			'teamFolderAutoCreate',
+			$this->appConfig->getAppValueBool(ConfigLexicon::TEAM_FOLDER_AUTO_CREATE, true),
+		);
+		/** @psalm-suppress UndefinedInterfaceMethod -- ITeamManager::getTeamFolderProvider() is @since 35.0.0 */
+		$providerAvailable = $this->teamManager->getTeamFolderProvider() !== null;
+		$this->initialState->provideInitialState('teamFolderProviderAvailable', $providerAvailable);
 
 		Util::addScript(Application::APP_ID, 'teams-main');
 		Util::addStyle(Application::APP_ID, 'teams-main');
