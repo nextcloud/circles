@@ -303,10 +303,13 @@ import ContentHeading from './CircleDetails/ContentHeading.vue'
 import TeamResourceButton from './CircleDetails/TeamResourceButton.vue'
 import MemberList from './MemberList/MemberList.vue'
 import CircleActionsMixin from '../mixins/CircleActionsMixin.js'
+import { loadState } from '@nextcloud/initial-state'
 import { CircleEdit, editCircle } from '../services/circles.ts'
 import { getTeamFolder, upgradeTeamFolder } from '../../api.ts'
 
 import 'cropperjs/dist/cropper.css'
+
+const teamFolderProvisioningEnabled = Boolean(loadState('circles', 'teamFolderProvisioningEnabled', true))
 
 const VALID_MIME_TYPES = ['image/png', 'image/jpeg']
 
@@ -466,7 +469,8 @@ export default {
 		},
 
 		canCreateTeamFolder() {
-			return this.canManageTeam || Boolean(getCurrentUser()?.isAdmin)
+			return teamFolderProvisioningEnabled
+				&& (this.canManageTeam || Boolean(getCurrentUser()?.isAdmin))
 		},
 
 		teamHasCollective() {

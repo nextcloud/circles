@@ -11,75 +11,90 @@ use OCA\Circles\ConfigLexicon;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Service\TeamFolderPolicy;
 use OCP\AppFramework\Services\IAppConfig;
+use OCP\IConfig;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class TeamFolderPolicyTest extends TestCase {
 	private TeamFolderPolicy $service;
 	private IAppConfig&MockObject $appConfig;
+	private IConfig&MockObject $config;
 
 	protected function setUp(): void {
 		parent::setUp();
 
 		$this->appConfig = $this->createMock(IAppConfig::class);
+		$this->config = $this->createMock(IConfig::class);
+		$this->config->method('getSystemValue')
+			->with(TeamFolderPolicy::SYSTEM_TEAM_FOLDER_AUTO_CREATE, null)
+			->willReturn(null);
 
 		$this->service = new TeamFolderPolicy(
 			$this->appConfig,
+			$this->config,
 		);
 	}
 
 	public function testShouldCreateTeamFolderSkipsForPersonalCircle(): void {
 		$circle = $this->createCircle(Circle::CFG_PERSONAL);
-		$this->appConfig->method('getAppValueBool')
-			->with(ConfigLexicon::TEAM_FOLDER_AUTO_CREATE, true)
-			->willReturn(true);
 
 		$this->assertFalse($this->service->shouldCreateTeamFolder($circle));
 	}
 
 	public function testShouldCreateTeamFolderSkipsForHiddenCircle(): void {
 		$circle = $this->createCircle(Circle::CFG_HIDDEN);
-		$this->appConfig->method('getAppValueBool')
-			->with(ConfigLexicon::TEAM_FOLDER_AUTO_CREATE, true)
-			->willReturn(true);
 
 		$this->assertFalse($this->service->shouldCreateTeamFolder($circle));
 	}
 
 	public function testShouldCreateTeamFolderSkipsForSystemCircle(): void {
 		$circle = $this->createCircle(Circle::CFG_SYSTEM);
-		$this->appConfig->method('getAppValueBool')
-			->with(ConfigLexicon::TEAM_FOLDER_AUTO_CREATE, true)
-			->willReturn(true);
 
 		$this->assertFalse($this->service->shouldCreateTeamFolder($circle));
 	}
 
 	public function testShouldCreateTeamFolderSkipsForBackendCircle(): void {
 		$circle = $this->createCircle(Circle::CFG_BACKEND);
-		$this->appConfig->method('getAppValueBool')
-			->with(ConfigLexicon::TEAM_FOLDER_AUTO_CREATE, true)
-			->willReturn(true);
 
 		$this->assertFalse($this->service->shouldCreateTeamFolder($circle));
 	}
 
-	public function testShouldCreateTeamFolderSkipsWhenAutoCreateDisabled(): void {
-		$circle = $this->createCircle();
-		$this->appConfig->method('getAppValueBool')
-			->with(ConfigLexicon::TEAM_FOLDER_AUTO_CREATE, true)
+	public function testShouldCreateTeamFolderSkipsWhenSystemConfigDisabled(): void {
+		$config = $this->createMock(IConfig::class);
+		$config->method('getSystemValue')
+			->with(TeamFolderPolicy::SYSTEM_TEAM_FOLDER_AUTO_CREATE, null)
 			->willReturn(false);
+		$service = new TeamFolderPolicy($this->appConfig, $config);
 
-		$this->assertFalse($this->service->shouldCreateTeamFolder($circle));
+		$this->assertFalse($service->isTeamFolderProvisioningEnabled());
+		$this->assertFalse($service->shouldCreateTeamFolder($this->createCircle()));
 	}
 
-	public function testShouldCreateTeamFolderReturnsTrueForEligibleCircle(): void {
-		$circle = $this->createCircle();
-		$this->appConfig->method('getAppValueBool')
-			->with(ConfigLexicon::TEAM_FOLDER_AUTO_CREATE, true)
+	public function testShouldCreateTeamFolderEnabledWhenSystemConfigTrue(): void {
+		$config = $this->createMock(IConfig::class);
+		$config->method('getSystemValue')
+			->with(TeamFolderPolicy::SYSTEM_TEAM_FOLDER_AUTO_CREATE, null)
 			->willReturn(true);
+		$service = new TeamFolderPolicy($this->appConfig, $config);
 
-		$this->assertTrue($this->service->shouldCreateTeamFolder($circle));
+		$this->assertTrue($service->isTeamFolderProvisioningEnabled());
+		$this->assertTrue($service->shouldCreateTeamFolder($this->createCircle()));
+	}
+
+	public function testShouldCreateTeamFolderDefaultsToEnabledWhenUnset(): void {
+		$this->assertTrue($this->service->isTeamFolderProvisioningEnabled());
+		$this->assertTrue($this->service->shouldCreateTeamFolder($this->createCircle()));
+	}
+
+	public function testIsEligibleCircleIndependentOfProvisioningFlag(): void {
+		$config = $this->createMock(IConfig::class);
+		$config->method('getSystemValue')
+			->with(TeamFolderPolicy::SYSTEM_TEAM_FOLDER_AUTO_CREATE, null)
+			->willReturn(false);
+		$service = new TeamFolderPolicy($this->appConfig, $config);
+
+		$this->assertTrue($service->isEligibleCircle($this->createCircle()));
+		$this->assertFalse($service->isEligibleCircle($this->createCircle(Circle::CFG_PERSONAL)));
 	}
 
 	public function testGetDefaultQuota(): void {

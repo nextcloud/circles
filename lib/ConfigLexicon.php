@@ -57,7 +57,8 @@ class ConfigLexicon implements ILexicon {
 			new Entry(key: self::FEDERATED_TEAMS_ENABLED, type: ValueType::BOOL, defaultRaw: false, definition: 'disable/enable Federated Teams', lazy: true),
 			new Entry(key: self::FEDERATED_TEAMS_FRONTAL, type: ValueType::STRING, defaultRaw: '', definition: 'domain name used to auth public request', lazy: true),
 			new Entry(key: self::REMOVE_SHARE_TOKENS_DONE, type: ValueType::BOOL, defaultRaw: false, definition: 'whether the remove share tokens repair step has already been executed', lazy: true),
-			new Entry(key: self::TEAM_FOLDER_AUTO_CREATE, type: ValueType::BOOL, defaultRaw: true, definition: 'automatically create a team folder when a new team is created', lazy: true),
+			// TEAM_FOLDER_AUTO_CREATE is a system config key (config.php:
+			// 'circles.team_folder_auto_create') and is intentionally not an appconfig entry.
 			new Entry(key: self::TEAM_FOLDER_DEFAULT_QUOTA, type: ValueType::INT, defaultRaw: 0, definition: 'default quota in bytes for auto-created team folders (0 means unlimited)', lazy: true),
 			// OIDC
 			new Entry(key: self::OIDC_ENABLED, type: ValueType::BOOL, defaultRaw: false, definition: 'disable/enable OIDC integration', lazy: true),
