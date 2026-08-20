@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace OCA\Circles\Db;
 
 use OCA\Circles\Exceptions\MountNotFoundException;
-use OCA\Circles\Model\Mount;
 use OCA\Circles\Model\Mountpoint;
 use OCA\Circles\Tools\Exceptions\RowNotFoundException;
 use OCP\DB\QueryBuilder\IQueryBuilder;
@@ -57,7 +56,6 @@ class MountPointRequestBuilder extends CoreRequestBuilder {
 	}
 
 	public function getItemFromRequest(CoreQueryBuilder $qb): MountPoint {
-		/** @var MountPoint $mountpoint */
 		try {
 			$mountpoint = $qb->asItem(MountPoint::class);
 		} catch (RowNotFoundException) {
@@ -70,10 +68,9 @@ class MountPointRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * @param CoreQueryBuilder $qb
 	 *
-	 * @return Mount[]
+	 * @return list<MountPoint>
 	 */
 	public function getItemsFromRequest(CoreQueryBuilder $qb): array {
-		/** @var MountPoint[] $result */
 		return $qb->asItems(MountPoint::class);
 	}
 }

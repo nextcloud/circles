@@ -75,22 +75,6 @@
       <code><![CDATA[GSSharesRequestBuilder]]></code>
     </DeprecatedClass>
   </file>
-  <file src="lib/Db/MemberRequest.php">
-    <InvalidReturnStatement>
-      <code><![CDATA[$this->getItemsFromRequest($qb)]]></code>
-      <code><![CDATA[$this->getItemsFromRequest($qb)]]></code>
-      <code><![CDATA[$this->getItemsFromRequest($qb)]]></code>
-      <code><![CDATA[$this->getItemsFromRequest($qb)]]></code>
-      <code><![CDATA[$this->getItemsFromRequest($qb, true)]]></code>
-    </InvalidReturnStatement>
-    <InvalidReturnType>
-      <code><![CDATA[FederatedUser[]]]></code>
-      <code><![CDATA[Member[]]]></code>
-      <code><![CDATA[Member[]]]></code>
-      <code><![CDATA[Member[]]]></code>
-      <code><![CDATA[Member[]]]></code>
-    </InvalidReturnType>
-  </file>
   <file src="lib/Db/ShareWrapperRequest.php">
     <DeprecatedConstant>
       <code><![CDATA[IQueryBuilder::PARAM_DATE]]></code>
@@ -135,9 +119,14 @@
       <code><![CDATA[SharingFrame]]></code>
     </DeprecatedClass>
   </file>
-  <file src="lib/Migration/Version0022Date20220526113601.php">
+  <file src="lib/Listeners/CircleMemberRemoved.php">
     <UndefinedClass>
-      <code><![CDATA[Types]]></code>
+      <code><![CDATA[\OCA\GroupFolders\Folder\FolderManager]]></code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/Listeners/GroupMemberRemoved.php">
+    <UndefinedClass>
+      <code><![CDATA[\OCA\GroupFolders\Folder\FolderManager]]></code>
     </UndefinedClass>
   </file>
   <file src="lib/Model/BaseCircle.php">
@@ -445,15 +434,5 @@
     <UndefinedMethod>
       <code><![CDATA[getOpenSSLAlgo]]></code>
     </UndefinedMethod>
-  </file>
-  <file src="lib/Listeners/GroupMemberRemoved.php">
-    <UndefinedClass>
-      <code><![CDATA[\OCA\GroupFolders\Folder\FolderManager]]></code>
-    </UndefinedClass>
-  </file>
-  <file src="lib/Listeners/CircleMemberRemoved.php">
-    <UndefinedClass>
-      <code><![CDATA[\OCA\GroupFolders\Folder\FolderManager]]></code>
-    </UndefinedClass>
   </file>
 </files>
