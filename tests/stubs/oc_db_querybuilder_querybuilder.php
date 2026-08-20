@@ -746,8 +746,7 @@ class QueryBuilder extends TypedQueryBuilder {
 	 *
 	 * @return $this This QueryBuilder instance.
 	 */
-	public function orderBy($sort, $order = null)
-    {
+	public function orderBy(string|ILiteral|IParameter|IQueryFunction $sort, string|\SortDirection|null $order = null): self {
     }
 
 	/**
@@ -758,8 +757,7 @@ class QueryBuilder extends TypedQueryBuilder {
 	 *
 	 * @return $this This QueryBuilder instance.
 	 */
-	public function addOrderBy($sort, $order = null)
-    {
+	public function addOrderBy(string|ILiteral|IParameter|IQueryFunction $sort, string|\SortDirection|null $order = null): self {
     }
 
 	/**
