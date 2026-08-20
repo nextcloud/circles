@@ -10,9 +10,9 @@ declare(strict_types=1);
 namespace OCA\Circles\Migration;
 
 use Closure;
-use Doctrine\DBAL\Schema\SchemaException;
-use Doctrine\DBAL\Types\Types;
 use OCP\DB\ISchemaWrapper;
+use OCP\DB\Schema\ColumnType;
+use OCP\DB\Schema\SchemaException;
 use OCP\IDBConnection;
 use OCP\Migration\IOutput;
 use OCP\Migration\SimpleMigrationStep;
@@ -48,7 +48,7 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 			$table = $schema->createTable('circles_circle');
 
 			$table->addColumn(
-				'id', 'integer', [
+				'id', ColumnType::Integer, [
 					'autoincrement' => true,
 					'notnull' => true,
 					'length' => 4,
@@ -56,76 +56,76 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 				]
 			);
 			$table->addColumn(
-				'unique_id', 'string', [
+				'unique_id', ColumnType::String, [
 					'notnull' => true,
 					'length' => 31,
 				]
 			);
 			$table->addColumn(
-				'name', 'string', [
+				'name', ColumnType::String, [
 					'notnull' => true,
 					'length' => 127,
 				]
 			);
 			$table->addColumn(
-				'display_name', 'string', [
+				'display_name', ColumnType::String, [
 					'notnull' => false,
 					'default' => '',
 					'length' => 255
 				]
 			);
 			$table->addColumn(
-				'sanitized_name', 'string', [
+				'sanitized_name', ColumnType::String, [
 					'notnull' => false,
 					'default' => '',
 					'length' => 127
 				]
 			);
 			$table->addColumn(
-				'instance', 'string', [
+				'instance', ColumnType::String, [
 					'notnull' => false,
 					'default' => '',
 					'length' => 255
 				]
 			);
 			$table->addColumn(
-				'config', 'integer', [
+				'config', ColumnType::Integer, [
 					'notnull' => false,
 					'length' => 11,
 					'unsigned' => true
 				]
 			);
 			$table->addColumn(
-				'source', 'integer', [
+				'source', ColumnType::Integer, [
 					'notnull' => false,
 					'length' => 5,
 					'unsigned' => true
 				]
 			);
 			$table->addColumn(
-				'settings', 'text', [
+				'settings', ColumnType::Text, [
 					'notnull' => false
 				]
 			);
 			$table->addColumn(
-				'description', 'text', [
+				'description', ColumnType::Text, [
 					'notnull' => false
 				]
 			);
 			$table->addColumn(
-				'creation', 'datetime', [
+				'creation', ColumnType::Datetime, [
 					'notnull' => false,
 				]
 			);
 			$table->addColumn(
-				'contact_addressbook', 'integer', [
+				'contact_addressbook', ColumnType::Integer, [
 					'notnull' => false,
 					'unsigned' => true,
 					'length' => 7,
 				]
 			);
 			$table->addColumn(
-				'contact_groupname', 'string', [
+				'contact_groupname', ColumnType::String, [
 					'notnull' => false,
 					'length' => 127,
 				]
@@ -146,7 +146,7 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 			$table = $schema->createTable('circles_member');
 
 			$table->addColumn(
-				'id', 'integer', [
+				'id', ColumnType::Integer, [
 					'autoincrement' => true,
 					'notnull' => true,
 					'length' => 4,
@@ -154,90 +154,90 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 				]
 			);
 			$table->addColumn(
-				'single_id', 'string', [
+				'single_id', ColumnType::String, [
 					'notnull' => false,
 					'length' => 31
 				]
 			);
 			$table->addColumn(
-				'circle_id', 'string', [
+				'circle_id', ColumnType::String, [
 					'notnull' => true,
 					'length' => 31,
 				]
 			);
 			$table->addColumn(
-				'member_id', Types::STRING, [
+				'member_id', ColumnType::String, [
 					'notnull' => false,
 					'length' => 31,
 				]
 			);
 			$table->addColumn(
-				'user_id', 'string', [
+				'user_id', ColumnType::String, [
 					'notnull' => true,
 					'length' => 127,
 				]
 			);
 			$table->addColumn(
-				'user_type', 'smallint', [
+				'user_type', ColumnType::Smallint, [
 					'notnull' => true,
 					'length' => 1,
 					'default' => 1,
 				]
 			);
 			$table->addColumn(
-				'instance', 'string', [
+				'instance', ColumnType::String, [
 					'default' => '',
 					'length' => 255
 				]
 			);
 			$table->addColumn(
-				'invited_by', 'string', [
+				'invited_by', ColumnType::String, [
 					'notnull' => false,
 					'length' => 31,
 				]
 			);
 			$table->addColumn(
-				'level', 'smallint', [
+				'level', ColumnType::Smallint, [
 					'notnull' => true,
 					'length' => 1,
 				]
 			);
 			$table->addColumn(
-				'status', 'string', [
+				'status', ColumnType::String, [
 					'notnull' => false,
 					'length' => 15,
 				]
 			);
 			$table->addColumn(
-				'note', 'text', [
+				'note', ColumnType::Text, [
 					'notnull' => false
 				]
 			);
 			$table->addColumn(
-				'cached_name', 'string', [
+				'cached_name', ColumnType::String, [
 					'notnull' => false,
 					'length' => 255,
 					'default' => ''
 				]
 			);
 			$table->addColumn(
-				'cached_update', 'datetime', [
+				'cached_update', ColumnType::Datetime, [
 					'notnull' => false,
 				]
 			);
 			$table->addColumn(
-				'contact_id', 'string', [
+				'contact_id', ColumnType::String, [
 					'notnull' => false,
 					'length' => 127,
 				]
 			);
 			$table->addColumn(
-				'contact_meta', 'text', [
+				'contact_meta', ColumnType::Text, [
 					'notnull' => false
 				]
 			);
 			$table->addColumn(
-				'joined', 'datetime', [
+				'joined', ColumnType::Datetime, [
 					'notnull' => false,
 				]
 			);
@@ -257,7 +257,7 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 		if (!$schema->hasTable('circles_remote')) {
 			$table = $schema->createTable('circles_remote');
 			$table->addColumn(
-				'id', 'integer', [
+				'id', ColumnType::Integer, [
 					'autoincrement' => true,
 					'notnull' => true,
 					'length' => 4,
@@ -265,44 +265,44 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 				]
 			);
 			$table->addColumn(
-				'type', 'string', [
+				'type', ColumnType::String, [
 					'notnull' => true,
 					'length' => 15,
 					'default' => 'Unknown'
 				]
 			);
 			$table->addColumn(
-				'interface', 'integer', [
+				'interface', ColumnType::Integer, [
 					'notnull' => true,
 					'length' => 1,
 					'default' => 0
 				]
 			);
 			$table->addColumn(
-				'uid', 'string', [
+				'uid', ColumnType::String, [
 					'notnull' => false,
 					'length' => 20,
 				]
 			);
 			$table->addColumn(
-				'instance', 'string', [
+				'instance', ColumnType::String, [
 					'notnull' => false,
 					'length' => 127,
 				]
 			);
 			$table->addColumn(
-				'href', 'string', [
+				'href', ColumnType::String, [
 					'notnull' => false,
 					'length' => 254,
 				]
 			);
 			$table->addColumn(
-				'item', 'text', [
+				'item', ColumnType::Text, [
 					'notnull' => false,
 				]
 			);
 			$table->addColumn(
-				'creation', 'datetime', [
+				'creation', ColumnType::Datetime, [
 					'notnull' => false,
 				]
 			);
@@ -319,59 +319,59 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 		if (!$schema->hasTable('circles_event')) {
 			$table = $schema->createTable('circles_event');
 			$table->addColumn(
-				'token', 'string', [
+				'token', ColumnType::String, [
 					'notnull' => false,
 					'length' => 63,
 				]
 			);
 			$table->addColumn(
-				'event', 'text', [
+				'event', ColumnType::Text, [
 					'notnull' => false
 				]
 			);
 			$table->addColumn(
-				'result', 'text', [
+				'result', ColumnType::Text, [
 					'notnull' => false
 				]
 			);
 			$table->addColumn(
-				'instance', 'string', [
+				'instance', ColumnType::String, [
 					'length' => 255,
 					'notnull' => false
 				]
 			);
 			$table->addColumn(
-				'interface', 'integer', [
+				'interface', ColumnType::Integer, [
 					'notnull' => true,
 					'length' => 1,
 					'default' => 0
 				]
 			);
 			$table->addColumn(
-				'severity', 'integer', [
+				'severity', ColumnType::Integer, [
 					'length' => 3,
 					'notnull' => false
 				]
 			);
 			$table->addColumn(
-				'retry', 'integer', [
+				'retry', ColumnType::Integer, [
 					'length' => 3,
 					'notnull' => false
 				]
 			);
 			$table->addColumn(
-				'status', 'integer', [
+				'status', ColumnType::Integer, [
 					'length' => 3,
 					'notnull' => false
 				]
 			);
 			$table->addColumn(
-				'updated', 'datetime', [
+				'updated', ColumnType::Datetime, [
 					'notnull' => false,
 				]
 			);
 			$table->addColumn(
-				'creation', 'bigint', [
+				'creation', ColumnType::Bigint, [
 					'length' => 14,
 					'notnull' => false
 				]
@@ -387,45 +387,45 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 			$table = $schema->createTable('circles_membership');
 
 			$table->addColumn(
-				'circle_id', 'string', [
+				'circle_id', ColumnType::String, [
 					'notnull' => true,
 					'length' => 31,
 				]
 			);
 			$table->addColumn(
-				'single_id', 'string', [
+				'single_id', ColumnType::String, [
 					'notnull' => true,
 					'length' => 31,
 				]
 			);
 			$table->addColumn(
-				'level', 'integer', [
+				'level', ColumnType::Integer, [
 					'notnull' => true,
 					'length' => 1,
 					'unsigned' => true
 				]
 			);
 			$table->addColumn(
-				'inheritance_first', 'string', [
+				'inheritance_first', ColumnType::String, [
 					'notnull' => true,
 					'length' => 31,
 				]
 			);
 			$table->addColumn(
-				'inheritance_last', 'string', [
+				'inheritance_last', ColumnType::String, [
 					'notnull' => true,
 					'length' => 31,
 				]
 			);
 			$table->addColumn(
-				'inheritance_depth', 'integer', [
+				'inheritance_depth', ColumnType::Integer, [
 					'notnull' => true,
 					'length' => 2,
 					'unsigned' => true
 				]
 			);
 			$table->addColumn(
-				'inheritance_path', 'text', [
+				'inheritance_path', ColumnType::Text, [
 					'notnull' => true
 				]
 			);
@@ -443,7 +443,7 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 		if (!$schema->hasTable('circles_token')) {
 			$table = $schema->createTable('circles_token');
 			$table->addColumn(
-				'id', 'integer', [
+				'id', ColumnType::Integer, [
 					'autoincrement' => true,
 					'notnull' => true,
 					'length' => 11,
@@ -451,43 +451,43 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 				]
 			);
 			$table->addColumn(
-				'share_id', 'integer', [
+				'share_id', ColumnType::Integer, [
 					'notnull' => false,
 					'length' => 11
 				]
 			);
 			$table->addColumn(
-				'circle_id', 'string', [
+				'circle_id', ColumnType::String, [
 					'notnull' => false,
 					'length' => 31
 				]
 			);
 			$table->addColumn(
-				'single_id', 'string', [
+				'single_id', ColumnType::String, [
 					'notnull' => false,
 					'length' => 31
 				]
 			);
 			$table->addColumn(
-				'member_id', 'string', [
+				'member_id', ColumnType::String, [
 					'notnull' => false,
 					'length' => 31
 				]
 			);
 			$table->addColumn(
-				'token', 'string', [
+				'token', ColumnType::String, [
 					'notnull' => false,
 					'length' => 31
 				]
 			);
 			$table->addColumn(
-				'password', 'string', [
+				'password', ColumnType::String, [
 					'notnull' => false,
 					'length' => 31
 				]
 			);
 			$table->addColumn(
-				'accepted', 'integer', [
+				'accepted', ColumnType::Integer, [
 					'notnull' => false,
 					'length' => 1
 				]
@@ -503,7 +503,7 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 		if (!$schema->hasTable('circles_mount')) {
 			$table = $schema->createTable('circles_mount');
 			$table->addColumn(
-				'id', 'integer', [
+				'id', ColumnType::Integer, [
 					'autoincrement' => true,
 					'notnull' => true,
 					'length' => 11,
@@ -511,42 +511,42 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 				]
 			);
 			$table->addColumn(
-				'mount_id', 'string', [
+				'mount_id', ColumnType::String, [
 					'notnull' => false,
 					'length' => 31
 				]
 			);
 			$table->addColumn(
-				'circle_id', 'string', [
+				'circle_id', ColumnType::String, [
 					'notnull' => false,
 					'length' => 31
 				]
 			);
 			$table->addColumn(
-				'single_id', 'string', [
+				'single_id', ColumnType::String, [
 					'notnull' => false,
 					'length' => 31
 				]
 			);
 			$table->addColumn(
-				'token', 'string', [
+				'token', ColumnType::String, [
 					'notnull' => false,
 					'length' => 63
 				]
 			);
 			$table->addColumn(
-				'parent', 'integer', [
+				'parent', ColumnType::Integer, [
 					'notnull' => false,
 					'length' => 11
 				]
 			);
 			$table->addColumn(
-				'mountpoint', 'text', [
+				'mountpoint', ColumnType::Text, [
 					'notnull' => false
 				]
 			);
 			$table->addColumn(
-				'mountpoint_hash', 'string', [
+				'mountpoint_hash', ColumnType::String, [
 					'notnull' => false,
 					'length' => 64
 				]
@@ -562,7 +562,7 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 		if (!$schema->hasTable('circles_mountpoint')) {
 			$table = $schema->createTable('circles_mountpoint');
 			$table->addColumn(
-				'id', 'integer', [
+				'id', ColumnType::Integer, [
 					'autoincrement' => true,
 					'notnull' => true,
 					'length' => 11,
@@ -570,24 +570,24 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 				]
 			);
 			$table->addColumn(
-				'mount_id', 'string', [
+				'mount_id', ColumnType::String, [
 					'notnull' => false,
 					'length' => 31
 				]
 			);
 			$table->addColumn(
-				'single_id', 'string', [
+				'single_id', ColumnType::String, [
 					'notnull' => false,
 					'length' => 31
 				]
 			);
 			$table->addColumn(
-				'mountpoint', 'text', [
+				'mountpoint', ColumnType::Text, [
 					'notnull' => false
 				]
 			);
 			$table->addColumn(
-				'mountpoint_hash', 'string', [
+				'mountpoint_hash', ColumnType::String, [
 					'notnull' => false,
 					'length' => 64
 				]
@@ -603,7 +603,7 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 		if (!$schema->hasTable('circles_share_lock')) {
 			$table = $schema->createTable('circles_share_lock');
 			$table->addColumn(
-				'id', 'integer', [
+				'id', ColumnType::Integer, [
 					'autoincrement' => true,
 					'notnull' => true,
 					'length' => 4,
@@ -611,19 +611,19 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 				]
 			);
 			$table->addColumn(
-				'item_id', 'string', [
+				'item_id', ColumnType::String, [
 					'notnull' => true,
 					'length' => 31
 				]
 			);
 			$table->addColumn(
-				'circle_id', 'string', [
+				'circle_id', ColumnType::String, [
 					'notnull' => true,
 					'length' => 31
 				]
 			);
 			$table->addColumn(
-				'instance', 'string', [
+				'instance', ColumnType::String, [
 					'notnull' => true,
 					'length' => 127,
 				]

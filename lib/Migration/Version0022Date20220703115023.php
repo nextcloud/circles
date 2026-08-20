@@ -10,8 +10,9 @@ declare(strict_types=1);
 namespace OCA\Circles\Migration;
 
 use Closure;
-use Doctrine\DBAL\Schema\SchemaException;
 use OCP\DB\ISchemaWrapper;
+use OCP\DB\Schema\ColumnType;
+use OCP\DB\Schema\SchemaException;
 use OCP\IDBConnection;
 use OCP\Migration\IOutput;
 use OCP\Migration\SimpleMigrationStep;
@@ -44,14 +45,14 @@ class Version0022Date20220703115023 extends SimpleMigrationStep {
 			$table = $schema->getTable('circles_event');
 			if (!$table->hasColumn('updated')) {
 				$table->addColumn(
-					'updated', 'datetime', [
+					'updated', ColumnType::Datetime, [
 						'notnull' => false,
 					]
 				);
 			}
 			if (!$table->hasColumn('retry')) {
 				$table->addColumn(
-					'retry', 'integer', [
+					'retry', ColumnType::Integer, [
 						'length' => 3,
 						'notnull' => false
 					]
@@ -63,7 +64,7 @@ class Version0022Date20220703115023 extends SimpleMigrationStep {
 			$table = $schema->getTable('circles_member');
 			if (!$table->hasColumn('invited_by')) {
 				$table->addColumn(
-					'invited_by', 'string', [
+					'invited_by', ColumnType::String, [
 						'notnull' => false,
 						'default' => '',
 						'length' => 31,
@@ -76,7 +77,7 @@ class Version0022Date20220703115023 extends SimpleMigrationStep {
 			$table = $schema->getTable('circles_circle');
 			if (!$table->hasColumn('sanitized_name')) {
 				$table->addColumn(
-					'sanitized_name', 'string', [
+					'sanitized_name', ColumnType::String, [
 						'notnull' => false,
 						'default' => '',
 						'length' => 127
@@ -175,7 +176,7 @@ class Version0022Date20220703115023 extends SimpleMigrationStep {
 		if (!$schema->hasTable('circles_token')) {
 			$table = $schema->createTable('circles_token');
 			$table->addColumn(
-				'id', 'integer', [
+				'id', ColumnType::Integer, [
 					'autoincrement' => true,
 					'notnull' => true,
 					'length' => 11,
@@ -183,43 +184,43 @@ class Version0022Date20220703115023 extends SimpleMigrationStep {
 				]
 			);
 			$table->addColumn(
-				'share_id', 'integer', [
+				'share_id', ColumnType::Integer, [
 					'notnull' => false,
 					'length' => 11
 				]
 			);
 			$table->addColumn(
-				'circle_id', 'string', [
+				'circle_id', ColumnType::String, [
 					'notnull' => false,
 					'length' => 31
 				]
 			);
 			$table->addColumn(
-				'single_id', 'string', [
+				'single_id', ColumnType::String, [
 					'notnull' => false,
 					'length' => 31
 				]
 			);
 			$table->addColumn(
-				'member_id', 'string', [
+				'member_id', ColumnType::String, [
 					'notnull' => false,
 					'length' => 31
 				]
 			);
 			$table->addColumn(
-				'token', 'string', [
+				'token', ColumnType::String, [
 					'notnull' => false,
 					'length' => 31
 				]
 			);
 			$table->addColumn(
-				'password', 'string', [
+				'password', ColumnType::String, [
 					'notnull' => false,
 					'length' => 31
 				]
 			);
 			$table->addColumn(
-				'accepted', 'integer', [
+				'accepted', ColumnType::Integer, [
 					'notnull' => false,
 					'length' => 1
 				]

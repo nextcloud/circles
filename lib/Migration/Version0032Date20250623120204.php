@@ -10,16 +10,17 @@ declare(strict_types=1);
 namespace OCA\Circles\Migration;
 
 use Closure;
-use Doctrine\DBAL\Schema\SchemaException;
 use OCP\DB\ISchemaWrapper;
+use OCP\DB\Schema\ColumnType;
+use OCP\DB\Schema\SchemaException;
 use OCP\Migration\Attributes\AddColumn;
-use OCP\Migration\Attributes\ColumnType;
+use OCP\Migration\Attributes\ColumnType as AttributeColumnType;
 use OCP\Migration\IOutput;
 use OCP\Migration\SimpleMigrationStep;
 use Psr\Log\LoggerInterface;
 
-#[AddColumn('circles_mount', 'remote', ColumnType::STRING, 'store remote instance for quicker identification')]
-#[AddColumn('circles_mount', 'remote_id', ColumnType::INTEGER, 'store remote share id for quicker identification')]
+#[AddColumn('circles_mount', 'remote', AttributeColumnType::STRING, 'store remote instance for quicker identification')]
+#[AddColumn('circles_mount', 'remote_id', AttributeColumnType::INTEGER, 'store remote share id for quicker identification')]
 class Version0032Date20250623120204 extends SimpleMigrationStep {
 	public function __construct(
 		private readonly LoggerInterface $logger,
@@ -34,7 +35,7 @@ class Version0032Date20250623120204 extends SimpleMigrationStep {
 			$table = $schema->getTable('circles_mount');
 			if (!$table->hasColumn('remote')) {
 				$table->addColumn(
-					'remote', 'string',
+					'remote', ColumnType::String,
 					[
 						'length' => 255,
 						'notnull' => false,
@@ -44,7 +45,7 @@ class Version0032Date20250623120204 extends SimpleMigrationStep {
 			}
 			if (!$table->hasColumn('remote_id')) {
 				$table->addColumn(
-					'remote_id', 'integer',
+					'remote_id', ColumnType::Integer,
 					[
 						'length' => 20,
 						'unsigned' => true,
