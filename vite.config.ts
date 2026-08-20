@@ -13,7 +13,8 @@ export default (env) => createAppConfig({
 	'settings-team-folders': join(import.meta.dirname, 'src/settings-team-folders.ts'),
 	'settings-personal': join(import.meta.dirname, 'src/settings-personal.ts'),
 }, {
-	appName: 'teams',
+	appName: 'circles',
+	assetsPrefix: 'teams-',
 	emptyOutputDirectory: { additionalDirectories: ['css'] },
 	extractLicenseInformation: {
 		includeSourceMaps: true,
