@@ -10,8 +10,9 @@ declare(strict_types=1);
 namespace OCA\Circles\Migration;
 
 use Closure;
-use Doctrine\DBAL\Schema\SchemaException;
 use OCP\DB\ISchemaWrapper;
+use OCP\DB\Schema\ColumnType;
+use OCP\DB\Schema\SchemaException;
 use OCP\Migration\IOutput;
 use OCP\Migration\SimpleMigrationStep;
 
@@ -32,7 +33,7 @@ class Version8100Date20261129153333 extends SimpleMigrationStep {
 			$table = $schema->createTable('circles_invitations');
 
 			$table->addColumn(
-				'id', 'integer', [
+				'id', ColumnType::Integer, [
 					'autoincrement' => true,
 					'notnull' => true,
 					'length' => 8,
@@ -40,25 +41,25 @@ class Version8100Date20261129153333 extends SimpleMigrationStep {
 				]
 			);
 			$table->addColumn(
-				'circle_id', 'string', [
+				'circle_id', ColumnType::String, [
 					'length' => 32,
 					'notnull' => true,
 				]
 			);
 			$table->addColumn(
-				'invitation_code', 'string', [
+				'invitation_code', ColumnType::String, [
 					'length' => 16,
 					'notnull' => true,
 				]
 			);
 			$table->addColumn(
-				'created_by', 'string', [
+				'created_by', ColumnType::String, [
 					'length' => 255,
 					'notnull' => true,
 				]
 			);
 			$table->addColumn(
-				'created', 'datetime', [
+				'created', ColumnType::Datetime, [
 					'notnull' => true,
 				]
 			);

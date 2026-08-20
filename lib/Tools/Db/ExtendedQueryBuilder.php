@@ -866,10 +866,11 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	}
 
 	/**
-	 * @param string $object
+	 * @template T of IQueryRow
+	 * @param class-string<T> $object
 	 * @param array $params
 	 *
-	 * @return IQueryRow
+	 * @return T
 	 * @throws RowNotFoundException
 	 * @throws InvalidItemException
 	 */
@@ -878,48 +879,24 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	}
 
 	/**
-	 * @param string $object
+	 * @template T of IQueryRow
+	 * @param class-string<T> $object
 	 * @param array $params
 	 *
-	 * @return list<IQueryRow>
+	 * @return list<T>
 	 */
 	public function asItems(string $object, array $params = []): array {
 		return $this->getRows($this->parseSimpleSelectSql(...), $object, $params);
 	}
 
 	/**
-	 * @param string $field
-	 * @param array $params
-	 *
-	 * @return IQueryRow
-	 * @throws InvalidItemException
-	 * @throws RowNotFoundException
-	 */
-	public function asItemFromField(string $field, array $params = []): IQueryRow {
-		$param['modelFromField'] = $field;
-
-		return $this->getRow($this->parseSimpleSelectSql(...), '', $params);
-	}
-
-	/**
-	 * @param string $field
-	 * @param array $params
-	 *
-	 * @return IQueryRow[]
-	 */
-	public function asItemsFromField(string $field, array $params = []): array {
-		$param['modelFromField'] = $field;
-
-		return $this->getRows($this->parseSimpleSelectSql(...), $field, $params);
-	}
-
-	/**
+	 * @template T of IQueryRow
 	 * @param array $data
 	 * @param ExtendedQueryBuilder $qb
-	 * @param string $object
+	 * @param class-string<T> $object
 	 * @param array $params
 	 *
-	 * @return IQueryRow
+	 * @return T
 	 * @throws InvalidItemException
 	 */
 	private function parseSimpleSelectSql(
@@ -937,6 +914,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 		if (!($item instanceof IQueryRow)) {
 			throw new InvalidItemException();
 		}
+		/** @var T $item */
 
 		if (!empty($params)) {
 			$data['_params'] = $params;
@@ -956,14 +934,16 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	}
 
 	/**
+	 * @template T of IQueryRow
+	 * @param class-string<T> $object
 	 * @param callable $method
-	 * @param string $object
 	 * @param array $params
 	 *
-	 * @return IQueryRow
+	 * @return T
+	 *
 	 * @throws RowNotFoundException
 	 */
-	public function getRow(callable $method, string $object = '', array $params = []): IQueryRow {
+	public function getRow(callable $method, string $object, array $params = []): IQueryRow {
 		$cursor = $this->executeQuery();
 		$data = $cursor->fetchAssociative();
 		$cursor->closeCursor();
@@ -976,13 +956,14 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	}
 
 	/**
+	 * @template T of IQueryRow
+	 * @param class-string<T> $object
 	 * @param callable $method
-	 * @param string $object
 	 * @param array $params
 	 *
-	 * @return list<IQueryRow>
+	 * @return list<T>
 	 */
-	public function getRows(callable $method, string $object = '', array $params = []): array {
+	public function getRows(callable $method, string $object, array $params = []): array {
 		$rows = [];
 		$cursor = $this->executeQuery();
 		while ($data = $cursor->fetchAssociative()) {

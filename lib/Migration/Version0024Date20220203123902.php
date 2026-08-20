@@ -10,8 +10,9 @@ declare(strict_types=1);
 namespace OCA\Circles\Migration;
 
 use Closure;
-use Doctrine\DBAL\Schema\SchemaException;
 use OCP\DB\ISchemaWrapper;
+use OCP\DB\Schema\ColumnType;
+use OCP\DB\Schema\SchemaException;
 use OCP\IDBConnection;
 use OCP\Migration\IOutput;
 use OCP\Migration\SimpleMigrationStep;
@@ -38,59 +39,59 @@ class Version0024Date20220203123902 extends SimpleMigrationStep {
 		if (!$schema->hasTable('circles_event')) {
 			$table = $schema->createTable('circles_event');
 			$table->addColumn(
-				'token', 'string', [
+				'token', ColumnType::String, [
 					'notnull' => false,
 					'length' => 63,
 				]
 			);
 			$table->addColumn(
-				'event', 'text', [
+				'event', ColumnType::Text, [
 					'notnull' => false
 				]
 			);
 			$table->addColumn(
-				'result', 'text', [
+				'result', ColumnType::Text, [
 					'notnull' => false
 				]
 			);
 			$table->addColumn(
-				'instance', 'string', [
+				'instance', ColumnType::String, [
 					'length' => 255,
 					'notnull' => false
 				]
 			);
 			$table->addColumn(
-				'interface', 'integer', [
+				'interface', ColumnType::Integer, [
 					'notnull' => true,
 					'length' => 1,
 					'default' => 0
 				]
 			);
 			$table->addColumn(
-				'severity', 'integer', [
+				'severity', ColumnType::Integer, [
 					'length' => 3,
 					'notnull' => false
 				]
 			);
 			$table->addColumn(
-				'retry', 'integer', [
+				'retry', ColumnType::Integer, [
 					'length' => 3,
 					'notnull' => false
 				]
 			);
 			$table->addColumn(
-				'status', 'integer', [
+				'status', ColumnType::Integer, [
 					'length' => 3,
 					'notnull' => false
 				]
 			);
 			$table->addColumn(
-				'updated', 'datetime', [
+				'updated', ColumnType::Datetime, [
 					'notnull' => false,
 				]
 			);
 			$table->addColumn(
-				'creation', 'bigint', [
+				'creation', ColumnType::Bigint, [
 					'length' => 14,
 					'notnull' => false
 				]

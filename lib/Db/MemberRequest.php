@@ -456,7 +456,7 @@ class MemberRequest extends MemberRequestBuilder {
 	/**
 	 * @param string $needle
 	 *
-	 * @return FederatedUser[]
+	 * @return list<FederatedUser>
 	 * @throws RequestBuilderException
 	 */
 	public function searchFederatedUsers(string $needle): array {
@@ -469,7 +469,7 @@ class MemberRequest extends MemberRequestBuilder {
 	/**
 	 * @param IFederatedUser $federatedUser
 	 *
-	 * @return Member[]
+	 * @return list<Member>
 	 * @throws RequestBuilderException
 	 */
 	public function getAlternateSingleId(IFederatedUser $federatedUser): array {

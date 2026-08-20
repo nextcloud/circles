@@ -103,7 +103,7 @@ class MemberRequestBuilder extends CoreRequestBuilder {
 	 * @param CoreQueryBuilder $qb
 	 * @param bool $asFederatedUser
 	 *
-	 * @return Member[]|FederatedUser[]
+	 * @return ($asFederatedUser is true ? list<FederatedUser> : list<Member>)
 	 */
 	public function getItemsFromRequest(CoreQueryBuilder $qb, bool $asFederatedUser = false): array {
 		$object = Member::class;
@@ -111,7 +111,6 @@ class MemberRequestBuilder extends CoreRequestBuilder {
 			$object = FederatedUser::class;
 		}
 
-		/** @var Member|FederatedUser[] $result */
 		return $qb->asItems($object);
 	}
 }

@@ -10,8 +10,8 @@ declare(strict_types=1);
 namespace OCA\Circles\Migration;
 
 use Closure;
-use Doctrine\DBAL\Schema\SchemaException;
 use OCP\DB\ISchemaWrapper;
+use OCP\DB\Schema\SchemaException;
 use OCP\Migration\Attributes\AddIndex;
 use OCP\Migration\Attributes\IndexType;
 use OCP\Migration\IOutput;
