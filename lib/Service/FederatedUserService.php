@@ -1172,7 +1172,7 @@ class FederatedUserService {
 			->setCircleId($circle->getSingleId())
 			->setLevel(Member::LEVEL_OWNER)
 			->setStatus(Member::STATUS_MEMBER)
-		   ->setDisplayName($group->getDisplayName());
+			->setDisplayName($group->getDisplayName());
 		$circle->setOwner($member)
 			->setInitiator($member);
 
