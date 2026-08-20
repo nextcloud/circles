@@ -13,10 +13,10 @@ use OCA\Circles\Model\ShareWrapper;
 use OCA\Circles\Service\ShareWrapperService;
 use OCP\IL10N;
 use OCP\IURLGenerator;
-use OCP\Teams\ITeamResourceProvider;
+use OCP\Teams\ITeamFileResourceProvider;
 use OCP\Teams\TeamResource;
 
-class FileSharingTeamResourceProvider implements ITeamResourceProvider {
+class FileSharingTeamResourceProvider implements ITeamFileResourceProvider {
 	public function __construct(
 		private readonly IL10N $l10n,
 		private readonly ?CirclesManager $circlesManager,
@@ -93,11 +93,15 @@ class FileSharingTeamResourceProvider implements ITeamResourceProvider {
 	}
 
 	public function getTeamsForResource(string $resourceId): array {
+		return $this->getTeamsForFile((int)$resourceId);
+	}
+
+	public function getTeamsForFile(int $fileId): array {
 		if (!$this->circlesManager) {
 			return [];
 		}
 
-		$shares = $this->shareWrapperService->getSharesByFileId((int)$resourceId);
+		$shares = $this->shareWrapperService->getSharesByFileId($fileId);
 
 		return array_map(fn ($share) => $share->getSharedWith(), $shares);
 	}
