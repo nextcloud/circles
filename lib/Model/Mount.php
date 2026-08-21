@@ -16,6 +16,7 @@ use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Tools\Db\IQueryRow;
 use OCA\Circles\Tools\IDeserializable;
 use OCA\Circles\Tools\Traits\TArrayTools;
+use OCA\Files_Sharing\External\Manager as ExternalShareManager;
 use OCP\Federation\ICloudIdManager;
 use OCP\Http\Client\IClientService;
 
@@ -41,6 +42,7 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 	private string $storage;
 	private ICloudIdManager $cloudIdManager;
 	private IClientService $httpClientService;
+	private ExternalShareManager $externalShareManager;
 	private string $remote = '';
 	private int $remoteShareId = 0;
 
@@ -304,6 +306,16 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 		return $this->httpClientService;
 	}
 
+	public function setExternalShareManager(ExternalShareManager $externalShareManager): self {
+		$this->externalShareManager = $externalShareManager;
+
+		return $this;
+	}
+
+	public function getExternalShareManager(): ExternalShareManager {
+		return $this->externalShareManager;
+	}
+
 	public function setRemote(string $remote): void {
 		$this->remote = $remote;
 	}
@@ -333,6 +345,7 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 			'password' => $this->getPassword(),
 			'mountpoint' => $this->getMountPoint(false),
 			'HttpClientService' => $this->getHttpClientService(),
+			'manager' => $this->getExternalShareManager(),
 			'cloudId' => $this->getCloudIdManager()->getCloudId(
 				$member->getUserId(),
 				$member->getRemoteInstance()->getRoot()

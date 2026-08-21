@@ -25,6 +25,7 @@ use OCA\Circles\Model\Mountpoint;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Tools\Traits\TArrayTools;
+use OCA\Files_Sharing\External\Manager as ExternalShareManager;
 use OCA\Files_Sharing\External\Storage as ExternalStorage;
 use OCP\DB\Exception;
 use OCP\Federation\ICloudIdManager;
@@ -53,6 +54,7 @@ class CircleMountProvider implements IMountProvider {
 		private FederatedUserService $federatedUserService,
 		private ConfigService $configService,
 		private LoggerInterface $logger,
+		private ExternalShareManager $externalShareManager,
 	) {
 	}
 
@@ -96,7 +98,8 @@ class CircleMountProvider implements IMountProvider {
 		}
 
 		$mount->setCloudIdManager($this->cloudIdManager)
-			->setHttpClientService($this->clientService);
+			->setHttpClientService($this->clientService)
+			->setExternalShareManager($this->externalShareManager);
 
 		return new CircleMount(
 			$mount,
