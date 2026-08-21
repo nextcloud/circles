@@ -35,6 +35,7 @@ use OCP\AppFramework\OCS\OCSException;
 use OCP\AppFramework\OCSController;
 use OCP\IRequest;
 use OCP\IUserSession;
+use OCP\Teams\ITeamManager;
 
 /**
  * Class AdminController
@@ -70,6 +71,7 @@ class AdminController extends OCSController {
 		private MemberService $memberService,
 		private MembershipService $membershipService,
 		private SearchService $searchService,
+		private ITeamManager $teamManager,
 		ConfigService $configService,
 	) {
 		parent::__construct($appName, $request);
@@ -259,6 +261,48 @@ class AdminController extends OCSController {
 
 			return new DataResponse($this->serializeArray($this->circleService->getAllCircles($probe)));
 		} catch (Exception $e) {
+			throw new OCSException($e->getMessage(), (int)$e->getCode());
+		}
+	}
+
+	/**
+	 * Return teams and their optionally linked team folders.
+	 *
+	 * @return DataResponse
+	 * @throws OCSException
+	 */
+	public function teamFolders(): DataResponse {
+		try {
+			$this->setLocalFederatedUser($this->userSession->getUser()->getUID());
+			$provider = $this->teamManager->getTeamFolderProvider();
+			if ($provider === null) {
+				return new DataResponse([]);
+			}
+
+			$probe = new CircleProbe();
+			$probe->filterPersonalCircles()
+				->filterSingleCircles()
+				->filterSystemCircles()
+				->filterHiddenCircles()
+				->filterBackendCircles();
+
+			$teamFolders = [];
+			foreach ($this->circleService->getAllCircles($probe) as $circle) {
+				$folder = $provider->getTeamFolder($circle->getSingleId());
+
+				$quota = null;
+
+				$teamFolders[] = [
+					'teamId' => $circle->getSingleId(),
+					'teamName' => $circle->getDisplayName(),
+					'folder' => $folder?->jsonSerialize(),
+					'quota' => $quota,
+				];
+			}
+
+			return new DataResponse($teamFolders);
+		} catch (Exception $e) {
+			$this->e($e);
 			throw new OCSException($e->getMessage(), (int)$e->getCode());
 		}
 	}
