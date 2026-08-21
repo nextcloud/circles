@@ -61,6 +61,9 @@ class Member extends ManagedModel implements
 	public const APP_OCC = 10002;
 	public const APP_DEFAULT = 11000;
 
+	// notes array keys
+	public const NOTE_MANAGED_BY = 'managed_by';
+
 	public static $TYPE = [
 		0 => 'single',
 		1 => 'user',
@@ -674,15 +677,6 @@ class Member extends ManagedModel implements
 		}
 
 		return $this->memberships;
-	}
-
-	public function setManagedBy(string $managedBy): self {
-		$this->setNote('managedBy', $managedBy);
-		return $this;
-	}
-
-	public function getManagedBy(): string {
-		return $this->getNote('managedBy');
 	}
 
 	/**

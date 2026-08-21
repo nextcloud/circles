@@ -93,6 +93,9 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	public const CFG_SCIM = 262144;                   // Circle is managed by a SCIM server, not manually
 	public static $DEF_CFG_MAX = 524287;
 
+	// settings array keys
+	public const SETTING_EXTERNAL_ID = 'external_id';
+
 	/**
 	 * Note: When editing those values, update lib/Application/Capabilities.php
 	 *
