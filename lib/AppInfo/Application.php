@@ -188,7 +188,7 @@ class Application extends App implements IBootstrap {
 
 	public function registerMountProvider(ContainerInterface $container): void {
 		$configService = $container->get(ConfigService::class);
-		if (!$configService->isGSAvailable()) {
+		if (!$configService->isGSAvailable() && !$configService->isFederatedTeamsEnabled()) {
 			return;
 		}
 
