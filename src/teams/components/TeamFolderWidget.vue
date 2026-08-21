@@ -98,6 +98,16 @@ function encodeDir(dir: string): string {
 }
 
 /**
+ * Hidden entries in Nextcloud start with a dot and should not be shown in
+ * the Team space widget.
+ *
+ * @param node - The team folder node
+ */
+function isHiddenEntry(node: INode): boolean {
+	return node.basename.startsWith('.')
+}
+
+/**
  * Build the URL for a single node so the list items are real links.
  *
  * Both files and folders open in the Files app using the file id based URL
@@ -222,6 +232,7 @@ async function loadContents(): Promise<void> {
 		nodes.value = data
 			.slice(1)
 			.map((entry) => resultToNode(entry, rootPath))
+			.filter((node) => !isHiddenEntry(node))
 			.sort((a, b) => {
 				if (a.type === b.type) {
 					return a.basename.localeCompare(b.basename)
