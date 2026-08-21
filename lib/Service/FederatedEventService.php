@@ -27,6 +27,7 @@ use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\FederatedItems\CircleCreate;
+use OCA\Circles\FederatedItems\CircleDestroy;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\IFederatedItemCircleCheckNotRequired;
@@ -119,12 +120,23 @@ class FederatedEventService extends NCSignature {
 				return $event->getOutcome();
 			}
 
+			$broadcasted = false;
 			if (OC::$CLI || !$event->isAsync()) {
+				// CircleDestroy needs to be broadcast before manage() runs.
+				// initBroadcast() > getInstances() > RemoteRequest::getOutgoingRecipient()
+				// finds remote instances via the circle's members, and if manage() already
+				// deleted them, no instance is found, thus the event is not broadcast.
+				if ($event->getClass() === CircleDestroy::class) {
+					$broadcasted = $this->initBroadcast($event);
+				}
 				$federatedItem->manage($event);
 			}
 
-			if (!$this->initBroadcast($event)
-				&& $event->getClass() === CircleCreate::class) {
+			if (!$broadcasted) {
+				$broadcasted = $this->initBroadcast($event);
+			}
+
+			if (!$broadcasted && $event->getClass() === CircleCreate::class) {
 				// Circle Creation is done in a different way as there is no Circle nor Members yet to
 				// base the broadcast to other instances, unless in GlobalScale. And the fact that we do
 				// not want to async the process.
