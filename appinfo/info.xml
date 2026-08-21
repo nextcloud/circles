@@ -82,7 +82,10 @@ Those groups of people can then be used by any other app for sharing purpose.
 		<command>OCA\Circles\Command\MigrateCustomGroups</command>
 
 		<command>OCA\Circles\Command\CirclesScimSyncCircles</command>
+		<command>OCA\Circles\Command\CirclesScimAddRemoteInstance</command>
+		<command>OCA\Circles\Command\CirclesScimRemoveRemoteInstance</command>
 		<command>OCA\Circles\Command\CirclesScimSyncFederatedModerators</command>
+
 		<command>OCA\Circles\Command\CirclesOidcSyncMemberships</command>
 	</commands>
 

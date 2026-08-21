@@ -289,7 +289,11 @@ class MemberService {
 		}
 
 		if ($member->getUserType() === Member::TYPE_CIRCLE) {
-			$circle = $this->circleRequest->getCircle($member->getSingleId());
+			try {
+				$circle = $this->circleRequest->getCircle($member->getSingleId());
+			} catch (CircleNotFoundException) {
+				return [];
+			}
 			$members = $circle->getInheritedMembers();
 			$userMembers = array_filter($members, static fn (Member $inheritedMember) => $inheritedMember->getUserType() === Member::TYPE_USER);
 			return array_map(fn (Member $inheritedMember) => $this->userManager->getExistingUser($inheritedMember->getUserId()), $userMembers);

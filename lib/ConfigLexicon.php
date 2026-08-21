@@ -42,7 +42,7 @@ class ConfigLexicon implements ILexicon {
 	public const SCIM_ENABLED = 'scim_enabled';
 	public const SCIM_ENDPOINT = 'scim_endpoint';
 	public const SCIM_TOKEN = 'scim_token';
-	public const SCIM_FEDERATED_MODERATOR_INSTANCES = 'scim_federated_moderator_instances';
+	public const SCIM_REMOTE_INSTANCES = 'scim_remote_instances';
 
 	// Federation agent
 	public const FEDERATION_AGENT_ENABLED = 'federation_agent_enabled';
@@ -73,7 +73,7 @@ class ConfigLexicon implements ILexicon {
 			new Entry(key: self::SCIM_ENABLED, type: ValueType::BOOL, defaultRaw: false, definition: 'disable/enable SCIM integration', lazy: true),
 			new Entry(key: self::SCIM_ENDPOINT, type: ValueType::STRING, defaultRaw: '', definition: 'server endpoint for group discovery', lazy: true),
 			new Entry(key: self::SCIM_TOKEN, type: ValueType::STRING, defaultRaw: '', definition: 'bearer token used to authenticate against the server', lazy: true),
-			new Entry(key: self::SCIM_FEDERATED_MODERATOR_INSTANCES, type: ValueType::ARRAY, defaultRaw: [], definition: "list of remote instances whose federation agent is trusted as a moderator on this instance's SCIM circles", lazy: true),
+			new Entry(key: self::SCIM_REMOTE_INSTANCES, type: ValueType::ARRAY, defaultRaw: [], definition: "list of remote instances trusted to add members on this instance's SCIM circles", lazy: true),
 			// Federation agent
 			new Entry(key: self::FEDERATION_AGENT_ENABLED, type: ValueType::BOOL, defaultRaw: false, definition: "disable/enable this instance's federation agent, used to act on behalf of this instance on remote circles", lazy: true),
 			new Entry(key: self::FEDERATION_AGENT_LOCAL_ID, type: ValueType::STRING, defaultRaw: '', definition: "single ID of this instance's own federation agent circle", lazy: true),

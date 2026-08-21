@@ -436,6 +436,18 @@ class MemberRequest extends MemberRequestBuilder {
 	}
 
 	/**
+	 * @return Member[]
+	 * @throws RequestBuilderException
+	 */
+	public function getMembersByCircleIdAndInstance(string $circleId, string $instance): array {
+		$qb = $this->getMemberSelectSql();
+		$qb->limitToCircleId($circleId);
+		$qb->limitToInstance($instance);
+
+		return $this->getItemsFromRequest($qb);
+	}
+
+	/**
 	 * @param Member $member
 	 * @param FederatedUser|null $initiator
 	 *
