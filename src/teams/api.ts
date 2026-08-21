@@ -6,7 +6,7 @@
 import type { Member, MemberCandidate, Resource, Team, TeamRole } from './types.ts'
 
 import axios from '@nextcloud/axios'
-import { generateOcsUrl } from '@nextcloud/router'
+import { generateOcsUrl, generateUrl } from '@nextcloud/router'
 import { logger } from '../logger.ts'
 import { SHARES_TYPES_MEMBER_MAP } from './team-page/models/constants.ts'
 import { getRecommendations, getSuggestions } from './team-page/services/collaborationAutocompletion.js'
@@ -249,6 +249,61 @@ export interface TeamFolder {
 	mountPoint: string
 }
 
+/** Team and its linked folder as exposed to administrators. */
+export interface AdminTeamFolder {
+	teamId: string
+	teamName: string
+	folder: TeamFolder | null
+	quota: number | null
+}
+
+interface GroupFolderForCircle {
+	id: number
+	quota: number
+}
+
+/**
+ * Fetch all teams and their optionally linked team folders for the admin settings view.
+ */
+export async function getAdminTeamFolders(): Promise<AdminTeamFolder[]> {
+	const { data } = await axios.get<OcsResponse<AdminTeamFolder[]>>(
+		generateOcsUrl('/apps/circles/admin/teamfolders'),
+		{ headers: HEADERS },
+	)
+	const teamFolders = data.ocs.data
+	return Promise.all(teamFolders.map(async (teamFolder) => {
+		if (teamFolder.folder === null) {
+			return teamFolder
+		}
+
+		try {
+			const { data: groupFoldersData } = await axios.get<OcsResponse<GroupFolderForCircle[]>>(
+				generateUrl(`/apps/groupfolders/circles/${encodeURIComponent(teamFolder.teamId)}/folders`),
+				{ headers: HEADERS },
+			)
+			const groupFolder = groupFoldersData.ocs.data.find(({ id }) => id === teamFolder.folder?.id)
+			return { ...teamFolder, quota: groupFolder?.quota ?? null }
+		} catch (error) {
+			logger.warn('Unable to load team folder quota', { error, teamId: teamFolder.teamId })
+			return teamFolder
+		}
+	}))
+}
+
+/**
+ * Update the quota of a Groupfolders team folder.
+ *
+ * @param folderId - The Groupfolders folder id
+ * @param quota - The quota in bytes, or zero for unlimited
+ */
+export async function updateTeamFolderQuota(folderId: number, quota: number): Promise<void> {
+	await axios.post(
+		generateUrl(`/apps/groupfolders/folders/${folderId}/quota`),
+		{ quota },
+		{ headers: HEADERS },
+	)
+}
+
 /**
  * Fetch the team folder linked to a team.
  *
@@ -282,12 +337,42 @@ export async function getTeamFolder(teamId: string): Promise<TeamFolder | null> 
  * returned. Requires team owner privileges.
  *
  * @param teamId - The team single id
+ * @param name - Optional team folder name
  * @return The created (or existing) team folder.
  */
-export async function upgradeTeamFolder(teamId: string): Promise<TeamFolder> {
+export async function upgradeTeamFolder(teamId: string, name?: string): Promise<TeamFolder> {
 	const { data } = await axios.post<OcsResponse<{ folderId: number, folder: TeamFolder }>>(
 		generateOcsUrl('apps/circles/teams/{circleId}/folder', { circleId: teamId }),
-		{},
+		{ name },
+		{ headers: HEADERS },
+	)
+	return data.ocs.data.folder
+}
+
+/**
+ * Fetch existing team folders directly available to a team that can become
+ * its exclusive team folder.
+ *
+ * @param teamId - The team single id
+ */
+export async function getLinkableTeamFolders(teamId: string): Promise<TeamFolder[]> {
+	const { data } = await axios.get<OcsResponse<TeamFolder[]>>(
+		generateOcsUrl('apps/circles/teams/{circleId}/folder/linkable', { circleId: teamId }),
+		{ headers: HEADERS },
+	)
+	return data.ocs.data
+}
+
+/**
+ * Make an eligible existing team folder the exclusive team folder.
+ *
+ * @param teamId - The team single id
+ * @param folderId - The id of the existing team folder
+ */
+export async function linkTeamFolder(teamId: string, folderId: number): Promise<TeamFolder> {
+	const { data } = await axios.post<OcsResponse<{ folderId: number, folder: TeamFolder }>>(
+		generateOcsUrl('apps/circles/teams/{circleId}/folder/link', { circleId: teamId }),
+		{ folderId },
 		{ headers: HEADERS },
 	)
 	return data.ocs.data.folder

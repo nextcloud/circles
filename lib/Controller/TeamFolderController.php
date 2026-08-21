@@ -51,17 +51,39 @@ class TeamFolderController extends OCSController {
 	}
 
 	#[NoAdminRequired]
-	public function upgradeTeamFolder(string $circleId): DataResponse {
+	public function upgradeTeamFolder(string $circleId, string $name = ''): DataResponse {
 		$circle = $this->getCircle($circleId);
 		$this->assertAuthenticatedUserIsTeamOwnerOrServerAdmin($circleId);
 		$folder = $this->getProvider()->createTeamFolder(
 			new Team(
 				teamId: $circle->getSingleId(),
-				displayName: $circle->getDisplayName(),
+				displayName: trim($name) ?: $circle->getDisplayName(),
 				link: null,
 			),
 			$this->policy->getDefaultQuota(),
 		);
+
+		return new DataResponse([
+			'success' => true,
+			'folderId' => $folder->getId(),
+			'folder' => $folder->jsonSerialize(),
+		]);
+	}
+
+	#[NoAdminRequired]
+	public function getLinkableTeamFolders(string $circleId): DataResponse {
+		$this->assertAuthenticatedUserIsTeamOwnerOrServerAdmin($circleId);
+
+		return new DataResponse(array_map(
+			static fn (\OCP\Teams\TeamFolder $folder): array => $folder->jsonSerialize(),
+			$this->getProvider()->getLinkableTeamFolders($circleId),
+		));
+	}
+
+	#[NoAdminRequired]
+	public function linkTeamFolder(string $circleId, int $folderId): DataResponse {
+		$this->assertAuthenticatedUserIsTeamOwnerOrServerAdmin($circleId);
+		$folder = $this->getProvider()->linkTeamFolder($circleId, $folderId);
 
 		return new DataResponse([
 			'success' => true,
