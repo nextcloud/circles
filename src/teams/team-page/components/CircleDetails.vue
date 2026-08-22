@@ -567,6 +567,15 @@ export default {
 					apiPath: 'calendar',
 					enabled: enabledApps.calendar !== undefined,
 				},
+				{
+					id: 'deck',
+					label: t('circles', 'Deck board'),
+					inputLabel: t('circles', 'New Deck board'),
+					placeholder: t('circles', 'Board name'),
+					icon: 'ViewDashboardIcon',
+					apiPath: 'deck',
+					enabled: enabledApps.deck !== undefined,
+				},
 			].filter((resource) => resource.enabled)
 		},
 	},
@@ -724,6 +733,18 @@ export default {
 						break
 					}
 
+					case 'deck': {
+						const deckResponse = await axios.post(generateUrl('/apps/deck/api/v1.0/boards/team'), {
+							title: name,
+							teamId: this.circle.id,
+						})
+						resourceId = deckResponse.data?.id ?? deckResponse.data?.ocs?.data?.id
+						if (!resourceId) {
+							throw new Error('Failed to get board ID from creation response')
+						}
+						break
+					}
+
 					default: {
 						showError(t('circles', 'Unknown resource type'))
 						return
@@ -792,6 +813,10 @@ export default {
 				}
 
 				case 'collective': {
+					break
+				}
+
+				case 'deck': {
 					break
 				}
 
