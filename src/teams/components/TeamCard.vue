@@ -42,7 +42,7 @@ const MAX_AVATARS = 5
 					:key="member.id"
 					:class="$style.teamCardMember">
 					<NcAvatar
-						:user="member.isUser ? member.userId : undefined"
+						:user="member.isUser ? member.userId ?? undefined : undefined"
 						:displayName="member.displayName"
 						:isNoUser="!member.isUser"
 						:size="28"
