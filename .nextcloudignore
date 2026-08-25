@@ -18,6 +18,7 @@
 /package.json
 /package-lock.json
 /phpDocumentor.sh
+/playwright
 /psalm.xml
 /README.md
 /rector.php
