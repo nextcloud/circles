@@ -148,7 +148,7 @@ OC.L10N.register(
     "Unlimited" : "Ubegrænset",
     "Default quota" : "Standard kvote",
     "Select default quota" : "Vælg standardkvote",
-    "Save" : "Save",
+    "Save" : "Gem",
     "Reconnect" : "Tilslut igen",
     "Connect" : "Forbind",
     "Overview" : "Overblik",
