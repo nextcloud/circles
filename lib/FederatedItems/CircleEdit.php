@@ -11,6 +11,7 @@ namespace OCA\Circles\FederatedItems;
 
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
+use OCA\Circles\Exceptions\CircleNameTooLongException;
 use OCA\Circles\Exceptions\CircleNameTooShortException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedItem;
@@ -49,6 +50,7 @@ class CircleEdit implements IFederatedItem {
 	 *
 	 * @throws RequestBuilderException
 	 * @throws CircleNameTooShortException
+	 * @throws CircleNameTooLongException
 	 */
 	public function verify(FederatedEvent $event): void {
 		$circle = $event->getCircle();
@@ -63,6 +65,8 @@ class CircleEdit implements IFederatedItem {
 			$new->setName($this->circleService->cleanCircleName($data->g('name')));
 			if (strlen($new->getName()) < 3) {
 				throw new CircleNameTooShortException('Circle name is too short');
+			} elseif (strlen($new->getName()) > 127) {
+				throw new CircleNameTooLongException('Circle name is too long');
 			}
 			$event->getData()->s('name', $new->getName());
 		}

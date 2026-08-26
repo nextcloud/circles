@@ -12,6 +12,7 @@ namespace OCA\Circles\Service;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
+use OCA\Circles\Exceptions\CircleNameTooLongException;
 use OCA\Circles\Exceptions\CircleNameTooShortException;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedEventException;
@@ -146,6 +147,8 @@ class CircleService {
 
 		if (strlen($circle->getName()) < 3) {
 			throw new CircleNameTooShortException('Circle name is too short');
+		} elseif (strlen($circle->getName()) > 127) {
+			throw new CircleNameTooLongException('Circle name is too long');
 		}
 
 		if ($personal) {
