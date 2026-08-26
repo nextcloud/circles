@@ -13,7 +13,7 @@ Those groups of people can then be used by any other app for sharing purpose.
 		]]>
 	</description>
 	<version>35.0.0</version>
-	<licence>agpl</licence>
+	<licence>AGPL-3.0-or-later</licence>
 	<author>Maxence Lange</author>
 	<types>
 		<filesystem/>
