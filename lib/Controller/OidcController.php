@@ -25,6 +25,7 @@ use OCP\IUserSession;
 use OCP\Security\ICredentialsManager;
 use OCP\Security\ISecureRandom;
 use Psr\Log\LoggerInterface;
+use Random\Randomizer;
 
 class OidcController extends Controller {
 	private const SESSION_STATE = 'circles.oidc.state';
@@ -35,7 +36,6 @@ class OidcController extends Controller {
 		private readonly IAppConfig $appConfig,
 		private readonly IUserSession $userSession,
 		private readonly ISession $session,
-		private readonly ISecureRandom $random,
 		private readonly IURLGenerator $urlGenerator,
 		private readonly IClientService $clientService,
 		private readonly ICredentialsManager $credentialsManager,
@@ -52,7 +52,7 @@ class OidcController extends Controller {
 			return $this->redirectToPersonalSettings('disabled');
 		}
 
-		$state = $this->random->generate(32, ISecureRandom::CHAR_ALPHANUMERIC);
+		$state = (new Randomizer())->getBytesFromString(ISecureRandom::CHAR_ALPHANUMERIC, 32);
 		$userId = $this->userSession->getUser()?->getUID();
 		if ($userId === null) {
 			return $this->redirectToPersonalSettings('error');
