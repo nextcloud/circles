@@ -17,7 +17,9 @@ use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\NotFoundResponse;
 use OCP\AppFramework\Http\TemplateResponse;
+use OCP\AppFramework\Services\IInitialState;
 use OCP\IRequest;
+use OCP\Teams\ITeamManager;
 use OCP\Util;
 
 /**
@@ -27,6 +29,8 @@ class PageController extends Controller {
 	public function __construct(
 		IRequest $request,
 		private ConfigService $configService,
+		private IInitialState $initialState,
+		private ITeamManager $teamManager,
 	) {
 		parent::__construct(Application::APP_ID, $request);
 	}
@@ -40,6 +44,9 @@ class PageController extends Controller {
 		if (!$this->configService->getAppValueBool(ConfigService::FRONTEND_ENABLED)) {
 			return new NotFoundResponse();
 		}
+
+		$providerAvailable = $this->teamManager->getTeamFolderProvider() !== null;
+		$this->initialState->provideInitialState('teamFolderProviderAvailable', $providerAvailable);
 
 		Util::addScript(Application::APP_ID, 'teams-main');
 		Util::addStyle(Application::APP_ID, 'teams-main');

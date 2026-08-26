@@ -498,6 +498,9 @@ class MemberRequest extends MemberRequestBuilder {
 		//
 		//		$qb->andWhere($orX);
 
-		return $this->getItemsFromRequest($qb);
+		/** @var Member[] $members */
+		$members = $this->getItemsFromRequest($qb);
+
+		return $members;
 	}
 }

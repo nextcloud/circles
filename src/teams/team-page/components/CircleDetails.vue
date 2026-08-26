@@ -164,6 +164,24 @@
 							</template>
 						</div>
 					</div>
+
+				<!-- Team folder upgrade notice -->
+				<NcNoteCard
+					v-if="circle.isMember && showTeamFolderBanner"
+					:type="teamFolderProviderAvailable ? 'info' : 'warning'"
+					class="team-folder-banner">
+					<span v-if="!teamFolderProviderAvailable">{{ t('circles', 'This team does not have a team folder yet. Ask your administrator to enable the Team Folders app.') }}</span>
+					<span v-else-if="canCreateTeamFolder">{{ t('circles', 'This team does not have a team folder yet. Create one to share files with the whole team.') }}</span>
+					<span v-else>{{ t('circles', 'This team does not have a team folder yet. Ask a team owner to create one.') }}</span>
+					<NcButton
+						v-if="teamFolderProviderAvailable && canCreateTeamFolder"
+						variant="primary"
+						size="small"
+						class="team-folder-banner__action"
+						@click="createTeamFolder">
+						{{ t('circles', 'Create team folder') }}
+					</NcButton>
+				</NcNoteCard>
 				</div>
 
 				<!-- Main content now a direct child of the grid -->
@@ -261,6 +279,7 @@
 import { getCurrentUser } from '@nextcloud/auth'
 import axios from '@nextcloud/axios'
 import { FilePickerClosed, FilePickerType, getFilePickerBuilder, showError, showSuccess } from '@nextcloud/dialogs'
+import { loadState } from '@nextcloud/initial-state'
 import { encodePath } from '@nextcloud/paths'
 import { generateOcsUrl, generateRemoteUrl, generateUrl } from '@nextcloud/router'
 import {
@@ -271,6 +290,7 @@ import {
 	NcDialog,
 	NcEmptyContent,
 	NcLoadingIcon,
+	NcNoteCard,
 	NcPopover,
 	NcTextArea,
 	NcTextField,
@@ -288,8 +308,6 @@ import CogIcon from 'vue-material-design-icons/CogOutline.vue'
 import CopyIcon from 'vue-material-design-icons/ContentCopy.vue'
 import FileDocumentOutline from 'vue-material-design-icons/FileDocumentOutline.vue'
 import FolderIcon from 'vue-material-design-icons/Folder.vue'
-import FolderOutlineIcon from 'vue-material-design-icons/FolderOutline.vue'
-import FolderPlusOutlineIcon from 'vue-material-design-icons/FolderPlusOutline.vue'
 import { logger } from '../../../logger.ts'
 import LoginIcon from 'vue-material-design-icons/Login.vue'
 import LogoutIcon from 'vue-material-design-icons/Logout.vue'
@@ -342,14 +360,13 @@ export default {
 		TeamResourceButton,
 		NcEmptyContent,
 		NcLoadingIcon,
+		NcNoteCard,
 		NcPopover,
 		PencilIcon,
 		NcTextField,
 		NcTextArea,
 		NcActions,
 		NcActionButton,
-		FolderOutlineIcon,
-		FolderPlusOutlineIcon,
 		MessageIcon,
 		CalendarIcon,
 		ViewDashboardIcon,
@@ -400,6 +417,7 @@ export default {
 			teamFolder: null,
 			loadingTeamFolder: false,
 			creatingTeamFolder: false,
+			teamFolderProviderAvailable: Boolean(loadState('circles', 'teamFolderProviderAvailable', true)),
 
 			// Avatar
 			avatarUrl: undefined,
@@ -469,6 +487,14 @@ export default {
 			return this.canManageTeam || Boolean(getCurrentUser()?.isAdmin)
 		},
 
+		folderButtonType() {
+			return null
+		},
+
+		showTeamFolderBanner() {
+			return !this.teamFolder && !this.loadingTeamFolder && !this.creatingTeamFolder
+		},
+
 		teamHasCollective() {
 			return this.resourcesForProvider('collectives').length > 0
 		},
@@ -518,27 +544,7 @@ export default {
 			const enabledApps = window.OC?.appswebroots || {}
 
 			return [
-				{
-					id: 'teamfolder',
-					label: t('circles', 'Team space'),
-					inputLabel: null,
-					placeholder: null,
-					helperText: t('circles', 'Create a shared team space for this team.'),
-					icon: 'FolderPlusOutlineIcon',
-					apiPath: null,
-					enabled: this.canCreateTeamFolder && !this.teamFolder && !this.loadingTeamFolder,
-					noInput: true,
-				},
-				{
-					id: 'folder',
-					label: t('circles', 'Folder'),
-					inputLabel: t('circles', 'New folder'),
-					placeholder: t('circles', 'Folder name'),
-					helperText: t('circles', 'This will create a regular folder shared with the team.'),
-					icon: 'FolderOutlineIcon',
-					apiPath: 'files',
-					enabled: enabledApps.files !== undefined,
-				},
+				this.folderButtonType,
 				{
 					id: 'talk',
 					label: t('circles', 'Talk conversation'),
@@ -576,7 +582,7 @@ export default {
 					apiPath: 'deck',
 					enabled: enabledApps.deck !== undefined,
 				}
-			]
+			].filter((resource) => resource !== null && resource.enabled)
 		}
 	},
 
@@ -660,24 +666,6 @@ export default {
 				let resourceId
 
 				switch (resourceType.id) {
-					case 'teamfolder': {
-						await this.createTeamFolder()
-						return
-					}
-
-					case 'folder': {
-						const folderPath = `/remote.php/dav/files/${getCurrentUser().uid}/${name}`
-						await axios.request({
-							method: 'MKCOL',
-							url: folderPath,
-							headers: {
-								'Content-Type': 'application/xml',
-							},
-						})
-						resourceId = name
-						break
-					}
-
 					case 'talk': {
 						const talkUrl = generateOcsUrl('/apps/spreed/api/v4/room')
 						const talkResponse = await axios.post(talkUrl, {
@@ -733,18 +721,18 @@ export default {
 						break
 					}
 
-				case 'deck': {
-					const deckUrl = generateOcsUrl('/apps/deck/api/v1.0/boards/team')
-					const deckResponse = await axios.post(deckUrl, {
-						title: name,
-						teamId: this.circle.id,
-					})
-					resourceId = deckResponse.data.ocs.data.id
-					if (!resourceId) {
-						throw new Error('Failed to get board ID from creation response')
+					case 'deck': {
+						const deckUrl = generateOcsUrl('/apps/deck/api/v1.0/boards/team')
+						const deckResponse = await axios.post(deckUrl, {
+							title: name,
+							teamId: this.circle.id,
+						})
+						resourceId = deckResponse.data.ocs.data.id
+						if (!resourceId) {
+							throw new Error('Failed to get board ID from creation response')
+						}
+						break
 					}
-					break
-				}
 
 					default: {
 						showError(t('circles', 'Unknown resource type'))
@@ -793,17 +781,6 @@ export default {
 
 		async shareResourceWithTeam(resourceType, resourceId) {
 			switch (resourceType.id) {
-				case 'folder': {
-					const shareUrl = generateOcsUrl('/apps/files_sharing/api/v1/shares')
-					await axios.post(shareUrl, {
-						path: `/${resourceId}`,
-						shareType: 7,
-						shareWith: this.circle.id,
-						permissions: 31,
-					})
-					break
-				}
-
 				case 'talk': {
 					const participantUrl = generateOcsUrl(`/apps/spreed/api/v4/room/${resourceId}/participants`)
 					await axios.post(participantUrl, {
@@ -964,9 +941,15 @@ export default {
 		},
 
 		async fetchTeamResources() {
-			const response = await axios.get(generateOcsUrl(`/teams/${this.circle.id}/resources`))
-			this.resources = response.data.ocs.data.resources
-			logger.debug('Team resources', { resources: this.resources })
+			try {
+				const response = await axios.get(generateOcsUrl(`/teams/${this.circle.id}/resources`))
+				const data = response.data?.ocs?.data?.resources
+				this.resources = Array.isArray(data) ? data : []
+				logger.debug('Team resources', { resources: this.resources })
+			} catch (error) {
+				logger.error('Could not fetch team resources', { error, circleId: this.circle.id })
+				this.resources = []
+			}
 		},
 
 		async loadAvatarUrl() {
@@ -1093,6 +1076,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.team-folder-banner {
+	margin-top: calc(var(--default-grid-baseline) * 2);
+
+	:deep(.notecard__main) {
+		display: flex;
+		align-items: center;
+		gap: var(--default-grid-baseline);
+	}
+
+	.team-folder-banner__action {
+		white-space: nowrap;
+	}
+}
+
 .circle-details-container {
 	padding-inline: 20px;
 	margin-top: 1rem;
@@ -1105,6 +1102,7 @@ export default {
 		margin-inline: auto;
 
 		&.is-editing {
+
 			.circle-name-wrapper,
 			.circle-description-wrapper {
 				width: 100%;
@@ -1190,14 +1188,23 @@ export default {
 				justify-content: center;
 				text-align: center;
 				color: var(--color-main-text);
+
 				svg {
 					width: 20px;
 					height: 20px;
 					fill: currentColor;
-					path, rect, circle, polygon, polyline, ellipse, line {
+
+					path,
+					rect,
+					circle,
+					polygon,
+					polyline,
+					ellipse,
+					line {
 						fill: currentColor;
 					}
 				}
+
 				img {
 					border-radius: var(--border-radius-pill);
 					overflow: hidden;
@@ -1271,9 +1278,9 @@ export default {
 }
 
 :deep(.dialog .dialog__content) {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 :deep(.dialog .dialog__actions) {
@@ -1288,8 +1295,8 @@ export default {
 
 <style lang="scss">
 @media only screen and (min-width: 513px) {
-    .circle-avatar-cropper-dialog .modal-wrapper--normal .modal-container {
-        width: 324px !important;
-    }
+	.circle-avatar-cropper-dialog .modal-wrapper--normal .modal-container {
+		width: 324px !important;
+	}
 }
 </style>
