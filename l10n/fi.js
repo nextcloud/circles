@@ -125,8 +125,6 @@ OC.L10N.register(
     "Copied" : "Kopioitu",
     "Create link" : "Luo linkki",
     "Close" : "Sulje",
-    "New folder" : "Uusi kansio",
-    "Folder name" : "Kansion nimi",
     "Talk conversation" : "Talk-keskustelu",
     "Calendar" : "Kalenteri",
     "New calendar" : "Uusi kalenteri",
@@ -171,6 +169,8 @@ OC.L10N.register(
     "No entries found in this folder" : "Tästä kansiosta ei löytynyt tietueita",
     "Name" : "Nimi",
     "Size" : "Koko",
-    "Modified" : "Muokattu"
+    "Modified" : "Muokattu",
+    "New folder" : "Uusi kansio",
+    "Folder name" : "Kansion nimi"
 },
 "nplurals=2; plural=(n != 1);");

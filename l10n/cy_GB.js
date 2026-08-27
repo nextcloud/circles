@@ -109,7 +109,6 @@ OC.L10N.register(
     "Cancel" : "Cancel",
     "Folder" : "Plygell",
     "Close" : "Cau",
-    "New folder" : "Ffolder newydd",
     "Calendar" : "Calendr",
     "New calendar" : "Calendr newydd",
     "Description" : "Disgrifiad",
@@ -128,6 +127,7 @@ OC.L10N.register(
     "Name" : "Enw",
     "Size" : "Maint",
     "Modified" : "Addaswyd",
-    "Circles App Initialization" : "Cychwyn Ap Cylchoedd"
+    "Circles App Initialization" : "Cychwyn Ap Cylchoedd",
+    "New folder" : "Ffolder newydd"
 },
 "nplurals=4; plural=(n==1) ? 0 : (n==2) ? 1 : (n != 8 && n != 11) ? 2 : 3;");

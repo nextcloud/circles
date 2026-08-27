@@ -123,8 +123,6 @@ OC.L10N.register(
     "Copy link" : "Copiază link",
     "Copied" : "Copiat",
     "Close" : "Închide",
-    "New folder" : "Director nou",
-    "Folder name" : "Denumire director",
     "Talk conversation" : "Conversație Talk",
     "Conversation name" : "Numele conversației",
     "Calendar" : "Calendar",
@@ -155,6 +153,8 @@ OC.L10N.register(
     "Name" : "Nume",
     "Size" : "Mărime",
     "Modified" : "Modificat",
-    "Circles App Initialization" : "Inițializare aplicație Cercuri"
+    "Circles App Initialization" : "Inițializare aplicație Cercuri",
+    "New folder" : "Director nou",
+    "Folder name" : "Denumire director"
 },
 "nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));");

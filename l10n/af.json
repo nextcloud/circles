@@ -26,7 +26,6 @@
     "Folder" : "Vouer",
     "you" : "u",
     "Close" : "Close",
-    "New folder" : "Nuwe gids",
     "Calendar" : "Kalender",
     "New calendar" : "Nuwe kalender",
     "Description" : "Beskrywing",
@@ -43,6 +42,7 @@
     "No entries found in this folder" : "Geen inskrwyings in hierdie gids gevind",
     "Name" : "Naam",
     "Size" : "Grootte",
-    "Modified" : "Gewysig"
+    "Modified" : "Gewysig",
+    "New folder" : "Nuwe gids"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

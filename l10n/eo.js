@@ -88,8 +88,6 @@ OC.L10N.register(
     "you" : "vi",
     "Copy link" : "Kopii ligilon",
     "Close" : "Malfermi",
-    "New folder" : "Nova dosierujo",
-    "Folder name" : "Dosierujnomo",
     "Calendar" : "Kalendaro",
     "New calendar" : "Nova kalendaro",
     "Description" : "Priskribo",
@@ -112,6 +110,8 @@ OC.L10N.register(
     "No entries found in this folder" : "Neniu elemento en tiu ĉi dosierujo",
     "Name" : "Nomo",
     "Size" : "Grando",
-    "Modified" : "Modifita"
+    "Modified" : "Modifita",
+    "New folder" : "Nova dosierujo",
+    "Folder name" : "Dosierujnomo"
 },
 "nplurals=2; plural=(n != 1);");

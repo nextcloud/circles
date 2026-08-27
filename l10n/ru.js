@@ -211,8 +211,6 @@ OC.L10N.register(
     "Choose a team picture" : "Выбор изображения команды",
     "There is no description for this team" : "Для этой команды нет описания",
     "Enter a description for the team" : "Введите описание команды",
-    "New folder" : "Новая папка",
-    "Folder name" : "Имя папки",
     "Talk conversation" : "Название обсуждения",
     "New Talk conversation" : "Новое обсуждение",
     "Conversation name" : "Название обсуждения",
@@ -349,6 +347,8 @@ OC.L10N.register(
     "Name" : "Имя",
     "Size" : "Размер",
     "Modified" : "Изменён",
-    "Circles App Initialization" : "Инициализация приложения \"Круги\""
+    "Circles App Initialization" : "Инициализация приложения \"Круги\"",
+    "New folder" : "Новая папка",
+    "Folder name" : "Имя папки"
 },
 "nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);");

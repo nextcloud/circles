@@ -242,11 +242,6 @@ OC.L10N.register(
     "Choose a team picture" : "Vælg et hold billede",
     "There is no description for this team" : "Der er ingen beskrivelse for dette hold",
     "Enter a description for the team" : "Indtast en beskrivelse for holdet",
-    "Team space" : "Team plads",
-    "Create a shared team space for this team." : "Opret et fælles team plads til dette hold.",
-    "New folder" : "Ny mappe",
-    "Folder name" : "Mappenavn",
-    "This will create a regular folder shared with the team." : "Dette vil skabe en regelmæssig mappe delt med holdet.",
     "Talk conversation" : "Snak samtale",
     "New Talk conversation" : "Ny samtale",
     "Conversation name" : "Samtalenavn",
@@ -397,6 +392,11 @@ OC.L10N.register(
     "Name" : "Navn",
     "Size" : "Størrelse",
     "Modified" : "Ændret",
-    "Circles App Initialization" : "Cirkler App Initialisering"
+    "Circles App Initialization" : "Cirkler App Initialisering",
+    "Team space" : "Team plads",
+    "Create a shared team space for this team." : "Opret et fælles team plads til dette hold.",
+    "New folder" : "Ny mappe",
+    "Folder name" : "Mappenavn",
+    "This will create a regular folder shared with the team." : "Dette vil skabe en regelmæssig mappe delt med holdet."
 },
 "nplurals=2; plural=(n != 1);");

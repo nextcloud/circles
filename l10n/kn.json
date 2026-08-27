@@ -13,7 +13,6 @@
     "Cancel" : "Cancel",
     "Folder" : "ಕೋಶ",
     "Close" : "ಮುಚ್ಚು",
-    "New folder" : "﻿ಹೊಸ ಕೋಶ",
     "Edit" : "ಸಂಪಾದಿಸು",
     "Pending" : "﻿ಬಾಕಿ ಇದೆ",
     "User" : "User",
@@ -23,6 +22,7 @@
     "Groups" : "﻿ಗುಂಪುಗಳು",
     "Name" : "﻿ಹೆಸರು",
     "Size" : "﻿ ಗಾತ್ರ",
-    "Modified" : "﻿ಬದಲಾಯಿಸಿದ"
+    "Modified" : "﻿ಬದಲಾಯಿಸಿದ",
+    "New folder" : "﻿ಹೊಸ ಕೋಶ"
 },"pluralForm" :"nplurals=2; plural=(n > 1);"
 }

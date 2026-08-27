@@ -184,9 +184,6 @@
     "Copied" : "Скопійовано",
     "Create link" : "Створити посилання",
     "Close" : "Закрити",
-    "Team space" : "Робоча область команди",
-    "New folder" : "Новий каталог",
-    "Folder name" : "Назва каталогу",
     "Talk conversation" : "Розмова Talk",
     "Conversation name" : "Назва розмови",
     "Calendar" : "Календар",
@@ -197,6 +194,7 @@
     "Edit" : "Редагувати",
     "Create" : "Створювати",
     "Show in Calendar" : "Показати в Календарі",
+    "Create team folder" : "Створити каталог команди",
     "Add" : "Додати",
     "Apply" : "Застосувати",
     "Remove {type}" : "Вилучити {type}",
@@ -234,6 +232,9 @@
     "Name" : "Ім'я",
     "Size" : "Розмір",
     "Modified" : "Змінено",
-    "Circles App Initialization" : "Ініціалізація застосунка \"Кола\""
+    "Circles App Initialization" : "Ініціалізація застосунка \"Кола\"",
+    "Team space" : "Робоча область команди",
+    "New folder" : "Новий каталог",
+    "Folder name" : "Назва каталогу"
 },"pluralForm" :"nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);"
 }

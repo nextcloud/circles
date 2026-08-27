@@ -17,8 +17,6 @@ OC.L10N.register(
     "you" : "អ្នក​",
     "Copy link" : "ចម្លងតំណ",
     "Close" : "បិទ",
-    "New folder" : "ថត​ថ្មី",
-    "Folder name" : "ឈ្មោះ​ថត",
     "Calendar" : "ប្រតិទិន",
     "New calendar" : "ប្រតិទិន​ថ្មី",
     "Description" : "ការ​អធិប្បាយ",
@@ -32,6 +30,8 @@ OC.L10N.register(
     "Groups" : "ក្រុ",
     "Name" : "ឈ្មោះ",
     "Size" : "ទំហំ",
-    "Modified" : "បាន​កែ​ប្រែ"
+    "Modified" : "បាន​កែ​ប្រែ",
+    "New folder" : "ថត​ថ្មី",
+    "Folder name" : "ឈ្មោះ​ថត"
 },
 "nplurals=1; plural=0;");

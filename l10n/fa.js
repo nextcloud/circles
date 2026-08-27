@@ -186,8 +186,6 @@ OC.L10N.register(
     "Copied" : "کپی شد",
     "Create link" : "ایجاد پیوند",
     "Close" : "بستن",
-    "New folder" : "پوشه جدید",
-    "Folder name" : "نام پوشه",
     "Talk conversation" : "مکالمه Talk",
     "Conversation name" : "نام مکالمه",
     "Calendar" : "تقویم",
@@ -237,6 +235,8 @@ OC.L10N.register(
     "Name" : "نام  ",
     "Size" : "اندازه  ",
     "Modified" : "تغییر یافته",
-    "Circles App Initialization" : "راه‌اندازی اپ حلقه‌ها"
+    "Circles App Initialization" : "راه‌اندازی اپ حلقه‌ها",
+    "New folder" : "پوشه جدید",
+    "Folder name" : "نام پوشه"
 },
 "nplurals=2; plural=(n > 1);");

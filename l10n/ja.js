@@ -210,8 +210,6 @@ OC.L10N.register(
     "Choose a team picture" : "チーム写真を選んでください",
     "There is no description for this team" : "このチームの説明はありません",
     "Enter a description for the team" : "チームの説明を入力します",
-    "New folder" : "新しいフォルダー",
-    "Folder name" : "フォルダー名",
     "Talk conversation" : "会話",
     "New Talk conversation" : "新しい会話",
     "Conversation name" : "会話の名前",
@@ -348,6 +346,8 @@ OC.L10N.register(
     "Name" : "名前",
     "Size" : "サイズ",
     "Modified" : "更新日時",
-    "Circles App Initialization" : "Circleアプリの初期化"
+    "Circles App Initialization" : "Circleアプリの初期化",
+    "New folder" : "新しいフォルダー",
+    "Folder name" : "フォルダー名"
 },
 "nplurals=1; plural=0;");

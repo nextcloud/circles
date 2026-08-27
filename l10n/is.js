@@ -164,8 +164,6 @@ OC.L10N.register(
     "Copy link" : "Afrita tengil",
     "Create link" : "Búa til tengil",
     "Close" : "Loka",
-    "New folder" : "Ný mappa",
-    "Folder name" : "Nafn möppu",
     "Talk conversation" : "Samtal í Talk-spjalli",
     "Conversation name" : "Heiti samtals",
     "Calendar" : "Dagatal",
@@ -206,6 +204,8 @@ OC.L10N.register(
     "Name" : "Nafn",
     "Size" : "Stærð",
     "Modified" : "Breytt",
-    "Circles App Initialization" : "Frumstilling Circles forrits"
+    "Circles App Initialization" : "Frumstilling Circles forrits",
+    "New folder" : "Ný mappa",
+    "Folder name" : "Nafn möppu"
 },
 "nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);");

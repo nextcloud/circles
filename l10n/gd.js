@@ -11,8 +11,6 @@ OC.L10N.register(
     "Back" : "Air ais",
     "Copy link" : "Dèan lethbhreac dhen cheangal",
     "Close" : "Dùin",
-    "New folder" : "Pasgan ùr",
-    "Folder name" : "Ainm a’ phasgain",
     "Edit" : "Deasaich",
     "Create" : "Cruthaich",
     "No results" : "Gun toradh",
@@ -22,6 +20,8 @@ OC.L10N.register(
     "User" : "Cleachdaiche",
     "Email" : "Post-d",
     "Privacy" : "Prìobhaideachd",
-    "Name" : "Ainm"
+    "Name" : "Ainm",
+    "New folder" : "Pasgan ùr",
+    "Folder name" : "Ainm a’ phasgain"
 },
 "nplurals=4; plural=(n==1 || n==11) ? 0 : (n==2 || n==12) ? 1 : (n > 2 && n < 20) ? 2 : 3;");

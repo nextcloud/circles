@@ -130,8 +130,6 @@ OC.L10N.register(
     "Copy link" : "Sao chép liên kết",
     "Copied" : "Đã sao chép",
     "Close" : "Đóng",
-    "New folder" : "Thư mục mới",
-    "Folder name" : "Tên thư mục",
     "Talk conversation" : "Nói chuyện",
     "Conversation name" : "Tên đàm thoại",
     "Calendar" : "Lịch",
@@ -168,6 +166,8 @@ OC.L10N.register(
     "Name" : "Tên",
     "Size" : "Kích cỡ",
     "Modified" : "Thay đổi",
-    "Circles App Initialization" : "Khởi tạo Ứng dụng vòng kết nối"
+    "Circles App Initialization" : "Khởi tạo Ứng dụng vòng kết nối",
+    "New folder" : "Thư mục mới",
+    "Folder name" : "Tên thư mục"
 },
 "nplurals=1; plural=0;");

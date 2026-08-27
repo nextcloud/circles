@@ -15,7 +15,6 @@ OC.L10N.register(
     "Cancel" : "Cancel",
     "Folder" : "ಕೋಶ",
     "Close" : "ಮುಚ್ಚು",
-    "New folder" : "﻿ಹೊಸ ಕೋಶ",
     "Edit" : "ಸಂಪಾದಿಸು",
     "Pending" : "﻿ಬಾಕಿ ಇದೆ",
     "User" : "User",
@@ -25,6 +24,7 @@ OC.L10N.register(
     "Groups" : "﻿ಗುಂಪುಗಳು",
     "Name" : "﻿ಹೆಸರು",
     "Size" : "﻿ ಗಾತ್ರ",
-    "Modified" : "﻿ಬದಲಾಯಿಸಿದ"
+    "Modified" : "﻿ಬದಲಾಯಿಸಿದ",
+    "New folder" : "﻿ಹೊಸ ಕೋಶ"
 },
 "nplurals=2; plural=(n > 1);");

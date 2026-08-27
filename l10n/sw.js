@@ -179,8 +179,6 @@ OC.L10N.register(
     "Copied" : "Iliyonakiliwa",
     "Create link" : "Tengeneza kiungo",
     "Close" : "Funga",
-    "New folder" : "Folda mpya",
-    "Folder name" : "Jina la kisanduku",
     "Talk conversation" : "Mazungumzo ya Talk",
     "Conversation name" : "Jina la mazungumzo",
     "Calendar" : "Calendar",
@@ -225,6 +223,8 @@ OC.L10N.register(
     "Name" : "Jina",
     "Size" : "Ukubwa",
     "Modified" : "Boresha",
-    "Circles App Initialization" : "Uanzishaji wa Programu ya Miduara"
+    "Circles App Initialization" : "Uanzishaji wa Programu ya Miduara",
+    "New folder" : "Folda mpya",
+    "Folder name" : "Jina la kisanduku"
 },
 "nplurals=2; plural=(n != 1);");

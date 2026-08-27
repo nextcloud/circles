@@ -186,8 +186,6 @@ OC.L10N.register(
     "Copied" : "已复制",
     "Create link" : "创建链接",
     "Close" : "关闭",
-    "New folder" : "新文件夹",
-    "Folder name" : "文件夹名称",
     "Talk conversation" : "对话",
     "Conversation name" : "对话名称",
     "Calendar" : "日历",
@@ -234,6 +232,8 @@ OC.L10N.register(
     "Name" : "名称",
     "Size" : "大小",
     "Modified" : "修改日期",
-    "Circles App Initialization" : "应用程序Circles初始化"
+    "Circles App Initialization" : "应用程序Circles初始化",
+    "New folder" : "新文件夹",
+    "Folder name" : "文件夹名称"
 },
 "nplurals=1; plural=0;");

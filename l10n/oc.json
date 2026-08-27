@@ -34,8 +34,6 @@
     "Copied" : "Copiat",
     "Create link" : "Crear ligam",
     "Close" : "Plegar",
-    "New folder" : "Novèl dorsièr",
-    "Folder name" : "Nom del dorsièr",
     "Talk conversation" : "Conversacion Talk",
     "Calendar" : "Calendièr",
     "New calendar" : "Calendièr novèl",
@@ -64,6 +62,8 @@
     "No files in here" : "Cap de fichièr aicí",
     "Name" : "Nom",
     "Size" : "Talha",
-    "Modified" : "Modificat"
+    "Modified" : "Modificat",
+    "New folder" : "Novèl dorsièr",
+    "Folder name" : "Nom del dorsièr"
 },"pluralForm" :"nplurals=2; plural=(n > 1);"
 }
