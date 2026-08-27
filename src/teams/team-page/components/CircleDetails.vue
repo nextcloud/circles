@@ -725,11 +725,12 @@ export default {
 				}
 
 				case 'deck': {
-					const deckResponse = await axios.post(generateUrl('/apps/deck/api/v1.0/boards/team'), {
+					const deckUrl = generateOcsUrl('/apps/deck/api/v1.0/boards/team')
+					const deckResponse = await axios.post(deckUrl, {
 						title: name,
 						teamId: this.circle.id,
 					})
-					resourceId = deckResponse.data?.id ?? deckResponse.data?.ocs?.data?.id
+					resourceId = deckResponse.data.ocs.data.id
 					if (!resourceId) {
 						throw new Error('Failed to get board ID from creation response')
 					}
