@@ -52,8 +52,17 @@ class TeamFolderController extends OCSController {
 
 	#[NoAdminRequired]
 	public function upgradeTeamFolder(string $circleId): DataResponse {
+		if (!$this->policy->isTeamFolderProvisioningEnabled()) {
+			throw new OCSException('Team space provisioning is disabled', Http::STATUS_FORBIDDEN);
+		}
+
 		$circle = $this->getCircle($circleId);
 		$this->assertAuthenticatedUserIsTeamOwnerOrServerAdmin($circleId);
+
+		if (!$this->policy->isEligibleCircle($circle)) {
+			throw new OCSException('This team cannot have a team space', Http::STATUS_FORBIDDEN);
+		}
+
 		$folder = $this->getProvider()->createTeamFolder(
 			new Team(
 				teamId: $circle->getSingleId(),
