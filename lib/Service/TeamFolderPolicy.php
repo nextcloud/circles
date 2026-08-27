@@ -17,7 +17,7 @@ use OCP\AppFramework\Services\IAppConfig;
  * Policy for team folders owned by teams (circles).
  *
  * This class owns the *policy* for team-folder creation:
- *  - the `team_folder_auto_create` app config toggle,
+ *  - the `team_folder_auto_create` app config toggle (occ only, not admin UI),
  *  - the `team_folder_default_quota` app config value,
  *  - the circle-type eligibility rules (personal/hidden/system/backend circles
  *    are excluded).
@@ -34,12 +34,22 @@ class TeamFolderPolicy {
 	) {
 	}
 
-	public function shouldCreateTeamFolder(Circle $circle): bool {
-		$autoCreate = $this->appConfig->getAppValueBool(ConfigLexicon::TEAM_FOLDER_AUTO_CREATE, true);
-		if (!$autoCreate) {
-			return false;
-		}
+	/**
+	 * Whether Circles may provision team folders (auto-create on team creation
+	 * and Circles UI/API upgrade). Controlled via app config, e.g.:
+	 *
+	 *   occ config:app:set circles team_folder_auto_create --value="false" --type=boolean
+	 *
+	 * Defaults to true when unset.
+	 */
+	public function isTeamFolderProvisioningEnabled(): bool {
+		return $this->appConfig->getAppValueBool(ConfigLexicon::TEAM_FOLDER_AUTO_CREATE, true);
+	}
 
+	/**
+	 * Whether the circle type is eligible for a dedicated team folder.
+	 */
+	public function isEligibleCircle(Circle $circle): bool {
 		if ($circle->isConfig(Circle::CFG_PERSONAL)) {
 			return false;
 		}
@@ -57,6 +67,14 @@ class TeamFolderPolicy {
 		}
 
 		return true;
+	}
+
+	public function shouldCreateTeamFolder(Circle $circle): bool {
+		if (!$this->isTeamFolderProvisioningEnabled()) {
+			return false;
+		}
+
+		return $this->isEligibleCircle($circle);
 	}
 
 	public function getDefaultQuota(): int {
