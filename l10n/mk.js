@@ -167,8 +167,6 @@ OC.L10N.register(
     "Copy link" : "Копирај линк",
     "Enable federation" : "Овозможи федерација",
     "Close" : "Затвори",
-    "New folder" : "Нова папка",
-    "Folder name" : "Име на папка",
     "Talk conversation" : "Talk раговор",
     "Conversation name" : "Име на разговорот",
     "Calendar" : "Календар",
@@ -210,6 +208,8 @@ OC.L10N.register(
     "Name" : "Име",
     "Size" : "Големина",
     "Modified" : "Изменето",
-    "Circles App Initialization" : "Иницијализација на апликацијата Circles"
+    "Circles App Initialization" : "Иницијализација на апликацијата Circles",
+    "New folder" : "Нова папка",
+    "Folder name" : "Име на папка"
 },
 "nplurals=2; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : 1;");

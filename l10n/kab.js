@@ -38,8 +38,6 @@ OC.L10N.register(
     "Copied" : "Yettwanɣel",
     "Create link" : "Snulfu-d aseɣwen",
     "Close" : "Mdel",
-    "New folder" : "Akaram amaynut",
-    "Folder name" : "Isem n ukaram",
     "Calendar" : "Awitay",
     "New calendar" : "Awitay amaynut",
     "Description" : "Aglam",
@@ -69,6 +67,8 @@ OC.L10N.register(
     "No entries found in this folder" : "Ulac inekcumen i yettwafen deg ukaram-a",
     "Name" : "Nom",
     "Size" : "Teɣzi",
-    "Modified" : "Yettwabeddel"
+    "Modified" : "Yettwabeddel",
+    "New folder" : "Akaram amaynut",
+    "Folder name" : "Isem n ukaram"
 },
 "nplurals=2; plural=(n != 1);");

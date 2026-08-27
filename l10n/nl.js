@@ -243,11 +243,6 @@ OC.L10N.register(
     "Choose a team picture" : "Kies een team afbeelding",
     "There is no description for this team" : "Er is geen beschrijving voor dit team",
     "Enter a description for the team" : "Geef een beschrijving voor het team",
-    "Team space" : "Teamruimte",
-    "Create a shared team space for this team." : "Maak een gedeelde teamruimte aan voor dit team.",
-    "New folder" : "Nieuwe map",
-    "Folder name" : "Mapnaam",
-    "This will create a regular folder shared with the team." : "Hiermee wordt een gewone map aangemaakt die met het team wordt gedeeld.",
     "Talk conversation" : "Talk-gesprek",
     "New Talk conversation" : "Nieuw Talk gesprek",
     "Conversation name" : "Gespreksnaam",
@@ -398,6 +393,11 @@ OC.L10N.register(
     "Name" : "Naam",
     "Size" : "Omvang",
     "Modified" : "Gewijzigd",
-    "Circles App Initialization" : "Circles App Initialisatie"
+    "Circles App Initialization" : "Circles App Initialisatie",
+    "Team space" : "Teamruimte",
+    "Create a shared team space for this team." : "Maak een gedeelde teamruimte aan voor dit team.",
+    "New folder" : "Nieuwe map",
+    "Folder name" : "Mapnaam",
+    "This will create a regular folder shared with the team." : "Hiermee wordt een gewone map aangemaakt die met het team wordt gedeeld."
 },
 "nplurals=2; plural=(n != 1);");

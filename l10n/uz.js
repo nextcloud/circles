@@ -38,8 +38,6 @@ OC.L10N.register(
     "you" : "siz",
     "Copy link" : "Havolani nusxalash",
     "Close" : "Yopish",
-    "New folder" : "Yangi jild",
-    "Folder name" : "Papka nomi",
     "Calendar" : "Taqvim",
     "New calendar" : "Yangi taqvim",
     "Calendar name" : "Taqvim nomi",
@@ -69,6 +67,8 @@ OC.L10N.register(
     "No entries found in this folder" : "Ushbu papkada hech qanday yozuv topilmadi",
     "Name" : "Nomi",
     "Size" : "O'lchami",
-    "Modified" : "O'zgartirilgan"
+    "Modified" : "O'zgartirilgan",
+    "New folder" : "Yangi jild",
+    "Folder name" : "Papka nomi"
 },
 "nplurals=1; plural=0;");

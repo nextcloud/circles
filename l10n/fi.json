@@ -123,8 +123,6 @@
     "Copied" : "Kopioitu",
     "Create link" : "Luo linkki",
     "Close" : "Sulje",
-    "New folder" : "Uusi kansio",
-    "Folder name" : "Kansion nimi",
     "Talk conversation" : "Talk-keskustelu",
     "Calendar" : "Kalenteri",
     "New calendar" : "Uusi kalenteri",
@@ -169,6 +167,8 @@
     "No entries found in this folder" : "Tästä kansiosta ei löytynyt tietueita",
     "Name" : "Nimi",
     "Size" : "Koko",
-    "Modified" : "Muokattu"
+    "Modified" : "Muokattu",
+    "New folder" : "Uusi kansio",
+    "Folder name" : "Kansion nimi"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

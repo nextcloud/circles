@@ -168,8 +168,6 @@ OC.L10N.register(
     "Copied" : "Копирано",
     "Create link" : "Креирај линк",
     "Close" : "Затвори",
-    "New folder" : "Нова фасцикла",
-    "Folder name" : "Назив фасцикле",
     "Talk conversation" : "Talk разговори",
     "Conversation name" : "Назив разговора",
     "Calendar" : "Календар",
@@ -217,6 +215,8 @@ OC.L10N.register(
     "Name" : "Назив",
     "Size" : "Величина",
     "Modified" : "Измењен",
-    "Circles App Initialization" : "Иницијализација апликације Кругови"
+    "Circles App Initialization" : "Иницијализација апликације Кругови",
+    "New folder" : "Нова фасцикла",
+    "Folder name" : "Назив фасцикле"
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");

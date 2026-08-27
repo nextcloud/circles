@@ -26,8 +26,6 @@ OC.L10N.register(
     "you" : "Tu",
     "Copy link" : "Copiar ligamine",
     "Close" : "Clauder",
-    "New folder" : "Nove dossier",
-    "Folder name" : "Nomine de dossier",
     "Calendar" : "Calendario",
     "New calendar" : "Nove calendario",
     "Description" : "Description",
@@ -45,6 +43,8 @@ OC.L10N.register(
     "No entries found in this folder" : "Nulle entratas trovate in iste dossier",
     "Name" : "Nomine",
     "Size" : "Dimension",
-    "Modified" : "Modificate"
+    "Modified" : "Modificate",
+    "New folder" : "Nove dossier",
+    "Folder name" : "Nomine de dossier"
 },
 "nplurals=2; plural=(n != 1);");

@@ -13,7 +13,6 @@ OC.L10N.register(
     "Folder" : "கோப்புறை",
     "Copied" : "நகலெடுக்கப்பட்டது",
     "Close" : "மூடுக",
-    "Folder name" : "கோப்புறை பெயர்",
     "Calendar" : "நாட்காட்டி",
     "New calendar" : "புதிய நாட்காட்டி",
     "Description" : "விவரிப்பு",
@@ -29,6 +28,7 @@ OC.L10N.register(
     "Contacts" : "தொடர்புகள்",
     "Name" : "பெயர்",
     "Size" : "அளவு",
-    "Modified" : "மாற்றப்பட்டது"
+    "Modified" : "மாற்றப்பட்டது",
+    "Folder name" : "கோப்புறை பெயர்"
 },
 "nplurals=2; plural=(n != 1);");

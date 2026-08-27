@@ -49,8 +49,6 @@
     "Copy link" : "Ievietot saiti starpliktuvē",
     "Create link" : "Izveidot saiti",
     "Close" : "Aizvērt",
-    "New folder" : "Jauna mape",
-    "Folder name" : "Mapes nosaukums",
     "Conversation name" : "Sarunas nosaukums",
     "Calendar" : "Kalendārs",
     "New calendar" : "Jauns kalendārs",
@@ -79,6 +77,8 @@
     "No entries found in this folder" : "Šajā mapē nekas nav atrasts",
     "Name" : "Vārds",
     "Size" : "Izmērs",
-    "Modified" : "Mainīts"
+    "Modified" : "Mainīts",
+    "New folder" : "Jauna mape",
+    "Folder name" : "Mapes nosaukums"
 },"pluralForm" :"nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);"
 }

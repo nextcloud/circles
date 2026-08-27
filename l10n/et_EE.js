@@ -235,9 +235,6 @@ OC.L10N.register(
     "Choose a team picture" : "Vali tiimipilt",
     "There is no description for this team" : "Sellel tiimil pole kirjeldust",
     "Enter a description for the team" : "Lisa tiimi kirjeldus",
-    "New folder" : "Uus kaust",
-    "Folder name" : "Kausta nimi",
-    "This will create a regular folder shared with the team." : "Järgnevaga  lood tavalise tiimiga jagatava kausta.",
     "Talk conversation" : "Suhtlus vestlusrakenduses",
     "New Talk conversation" : "Uus vestlus kõnerakenduses",
     "Conversation name" : "Vestluse nimi",
@@ -262,6 +259,7 @@ OC.L10N.register(
     "Request to join" : "Palu võimalust liituda",
     "Create" : "Loo",
     "Show in Calendar" : "Näita kalendris",
+    "Create team folder" : "Loo tiimikaust",
     "Your request to join this team is pending approval" : "Sinu liitumissoov tiimiga ootab kinnitust",
     "You are not a member of {circle}" : "Sa pole „{circle}“ tiimi liige",
     "Add" : "Lisa",
@@ -384,6 +382,9 @@ OC.L10N.register(
     "Name" : "Nimi",
     "Size" : "Suurus",
     "Modified" : "Muudetud",
-    "Circles App Initialization" : "Tiimide rakenduse valmendamine"
+    "Circles App Initialization" : "Tiimide rakenduse valmendamine",
+    "New folder" : "Uus kaust",
+    "Folder name" : "Kausta nimi",
+    "This will create a regular folder shared with the team." : "Järgnevaga  lood tavalise tiimiga jagatava kausta."
 },
 "nplurals=2; plural=(n != 1);");

@@ -122,8 +122,6 @@ OC.L10N.register(
     "Copied" : "복사됨",
     "Create link" : "링크 만들기",
     "Close" : "닫기",
-    "New folder" : "새 폴더",
-    "Folder name" : "폴더 이름",
     "Talk conversation" : "토크 대화",
     "Calendar" : "일정",
     "New calendar" : "새 달력",
@@ -158,6 +156,8 @@ OC.L10N.register(
     "No entries found in this folder" : "이 폴더에서 항목을 찾을 수 없음",
     "Name" : "이름",
     "Size" : "크기",
-    "Modified" : "수정한 날짜"
+    "Modified" : "수정한 날짜",
+    "New folder" : "새 폴더",
+    "Folder name" : "폴더 이름"
 },
 "nplurals=1; plural=0;");
