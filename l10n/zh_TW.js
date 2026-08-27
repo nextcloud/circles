@@ -243,11 +243,6 @@ OC.L10N.register(
     "Choose a team picture" : "選擇團隊圖片",
     "There is no description for this team" : "此團隊沒有描述",
     "Enter a description for the team" : "輸入團隊的描述",
-    "Team space" : "團隊空間",
-    "Create a shared team space for this team." : "為此團隊建立共享團隊空間。",
-    "New folder" : "新增資料夾",
-    "Folder name" : "資料夾名稱",
-    "This will create a regular folder shared with the team." : "這將建立一個與團隊共享的普通資料夾。",
     "Talk conversation" : "Talk 對話",
     "New Talk conversation" : "新 Talk 對話",
     "Conversation name" : "對話名稱",
@@ -274,6 +269,7 @@ OC.L10N.register(
     "Request to join" : "要求加入",
     "Create" : "建立",
     "Show in Calendar" : "在日曆中顯示",
+    "Create team folder" : "建立團隊資料夾",
     "Your request to join this team is pending approval" : "您加入此團隊的請求正在等待批准",
     "You are not a member of {circle}" : "您不是 {circle} 的成員",
     "Add" : "加",
@@ -398,6 +394,11 @@ OC.L10N.register(
     "Name" : "名稱",
     "Size" : "大小",
     "Modified" : "已修改",
-    "Circles App Initialization" : "初始化小圈圈應用程式"
+    "Circles App Initialization" : "初始化小圈圈應用程式",
+    "Team space" : "團隊空間",
+    "Create a shared team space for this team." : "為此團隊建立共享團隊空間。",
+    "New folder" : "新增資料夾",
+    "Folder name" : "資料夾名稱",
+    "This will create a regular folder shared with the team." : "這將建立一個與團隊共享的普通資料夾。"
 },
 "nplurals=1; plural=0;");

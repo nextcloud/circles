@@ -243,11 +243,6 @@ OC.L10N.register(
     "Choose a team picture" : "Choisir une image pour l’équipe",
     "There is no description for this team" : "Cette équipe n’a pas de description",
     "Enter a description for the team" : "Saisissez une description pour l’équipe",
-    "Team space" : "Espace d’équipe",
-    "Create a shared team space for this team." : "Créer un espace d’équipe partagé pour cette équipe.",
-    "New folder" : "Nouveau dossier",
-    "Folder name" : "Nom du dossier",
-    "This will create a regular folder shared with the team." : "Cette action créera un dossier standard partagé avec l’équipe.",
     "Talk conversation" : "Conversation Talk",
     "New Talk conversation" : "Nouvelle conversation Talk",
     "Conversation name" : "Nom de la conversation",
@@ -274,6 +269,7 @@ OC.L10N.register(
     "Request to join" : "Demander à rejoindre",
     "Create" : "Créer",
     "Show in Calendar" : "Afficher dans l’agenda",
+    "Create team folder" : "Créer un dossier d'équipe",
     "Your request to join this team is pending approval" : "Votre demande pour rejoindre cette équipe est en attente d’approbation",
     "You are not a member of {circle}" : "Vous n’êtes pas membre de {circle}",
     "Add" : "Ajouter",
@@ -398,6 +394,11 @@ OC.L10N.register(
     "Name" : "Nom",
     "Size" : "Taille",
     "Modified" : "Modifié",
-    "Circles App Initialization" : "Initialisation de l'application Cercles"
+    "Circles App Initialization" : "Initialisation de l'application Cercles",
+    "Team space" : "Espace d’équipe",
+    "Create a shared team space for this team." : "Créer un espace d’équipe partagé pour cette équipe.",
+    "New folder" : "Nouveau dossier",
+    "Folder name" : "Nom du dossier",
+    "This will create a regular folder shared with the team." : "Cette action créera un dossier standard partagé avec l’équipe."
 },
 "nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");

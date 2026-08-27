@@ -243,11 +243,6 @@ OC.L10N.register(
     "Choose a team picture" : "Ein Teambild auswählen",
     "There is no description for this team" : "Es existiert keine Beschreibung für dieses Team",
     "Enter a description for the team" : "Beschreibung für das Team eingeben",
-    "Team space" : "Team-Bereich",
-    "Create a shared team space for this team." : "Einen gemeinsamen Team-Bereich für dieses Team erstellen.",
-    "New folder" : "Neuer Ordner",
-    "Folder name" : "Ordnername",
-    "This will create a regular folder shared with the team." : "Dadurch wird ein regulärer Ordner erstellt, der mit dem Team geteilt wird.",
     "Talk conversation" : "Talk-Unterhaltung",
     "New Talk conversation" : "Neue Talk-Unterhaltung",
     "Conversation name" : "Name der Unterhaltung",
@@ -274,6 +269,7 @@ OC.L10N.register(
     "Request to join" : "Beitritt anfragen",
     "Create" : "Erstellen",
     "Show in Calendar" : "Im Kalender anzeigen",
+    "Create team folder" : "Neuen Team-Ordner erstellen",
     "Your request to join this team is pending approval" : "Ihre Anfrage, diesem Team beizutreten, muss noch genehmigt werden",
     "You are not a member of {circle}" : "Sie sind kein Mitglied von {circle}",
     "Add" : "Addieren",
@@ -398,6 +394,11 @@ OC.L10N.register(
     "Name" : "Name",
     "Size" : "Größe",
     "Modified" : "Geändert",
-    "Circles App Initialization" : "Initialisierung der Kreise-App"
+    "Circles App Initialization" : "Initialisierung der Kreise-App",
+    "Team space" : "Team-Bereich",
+    "Create a shared team space for this team." : "Einen gemeinsamen Team-Bereich für dieses Team erstellen.",
+    "New folder" : "Neuer Ordner",
+    "Folder name" : "Ordnername",
+    "This will create a regular folder shared with the team." : "Dadurch wird ein regulärer Ordner erstellt, der mit dem Team geteilt wird."
 },
 "nplurals=2; plural=(n != 1);");

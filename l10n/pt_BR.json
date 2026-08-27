@@ -241,11 +241,6 @@
     "Choose a team picture" : "Escolha uma foto da equipe",
     "There is no description for this team" : "Não há descrição para essa equipe",
     "Enter a description for the team" : "Insira uma descrição para a equipe",
-    "Team space" : "Espaço de equipe",
-    "Create a shared team space for this team." : "Crie um espaço de equipe compartilhado para essa equipe.",
-    "New folder" : "Nova pasta",
-    "Folder name" : "Nome da pasta",
-    "This will create a regular folder shared with the team." : "Isso criará uma pasta comum compartilhada com a equipe.",
     "Talk conversation" : "Conversa Talk",
     "New Talk conversation" : "Nova conversa do Talk",
     "Conversation name" : "Nome da conversa",
@@ -272,6 +267,7 @@
     "Request to join" : "Solicitar acesso",
     "Create" : "Criar",
     "Show in Calendar" : "Mostrar no Calendário",
+    "Create team folder" : "Criar pasta de equipe",
     "Your request to join this team is pending approval" : "Sua solicitação para entrar nesta equipe está pendente de aprovação",
     "You are not a member of {circle}" : "Você não é membro de {circle}",
     "Add" : "Adicionar",
@@ -396,6 +392,11 @@
     "Name" : "Nome",
     "Size" : "Tamanho",
     "Modified" : "Modificado",
-    "Circles App Initialization" : "Inicialização do Aplicativo Círculos"
+    "Circles App Initialization" : "Inicialização do Aplicativo Círculos",
+    "Team space" : "Espaço de equipe",
+    "Create a shared team space for this team." : "Crie um espaço de equipe compartilhado para essa equipe.",
+    "New folder" : "Nova pasta",
+    "Folder name" : "Nome da pasta",
+    "This will create a regular folder shared with the team." : "Isso criará uma pasta comum compartilhada com a equipe."
 },"pluralForm" :"nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }

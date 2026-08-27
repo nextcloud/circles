@@ -17,8 +17,6 @@ OC.L10N.register(
     "Folder" : "Dossier",
     "Copy link" : "Link kopéieren",
     "Close" : "Zoumaachen",
-    "New folder" : "Neien Dossier",
-    "Folder name" : "Dossiers Numm:",
     "Calendar" : "Kalenner",
     "New calendar" : "Neie Kalenner",
     "Description" : "Beschreiwung",
@@ -38,6 +36,8 @@ OC.L10N.register(
     "No entries found in this folder" : "Keng Elementer an dësem Dossier fonnt",
     "Name" : "Numm",
     "Size" : "Gréisst",
-    "Modified" : "Geännert"
+    "Modified" : "Geännert",
+    "New folder" : "Neien Dossier",
+    "Folder name" : "Dossiers Numm:"
 },
 "nplurals=2; plural=(n != 1);");

@@ -11,7 +11,6 @@
     "Cancel" : "Cancel",
     "Copy link" : "لېنک کاپي کول",
     "Close" : "بندول",
-    "New folder" : "نوی فولډر",
     "Pending" : "د انتظار په حال کې",
     "Users" : "کارنان",
     "Groups" : "ګروپونه",
@@ -19,6 +18,7 @@
     "No entries found in this folder" : "په دې فولډر کې څه نشته",
     "Name" : "نوم",
     "Size" : "کچه",
-    "Modified" : "د بدلون نېټه"
+    "Modified" : "د بدلون نېټه",
+    "New folder" : "نوی فولډر"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

@@ -166,8 +166,6 @@ OC.L10N.register(
     "Copied" : "Copied",
     "Create link" : "Create link",
     "Close" : "ປິດ",
-    "New folder" : "ໂຟນເດີໃໝ່",
-    "Folder name" : "ຊື່ໂຟນເດີ",
     "Talk conversation" : "ການສົນທະນາ Talk",
     "Conversation name" : "Conversation name",
     "Calendar" : "ປະຕິທິນ",
@@ -212,6 +210,8 @@ OC.L10N.register(
     "Name" : "ຊື່",
     "Size" : "ຂະຫນາດ",
     "Modified" : "\"{name}\" ແມ່ນຊື່ໄຟລ໌ທີ່ບໍ່ຖືກຕ້ອງ.",
-    "Circles App Initialization" : "Circles App Initialization"
+    "Circles App Initialization" : "Circles App Initialization",
+    "New folder" : "ໂຟນເດີໃໝ່",
+    "Folder name" : "ຊື່ໂຟນເດີ"
 },
 "nplurals=1; plural=0;");

@@ -212,8 +212,6 @@ OC.L10N.register(
     "Choose a team picture" : "Välj en teambild",
     "There is no description for this team" : "Det finns ingen beskrivning för detta team",
     "Enter a description for the team" : "Ange en beskrivning för teamet",
-    "New folder" : "Ny mapp",
-    "Folder name" : "Mappnamn",
     "Talk conversation" : "Talk-konversation",
     "New Talk conversation" : "Ny Talk-konversation",
     "Conversation name" : "Samtalsnamn",
@@ -345,6 +343,8 @@ OC.L10N.register(
     "Name" : "Namn",
     "Size" : "Storlek",
     "Modified" : "Ändrad",
-    "Circles App Initialization" : "Initiering av Circles-appen"
+    "Circles App Initialization" : "Initiering av Circles-appen",
+    "New folder" : "Ny mapp",
+    "Folder name" : "Mappnamn"
 },
 "nplurals=2; plural=(n != 1);");

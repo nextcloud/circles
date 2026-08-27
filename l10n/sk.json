@@ -181,8 +181,6 @@
     "Copied" : "Skopírované",
     "Create link" : "Vytvoriť odkaz",
     "Close" : "Zavrieť",
-    "New folder" : "Nový priečinok",
-    "Folder name" : "Názov priečinka",
     "Talk conversation" : "Konverzácia v Talk /Rozhovore/",
     "Conversation name" : "Názov konverzácie",
     "Calendar" : "Kalendár",
@@ -229,6 +227,8 @@
     "Name" : "Názov",
     "Size" : "Veľkosť",
     "Modified" : "Upravené",
-    "Circles App Initialization" : "Inicializácia Aplikácie Kruhy"
+    "Circles App Initialization" : "Inicializácia Aplikácie Kruhy",
+    "New folder" : "Nový priečinok",
+    "Folder name" : "Názov priečinka"
 },"pluralForm" :"nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);"
 }

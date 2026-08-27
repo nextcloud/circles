@@ -28,7 +28,6 @@ OC.L10N.register(
     "Folder" : "Vouer",
     "you" : "u",
     "Close" : "Close",
-    "New folder" : "Nuwe gids",
     "Calendar" : "Kalender",
     "New calendar" : "Nuwe kalender",
     "Description" : "Beskrywing",
@@ -45,6 +44,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Geen inskrwyings in hierdie gids gevind",
     "Name" : "Naam",
     "Size" : "Grootte",
-    "Modified" : "Gewysig"
+    "Modified" : "Gewysig",
+    "New folder" : "Nuwe gids"
 },
 "nplurals=2; plural=(n != 1);");

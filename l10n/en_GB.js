@@ -243,11 +243,6 @@ OC.L10N.register(
     "Choose a team picture" : "Choose a team picture",
     "There is no description for this team" : "There is no description for this team",
     "Enter a description for the team" : "Enter a description for the team",
-    "Team space" : "Team space",
-    "Create a shared team space for this team." : "Create a shared team space for this team.",
-    "New folder" : "New folder",
-    "Folder name" : "Folder name",
-    "This will create a regular folder shared with the team." : "This will create a regular folder shared with the team.",
     "Talk conversation" : "Talk conversation",
     "New Talk conversation" : "New Talk conversation",
     "Conversation name" : "Conversation name",
@@ -274,6 +269,7 @@ OC.L10N.register(
     "Request to join" : "Request to join",
     "Create" : "Create",
     "Show in Calendar" : "Show in Calendar",
+    "Create team folder" : "Create team folder",
     "Your request to join this team is pending approval" : "Your request to join this team is pending approval",
     "You are not a member of {circle}" : "You are not a member of {circle}",
     "Add" : "Add",
@@ -398,6 +394,11 @@ OC.L10N.register(
     "Name" : "Name",
     "Size" : "Size",
     "Modified" : "Modified",
-    "Circles App Initialization" : "Circles App Initialisation"
+    "Circles App Initialization" : "Circles App Initialisation",
+    "Team space" : "Team space",
+    "Create a shared team space for this team." : "Create a shared team space for this team.",
+    "New folder" : "New folder",
+    "Folder name" : "Folder name",
+    "This will create a regular folder shared with the team." : "This will create a regular folder shared with the team."
 },
 "nplurals=2; plural=(n != 1);");

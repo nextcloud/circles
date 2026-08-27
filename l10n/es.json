@@ -179,8 +179,6 @@
     "Copied" : "Copiado",
     "Create link" : "Crear enlace",
     "Close" : "Cerrar",
-    "New folder" : "Nueva carpeta",
-    "Folder name" : "Nombre de la carpeta",
     "Talk conversation" : "Conversación de Talk",
     "Conversation name" : "Nombre de conversación",
     "Calendar" : "Calendario",
@@ -231,6 +229,8 @@
     "Name" : "Nombre",
     "Size" : "Tamaño",
     "Modified" : "Modificado",
-    "Circles App Initialization" : "Inicialización de la app Circles"
+    "Circles App Initialization" : "Inicialización de la app Circles",
+    "New folder" : "Nueva carpeta",
+    "Folder name" : "Nombre de la carpeta"
 },"pluralForm" :"nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }

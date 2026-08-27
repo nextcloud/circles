@@ -66,8 +66,6 @@ OC.L10N.register(
     "you" : "ju",
     "Copy link" : "Kopjoje lidhjen",
     "Close" : "Mbylleni",
-    "New folder" : "Dosje e re",
-    "Folder name" : "Emër dosjeje",
     "Conversation name" : "Emri i bisedës",
     "Calendar" : "Kalendar",
     "New calendar" : "Kalendar i ri",
@@ -95,6 +93,8 @@ OC.L10N.register(
     "No entries found in this folder" : "Në këtë dosje nuk gjëndet asnjë hyrje",
     "Name" : "Emër",
     "Size" : "Madhësi",
-    "Modified" : "Modifikuar "
+    "Modified" : "Modifikuar ",
+    "New folder" : "Dosje e re",
+    "Folder name" : "Emër dosjeje"
 },
 "nplurals=2; plural=(n != 1);");

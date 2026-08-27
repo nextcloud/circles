@@ -17,7 +17,6 @@ OC.L10N.register(
     "Cancel" : "Cancel",
     "Folder" : "Fasikla",
     "Close" : "Zatvori",
-    "New folder" : "Nova fascikla",
     "Calendar" : "Kalendar",
     "New calendar" : "Novi kalendar",
     "Description" : "Opis",
@@ -31,6 +30,7 @@ OC.L10N.register(
     "Groups" : "Grupe",
     "Name" : "Ime",
     "Size" : "Veličina",
-    "Modified" : "Izmijenjeno"
+    "Modified" : "Izmijenjeno",
+    "New folder" : "Nova fascikla"
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");

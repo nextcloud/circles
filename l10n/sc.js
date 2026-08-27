@@ -124,8 +124,6 @@ OC.L10N.register(
     "you" : "tue",
     "Copied" : "Copiadu",
     "Close" : "Serra",
-    "New folder" : "Cartella noa",
-    "Folder name" : "Nùmene de sa cartella",
     "Talk conversation" : "Resonada de Talk",
     "Conversation name" : "Nùmene de sa resonada",
     "Calendar" : "Calendàriu",
@@ -158,6 +156,8 @@ OC.L10N.register(
     "No entries found in this folder" : "Perunu elementu agatadu in custa cartella",
     "Name" : "Nùmene",
     "Size" : "Mannària",
-    "Modified" : "Modificadu"
+    "Modified" : "Modificadu",
+    "New folder" : "Cartella noa",
+    "Folder name" : "Nùmene de sa cartella"
 },
 "nplurals=2; plural=(n != 1);");

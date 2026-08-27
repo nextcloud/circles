@@ -13,7 +13,6 @@ OC.L10N.register(
     "Cancel" : "Cancel",
     "Copy link" : "لېنک کاپي کول",
     "Close" : "بندول",
-    "New folder" : "نوی فولډر",
     "Pending" : "د انتظار په حال کې",
     "Users" : "کارنان",
     "Groups" : "ګروپونه",
@@ -21,6 +20,7 @@ OC.L10N.register(
     "No entries found in this folder" : "په دې فولډر کې څه نشته",
     "Name" : "نوم",
     "Size" : "کچه",
-    "Modified" : "د بدلون نېټه"
+    "Modified" : "د بدلون نېټه",
+    "New folder" : "نوی فولډر"
 },
 "nplurals=2; plural=(n != 1);");
