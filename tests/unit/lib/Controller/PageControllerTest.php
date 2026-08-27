@@ -11,6 +11,7 @@ namespace OCA\Circles\Tests\Controller;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Controller\PageController;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\TeamFolderPolicy;
 use OCP\AppFramework\Http\NotFoundResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
@@ -25,6 +26,7 @@ final class PageControllerTest extends TestCase {
 	private ConfigService&MockObject $configService;
 	private IInitialState&MockObject $initialState;
 	private ITeamManager&MockObject $teamManager;
+	private TeamFolderPolicy&MockObject $teamFolderPolicy;
 	private PageController $pageController;
 
 	#[\Override]
@@ -35,12 +37,14 @@ final class PageControllerTest extends TestCase {
 		$this->configService = $this->createMock(ConfigService::class);
 		$this->initialState = $this->createMock(IInitialState::class);
 		$this->teamManager = $this->createMock(ITeamManager::class);
+		$this->teamFolderPolicy = $this->createMock(TeamFolderPolicy::class);
 
 		$this->pageController = new PageController(
 			$this->request,
 			$this->configService,
 			$this->initialState,
 			$this->teamManager,
+			$this->teamFolderPolicy,
 		);
 	}
 
@@ -59,12 +63,15 @@ final class PageControllerTest extends TestCase {
 		$this->teamManager->expects($this->once())
 			->method('getTeamFolderProvider')
 			->willReturn($provider);
+		$this->teamFolderPolicy->expects($this->once())
+			->method('isTeamFolderProvisioningEnabled')
+			->willReturn(true);
 
-		$this->initialState->expects($this->once())
+		$provided = [];
+		$this->initialState->expects($this->exactly(2))
 			->method('provideInitialState')
-			->willReturnCallback(function (string $key, mixed $value): void {
-				$this->assertSame('teamFolderProviderAvailable', $key);
-				$this->assertTrue($value);
+			->willReturnCallback(function (string $key, mixed $value) use (&$provided): void {
+				$provided[$key] = $value;
 			});
 
 		$result = $this->pageController->index();
@@ -72,6 +79,8 @@ final class PageControllerTest extends TestCase {
 		$this->assertInstanceOf(TemplateResponse::class, $result);
 		$this->assertSame(Application::APP_ID, $result->getApp());
 		$this->assertSame('main', $result->getTemplateName());
+		$this->assertTrue($provided['teamFolderProviderAvailable']);
+		$this->assertTrue($provided['teamFolderProvisioningEnabled']);
 	}
 
 	/**
@@ -88,17 +97,22 @@ final class PageControllerTest extends TestCase {
 		$this->teamManager->expects($this->once())
 			->method('getTeamFolderProvider')
 			->willReturn(null);
+		$this->teamFolderPolicy->expects($this->once())
+			->method('isTeamFolderProvisioningEnabled')
+			->willReturn(false);
 
-		$this->initialState->expects($this->once())
+		$provided = [];
+		$this->initialState->expects($this->exactly(2))
 			->method('provideInitialState')
-			->willReturnCallback(function (string $key, mixed $value): void {
-				$this->assertSame('teamFolderProviderAvailable', $key);
-				$this->assertFalse($value);
+			->willReturnCallback(function (string $key, mixed $value) use (&$provided): void {
+				$provided[$key] = $value;
 			});
 
 		$result = $this->pageController->index();
 
 		$this->assertInstanceOf(TemplateResponse::class, $result);
+		$this->assertFalse($provided['teamFolderProviderAvailable']);
+		$this->assertFalse($provided['teamFolderProvisioningEnabled']);
 	}
 
 	/**
@@ -115,6 +129,8 @@ final class PageControllerTest extends TestCase {
 
 		$this->teamManager->expects($this->never())
 			->method('getTeamFolderProvider');
+		$this->teamFolderPolicy->expects($this->never())
+			->method('isTeamFolderProvisioningEnabled');
 
 		$result = $this->pageController->index();
 
