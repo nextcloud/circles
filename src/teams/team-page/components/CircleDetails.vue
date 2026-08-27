@@ -575,8 +575,9 @@ export default {
 					icon: 'ViewDashboardIcon',
 					apiPath: 'deck',
 					enabled: enabledApps.deck !== undefined,
-				},
-		},
+				}
+			]
+		}
 	},
 
 	watch: {
