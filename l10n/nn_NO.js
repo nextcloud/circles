@@ -29,8 +29,6 @@ OC.L10N.register(
     "Folder" : "Mappe",
     "Copy link" : "Kopier lenkje",
     "Close" : "Lat att",
-    "New folder" : "Ny mappe",
-    "Folder name" : "Mappenamn",
     "Conversation name" : "Samtale namn",
     "Calendar" : "Kalendar",
     "New calendar" : "Ny kalender",
@@ -54,6 +52,8 @@ OC.L10N.register(
     "No entries found in this folder" : "Ingen oppføringar funne i denne mappa",
     "Name" : "Namn",
     "Size" : "Storleik",
-    "Modified" : "Endra"
+    "Modified" : "Endra",
+    "New folder" : "Ny mappe",
+    "Folder name" : "Mappenamn"
 },
 "nplurals=2; plural=(n != 1);");

@@ -170,8 +170,6 @@ OC.L10N.register(
     "Copied" : "Disalin",
     "Create link" : "Buat tautan",
     "Close" : "Tutup",
-    "New folder" : "Folder baru",
-    "Folder name" : "Nama folder",
     "Talk conversation" : "Percakapan Talk",
     "Conversation name" : "Nama percakapan",
     "Calendar" : "Kalender",
@@ -215,6 +213,8 @@ OC.L10N.register(
     "Name" : "Nama",
     "Size" : "Ukuran",
     "Modified" : "Dimodifikasi",
-    "Circles App Initialization" : "Inisialisasi Aplikasi Circles"
+    "Circles App Initialization" : "Inisialisasi Aplikasi Circles",
+    "New folder" : "Folder baru",
+    "Folder name" : "Nama folder"
 },
 "nplurals=1; plural=0;");

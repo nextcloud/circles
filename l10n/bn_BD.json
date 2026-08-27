@@ -19,8 +19,6 @@
     "you" : "তুমি",
     "Copy link" : "লিঙ্ক কপি করো",
     "Close" : "বন্ধ",
-    "New folder" : "নতুন ফোল্ডার",
-    "Folder name" : "ফোলডারের নাম",
     "Calendar" : "দিনপঞ্জী",
     "New calendar" : "নতুন দিনপঞ্জী",
     "Description" : "বিবরণ",
@@ -35,6 +33,8 @@
     "Groups" : "গোষ্ঠীসমূহ",
     "Name" : "নাম",
     "Size" : "আকার",
-    "Modified" : "পরিবর্তিত"
+    "Modified" : "পরিবর্তিত",
+    "New folder" : "নতুন ফোল্ডার",
+    "Folder name" : "ফোলডারের নাম"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

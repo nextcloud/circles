@@ -126,8 +126,6 @@ OC.L10N.register(
     "Copy link" : "Copy link",
     "Copied" : "Copied",
     "Close" : "Close",
-    "New folder" : "New folder",
-    "Folder name" : "Folder name",
     "Talk conversation" : "Talk conversation",
     "Conversation name" : "Conversation name",
     "Calendar" : "Calendar",
@@ -162,6 +160,8 @@ OC.L10N.register(
     "Name" : "Name",
     "Size" : "Size",
     "Modified" : "Modified",
-    "Circles App Initialization" : "Circles App Initialization"
+    "Circles App Initialization" : "Circles App Initialization",
+    "New folder" : "New folder",
+    "Folder name" : "Folder name"
 },
 "nplurals=2; plural=(n!=1);");

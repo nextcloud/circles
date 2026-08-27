@@ -211,8 +211,6 @@ OC.L10N.register(
     "Choose a team picture" : "Επιλογή εικόνας ομάδας",
     "There is no description for this team" : "Δεν υπάρχει περιγραφή για αυτήν την ομάδα",
     "Enter a description for the team" : "Εισαγάγετε μια περιγραφή για την ομάδα",
-    "New folder" : "Νέος φάκελος",
-    "Folder name" : "Όνομα φακέλου",
     "Talk conversation" : "Συνομιλία Talk",
     "New Talk conversation" : "Νέα συνομιλία Talk",
     "Conversation name" : "Όνομα συνομιλίας",
@@ -344,6 +342,8 @@ OC.L10N.register(
     "Name" : "Όνομα",
     "Size" : "Μέγεθος",
     "Modified" : "Τροποποιήθηκε",
-    "Circles App Initialization" : "Αρχικοποίηση της εφαρμογής Circles"
+    "Circles App Initialization" : "Αρχικοποίηση της εφαρμογής Circles",
+    "New folder" : "Νέος φάκελος",
+    "Folder name" : "Όνομα φακέλου"
 },
 "nplurals=2; plural=(n != 1);");

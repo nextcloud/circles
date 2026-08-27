@@ -46,8 +46,6 @@ OC.L10N.register(
     "you" : "usted",
     "Copy link" : "Copiar link",
     "Close" : "Cerrar",
-    "New folder" : "Carpeta nueva",
-    "Folder name" : "Nombre de la carpeta",
     "Conversation name" : "Nombre de conversación",
     "Calendar" : "Calendario",
     "New calendar" : "Nuevo calendario",
@@ -75,6 +73,8 @@ OC.L10N.register(
     "No entries found in this folder" : "No se encontraron elementos en esta carpeta",
     "Name" : "Nombre",
     "Size" : "Tamaño",
-    "Modified" : "Modificado"
+    "Modified" : "Modificado",
+    "New folder" : "Carpeta nueva",
+    "Folder name" : "Nombre de la carpeta"
 },
 "nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");

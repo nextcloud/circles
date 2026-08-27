@@ -36,8 +36,6 @@ OC.L10N.register(
     "Copied" : "Copiat",
     "Create link" : "Crear ligam",
     "Close" : "Plegar",
-    "New folder" : "Novèl dorsièr",
-    "Folder name" : "Nom del dorsièr",
     "Talk conversation" : "Conversacion Talk",
     "Calendar" : "Calendièr",
     "New calendar" : "Calendièr novèl",
@@ -66,6 +64,8 @@ OC.L10N.register(
     "No files in here" : "Cap de fichièr aicí",
     "Name" : "Nom",
     "Size" : "Talha",
-    "Modified" : "Modificat"
+    "Modified" : "Modificat",
+    "New folder" : "Novèl dorsièr",
+    "Folder name" : "Nom del dorsièr"
 },
 "nplurals=2; plural=(n > 1);");

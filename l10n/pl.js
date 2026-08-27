@@ -210,8 +210,6 @@ OC.L10N.register(
     "Choose a team picture" : "Wybierz zdjęcie zespołu",
     "There is no description for this team" : "Ten zespół nie ma opisu",
     "Enter a description for the team" : "Wprowadź opis zespołu",
-    "New folder" : "Nowy katalog",
-    "Folder name" : "Nazwa katalogu",
     "Talk conversation" : "Rozmowa Talk",
     "New Talk conversation" : "Nowa rozmowa Talk",
     "Conversation name" : "Nazwa konwersacji",
@@ -344,6 +342,8 @@ OC.L10N.register(
     "Name" : "Nazwa",
     "Size" : "Rozmiar",
     "Modified" : "Zmodyfikowano",
-    "Circles App Initialization" : "Inicjalizacja aplikacji Zespołów"
+    "Circles App Initialization" : "Inicjalizacja aplikacji Zespołów",
+    "New folder" : "Nowy katalog",
+    "Folder name" : "Nazwa katalogu"
 },
 "nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);");

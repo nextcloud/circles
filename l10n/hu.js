@@ -183,8 +183,6 @@ OC.L10N.register(
     "Copied" : "Másolva",
     "Create link" : "Hivatkozás létrehozása",
     "Close" : "Bezárás",
-    "New folder" : "Új mappa",
-    "Folder name" : "Mappanév",
     "Talk conversation" : "Beszélgetés",
     "Conversation name" : "Beszélgetésnév",
     "Calendar" : "Naptár",
@@ -230,6 +228,8 @@ OC.L10N.register(
     "Name" : "Név",
     "Size" : "Méret",
     "Modified" : "Módosítva",
-    "Circles App Initialization" : "Körök alkalmazás előkészítése"
+    "Circles App Initialization" : "Körök alkalmazás előkészítése",
+    "New folder" : "Új mappa",
+    "Folder name" : "Mappanév"
 },
 "nplurals=2; plural=(n != 1);");

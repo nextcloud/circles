@@ -15,8 +15,6 @@ OC.L10N.register(
     "Cancel" : "Poništi",
     "Copy link" : "Kopiraj vezu",
     "Close" : "Zatvori",
-    "New folder" : "Nova fascikla",
-    "Folder name" : "Naziv fascikle",
     "Conversation name" : "Naziv razgovora",
     "Description" : "Opis",
     "Edit" : "Izmeni",
@@ -27,6 +25,8 @@ OC.L10N.register(
     "Loading…" : "Učitavam…",
     "User" : "Korisnik",
     "Groups" : "Grupe",
-    "Name" : "naziv"
+    "Name" : "naziv",
+    "New folder" : "Nova fascikla",
+    "Folder name" : "Naziv fascikle"
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");

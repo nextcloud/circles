@@ -172,8 +172,6 @@ OC.L10N.register(
     "Copied" : "Kopiatuta",
     "Create link" : "Sortu esteka",
     "Close" : "Itxi",
-    "New folder" : "Karpeta berria",
-    "Folder name" : "Karpetaren izena",
     "Talk conversation" : "Talk elkarrizketa",
     "Calendar" : "Egutegia",
     "New calendar" : "Egutegi berria",
@@ -217,6 +215,8 @@ OC.L10N.register(
     "Name" : "Izena",
     "Size" : "Tamaina",
     "Modified" : "Aldatua",
-    "Circles App Initialization" : "Zirkuluak aplikazioaren hastapena"
+    "Circles App Initialization" : "Zirkuluak aplikazioaren hastapena",
+    "New folder" : "Karpeta berria",
+    "Folder name" : "Karpetaren izena"
 },
 "nplurals=2; plural=(n != 1);");

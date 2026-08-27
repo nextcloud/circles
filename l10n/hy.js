@@ -15,8 +15,6 @@ OC.L10N.register(
     "Folder" : "Պանակ",
     "Copy link" : "Պատճենել հղումը",
     "Close" : "Փակել",
-    "New folder" : "Նոր պանակ",
-    "Folder name" : "Պանակի անուն",
     "Calendar" : "Օրացույց",
     "Description" : "Նկարագրություն",
     "Edit" : "մշակել",
@@ -27,6 +25,8 @@ OC.L10N.register(
     "No files in here" : "Ֆայլեր չկան այստեղ",
     "Name" : "Անուն",
     "Size" : "Չափս",
-    "Modified" : "Փոփոխված"
+    "Modified" : "Փոփոխված",
+    "New folder" : "Նոր պանակ",
+    "Folder name" : "Պանակի անուն"
 },
 "nplurals=2; plural=(n != 1);");

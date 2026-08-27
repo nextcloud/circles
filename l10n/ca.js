@@ -163,8 +163,6 @@ OC.L10N.register(
     "Copied" : "Copiat",
     "Create link" : "Crea un enllaç",
     "Close" : "Tanca",
-    "New folder" : "Carpeta nova",
-    "Folder name" : "Nom de la carpeta",
     "Talk conversation" : "Conversa",
     "Conversation name" : "Nom de la conversa",
     "Calendar" : "Calendari",
@@ -201,6 +199,8 @@ OC.L10N.register(
     "Name" : "Nom",
     "Size" : "Mida",
     "Modified" : "Data de modificació",
-    "Circles App Initialization" : "Inicialització de l'aplicació Cercles"
+    "Circles App Initialization" : "Inicialització de l'aplicació Cercles",
+    "New folder" : "Carpeta nova",
+    "Folder name" : "Nom de la carpeta"
 },
 "nplurals=2; plural=(n != 1);");

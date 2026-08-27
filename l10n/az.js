@@ -27,8 +27,6 @@ OC.L10N.register(
     "you" : "siz",
     "Copy link" : "linki nüsxələ",
     "Close" : "Bağla",
-    "New folder" : "Yeni qovluq",
-    "Folder name" : "Qovluq adı",
     "Calendar" : "Təqvim",
     "New calendar" : "Yeni təqvim",
     "Please select a valid png or jpg file" : "Zəhmət olmasa düzgün png və ya jpg fayl seçin",
@@ -45,6 +43,8 @@ OC.L10N.register(
     "No entries found in this folder" : "Bu qovluqda heç bir verilən tapılmadı",
     "Name" : "Ad",
     "Size" : "Həcm",
-    "Modified" : "Dəyişdirildi"
+    "Modified" : "Dəyişdirildi",
+    "New folder" : "Yeni qovluq",
+    "Folder name" : "Qovluq adı"
 },
 "nplurals=2; plural=(n != 1);");

@@ -33,8 +33,6 @@ OC.L10N.register(
     "you" : "คุณ",
     "Copy link" : "คัดลอกลิงก์",
     "Close" : "ปิด",
-    "New folder" : "โฟลเดอร์ใหม่",
-    "Folder name" : "ชื่อโฟลเดอร์",
     "Calendar" : "ปฏิทิน",
     "New calendar" : "สร้างปฏิทินใหม่",
     "Description" : "คำอธิบาย",
@@ -60,6 +58,8 @@ OC.L10N.register(
     "No entries found in this folder" : "ไม่พบรายการในโฟลเดอร์นี้",
     "Name" : "ชื่อ",
     "Size" : "ขนาด",
-    "Modified" : "แก้ไขเมื่อ"
+    "Modified" : "แก้ไขเมื่อ",
+    "New folder" : "โฟลเดอร์ใหม่",
+    "Folder name" : "ชื่อโฟลเดอร์"
 },
 "nplurals=1; plural=0;");

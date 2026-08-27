@@ -21,8 +21,6 @@ OC.L10N.register(
     "Folder" : "බහාලුම",
     "Copy link" : "සබැඳිය පිටපත් කරන්න",
     "Close" : "වසන්න",
-    "New folder" : "නව බහාලුම",
-    "Folder name" : "බහාලුමේ නම",
     "Calendar" : "දින දර්ශනය",
     "Description" : "විස්තරය",
     "Edit" : "සංස්කරණය",
@@ -40,6 +38,8 @@ OC.L10N.register(
     "Users" : "පරිශීලකයින්",
     "Groups" : "සමූහ",
     "Name" : "නම",
-    "Size" : "ප්‍රමාණය"
+    "Size" : "ප්‍රමාණය",
+    "New folder" : "නව බහාලුම",
+    "Folder name" : "බහාලුමේ නම"
 },
 "nplurals=2; plural=(n != 1);");

@@ -154,8 +154,6 @@ OC.L10N.register(
     "Copy link" : "Copiar l'enllaz",
     "Copied" : "Copióse",
     "Close" : "Zarrar",
-    "New folder" : "Carpeta nueva",
-    "Folder name" : "Nome de la carpeta",
     "Talk conversation" : "Conversación de Talk",
     "Conversation name" : "Nome de la conversación",
     "Calendar" : "Calendariu",
@@ -193,6 +191,8 @@ OC.L10N.register(
     "Name" : "Nome",
     "Size" : "Tamañu",
     "Modified" : "Modificóse",
-    "Circles App Initialization" : "Aniciu de l'aplicación Círculos"
+    "Circles App Initialization" : "Aniciu de l'aplicación Círculos",
+    "New folder" : "Carpeta nueva",
+    "Folder name" : "Nome de la carpeta"
 },
 "nplurals=2; plural=(n != 1);");

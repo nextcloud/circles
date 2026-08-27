@@ -173,8 +173,6 @@ OC.L10N.register(
     "Copied" : "كۆچۈرۈلگەن",
     "Create link" : "ئۇلىنىش قۇر",
     "Close" : "ياپ",
-    "New folder" : "يېڭى ھۆججەت قىسقۇچ",
-    "Folder name" : "ھۆججەت قىسقۇچنىڭ ئىسمى",
     "Talk conversation" : "پاراڭلىشىش",
     "Conversation name" : "سۆھبەت ئىسمى",
     "Calendar" : "كالېندار",
@@ -220,6 +218,8 @@ OC.L10N.register(
     "Name" : "ئاتى",
     "Size" : "چوڭلۇقى",
     "Modified" : "ئۆزگەرتكەن",
-    "Circles App Initialization" : "چەمبەر ئەپلىرىنى قوزغىتىش"
+    "Circles App Initialization" : "چەمبەر ئەپلىرىنى قوزغىتىش",
+    "New folder" : "يېڭى ھۆججەت قىسقۇچ",
+    "Folder name" : "ھۆججەت قىسقۇچنىڭ ئىسمى"
 },
 "nplurals=2; plural=(n != 1);");

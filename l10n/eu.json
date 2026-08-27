@@ -170,8 +170,6 @@
     "Copied" : "Kopiatuta",
     "Create link" : "Sortu esteka",
     "Close" : "Itxi",
-    "New folder" : "Karpeta berria",
-    "Folder name" : "Karpetaren izena",
     "Talk conversation" : "Talk elkarrizketa",
     "Calendar" : "Egutegia",
     "New calendar" : "Egutegi berria",
@@ -215,6 +213,8 @@
     "Name" : "Izena",
     "Size" : "Tamaina",
     "Modified" : "Aldatua",
-    "Circles App Initialization" : "Zirkuluak aplikazioaren hastapena"
+    "Circles App Initialization" : "Zirkuluak aplikazioaren hastapena",
+    "New folder" : "Karpeta berria",
+    "Folder name" : "Karpetaren izena"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
