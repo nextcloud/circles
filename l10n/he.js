@@ -85,8 +85,6 @@ OC.L10N.register(
     "you" : "את/ה",
     "Copy link" : "העתקת קישור",
     "Close" : "סגירה",
-    "New folder" : "תיקייה חדשה",
-    "Folder name" : "שם התיקייה",
     "Conversation name" : "שם דיון",
     "Calendar" : "לוח שנה",
     "New calendar" : "לוח שנה חדש",
@@ -119,6 +117,8 @@ OC.L10N.register(
     "No entries found in this folder" : "לא נמצאו רשומות בתיקייה הזאת",
     "Name" : "שם",
     "Size" : "גודל",
-    "Modified" : "מועד שינוי"
+    "Modified" : "מועד שינוי",
+    "New folder" : "תיקייה חדשה",
+    "Folder name" : "שם התיקייה"
 },
 "nplurals=3; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % 1 == 0) ? 1: 2;");

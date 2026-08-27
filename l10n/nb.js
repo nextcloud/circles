@@ -163,8 +163,6 @@ OC.L10N.register(
     "Copied" : "Kopiert",
     "Create link" : "Lag lenke",
     "Close" : "Lukk",
-    "New folder" : "Ny mappe",
-    "Folder name" : "Mappenavn",
     "Talk conversation" : "Talk-samtale",
     "Conversation name" : "Samtalenavn",
     "Calendar" : "Kalender",
@@ -206,6 +204,8 @@ OC.L10N.register(
     "Name" : "Navn",
     "Size" : "Størrelse",
     "Modified" : "Endret",
-    "Circles App Initialization" : "Initialisering av Circles App"
+    "Circles App Initialization" : "Initialisering av Circles App",
+    "New folder" : "Ny mappe",
+    "Folder name" : "Mappenavn"
 },
 "nplurals=2; plural=(n != 1);");

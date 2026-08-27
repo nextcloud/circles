@@ -13,8 +13,6 @@ OC.L10N.register(
     "Cancel" : "Cancel",
     "Back" : "Ta zaga",
     "Close" : "Zarrar",
-    "New folder" : "Nueva carpeta",
-    "Folder name" : "Nombre de carpeta",
     "Create" : "Crear",
     "Pending" : "Pendient",
     "Loading…" : "Cargando...",
@@ -24,6 +22,8 @@ OC.L10N.register(
     "Groups" : "Grupos",
     "Name" : "Nombre",
     "Size" : "Grandario",
-    "Modified" : "Modificau"
+    "Modified" : "Modificau",
+    "New folder" : "Nueva carpeta",
+    "Folder name" : "Nombre de carpeta"
 },
 "nplurals=2; plural=(n != 1);");

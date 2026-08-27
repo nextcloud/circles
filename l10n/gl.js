@@ -183,8 +183,6 @@ OC.L10N.register(
     "Copied" : "Copiado",
     "Create link" : "Crear ligazón",
     "Close" : "Pechar",
-    "New folder" : "Novo cartafol",
-    "Folder name" : "Nome do cartafol",
     "Talk conversation" : "Conversa no Parladoiro",
     "Calendar" : "Calendario",
     "New calendar" : "Novo calendario",
@@ -231,6 +229,8 @@ OC.L10N.register(
     "Name" : "Nome",
     "Size" : "Tamaño",
     "Modified" : "Modificado",
-    "Circles App Initialization" : "Preparación da aplicación Círculos"
+    "Circles App Initialization" : "Preparación da aplicación Círculos",
+    "New folder" : "Novo cartafol",
+    "Folder name" : "Nome do cartafol"
 },
 "nplurals=2; plural=(n != 1);");

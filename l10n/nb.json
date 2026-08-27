@@ -161,8 +161,6 @@
     "Copied" : "Kopiert",
     "Create link" : "Lag lenke",
     "Close" : "Lukk",
-    "New folder" : "Ny mappe",
-    "Folder name" : "Mappenavn",
     "Talk conversation" : "Talk-samtale",
     "Conversation name" : "Samtalenavn",
     "Calendar" : "Kalender",
@@ -204,6 +202,8 @@
     "Name" : "Navn",
     "Size" : "Størrelse",
     "Modified" : "Endret",
-    "Circles App Initialization" : "Initialisering av Circles App"
+    "Circles App Initialization" : "Initialisering av Circles App",
+    "New folder" : "Ny mappe",
+    "Folder name" : "Mappenavn"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

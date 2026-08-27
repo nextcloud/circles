@@ -182,8 +182,6 @@ OC.L10N.register(
     "Copied" : "Copiado",
     "Create link" : "Criar hiperligação",
     "Close" : "Fechar",
-    "New folder" : "Nova pasta",
-    "Folder name" : "Nome da pasta",
     "Talk conversation" : "Conversa Talk",
     "Conversation name" : "Nome da conversação",
     "Calendar" : "Calendário",
@@ -230,6 +228,8 @@ OC.L10N.register(
     "Name" : "Nome",
     "Size" : "Tamanho",
     "Modified" : "Modificado",
-    "Circles App Initialization" : "Inicialização da App Circles"
+    "Circles App Initialization" : "Inicialização da App Circles",
+    "New folder" : "Nova pasta",
+    "Folder name" : "Nome da pasta"
 },
 "nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");

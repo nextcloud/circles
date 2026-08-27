@@ -181,8 +181,6 @@ OC.L10N.register(
     "Enable federation" : "Холбооныг идэвхжүүлэх",
     "Copied" : "Хуулагдсан",
     "Close" : "‚Äì‚Ä¢‚Äì‚àû‚Äì‚àû‚Äî√ñ",
-    "New folder" : "–®–∏–Ω—ç —Ö–∞–≤—Ç–∞—Å",
-    "Folder name" : "–•–∞–≤—Ç–∞—Å–Ω—ã –Ω—ç—Ä",
     "Talk conversation" : "Talk —è—Ä–∏–∞",
     "Calendar" : "–ö–∞–ª–µ–Ω–¥–∞—Ä—å",
     "New calendar" : "Шинэ цагийн хуваарь",
@@ -227,6 +225,8 @@ OC.L10N.register(
     "Name" : "Нэр",
     "Size" : "Хэмжээ",
     "Modified" : "Өөрчлөгдсөн",
-    "Circles App Initialization" : "Circles апп эхлүүлэлт"
+    "Circles App Initialization" : "Circles апп эхлүүлэлт",
+    "New folder" : "–®–∏–Ω—ç —Ö–∞–≤—Ç–∞—Å",
+    "Folder name" : "–•–∞–≤—Ç–∞—Å–Ω—ã –Ω—ç—Ä"
 },
 "nplurals=2; plural=(n != 1);");

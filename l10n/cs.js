@@ -185,8 +185,6 @@ OC.L10N.register(
     "Copied" : "Zkopírováno",
     "Create link" : "Vytvořit odkaz",
     "Close" : "Zavřít",
-    "New folder" : "Nová složka",
-    "Folder name" : "Název složky",
     "Talk conversation" : "Konverzace v Talk",
     "Collective" : "Kolektiv",
     "Calendar" : "Kalendář",
@@ -240,6 +238,8 @@ OC.L10N.register(
     "Name" : "Název",
     "Size" : "Velikost",
     "Modified" : "Změněno",
-    "Circles App Initialization" : "Inicializace aplikace okruhy"
+    "Circles App Initialization" : "Inicializace aplikace okruhy",
+    "New folder" : "Nová složka",
+    "Folder name" : "Název složky"
 },
 "nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;");

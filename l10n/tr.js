@@ -243,11 +243,6 @@ OC.L10N.register(
     "Choose a team picture" : "Bir takım görseli seçin",
     "There is no description for this team" : "Bu takım için bir açıklama yok",
     "Enter a description for the team" : "Takım için bir açıklama yazın",
-    "Team space" : "Takım alanı",
-    "Create a shared team space for this team." : "Bu takım için paylaşılan bir takım alanı oluşturun.",
-    "New folder" : "Yeni klasör",
-    "Folder name" : "Klasör adı",
-    "This will create a regular folder shared with the team." : "Bu işlem, takım ile paylaşılan normal bir klasör oluşturacak.",
     "Talk conversation" : "Konuş görüşmesi",
     "New Talk conversation" : "Yeni Konuş görüşmesi",
     "Conversation name" : "Görüşme adı",
@@ -274,6 +269,7 @@ OC.L10N.register(
     "Request to join" : "Girme isteğinde bulun",
     "Create" : "Oluştur",
     "Show in Calendar" : "Takvimde görüntülensin",
+    "Create team folder" : "Takım klasörü oluştur",
     "Your request to join this team is pending approval" : "Bu takıma girme isteğiniz onaylanmayı bekliyor",
     "You are not a member of {circle}" : "{circle} takımının üyesi değilsiniz ",
     "Add" : "Ekle",
@@ -398,6 +394,11 @@ OC.L10N.register(
     "Name" : "Ad",
     "Size" : "Boyut",
     "Modified" : "Değiştirilme",
-    "Circles App Initialization" : "Takımlar uygulaması başlatılıyor"
+    "Circles App Initialization" : "Takımlar uygulaması başlatılıyor",
+    "Team space" : "Takım alanı",
+    "Create a shared team space for this team." : "Bu takım için paylaşılan bir takım alanı oluşturun.",
+    "New folder" : "Yeni klasör",
+    "Folder name" : "Klasör adı",
+    "This will create a regular folder shared with the team." : "Bu işlem, takım ile paylaşılan normal bir klasör oluşturacak."
 },
 "nplurals=2; plural=(n > 1);");

@@ -243,11 +243,6 @@ OC.L10N.register(
     "Choose a team picture" : "Roghnaigh pictiúr foirne",
     "There is no description for this team" : "Níl aon chur síos ann don fhoireann seo",
     "Enter a description for the team" : "Cuir isteach cur síos don fhoireann",
-    "Team space" : "Spás foirne",
-    "Create a shared team space for this team." : "Cruthaigh spás foirne comhroinnte don fhoireann seo.",
-    "New folder" : "Fillteán nua",
-    "Folder name" : "Ainm fillteáin",
-    "This will create a regular folder shared with the team." : "Cruthóidh sé seo fillteán rialta a roinntear leis an bhfoireann.",
     "Talk conversation" : "Labhair comhrá",
     "New Talk conversation" : "Comhrá Talk Nua",
     "Conversation name" : "Ainm an chomhrá",
@@ -274,6 +269,7 @@ OC.L10N.register(
     "Request to join" : "Iarratas chun páirt a ghlacadh",
     "Create" : "Cruthaigh",
     "Show in Calendar" : "Taispeáin i bhFéilire",
+    "Create team folder" : "Cruthaigh fillteán foirne",
     "Your request to join this team is pending approval" : "Tá d’iarratas chun páirt a ghlacadh sa fhoireann seo ag feitheamh ar cheadú",
     "You are not a member of {circle}" : "Ní ball de {circle} thú",
     "Add" : "Cuir",
@@ -398,6 +394,11 @@ OC.L10N.register(
     "Name" : "Ainm",
     "Size" : "Méid",
     "Modified" : "Athraithe",
-    "Circles App Initialization" : "Ciorcail Aip Tosaigh"
+    "Circles App Initialization" : "Ciorcail Aip Tosaigh",
+    "Team space" : "Spás foirne",
+    "Create a shared team space for this team." : "Cruthaigh spás foirne comhroinnte don fhoireann seo.",
+    "New folder" : "Fillteán nua",
+    "Folder name" : "Ainm fillteáin",
+    "This will create a regular folder shared with the team." : "Cruthóidh sé seo fillteán rialta a roinntear leis an bhfoireann."
 },
 "nplurals=5; plural=(n==1 ? 0 : n==2 ? 1 : n<7 ? 2 : n<11 ? 3 : 4);");

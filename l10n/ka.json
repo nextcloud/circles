@@ -124,8 +124,6 @@
     "Copy link" : "Copy link",
     "Copied" : "Copied",
     "Close" : "Close",
-    "New folder" : "New folder",
-    "Folder name" : "Folder name",
     "Talk conversation" : "Talk conversation",
     "Conversation name" : "Conversation name",
     "Calendar" : "Calendar",
@@ -160,6 +158,8 @@
     "Name" : "Name",
     "Size" : "Size",
     "Modified" : "Modified",
-    "Circles App Initialization" : "Circles App Initialization"
+    "Circles App Initialization" : "Circles App Initialization",
+    "New folder" : "New folder",
+    "Folder name" : "Folder name"
 },"pluralForm" :"nplurals=2; plural=(n!=1);"
 }

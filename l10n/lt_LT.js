@@ -243,11 +243,6 @@ OC.L10N.register(
     "Choose a team picture" : "Pasirinkite komandos paveikslėlį",
     "There is no description for this team" : "Ši komanda neturi aprašo",
     "Enter a description for the team" : "Įveskite komandos aprašą",
-    "Team space" : "Komandos erdvė",
-    "Create a shared team space for this team." : "Sukurkite bendrą komandos erdvę šiai komandai.",
-    "New folder" : "Naujas aplankas",
-    "Folder name" : "Aplanko pavadinimas",
-    "This will create a regular folder shared with the team." : "Tai sukurs įprastą aplanką, bendrinamą su komanda.",
     "Talk conversation" : "„Pokalbiai\" pokalbis",
     "New Talk conversation" : "Naujas „Pokalbiai\" pokalbis",
     "Conversation name" : "Pokalbio pavadinimas",
@@ -274,6 +269,7 @@ OC.L10N.register(
     "Request to join" : "Prašyti prisijungti",
     "Create" : "Sukurti",
     "Show in Calendar" : "Rodyti „Kalendoriuje“",
+    "Create team folder" : "Sukurti komandos aplanką",
     "Your request to join this team is pending approval" : "Jūsų užklausa prisijungti prie šios komandos laukia patvirtinimo",
     "You are not a member of {circle}" : "Jūs nesate rato {circle} narys",
     "Add" : "Pridėti",
@@ -398,6 +394,11 @@ OC.L10N.register(
     "Name" : "Vardas",
     "Size" : "Dydis",
     "Modified" : "Pakeistas",
-    "Circles App Initialization" : "Programėlės „Ratai“ inicijavimas"
+    "Circles App Initialization" : "Programėlės „Ratai“ inicijavimas",
+    "Team space" : "Komandos erdvė",
+    "Create a shared team space for this team." : "Sukurkite bendrą komandos erdvę šiai komandai.",
+    "New folder" : "Naujas aplankas",
+    "Folder name" : "Aplanko pavadinimas",
+    "This will create a regular folder shared with the team." : "Tai sukurs įprastą aplanką, bendrinamą su komanda."
 },
 "nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);");

@@ -79,8 +79,6 @@ OC.L10N.register(
     "Cancel" : "Cancel",
     "you" : "თქვენ",
     "Close" : "დახურვა",
-    "New folder" : "ახალი დირექტორია",
-    "Folder name" : "დირექტორიის სახელი",
     "Conversation name" : "საუბრის სახელწოდება",
     "Calendar" : "კალენდარი",
     "New calendar" : "ახალი კალენდარი",
@@ -100,6 +98,8 @@ OC.L10N.register(
     "No entries found in this folder" : "ამ დირექტორიაში შენატანები ვერ იქნა ნაპოვნი",
     "Name" : "სახელი",
     "Size" : "ზომა",
-    "Modified" : "შეიცვალა"
+    "Modified" : "შეიცვალა",
+    "New folder" : "ახალი დირექტორია",
+    "Folder name" : "დირექტორიის სახელი"
 },
 "nplurals=2; plural=(n!=1);");
