@@ -326,6 +326,8 @@ import { getTeamFolder, upgradeTeamFolder } from '../../api.ts'
 
 import 'cropperjs/dist/cropper.css'
 
+const teamFolderProvisioningEnabled = Boolean(loadState('circles', 'teamFolderProvisioningEnabled', true))
+
 const VALID_MIME_TYPES = ['image/png', 'image/jpeg']
 
 const AVATAR_ACTIONS = Object.freeze({
@@ -484,7 +486,8 @@ export default {
 		},
 
 		canCreateTeamFolder() {
-			return this.canManageTeam || Boolean(getCurrentUser()?.isAdmin)
+			return teamFolderProvisioningEnabled
+				&& (this.canManageTeam || Boolean(getCurrentUser()?.isAdmin))
 		},
 
 		folderButtonType() {
