@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import axios from '@nextcloud/axios'
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 import App from './teams/App.vue'
@@ -11,10 +10,6 @@ import { logger } from './logger.ts'
 import { router } from './teams/router.ts'
 import LegacyGlobalMixin from './teams/team-page/mixins/LegacyGlobalMixin.js'
 import store from './teams/team-page/store/index.ts'
-
-// OCS endpoints require this header; the ported Contacts services rely on a
-// global default rather than setting it per request.
-axios.defaults.headers.common['OCS-APIRequest'] = 'true'
 
 logger.debug('Mounting Teams app')
 
