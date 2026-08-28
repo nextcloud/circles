@@ -6,10 +6,8 @@
 <script setup lang="ts">
 import type { Team } from '../types.ts'
 
-import { mdiFolderMultipleOutline } from '@mdi/js'
-import { n, t } from '@nextcloud/l10n'
+import { t } from '@nextcloud/l10n'
 import NcAvatar from '@nextcloud/vue/components/NcAvatar'
-import NcIconSvgWrapper from '@nextcloud/vue/components/NcIconSvgWrapper'
 import TeamAvatar from './TeamAvatar.vue'
 
 const props = defineProps<{
@@ -46,17 +44,13 @@ const MAX_AVATARS = 5
 						:displayName="member.displayName"
 						:isNoUser="!member.isUser"
 						:size="28"
-						hideStatus />
+						hideStatus
+						disableMenu />
 				</li>
 				<li v-if="team.memberCount > team.members.length" :class="$style.teamCardMemberMore">
 					+{{ team.memberCount - team.members.length }}
 				</li>
 			</ul>
-
-			<span :class="$style.teamCardResources">
-				<NcIconSvgWrapper :path="mdiFolderMultipleOutline" :size="18" inline />
-				{{ n('circles', '%n resource', '%n resources', team.resources.length) }}
-			</span>
 		</div>
 	</RouterLink>
 </template>
@@ -142,6 +136,9 @@ const MAX_AVATARS = 5
 
 	&__member {
 		position: relative;
+		// collapse the list item to the avatar's box, otherwise line-height
+		// makes it taller than wide and the ring below turns into an ellipse
+		display: flex;
 		border-radius: 50%;
 		// ring matches the card background so overlaps read as separate avatars
 		box-shadow: 0 0 0 2px var(--color-main-background);
@@ -170,15 +167,6 @@ const MAX_AVATARS = 5
 		color: var(--color-text-maxcontrast);
 		font-size: 0.8em;
 		font-weight: 600;
-	}
-
-	&__resources {
-		display: inline-flex;
-		align-items: center;
-		gap: var(--default-grid-baseline);
-		color: var(--color-text-maxcontrast);
-		font-size: 0.9em;
-		white-space: nowrap;
 	}
 }
 </style>
