@@ -6,20 +6,22 @@
 <script setup lang="ts">
 import type { MemberCandidate } from '../types.ts'
 
-import { mdiAccountMultiplePlusOutline, mdiChevronDown, mdiChevronRight, mdiMagnify } from '@mdi/js'
+import { mdiAccountMultiplePlusOutline, mdiChevronDown, mdiChevronRight, mdiClose, mdiMagnify } from '@mdi/js'
 import { showError, showSuccess, showWarning } from '@nextcloud/dialogs'
 import { loadState } from '@nextcloud/initial-state'
 import { t } from '@nextcloud/l10n'
 import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import NcAvatar from '@nextcloud/vue/components/NcAvatar'
 import NcButton from '@nextcloud/vue/components/NcButton'
 import NcCheckboxRadioSwitch from '@nextcloud/vue/components/NcCheckboxRadioSwitch'
+import NcChip from '@nextcloud/vue/components/NcChip'
 import NcDialog from '@nextcloud/vue/components/NcDialog'
 import NcEmptyContent from '@nextcloud/vue/components/NcEmptyContent'
 import NcIconSvgWrapper from '@nextcloud/vue/components/NcIconSvgWrapper'
+import NcListItem from '@nextcloud/vue/components/NcListItem'
 import NcLoadingIcon from '@nextcloud/vue/components/NcLoadingIcon'
 import NcTextField from '@nextcloud/vue/components/NcTextField'
-import NcUserBubble from '@nextcloud/vue/components/NcUserBubble'
 import { logger } from '../../logger.ts'
 import { useTeamsStore } from '../store.ts'
 
@@ -40,15 +42,11 @@ const emit = defineEmits<{
 const router = useRouter()
 const store = useTeamsStore()
 
-/** The wizard's steps, in order. Kept as data so the template can stay generic. */
-const STEPS = ['name', 'members'] as const
-type WizardStep = typeof STEPS[number]
+type WizardStep = 'name' | 'members'
 
 const open = ref(true)
 const step = ref<WizardStep>('name')
 const submitting = ref(false)
-
-const stepIndex = computed(() => STEPS.indexOf(step.value))
 
 // `NcDialog` owns the `open` model; forward its close (✕ button, escape,
 // backdrop click, "Cancel") to the parent so it can drop this component.
@@ -62,10 +60,18 @@ watch(open, (value) => {
 
 const name = ref('')
 const nameTouched = ref(false)
-const isNameValid = computed(() => name.value.trim().length > 0)
-const nameError = computed(() => (nameTouched.value && !isNameValid.value
-	? t('circles', 'Please enter a team name')
-	: ''))
+// The server rejects names shorter than 3 characters.
+const NAME_MIN_LENGTH = 3
+const isNameValid = computed(() => name.value.trim().length >= NAME_MIN_LENGTH)
+const nameError = computed(() => {
+	if (!nameTouched.value || isNameValid.value) {
+		return ''
+	}
+	if (name.value.trim().length === 0) {
+		return t('circles', 'Please enter a team name')
+	}
+	return t('circles', 'The team name must be at least {min} characters long', { min: NAME_MIN_LENGTH })
+})
 
 /** Global provisioning flag; when off, the wizard skip option is irrelevant. */
 const teamFolderProvisioningEnabled = Boolean(loadState('circles', 'teamFolderProvisioningEnabled', true))
@@ -119,14 +125,52 @@ function toggleCandidate(candidate: MemberCandidate): void {
 	selectedMembers.value = next
 }
 
-/**
- * Whether a candidate is currently part of the selection.
- *
- * @param candidate - The candidate to check
- */
-function isSelected(candidate: MemberCandidate): boolean {
-	return selectedMembers.value.has(candidate.key)
+/** Clear the search and show the default recommendations again. */
+function clearSearch(): void {
+	searchQuery.value = ''
 }
+
+/**
+ * Group caption for a sharee type, mirroring the sections of Talk's
+ * participant selector ("Add users", "Add groups", …).
+ *
+ * @param shareType - The sharee share type
+ */
+function candidateGroupCaption(shareType: number): string {
+	switch (shareType) {
+		case 0:
+			return t('circles', 'Add users')
+		case 1:
+			return t('circles', 'Add groups')
+		case 4:
+			return t('circles', 'Add emails')
+		case 7:
+			return t('circles', 'Add teams')
+		default:
+			return t('circles', 'Other')
+	}
+}
+
+/**
+ * Search results grouped by sharee type, with already selected candidates
+ * filtered out (they are shown as chips above the list).
+ */
+const groupedCandidates = computed(() => {
+	const groups: { caption: string, items: MemberCandidate[] }[] = []
+	for (const candidate of candidates.value) {
+		if (selectedMembers.value.has(candidate.key)) {
+			continue
+		}
+		const caption = candidateGroupCaption(candidate.shareType)
+		let group = groups.find((existing) => existing.caption === caption)
+		if (!group) {
+			group = { caption, items: [] }
+			groups.push(group)
+		}
+		group.items.push(candidate)
+	}
+	return groups
+})
 
 // --- Wizard navigation / submission -----------------------------------------
 
@@ -186,7 +230,11 @@ async function createTeam(): Promise<false | void> {
 		open.value = false
 	} catch (error) {
 		logger.error('Failed to create team', { error })
-		showError(t('circles', 'Could not create the team'))
+		// Prefer the server's reason (e.g. a name rejected after cleaning)
+		// over the generic message.
+		const serverMessage = (error as { response?: { data?: { ocs?: { meta?: { message?: string } } } } })
+			?.response?.data?.ocs?.meta?.message
+		showError(serverMessage || t('circles', 'Could not create the team'))
 		return false
 	} finally {
 		submitting.value = false
@@ -247,11 +295,7 @@ function onFormSubmit(): void {
 		:buttons="buttons"
 		@submit="onFormSubmit">
 		<div class="team-wizard">
-			<p class="team-wizard__step-indicator">
-				{{ t('circles', 'Step {current} of {total}', { current: stepIndex + 1, total: STEPS.length }) }}
-			</p>
-
-			<!-- Step 1: team name + optional team space -->
+			<!-- Step 1: team name + optional team folder -->
 			<section v-if="step === 'name'" class="team-wizard__step">
 				<h3>{{ t('circles', 'Name your team') }}</h3>
 				<NcTextField
@@ -282,46 +326,78 @@ function onFormSubmit(): void {
 				</div>
 			</section>
 
-			<!-- Step 2: initial member selection -->
+			<!-- Step 2: initial member selection, modeled after Talk's
+				participant selector in the new conversation dialog. -->
 			<section v-else-if="step === 'members'" class="team-wizard__step">
 				<h3>{{ t('circles', 'Add initial members') }}</h3>
 				<NcTextField
 					v-model="searchQuery"
 					:label="t('circles', 'Search people, groups, teams…')"
-					:placeholder="t('circles', 'Optional, you can also add members later')"
+					:showTrailingButton="searchQuery !== ''"
+					:trailingButtonLabel="t('circles', 'Cancel search')"
+					@trailingButtonClick="clearSearch"
 					@keydown.enter.prevent>
 					<template #icon>
 						<NcIconSvgWrapper :path="mdiMagnify" :size="20" />
 					</template>
+					<template #trailing-button-icon>
+						<NcIconSvgWrapper :path="mdiClose" :size="20" />
+					</template>
 				</NcTextField>
 
-				<ul v-if="selectedList.length > 0" class="team-wizard__selection">
-					<li v-for="candidate in selectedList" :key="candidate.key">
-						<NcUserBubble
-							:displayName="candidate.displayName"
-							:user="candidate.isUser ? candidate.shareWith : undefined"
-							@click="toggleCandidate(candidate)" />
-					</li>
-				</ul>
+				<div v-if="selectedList.length > 0" class="team-wizard__selection">
+					<NcChip
+						v-for="candidate in selectedList"
+						:key="candidate.key"
+						:text="candidate.displayName"
+						:ariaLabelClose="t('circles', 'Remove {name}', { name: candidate.displayName })"
+						@close="toggleCandidate(candidate)">
+						<template #icon>
+							<NcAvatar
+								:user="candidate.isUser ? candidate.shareWith : undefined"
+								:displayName="candidate.displayName"
+								:isNoUser="!candidate.isUser"
+								:size="24"
+								disableMenu
+								hideStatus />
+						</template>
+					</NcChip>
+				</div>
 
-				<NcLoadingIcon v-if="searching" :size="32" />
+				<NcLoadingIcon v-if="searching" class="team-wizard__loading" :size="32" />
 				<NcEmptyContent
-					v-else-if="candidates.length === 0"
+					v-else-if="groupedCandidates.length === 0"
 					:name="t('circles', 'Search for people to add')"
 					:description="t('circles', 'You can always add or remove members later from the team page.')">
 					<template #icon>
 						<NcIconSvgWrapper :path="mdiAccountMultiplePlusOutline" />
 					</template>
 				</NcEmptyContent>
-				<ul v-else class="team-wizard__results">
-					<li v-for="candidate in candidates" :key="candidate.key">
-						<NcButton
-							:variant="isSelected(candidate) ? 'primary' : 'tertiary'"
-							@click="toggleCandidate(candidate)">
-							{{ candidate.displayName }}
-						</NcButton>
-					</li>
-				</ul>
+				<div v-else class="team-wizard__results">
+					<template v-for="group in groupedCandidates" :key="group.caption">
+						<div class="team-wizard__caption">
+							{{ group.caption }}
+						</div>
+						<ul class="team-wizard__result-list">
+							<NcListItem
+								v-for="candidate in group.items"
+								:key="candidate.key"
+								:name="candidate.displayName"
+								compact
+								@click="toggleCandidate(candidate)">
+								<template #icon>
+									<NcAvatar
+										:user="candidate.isUser ? candidate.shareWith : undefined"
+										:displayName="candidate.displayName"
+										:isNoUser="!candidate.isUser"
+										:size="32"
+										disableMenu
+										hideStatus />
+								</template>
+							</NcListItem>
+						</ul>
+					</template>
+				</div>
 			</section>
 		</div>
 	</NcDialog>
@@ -335,11 +411,6 @@ function onFormSubmit(): void {
 	box-sizing: border-box;
 	min-height: 280px;
 
-	&__step-indicator {
-		margin: 0;
-		color: var(--color-text-maxcontrast);
-	}
-
 	&__step {
 		display: flex;
 		flex: 1 1 auto;
@@ -351,11 +422,38 @@ function onFormSubmit(): void {
 		}
 	}
 
-	&__selection,
-	&__results {
+	// Selected members as chips, capped and scrollable like Talk's
+	// participant selector.
+	&__selection {
 		display: flex;
 		flex-wrap: wrap;
-		gap: calc(2 * var(--default-grid-baseline));
+		align-content: flex-start;
+		gap: var(--default-grid-baseline);
+		flex-shrink: 0;
+		max-height: 97px;
+		overflow-y: auto;
+		padding: var(--default-grid-baseline) 0;
+		border-bottom: 1px solid var(--color-background-darker);
+	}
+
+	&__loading {
+		margin-block: calc(4 * var(--default-grid-baseline));
+	}
+
+	&__results {
+		flex: 1 1 auto;
+		min-height: 0;
+		max-height: 300px;
+		overflow-y: auto;
+	}
+
+	&__caption {
+		padding: calc(2 * var(--default-grid-baseline)) var(--default-grid-baseline) var(--default-grid-baseline);
+		color: var(--color-primary-element);
+		font-weight: bold;
+	}
+
+	&__result-list {
 		margin: 0;
 		padding: 0;
 		list-style: none;
