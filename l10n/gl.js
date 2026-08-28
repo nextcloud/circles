@@ -231,6 +231,8 @@ OC.L10N.register(
     "Modified" : "Modificado",
     "Circles App Initialization" : "Preparación da aplicación Círculos",
     "New folder" : "Novo cartafol",
-    "Folder name" : "Nome do cartafol"
+    "Folder name" : "Nome do cartafol",
+    "Deck board" : "Taboleiro da Gabeta",
+    "Board name" : "Nome do taboleiro"
 },
 "nplurals=2; plural=(n != 1);");

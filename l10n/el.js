@@ -344,6 +344,8 @@ OC.L10N.register(
     "Modified" : "Τροποποιήθηκε",
     "Circles App Initialization" : "Αρχικοποίηση της εφαρμογής Circles",
     "New folder" : "Νέος φάκελος",
-    "Folder name" : "Όνομα φακέλου"
+    "Folder name" : "Όνομα φακέλου",
+    "Deck board" : "Πίνακας του Deck",
+    "Board name" : "Όνομα πίνακα"
 },
 "nplurals=2; plural=(n != 1);");

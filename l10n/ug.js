@@ -220,6 +220,8 @@ OC.L10N.register(
     "Modified" : "ئۆزگەرتكەن",
     "Circles App Initialization" : "چەمبەر ئەپلىرىنى قوزغىتىش",
     "New folder" : "يېڭى ھۆججەت قىسقۇچ",
-    "Folder name" : "ھۆججەت قىسقۇچنىڭ ئىسمى"
+    "Folder name" : "ھۆججەت قىسقۇچنىڭ ئىسمى",
+    "Deck board" : "پالۋان تاختىسى",
+    "Board name" : "مۇدىرىيەت ئىسمى"
 },
 "nplurals=2; plural=(n != 1);");

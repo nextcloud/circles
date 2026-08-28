@@ -168,6 +168,8 @@ OC.L10N.register(
     "Modified" : "Thay đổi",
     "Circles App Initialization" : "Khởi tạo Ứng dụng vòng kết nối",
     "New folder" : "Thư mục mới",
-    "Folder name" : "Tên thư mục"
+    "Folder name" : "Tên thư mục",
+    "Deck board" : "Bảng Deck",
+    "Board name" : "Tên bảng"
 },
 "nplurals=1; plural=0;");

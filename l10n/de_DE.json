@@ -166,8 +166,6 @@
     "Unable to update team space config" : "Konfiguration des Team-Bereichs konnte nicht aktualisiert werden",
     "Changed default team space quota" : "Standard-Speicherplatzkontingent des Teams geändert",
     "Quota must be a non-negative number." : "Speicherplatzkontingent muss eine positive Zahl sein.",
-    "Automatically create a shared team space when a new team is created. Requires the Team Folders app to be installed and enabled." : "Beim Erstellen eines neuen Teams wird automatisch ein gemeinsamer Team-Bereich angelegt. Die App “Team-Ordner“ muss installiert und aktiviert sein.",
-    "Automatically create a team space" : "Automatisch einen Team-Bereich erstellen",
     "Default quota" : "Standard Speicherkontingent ",
     "Select default quota" : "Standardkontingent auswählen",
     "Save" : "Speichern",
@@ -267,7 +265,10 @@
     "Request to join" : "Beitritt anfragen",
     "Create" : "Erstellen",
     "Show in Calendar" : "Im Kalender anzeigen",
-    "Create team folder" : "Neuen Team-Ordner erstellen",
+    "This team does not have a team folder yet. Ask your administrator to enable the Team Folders app." : "Dieses Team hat noch keinen Teamordner. Die Administration bitten, die Team Folders-App zu aktivieren.",
+    "This team does not have a team folder yet. Create one to share files with the whole team." : "Dieses Team hat noch keinen Teamordner. Bitte einen erstellen, um Dateien mit dem gesamten Team zu teilen.",
+    "This team does not have a team folder yet. Ask a team owner to create one." : "Dieses Team hat noch keinen Teamordner. Einen Teambesitzer bitten, einen zu erstellen.",
+    "Create team folder" : "Team-Ordner erstellen",
     "Your request to join this team is pending approval" : "Ihre Anfrage, diesem Team beizutreten, muss noch genehmigt werden",
     "You are not a member of {circle}" : "Sie sind kein Mitglied von {circle}",
     "Add" : "Addieren",
@@ -393,10 +394,14 @@
     "Size" : "Größe",
     "Modified" : "Geändert",
     "Circles App Initialization" : "Initialisierung der Kreise-App",
+    "Automatically create a shared team space when a new team is created. Requires the Team Folders app to be installed and enabled." : "Beim Erstellen eines neuen Teams wird automatisch ein gemeinsamer Team-Bereich angelegt. Die App “Team-Ordner“ muss installiert und aktiviert sein.",
+    "Automatically create a team space" : "Automatisch einen Team-Bereich erstellen",
     "Team space" : "Team-Bereich",
     "Create a shared team space for this team." : "Einen gemeinsamen Team-Bereich für dieses Team erstellen.",
     "New folder" : "Neuer Ordner",
     "Folder name" : "Ordnername",
-    "This will create a regular folder shared with the team." : "Dadurch wird ein regulärer Ordner erstellt, der mit dem Team geteilt wird."
+    "This will create a regular folder shared with the team." : "Dadurch wird ein regulärer Ordner erstellt, der mit dem Team geteilt wird.",
+    "Deck board" : "Deck-Board",
+    "Board name" : "Boardname"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

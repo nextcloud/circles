@@ -168,8 +168,6 @@ OC.L10N.register(
     "Unable to update team space config" : "Nepavyko atnaujinti komandos erdvės konfigūracijos",
     "Changed default team space quota" : "Pakeista numatytoji komandos erdvės kvota",
     "Quota must be a non-negative number." : "Kvota turi būti neneigiamas skaičius.",
-    "Automatically create a shared team space when a new team is created. Requires the Team Folders app to be installed and enabled." : "Automatiškai sukurti bendrą komandos erdvę, kai sukuriama nauja komanda. Reikia, kad būtų įdiegta ir įjungta „Team Folders“ programėlė.",
-    "Automatically create a team space" : "Automatiškai sukurti komandos erdvę",
     "Default quota" : "Numatytasis leidžiamas duomenų kiekis",
     "Select default quota" : "Pasirinkite numatytą leidžiamą duomenų kiekį ",
     "Save" : "Išsaugoti",
@@ -395,10 +393,14 @@ OC.L10N.register(
     "Size" : "Dydis",
     "Modified" : "Pakeistas",
     "Circles App Initialization" : "Programėlės „Ratai“ inicijavimas",
+    "Automatically create a shared team space when a new team is created. Requires the Team Folders app to be installed and enabled." : "Automatiškai sukurti bendrą komandos erdvę, kai sukuriama nauja komanda. Reikia, kad būtų įdiegta ir įjungta „Team Folders“ programėlė.",
+    "Automatically create a team space" : "Automatiškai sukurti komandos erdvę",
     "Team space" : "Komandos erdvė",
     "Create a shared team space for this team." : "Sukurkite bendrą komandos erdvę šiai komandai.",
     "New folder" : "Naujas aplankas",
     "Folder name" : "Aplanko pavadinimas",
-    "This will create a regular folder shared with the team." : "Tai sukurs įprastą aplanką, bendrinamą su komanda."
+    "This will create a regular folder shared with the team." : "Tai sukurs įprastą aplanką, bendrinamą su komanda.",
+    "Deck board" : "Darbų lenta",
+    "Board name" : "Lentos pavadinimas"
 },
 "nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);");

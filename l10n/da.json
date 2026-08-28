@@ -166,8 +166,6 @@
     "Unable to update team space config" : "Kan ikke opdatere team- plads- config",
     "Changed default team space quota" : "Ændrede standardsteam- rumkvote",
     "Quota must be a non-negative number." : "Kvoten skal være et ikke-negativt tal.",
-    "Automatically create a shared team space when a new team is created. Requires the Team Folders app to be installed and enabled." : "Opret automatisk et delt teamrum når et nyt hold oprettes. Kræver at programmet Team Mapper installeres og aktiveres.",
-    "Automatically create a team space" : "Opret automatisk et holderum",
     "Default quota" : "Standard kvote",
     "Select default quota" : "Vælg standardkvote",
     "Save" : "Gem",
@@ -391,10 +389,14 @@
     "Size" : "Størrelse",
     "Modified" : "Ændret",
     "Circles App Initialization" : "Cirkler App Initialisering",
+    "Automatically create a shared team space when a new team is created. Requires the Team Folders app to be installed and enabled." : "Opret automatisk et delt teamrum når et nyt hold oprettes. Kræver at programmet Team Mapper installeres og aktiveres.",
+    "Automatically create a team space" : "Opret automatisk et holderum",
     "Team space" : "Team plads",
     "Create a shared team space for this team." : "Opret et fælles team plads til dette hold.",
     "New folder" : "Ny mappe",
     "Folder name" : "Mappenavn",
-    "This will create a regular folder shared with the team." : "Dette vil skabe en regelmæssig mappe delt med holdet."
+    "This will create a regular folder shared with the team." : "Dette vil skabe en regelmæssig mappe delt med holdet.",
+    "Deck board" : "Opslagstavle",
+    "Board name" : "Tavlenavn"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
