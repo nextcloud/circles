@@ -212,6 +212,8 @@ OC.L10N.register(
     "Modified" : "\"{name}\" ແມ່ນຊື່ໄຟລ໌ທີ່ບໍ່ຖືກຕ້ອງ.",
     "Circles App Initialization" : "Circles App Initialization",
     "New folder" : "ໂຟນເດີໃໝ່",
-    "Folder name" : "ຊື່ໂຟນເດີ"
+    "Folder name" : "ຊື່ໂຟນເດີ",
+    "Deck board" : "ກະດານ Deck",
+    "Board name" : "ຊື່ກະດານ"
 },
 "nplurals=1; plural=0;");

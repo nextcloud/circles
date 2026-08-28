@@ -155,6 +155,8 @@ OC.L10N.register(
     "Modified" : "Modificat",
     "Circles App Initialization" : "Inițializare aplicație Cercuri",
     "New folder" : "Director nou",
-    "Folder name" : "Denumire director"
+    "Folder name" : "Denumire director",
+    "Deck board" : "Panou Deck",
+    "Board name" : "Nume panou"
 },
 "nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));");

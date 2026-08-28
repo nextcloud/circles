@@ -166,8 +166,6 @@
     "Unable to update team space config" : "無法更新團隊空間設定",
     "Changed default team space quota" : "已更改預設團隊空間配額",
     "Quota must be a non-negative number." : "配額必須為非負數。",
-    "Automatically create a shared team space when a new team is created. Requires the Team Folders app to be installed and enabled." : "建立新團隊時自動建立共享團隊空間。必須已安裝並啟用「團隊資料夾」應用程式。",
-    "Automatically create a team space" : "自動建立團隊空間",
     "Default quota" : "默認儲存容量限制",
     "Select default quota" : "選擇預設容量限制",
     "Save" : "儲存",
@@ -393,10 +391,14 @@
     "Size" : "大小",
     "Modified" : "修改日期",
     "Circles App Initialization" : "初始 Circles 應用程式",
+    "Automatically create a shared team space when a new team is created. Requires the Team Folders app to be installed and enabled." : "建立新團隊時自動建立共享團隊空間。必須已安裝並啟用「團隊資料夾」應用程式。",
+    "Automatically create a team space" : "自動建立團隊空間",
     "Team space" : "團隊空間",
     "Create a shared team space for this team." : "為此團隊建立共享團隊空間。",
     "New folder" : "新資料夾",
     "Folder name" : "資料夾名稱",
-    "This will create a regular folder shared with the team." : "這會建立一個與團隊共享的一般資料夾。"
+    "This will create a regular folder shared with the team." : "這會建立一個與團隊共享的一般資料夾。",
+    "Deck board" : "Deck 面板",
+    "Board name" : "面板名"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

@@ -201,6 +201,8 @@ OC.L10N.register(
     "Modified" : "Data de modificació",
     "Circles App Initialization" : "Inicialització de l'aplicació Cercles",
     "New folder" : "Carpeta nova",
-    "Folder name" : "Nom de la carpeta"
+    "Folder name" : "Nom de la carpeta",
+    "Deck board" : "Tauler de Targetes",
+    "Board name" : "Nom del taulell"
 },
 "nplurals=2; plural=(n != 1);");

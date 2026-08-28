@@ -182,6 +182,8 @@ OC.L10N.register(
     "Modified" : "Spremenjeno",
     "Circles App Initialization" : "Zaganjanje programa Krogi",
     "New folder" : "Nova mapa",
-    "Folder name" : "Ime mape"
+    "Folder name" : "Ime mape",
+    "Deck board" : "Zbirka Deck",
+    "Board name" : "Ime zbirke"
 },
 "nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);");
