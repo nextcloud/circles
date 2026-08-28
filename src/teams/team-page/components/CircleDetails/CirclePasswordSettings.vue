@@ -3,57 +3,49 @@
   - SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 <template>
-	<ul>
-		<li class="circle-config">
-			<ul class="circle-config__list">
-				<NcCheckboxRadioSwitch
-					:model-value="enforcePasswordProtection"
-					:loading="loading.includes(ENFORCE_PASSWORD_PROTECTION)"
+	<div class="circle-password-settings">
+		<NcFormBox v-slot="{ itemClass }">
+			<NcFormBoxSwitch
+				:model-value="enforcePasswordProtection"
+				:label="t('circles', 'Enforce password protection on files shared to this team')"
+				:disabled="loading.length > 0"
+				@update:model-value="changePasswordProtection" />
+
+			<NcFormBoxSwitch
+				v-if="enforcePasswordProtection"
+				:model-value="useUniquePassword || showUniquePasswordInput"
+				:label="t('circles', 'Use a unique password for all shares to this team')"
+				:disabled="loading.length > 0"
+				@update:model-value="changeUseUniquePassword" />
+
+			<form
+				v-if="showUniquePasswordInput"
+				class="unique-password-form"
+				:class="itemClass"
+				@submit.prevent="saveUniquePassword">
+				<NcPasswordField
+					v-model="uniquePassword"
+					class="unique-password-form__input"
 					:disabled="loading.length > 0"
-					wrapper-element="li"
-					@update:model-value="changePasswordProtection">
-					{{ t('circles', 'Enforce password protection on files shared to this team') }}
-				</NcCheckboxRadioSwitch>
+					:label="t('circles', 'Unique password')" />
+				<NcButton
+					variant="primary"
+					type="submit"
+					:disabled="loading.length > 0 || uniquePassword.length === 0">
+					{{ t('circles', 'Save') }}
+				</NcButton>
+			</form>
+			<NcFormBoxButton
+				v-else-if="useUniquePassword"
+				:label="t('circles', 'Change unique password')"
+				:disabled="loading.length > 0"
+				@click="onClickChangePassword" />
+		</NcFormBox>
 
-				<NcCheckboxRadioSwitch
-					v-if="enforcePasswordProtection"
-					:model-value="useUniquePassword || showUniquePasswordInput"
-					:loading="loading.includes(USE_UNIQUE_PASSWORD)"
-					:disabled="loading.length > 0"
-					wrapper-element="li"
-					@update:model-value="changeUseUniquePassword">
-					{{ t('circles', 'Use a unique password for all shares to this team') }}
-				</NcCheckboxRadioSwitch>
-
-				<li class="unique-password">
-					<template v-if="showUniquePasswordInput">
-						<input
-							v-model="uniquePassword"
-							:disabled="loading.length > 0"
-							:placeholder="t('circles', 'Unique password …')"
-							type="text"
-							@keyup.enter="saveUniquePassword">
-						<NcButton
-							variant="tertiary-no-background"
-							:disabled="loading.length > 0 || uniquePassword.length === 0"
-							@click="saveUniquePassword">
-							{{ t('circles', 'Save') }}
-						</NcButton>
-					</template>
-					<NcButton
-						v-else-if="useUniquePassword"
-						class="change-unique-password"
-						@click="onClickChangePassword">
-						{{ t('circles', 'Change unique password') }}
-					</NcButton>
-
-					<div v-if="uniquePasswordError" class="unique-password-error">
-						{{ t('circles', 'Failed to save password. Please try again later.') }}
-					</div>
-				</li>
-			</ul>
-		</li>
-	</ul>
+		<NcNoteCard v-if="uniquePasswordError" type="error">
+			{{ t('circles', 'Failed to save password. Please try again later.') }}
+		</NcNoteCard>
+	</div>
 </template>
 
 <script setup lang="ts">
@@ -61,7 +53,11 @@ import type Circle from '../../models/circle.ts'
 
 import { t } from '@nextcloud/l10n'
 import NcButton from '@nextcloud/vue/components/NcButton'
-import NcCheckboxRadioSwitch from '@nextcloud/vue/components/NcCheckboxRadioSwitch'
+import NcFormBox from '@nextcloud/vue/components/NcFormBox'
+import NcFormBoxButton from '@nextcloud/vue/components/NcFormBoxButton'
+import NcFormBoxSwitch from '@nextcloud/vue/components/NcFormBoxSwitch'
+import NcNoteCard from '@nextcloud/vue/components/NcNoteCard'
+import NcPasswordField from '@nextcloud/vue/components/NcPasswordField'
 import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 
@@ -205,28 +201,19 @@ function onClickChangePassword() {
 </script>
 
 <style lang="scss" scoped>
-ul {
-	margin-top: -12px; // Merge with privacy settings list
+.circle-password-settings {
+	display: flex;
+	flex-direction: column;
+	gap: var(--default-grid-baseline);
 }
 
-.unique-password {
+.unique-password-form {
 	display: flex;
 	align-items: center;
-	flex-wrap: wrap;
-	width: 100%;
+	gap: calc(2 * var(--default-grid-baseline));
 
-	input {
-		flex: 1 auto;
-		max-width: 200px;
-	}
-
-	.change-unique-password {
-		margin-top: 5px;
-	}
-
-	// Force wrap error into a new line
-	.unique-password-error {
-		flex: 1 100%;
+	&__input {
+		max-width: 250px;
 	}
 }
 </style>
