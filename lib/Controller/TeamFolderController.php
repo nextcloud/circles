@@ -51,7 +51,7 @@ class TeamFolderController extends OCSController {
 	}
 
 	#[NoAdminRequired]
-	public function upgradeTeamFolder(string $circleId): DataResponse {
+	public function upgradeTeamFolder(string $circleId, string $name = ''): DataResponse {
 		if (!$this->policy->isTeamFolderProvisioningEnabled()) {
 			throw new OCSException('Team space provisioning is disabled', Http::STATUS_FORBIDDEN);
 		}
@@ -66,11 +66,44 @@ class TeamFolderController extends OCSController {
 		$folder = $this->getProvider()->createTeamFolder(
 			new Team(
 				teamId: $circle->getSingleId(),
-				displayName: $circle->getDisplayName(),
+				displayName: trim($name) ?: $circle->getDisplayName(),
 				link: null,
 			),
 			$this->policy->getDefaultQuota(),
 		);
+
+		return new DataResponse([
+			'success' => true,
+			'folderId' => $folder->getId(),
+			'folder' => $folder->jsonSerialize(),
+		]);
+	}
+
+	#[NoAdminRequired]
+	public function getLinkableTeamFolders(string $circleId): array {
+		$this->assertAuthenticatedUserIsTeamOwnerOrServerAdmin($circleId);
+
+		return array_map(
+			static fn (\OCP\Teams\TeamFolder $folder): array => $folder->jsonSerialize(),
+			$this->getProvider()->getLinkableTeamFolders($circleId),
+		);
+	}
+
+	#[NoAdminRequired]
+	public function linkTeamFolder(string $circleId, int $folderId): TeamFolder {
+		$this->assertAuthenticatedUserIsTeamOwnerOrServerAdmin($circleId);
+		$folder = $this->getProvider()->linkTeamFolder($circleId, $folderId);
+		return $folder;
+	}
+
+	#[NoAdminRequired]
+	public function updateTeamFolderQuota(string $circleId, int $quota): DataResponse {
+		$this->assertAuthenticatedUserIsTeamOwnerOrServerAdmin($circleId);
+		if ($quota < 0) {
+			throw new OCSException('Quota must be a non-negative number', Http::STATUS_BAD_REQUEST);
+		}
+
+		$folder = $this->getProvider()->updateTeamFolderQuota($circleId, $quota);
 
 		return new DataResponse([
 			'success' => true,

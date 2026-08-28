@@ -239,6 +239,22 @@ export async function deleteTeam(teamId: string): Promise<void> {
 export interface TeamFolder {
 	id: number
 	mountPoint: string
+	quota: number | null
+}
+
+/** Team and its linked folder as exposed to administrators. */
+export interface AdminTeamFolder {
+	teamId: string
+	teamName: string
+	folder: TeamFolder | null
+}
+
+/**
+ * Fetch all teams and their optionally linked team folders for the admin settings view.
+ */
+export async function getAdminTeamFolders(): Promise<AdminTeamFolder[]> {
+	const { data } = await axios.get<OcsResponse<AdminTeamFolder[]>>(generateOcsUrl('/apps/circles/admin/teamfolders'))
+	return data.ocs.data
 }
 
 /**
@@ -271,12 +287,51 @@ export async function getTeamFolder(teamId: string): Promise<TeamFolder | null> 
  * returned. Requires team owner privileges.
  *
  * @param teamId - The team single id
+ * @param name - Optional team folder name
  * @return The created (or existing) team folder.
  */
-export async function upgradeTeamFolder(teamId: string): Promise<TeamFolder> {
+export async function upgradeTeamFolder(teamId: string, name?: string): Promise<TeamFolder> {
 	const { data } = await axios.post<OcsResponse<{ folderId: number, folder: TeamFolder }>>(
 		generateOcsUrl('apps/circles/teams/{circleId}/folder', { circleId: teamId }),
-		{},
+		{ name },
+	)
+	return data.ocs.data.folder
+}
+
+/**
+ * Fetch team folders that are not yet linked to a team.
+ *
+ * @param teamId - The team single id
+ */
+export async function getLinkableTeamFolders(teamId: string): Promise<TeamFolder[]> {
+	const { data } = await axios.get<OcsResponse<TeamFolder[]>>(generateOcsUrl('apps/circles/teams/{circleId}/folder/linkable', { circleId: teamId }))
+	return data.ocs.data
+}
+
+/**
+ * Link a team to a team folder.
+ *
+ * @param teamId - The team single id
+ * @param folderId - The id of the existing team folder
+ */
+export async function linkTeamFolder(teamId: string, folderId: number): Promise<TeamFolder> {
+	const { data } = await axios.post<OcsResponse<{ folderId: number, folder: TeamFolder }>>(
+		generateOcsUrl('apps/circles/teams/{circleId}/folder/link', { circleId: teamId }),
+		{ folderId },
+	)
+	return data.ocs.data.folder
+}
+
+/**
+ * Update the storage quota of the team folder linked to a team.
+ *
+ * @param teamId - The team single id
+ * @param quota - Quota in bytes, or zero for unlimited
+ */
+export async function updateTeamFolderQuota(teamId: string, quota: number): Promise<TeamFolder> {
+	const { data } = await axios.put<OcsResponse<{ folderId: number, folder: TeamFolder }>>(
+		generateOcsUrl('apps/circles/teams/{circleId}/folder/quota', { circleId: teamId }),
+		{ quota },
 	)
 	return data.ocs.data.folder
 }
