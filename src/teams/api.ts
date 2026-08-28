@@ -3,9 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import type { Member, MemberCandidate, Resource, Team, TeamRole } from './types.ts'
+import type { Member, MemberCandidate, Resource, SharedResource, Team, TeamRole } from './types.ts'
 
 import axios from '@nextcloud/axios'
+import { FileType } from '@nextcloud/files'
+import { defaultRootPath, getClient, getDefaultPropfind, resultToNode } from '@nextcloud/files/dav'
 import { generateOcsUrl } from '@nextcloud/router'
 import { logger } from '../logger.ts'
 import { SHARES_TYPES_MEMBER_MAP } from './team-page/models/constants.ts'
@@ -13,9 +15,6 @@ import { getRecommendations, getSuggestions } from './team-page/services/collabo
 
 /** `SHARES_TYPES_MEMBER_MAP` is built dynamically, so type its shape explicitly. */
 const shareTypeToMemberType = SHARES_TYPES_MEMBER_MAP as Record<number, number>
-
-/** OCS endpoints require this header. */
-const HEADERS = { 'OCS-APIRequest': 'true' }
 
 /** Minimal shape of an OCS response envelope. */
 interface OcsResponse<T> {
@@ -141,8 +140,8 @@ function mapFullMember(raw: RawMember): Member {
  */
 export async function fetchTeams(): Promise<Team[]> {
 	const [circlesRes, dashRes] = await Promise.allSettled([
-		axios.get<OcsResponse<RawCircle[]>>(generateOcsUrl('apps/circles/circles') + '?limit=-1', { headers: HEADERS }),
-		axios.get<OcsResponse<RawDashboardTeam[]>>(generateOcsUrl('apps/circles/teams/dashboard/widget') + '?limit=200&offset=0', { headers: HEADERS }),
+		axios.get<OcsResponse<RawCircle[]>>(generateOcsUrl('apps/circles/circles') + '?limit=-1'),
+		axios.get<OcsResponse<RawDashboardTeam[]>>(generateOcsUrl('apps/circles/teams/dashboard/widget') + '?limit=200&offset=0'),
 	])
 
 	// The team list is required; without it we have nothing to show.
@@ -181,10 +180,7 @@ export async function fetchTeams(): Promise<Team[]> {
  * @param teamId - The team single id
  */
 export async function fetchTeamMembers(teamId: string): Promise<Member[]> {
-	const res = await axios.get<OcsResponse<RawMember[]>>(
-		generateOcsUrl('apps/circles/circles/{circleId}/members', { circleId: teamId }),
-		{ headers: HEADERS },
-	)
+	const res = await axios.get<OcsResponse<RawMember[]>>(generateOcsUrl('apps/circles/circles/{circleId}/members', { circleId: teamId }))
 	return (res.data.ocs.data ?? []).map(mapFullMember)
 }
 
@@ -199,7 +195,6 @@ export async function createTeam(name: string, createTeamFolder = true): Promise
 	const res = await axios.post<OcsResponse<RawCircle>>(
 		generateOcsUrl('apps/circles/circles'),
 		{ name, createTeamFolder },
-		{ headers: HEADERS },
 	)
 	return res.data.ocs.data.id
 }
@@ -214,7 +209,6 @@ export async function setTeamDescription(teamId: string, description: string): P
 	await axios.put(
 		generateOcsUrl('apps/circles/circles/{circleId}/description', { circleId: teamId }),
 		{ value: description },
-		{ headers: HEADERS },
 	)
 }
 
@@ -227,7 +221,6 @@ export async function leaveTeam(teamId: string): Promise<void> {
 	await axios.put(
 		generateOcsUrl('apps/circles/circles/{circleId}/leave', { circleId: teamId }),
 		{},
-		{ headers: HEADERS },
 	)
 }
 
@@ -237,10 +230,7 @@ export async function leaveTeam(teamId: string): Promise<void> {
  * @param teamId - The team single id
  */
 export async function deleteTeam(teamId: string): Promise<void> {
-	await axios.delete(
-		generateOcsUrl('apps/circles/circles/{circleId}', { circleId: teamId }),
-		{ headers: HEADERS },
-	)
+	await axios.delete(generateOcsUrl('apps/circles/circles/{circleId}', { circleId: teamId }))
 }
 
 /**
@@ -262,10 +252,7 @@ export interface TeamFolder {
  */
 export async function getTeamFolder(teamId: string): Promise<TeamFolder | null> {
 	try {
-		const { data } = await axios.get<OcsResponse<TeamFolder>>(
-			generateOcsUrl('apps/circles/teams/{circleId}/folder', { circleId: teamId }),
-			{ headers: HEADERS },
-		)
+		const { data } = await axios.get<OcsResponse<TeamFolder>>(generateOcsUrl('apps/circles/teams/{circleId}/folder', { circleId: teamId }))
 		return data.ocs.data
 	} catch (error) {
 		if (error && typeof error === 'object'
@@ -290,9 +277,170 @@ export async function upgradeTeamFolder(teamId: string): Promise<TeamFolder> {
 	const { data } = await axios.post<OcsResponse<{ folderId: number, folder: TeamFolder }>>(
 		generateOcsUrl('apps/circles/teams/{circleId}/folder', { circleId: teamId }),
 		{},
-		{ headers: HEADERS },
 	)
 	return data.ocs.data.folder
+}
+
+/**
+ * Subfolder of the team folder holding the page files, inside the app's
+ * own namespace of the hidden `.system` folder: the pages neither clutter
+ * the files the team actually shares nor the `.system` root itself.
+ */
+const PAGES_FOLDER = '.system/teams/pages'
+
+/**
+ * A team page: a markdown file stored in the team folder's hidden pages
+ * subfolder, surfaced as a tab on the team.
+ */
+export interface TeamPage {
+	fileId: number
+	/** Page title: the file name without the .md extension. */
+	title: string
+	/** Path relative to the user's files root, as the Text editor expects. */
+	filePath: string
+}
+
+/**
+ * List the team pages: the markdown files in the team folder's hidden
+ * pages subfolder.
+ *
+ * @param mountPoint - The team folder mount point of the current user
+ */
+export async function fetchTeamPages(mountPoint: string): Promise<TeamPage[]> {
+	let response
+	try {
+		response = await getClient().getDirectoryContents(`${defaultRootPath}/${mountPoint}/${PAGES_FOLDER}`, {
+			details: true,
+			data: getDefaultPropfind(),
+		})
+	} catch (error) {
+		// 404 means the pages subfolder was not created yet (it appears with
+		// the first page), or the team folder itself has not been physically
+		// created — either way "no pages".
+		if ((error as { status?: number })?.status === 404) {
+			return []
+		}
+		throw error
+	}
+	const data = Array.isArray(response) ? response : response.data
+
+	return data
+		.map((entry) => resultToNode(entry, defaultRootPath))
+		.filter((node) => node.type === FileType.File
+			&& node.extension?.toLowerCase() === '.md'
+			&& node.fileid !== undefined)
+		.map((node) => ({
+			fileId: node.fileid!,
+			title: node.basename.slice(0, -node.extension!.length),
+			filePath: `/${mountPoint}/${PAGES_FOLDER}/${node.basename}`,
+		}))
+		.sort((a, b) => a.title.localeCompare(b.title))
+}
+
+/**
+ * Create a team page: an empty markdown file in the team folder's hidden
+ * pages subfolder, which appears with the first page.
+ *
+ * @param mountPoint - The team folder mount point of the current user
+ * @param name - The page name (without extension)
+ */
+export async function createTeamPage(mountPoint: string, name: string): Promise<void> {
+	const pagesFolder = `${defaultRootPath}/${mountPoint}/${PAGES_FOLDER}`
+	try {
+		// Recursive: `.system` and the pages folder inside it appear with
+		// the first page.
+		await getClient().createDirectory(pagesFolder, { recursive: true })
+	} catch (error) {
+		// 405: the folder appeared between the existence probe and the MKCOL.
+		if ((error as { status?: number })?.status !== 405) {
+			throw error
+		}
+	}
+	const written = await getClient().putFileContents(`${pagesFolder}/${name}.md`, '', {
+		// Refuse to overwrite an existing page of the same name
+		overwrite: false,
+	})
+	// The webdav client returns false instead of throwing on the 412 an
+	// existing page produces with overwrite disabled.
+	if (written === false) {
+		throw Object.assign(new Error('A page with this name already exists'), { status: 412 })
+	}
+}
+
+/**
+ * Delete a team page: remove its markdown file from the team folder.
+ *
+ * @param page - The team page to delete
+ */
+export async function deleteTeamPage(page: TeamPage): Promise<void> {
+	await getClient().deleteFile(`${defaultRootPath}${page.filePath}`)
+}
+
+/**
+ * Rename a team page: move its markdown file to the new name within the
+ * team folder. Refuses to overwrite an existing page of the same name.
+ *
+ * @param page - The team page to rename
+ * @param name - The new page name (without extension)
+ */
+export async function renameTeamPage(page: TeamPage, name: string): Promise<void> {
+	const directory = page.filePath.slice(0, page.filePath.lastIndexOf('/'))
+	await getClient().moveFile(
+		`${defaultRootPath}${page.filePath}`,
+		`${defaultRootPath}${directory}/${name}.md`,
+		{ overwrite: false },
+	)
+}
+
+/**
+ * Fetch the team-level tab order (readable by every member).
+ *
+ * @param teamId - The team single id
+ * @return Tab ids, first to last. Empty when no order has been saved.
+ */
+export async function fetchTabOrder(teamId: string): Promise<string[]> {
+	const { data } = await axios.get<OcsResponse<{ order: string[] }>>(generateOcsUrl('apps/circles/teams/{circleId}/tab-order', { circleId: teamId }))
+	return data.ocs.data.order ?? []
+}
+
+/**
+ * Save the team-level tab order. Requires team admin or above.
+ *
+ * @param teamId - The team single id
+ * @param order - Tab ids, first to last
+ */
+export async function saveTabOrder(teamId: string, order: string[]): Promise<void> {
+	await axios.put(
+		generateOcsUrl('apps/circles/teams/{circleId}/tab-order', { circleId: teamId }),
+		{ order },
+	)
+}
+
+/**
+ * Fetch the resources shared to a team from the core teams resource
+ * providers (Talk rooms, calendars, collectives, …).
+ *
+ * @param teamId - The team single id
+ */
+export async function fetchTeamResources(teamId: string): Promise<SharedResource[]> {
+	const res = await axios.get<OcsResponse<{ resources: SharedResource[] }>>(generateOcsUrl('teams/{teamId}/resources', { teamId }))
+	return res.data.ocs.data.resources ?? []
+}
+
+/**
+ * Create a collective named after a team. The collectives app links the
+ * collective to the team by name, so no separate share step is needed.
+ *
+ * TODO: calls the collectives API directly; should eventually go through
+ * a teams extension point instead of hardcoding another app's route.
+ *
+ * @param name - The collective name (the team's name)
+ */
+export async function createCollective(name: string): Promise<void> {
+	await axios.post(
+		generateOcsUrl('apps/collectives/api/v1.0/collectives'),
+		{ name },
+	)
 }
 
 /**
@@ -333,7 +481,6 @@ export async function addTeamMembers(teamId: string, candidates: MemberCandidate
 	const res = await axios.post<OcsResponse<Record<string, unknown>>>(
 		generateOcsUrl('apps/circles/circles/{circleId}/members/multi', { circleId: teamId }),
 		{ members },
-		{ headers: HEADERS },
 	)
 	return Object.keys(res.data.ocs.data ?? {}).length
 }

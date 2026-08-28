@@ -47,7 +47,6 @@ describe('createTeam', () => {
 		expect(axios.post).toHaveBeenCalledWith(
 			'/ocs/apps/circles/circles',
 			{ name: 'Design', createTeamFolder: true },
-			{ headers: { 'OCS-APIRequest': 'true' } },
 		)
 	})
 
@@ -57,7 +56,6 @@ describe('createTeam', () => {
 		expect(axios.post).toHaveBeenCalledWith(
 			'/ocs/apps/circles/circles',
 			{ name: 'Design', createTeamFolder: false },
-			{ headers: { 'OCS-APIRequest': 'true' } },
 		)
 	})
 })
