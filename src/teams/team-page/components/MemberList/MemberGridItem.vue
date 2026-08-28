@@ -81,7 +81,7 @@
 
 <script>
 // @ts-nocheck
-import { DialogBuilder, showError } from '@nextcloud/dialogs'
+import { DialogBuilder, showError, showSuccess } from '@nextcloud/dialogs'
 import { NcActionButton, NcActions, NcActionSeparator, NcActionText, NcAvatar, NcButton } from '@nextcloud/vue'
 import IconAccountGroupOutline from 'vue-material-design-icons/AccountGroupOutline.vue'
 import IconCheckOutline from 'vue-material-design-icons/CheckOutline.vue'
@@ -313,12 +313,17 @@ export default {
 
 		async doDeleteMember() {
 			this.loading = true
+			const teamName = this.circle.displayName
 
 			try {
 				await this.$store.dispatch('deleteMemberFromCircle', {
 					member: this.member,
 					leave: this.isCurrentUser,
 				})
+				if (this.isCurrentUser) {
+					showSuccess(t('circles', 'You left "{name}"', { name: teamName }))
+					this.$router.push({ name: 'home' })
+				}
 			} catch (error) {
 				if (error?.response?.status === 404) {
 					this.logger.debug('Member is not in circle')
