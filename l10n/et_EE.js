@@ -259,6 +259,9 @@ OC.L10N.register(
     "Request to join" : "Palu võimalust liituda",
     "Create" : "Loo",
     "Show in Calendar" : "Näita kalendris",
+    "This team does not have a team folder yet. Ask your administrator to enable the Team Folders app." : "Sel tiimil pole veel tiimikausta. Palu serveri haldajat või peakasutajat, et ta paigaldaks või võtaks kasutusele tiimikaustade rakenduse.",
+    "This team does not have a team folder yet. Create one to share files with the whole team." : "Sel tiimil pole veel tiimikausta. Jagamaks faile kogu tiimiga saad sellise kausta luua.",
+    "This team does not have a team folder yet. Ask a team owner to create one." : "Sel tiimil pole veel tiimikausta. Palu tiimijuhil selline kaust luua.",
     "Create team folder" : "Loo tiimikaust",
     "Your request to join this team is pending approval" : "Sinu liitumissoov tiimiga ootab kinnitust",
     "You are not a member of {circle}" : "Sa pole „{circle}“ tiimi liige",
@@ -385,6 +388,8 @@ OC.L10N.register(
     "Circles App Initialization" : "Tiimide rakenduse valmendamine",
     "New folder" : "Uus kaust",
     "Folder name" : "Kausta nimi",
-    "This will create a regular folder shared with the team." : "Järgnevaga  lood tavalise tiimiga jagatava kausta."
+    "This will create a regular folder shared with the team." : "Järgnevaga  lood tavalise tiimiga jagatava kausta.",
+    "Deck board" : "Kanbani tahvel",
+    "Board name" : "Tahvli nimi"
 },
 "nplurals=2; plural=(n != 1);");

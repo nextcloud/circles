@@ -166,8 +166,6 @@
     "Unable to update team space config" : "無法更新團隊空間設定",
     "Changed default team space quota" : "已變更預設團隊空間配額",
     "Quota must be a non-negative number." : "配額必須為非負數字。",
-    "Automatically create a shared team space when a new team is created. Requires the Team Folders app to be installed and enabled." : "建立新團隊時，自動建立共享的團隊空間。此功能需先安裝並啟用「團隊資料夾」應用程式。",
-    "Automatically create a team space" : "自動建立團隊空間",
     "Default quota" : "預設儲存容量限制",
     "Select default quota" : "選取預設容量限制",
     "Save" : "儲存",
@@ -267,6 +265,9 @@
     "Request to join" : "要求加入",
     "Create" : "建立",
     "Show in Calendar" : "在日曆中顯示",
+    "This team does not have a team folder yet. Ask your administrator to enable the Team Folders app." : "此團隊目前尚無團隊資料夾。請向您的管理員請求啟用「團隊資料夾」應用程式。",
+    "This team does not have a team folder yet. Create one to share files with the whole team." : "這個團隊目前尚無團隊資料夾。請建立以便與整個團隊分享檔案。",
+    "This team does not have a team folder yet. Ask a team owner to create one." : "這個團隊目前尚無團隊資料夾。請要求團隊擁有者建立。",
     "Create team folder" : "建立團隊資料夾",
     "Your request to join this team is pending approval" : "您加入此團隊的請求正在等待批准",
     "You are not a member of {circle}" : "您不是 {circle} 的成員",
@@ -393,10 +394,14 @@
     "Size" : "大小",
     "Modified" : "已修改",
     "Circles App Initialization" : "初始化小圈圈應用程式",
+    "Automatically create a shared team space when a new team is created. Requires the Team Folders app to be installed and enabled." : "建立新團隊時，自動建立共享的團隊空間。此功能需先安裝並啟用「團隊資料夾」應用程式。",
+    "Automatically create a team space" : "自動建立團隊空間",
     "Team space" : "團隊空間",
     "Create a shared team space for this team." : "為此團隊建立共享團隊空間。",
     "New folder" : "新增資料夾",
     "Folder name" : "資料夾名稱",
-    "This will create a regular folder shared with the team." : "這將建立一個與團隊共享的普通資料夾。"
+    "This will create a regular folder shared with the team." : "這將建立一個與團隊共享的普通資料夾。",
+    "Deck board" : "Deck 佈告欄",
+    "Board name" : "佈告欄名稱"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

@@ -230,6 +230,8 @@ OC.L10N.register(
     "Modified" : "Módosítva",
     "Circles App Initialization" : "Körök alkalmazás előkészítése",
     "New folder" : "Új mappa",
-    "Folder name" : "Mappanév"
+    "Folder name" : "Mappanév",
+    "Deck board" : "Kártyatábla",
+    "Board name" : "Tábla neve"
 },
 "nplurals=2; plural=(n != 1);");

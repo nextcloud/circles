@@ -158,6 +158,8 @@ OC.L10N.register(
     "Size" : "Mannària",
     "Modified" : "Modificadu",
     "New folder" : "Cartella noa",
-    "Folder name" : "Nùmene de sa cartella"
+    "Folder name" : "Nùmene de sa cartella",
+    "Deck board" : "Tabella in Deck",
+    "Board name" : "Nùmene de sa lavagna"
 },
 "nplurals=2; plural=(n != 1);");

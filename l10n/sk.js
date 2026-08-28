@@ -231,6 +231,8 @@ OC.L10N.register(
     "Modified" : "Upravené",
     "Circles App Initialization" : "Inicializácia Aplikácie Kruhy",
     "New folder" : "Nový priečinok",
-    "Folder name" : "Názov priečinka"
+    "Folder name" : "Názov priečinka",
+    "Deck board" : "Palubná doska",
+    "Board name" : "Názov nástenky"
 },
 "nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);");

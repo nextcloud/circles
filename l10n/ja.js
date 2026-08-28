@@ -348,6 +348,8 @@ OC.L10N.register(
     "Modified" : "更新日時",
     "Circles App Initialization" : "Circleアプリの初期化",
     "New folder" : "新しいフォルダー",
-    "Folder name" : "フォルダー名"
+    "Folder name" : "フォルダー名",
+    "Deck board" : "Deckボード",
+    "Board name" : "ボード名"
 },
 "nplurals=1; plural=0;");

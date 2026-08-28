@@ -69,6 +69,7 @@ OC.L10N.register(
     "Size" : "O'lchami",
     "Modified" : "O'zgartirilgan",
     "New folder" : "Yangi jild",
-    "Folder name" : "Papka nomi"
+    "Folder name" : "Papka nomi",
+    "Deck board" : "Pastki taxta"
 },
 "nplurals=1; plural=0;");

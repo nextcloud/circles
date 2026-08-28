@@ -206,6 +206,8 @@ OC.L10N.register(
     "Modified" : "Endret",
     "Circles App Initialization" : "Initialisering av Circles App",
     "New folder" : "Ny mappe",
-    "Folder name" : "Mappenavn"
+    "Folder name" : "Mappenavn",
+    "Deck board" : "Stokktavle",
+    "Board name" : "Navn på tavle"
 },
 "nplurals=2; plural=(n != 1);");

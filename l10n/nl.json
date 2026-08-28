@@ -166,8 +166,6 @@
     "Unable to update team space config" : "Configuratie van de teamruimte kan niet worden bijgewerkt",
     "Changed default team space quota" : "Standaardquota voor teamruimtes gewijzigd",
     "Quota must be a non-negative number." : "Het quotum moet een niet-negatief getal zijn.",
-    "Automatically create a shared team space when a new team is created. Requires the Team Folders app to be installed and enabled." : "Maak automatisch een gedeelde teamruimte aan wanneer er een nieuw team wordt aangemaakt. Hiervoor moet de app ‘Team Folders’ zijn geïnstalleerd en ingeschakeld.",
-    "Automatically create a team space" : "Automatisch een teamruimte aanmaken",
     "Default quota" : "Standaard quota",
     "Select default quota" : "Selecteer standaardquotum",
     "Save" : "Opslaan",
@@ -392,10 +390,14 @@
     "Size" : "Omvang",
     "Modified" : "Gewijzigd",
     "Circles App Initialization" : "Circles App Initialisatie",
+    "Automatically create a shared team space when a new team is created. Requires the Team Folders app to be installed and enabled." : "Maak automatisch een gedeelde teamruimte aan wanneer er een nieuw team wordt aangemaakt. Hiervoor moet de app ‘Team Folders’ zijn geïnstalleerd en ingeschakeld.",
+    "Automatically create a team space" : "Automatisch een teamruimte aanmaken",
     "Team space" : "Teamruimte",
     "Create a shared team space for this team." : "Maak een gedeelde teamruimte aan voor dit team.",
     "New folder" : "Nieuwe map",
     "Folder name" : "Mapnaam",
-    "This will create a regular folder shared with the team." : "Hiermee wordt een gewone map aangemaakt die met het team wordt gedeeld."
+    "This will create a regular folder shared with the team." : "Hiermee wordt een gewone map aangemaakt die met het team wordt gedeeld.",
+    "Deck board" : "Deck board",
+    "Board name" : "Bordnaam"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
