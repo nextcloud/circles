@@ -225,6 +225,8 @@ OC.L10N.register(
     "Modified" : "Boresha",
     "Circles App Initialization" : "Uanzishaji wa Programu ya Miduara",
     "New folder" : "Folda mpya",
-    "Folder name" : "Jina la kisanduku"
+    "Folder name" : "Jina la kisanduku",
+    "Deck board" : "Bodi ya deki",
+    "Board name" : "Jina la bodi"
 },
 "nplurals=2; plural=(n != 1);");

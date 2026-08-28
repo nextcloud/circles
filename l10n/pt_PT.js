@@ -230,6 +230,8 @@ OC.L10N.register(
     "Modified" : "Modificado",
     "Circles App Initialization" : "Inicialização da App Circles",
     "New folder" : "Nova pasta",
-    "Folder name" : "Nome da pasta"
+    "Folder name" : "Nome da pasta",
+    "Deck board" : "Painel de Deck",
+    "Board name" : "Nome do quadro"
 },
 "nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");

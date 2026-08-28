@@ -168,8 +168,6 @@ OC.L10N.register(
     "Unable to update team space config" : "Unable to update team space config",
     "Changed default team space quota" : "Changed default team space quota",
     "Quota must be a non-negative number." : "Quota must be a non-negative number.",
-    "Automatically create a shared team space when a new team is created. Requires the Team Folders app to be installed and enabled." : "Automatically create a shared team space when a new team is created. Requires the Team Folders app to be installed and enabled.",
-    "Automatically create a team space" : "Automatically create a team space",
     "Default quota" : "Default quota",
     "Select default quota" : "Select default quota",
     "Save" : "Save",
@@ -395,10 +393,14 @@ OC.L10N.register(
     "Size" : "Size",
     "Modified" : "Modified",
     "Circles App Initialization" : "Circles App Initialisation",
+    "Automatically create a shared team space when a new team is created. Requires the Team Folders app to be installed and enabled." : "Automatically create a shared team space when a new team is created. Requires the Team Folders app to be installed and enabled.",
+    "Automatically create a team space" : "Automatically create a team space",
     "Team space" : "Team space",
     "Create a shared team space for this team." : "Create a shared team space for this team.",
     "New folder" : "New folder",
     "Folder name" : "Folder name",
-    "This will create a regular folder shared with the team." : "This will create a regular folder shared with the team."
+    "This will create a regular folder shared with the team." : "This will create a regular folder shared with the team.",
+    "Deck board" : "Deck board",
+    "Board name" : "Board name"
 },
 "nplurals=2; plural=(n != 1);");

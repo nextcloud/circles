@@ -227,6 +227,8 @@ OC.L10N.register(
     "Modified" : "Өөрчлөгдсөн",
     "Circles App Initialization" : "Circles апп эхлүүлэлт",
     "New folder" : "–®–∏–Ω—ç —Ö–∞–≤—Ç–∞—Å",
-    "Folder name" : "–•–∞–≤—Ç–∞—Å–Ω—ã –Ω—ç—Ä"
+    "Folder name" : "–•–∞–≤—Ç–∞—Å–Ω—ã –Ω—ç—Ä",
+    "Deck board" : "Deck самбар",
+    "Board name" : "Самбарын нэр"
 },
 "nplurals=2; plural=(n != 1);");

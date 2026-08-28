@@ -240,6 +240,8 @@ OC.L10N.register(
     "Modified" : "Změněno",
     "Circles App Initialization" : "Inicializace aplikace okruhy",
     "New folder" : "Nová složka",
-    "Folder name" : "Název složky"
+    "Folder name" : "Název složky",
+    "Deck board" : "Tabule aplikace Deck",
+    "Board name" : "Název tabule"
 },
 "nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;");
