@@ -217,6 +217,8 @@ OC.L10N.register(
     "Modified" : "Aldatua",
     "Circles App Initialization" : "Zirkuluak aplikazioaren hastapena",
     "New folder" : "Karpeta berria",
-    "Folder name" : "Karpetaren izena"
+    "Folder name" : "Karpetaren izena",
+    "Deck board" : "Deck taula",
+    "Board name" : "Taularen izena"
 },
 "nplurals=2; plural=(n != 1);");

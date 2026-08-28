@@ -206,6 +206,8 @@ OC.L10N.register(
     "Modified" : "Breytt",
     "Circles App Initialization" : "Frumstilling Circles forrits",
     "New folder" : "Ný mappa",
-    "Folder name" : "Nafn möppu"
+    "Folder name" : "Nafn möppu",
+    "Deck board" : "Deck-borð",
+    "Board name" : "Heiti borðs"
 },
 "nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);");

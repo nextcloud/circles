@@ -162,6 +162,8 @@ OC.L10N.register(
     "Modified" : "Modified",
     "Circles App Initialization" : "Circles App Initialization",
     "New folder" : "New folder",
-    "Folder name" : "Folder name"
+    "Folder name" : "Folder name",
+    "Deck board" : "Deck board",
+    "Board name" : "Board name"
 },
 "nplurals=2; plural=(n!=1);");

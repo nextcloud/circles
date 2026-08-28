@@ -234,6 +234,8 @@ OC.L10N.register(
     "Modified" : "修改日期",
     "Circles App Initialization" : "应用程序Circles初始化",
     "New folder" : "新文件夹",
-    "Folder name" : "文件夹名称"
+    "Folder name" : "文件夹名称",
+    "Deck board" : "看板",
+    "Board name" : "面板名称"
 },
 "nplurals=1; plural=0;");

@@ -119,6 +119,8 @@ OC.L10N.register(
     "Size" : "גודל",
     "Modified" : "מועד שינוי",
     "New folder" : "תיקייה חדשה",
-    "Folder name" : "שם התיקייה"
+    "Folder name" : "שם התיקייה",
+    "Deck board" : "לוח חסיפה",
+    "Board name" : "שם הלוח"
 },
 "nplurals=3; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % 1 == 0) ? 1: 2;");

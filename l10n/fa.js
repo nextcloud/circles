@@ -237,6 +237,8 @@ OC.L10N.register(
     "Modified" : "تغییر یافته",
     "Circles App Initialization" : "راه‌اندازی اپ حلقه‌ها",
     "New folder" : "پوشه جدید",
-    "Folder name" : "نام پوشه"
+    "Folder name" : "نام پوشه",
+    "Deck board" : "بورد کارتابل",
+    "Board name" : "نام تخته"
 },
 "nplurals=2; plural=(n > 1);");

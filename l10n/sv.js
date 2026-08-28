@@ -345,6 +345,8 @@ OC.L10N.register(
     "Modified" : "Ändrad",
     "Circles App Initialization" : "Initiering av Circles-appen",
     "New folder" : "Ny mapp",
-    "Folder name" : "Mappnamn"
+    "Folder name" : "Mappnamn",
+    "Deck board" : "Deck-tavla",
+    "Board name" : "Tavlans namn"
 },
 "nplurals=2; plural=(n != 1);");

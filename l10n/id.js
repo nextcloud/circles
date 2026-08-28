@@ -215,6 +215,8 @@ OC.L10N.register(
     "Modified" : "Dimodifikasi",
     "Circles App Initialization" : "Inisialisasi Aplikasi Circles",
     "New folder" : "Folder baru",
-    "Folder name" : "Nama folder"
+    "Folder name" : "Nama folder",
+    "Deck board" : "Papan Longgok",
+    "Board name" : "Nama papan"
 },
 "nplurals=1; plural=0;");

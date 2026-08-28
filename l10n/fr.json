@@ -166,8 +166,6 @@
     "Unable to update team space config" : "Impossible de mettre à jour la configuration des espaces d’équipe",
     "Changed default team space quota" : "Quota par défaut de l’espace d’équipe modifié",
     "Quota must be a non-negative number." : "Le quota doit être un nombre positif ou nul.",
-    "Automatically create a shared team space when a new team is created. Requires the Team Folders app to be installed and enabled." : "Créer automatiquement un espace d’équipe partagé lorsqu’une nouvelle équipe est créée. L’application Team Folders doit être installée et activée.",
-    "Automatically create a team space" : "Créer automatiquement un espace d’équipe",
     "Default quota" : "Quota par défaut",
     "Select default quota" : "Sélectionner le quota par défaut",
     "Save" : "Enregistrer",
@@ -267,6 +265,9 @@
     "Request to join" : "Demander à rejoindre",
     "Create" : "Créer",
     "Show in Calendar" : "Afficher dans l’agenda",
+    "This team does not have a team folder yet. Ask your administrator to enable the Team Folders app." : "Cette équipe n'a pas de dossier d'équipe pour le moment. Demandez à votre administrateur d'activer l'application Team Folders.",
+    "This team does not have a team folder yet. Create one to share files with the whole team." : "Cette équipe n'a pas de dossier d'équipe pour le moment. Créez-en un pour partager des fichiers avec toute l'équipe.",
+    "This team does not have a team folder yet. Ask a team owner to create one." : "Cette équipe n'a pas de dossier d'équipe pour le moment. Demandez à un de ses propriétaires d'en créer un.",
     "Create team folder" : "Créer un dossier d'équipe",
     "Your request to join this team is pending approval" : "Votre demande pour rejoindre cette équipe est en attente d’approbation",
     "You are not a member of {circle}" : "Vous n’êtes pas membre de {circle}",
@@ -393,10 +394,14 @@
     "Size" : "Taille",
     "Modified" : "Modifié",
     "Circles App Initialization" : "Initialisation de l'application Cercles",
+    "Automatically create a shared team space when a new team is created. Requires the Team Folders app to be installed and enabled." : "Créer automatiquement un espace d’équipe partagé lorsqu’une nouvelle équipe est créée. L’application Team Folders doit être installée et activée.",
+    "Automatically create a team space" : "Créer automatiquement un espace d’équipe",
     "Team space" : "Espace d’équipe",
     "Create a shared team space for this team." : "Créer un espace d’équipe partagé pour cette équipe.",
     "New folder" : "Nouveau dossier",
     "Folder name" : "Nom du dossier",
-    "This will create a regular folder shared with the team." : "Cette action créera un dossier standard partagé avec l’équipe."
+    "This will create a regular folder shared with the team." : "Cette action créera un dossier standard partagé avec l’équipe.",
+    "Deck board" : "Tableau Deck",
+    "Board name" : "Nom du tableau"
 },"pluralForm" :"nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }

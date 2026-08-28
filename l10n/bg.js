@@ -169,6 +169,8 @@ OC.L10N.register(
     "Modified" : "Променен на",
     "Circles App Initialization" : "Инициализация на приложението Circles /кръгове/",
     "New folder" : "Нова папка",
-    "Folder name" : "Име на папка"
+    "Folder name" : "Име на папка",
+    "Deck board" : "Deck табло",
+    "Board name" : "Име на табло"
 },
 "nplurals=2; plural=(n != 1);");

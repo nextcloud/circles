@@ -166,8 +166,6 @@
     "Unable to update team space config" : "Ní féidir cumraíocht spáis foirne a nuashonrú",
     "Changed default team space quota" : "Athraíodh cuóta spáis foirne réamhshocraithe",
     "Quota must be a non-negative number." : "Ní mór don chuóta a bheith ina uimhir neamh-dhiúltach.",
-    "Automatically create a shared team space when a new team is created. Requires the Team Folders app to be installed and enabled." : "Cruthaigh spás foirne comhroinnte go huathoibríoch nuair a chruthaítear foireann nua. Éilíonn sé seo go mbeidh an aip Fillteáin Foirne suiteáilte agus cumasaithe.",
-    "Automatically create a team space" : "Cruthaigh spás foirne go huathoibríoch",
     "Default quota" : "Cuóta réamhshocraithe",
     "Select default quota" : "Roghnaigh cuóta réamhshocraithe",
     "Save" : "Sábháil",
@@ -393,10 +391,14 @@
     "Size" : "Méid",
     "Modified" : "Athraithe",
     "Circles App Initialization" : "Ciorcail Aip Tosaigh",
+    "Automatically create a shared team space when a new team is created. Requires the Team Folders app to be installed and enabled." : "Cruthaigh spás foirne comhroinnte go huathoibríoch nuair a chruthaítear foireann nua. Éilíonn sé seo go mbeidh an aip Fillteáin Foirne suiteáilte agus cumasaithe.",
+    "Automatically create a team space" : "Cruthaigh spás foirne go huathoibríoch",
     "Team space" : "Spás foirne",
     "Create a shared team space for this team." : "Cruthaigh spás foirne comhroinnte don fhoireann seo.",
     "New folder" : "Fillteán nua",
     "Folder name" : "Ainm fillteáin",
-    "This will create a regular folder shared with the team." : "Cruthóidh sé seo fillteán rialta a roinntear leis an bhfoireann."
+    "This will create a regular folder shared with the team." : "Cruthóidh sé seo fillteán rialta a roinntear leis an bhfoireann.",
+    "Deck board" : "Bord deic",
+    "Board name" : "Ainm an bhoird"
 },"pluralForm" :"nplurals=5; plural=(n==1 ? 0 : n==2 ? 1 : n<7 ? 2 : n<11 ? 3 : 4);"
 }

@@ -171,6 +171,8 @@ OC.L10N.register(
     "Size" : "Koko",
     "Modified" : "Muokattu",
     "New folder" : "Uusi kansio",
-    "Folder name" : "Kansion nimi"
+    "Folder name" : "Kansion nimi",
+    "Deck board" : "Deck-taulu",
+    "Board name" : "Taulun nimi"
 },
 "nplurals=2; plural=(n != 1);");

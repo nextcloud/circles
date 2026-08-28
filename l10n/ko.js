@@ -158,6 +158,8 @@ OC.L10N.register(
     "Size" : "크기",
     "Modified" : "수정한 날짜",
     "New folder" : "새 폴더",
-    "Folder name" : "폴더 이름"
+    "Folder name" : "폴더 이름",
+    "Deck board" : "Deck 보드",
+    "Board name" : "보드 이름"
 },
 "nplurals=1; plural=0;");
