@@ -72,7 +72,7 @@ class LocalController extends OCSController {
 
 	#[NoAdminRequired]
 	#[UserRateLimit(limit: 10, period: 60)]
-	public function create(string $name, bool $personal = false, bool $local = false): DataResponse {
+	public function create(string $name, bool $personal = false, bool $local = false, bool $createTeamFolder = true): DataResponse {
 		try {
 			if (!$this->configService->isGSAvailable() && $local === true) {
 				throw new OCSException('circle configuration not supported', 400);
@@ -81,11 +81,11 @@ class LocalController extends OCSController {
 
 			$this->permissionService->confirmCircleCreation();
 
-			$circle = $this->circleService->create($name, null, $personal, $local);
+			$circle = $this->circleService->create($name, null, $personal, $local, $createTeamFolder);
 
 			return new DataResponse($this->serializeArray($circle));
 		} catch (Exception $e) {
-			$this->e($e, ['name' => $name, 'members' => $personal, 'local' => $local]);
+			$this->e($e, ['name' => $name, 'members' => $personal, 'local' => $local, 'createTeamFolder' => $createTeamFolder]);
 			throw new OCSException($e->getMessage(), (int)$e->getCode());
 		}
 	}

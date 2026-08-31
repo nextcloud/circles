@@ -225,6 +225,7 @@ class CirclesManager {
 	 * @param FederatedUser|null $owner
 	 * @param bool $personal
 	 * @param bool $local
+	 * @param bool $createTeamFolder Default true; the wizard can opt out.
 	 *
 	 * @return Circle
 	 * @throws FederatedEventException
@@ -244,8 +245,9 @@ class CirclesManager {
 		?FederatedUser $owner = null,
 		bool $personal = false,
 		bool $local = false,
+		bool $createTeamFolder = true,
 	): Circle {
-		$outcome = $this->circleService->create($name, $owner, $personal, $local);
+		$outcome = $this->circleService->create($name, $owner, $personal, $local, $createTeamFolder);
 		$circle = new Circle();
 		$circle->import($outcome);
 
