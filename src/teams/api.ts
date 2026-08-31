@@ -192,11 +192,13 @@ export async function fetchTeamMembers(teamId: string): Promise<Member[]> {
  * Create a team and return its single id.
  *
  * @param name - The team name
+ * @param createTeamFolder - Whether to auto-create a team space. Defaults to
+ * true so existing API callers keep the previous behaviour.
  */
-export async function createTeam(name: string): Promise<string> {
+export async function createTeam(name: string, createTeamFolder = true): Promise<string> {
 	const res = await axios.post<OcsResponse<RawCircle>>(
 		generateOcsUrl('apps/circles/circles'),
-		{ name },
+		{ name, createTeamFolder },
 		{ headers: HEADERS },
 	)
 	return res.data.ocs.data.id

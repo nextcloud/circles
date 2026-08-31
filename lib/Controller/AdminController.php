@@ -83,6 +83,7 @@ class AdminController extends OCSController {
 	 * @param string $name
 	 * @param bool $personal
 	 * @param bool $local
+	 * @param bool $createTeamFolder
 	 *
 	 * @return DataResponse
 	 * @throws OCSException
@@ -92,10 +93,11 @@ class AdminController extends OCSController {
 		string $name,
 		bool $personal = false,
 		bool $local = false,
+		bool $createTeamFolder = true,
 	): DataResponse {
 		try {
 			$this->setLocalFederatedUser($emulated);
-			$circle = $this->circleService->create($name, null, $personal, $local);
+			$circle = $this->circleService->create($name, null, $personal, $local, $createTeamFolder);
 
 			return new DataResponse($this->serializeArray($circle));
 		} catch (Exception $e) {
@@ -104,7 +106,8 @@ class AdminController extends OCSController {
 					'emulated' => $emulated,
 					'name' => $name,
 					'members' => $personal,
-					'local' => $local
+					'local' => $local,
+					'createTeamFolder' => $createTeamFolder,
 				]
 			);
 			throw new OCSException($e->getMessage(), (int)$e->getCode());
