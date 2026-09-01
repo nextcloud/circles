@@ -334,7 +334,7 @@ class LocalController extends OCSController {
 			$this->setCurrentFederatedUser();
 
 			$memberUser = $this->permissionService->userMustBeMember($this->userSession->getUser()->getUID(), $circleId);
-			$this->permissionService->memberMustBeAtLeastModerator($memberUser);
+			$this->permissionService->memberMustBeAtLeastAdmin($memberUser);
 
 			if (is_int($level)) {
 				$level = Member::parseLevelInt($level);
