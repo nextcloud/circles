@@ -81,10 +81,11 @@ export const useTeamsStore = defineStore('teams', {
 		 * return it.
 		 *
 		 * @param displayName - The team name
+		 * @param createTeamFolder - Whether to auto-create a team space
 		 * @param description - An optional description
 		 */
-		async createTeam(displayName: string, description = ''): Promise<Team | undefined> {
-			const id = await api.createTeam(displayName.trim())
+		async createTeam(displayName: string, createTeamFolder = true, description = ''): Promise<Team | undefined> {
+			const id = await api.createTeam(displayName.trim(), createTeamFolder)
 			const trimmedDescription = description.trim()
 			if (trimmedDescription) {
 				try {

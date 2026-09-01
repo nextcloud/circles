@@ -6,12 +6,14 @@
 <script setup lang="ts">
 import type { MemberCandidate } from '../types.ts'
 
-import { mdiAccountMultiplePlusOutline, mdiMagnify } from '@mdi/js'
+import { mdiAccountMultiplePlusOutline, mdiChevronDown, mdiChevronRight, mdiMagnify } from '@mdi/js'
 import { showError, showSuccess, showWarning } from '@nextcloud/dialogs'
+import { loadState } from '@nextcloud/initial-state'
 import { t } from '@nextcloud/l10n'
 import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import NcButton from '@nextcloud/vue/components/NcButton'
+import NcCheckboxRadioSwitch from '@nextcloud/vue/components/NcCheckboxRadioSwitch'
 import NcDialog from '@nextcloud/vue/components/NcDialog'
 import NcEmptyContent from '@nextcloud/vue/components/NcEmptyContent'
 import NcIconSvgWrapper from '@nextcloud/vue/components/NcIconSvgWrapper'
@@ -64,6 +66,12 @@ const isNameValid = computed(() => name.value.trim().length > 0)
 const nameError = computed(() => (nameTouched.value && !isNameValid.value
 	? t('circles', 'Please enter a team name')
 	: ''))
+
+/** Global provisioning flag; when off, the wizard skip option is irrelevant. */
+const teamFolderProvisioningEnabled = Boolean(loadState('circles', 'teamFolderProvisioningEnabled', true))
+/** Default on: teams are meant to come with a space. Advanced on step 1 can opt out. */
+const createTeamFolder = ref(true)
+const showAdvanced = ref(false)
 
 // --- Step 2: initial member selection (restored legacy feature) ------------
 
@@ -156,7 +164,7 @@ async function createTeam(): Promise<false | void> {
 
 	submitting.value = true
 	try {
-		const team = await store.createTeam(name.value)
+		const team = await store.createTeam(name.value, createTeamFolder.value)
 		if (!team) {
 			throw new Error('Team creation did not return a team')
 		}
@@ -243,7 +251,7 @@ function onFormSubmit(): void {
 				{{ t('circles', 'Step {current} of {total}', { current: stepIndex + 1, total: STEPS.length }) }}
 			</p>
 
-			<!-- Step 1: team name -->
+			<!-- Step 1: team name + optional team space -->
 			<section v-if="step === 'name'" class="team-wizard__step">
 				<h3>{{ t('circles', 'Name your team') }}</h3>
 				<NcTextField
@@ -252,6 +260,26 @@ function onFormSubmit(): void {
 					:error="!!nameError"
 					:helperText="nameError"
 					:placeholder="t('circles', 'e.g. Design')" />
+
+				<div v-if="teamFolderProvisioningEnabled" class="team-wizard__advanced">
+					<NcButton
+						variant="tertiary"
+						:aria-expanded="showAdvanced ? 'true' : 'false'"
+						@click="showAdvanced = !showAdvanced">
+						<template #icon>
+							<NcIconSvgWrapper :path="showAdvanced ? mdiChevronDown : mdiChevronRight" :size="20" />
+						</template>
+						{{ t('circles', 'Advanced') }}
+					</NcButton>
+					<div v-if="showAdvanced" class="team-wizard__advanced-body">
+						<NcCheckboxRadioSwitch v-model="createTeamFolder">
+							{{ t('circles', 'Create a team space') }}
+						</NcCheckboxRadioSwitch>
+						<p class="team-wizard__hint">
+							{{ t('circles', 'A shared folder for this team. You can also add one later from the team page.') }}
+						</p>
+					</div>
+				</div>
 			</section>
 
 			<!-- Step 2: initial member selection -->
@@ -331,6 +359,26 @@ function onFormSubmit(): void {
 		margin: 0;
 		padding: 0;
 		list-style: none;
+	}
+
+	&__advanced {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: calc(2 * var(--default-grid-baseline));
+		margin-block-start: auto;
+	}
+
+	&__advanced-body {
+		display: flex;
+		flex-direction: column;
+		gap: var(--default-grid-baseline);
+		padding-inline-start: calc(2 * var(--default-grid-baseline));
+	}
+
+	&__hint {
+		margin: 0;
+		color: var(--color-text-maxcontrast);
 	}
 }
 </style>
