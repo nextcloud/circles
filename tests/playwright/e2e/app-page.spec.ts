@@ -20,8 +20,6 @@ import { userTest as test } from '../support/fixtures.ts'
 //   - never select by CSS class, especially third-party ones
 //   - use waitForApiResponse() from ../support/helpers.ts before assertions on mutations
 test.describe('Teams app page', () => {
-	test.fixme(true, 'The in-app Teams page (circles#2561) is not merged yet')
-
 	test('loads the app for a regular user', async ({ page }) => {
 		await page.goto('apps/circles/teams', { waitUntil: 'networkidle' })
 		await page.waitForURL(/apps\/circles\/teams/)
