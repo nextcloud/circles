@@ -36,6 +36,7 @@ use OCA\Circles\Tools\Traits\TNCLogger;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\BruteForceProtection;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
+use OCP\AppFramework\Http\Attribute\UserRateLimit;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\FileDisplayResponse;
 use OCP\AppFramework\OCS\OCSException;
@@ -70,6 +71,7 @@ class LocalController extends OCSController {
 	}
 
 	#[NoAdminRequired]
+	#[UserRateLimit(limit: 10, period: 60)]
 	public function create(string $name, bool $personal = false, bool $local = false): DataResponse {
 		try {
 			if (!$this->configService->isGSAvailable() && $local === true) {
