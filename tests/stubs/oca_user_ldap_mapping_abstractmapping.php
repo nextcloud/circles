@@ -5,10 +5,10 @@
  * SPDX-FileCopyrightText: 2016 ownCloud, Inc.
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+
 namespace OCA\User_LDAP\Mapping;
 
 use Doctrine\DBAL\Exception;
-use OCP\DB\IPreparedStatement;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IAppConfig;
 use OCP\ICache;
@@ -28,9 +28,7 @@ abstract class AbstractMapping {
 	 *
 	 * @return string
 	 */
-	abstract protected function getTableName(bool $includePrefix = true)
-    {
-    }
+	abstract protected function getTableName(bool $includePrefix = true);
 
 	/**
 	 * A month worth of cache time for as good as never changing mapping data.
@@ -92,17 +90,6 @@ abstract class AbstractMapping {
 	 * @throws \Exception
 	 */
 	protected function getXbyY($fetchCol, $compareCol, $search)
-    {
-    }
-
-	/**
-	 * Performs a DELETE or UPDATE query to the database.
-	 *
-	 * @param IPreparedStatement $statement
-	 * @param array $parameters
-	 * @return bool true if at least one row was modified, false otherwise
-	 */
-	protected function modify(IPreparedStatement $statement, $parameters)
     {
     }
 

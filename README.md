@@ -21,3 +21,4 @@ You can use the `\Psr\Container\ContainerInterface`, see [dependency injection](
 
 # Testing
 Front-end tests (Vitest for unit/component, Playwright for end-to-end) are documented in [TESTING.md](TESTING.md).
+
