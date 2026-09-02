@@ -22,6 +22,9 @@ use OCP\AppFramework\Services\IAppConfig;
  *  - the circle-type eligibility rules (personal/hidden/system/backend circles
  *    are excluded).
  *
+ * Per-creation opt-out from the team wizard/API is applied by the listener
+ * before this policy runs.
+ *
  * The *orchestration* (creating, unlinking, removing folders) is owned by the
  * groupfolders app. The circles app keeps no reference to the groupfolders app.
  *
@@ -29,6 +32,8 @@ use OCP\AppFramework\Services\IAppConfig;
  * never persists a Groupfolders identifier.
  */
 class TeamFolderPolicy {
+	public const PARAM_CREATE_TEAM_FOLDER = 'createTeamFolder';
+
 	public function __construct(
 		private IAppConfig $appConfig,
 	) {

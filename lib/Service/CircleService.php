@@ -107,6 +107,7 @@ class CircleService {
 	 * @param FederatedUser|null $owner
 	 * @param bool $personal
 	 * @param bool $local
+	 * @param bool $createTeamFolder Default true; the wizard can opt out.
 	 *
 	 * @return array
 	 * @throws FederatedEventException
@@ -126,6 +127,7 @@ class CircleService {
 		?FederatedUser $owner = null,
 		bool $personal = false,
 		bool $local = false,
+		bool $createTeamFolder = true,
 	): array {
 		$this->federatedUserService->mustHaveCurrentUser();
 		if (is_null($owner)) {
@@ -176,6 +178,7 @@ class CircleService {
 
 		$event = new FederatedEvent(CircleCreate::class);
 		$event->setCircle($circle);
+		$event->getParams()->sBool(TeamFolderPolicy::PARAM_CREATE_TEAM_FOLDER, $createTeamFolder);
 		$this->federatedEventService->newEvent($event);
 
 		return $event->getOutcome();
