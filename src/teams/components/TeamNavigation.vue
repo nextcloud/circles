@@ -7,7 +7,7 @@
 import type { RouteLocationRaw } from 'vue-router'
 import type { TeamPage } from '../api.ts'
 
-import { mdiAccountMultipleOutline, mdiArrowTopRight, mdiBookOpenPageVariantOutline, mdiCogOutline, mdiFileDocumentOutline, mdiFolderOutline, mdiFolderPlusOutline, mdiPlus, mdiShareVariantOutline, mdiTextBoxPlusOutline, mdiTrashCanOutline } from '@mdi/js'
+import { mdiAccountMultipleOutline, mdiArrowTopRight, mdiBookOpenPageVariantOutline, mdiCogOutline, mdiFileDocumentOutline, mdiFolderOutline, mdiFolderPlusOutline, mdiPlus, mdiShareVariantOutline, mdiTextBoxPlusOutline, mdiTrashCanOutline, mdiViewDashboardOutline } from '@mdi/js'
 import { showConfirmation, showError, showSuccess } from '@nextcloud/dialogs'
 import { t } from '@nextcloud/l10n'
 import { computed, nextTick, ref } from 'vue'
@@ -20,12 +20,14 @@ import NcActionSeparator from '@nextcloud/vue/components/NcActionSeparator'
 import NcAppNavigation from '@nextcloud/vue/components/NcAppNavigation'
 import NcAppNavigationCaption from '@nextcloud/vue/components/NcAppNavigationCaption'
 import NcAppNavigationItem from '@nextcloud/vue/components/NcAppNavigationItem'
+import NcButton from '@nextcloud/vue/components/NcButton'
+import NcDialog from '@nextcloud/vue/components/NcDialog'
 import NcIconSvgWrapper from '@nextcloud/vue/components/NcIconSvgWrapper'
 import NcTextField from '@nextcloud/vue/components/NcTextField'
 import TeamHeader from './TeamHeader.vue'
 import TeamSettingsDialog from './TeamSettingsDialog.vue'
 import { logger } from '../../logger.ts'
-import { createCollective, createTeamPage, deleteTeamPage, renameTeamPage } from '../api.ts'
+import { createCollective, createDeckBoard, createTeamPage, deleteTeamPage, renameTeamPage } from '../api.ts'
 import { canCreateTeamFolder, useTeamActions } from '../composables/useTeamActions.ts'
 import { useTeamResourcesStore } from '../resourcesStore.ts'
 import { useTeamsStore } from '../store.ts'
@@ -154,6 +156,9 @@ const showCollectiveOption = computed(() => enabledApps.collectives !== undefine
 const showPageOption = computed(() => enabledApps.text !== undefined
 	&& isTeamAdmin.value
 	&& teamFolder.value !== null)
+// A team can have any number of boards, so the option only needs the app.
+const showBoardOption = computed(() => enabledApps.deck !== undefined
+	&& isTeamAdmin.value)
 
 interface CreateMenuEntry {
 	id: string
@@ -174,6 +179,9 @@ const createMenuEntries = computed<CreateMenuEntry[]>(() => {
 	}
 	if (showPageOption.value) {
 		items.push({ id: 'page', icon: mdiTextBoxPlusOutline, label: t('circles', 'New page'), action: onNewPageFromMenu })
+	}
+	if (showBoardOption.value) {
+		items.push({ id: 'board', icon: mdiViewDashboardOutline, label: t('circles', 'New Deck board'), action: onNewBoardFromMenu })
 	}
 	return items
 })
@@ -222,6 +230,38 @@ async function onNewPageFromMenu(): Promise<void> {
 	addingPage.value = true
 	await nextTick()
 	newPageInput.value?.focus?.()
+}
+
+// Dialog naming a new Deck board; unlike pages, the created board appears
+// under "Shared with the team" rather than as a navigation entry.
+const boardDialogOpen = ref(false)
+const newBoardName = ref('')
+
+/** Open the naming dialog for a new Deck board. */
+function onNewBoardFromMenu(): void {
+	newBoardName.value = ''
+	boardDialogOpen.value = true
+}
+
+/** Create the Deck board named in the dialog; deck links it to the team. */
+async function onCreateBoard(): Promise<void> {
+	const title = newBoardName.value.trim()
+	if (!title) {
+		return
+	}
+	creating.value = true
+	try {
+		await createDeckBoard(teamId.value, title)
+		boardDialogOpen.value = false
+		// Re-fetch so the board shows up among the team resources.
+		await resourcesStore.ensureResources(teamId.value, true)
+		showSuccess(t('circles', 'Deck board "{name}" created and shared with the team', { name: title }))
+	} catch (error) {
+		logger.error('Could not create the Deck board', { error, teamId: teamId.value })
+		showError(t('circles', 'Could not create the Deck board'))
+	} finally {
+		creating.value = false
+	}
 }
 
 /** Create the page named in the inline input. */
@@ -576,6 +616,28 @@ async function onEntryDragEnd(): Promise<void> {
 		v-if="settingsOpen && circle"
 		v-model:open="settingsOpen"
 		:circle="circle" />
+
+	<NcDialog
+		v-model:open="boardDialogOpen"
+		:name="t('circles', 'New Deck board')"
+		size="small">
+		<NcTextField
+			v-model="newBoardName"
+			:label="t('circles', 'Board name')"
+			:disabled="creating"
+			@keyup.enter="onCreateBoard" />
+		<template #actions>
+			<NcButton :disabled="creating" @click="boardDialogOpen = false">
+				{{ t('circles', 'Cancel') }}
+			</NcButton>
+			<NcButton
+				variant="primary"
+				:disabled="creating || !newBoardName.trim()"
+				@click="onCreateBoard">
+				{{ t('circles', 'Create board') }}
+			</NcButton>
+		</template>
+	</NcDialog>
 
 </template>
 

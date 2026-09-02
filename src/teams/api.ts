@@ -444,6 +444,26 @@ export async function createCollective(name: string): Promise<void> {
 }
 
 /**
+ * Create a Deck board linked to a team. The deck endpoint links the board
+ * to the team itself, so no separate share step is needed.
+ *
+ * TODO: calls the deck API directly; should eventually go through a teams
+ * extension point instead of hardcoding another app's route.
+ *
+ * @param teamId - The team single id
+ * @param title - The board title
+ */
+export async function createDeckBoard(teamId: string, title: string): Promise<void> {
+	const res = await axios.post<OcsResponse<{ id?: number }>>(
+		generateOcsUrl('apps/deck/api/v1.0/boards/team'),
+		{ title, teamId },
+	)
+	if (!res.data.ocs.data.id) {
+		throw new Error('The board creation response contains no board id')
+	}
+}
+
+/**
  * Search for potential new members (users, groups, emails, contacts, other
  * teams…) using the same sharee autocompletion endpoint as file sharing.
  * This restores the legacy "add members while creating a team" feature for
