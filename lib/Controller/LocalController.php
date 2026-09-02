@@ -36,6 +36,7 @@ use OCA\Circles\Tools\Traits\TNCLogger;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\BruteForceProtection;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
+use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\Attribute\UserRateLimit;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\FileDisplayResponse;
@@ -509,7 +510,12 @@ class LocalController extends OCSController {
 		}
 	}
 
+	/**
+	 * No CSRF check so the avatar can be loaded by plain image elements;
+	 * the endpoint only reads the picture and checks membership itself.
+	 */
 	#[NoAdminRequired]
+	#[NoCSRFRequired]
 	#[BruteForceProtection(action: 'circleAvatar')]
 	public function circleAvatar(string $circleId): FileDisplayResponse|DataResponse {
 		try {

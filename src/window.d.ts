@@ -19,6 +19,14 @@ declare global {
 			Dashboard: {
 				register: (appid: string, callback: DashboardRegisterCallback) => void
 			}
+			/** Present when the Text app is enabled. */
+			Text?: {
+				createCollaborativeEditor: (options: {
+					el: HTMLElement
+					fileId: number
+					filePath: string
+				}) => Promise<{ destroy(): void }>
+			}
 		}
 	}
 }

@@ -3,8 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
+import type Circle from '../team-page/models/circle.ts'
 import type { Team } from '../types.ts'
 
+import { getCurrentUser } from '@nextcloud/auth'
 import { showConfirmation, showError, showSuccess } from '@nextcloud/dialogs'
 import { t } from '@nextcloud/l10n'
 import { computed } from 'vue'
@@ -13,9 +15,22 @@ import { logger } from '../../logger.ts'
 import { useTeamsStore } from '../store.ts'
 
 /**
- * Team-level actions (manage/copy link/leave/delete) shared between the
- * sidebar navigation item's context menu and the dashboard's admin actions
- * menu.
+ * Whether the user may create the team folder. Creating it is an owner-level
+ * act — the server accepts only the team owner or a server admin — and
+ * personal teams have no team folder.
+ *
+ * @param circle - The team's circle model (may be undefined while loading)
+ */
+export function canCreateTeamFolder(circle: Circle | null | undefined): boolean {
+	if (!circle) {
+		return false
+	}
+	return (circle.isOwner && !circle.isPersonal) || Boolean(getCurrentUser()?.isAdmin)
+}
+
+/**
+ * Team-level actions (copy link/leave/delete) shared by the team header and
+ * the settings dialog.
  *
  * @param getTeam a getter returning the team the actions apply to (may be
  * undefined while it is still loading)
@@ -25,19 +40,20 @@ export function useTeamActions(getTeam: () => Team | undefined) {
 	const store = useTeamsStore()
 
 	const to = computed(() => ({ name: 'team', params: { teamId: getTeam()?.id } }))
-	const settingsTo = computed(() => ({ name: 'team-settings', params: { teamId: getTeam()?.id } }))
 	const isOwner = computed(() => getTeam()?.myRole === 'owner')
+	// Management gates with deliberately different thresholds: the settings
+	// entry includes moderators, while creating team resources, managing
+	// pages and reordering hit endpoints the server restricts to admins+.
 	const canManage = computed(() => {
 		const team = getTeam()
 		return !!team && ['owner', 'admin', 'moderator'].includes(team.myRole)
 	})
+	const isTeamAdmin = computed(() => {
+		const team = getTeam()
+		return !!team && ['owner', 'admin'].includes(team.myRole)
+	})
 	const canLeave = computed(() => !!getTeam() && !isOwner.value)
 	const canDelete = computed(() => isOwner.value)
-
-	/** Open the team's Settings page. */
-	async function onManage(): Promise<void> {
-		await router.push(settingsTo.value)
-	}
 
 	/** Copy a direct link to the team. */
 	async function onCopyLink(): Promise<void> {
@@ -108,13 +124,10 @@ export function useTeamActions(getTeam: () => Team | undefined) {
 	}
 
 	return {
-		to,
-		settingsTo,
-		isOwner,
 		canManage,
+		isTeamAdmin,
 		canLeave,
 		canDelete,
-		onManage,
 		onCopyLink,
 		onLeave,
 		onDelete,

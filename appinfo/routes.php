@@ -48,6 +48,8 @@ return [
 		['name' => 'TeamFolder#getTeamFolder', 'url' => '/teams/{circleId}/folder', 'verb' => 'GET'],
 		['name' => 'TeamFolder#unlinkTeamFolder', 'url' => '/teams/{circleId}/folder', 'verb' => 'DELETE'],
 		['name' => 'TeamFolder#upgradeTeamFolder', 'url' => '/teams/{circleId}/folder', 'verb' => 'POST'],
+		['name' => 'TeamTabs#getTabOrder', 'url' => '/teams/{circleId}/tab-order', 'verb' => 'GET'],
+		['name' => 'TeamTabs#setTabOrder', 'url' => '/teams/{circleId}/tab-order', 'verb' => 'PUT'],
 
 		// Teams Dashboard widget endpoint
 		['name' => 'TeamsDashboard#getCompleteTeamsData', 'url' => '/teams/dashboard/widget', 'verb' => 'GET'],
