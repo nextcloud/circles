@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import type { TeamFolder, TeamPage } from './api.ts'
+import type { TeamBoard, TeamFolder, TeamPage } from './api.ts'
 import type { SharedResource } from './types.ts'
 
 import { defineStore } from 'pinia'
 import { logger } from '../logger.ts'
-import { fetchTabOrder, fetchTeamPages, fetchTeamResources, getTeamFolder, saveTabOrder, upgradeTeamFolder } from './api.ts'
+import { fetchTabOrder, fetchTeamDeckBoards, fetchTeamPages, fetchTeamResources, getTeamFolder, saveTabOrder, upgradeTeamFolder } from './api.ts'
 
 /**
  * The shared resource state of one team: its team folder, the resources
@@ -22,6 +22,9 @@ export interface TeamResources {
 	folderError: boolean
 	resources: SharedResource[]
 	resourcesChecked: boolean
+	/** Deck boards attached to the team itself, shown as navigation entries. */
+	boards: TeamBoard[]
+	boardsChecked: boolean
 	pages: TeamPage[]
 	pagesChecked: boolean
 	pagesError: boolean
@@ -37,6 +40,8 @@ const EMPTY_SLOT: TeamResources = Object.freeze({
 	folderError: false,
 	resources: [],
 	resourcesChecked: false,
+	boards: [],
+	boardsChecked: false,
 	pages: [],
 	pagesChecked: false,
 	pagesError: false,
@@ -95,9 +100,10 @@ export const useTeamResourcesStore = defineStore('teamResources', {
 		 */
 		async loadTeam(teamId: string, refresh = false): Promise<void> {
 			await Promise.all([
-				// Pages live in the folder, so they load once it is known.
+				// Pages live in the folder, so they load once it is known;
+				// boards are found among the resources, same dependency.
 				this.ensureFolder(teamId, refresh).then(() => this.ensurePages(teamId, refresh)),
-				this.ensureResources(teamId, refresh),
+				this.ensureResources(teamId, refresh).then(() => this.ensureBoards(teamId, refresh)),
 				this.ensureOrder(teamId, refresh),
 			])
 		},
@@ -140,6 +146,31 @@ export const useTeamResourcesStore = defineStore('teamResources', {
 			} catch (error) {
 				logger.error('Could not load the team resources', { error, teamId })
 			}
+		},
+
+		/**
+		 * Find the deck boards attached to the team itself among the shared
+		 * resources. Marked checked even on failure: consumers only use the
+		 * boards to pin tabs and to filter the shared list, and the boards
+		 * stay reachable there.
+		 *
+		 * @param teamId - The team to load boards for
+		 * @param refresh - Refetch even when cached
+		 */
+		async ensureBoards(teamId: string, refresh = false): Promise<void> {
+			const slot = this.slot(teamId)
+			if (slot.boardsChecked && !refresh) {
+				return
+			}
+			await this.ensureResources(teamId)
+			const candidates = slot.resources.filter((resource) => resource.provider.id === 'deck')
+			try {
+				slot.boards = await fetchTeamDeckBoards(teamId, candidates)
+			} catch (error) {
+				logger.error('Could not load the team boards', { error, teamId })
+				slot.boards = []
+			}
+			slot.boardsChecked = true
 		},
 
 		/**

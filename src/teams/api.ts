@@ -463,6 +463,55 @@ export async function createDeckBoard(teamId: string, title: string): Promise<vo
 	}
 }
 
+/** A deck board attached to the team itself, shown as a navigation entry. */
+export interface TeamBoard {
+	id: number
+	title: string
+	/** Absolute deep link to the board in the deck app. */
+	url: string
+}
+
+/** The subset of deck's serialized board relevant here. */
+interface RawDeckBoard {
+	id: number
+	title: string
+	teamId?: string | null
+	archived?: boolean
+	deletedAt?: number
+}
+
+/**
+ * Pick the deck boards attached to the team itself out of the shared deck
+ * resources. The generic resource list cannot tell a team board from a
+ * personally-shared one (and deck's board list omits teamId), so each
+ * candidate is read individually from deck.
+ *
+ * TODO: calls the deck API directly; should eventually go through a teams
+ * extension point instead of hardcoding another app's route.
+ *
+ * @param teamId - The team single id
+ * @param candidates - The team's shared resources from the deck provider
+ */
+export async function fetchTeamDeckBoards(teamId: string, candidates: SharedResource[]): Promise<TeamBoard[]> {
+	const responses = await Promise.allSettled(candidates.map((resource) => axios.get<OcsResponse<RawDeckBoard>>(generateOcsUrl('apps/deck/api/v1.0/board/{boardId}', { boardId: resource.id }))))
+
+	const boards: TeamBoard[] = []
+	responses.forEach((response, index) => {
+		const resource = candidates[index]
+		if (response.status === 'rejected') {
+			// The board stays reachable through the shared resources.
+			logger.warn('Could not read a deck board, not showing it as a tab', { resource, reason: response.reason })
+			return
+		}
+		const board = response.value.data.ocs.data
+		if (board.teamId === teamId && !board.archived && (board.deletedAt ?? 0) === 0) {
+			boards.push({ id: board.id, title: board.title, url: resource.url })
+		}
+	})
+
+	return boards.sort((a, b) => a.title.localeCompare(b.title))
+}
+
 /**
  * Search for potential new members (users, groups, emails, contacts, other
  * teams…) using the same sharee autocompletion endpoint as file sharing.
