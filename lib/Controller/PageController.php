@@ -11,6 +11,7 @@ namespace OCA\Circles\Controller;
 
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\TeamFolderPolicy;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Attribute\FrontpageRoute;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
@@ -31,6 +32,7 @@ class PageController extends Controller {
 		private ConfigService $configService,
 		private IInitialState $initialState,
 		private ITeamManager $teamManager,
+		private TeamFolderPolicy $teamFolderPolicy,
 	) {
 		parent::__construct(Application::APP_ID, $request);
 	}
@@ -47,6 +49,10 @@ class PageController extends Controller {
 
 		$providerAvailable = $this->teamManager->getTeamFolderProvider() !== null;
 		$this->initialState->provideInitialState('teamFolderProviderAvailable', $providerAvailable);
+		$this->initialState->provideInitialState(
+			'teamFolderProvisioningEnabled',
+			$this->teamFolderPolicy->isTeamFolderProvisioningEnabled(),
+		);
 
 		Util::addScript(Application::APP_ID, 'teams-main');
 		Util::addStyle(Application::APP_ID, 'teams-main');
