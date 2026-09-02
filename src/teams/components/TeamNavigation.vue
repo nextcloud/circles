@@ -7,7 +7,7 @@
 import type { RouteLocationRaw } from 'vue-router'
 import type { TeamPage } from '../api.ts'
 
-import { mdiAccountMultipleOutline, mdiArrowTopRight, mdiBookOpenPageVariantOutline, mdiCogOutline, mdiFileDocumentOutline, mdiFolderOutline, mdiFolderPlusOutline, mdiPlus, mdiShareVariantOutline, mdiTextBoxPlusOutline, mdiTrashCanOutline, mdiViewDashboardOutline } from '@mdi/js'
+import { mdiAccountMultiple, mdiAccountMultipleOutline, mdiArrowTopRight, mdiBookOpenPageVariantOutline, mdiCogOutline, mdiFileDocument, mdiFileDocumentOutline, mdiFolder, mdiFolderOutline, mdiFolderPlusOutline, mdiPlus, mdiShareVariant, mdiShareVariantOutline, mdiTextBoxPlusOutline, mdiTrashCanOutline, mdiViewDashboardOutline } from '@mdi/js'
 import { showConfirmation, showError, showSuccess } from '@nextcloud/dialogs'
 import { t } from '@nextcloud/l10n'
 import { computed, nextTick, ref } from 'vue'
@@ -28,6 +28,8 @@ import TeamHeader from './TeamHeader.vue'
 import TeamSettingsDialog from './TeamSettingsDialog.vue'
 import { logger } from '../../logger.ts'
 import { createCollective, createDeckBoard, createTeamPage, deleteTeamPage, renameTeamPage } from '../api.ts'
+import collectivesIcon from '../assets/collectives.svg?raw'
+import deckIcon from '../assets/deck.svg?raw'
 import { canCreateTeamFolder, useTeamActions } from '../composables/useTeamActions.ts'
 import { useTeamResourcesStore } from '../resourcesStore.ts'
 import { useTeamsStore } from '../store.ts'
@@ -35,7 +37,10 @@ import { useTeamsStore } from '../store.ts'
 interface NavigationEntry {
 	id: string
 	label: string
-	icon: string
+	/** MDI icon path; the filled variant when the entry is the active tab. */
+	icon?: string
+	/** Inline SVG markup (the app's own icon), used instead of `icon`. */
+	iconSvg?: string
 	to?: RouteLocationRaw
 	href?: string
 	/** Set for page entries, which carry per-entry actions. */
@@ -102,7 +107,7 @@ const entries = computed<NavigationEntry[]>(() => {
 		{
 			id: 'team-folder',
 			label: t('circles', 'Team folder'),
-			icon: mdiFolderOutline,
+			icon: route.name === 'team-folder' ? mdiFolder : mdiFolderOutline,
 			to: { name: 'team-folder', params: { teamId: teamId.value } },
 		},
 	]
@@ -110,7 +115,7 @@ const entries = computed<NavigationEntry[]>(() => {
 		items.push({
 			id: 'collective',
 			label: t('circles', 'Collective'),
-			icon: mdiBookOpenPageVariantOutline,
+			iconSvg: collectivesIcon,
 			href: collective.value.url,
 		})
 	}
@@ -118,15 +123,16 @@ const entries = computed<NavigationEntry[]>(() => {
 		items.push({
 			id: `board-${board.id}`,
 			label: board.title,
-			icon: mdiViewDashboardOutline,
+			iconSvg: deckIcon,
 			href: board.url,
 		})
 	}
 	for (const page of pages.value) {
+		const active = route.name === 'team-page' && route.params.fileId === String(page.fileId)
 		items.push({
 			id: `page-${page.fileId}`,
 			label: page.title,
-			icon: mdiFileDocumentOutline,
+			icon: active ? mdiFileDocument : mdiFileDocumentOutline,
 			to: { name: 'team-page', params: { teamId: teamId.value, fileId: String(page.fileId) } },
 			page,
 		})
@@ -134,7 +140,7 @@ const entries = computed<NavigationEntry[]>(() => {
 	items.push({
 		id: 'home',
 		label: t('circles', 'Shared with the team'),
-		icon: mdiShareVariantOutline,
+		icon: route.name === 'team-home' ? mdiShareVariant : mdiShareVariantOutline,
 		to: { name: 'team-home', params: { teamId: teamId.value } },
 	})
 	return items
@@ -542,7 +548,8 @@ async function onEntryDragEnd(): Promise<void> {
 				@drop.prevent
 				@dragend="onEntryDragEnd">
 				<template #icon>
-					<NcIconSvgWrapper :path="entry.icon" :size="20" />
+					<NcIconSvgWrapper v-if="entry.iconSvg" :svg="entry.iconSvg" :size="20" />
+					<NcIconSvgWrapper v-else :path="entry.icon" :size="20" />
 				</template>
 
 				<!-- External entries (the collective) open outside the app -->
@@ -609,7 +616,7 @@ async function onEntryDragEnd(): Promise<void> {
 					:name="t('circles', 'Members')"
 					:to="{ name: 'team-members', params: { teamId } }">
 					<template #icon>
-						<NcIconSvgWrapper :path="mdiAccountMultipleOutline" :size="20" />
+						<NcIconSvgWrapper :path="route.name === 'team-members' ? mdiAccountMultiple : mdiAccountMultipleOutline" :size="20" />
 					</template>
 				</NcAppNavigationItem>
 
@@ -651,7 +658,6 @@ async function onEntryDragEnd(): Promise<void> {
 			</NcButton>
 		</template>
 	</NcDialog>
-
 </template>
 
 <style lang="scss" scoped>
