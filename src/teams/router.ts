@@ -12,6 +12,7 @@ import JoinInvitation from './views/JoinInvitation.vue'
 import PageView from './views/PageView.vue'
 import TeamFolderView from './views/TeamFolderView.vue'
 import TeamHomeView from './views/TeamHomeView.vue'
+import TeamLandingView from './views/TeamLandingView.vue'
 import TeamMembersView from './views/TeamMembersView.vue'
 import TeamPage from './views/TeamPage.vue'
 
@@ -34,11 +35,14 @@ const routes: RouteRecordRaw[] = [
 		props: true,
 		children: [
 			{
-				// The folder tab needs its own path: links to an empty-path child
-				// count as links to the parent, which vue-router marks active on
-				// every child route.
+				// The team's own URL: forwards to the first navigation entry
+				// once the tab order is known. The entries keep their own
+				// paths — links to an empty-path child count as links to the
+				// parent, which vue-router marks active on every child route.
+				name: 'team',
 				path: '',
-				redirect: { name: 'team-folder' },
+				component: TeamLandingView,
+				props: true,
 			},
 			{
 				name: 'team-folder',
@@ -63,12 +67,6 @@ const routes: RouteRecordRaw[] = [
 				path: 'members',
 				component: TeamMembersView,
 				props: true,
-			},
-			{
-				// The settings page shipped in earlier releases; its links
-				// land on the team, where settings is in the sidebar footer.
-				path: 'settings',
-				redirect: { name: 'team-folder' },
 			},
 		],
 	},
