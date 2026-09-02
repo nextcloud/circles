@@ -80,6 +80,10 @@ const creating = ref(false)
 // pinned as navigation entries.
 const pages = computed(() => teamResources.value.pages)
 
+// Deck boards attached to the team itself, pinned as navigation entries;
+// personally-shared boards stay in "Shared with the team".
+const boards = computed(() => teamResources.value.boards)
+
 // Transient inline input at the end of the list, summoned by the create
 // menu's "New page" option.
 const addingPage = ref(false)
@@ -108,6 +112,14 @@ const entries = computed<NavigationEntry[]>(() => {
 			label: t('circles', 'Collective'),
 			icon: mdiBookOpenPageVariantOutline,
 			href: collective.value.url,
+		})
+	}
+	for (const board of boards.value) {
+		items.push({
+			id: `board-${board.id}`,
+			label: board.title,
+			icon: mdiViewDashboardOutline,
+			href: board.url,
 		})
 	}
 	for (const page of pages.value) {
@@ -232,8 +244,7 @@ async function onNewPageFromMenu(): Promise<void> {
 	newPageInput.value?.focus?.()
 }
 
-// Dialog naming a new Deck board; unlike pages, the created board appears
-// under "Shared with the team" rather than as a navigation entry.
+// Dialog naming a new Deck board, summoned by the create menu.
 const boardDialogOpen = ref(false)
 const newBoardName = ref('')
 
@@ -253,9 +264,11 @@ async function onCreateBoard(): Promise<void> {
 	try {
 		await createDeckBoard(teamId.value, title)
 		boardDialogOpen.value = false
-		// Re-fetch so the board shows up among the team resources.
+		// The board lands among the resources (its team share) and from
+		// there among the boards, which pin it as a navigation entry.
 		await resourcesStore.ensureResources(teamId.value, true)
-		showSuccess(t('circles', 'Deck board "{name}" created and shared with the team', { name: title }))
+		await resourcesStore.ensureBoards(teamId.value, true)
+		showSuccess(t('circles', 'Deck board "{name}" created', { name: title }))
 	} catch (error) {
 		logger.error('Could not create the Deck board', { error, teamId: teamId.value })
 		showError(t('circles', 'Could not create the Deck board'))

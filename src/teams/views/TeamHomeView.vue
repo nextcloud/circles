@@ -32,18 +32,25 @@ const isMember = computed(() => circle.value?.isMember ?? false)
 const resourcesStore = useTeamResourcesStore()
 const teamResources = computed(() => resourcesStore.forTeam(props.teamId))
 
-// The folder is part of the filter below, so wait for its probe as well.
+// The folder and the team boards are part of the filter below, so wait
+// for their probes as well.
 const loading = computed(() => !teamResources.value.resourcesChecked
+	|| !teamResources.value.boardsChecked
 	|| (!teamResources.value.folderChecked && !teamResources.value.folderError))
 
-// The team folder and the collective have their own tabs, so they are
-// filtered out of the shared resources. The groupfolders provider lists
-// every folder the team can access with no flag marking the team's own
-// folder, hence the id comparison.
+// The team folder, the collective and the team's own boards have their own
+// tabs, so they are filtered out of the shared resources; boards shared to
+// the team by a member stay. The groupfolders provider lists every folder
+// the team can access with no flag marking the team's own folder, hence
+// the id comparison.
 const resources = computed<SharedResource[]>(() => {
 	const folder = teamResources.value.folder
+	const teamBoardIds = new Set(teamResources.value.boards.map((board) => String(board.id)))
 	return teamResources.value.resources.filter((resource) => {
 		if (resource.provider.id === 'collectives') {
+			return false
+		}
+		if (resource.provider.id === 'deck' && teamBoardIds.has(String(resource.id))) {
 			return false
 		}
 		return folder === null

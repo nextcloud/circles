@@ -51,6 +51,7 @@ vi.mock('../api.ts', () => ({
 	upgradeTeamFolder,
 	fetchTeamPages: vi.fn(async () => []),
 	fetchTeamResources: vi.fn(async () => []),
+	fetchTeamDeckBoards: vi.fn(async () => []),
 	fetchTabOrder: vi.fn(async () => []),
 	saveTabOrder: vi.fn(),
 }))
