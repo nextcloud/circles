@@ -6,13 +6,15 @@
 <script setup lang="ts">
 import type { INode } from '@nextcloud/files'
 
-import { mdiFileOutline, mdiFolderOutline, mdiOpenInNew, mdiViewGridOutline, mdiViewListOutline } from '@mdi/js'
+import { mdiFile, mdiFolder, mdiFormatListBulletedSquare, mdiOpenInNew, mdiViewGridOutline } from '@mdi/js'
 import { showError } from '@nextcloud/dialogs'
 import { FileType, formatFileSize } from '@nextcloud/files'
 import { defaultRootPath, getClient, getDefaultPropfind, resultToNode } from '@nextcloud/files/dav'
 import { t } from '@nextcloud/l10n'
 import { generateUrl } from '@nextcloud/router'
 import { computed, ref, watch } from 'vue'
+import NcBreadcrumb from '@nextcloud/vue/components/NcBreadcrumb'
+import NcBreadcrumbs from '@nextcloud/vue/components/NcBreadcrumbs'
 import NcButton from '@nextcloud/vue/components/NcButton'
 import NcDateTime from '@nextcloud/vue/components/NcDateTime'
 import NcEmptyContent from '@nextcloud/vue/components/NcEmptyContent'
@@ -127,12 +129,92 @@ function getNodeUrl(node: INode): string {
 }
 
 /**
- * Return the icon path for the given node type.
+ * Return the icon path for the given node type. The files app renders the
+ * filled folder/file icons in the primary color.
  *
  * @param node - The team folder node
  */
 function nodeIconPath(node: INode): string {
-	return node.type === FileType.Folder ? mdiFolderOutline : mdiFileOutline
+	return node.type === FileType.Folder ? mdiFolder : mdiFile
+}
+
+/**
+ * Display name of a node.
+ *
+ * @param node - The team folder node
+ */
+function nodeDisplayName(node: INode): string {
+	return node.displayname || node.basename
+}
+
+/**
+ * File extension (including the dot) of a node's display name. Folders have
+ * none, matching the files app's basename/extension split.
+ *
+ * @param node - The team folder node
+ */
+function nodeExtension(node: INode): string {
+	if (node.type === FileType.Folder) {
+		return ''
+	}
+	const name = nodeDisplayName(node)
+	const dot = name.lastIndexOf('.')
+	return dot > 0 ? name.slice(dot) : ''
+}
+
+/**
+ * Display name without the extension.
+ *
+ * @param node - The team folder node
+ */
+function nodeBasename(node: INode): string {
+	const extension = nodeExtension(node)
+	return extension ? nodeDisplayName(node).slice(0, -extension.length) : nodeDisplayName(node)
+}
+
+/**
+ * Fade small file sizes towards maxcontrast — same math as the files app
+ * (FileEntry.vue `sizeOpacity`): quadratic ramp up to 10 MiB.
+ *
+ * @param node - The team folder node
+ */
+function sizeStyle(node: INode): Record<string, string> {
+	const maxOpacitySize = 10 * 1024 * 1024
+	const size = node.size
+	if (size === undefined || isNaN(size) || size < 0) {
+		return {}
+	}
+	const ratio = Math.round(Math.min(100, 100 * ((size / maxOpacitySize) ** 2)))
+	return { color: `color-mix(in srgb, var(--color-main-text) ${ratio}%, var(--color-text-maxcontrast))` }
+}
+
+/**
+ * Fade old modification times towards maxcontrast — same math as the files
+ * app (FileEntryMixin.ts `mtimeOpacity`): linear fade over 31 days.
+ *
+ * @param node - The team folder node
+ */
+function mtimeStyle(node: INode): Record<string, string> {
+	if (!node.mtime) {
+		return {}
+	}
+	const maxOpacityTime = 31 * 24 * 60 * 60 * 1000
+	const timeDiff = Date.now() - node.mtime.getTime()
+	if (timeDiff < 0) {
+		return {}
+	}
+	const percentage = Math.round(Math.max(0, maxOpacityTime - timeDiff) * 100 / maxOpacityTime)
+	return { color: `color-mix(in srgb, var(--color-main-text) ${percentage}%, var(--color-text-maxcontrast))` }
+}
+
+/**
+ * Drop the loading background of a preview once the image has loaded,
+ * mimicking the files app's loaded state.
+ *
+ * @param event - The image load event
+ */
+function markPreviewLoaded(event: Event): void {
+	(event.target as HTMLImageElement).dataset.loaded = 'true'
 }
 
 /**
@@ -266,36 +348,15 @@ watch(() => [props.mountPoint, currentPath.value], loadContents, { immediate: tr
 <template>
 	<div class="team-folder-widget">
 		<div class="team-folder-widget__header">
-			<nav
+			<NcBreadcrumbs
 				class="team-folder-widget__breadcrumbs"
-				:aria-label="t('circles', 'Team space breadcrumbs')">
-				<ol class="team-folder-widget__breadcrumbs-list">
-					<li
-						v-for="(crumb, index) in breadcrumbs"
-						:key="crumb.path"
-						class="team-folder-widget__breadcrumbs-item">
-						<NcButton
-							v-if="index < breadcrumbs.length - 1"
-							variant="tertiary"
-							size="small"
-							@click="navigateTo(crumb.path)">
-							{{ crumb.name }}
-						</NcButton>
-						<span
-							v-else
-							class="team-folder-widget__breadcrumbs-current"
-							aria-current="location">
-							{{ crumb.name }}
-						</span>
-						<span
-							v-if="index < breadcrumbs.length - 1"
-							class="team-folder-widget__breadcrumbs-separator"
-							aria-hidden="true">
-							/
-						</span>
-					</li>
-				</ol>
-			</nav>
+				:aria-label="t('circles', 'Team folder breadcrumbs')">
+				<NcBreadcrumb
+					v-for="crumb in breadcrumbs"
+					:key="crumb.path"
+					:name="crumb.name"
+					@click="navigateTo(crumb.path)" />
+			</NcBreadcrumbs>
 
 			<div class="team-folder-widget__actions">
 				<NcButton
@@ -304,7 +365,7 @@ watch(() => [props.mountPoint, currentPath.value], loadContents, { immediate: tr
 					:aria-label="viewMode === 'grid' ? t('circles', 'Switch to list view') : t('circles', 'Switch to grid view')"
 					@click="toggleViewMode">
 					<template #icon>
-						<NcIconSvgWrapper :path="viewMode === 'grid' ? mdiViewListOutline : mdiViewGridOutline" :size="18" />
+						<NcIconSvgWrapper :path="viewMode === 'grid' ? mdiFormatListBulletedSquare : mdiViewGridOutline" :size="18" />
 					</template>
 				</NcButton>
 				<NcButton
@@ -332,55 +393,93 @@ watch(() => [props.mountPoint, currentPath.value], loadContents, { immediate: tr
 		<NcEmptyContent
 			v-else-if="nodes.length === 0"
 			:name="t('circles', 'Empty folder')"
-			:description="t('circles', 'This team space is empty.')" />
+			:description="t('circles', 'This team folder is empty.')" />
 
 		<ul
-			v-else
-			class="team-folder-widget__list"
-			:class="{ 'team-folder-widget__list--grid': viewMode === 'grid' }"
+			v-else-if="viewMode === 'grid'"
+			class="team-folder-widget__list team-folder-widget__list--grid"
 			:aria-label="t('circles', 'Folder contents')">
 			<li
 				v-for="node in nodes"
 				:key="node.source"
-				class="team-folder-widget__item"
-				:class="{ 'team-folder-widget__item--folder': node.type === FileType.Folder }">
+				class="team-folder-widget__item">
 				<a
 					class="team-folder-widget__tile"
-					:class="{ 'team-folder-widget__tile--list': viewMode === 'list' }"
 					:href="getNodeUrl(node)"
 					@click="onNodeClick(node, $event)">
 					<div class="team-folder-widget__tile-preview">
 						<img
-							v-if="nodePreviewUrl(node, 64) && viewMode === 'grid'"
-							:src="nodePreviewUrl(node, 64)"
+							v-if="nodePreviewUrl(node, 256)"
+							:src="nodePreviewUrl(node, 256)"
 							:alt="t('circles', 'Preview of {name}', { name: node.basename })"
 							loading="lazy"
-							class="team-folder-widget__preview">
+							class="team-folder-widget__preview"
+							@load="markPreviewLoaded">
 						<NcIconSvgWrapper
 							v-else
 							class="team-folder-widget__tile-icon"
 							:path="nodeIconPath(node)"
-							:size="viewMode === 'grid' ? 32 : 20" />
+							:size="128" />
 					</div>
 					<div class="team-folder-widget__tile-info">
-						<span class="team-folder-widget__tile-name" :title="node.displayname || node.basename">
-							{{ node.displayname || node.basename }}
-						</span>
-						<span class="team-folder-widget__tile-meta">
-							<span v-if="node.type === FileType.Folder" class="team-folder-widget__tile-type">
-								{{ t('circles', 'Folder') }}
-							</span>
-							<span v-else-if="node.size !== undefined" class="team-folder-widget__tile-size">
-								{{ formatFileSize(node.size) }}
-							</span>
-							<span v-if="node.mtime" class="team-folder-widget__tile-mtime">
-								<NcDateTime :timestamp="node.mtime" :relativeTime="false" ignoreSeconds />
-							</span>
+						<span class="team-folder-widget__tile-name" :title="nodeDisplayName(node)" dir="auto">
+							<span class="team-folder-widget__name-base">{{ nodeBasename(node) }}</span>
+							<span v-if="nodeExtension(node)" class="team-folder-widget__name-ext">{{ nodeExtension(node) }}</span>
 						</span>
 					</div>
+					<span class="team-folder-widget__tile-mtime" :style="mtimeStyle(node)">
+						<NcDateTime v-if="node.mtime" :timestamp="node.mtime" ignoreSeconds />
+					</span>
 				</a>
 			</li>
 		</ul>
+
+		<!-- List mode replicates the files app list (FilesListVirtual.vue). -->
+		<div v-else class="team-folder-widget__table">
+			<div class="team-folder-widget__table-header" aria-hidden="true">
+				<span class="team-folder-widget__row-icon" />
+				<span class="team-folder-widget__row-name team-folder-widget__row-name--header">{{ t('circles', 'Name') }}</span>
+				<span class="team-folder-widget__row-size">{{ t('circles', 'Size') }}</span>
+				<span class="team-folder-widget__row-mtime">{{ t('circles', 'Modified') }}</span>
+			</div>
+			<ul class="team-folder-widget__rows" :aria-label="t('circles', 'Folder contents')">
+				<li
+					v-for="node in nodes"
+					:key="node.source">
+					<a
+						class="team-folder-widget__row"
+						:href="getNodeUrl(node)"
+						@click="onNodeClick(node, $event)">
+						<span class="team-folder-widget__row-icon">
+							<img
+								v-if="nodePreviewUrl(node, 32)"
+								:src="nodePreviewUrl(node, 32)"
+								:alt="t('circles', 'Preview of {name}', { name: node.basename })"
+								loading="lazy"
+								class="team-folder-widget__row-preview"
+								@load="markPreviewLoaded">
+							<NcIconSvgWrapper
+								v-else
+								:path="nodeIconPath(node)"
+								:size="node.type === FileType.Folder ? 30 : 24" />
+						</span>
+						<span class="team-folder-widget__row-name">
+							<span class="team-folder-widget__row-name-text" :title="nodeDisplayName(node)" dir="auto">
+								<span class="team-folder-widget__name-base">{{ nodeBasename(node) }}</span>
+								<span v-if="nodeExtension(node)" class="team-folder-widget__name-ext">{{ nodeExtension(node) }}</span>
+							</span>
+						</span>
+						<span class="team-folder-widget__row-size" :style="sizeStyle(node)">
+							{{ node.size !== undefined ? formatFileSize(node.size, true) : '–' }}
+						</span>
+						<span class="team-folder-widget__row-mtime" :style="mtimeStyle(node)">
+							<NcDateTime v-if="node.mtime" :timestamp="node.mtime" ignoreSeconds />
+							<template v-else>{{ t('circles', 'Unknown date') }}</template>
+						</span>
+					</a>
+				</li>
+			</ul>
+		</div>
 	</div>
 </template>
 
@@ -396,38 +495,14 @@ watch(() => [props.mountPoint, currentPath.value], loadContents, { immediate: tr
 		align-items: center;
 		justify-content: space-between;
 		gap: 8px;
-		padding: 8px 16px;
+		// Clear the app navigation toggle, like the files app header
+		padding-inline: calc(var(--default-clickable-area) + 2 * var(--app-navigation-padding, 4px)) 16px;
 		border-bottom: 1px solid var(--color-border);
 	}
 
 	&__breadcrumbs {
 		flex: 1 1 auto;
 		min-width: 0;
-	}
-
-	&__breadcrumbs-list {
-		display: flex;
-		flex-wrap: wrap;
-		align-items: center;
-		gap: 4px;
-		margin: 0;
-		padding: 0;
-		list-style: none;
-	}
-
-	&__breadcrumbs-item {
-		display: flex;
-		align-items: center;
-		gap: 4px;
-	}
-
-	&__breadcrumbs-current {
-		padding: 4px 8px;
-		font-weight: bold;
-	}
-
-	&__breadcrumbs-separator {
-		color: var(--color-text-maxcontrast);
 	}
 
 	&__loading {
@@ -444,6 +519,23 @@ watch(() => [props.mountPoint, currentPath.value], loadContents, { immediate: tr
 		flex-shrink: 0;
 	}
 
+	// Shared basename/extension split, as in the files app: the extension
+	// renders in maxcontrast next to the main-text basename.
+	&__name-base {
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+
+	&__name-ext {
+		color: var(--color-text-maxcontrast);
+		white-space: nowrap;
+		overflow: visible;
+	}
+
+	// Grid mode replicating the files app grid (FilesListVirtual.vue grid
+	// style block): fixed 198px tiles (166px preview + 16px padding),
+	// name row at clickable-area height, small relative mtime below.
 	&__list {
 		flex: 1 1 auto;
 		overflow-y: auto;
@@ -453,122 +545,206 @@ watch(() => [props.mountPoint, currentPath.value], loadContents, { immediate: tr
 	}
 
 	&__list--grid {
+		--item-padding: 16px;
+		--icon-preview-size: 166px;
+		--name-height: var(--default-clickable-area);
+		--mtime-height: calc(var(--font-size-small) + var(--default-grid-baseline));
+		--row-width: calc(var(--icon-preview-size) + var(--item-padding) * 2);
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-		gap: calc(2 * var(--default-grid-baseline));
-		padding: calc(2 * var(--default-grid-baseline));
+		grid-template-columns: repeat(auto-fill, var(--row-width));
+		justify-content: space-around;
 		align-content: start;
-	}
-
-	&__list--grid &__item {
-		width: 100%;
+		padding-block: calc(2 * var(--default-grid-baseline));
 	}
 
 	&__tile {
 		display: flex;
 		flex-direction: column;
-		gap: calc(2 * var(--default-grid-baseline));
-		padding: calc(2 * var(--default-grid-baseline));
-		border: 2px solid var(--color-border);
-		border-radius: var(--border-radius-container, 16px);
-		background-color: var(--color-main-background);
+		width: var(--row-width);
+		box-sizing: border-box;
+		padding: var(--item-padding);
+		border-radius: var(--border-radius-large);
 		color: var(--color-main-text);
 		text-decoration: none;
 
-		&:hover {
+		&:hover,
+		&:focus {
 			background-color: var(--color-background-hover);
-			border-color: var(--color-primary-element);
 		}
 
 		&:focus-visible {
 			outline: 2px solid var(--color-main-text);
-			outline-offset: 2px;
-		}
-
-		&--list {
-			flex-direction: row;
-			align-items: center;
-			gap: calc(2 * var(--default-grid-baseline));
-			padding: calc(1.5 * var(--default-grid-baseline)) calc(2 * var(--default-grid-baseline));
-			border-width: 0 0 1px 0;
-			border-radius: 0;
-
-			&:hover {
-				background-color: var(--color-background-hover);
-			}
+			outline-offset: -2px;
 		}
 	}
 
 	&__tile-preview {
-		aspect-ratio: 1 / 1;
+		width: var(--icon-preview-size);
+		height: var(--icon-preview-size);
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		overflow: hidden;
-		border-radius: var(--border-radius-large);
-		background-color: var(--color-background-dark);
-		flex-shrink: 0;
-		width: 100%;
-		height: auto;
-
-		.team-folder-widget__tile--list & {
-			width: 32px;
-			height: 32px;
-			border-radius: var(--border-radius);
-			background-color: transparent;
-		}
+		border-radius: var(--border-radius);
 	}
 
 	&__tile-icon {
-		color: var(--color-text-maxcontrast);
+		color: var(--color-primary-element);
 	}
 
 	&__preview {
 		width: 100%;
 		height: 100%;
-		object-fit: cover;
+		object-fit: contain;
+		object-position: center;
+
+		&:not([data-loaded]) {
+			background: var(--color-loading-dark);
+		}
 	}
 
 	&__tile-info {
 		display: flex;
-		flex-direction: column;
-		gap: var(--default-grid-baseline);
+		align-items: center;
+		width: var(--icon-preview-size);
+		height: var(--name-height);
 		min-width: 0;
-		width: 100%;
-
-		.team-folder-widget__tile--list & {
-			flex-direction: row;
-			align-items: center;
-			justify-content: space-between;
-			gap: calc(2 * var(--default-grid-baseline));
-		}
 	}
 
 	&__tile-name {
-		font-weight: 600;
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		flex: 1 1 auto;
+		display: inline-flex;
 		min-width: 0;
-	}
-
-	&__tile-meta {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0 calc(2 * var(--default-grid-baseline));
-		color: var(--color-text-maxcontrast);
-		font-size: 0.9em;
-		flex-shrink: 0;
-
-		.team-folder-widget__tile--list & {
-			justify-content: flex-end;
-			min-width: 140px;
-		}
+		max-width: 100%;
+		padding: 0 4px;
+		margin-inline-start: -4px;
 	}
 
 	&__tile-mtime {
+		width: var(--icon-preview-size);
+		height: var(--mtime-height);
+		font-size: var(--font-size-small);
+		color: var(--color-text-maxcontrast);
 		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	// List mode replicating the files app list (FilesListVirtual.vue):
+	// 44px rows with a bottom border, 24px primary-colored icon/preview,
+	// flexible name, right-aligned size and relative mtime columns whose
+	// color fades via the same color-mix formulas.
+	&__table {
+		--row-height: 44px;
+		--icon-preview-size: 24px;
+		--cell-margin: 14px;
+		--icon-margin: calc((var(--row-height) - var(--icon-preview-size)) / 2);
+		flex: 1 1 auto;
+		overflow-y: auto;
+		display: flex;
+		flex-direction: column;
+	}
+
+	&__table-header {
+		flex: 0 0 auto;
+		display: flex;
+		align-items: center;
+		height: var(--row-height);
+		box-sizing: border-box;
+		padding-inline: calc(2 * var(--default-grid-baseline));
+		border-block-end: 1px solid var(--color-border);
+		color: var(--color-text-maxcontrast);
+		font-weight: normal;
+		user-select: none;
+	}
+
+	&__rows {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	&__row {
+		display: flex;
+		align-items: center;
+		height: var(--row-height);
+		box-sizing: border-box;
+		padding-inline: calc(2 * var(--default-grid-baseline));
+		border-block-end: 1px solid var(--color-border);
+		color: var(--color-text-maxcontrast);
+		text-decoration: none;
+
+		&:hover,
+		&:focus,
+		&:active {
+			background-color: var(--color-background-hover);
+			// Same contrast adjustments the files app applies on hover
+			--color-text-maxcontrast: var(--color-main-text);
+			--color-border: var(--color-border-dark);
+		}
+
+		&:focus-visible {
+			outline: 2px solid var(--color-main-text);
+			outline-offset: -2px;
+		}
+	}
+
+	&__row-icon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex: 0 0 var(--icon-preview-size);
+		width: var(--icon-preview-size);
+		height: 100%;
+		margin-inline-end: var(--icon-margin);
+		color: var(--color-primary-element);
+	}
+
+	&__row-preview {
+		width: var(--icon-preview-size);
+		height: var(--icon-preview-size);
+		object-fit: contain;
+		object-position: center;
+		border-radius: var(--border-radius);
+
+		&:not([data-loaded]) {
+			background: var(--color-loading-dark);
+		}
+	}
+
+	&__row-name {
+		flex: 1 1 auto;
+		min-width: 0;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+
+		&--header {
+			padding-inline: calc(2 * var(--default-grid-baseline));
+		}
+	}
+
+	&__row-name-text {
+		display: inline-flex;
+		max-width: 100%;
+		color: var(--color-main-text);
+		padding: var(--default-grid-baseline) calc(2 * var(--default-grid-baseline));
+	}
+
+	&__row-size {
+		flex: 0 0 auto;
+		display: flex;
+		justify-content: flex-end;
+		width: calc(var(--row-height) * 2);
+		margin: 0 var(--cell-margin);
+	}
+
+	&__row-mtime {
+		flex: 0 0 auto;
+		width: calc(var(--row-height) * 2.5);
+		margin: 0 var(--cell-margin);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 }
 </style>

@@ -4,24 +4,22 @@
 -->
 
 <template>
-	<NcActions :inline="3" force-name variant="tertiary">
-		<NcActionButton
+	<NcFormBox>
+		<NcFormBoxButton
 			v-if="!invitationUrl"
+			:label="t('circles', 'Create link')"
 			@click="createInvitationLink()">
 			<template #icon>
 				<LinkPlus :size="20" />
 			</template>
-			{{ t('circles', 'Create link') }}
-		</NcActionButton>
+		</NcFormBoxButton>
 		<template v-else>
-			<NcActionLink
-				:href="invitationUrl"
-				:icon="copyLinkIcon"
-				@click.stop.prevent="copyToClipboard(invitationUrl)">
-				{{ copyButtonText }}
-			</NcActionLink>
+			<NcFormBoxCopyButton
+				:label="t('circles', 'Copy link')"
+				:value="invitationUrl" />
 
-			<NcActionButton
+			<NcFormBoxButton
+				:label="t('circles', 'Reset link')"
 				@click="confirm(
 					t('circles', 'This action will make it impossible to join the team using the current link. Do we really want to change the link?'),
 					() => createInvitationLink(),
@@ -29,10 +27,10 @@
 				<template #icon>
 					<Autorenew :size="20" />
 				</template>
-				{{ t('circles', 'Reset link') }}
-			</NcActionButton>
+			</NcFormBoxButton>
 
-			<NcActionButton
+			<NcFormBoxButton
+				:label="t('circles', 'Reject link')"
 				@click="confirm(
 					t('circles', 'This action will make it impossible to join the team using the current link. Do we really want to delete the link?'),
 					() => revokeInvitationLink(),
@@ -40,17 +38,16 @@
 				<template #icon>
 					<LinkOff :size="20" />
 				</template>
-				{{ t('circles', 'Reject link') }}
-			</NcActionButton>
+			</NcFormBoxButton>
 		</template>
-	</NcActions>
+	</NcFormBox>
 </template>
 
 <script>
 import { generateUrl, getBaseUrl } from '@nextcloud/router'
-import NcActions from '@nextcloud/vue/components/NcActions'
-import NcActionButton from '@nextcloud/vue/components/NcActionButton'
-import NcActionLink from '@nextcloud/vue/components/NcActionLink'
+import NcFormBox from '@nextcloud/vue/components/NcFormBox'
+import NcFormBoxButton from '@nextcloud/vue/components/NcFormBoxButton'
+import NcFormBoxCopyButton from '@nextcloud/vue/components/NcFormBoxCopyButton'
 import Autorenew from 'vue-material-design-icons/Autorenew.vue'
 import LinkOff from 'vue-material-design-icons/LinkOff.vue'
 import LinkPlus from 'vue-material-design-icons/LinkPlus.vue'
@@ -63,9 +60,9 @@ export default {
 		Autorenew,
 		LinkOff,
 		LinkPlus,
-		NcActions,
-		NcActionLink,
-		NcActionButton,
+		NcFormBox,
+		NcFormBoxButton,
+		NcFormBoxCopyButton,
 	},
 
 	mixins: [CopyToClipboardMixin],
@@ -86,15 +83,6 @@ export default {
 				'apps/circles/teams/join/{invitationCode}',
 				{ invitationCode: this.circle.invitationCode.match(/.{1,4}/g).join('-') },
 			)
-		},
-
-		copyButtonText() {
-			if (this.copied) {
-				return this.copySuccess
-					? t('circles', 'Copied')
-					: t('circles', 'Could not copy')
-			}
-			return t('circles', 'Copy link')
 		},
 	},
 

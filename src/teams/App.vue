@@ -8,8 +8,8 @@ import { storeToRefs } from 'pinia'
 import { onMounted } from 'vue'
 import NcAppContent from '@nextcloud/vue/components/NcAppContent'
 import NcContent from '@nextcloud/vue/components/NcContent'
-import GlobalNavigation from './components/GlobalNavigation.vue'
 import TeamCreationWizard from './components/TeamCreationWizard.vue'
+import TeamNavigation from './components/TeamNavigation.vue'
 import { useTeamsStore } from './store.ts'
 
 const store = useTeamsStore()
@@ -20,7 +20,7 @@ onMounted(() => store.loadTeams())
 
 <template>
 	<NcContent appName="teams">
-		<GlobalNavigation />
+		<TeamNavigation />
 
 		<NcAppContent>
 			<div :class="$style.teamsContent">
@@ -36,8 +36,5 @@ onMounted(() => store.loadTeams())
 .teams-content {
 	height: 100%;
 	box-sizing: border-box;
-	// Offset all content below the floating navigation toggle button,
-	// which is pinned to the top-left of the content area.
-	padding-block-start: var(--default-clickable-area);
 }
 </style>

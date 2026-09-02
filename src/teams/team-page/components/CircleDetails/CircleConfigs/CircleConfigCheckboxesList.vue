@@ -4,24 +4,22 @@
 -->
 
 <template>
-	<ul class="circle-config__list">
-		<NcCheckboxRadioSwitch
+	<NcFormBox>
+		<NcFormBoxSwitch
 			v-for="(label, config) in configs"
 			:key="'circle-config' + config"
 			:model-value="isChecked(Number(config))"
-			:loading="loading === Number(config)"
+			:label="label"
 			:disabled="loading !== false"
-			wrapper-element="li"
-			@update:model-value="onChange(Number(config), $event)">
-			{{ label }}
-		</NcCheckboxRadioSwitch>
-	</ul>
+			@update:model-value="onChange(Number(config), $event)" />
+	</NcFormBox>
 </template>
 
 <script setup lang="ts">
 import { showConfirmation, showError } from '@nextcloud/dialogs'
 import { t } from '@nextcloud/l10n'
-import NcCheckboxRadioSwitch from '@nextcloud/vue/components/NcCheckboxRadioSwitch'
+import NcFormBox from '@nextcloud/vue/components/NcFormBox'
+import NcFormBoxSwitch from '@nextcloud/vue/components/NcFormBoxSwitch'
 import { ref } from 'vue'
 import Circle from '../../../models/circle.ts'
 import { CircleConfigs } from '../../../models/constants.ts'
@@ -31,10 +29,6 @@ import { logger } from '../../../../../logger.ts'
 const props = defineProps<{
 	circle: Circle
 	configs: Record<string, string>
-}>()
-
-const emit = defineEmits<{
-	(e: 'close-settings-popover'): void
 }>()
 
 const loading = ref<number | false>(false)
@@ -47,7 +41,6 @@ async function onChange(config: number, checked: boolean) {
 	logger.debug(`Circle config ${config} is set to ${checked}`)
 
 	if (checked && config === CircleConfigs.FEDERATED) {
-		emit('close-settings-popover')
 		const confirmed = await confirmEnableFederationForCircle()
 		if (!confirmed) {
 			return
