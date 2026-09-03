@@ -6,6 +6,7 @@
 import { createApp } from 'vue'
 import AdminTeamFolders from './components/AdminTeamFolders.vue'
 
+import '@nextcloud/dialogs/style.css'
 import 'vite/modulepreload-polyfill'
 
 const app = createApp(AdminTeamFolders)
