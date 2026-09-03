@@ -8,20 +8,18 @@
     "Open %s" : "Buka%s",
     "Save" : "Save",
     "Connect" : "Berhubung",
+    "Other" : "Lain",
     "Cancel" : "Cancel",
-    "Folder" : "Folder",
-    "Close" : "Tutup",
-    "Calendar" : "Kalendar",
-    "New calendar" : "Kalendar baru",
+    "Advanced" : "Maju",
+    "Name" : "Nama",
+    "Size" : "Saiz",
+    "Modified" : "Dimodifikasi",
+    "Home" : "Rumah",
     "Description" : "Keterangan",
-    "Edit" : "Sunting",
     "Pending" : "Dalam proses",
     "User" : "User",
     "Email" : "Email",
     "Users" : "Pengguna",
-    "Groups" : "Kumpulan",
-    "Name" : "Nama",
-    "Size" : "Saiz",
-    "Modified" : "Dimodifikasi"
+    "Groups" : "Kumpulan"
 },"pluralForm" :"nplurals=1; plural=0;"
 }
