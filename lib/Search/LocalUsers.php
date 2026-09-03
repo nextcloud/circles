@@ -62,6 +62,7 @@ class LocalUsers implements ISearch {
 	 * @return array
 	 */
 	private function searchFromCollaborator($search): array {
+		/** @psalm-suppress DeprecatedMethod The Collaborator ISearch API has no replacement yet. */
 		[$temp, $hasMore] = $this->search->search($search, [IShare::TYPE_USER, IShare::TYPE_EMAIL], false, 50, 0);
 
 		$result = array_merge($temp['exact']['users'], $temp['users']);
