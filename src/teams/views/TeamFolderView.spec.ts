@@ -18,7 +18,7 @@ import { useTeamResourcesStore } from '../resourcesStore.ts'
  */
 const loadState = vi.hoisted(() => vi.fn((app: string, key: string, fallback: unknown) => fallback))
 const getTeamFolder = vi.hoisted(() => vi.fn<(teamId: string) => Promise<TeamFolder | null>>(async () => null))
-const upgradeTeamFolder = vi.hoisted(() => vi.fn<(teamId: string) => Promise<TeamFolder>>(async () => ({ id: 1, mountPoint: 'Team' })))
+const upgradeTeamFolder = vi.hoisted(() => vi.fn<(teamId: string) => Promise<TeamFolder>>(async () => ({ id: 1, mountPoint: 'Team', quota: null })))
 const showError = vi.hoisted(() => vi.fn())
 const busEmit = vi.hoisted(() => vi.fn())
 const getCircle = vi.hoisted(() => vi.fn())
@@ -155,7 +155,7 @@ describe('TeamFolderView empty state (team folder upgrade)', () => {
 	})
 
 	it('shows the folder widget instead of the empty state when a folder is linked', async () => {
-		const wrapper = mountView({ folder: { id: 42, mountPoint: 'Marketing' } })
+		const wrapper = mountView({ folder: { id: 42, mountPoint: 'Marketing', quota: null } })
 		await flushPromises()
 
 		expect(wrapper.findComponent({ name: 'TeamFolderWidget' }).exists()).toBe(true)

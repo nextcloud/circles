@@ -50,6 +50,9 @@ return [
 		['name' => 'TeamFolder#upgradeTeamFolder', 'url' => '/teams/{circleId}/folder', 'verb' => 'POST'],
 		['name' => 'TeamTabs#getTabOrder', 'url' => '/teams/{circleId}/tab-order', 'verb' => 'GET'],
 		['name' => 'TeamTabs#setTabOrder', 'url' => '/teams/{circleId}/tab-order', 'verb' => 'PUT'],
+		['name' => 'TeamFolder#getLinkableTeamFolders', 'url' => '/teams/{circleId}/folder/linkable', 'verb' => 'GET'],
+		['name' => 'TeamFolder#linkTeamFolder', 'url' => '/teams/{circleId}/folder/link', 'verb' => 'POST'],
+		['name' => 'TeamFolder#updateTeamFolderQuota', 'url' => '/teams/{circleId}/folder/quota', 'verb' => 'PUT'],
 
 		// Teams Dashboard widget endpoint
 		['name' => 'TeamsDashboard#getCompleteTeamsData', 'url' => '/teams/dashboard/widget', 'verb' => 'GET'],
@@ -57,6 +60,7 @@ return [
 		// AdminController
 		['name' => 'Admin#circles', 'url' => '/admin/{emulated}/circles', 'verb' => 'GET'],
 		['name' => 'Admin#circlesAll', 'url' => '/admin/circlesall', 'verb' => 'GET'],
+		['name' => 'Admin#teamFolders', 'url' => '/admin/teamfolders', 'verb' => 'GET'],
 		['name' => 'Admin#create', 'url' => '/admin/{emulated}/circles', 'verb' => 'POST'],
 		['name' => 'Admin#destroy', 'url' => '/admin/{emulated}/circles/{circleId}', 'verb' => 'DELETE'],
 		[
