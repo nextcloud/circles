@@ -10,18 +10,16 @@
     "Save" : "Save",
     "Cancel" : "Cancel",
     "Back" : "Ta zaga",
-    "Close" : "Zarrar",
-    "Create" : "Crear",
+    "Name" : "Nombre",
+    "Size" : "Grandario",
+    "Modified" : "Modificau",
+    "Home" : "Casa",
     "Pending" : "Pendient",
+    "Group folders" : "Carpetas de grupo",
     "Loading…" : "Cargando...",
     "Group" : "Grupo",
     "Email" : "Correu electronico",
     "Users" : "Usuarios",
-    "Groups" : "Grupos",
-    "Name" : "Nombre",
-    "Size" : "Grandario",
-    "Modified" : "Modificau",
-    "New folder" : "Nueva carpeta",
-    "Folder name" : "Nombre de carpeta"
+    "Groups" : "Grupos"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
