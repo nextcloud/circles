@@ -22,6 +22,7 @@ use OCA\Circles\Service\SearchService;
 use OCP\IRequest;
 use OCP\IUserManager;
 use OCP\IUserSession;
+use OCP\Teams\ITeamManager;
 use PHPUnit\Framework\Attributes\Group;
 use Psr\Container\ContainerInterface;
 use Test\TestCase;
@@ -89,6 +90,7 @@ class AdminControllerTest extends TestCase {
 			$this->container->get(MemberService::class),
 			$this->container->get(MembershipService::class),
 			$this->container->get(SearchService::class),
+			$this->container->get(ITeamManager::class),
 			$this->container->get(ConfigService::class),
 		);
 	}
