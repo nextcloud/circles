@@ -15,7 +15,5 @@ interface Exception extends Throwable
      *
      * @return string|null
      */
-    public function getSQLState()
-    {
-    }
+    public function getSQLState();
 }

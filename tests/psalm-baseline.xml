@@ -260,6 +260,7 @@
   <file src="lib/Search/LocalUsers.php">
     <DeprecatedMethod>
       <code><![CDATA[search]]></code>
+      <code><![CDATA[search]]></code>
     </DeprecatedMethod>
   </file>
   <file src="lib/Service/AvatarService.php">

@@ -33,7 +33,8 @@ class UserMapping extends AbstractMapping {
 	/**
 	 * @throws HintException
 	 */
-	public function map($fdn, $name, $uuid): bool
+	#[\Override]
+    public function map($fdn, $name, $uuid): bool
     {
     }
 
@@ -41,7 +42,8 @@ class UserMapping extends AbstractMapping {
 	 * returns the DB table name which holds the mappings
 	 * @return string
 	 */
-	protected function getTableName(bool $includePrefix = true)
+	#[\Override]
+    protected function getTableName(bool $includePrefix = true)
     {
     }
 }
