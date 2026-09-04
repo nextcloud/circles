@@ -43,6 +43,7 @@
 		<file name="tests/stubs/oc_files_mount_mountpoint.php" />
 		<file name="tests/stubs/oc_files_storage_common.php" />
 		<file name="tests/stubs/oc_files_storage_dav.php" />
+		<file name="tests/stubs/oc_files_storage_storage.php" />
 		<file name="tests/stubs/oc_group_group.php" />
 		<file name="tests/stubs/oc_group_manager.php" />
 		<file name="tests/stubs/oc_hooks_basicemitter.php" />
