@@ -50,7 +50,10 @@ class StreamOutput extends Output
     {
     }
 
-    protected function doWrite(string $message, bool $newline): void
+    /**
+     * @return void
+     */
+    protected function doWrite(string $message, bool $newline)
     {
     }
 

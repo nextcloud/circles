@@ -25,31 +25,20 @@ use Symfony\Component\Console\Exception\LogicException;
  */
 class InputArgument
 {
-    /**
-     * Providing an argument is required (e.g. just 'app:foo' is not allowed).
-     */
     public const REQUIRED = 1;
-
-    /**
-     * Providing an argument is optional (e.g. 'app:foo' and 'app:foo bar' are both allowed). This is the default behavior of arguments.
-     */
     public const OPTIONAL = 2;
-
-    /**
-     * The argument accepts multiple values and turn them into an array (e.g. 'app:foo bar baz' will result in value ['bar', 'baz']).
-     */
     public const IS_ARRAY = 4;
 
     /**
      * @param string                                                                        $name            The argument name
-     * @param int-mask-of<InputArgument::*>|null                                            $mode            The argument mode: a bit mask of self::REQUIRED, self::OPTIONAL and self::IS_ARRAY
+     * @param int|null                                                                      $mode            The argument mode: a bit mask of self::REQUIRED, self::OPTIONAL and self::IS_ARRAY
      * @param string                                                                        $description     A description text
      * @param string|bool|int|float|array|null                                              $default         The default value (for self::OPTIONAL mode only)
      * @param array|\Closure(CompletionInput,CompletionSuggestions):list<string|Suggestion> $suggestedValues The values used for input completion
      *
      * @throws InvalidArgumentException When argument mode is not valid
      */
-    public function __construct(private string $name, ?int $mode = null, private string $description = '', string|bool|int|float|array|null $default = null, private \Closure|array $suggestedValues = [])
+    public function __construct(string $name, ?int $mode = null, string $description = '', string|bool|int|float|array|null $default = null, \Closure|array $suggestedValues = [])
     {
     }
 
@@ -80,8 +69,12 @@ class InputArgument
 
     /**
      * Sets the default value.
+     *
+     * @return void
+     *
+     * @throws LogicException When incorrect default value is given
      */
-    public function setDefault(string|bool|int|float|array|null $default): void
+    public function setDefault(string|bool|int|float|array|null $default = null)
     {
     }
 
@@ -92,15 +85,12 @@ class InputArgument
     {
     }
 
-    /**
-     * Returns true if the argument has values for input completion.
-     */
     public function hasCompletion(): bool
     {
     }
 
     /**
-     * Supplies suggestions when command resolves possible completion options for input.
+     * Adds suggestions to $suggestions for the current completion input.
      *
      * @see Command::complete()
      */
