@@ -21,9 +21,12 @@ use Symfony\Component\String\UnicodeString;
  */
 abstract class Helper implements HelperInterface
 {
-    protected ?HelperSet $helperSet = null;
+    protected $helperSet;
 
-    public function setHelperSet(?HelperSet $helperSet): void
+    /**
+     * @return void
+     */
+    public function setHelperSet(?HelperSet $helperSet = null)
     {
     }
 
@@ -54,15 +57,24 @@ abstract class Helper implements HelperInterface
     {
     }
 
-    public static function formatTime(int|float $secs, int $precision = 1): string
+    /**
+     * @return string
+     */
+    public static function formatTime(int|float $secs, int $precision = 1)
     {
     }
 
-    public static function formatMemory(int $memory): string
+    /**
+     * @return string
+     */
+    public static function formatMemory(int $memory)
     {
     }
 
-    public static function removeDecoration(OutputFormatterInterface $formatter, ?string $string): string
+    /**
+     * @return string
+     */
+    public static function removeDecoration(OutputFormatterInterface $formatter, ?string $string)
     {
     }
 }

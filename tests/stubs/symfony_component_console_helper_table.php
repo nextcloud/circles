@@ -39,14 +39,16 @@ class Table
     private const DISPLAY_ORIENTATION_HORIZONTAL = 'horizontal';
     private const DISPLAY_ORIENTATION_VERTICAL = 'vertical';
 
-    public function __construct(private OutputInterface $output)
+    public function __construct(OutputInterface $output)
     {
     }
 
     /**
      * Sets a style definition.
+     *
+     * @return void
      */
-    public static function setStyleDefinition(string $name, TableStyle $style): void
+    public static function setStyleDefinition(string $name, TableStyle $style)
     {
     }
 
@@ -133,7 +135,7 @@ class Table
     /**
      * @return $this
      */
-    public function setRows(array $rows): static
+    public function setRows(array $rows)
     {
     }
 
@@ -207,8 +209,10 @@ class Table
      *     | 9971-5-0210-0 | A Tale of Two Cities  | Charles Dickens  |
      *     | 960-425-059-0 | The Lord of the Rings | J. R. R. Tolkien |
      *     +---------------+-----------------------+------------------+
+     *
+     * @return void
      */
-    public function render(): void
+    public function render()
     {
     }
 }

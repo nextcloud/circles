@@ -45,15 +45,24 @@ class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
     {
     }
 
-    public function setDecorated(bool $decorated): void
+    /**
+     * @return void
+     */
+    public function setDecorated(bool $decorated)
     {
     }
 
-    public function setFormatter(OutputFormatterInterface $formatter): void
+    /**
+     * @return void
+     */
+    public function setFormatter(OutputFormatterInterface $formatter)
     {
     }
 
-    public function setVerbosity(int $level): void
+    /**
+     * @return void
+     */
+    public function setVerbosity(int $level)
     {
     }
 
@@ -61,7 +70,10 @@ class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
     {
     }
 
-    public function setErrorOutput(OutputInterface $error): void
+    /**
+     * @return void
+     */
+    public function setErrorOutput(OutputInterface $error)
     {
     }
 

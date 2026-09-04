@@ -51,15 +51,19 @@ class QuestionHelper extends Helper
 
     /**
      * Prevents usage of stty.
+     *
+     * @return void
      */
-    public static function disableStty(): void
+    public static function disableStty()
     {
     }
 
     /**
      * Outputs the question prompt.
+     *
+     * @return void
      */
-    protected function writePrompt(OutputInterface $output, Question $question): void
+    protected function writePrompt(OutputInterface $output, Question $question)
     {
     }
 
@@ -72,8 +76,10 @@ class QuestionHelper extends Helper
 
     /**
      * Outputs an error message.
+     *
+     * @return void
      */
-    protected function writeError(OutputInterface $output, \Exception $error): void
+    protected function writeError(OutputInterface $output, \Exception $error)
     {
     }
 }
