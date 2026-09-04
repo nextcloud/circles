@@ -870,7 +870,7 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 	public function getUsersForShare(IShare $share): iterable {
 		$members = $this->shareWrapperService->getShareById((int)$share->getId())->getCircle()->getInheritedMembers();
 		foreach ($members as $member) {
-			if ($member->getUserType() === Member::TYPE_USER) {
+			if ($member->getUserType() === Member::TYPE_USER && $member->isLocal()) {
 				yield $this->userManager->getExistingUser($member->getUserId());
 			}
 		}
