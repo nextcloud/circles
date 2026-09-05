@@ -117,6 +117,8 @@ OC.L10N.register(
     "Default quota" : "Стандартна квота",
     "Select default quota" : "Изберете стандартна квота",
     "Save" : "Save",
+    "Storage quota" : "Квота за съхранение",
+    "Actions" : "Действия",
     "Add" : "Добавяне",
     "Reconnect" : "Повторно свързване",
     "Connect" : "Свързване",
