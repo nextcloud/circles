@@ -20,6 +20,7 @@ OC.L10N.register(
     "Unlimited" : "Limitsiz",
     "Cancel" : "Cancel",
     "Save" : "Save",
+    "Actions" : "İşlər",
     "Connect" : "Qoşul",
     "Other" : "Digər",
     "Back" : "Geri",

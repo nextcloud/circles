@@ -139,6 +139,7 @@ OC.L10N.register(
     "Cancel" : "Cancel",
     "Default quota" : "Cuota predeterminada",
     "Save" : "Save",
+    "Actions" : "Aiciones",
     "Add" : "Amestar",
     "Reconnect" : "Volver conectar",
     "Connect" : "Coneutar",
