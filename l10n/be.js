@@ -62,6 +62,8 @@ OC.L10N.register(
     "Default quota" : "Прадвызначаная квота",
     "Select default quota" : "Выберыце прадвызначаную квоту",
     "Save" : "Save",
+    "Storage quota" : "Квота сховішча",
+    "Actions" : "Дзеянні",
     "Add" : "Дадаць",
     "Reconnect" : "Перазлучыцца",
     "Members" : "Удзельнікі",
