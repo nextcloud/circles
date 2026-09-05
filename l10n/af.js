@@ -23,6 +23,7 @@ OC.L10N.register(
     "Cancel" : "Cancel",
     "Default quota" : "Verstekkwota",
     "Save" : "Save",
+    "Actions" : "Aksies",
     "Add" : "Voeg toe",
     "Reconnect" : "Herverbind",
     "Connect" : "Verbind",

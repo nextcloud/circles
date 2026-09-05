@@ -11,6 +11,7 @@ OC.L10N.register(
     "Open %s" : "Ubrir %s",
     "Cancel" : "Cancel",
     "Save" : "Save",
+    "Actions" : "Acions",
     "Back" : "Ta zaga",
     "Name" : "Nombre",
     "Size" : "Grandario",
