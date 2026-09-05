@@ -148,6 +148,8 @@ OC.L10N.register(
     "Select default quota" : "تعيين الحصة الافتراضية",
     "Save" : "Save",
     "Team folder" : "مُجلّد للفريق",
+    "Storage quota" : "حصة التخزين",
+    "Actions" : "الإجراءات",
     "Add" : "إضافة ",
     "Reconnect" : "أعد الاتصال",
     "Connect" : "اتصال",
