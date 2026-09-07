@@ -30,7 +30,7 @@
     "@nextcloud/password-confirmation": "^6.1.0",
     "@nextcloud/router": "^3.0.1",
     "@nextcloud/typings": "^1.10.0",
-    "@nextcloud/vue": "^9.9.0",
+    "@nextcloud/vue": "^9.10.0",
     "pinia": "^4.0.3",
     "virtua": "^0.50.5",
     "vue-cropperjs": "^5.0.0",
