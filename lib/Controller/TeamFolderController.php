@@ -20,6 +20,7 @@ use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\OCS\OCSException;
 use OCP\AppFramework\OCS\OCSNotFoundException;
 use OCP\AppFramework\OCSController;
+use OCP\IGroupManager;
 use OCP\IRequest;
 use OCP\IUser;
 use OCP\IUserSession;
@@ -34,6 +35,7 @@ class TeamFolderController extends OCSController {
 		private readonly TeamFolderPolicy $policy,
 		private readonly CircleRequest $circleRequest,
 		private readonly PermissionService $permissionService,
+		private readonly IGroupManager $groupManager,
 		private readonly IUserSession $userSession,
 	) {
 		parent::__construct($appName, $request);
@@ -52,12 +54,13 @@ class TeamFolderController extends OCSController {
 
 	#[NoAdminRequired]
 	public function upgradeTeamFolder(string $circleId, string $name = ''): DataResponse {
-		if (!$this->policy->isTeamFolderProvisioningEnabled()) {
+		$circle = $this->getCircle($circleId);
+		$user = $this->getAuthenticatedUser();
+		$this->assertAuthenticatedUserIsTeamOwnerOrServerAdmin($circleId, $user);
+
+		if (!$this->policy->isTeamFolderProvisioningEnabled() && !$this->groupManager->isAdmin($user->getUID())) {
 			throw new OCSException('Team space provisioning is disabled', Http::STATUS_FORBIDDEN);
 		}
-
-		$circle = $this->getCircle($circleId);
-		$this->assertAuthenticatedUserIsTeamOwnerOrServerAdmin($circleId);
 
 		if (!$this->policy->isEligibleCircle($circle)) {
 			throw new OCSException('This team cannot have a team space', Http::STATUS_FORBIDDEN);
@@ -80,20 +83,25 @@ class TeamFolderController extends OCSController {
 	}
 
 	#[NoAdminRequired]
-	public function getLinkableTeamFolders(string $circleId): array {
+	public function getLinkableTeamFolders(string $circleId): DataResponse {
 		$this->assertAuthenticatedUserIsTeamOwnerOrServerAdmin($circleId);
 
-		return array_map(
+		return new DataResponse(array_map(
 			static fn (\OCP\Teams\TeamFolder $folder): array => $folder->jsonSerialize(),
 			$this->getProvider()->getLinkableTeamFolders($circleId),
-		);
+		));
 	}
 
 	#[NoAdminRequired]
-	public function linkTeamFolder(string $circleId, int $folderId): TeamFolder {
+	public function linkTeamFolder(string $circleId, int $folderId): DataResponse {
 		$this->assertAuthenticatedUserIsTeamOwnerOrServerAdmin($circleId);
 		$folder = $this->getProvider()->linkTeamFolder($circleId, $folderId);
-		return $folder;
+
+		return new DataResponse([
+			'success' => true,
+			'folderId' => $folder->getId(),
+			'folder' => $folder->jsonSerialize(),
+		]);
 	}
 
 	#[NoAdminRequired]
@@ -153,9 +161,9 @@ class TeamFolderController extends OCSController {
 		}
 	}
 
-	private function assertAuthenticatedUserIsTeamOwnerOrServerAdmin(string $circleId): void {
+	private function assertAuthenticatedUserIsTeamOwnerOrServerAdmin(string $circleId, ?IUser $user = null): void {
 		try {
-			$this->permissionService->userMustBeTeamOwnerOrServerAdmin($this->getAuthenticatedUser()->getUID(), $circleId);
+			$this->permissionService->userMustBeTeamOwnerOrServerAdmin(($user ?? $this->getAuthenticatedUser())->getUID(), $circleId);
 		} catch (InsufficientPermissionException $e) {
 			throw new OCSException($e->getMessage(), Http::STATUS_FORBIDDEN);
 		}
