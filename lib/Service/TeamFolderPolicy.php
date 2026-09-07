@@ -15,6 +15,8 @@ use OCA\Circles\Db\MembershipRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Model\Circle;
 use OCP\AppFramework\Services\IAppConfig;
+use OCP\IGroupManager;
+use OCP\IUserManager;
 
 /**
  * Policy for team folders owned by teams (circles).
@@ -38,6 +40,8 @@ class TeamFolderPolicy {
 		private IAppConfig $appConfig,
 		private MembershipRequest $membershipRequest,
 		private CircleRequest $circleRequest,
+		private IGroupManager $groupManager,
+		private IUserManager $userManager,
 	) {
 	}
 
@@ -127,23 +131,30 @@ class TeamFolderPolicy {
 		}
 	}
 
+	/** @return array<string, int> */
+	public function getGroupQuotas(): array {
+		$quotas = $this->appConfig->getAppValueArray(ConfigLexicon::TEAM_FOLDER_GROUP_QUOTAS, []);
+		if (!is_array($quotas)) {
+			return [];
+		}
+
+		return array_filter($quotas, static fn (mixed $quota): bool => is_int($quota) && $quota >= 0);
+	}
+
 	/**
-	 * Resolve the highest configured quota for the local team owner.
+	 * Resolve the highest configured team or group quota for the local team owner.
 	 * Unlimited (0) takes precedence over every finite quota.
 	 */
 	public function getQuotaForCircle(Circle $circle): int {
 		$override = $this->getTeamFolderQuota($circle);
-		if ($override !== null) {
-			return $override;
-		}
-
 		$fallback = $this->getDefaultQuota();
+		$matches = $override === null ? [] : [$override];
 		$owner = $circle->getOwner();
 		if (!$owner->isLocal()) {
-			return $fallback;
+			return $matches === [] ? $fallback : ($matches[0] ?? $fallback);
 		}
 
-		$matches = [];
+		$matches = [...$matches, ...$this->getMatchingGroupQuotas($owner->getUserId())];
 		foreach ($this->membershipRequest->getMemberships($owner->getSingleId()) as $membership) {
 			try {
 				$membershipCircle = $this->circleRequest->getCircle($membership->getCircleId());
@@ -166,5 +177,19 @@ class TeamFolderPolicy {
 		}
 
 		return max($matches);
+	}
+
+	/** @return list<int> */
+	private function getMatchingGroupQuotas(string $userId): array {
+		$user = $this->userManager->get($userId);
+		if ($user === null) {
+			return [];
+		}
+
+		$quotas = $this->getGroupQuotas();
+		return array_values(array_filter(array_map(
+			static fn (string $groupId): ?int => $quotas[$groupId] ?? null,
+			$this->groupManager->getUserGroupIds($user),
+		), static fn (?int $quota): bool => $quota !== null));
 	}
 }

@@ -15,6 +15,9 @@ use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Membership;
 use OCA\Circles\Service\TeamFolderPolicy;
 use OCP\AppFramework\Services\IAppConfig;
+use OCP\IGroupManager;
+use OCP\IUser;
+use OCP\IUserManager;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -23,6 +26,8 @@ class TeamFolderPolicyTest extends TestCase {
 	private IAppConfig&MockObject $appConfig;
 	private MembershipRequest&MockObject $membershipRequest;
 	private CircleRequest&MockObject $circleRequest;
+	private IGroupManager&MockObject $groupManager;
+	private IUserManager&MockObject $userManager;
 
 	protected function setUp(): void {
 		parent::setUp();
@@ -30,6 +35,8 @@ class TeamFolderPolicyTest extends TestCase {
 		$this->appConfig = $this->createMock(IAppConfig::class);
 		$this->membershipRequest = $this->createMock(MembershipRequest::class);
 		$this->circleRequest = $this->createMock(CircleRequest::class);
+		$this->groupManager = $this->createMock(IGroupManager::class);
+		$this->userManager = $this->createMock(IUserManager::class);
 		$this->appConfig->method('getAppValueBool')
 			->with(ConfigLexicon::TEAM_FOLDER_AUTO_CREATE, true)
 			->willReturn(true);
@@ -38,6 +45,8 @@ class TeamFolderPolicyTest extends TestCase {
 			$this->appConfig,
 			$this->membershipRequest,
 			$this->circleRequest,
+			$this->groupManager,
+			$this->userManager,
 		);
 	}
 
@@ -74,6 +83,8 @@ class TeamFolderPolicyTest extends TestCase {
 			$appConfig,
 			$this->membershipRequest,
 			$this->circleRequest,
+			$this->groupManager,
+			$this->userManager,
 		);
 
 		$this->assertFalse($service->isTeamFolderProvisioningEnabled());
@@ -99,6 +110,8 @@ class TeamFolderPolicyTest extends TestCase {
 			$appConfig,
 			$this->membershipRequest,
 			$this->circleRequest,
+			$this->groupManager,
+			$this->userManager,
 		);
 
 		$this->assertTrue($service->isEligibleCircle($this->createCircle()));
@@ -158,6 +171,34 @@ class TeamFolderPolicyTest extends TestCase {
 		$this->assertSame(ConfigLexicon::DEFAULT_QUOTA, $this->service->getQuotaForCircle($this->createCircleWithOwner('alice')));
 	}
 
+	public function testGetQuotaForCircleUsesMatchingGroupQuota(): void {
+		$this->configureDefaultQuota(ConfigLexicon::DEFAULT_QUOTA);
+		$this->configureGroupQuotas(['marketing' => 2147483648]);
+		$this->configureUserGroups('alice', ['marketing']);
+		$this->configureMemberships('alice', []);
+
+		$this->assertSame(2147483648, $this->service->getQuotaForCircle($this->createCircleWithOwner('alice')));
+	}
+
+	public function testGetQuotaForCircleUsesHighestMatchingTeamOrGroupQuota(): void {
+		$this->configureDefaultQuota(ConfigLexicon::DEFAULT_QUOTA);
+		$this->configureGroupQuotas(['marketing' => 2147483648, 'engineering' => 5368709120]);
+		$this->configureUserGroups('bob', ['marketing', 'engineering']);
+		$this->configureMemberships('bob', ['support']);
+		$this->configureMembershipCircles(['support' => 3221225472]);
+
+		$this->assertSame(5368709120, $this->service->getQuotaForCircle($this->createCircleWithOwner('bob')));
+	}
+
+	public function testGetQuotaForCircleTreatsUnlimitedGroupQuotaAsHighest(): void {
+		$this->configureDefaultQuota(ConfigLexicon::DEFAULT_QUOTA);
+		$this->configureGroupQuotas(['marketing' => 2147483648, 'engineering' => 0]);
+		$this->configureUserGroups('bob', ['marketing', 'engineering']);
+		$this->configureMemberships('bob', []);
+
+		$this->assertSame(0, $this->service->getQuotaForCircle($this->createCircleWithOwner('bob')));
+	}
+
 	public function testGetQuotaForCircleUsesHighestMatchingQuota(): void {
 		$this->configureDefaultQuota(ConfigLexicon::DEFAULT_QUOTA);
 		$this->configureMemberships('bob', ['marketing', 'engineering']);
@@ -169,9 +210,10 @@ class TeamFolderPolicyTest extends TestCase {
 		$this->assertSame(5368709120, $this->service->getQuotaForCircle($this->createCircleWithOwner('bob')));
 	}
 
-	public function testGetQuotaForCirclePrefersTeamOverride(): void {
-		$this->membershipRequest->expects($this->never())->method('getMemberships');
+	public function testGetQuotaForCircleUsesTeamOverrideWhenNoHigherQuotaMatches(): void {
+		$this->configureMemberships('alice', []);
 		$circle = (new Circle())->setSettings([Circle::SETTING_TEAM_FOLDER_QUOTA => 2147483648]);
+		$circle->setOwner($this->createOwner('alice'));
 
 		$this->assertSame(2147483648, $this->service->getQuotaForCircle($circle));
 	}
@@ -217,6 +259,20 @@ class TeamFolderPolicyTest extends TestCase {
 		$this->appConfig->method('getAppValueInt')->willReturn($quota);
 	}
 
+	/** @param array<string, int> $quotas */
+	private function configureGroupQuotas(array $quotas): void {
+		$this->appConfig->method('getAppValueArray')
+			->with(ConfigLexicon::TEAM_FOLDER_GROUP_QUOTAS, [])
+			->willReturn($quotas);
+	}
+
+	/** @param list<string> $groupIds */
+	private function configureUserGroups(string $userId, array $groupIds): void {
+		$user = $this->createMock(IUser::class);
+		$this->userManager->method('get')->with($userId)->willReturn($user);
+		$this->groupManager->method('getUserGroupIds')->with($user)->willReturn($groupIds);
+	}
+
 	/** @param list<string> $teamIds */
 	private function configureMemberships(string $ownerSingleId, array $teamIds): void {
 		$memberships = array_map(function (string $teamId): Membership&MockObject {
@@ -228,13 +284,19 @@ class TeamFolderPolicyTest extends TestCase {
 	}
 
 	private function createCircleWithOwner(string $userId, bool $local = true): Circle&MockObject {
-		$owner = $this->createMock(Member::class);
-		$owner->method('isLocal')->willReturn($local);
-		$owner->method('getSingleId')->willReturn($userId);
+		$owner = $this->createOwner($userId, $local);
 		$circle = $this->createMock(Circle::class);
 		$circle->method('getOwner')->willReturn($owner);
 
 		return $circle;
+	}
+
+	private function createOwner(string $userId, bool $local = true): Member&MockObject {
+		$owner = $this->createMock(Member::class);
+		$owner->method('isLocal')->willReturn($local);
+		$owner->method('getSingleId')->willReturn($userId);
+		$owner->method('getUserId')->willReturn($userId);
+		return $owner;
 	}
 
 	/**
