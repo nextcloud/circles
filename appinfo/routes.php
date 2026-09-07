@@ -97,6 +97,7 @@ return [
 		['name' => 'Admin#editConfig', 'url' => '/admin/{emulated}/circles/{circleId}/config', 'verb' => 'PUT'],
 		['name' => 'Admin#link', 'url' => '/admin/{emulated}/link/{circleId}/{singleId}', 'verb' => 'GET'],
 
+		['name' => 'Settings#getGroups', 'url' => '/settings/groups/', 'verb' => 'GET'],
 		['name' => 'Settings#getValues', 'url' => '/settings/', 'verb' => 'GET'],
 		['name' => 'Settings#setValue', 'url' => '/settings/{key}/', 'verb' => 'POST'],
 	],

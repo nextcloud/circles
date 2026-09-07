@@ -37,8 +37,15 @@ interface TeamOption {
 	label: string
 }
 
+type QuotaTargetType = 'team' | 'group'
+
 interface QuotaRow extends TeamOption {
+	type: QuotaTargetType
 	quota: QuotaOption
+}
+
+interface QuotaTarget extends QuotaRow {
+	selectionLabel: string
 }
 
 const unlimitedQuota: QuotaOption = {
@@ -59,7 +66,11 @@ const selectedQuota = ref<QuotaOption>(teamFolderDefaultQuotaBytes <= 0
 	: { id: formatFileSize(teamFolderDefaultQuotaBytes), label: formatFileSize(teamFolderDefaultQuotaBytes) })
 const rows = ref<QuotaRow[]>([])
 const loadedQuotas = ref<Record<string, number>>({})
-const selectedQuotaTeam = ref<TeamOption | null>(null)
+const groupRows = ref<QuotaRow[]>([])
+const loadedGroupQuotas = ref<Record<string, number>>({})
+const availableGroups = ref<TeamOption[]>([])
+const selectedQuotaTarget = ref<QuotaTarget | null>(null)
+const loadingGroups = ref(true)
 const savingQuotas = ref(false)
 const settingsTabs = ['teamFolders', 'defaultQuotas'] as const
 type SettingsTab = typeof settingsTabs[number]
@@ -67,7 +78,7 @@ const activeTab = ref<SettingsTab>('teamFolders')
 
 const quotaOptions = computed<QuotaOption[]>(() => {
 	const options = [unlimitedQuota, ...quotaPreset]
-	for (const quota of [selectedQuota.value, ...rows.value.map((row) => row.quota)]) {
+	for (const quota of [selectedQuota.value, ...rows.value.map((row) => row.quota), ...groupRows.value.map((row) => row.quota)]) {
 		if (!options.some((option) => option.id === quota.id)) {
 			options.push(quota)
 		}
@@ -93,13 +104,19 @@ const linkableFolders = ref<TeamFolder[]>([])
 const selectedExistingFolder = ref<TeamFolder | null>(null)
 const loadingLinkableFolders = ref(false)
 
-const availableTeams = computed<TeamOption[]>(() => {
-	const mappedIds = new Set(rows.value.map((row) => row.id))
-	return teamFolders.value
-		.map((team) => ({ id: team.teamId, label: team.teamName }))
-		.filter((team) => !mappedIds.has(team.id))
-		.sort((left, right) => left.label.localeCompare(right.label))
+const availableQuotaTargets = computed<QuotaTarget[]>(() => {
+	const mappedTargets = new Set([...rows.value, ...groupRows.value].map((row) => `${row.type}:${row.id}`))
+	const teams = teamFolders.value
+		.map((team) => ({ id: team.teamId, label: team.teamName, selectionLabel: `${team.teamName} (${t('circles', 'Team')})`, type: 'team' as const, quota: selectedQuota.value }))
+		.filter((team) => !mappedTargets.has(`${team.type}:${team.id}`))
+	const groups = availableGroups.value
+		.map((group) => ({ ...group, selectionLabel: `${group.label} (${t('circles', 'Group')})`, type: 'group' as const, quota: selectedQuota.value }))
+		.filter((group) => !mappedTargets.has(`${group.type}:${group.id}`))
+	return [...teams, ...groups].sort((left, right) => left.label.localeCompare(right.label))
 })
+
+const quotaRows = computed(() => [...rows.value, ...groupRows.value]
+	.sort((left, right) => left.label.localeCompare(right.label)))
 
 const sortedTeamFolders = computed(() => {
 	const direction = sortAscending.value ? 1 : -1
@@ -164,7 +181,7 @@ async function loadTeamFolders() {
 			.map((team) => [team.teamId, team.defaultQuota as number]))
 		rows.value = teamFolders.value
 			.filter((team) => team.defaultQuota !== null)
-			.map((team) => ({ id: team.teamId, label: team.teamName, quota: quotaOptionFromBytes(team.defaultQuota as number) }))
+			.map((team) => ({ id: team.teamId, label: team.teamName, type: 'team' as const, quota: quotaOptionFromBytes(team.defaultQuota as number) }))
 			.sort((left, right) => left.label.localeCompare(right.label))
 		teamFolderQuotas.value = Object.fromEntries(teamFolders.value.map((teamFolder) => [
 			teamFolder.teamId,
@@ -176,6 +193,29 @@ async function loadTeamFolders() {
 		logger.error('Unable to load team folders', { error })
 	} finally {
 		loadingTeamFolders.value = false
+	}
+}
+
+/** Load groups and their configured quota mappings. */
+async function loadGroupQuotas() {
+	loadingGroups.value = true
+	try {
+		const [groupsResponse, settingsResponse] = await Promise.all([
+			axios.get<OCSResponse>(generateOcsUrl('/apps/circles/settings/groups')),
+			axios.get<OCSResponse>(generateOcsUrl('/apps/circles/settings')),
+		])
+		availableGroups.value = groupsResponse.data.ocs.data as TeamOption[]
+		const quotas = (settingsResponse.data.ocs.data.team_folder_group_quotas ?? {}) as Record<string, number>
+		loadedGroupQuotas.value = quotas
+		const groupsById = new Map(availableGroups.value.map((group) => [group.id, group]))
+		groupRows.value = Object.entries(quotas)
+			.map(([id, quota]) => ({ id, label: groupsById.get(id)?.label ?? id, type: 'group' as const, quota: quotaOptionFromBytes(quota) }))
+			.sort((left, right) => left.label.localeCompare(right.label))
+	} catch (error) {
+		showError(t('circles', 'Unable to load group quotas'))
+		logger.error('Unable to load group quotas', { error })
+	} finally {
+		loadingGroups.value = false
 	}
 }
 
@@ -381,10 +421,22 @@ async function onSaveQuota() {
 		}
 		quotas[row.id] = Math.round(rowBytes)
 	}
+	const groupQuotas: Record<string, number> = {}
+	for (const row of groupRows.value) {
+		const rowBytes = row.quota.id === unlimitedQuota.id ? 0 : parseFileSize(row.quota.id, true)
+		if (rowBytes === null || rowBytes < 0) {
+			showError(t('circles', 'Quota must be a non-negative number.'))
+			return
+		}
+		groupQuotas[row.id] = Math.round(rowBytes)
+	}
 
 	savingQuotas.value = true
 	try {
 		if (!await updateAppConfig('team_folder_default_quota', String(Math.round(bytes)))) {
+			return
+		}
+		if (!await updateAppConfig('team_folder_group_quotas', JSON.stringify(groupQuotas))) {
 			return
 		}
 
@@ -397,7 +449,7 @@ async function onSaveQuota() {
 		}))
 
 		showSuccess(t('circles', 'Changed default team folder quotas'))
-		await loadTeamFolders()
+		await Promise.all([loadTeamFolders(), loadGroupQuotas()])
 	} catch (error) {
 		showError(t('circles', 'Unable to update team folder config'))
 		logger.error('Unable to update team quota settings', { error })
@@ -406,22 +458,31 @@ async function onSaveQuota() {
 	}
 }
 
-/** Add the selected team with the global default quota. */
-function addQuotaTeam() {
-	if (selectedQuotaTeam.value === null) {
+/** Add the selected team or group with the global default quota. */
+function addQuotaTarget() {
+	if (selectedQuotaTarget.value === null) {
 		return
 	}
-	rows.value.push({ ...selectedQuotaTeam.value, quota: selectedQuota.value })
-	selectedQuotaTeam.value = null
+	const target = { ...selectedQuotaTarget.value, quota: selectedQuota.value }
+	if (target.type === 'team') {
+		rows.value.push(target)
+	} else {
+		groupRows.value.push(target)
+	}
+	selectedQuotaTarget.value = null
 }
 
 /**
- * Remove a team quota mapping.
+ * Remove a quota mapping.
  *
- * @param teamId - Team ID to remove
+ * @param target - Team or group mapping to remove
  */
-function removeQuotaTeam(teamId: string) {
-	rows.value = rows.value.filter((row) => row.id !== teamId)
+function removeQuotaTarget(target: QuotaRow) {
+	if (target.type === 'team') {
+		rows.value = rows.value.filter((row) => row.id !== target.id)
+	} else {
+		groupRows.value = groupRows.value.filter((row) => row.id !== target.id)
+	}
 }
 
 /**
@@ -456,7 +517,7 @@ function onTabKeydown(event: KeyboardEvent) {
 	tabButtons?.[nextIndex]?.focus()
 }
 
-onMounted(loadTeamFolders)
+onMounted(() => Promise.all([loadTeamFolders(), loadGroupQuotas()]))
 </script>
 
 <template>
@@ -528,15 +589,19 @@ onMounted(loadTeamFolders)
 				{{ t('circles', 'Default storage quota applied to each auto-created team folder. Use 0 for unlimited storage.') }}
 			</p>
 
-			<h3>{{ t('circles', 'Team-specific quota') }}</h3>
+			<h3>{{ t('circles', 'Quota overrides') }}</h3>
+			<p class="team-folders__hint team-folders__hint--quota-overrides">
+				{{ t('circles', 'Choose the default quota assigned to a Team folder created by users based on group membership. The default quota for a new Team folder is always the highest from the default quotas assigned to any of the groups a user is member of.') }}
+			</p>
 			<div class="team-folders__add-row">
 				<NcSelect
-					v-model="selectedQuotaTeam"
-					:loading="loadingTeamFolders"
-					:options="availableTeams"
-					:placeholder="t('circles', 'Select a team')"
+					v-model="selectedQuotaTarget"
+					:loading="loadingTeamFolders || loadingGroups"
+					:options="availableQuotaTargets"
+					:placeholder="t('circles', 'Select a team or group')"
+					label="selectionLabel"
 					class="team-folders__team-select" />
-				<NcButton :disabled="selectedQuotaTeam === null" @click="addQuotaTeam">
+				<NcButton :disabled="selectedQuotaTarget === null" @click="addQuotaTarget">
 					{{ t('circles', 'Add') }}
 				</NcButton>
 			</div>
@@ -546,18 +611,20 @@ onMounted(loadTeamFolders)
 				role="table"
 				:aria-label="t('circles', 'Default team folder quotas')">
 				<div class="team-folders__header" role="row">
-					<span role="columnheader">{{ t('circles', 'Team') }}</span>
+					<span role="columnheader">{{ t('circles', 'Name') }}</span>
+					<span role="columnheader">{{ t('circles', 'Type') }}</span>
 					<span role="columnheader">{{ t('circles', 'Default quota') }}</span>
 					<span role="columnheader">{{ t('circles', 'Options') }}</span>
 				</div>
 				<div
-					v-for="row in rows"
-					:key="row.id"
+					v-for="row in quotaRows"
+					:key="`${row.type}:${row.id}`"
 					class="team-folders__row"
 					role="row">
 					<div class="team-folders__team" role="cell">
 						<strong>{{ row.label }}</strong>
 					</div>
+					<span role="cell">{{ row.type === 'team' ? t('circles', 'Team') : t('circles', 'Group') }}</span>
 					<NcSelect
 						v-model="row.quota"
 						:aria-label="t('circles', 'Default quota for {team}', { team: row.label })"
@@ -568,7 +635,7 @@ onMounted(loadTeamFolders)
 						role="cell" />
 					<div class="team-folders__options" role="cell">
 						<NcActions :aria-label="t('circles', 'Quota mapping actions')">
-							<NcActionButton closeAfterClick @click="removeQuotaTeam(row.id)">
+							<NcActionButton closeAfterClick @click="removeQuotaTarget(row)">
 								<template #icon>
 									<IconDeleteOutline :size="20" />
 								</template>
@@ -799,6 +866,10 @@ onMounted(loadTeamFolders)
 	margin: 12px 0 0;
 }
 
+.team-folders__hint--quota-overrides {
+	margin-bottom: 20px;
+}
+
 .team-folders__add-row {
 	display: flex;
 	gap: 8px;
@@ -825,7 +896,7 @@ onMounted(loadTeamFolders)
 .team-folders__header,
 .team-folders__row {
 	display: grid;
-	grid-template-columns: minmax(160px, 1fr) minmax(180px, 240px) 44px;
+	grid-template-columns: minmax(160px, 1fr) 100px minmax(180px, 240px) 44px;
 	gap: 12px;
 	align-items: center;
 	min-height: 52px;
