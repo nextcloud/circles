@@ -43,7 +43,7 @@ class LocalUsers implements ISearch {
 			return $this->searchFromCollaborator($needle);
 		}
 
-		$users = $userManager->search($needle);
+		$users = $userManager->searchDisplayName($needle);
 		foreach ($users as $user) {
 			$result[] = new SearchResult(
 				$user->getUID(),
