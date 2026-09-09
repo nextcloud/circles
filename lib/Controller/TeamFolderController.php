@@ -26,7 +26,6 @@ use OCP\IUser;
 use OCP\IUserSession;
 use OCP\Teams\ITeamManager;
 use OCP\Teams\Team;
-use OCP\Teams\TeamFolder;
 
 class TeamFolderController extends OCSController {
 	public function __construct(
