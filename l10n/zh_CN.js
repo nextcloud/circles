@@ -235,6 +235,7 @@ OC.L10N.register(
     "Email" : "电子邮件",
     "Federation" : "联合",
     "Privacy" : "隐私",
+    "Users" : "用户",
     "groups" : "组",
     "Groups" : "群组",
     "Federated users" : "联合用户",
