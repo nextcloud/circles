@@ -186,6 +186,7 @@ OC.L10N.register(
     "Copy link" : "Copia l'enllaç",
     "Remove {type}" : "Suprimeix {type}",
     "Search {types}" : "Cerca {types}",
+    "Loading …" : "S'està carregant ...",
     "No results" : "Sense resultats",
     "Add {type}" : "Afegeix {type}",
     "Role" : "Rol",
