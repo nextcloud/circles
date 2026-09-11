@@ -257,12 +257,6 @@
       <code><![CDATA[null]]></code>
     </NullableReturnStatement>
   </file>
-  <file src="lib/Search/LocalUsers.php">
-    <DeprecatedMethod>
-      <code><![CDATA[search]]></code>
-      <code><![CDATA[search]]></code>
-    </DeprecatedMethod>
-  </file>
   <file src="lib/Service/AvatarService.php">
     <MissingDependency>
       <code><![CDATA[\OCP\Image]]></code>

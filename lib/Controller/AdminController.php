@@ -28,10 +28,13 @@ use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\Service\SearchService;
+use OCA\Circles\Service\TeamFolderPolicy;
 use OCA\Circles\Tools\Traits\TDeserialize;
 use OCA\Circles\Tools\Traits\TNCLogger;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\OCS\OCSException;
+use OCP\AppFramework\OCS\OCSNotFoundException;
 use OCP\AppFramework\OCSController;
 use OCP\IRequest;
 use OCP\IUserSession;
@@ -72,6 +75,7 @@ class AdminController extends OCSController {
 		private MembershipService $membershipService,
 		private SearchService $searchService,
 		private ITeamManager $teamManager,
+		private TeamFolderPolicy $teamFolderPolicy,
 		ConfigService $configService,
 	) {
 		parent::__construct($appName, $request);
@@ -278,9 +282,6 @@ class AdminController extends OCSController {
 		try {
 			$this->setLocalFederatedUser($this->userSession->getUser()->getUID());
 			$provider = $this->teamManager->getTeamFolderProvider();
-			if ($provider === null) {
-				return new DataResponse([]);
-			}
 
 			$probe = new CircleProbe();
 			$probe->filterPersonalCircles()
@@ -291,11 +292,12 @@ class AdminController extends OCSController {
 
 			$teamFolders = [];
 			foreach ($this->circleService->getAllCircles($probe) as $circle) {
-				$folder = $provider->getTeamFolder($circle->getSingleId());
+				$folder = $provider?->getTeamFolder($circle->getSingleId());
 
 				$teamFolders[] = [
 					'teamId' => $circle->getSingleId(),
 					'teamName' => $circle->getDisplayName(),
+					'defaultQuota' => $this->teamFolderPolicy->getTeamFolderQuota($circle),
 					'folder' => $folder?->jsonSerialize(),
 				];
 			}
@@ -304,6 +306,37 @@ class AdminController extends OCSController {
 		} catch (Exception $e) {
 			$this->e($e);
 			throw new OCSException($e->getMessage(), (int)$e->getCode());
+		}
+	}
+
+	/**
+	 * Set or remove the quota override associated with a team.
+	 *
+	 * @throws OCSException
+	 */
+	public function updateTeamFolderDefaultQuota(string $circleId, ?int $quota): DataResponse {
+		try {
+			$user = $this->userSession->getUser();
+			if ($user === null) {
+				throw new OCSException('Authentication required', Http::STATUS_UNAUTHORIZED);
+			}
+
+			$this->setLocalFederatedUser($user->getUID());
+			$circle = $this->circleService->getCircle($circleId);
+			if ($quota === null) {
+				$this->teamFolderPolicy->removeTeamFolderQuota($circle);
+			} else {
+				$this->teamFolderPolicy->setTeamFolderQuota($circle, $quota);
+			}
+
+			return new DataResponse([
+				'teamId' => $circleId,
+				'defaultQuota' => $this->teamFolderPolicy->getTeamFolderQuota($circle),
+			]);
+		} catch (\InvalidArgumentException $e) {
+			throw new OCSException($e->getMessage(), Http::STATUS_BAD_REQUEST);
+		} catch (\OCA\Circles\Exceptions\CircleNotFoundException) {
+			throw new OCSNotFoundException('Team not found');
 		}
 	}
 
