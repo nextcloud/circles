@@ -24,8 +24,8 @@ use PHPUnit\Framework\TestCase;
 class TeamFolderPolicyTest extends TestCase {
 	private TeamFolderPolicy $service;
 	private IAppConfig&MockObject $appConfig;
-	private MembershipRequest&MockObject $membershipRequest;
 	private CircleRequest&MockObject $circleRequest;
+	private MembershipRequest&MockObject $membershipRequest;
 	private IGroupManager&MockObject $groupManager;
 	private IUserManager&MockObject $userManager;
 
@@ -33,8 +33,8 @@ class TeamFolderPolicyTest extends TestCase {
 		parent::setUp();
 
 		$this->appConfig = $this->createMock(IAppConfig::class);
-		$this->membershipRequest = $this->createMock(MembershipRequest::class);
 		$this->circleRequest = $this->createMock(CircleRequest::class);
+		$this->membershipRequest = $this->createMock(MembershipRequest::class);
 		$this->groupManager = $this->createMock(IGroupManager::class);
 		$this->userManager = $this->createMock(IUserManager::class);
 		$this->appConfig->method('getAppValueBool')
@@ -43,8 +43,8 @@ class TeamFolderPolicyTest extends TestCase {
 
 		$this->service = new TeamFolderPolicy(
 			$this->appConfig,
-			$this->membershipRequest,
 			$this->circleRequest,
+			$this->membershipRequest,
 			$this->groupManager,
 			$this->userManager,
 		);
@@ -81,8 +81,8 @@ class TeamFolderPolicyTest extends TestCase {
 			->willReturn(false);
 		$service = new TeamFolderPolicy(
 			$appConfig,
-			$this->membershipRequest,
 			$this->circleRequest,
+			$this->membershipRequest,
 			$this->groupManager,
 			$this->userManager,
 		);
@@ -108,8 +108,8 @@ class TeamFolderPolicyTest extends TestCase {
 			->willReturn(false);
 		$service = new TeamFolderPolicy(
 			$appConfig,
-			$this->membershipRequest,
 			$this->circleRequest,
+			$this->membershipRequest,
 			$this->groupManager,
 			$this->userManager,
 		);
@@ -163,10 +163,8 @@ class TeamFolderPolicyTest extends TestCase {
 		$this->service->removeTeamFolderQuota($circle);
 	}
 
-	public function testGetQuotaForCircleUsesDefaultWithoutMatchingTeam(): void {
+	public function testGetQuotaForCircleUsesDefaultWithoutMatchingGroup(): void {
 		$this->configureDefaultQuota(ConfigLexicon::DEFAULT_QUOTA);
-		$this->configureMemberships('alice', ['support']);
-		$this->configureMembershipCircles(['support' => null]);
 
 		$this->assertSame(ConfigLexicon::DEFAULT_QUOTA, $this->service->getQuotaForCircle($this->createCircleWithOwner('alice')));
 	}
@@ -175,17 +173,24 @@ class TeamFolderPolicyTest extends TestCase {
 		$this->configureDefaultQuota(ConfigLexicon::DEFAULT_QUOTA);
 		$this->configureGroupQuotas(['marketing' => 2147483648]);
 		$this->configureUserGroups('alice', ['marketing']);
-		$this->configureMemberships('alice', []);
 
 		$this->assertSame(2147483648, $this->service->getQuotaForCircle($this->createCircleWithOwner('alice')));
 	}
 
-	public function testGetQuotaForCircleUsesHighestMatchingTeamOrGroupQuota(): void {
+	public function testGetQuotaForCircleUsesDefaultWhenHigherThanGroupQuota(): void {
+		$this->configureDefaultQuota(5368709120);
+		$this->configureGroupQuotas(['marketing' => 2147483648]);
+		$this->configureUserGroups('alice', ['marketing']);
+		$this->configureMemberships('alice', []);
+
+		$this->assertSame(5368709120, $this->service->getQuotaForCircle($this->createCircleWithOwner('alice')));
+	}
+
+	public function testGetQuotaForCircleUsesHighestMatchingGroupQuota(): void {
 		$this->configureDefaultQuota(ConfigLexicon::DEFAULT_QUOTA);
 		$this->configureGroupQuotas(['marketing' => 2147483648, 'engineering' => 5368709120]);
 		$this->configureUserGroups('bob', ['marketing', 'engineering']);
-		$this->configureMemberships('bob', ['support']);
-		$this->configureMembershipCircles(['support' => 3221225472]);
+		$this->configureMemberships('bob', []);
 
 		$this->assertSame(5368709120, $this->service->getQuotaForCircle($this->createCircleWithOwner('bob')));
 	}
@@ -199,38 +204,28 @@ class TeamFolderPolicyTest extends TestCase {
 		$this->assertSame(0, $this->service->getQuotaForCircle($this->createCircleWithOwner('bob')));
 	}
 
-	public function testGetQuotaForCircleUsesHighestMatchingQuota(): void {
+	public function testGetQuotaForCircleUsesTeamOverride(): void {
 		$this->configureDefaultQuota(ConfigLexicon::DEFAULT_QUOTA);
-		$this->configureMemberships('bob', ['marketing', 'engineering']);
-		$this->configureMembershipCircles([
-			'marketing' => 2147483648,
-			'engineering' => 5368709120,
-		]);
-
-		$this->assertSame(5368709120, $this->service->getQuotaForCircle($this->createCircleWithOwner('bob')));
-	}
-
-	public function testGetQuotaForCircleUsesTeamOverrideWhenNoHigherQuotaMatches(): void {
-		$this->configureMemberships('alice', []);
 		$circle = (new Circle())->setSettings([Circle::SETTING_TEAM_FOLDER_QUOTA => 2147483648]);
 		$circle->setOwner($this->createOwner('alice'));
 
 		$this->assertSame(2147483648, $this->service->getQuotaForCircle($circle));
 	}
 
-	public function testGetQuotaForCircleTreatsUnlimitedAsHighestQuota(): void {
+	public function testGetQuotaForCircleUsesHighestMatchingTeamMembershipQuota(): void {
 		$this->configureDefaultQuota(ConfigLexicon::DEFAULT_QUOTA);
-		$this->configureMemberships('bob', ['marketing', 'engineering']);
+		$this->configureMemberships('alice', ['support', 'management']);
 		$this->configureMembershipCircles([
-			'marketing' => 2147483648,
-			'engineering' => 0,
+			'support' => 2147483648,
+			'management' => 5368709120,
 		]);
 
-		$this->assertSame(0, $this->service->getQuotaForCircle($this->createCircleWithOwner('bob')));
+		$this->assertSame(5368709120, $this->service->getQuotaForCircle($this->createCircleWithOwner('alice')));
 	}
 
 	public function testGetQuotaForCircleUsesDefaultForRemoteOwner(): void {
 		$this->configureDefaultQuota(ConfigLexicon::DEFAULT_QUOTA);
+		$this->userManager->expects($this->never())->method('get');
 		$this->membershipRequest->expects($this->never())->method('getMemberships');
 
 		$this->assertSame(ConfigLexicon::DEFAULT_QUOTA, $this->service->getQuotaForCircle($this->createCircleWithOwner('remote-user', false)));
@@ -243,6 +238,10 @@ class TeamFolderPolicyTest extends TestCase {
 		$this->service->setTeamFolderQuota(new Circle(), -1);
 	}
 
+	private function configureDefaultQuota(int $quota): void {
+		$this->appConfig->method('getAppValueInt')->willReturn($quota);
+	}
+
 	/** @param array<string, int|null> $quotas */
 	private function configureMembershipCircles(array $quotas): void {
 		$circles = [];
@@ -253,10 +252,6 @@ class TeamFolderPolicyTest extends TestCase {
 
 		$this->circleRequest->method('getCircle')
 			->willReturnCallback(static fn (string $teamId): Circle => $circles[$teamId]);
-	}
-
-	private function configureDefaultQuota(int $quota): void {
-		$this->appConfig->method('getAppValueInt')->willReturn($quota);
 	}
 
 	/** @param array<string, int> $quotas */

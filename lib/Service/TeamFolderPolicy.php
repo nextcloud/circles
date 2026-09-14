@@ -38,8 +38,8 @@ class TeamFolderPolicy {
 
 	public function __construct(
 		private IAppConfig $appConfig,
-		private MembershipRequest $membershipRequest,
 		private CircleRequest $circleRequest,
+		private MembershipRequest $membershipRequest,
 		private IGroupManager $groupManager,
 		private IUserManager $userManager,
 	) {
@@ -138,19 +138,22 @@ class TeamFolderPolicy {
 	}
 
 	/**
-	 * Resolve the highest configured team or group quota for the local team owner.
+	 * Resolve the highest configured default, team, or group quota for the local team owner.
 	 * Unlimited (0) takes precedence over every finite quota.
 	 */
 	public function getQuotaForCircle(Circle $circle): int {
-		$override = $this->getTeamFolderQuota($circle);
-		$fallback = $this->getDefaultQuota();
-		$matches = $override === null ? [] : [$override];
-		$owner = $circle->getOwner();
-		if (!$owner->isLocal()) {
-			return $matches === [] ? $fallback : ($matches[0] ?? $fallback);
+		$quotas = [$this->getDefaultQuota()];
+		$teamQuota = $this->getTeamFolderQuota($circle);
+		if ($teamQuota !== null) {
+			$quotas[] = $teamQuota;
 		}
 
-		$matches = [...$matches, ...$this->getMatchingGroupQuotas($owner->getUserId())];
+		$owner = $circle->getOwner();
+		if (!$owner->isLocal()) {
+			return in_array(0, $quotas, true) ? 0 : max($quotas);
+		}
+
+		$quotas = [...$quotas, ...$this->getGroupQuotaForUser($owner->getUserId())];
 		foreach ($this->membershipRequest->getMemberships($owner->getSingleId()) as $membership) {
 			try {
 				$membershipCircle = $this->circleRequest->getCircle($membership->getCircleId());
@@ -158,25 +161,21 @@ class TeamFolderPolicy {
 				continue;
 			}
 
-			$quota = $this->getTeamFolderQuota($membershipCircle);
-			if ($quota !== null) {
-				$matches[] = $quota;
+			$membershipQuota = $this->getTeamFolderQuota($membershipCircle);
+			if ($membershipQuota !== null) {
+				$quotas[] = $membershipQuota;
 			}
 		}
 
-		if ($matches === []) {
-			return $fallback;
-		}
-
-		if (in_array(0, $matches, true)) {
+		if (in_array(0, $quotas, true)) {
 			return 0;
 		}
 
-		return max($matches);
+		return max($quotas);
 	}
 
 	/** @return list<int> */
-	private function getMatchingGroupQuotas(string $userId): array {
+	private function getGroupQuotaForUser(string $userId): array {
 		$user = $this->userManager->get($userId);
 		if ($user === null) {
 			return [];

@@ -292,7 +292,7 @@ class AdminController extends OCSController {
 
 			$teamFolders = [];
 			foreach ($this->circleService->getAllCircles($probe) as $circle) {
-				$folder = $provider?->getTeamFolder($circle->getSingleId());
+				$folder = $provider->getTeamFolder($circle->getSingleId());
 
 				$teamFolders[] = [
 					'teamId' => $circle->getSingleId(),
