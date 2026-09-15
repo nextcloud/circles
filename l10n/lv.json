@@ -1,7 +1,11 @@
 { "translations": {
     "You created the team {circle}" : "Tu izveidoji komandu {circle}",
     "You deleted {circle}" : "Tu izdzēsi {circle}",
+    "You added team {member} as member to {circle}" : "Tu pievienoji komandu {member} kā {circle} dalībnieku",
     "You removed {member} from {circle}" : "Tu noņēmi {member} no {circle}",
+    "You added {member} as member to {circle}" : "Tu pievienoji {member} kā {circle} dalībnieku",
+    "You have been added as member to {circle} by {author}" : "{author} Tevi pievienoja kā {circle} dalībnieku",
+    "You added {external} to {circle}" : "Tu {circle} pievienoji {external}",
     "You left {circle}" : "Tu pameti {circle}",
     "{member} left {circle}" : "{member} pameta {circle}",
     "You removed {external} from {circle}" : "Tu noņēmi {external} no {circle}",

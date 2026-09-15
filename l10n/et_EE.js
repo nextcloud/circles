@@ -320,7 +320,7 @@ OC.L10N.register(
     "Remove {type}" : "Eemalda: „{type}“",
     "Add to group" : "Lisa gruppi",
     "Add members to group" : "Lisa liikmeid gruppi",
-    "Search {types}" : "Otsi „{types}“ kategooriat",
+    "Search {types}" : "Otsi kategooriat „{types}“",
     "Add guest" : "Lisa külaline",
     "Loading …" : "Andmed on laadimisel…",
     "No results" : "Vasteid ei leidu",
