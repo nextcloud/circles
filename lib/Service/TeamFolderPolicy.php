@@ -10,20 +10,22 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 use OCA\Circles\ConfigLexicon;
+use OCA\Circles\Db\CircleRequest;
+use OCA\Circles\Db\MembershipRequest;
+use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Model\Circle;
 use OCP\AppFramework\Services\IAppConfig;
+use OCP\IGroupManager;
+use OCP\IUserManager;
 
 /**
  * Policy for team folders owned by teams (circles).
  *
  * This class owns the *policy* for team-folder creation:
  *  - the `team_folder_auto_create` app config toggle (occ only, not admin UI),
- *  - the `team_folder_default_quota` app config value,
+ *  - the default quota and per-team quota settings,
  *  - the circle-type eligibility rules (personal/hidden/system/backend circles
  *    are excluded).
- *
- * Per-creation opt-out from the team wizard/API is applied by the listener
- * before this policy runs.
  *
  * The *orchestration* (creating, unlinking, removing folders) is owned by the
  * groupfolders app. The circles app keeps no reference to the groupfolders app.
@@ -36,6 +38,10 @@ class TeamFolderPolicy {
 
 	public function __construct(
 		private IAppConfig $appConfig,
+		private CircleRequest $circleRequest,
+		private MembershipRequest $membershipRequest,
+		private IGroupManager $groupManager,
+		private IUserManager $userManager,
 	) {
 	}
 
@@ -82,7 +88,103 @@ class TeamFolderPolicy {
 		return $this->isEligibleCircle($circle);
 	}
 
+	/**
+	 * Get the quota applied when no group-specific override matches.
+	 */
 	public function getDefaultQuota(): int {
-		return $this->appConfig->getAppValueInt(ConfigLexicon::TEAM_FOLDER_DEFAULT_QUOTA, 0);
+		$quota = $this->appConfig->getAppValueInt(ConfigLexicon::TEAM_FOLDER_DEFAULT_QUOTA, ConfigLexicon::DEFAULT_QUOTA);
+		return $quota >= 0 ? $quota : ConfigLexicon::DEFAULT_QUOTA;
+	}
+
+	/**
+	 * @throws \InvalidArgumentException when the quota is negative.
+	 */
+	public function setDefaultQuota(int $quota): void {
+		if ($quota < 0) {
+			throw new \InvalidArgumentException('default quota must be a non-negative integer');
+		}
+
+		$this->appConfig->setAppValueInt(ConfigLexicon::TEAM_FOLDER_DEFAULT_QUOTA, $quota);
+	}
+
+	public function getTeamFolderQuota(Circle $circle): ?int {
+		$quota = $circle->getSettings()[Circle::SETTING_TEAM_FOLDER_QUOTA] ?? null;
+
+		return is_int($quota) && $quota >= 0 ? $quota : null;
+	}
+
+	public function setTeamFolderQuota(Circle $circle, int $quota): void {
+		if ($quota < 0) {
+			throw new \InvalidArgumentException('team folder quota must be a non-negative integer');
+		}
+
+		$settings = $circle->getSettings();
+		$settings[Circle::SETTING_TEAM_FOLDER_QUOTA] = $quota;
+		$this->circleRequest->updateSettings($circle->setSettings($settings));
+	}
+
+	public function removeTeamFolderQuota(Circle $circle): void {
+		$settings = $circle->getSettings();
+		if (array_key_exists(Circle::SETTING_TEAM_FOLDER_QUOTA, $settings)) {
+			unset($settings[Circle::SETTING_TEAM_FOLDER_QUOTA]);
+			$this->circleRequest->updateSettings($circle->setSettings($settings));
+		}
+	}
+
+	/** @return array<string, int> */
+	public function getGroupQuotas(): array {
+		$quotas = $this->appConfig->getAppValueArray(ConfigLexicon::TEAM_FOLDER_GROUP_QUOTAS, []);
+		return array_filter($quotas, static fn (mixed $quota): bool => is_int($quota) && $quota >= 0);
+	}
+
+	/**
+	 * Resolve the highest configured default, team, or group quota for the local team owner.
+	 * Unlimited (0) takes precedence over every finite quota.
+	 */
+	public function getQuotaForCircle(Circle $circle): int {
+		$quotas = [$this->getDefaultQuota()];
+		$teamQuota = $this->getTeamFolderQuota($circle);
+		if ($teamQuota !== null) {
+			$quotas[] = $teamQuota;
+		}
+
+		$owner = $circle->getOwner();
+		if (!$owner->isLocal()) {
+			return in_array(0, $quotas, true) ? 0 : max($quotas);
+		}
+
+		$quotas = [...$quotas, ...$this->getGroupQuotaForUser($owner->getUserId())];
+		foreach ($this->membershipRequest->getMemberships($owner->getSingleId()) as $membership) {
+			try {
+				$membershipCircle = $this->circleRequest->getCircle($membership->getCircleId());
+			} catch (CircleNotFoundException) {
+				continue;
+			}
+
+			$membershipQuota = $this->getTeamFolderQuota($membershipCircle);
+			if ($membershipQuota !== null) {
+				$quotas[] = $membershipQuota;
+			}
+		}
+
+		if (in_array(0, $quotas, true)) {
+			return 0;
+		}
+
+		return max($quotas);
+	}
+
+	/** @return list<int> */
+	private function getGroupQuotaForUser(string $userId): array {
+		$user = $this->userManager->get($userId);
+		if ($user === null) {
+			return [];
+		}
+
+		$quotas = $this->getGroupQuotas();
+		return array_values(array_filter(array_map(
+			static fn (string $groupId): ?int => $quotas[$groupId] ?? null,
+			$this->groupManager->getUserGroupIds($user),
+		), static fn (?int $quota): bool => $quota !== null));
 	}
 }
