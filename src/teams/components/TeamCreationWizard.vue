@@ -394,6 +394,9 @@ function onFormSubmit(): void {
 										disableMenu
 										hideStatus />
 								</template>
+								<template v-if="candidate.subname" #subname>
+									{{ candidate.subname }}
+								</template>
 							</NcListItem>
 						</ul>
 					</template>

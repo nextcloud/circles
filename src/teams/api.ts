@@ -65,6 +65,7 @@ interface RawSuggestion {
 	shareWith: string
 	shareType: number
 	user?: string | null
+	subname: string
 }
 
 /**
@@ -600,6 +601,7 @@ export async function searchMemberCandidates(term: string): Promise<MemberCandid
 		shareWith: suggestion.shareWith,
 		shareType: suggestion.shareType,
 		displayName: suggestion.label,
+		subname: suggestion.subname,
 		isUser: suggestion.user !== null && suggestion.user !== undefined,
 	}))
 }
