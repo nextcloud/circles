@@ -4,6 +4,8 @@
  */
 
 import axios from '@nextcloud/axios'
+import { getCapabilities } from '@nextcloud/capabilities'
+import { t } from '@nextcloud/l10n'
 import { generateOcsUrl } from '@nextcloud/router'
 import { ShareType } from '@nextcloud/sharing'
 import { CircleConfigs, SHARES_TYPES_MEMBER_MAP } from '../models/constants.ts'
@@ -67,27 +69,7 @@ export async function getSuggestions(search, circle = null) {
 		// sort by type so we can get user&groups first...
 		.sort((a, b) => a.shareType - b.shareType)
 
-	const allSuggestions = exactSuggestions.concat(suggestions)
-
-	// Count occurances of display names in order to provide a distinguishable description if needed
-	const nameCounts = allSuggestions.reduce((nameCounts, result) => {
-		if (!result.displayName) {
-			return nameCounts
-		}
-		if (!nameCounts[result.displayName]) {
-			nameCounts[result.displayName] = 0
-		}
-		nameCounts[result.displayName]++
-		return nameCounts
-	}, {})
-
-	const finalResults = allSuggestions.map((item) => {
-		// Make sure that items with duplicate displayName get the shareWith applied as a description
-		if (nameCounts[item.displayName] > 1 && !item.desc) {
-			return { ...item, desc: item.shareWithDisplayNameUnique }
-		}
-		return item
-	})
+	const finalResults = exactSuggestions.concat(suggestions)
 
 	logger.info('suggestions', { finalResults })
 
@@ -119,16 +101,43 @@ export async function getRecommendations() {
 	return finalResults
 }
 
+/**
+ * Secondary line telling apart entries with the same name,
+ * same rules as the files_sharing sharing input.
+ *
+ * @param {object} result raw sharee result
+ * @return {string}
+ */
+function getSubname(result) {
+	switch (result.value.shareType) {
+		case ShareType.User:
+			// Admins can hide the email/unique name for privacy
+			return getCapabilities().files_sharing?.sharee?.always_show_unique === true
+				? result.shareWithDisplayNameUnique ?? ''
+				: ''
+		case ShareType.Email:
+			return result.value.shareWith
+		case ShareType.Remote:
+		case ShareType.RemoteGroup:
+			return result.value.server
+				? t('circles', 'on {server}', { server: result.value.server })
+				: ''
+		default:
+			return result.shareWithDescription ?? ''
+	}
+}
+
 function formatResults(result) {
 	const type = `picker-${result.value.shareType}`
 	return {
 		label: result.label,
 		id: `${type}-${result.value.shareWith}`,
 		// If this is a user, set as user for avatar display by UserBubble
-		user: [window.OC.Share.SHARE_TYPE_USER, window.OC.Share.SHARE_TYPE_REMOTE].indexOf(result.value.shareType) > -1
+		user: [ShareType.User, ShareType.Remote].indexOf(result.value.shareType) > -1
 			? result.value.shareWith
 			: null,
 		type,
+		subname: getSubname(result),
 		...result.value,
 	}
 }
