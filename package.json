@@ -22,6 +22,7 @@
   "dependencies": {
     "@mdi/js": "^7.4.47",
     "@nextcloud/axios": "^2.5.1",
+    "@nextcloud/capabilities": "^1.2.1",
     "@nextcloud/cdav-library": "^2.6.2",
     "@nextcloud/dialogs": "^7.5.0",
     "@nextcloud/files": "^4.0.0",
