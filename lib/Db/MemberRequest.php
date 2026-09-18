@@ -205,12 +205,16 @@ class MemberRequest extends MemberRequestBuilder {
 		try {
 			$this->db->beginTransaction();
 
-			$qb = $this->getMemberSelectSql();
+			$qb = $this->getMemberSelectSql(null, false);
 			$qb->limitToCircleId($member->getCircleId());
 			$qb->limitInt('level', Member::LEVEL_OWNER);
-			// forUpdate locks the owner row until transaction is commited, forcing concurrent
+
+			// forUpdate() locks the owner row until transaction is commited, forcing concurrent
 			// requests to wait and read the updated current owner, preventing multiple owners
-			$qb->forUpdate();
+			// Not needed/supported on SQLite, which only allows one writer at a time anyway
+			if ($this->db->getDatabaseProvider() !== IDBConnection::PLATFORM_SQLITE) {
+				$qb->forUpdate();
+			}
 
 			try {
 				$oldOwner = $this->getItemFromRequest($qb);
