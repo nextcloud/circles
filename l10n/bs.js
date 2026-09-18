@@ -16,6 +16,7 @@ OC.L10N.register(
     "Cancel" : "Cancel",
     "Save" : "Save",
     "Name" : "Ime",
+    "Delete" : "Delete",
     "Actions" : "Radnje",
     "Members" : "Članovi",
     "Other" : "Ostali",
