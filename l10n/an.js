@@ -13,6 +13,7 @@ OC.L10N.register(
     "Cancel" : "Cancel",
     "Save" : "Save",
     "Name" : "Nombre",
+    "Delete" : "Delete",
     "Actions" : "Acions",
     "Back" : "Ta zaga",
     "Size" : "Grandario",

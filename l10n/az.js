@@ -22,6 +22,7 @@ OC.L10N.register(
     "Cancel" : "Cancel",
     "Save" : "Save",
     "Name" : "Ad",
+    "Delete" : "Delete",
     "Actions" : "İşlər",
     "Connect" : "Qoşul",
     "Other" : "Digər",
