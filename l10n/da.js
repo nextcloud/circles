@@ -181,6 +181,7 @@ OC.L10N.register(
     "Name" : "Navn",
     "Type" : "Type",
     "Options" : "Muligheder",
+    "Delete" : "Delete",
     "Team folder" : "Teammappe",
     "Storage quota" : "Lagerkvote",
     "Actions" : "Handlinger",

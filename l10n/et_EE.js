@@ -166,6 +166,7 @@ OC.L10N.register(
     "Unlimited" : "Piiramatu",
     "Group" : "Grupp",
     "Unable to load team folders" : "Tiimikaustade laadimine ei õnnestu",
+    "Unable to load group quotas" : "Grupikvootide laadimine ei õnnestu.",
     "Unable to load available team folders" : "Saadavalolevate tiimikaustade laadimine ei õnnestu",
     "Team folder added" : "Tiimikaust on lisatud",
     "Unable to add team folder" : "Tiimikausta lisamine ei õnnestu",

@@ -19,6 +19,8 @@ OC.L10N.register(
     "Save" : "Save",
     "Add" : "যোগ কর",
     "Name" : "নাম",
+    "Type" : "ধরণ",
+    "Delete" : "Delete",
     "Actions" : "পদক্ষেপসমূহ",
     "Connect" : "সংযুক্ত হও",
     "Other" : "অন্যান্য",
