@@ -26,6 +26,8 @@ OC.L10N.register(
     "Select default quota" : "Choaz ar c'hota dre ziouer",
     "Save" : "Save",
     "Name" : "Anv",
+    "Type" : "Seurt",
+    "Delete" : "Delete",
     "Actions" : "Oberoù",
     "Connect" : "Kenstagañ",
     "Add users" : "Ouzhpennañ implijer ",

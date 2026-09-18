@@ -108,6 +108,8 @@ OC.L10N.register(
     "Cancel" : "Cancel",
     "Save" : "Save",
     "Name" : "Enw",
+    "Type" : "Math",
+    "Delete" : "Delete",
     "Actions" : "Gweithredoedd",
     "Connect" : "Cysylltu",
     "Other" : "Arall",
