@@ -240,6 +240,7 @@ OC.L10N.register(
     "Groups" : "Grupos",
     "Federated users" : "Usuários federados",
     "Contacts" : "Contactos",
+    "on {server}" : "em {server}",
     "No files in here" : "Sem ficheiros aqui",
     "No entries found in this folder" : "Não foram encontradas entradas nesta pasta",
     "Circles App Initialization" : "Inicialização da App Circles"

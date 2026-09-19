@@ -155,6 +155,7 @@ OC.L10N.register(
     "Users" : "Utilizatori",
     "Groups" : "Grupuri",
     "Contacts" : "Contacte",
+    "on {server}" : "pe {server}",
     "No files in here" : "Nu sunt fișiere aici",
     "No entries found in this folder" : "Nici o intrare găsită în acest folder",
     "Circles App Initialization" : "Inițializare aplicație Cercuri"

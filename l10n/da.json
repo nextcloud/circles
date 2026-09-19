@@ -370,6 +370,7 @@
     "Email addresses" : "E- mail- adresser",
     "contacts" : "kontakter",
     "Contacts" : "Kontakter",
+    "on {server}" : "på {server}",
     "An error has occurred in team(s). Check the log for more details." : "Der er opstået en fejl i hold (er). Tjek loggen for flere detaljer.",
     "Unable to create team {circleName}" : "Kan ikke oprette team {circleName}",
     "Unable to delete team {circleId}" : "Kan ikke slette team {circleId}",

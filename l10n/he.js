@@ -123,6 +123,7 @@ OC.L10N.register(
     "Privacy" : "פרטיות",
     "Users" : "משתמשים",
     "Groups" : "קבוצות",
+    "on {server}" : "על גבי {server}",
     "No files in here" : "אין כאן קבצים",
     "No entries found in this folder" : "לא נמצאו רשומות בתיקייה הזאת"
 },

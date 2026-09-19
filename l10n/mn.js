@@ -237,6 +237,7 @@ OC.L10N.register(
     "groups" : "бүлгүүд",
     "Groups" : "–±“Ø–ª—ç–≥“Ø“Ø–¥",
     "Federated users" : "Федерацийн хэрэглэгчид",
+    "on {server}" : "{server} дээр",
     "No files in here" : "Энд файл алга",
     "No entries found in this folder" : "Энэ хавтаст юм олдсонгүй",
     "Circles App Initialization" : "Circles апп эхлүүлэлт"

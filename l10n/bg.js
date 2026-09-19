@@ -177,6 +177,7 @@ OC.L10N.register(
     "groups" : "групи",
     "Groups" : "Групи",
     "Contacts" : "Контакти",
+    "on {server}" : "на {server}",
     "No files in here" : "Няма файлове",
     "No entries found in this folder" : "Папката е празна",
     "Circles App Initialization" : "Инициализация на приложението Circles /кръгове/"

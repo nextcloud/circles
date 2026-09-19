@@ -436,6 +436,7 @@ OC.L10N.register(
     "Email addresses" : "Alamat email",
     "contacts" : "kontak",
     "Contacts" : "Kontak",
+    "on {server}" : "di {server}",
     "An error has occurred in team(s). Check the log for more details." : "Terjadi kesalahan pada tim. Periksa log untuk detail selengkapnya.",
     "Unable to create team {circleName}" : "Tidak dapat membuat tim {circleName}",
     "Unable to delete team {circleId}" : "Tidak dapat menghapus tim {circleId}",
