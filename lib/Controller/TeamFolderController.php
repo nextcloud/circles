@@ -59,11 +59,11 @@ class TeamFolderController extends OCSController {
 		$this->assertAuthenticatedUserIsTeamOwnerOrServerAdmin($circleId, $user);
 
 		if (!$this->policy->isTeamFolderProvisioningEnabled() && !$this->groupManager->isAdmin($user->getUID())) {
-			throw new OCSException('Team space provisioning is disabled', Http::STATUS_FORBIDDEN);
+			throw new OCSException('Team folder provisioning is disabled', Http::STATUS_FORBIDDEN);
 		}
 
 		if (!$this->policy->isEligibleCircle($circle)) {
-			throw new OCSException('This team cannot have a team space', Http::STATUS_FORBIDDEN);
+			throw new OCSException('This team cannot have a team folder', Http::STATUS_FORBIDDEN);
 		}
 
 		$folder = $this->getProvider()->createTeamFolder(

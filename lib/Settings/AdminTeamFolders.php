@@ -62,7 +62,7 @@ class AdminTeamFolders implements IDelegatedSettings {
 	}
 
 	public function getName(): ?string {
-		return $this->l->t('Team spaces');
+		return $this->l->t('Team folders');
 	}
 
 	public function getAuthorizedAppConfig(): array {
