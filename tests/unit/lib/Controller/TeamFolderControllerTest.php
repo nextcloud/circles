@@ -63,7 +63,7 @@ class TeamFolderControllerTest extends TestCase {
 		$this->groupManager->method('isAdmin')->with('owner')->willReturn(false);
 
 		$this->expectException(OCSException::class);
-		$this->expectExceptionMessage('Team space provisioning is disabled');
+		$this->expectExceptionMessage('Team folder provisioning is disabled');
 
 		$this->controller->upgradeTeamFolder('team1');
 	}
@@ -143,7 +143,7 @@ class TeamFolderControllerTest extends TestCase {
 		$this->circleRequest->method('getCircle')->with('team1')->willReturn($circle);
 
 		$this->expectException(OCSException::class);
-		$this->expectExceptionMessage('This team cannot have a team space');
+		$this->expectExceptionMessage('This team cannot have a team folder');
 
 		$this->controller->upgradeTeamFolder('team1');
 	}
