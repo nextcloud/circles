@@ -54,6 +54,7 @@ OC.L10N.register(
     "Users" : "Implijer",
     "Groups" : "Strolladoù",
     "Contacts" : "Darempredoù",
+    "on {server}" : "d'al {server}",
     "No files in here" : "Restr ebet amañ",
     "No entries found in this folder" : "Disoc'h ebet en teuliad-mañ"
 },

@@ -168,6 +168,7 @@ OC.L10N.register(
     "Users" : "Người dùng",
     "Groups" : "Nhóm",
     "Contacts" : "Danh Bạ",
+    "on {server}" : "trên {server}",
     "No files in here" : "Không có tệp ở đây",
     "No entries found in this folder" : "Chưa có mục nào trong thư mục",
     "Circles App Initialization" : "Khởi tạo Ứng dụng vòng kết nối"

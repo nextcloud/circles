@@ -435,6 +435,7 @@
     "Email addresses" : "メールアドレス",
     "contacts" : "連絡先",
     "Contacts" : "連絡先",
+    "on {server}" : "{server} に",
     "An error has occurred in team(s). Check the log for more details." : "チームでエラーが発生しました。詳細についてはログを確認してください。",
     "Unable to create team {circleName}" : "チーム{circleName}を作成できません",
     "Unable to delete team {circleId}" : "チーム {circleId} を削除できません",

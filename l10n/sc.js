@@ -159,6 +159,7 @@ OC.L10N.register(
     "Federation" : "Federatzione",
     "Users" : "Utentes",
     "Groups" : "Grupos",
+    "on {server}" : "in {server}",
     "No files in here" : "Perunu archìviu",
     "No entries found in this folder" : "Perunu elementu agatadu in custa cartella"
 },

@@ -229,6 +229,7 @@ OC.L10N.register(
     "Federated users" : "Федерисани корисници",
     "Email addresses" : "И-мејл адресе",
     "Contacts" : "Контакти",
+    "on {server}" : "на серверу {server}",
     "No files in here" : "Овде нема фајлова",
     "No entries found in this folder" : "Нема резултата у овој фасцикли",
     "Circles App Initialization" : "Иницијализација апликације Кругови"

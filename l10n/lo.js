@@ -218,6 +218,7 @@ OC.L10N.register(
     "Groups" : "ກຸ່ມ",
     "Federated users" : "Federated users",
     "Contacts" : "ລາຍຊື່ຜູ້ຕິດຕໍ່",
+    "on {server}" : "ເທິງ {server}",
     "No files in here" : "ບໍ່ມີຟາຍໃນທີ່ນີ້",
     "No entries found in this folder" : "No entries found in this folder",
     "Circles App Initialization" : "Circles App Initialization"
