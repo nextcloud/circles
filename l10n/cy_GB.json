@@ -124,6 +124,7 @@
     "Email" : "E-bost",
     "Users" : "Defnyddwyr",
     "Groups" : "Grwpiau",
+    "on {server}" : "ar {server}",
     "No files in here" : "Dim ffeiliau i mewn yma",
     "No entries found in this folder" : "Ni chanfuwyd unrhyw gofnodion yn y ffolder hwn",
     "Circles App Initialization" : "Cychwyn Ap Cylchoedd"

@@ -84,6 +84,7 @@ OC.L10N.register(
     "Save" : "Save",
     "Name" : "Nomo",
     "Type" : "Tipo",
+    "Delete" : "Delete",
     "Actions" : "Agoj",
     "Connect" : "Konekti",
     "Members" : "Membroj",
@@ -111,6 +112,7 @@ OC.L10N.register(
     "Federation" : "Federado",
     "Users" : "Uzantoj",
     "Groups" : "Grupoj",
+    "on {server}" : "ĉe {server}",
     "No files in here" : "Neniu dosiero ĉi tie",
     "No entries found in this folder" : "Neniu elemento en tiu ĉi dosierujo"
 },

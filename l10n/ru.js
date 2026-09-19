@@ -337,6 +337,7 @@ OC.L10N.register(
     "Email addresses" : "Адреса электронной почты",
     "contacts" : "контакты",
     "Contacts" : "Контакты",
+    "on {server}" : "на {server}",
     "Unable to create team {circleName}" : "Невозможно создать команду {circleName}",
     "Unable to delete team {circleId}" : "Невозможно удалить команду {circleId}",
     "No files in here" : "Здесь нет файлов",

@@ -178,6 +178,7 @@ OC.L10N.register(
     "Groups" : "Ryhmät",
     "Federated users" : "Federoidut käyttäjät",
     "Contacts" : "Yhteystiedot",
+    "on {server}" : "palvelimella {server}",
     "No files in here" : "Täällä ei ole tiedostoja",
     "No entries found in this folder" : "Tästä kansiosta ei löytynyt tietueita"
 },

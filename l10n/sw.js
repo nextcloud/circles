@@ -236,6 +236,7 @@ OC.L10N.register(
     "Groups" : "Makundi",
     "Federated users" : "Watumiaji walioshirikishwa",
     "Contacts" : "Mawasiliano",
+    "on {server}" : "juu ya {server}",
     "No files in here" : "Hakuna faili hapa",
     "No entries found in this folder" : "Hakuna maingizo yaliyopatikana katika kasha hili",
     "Circles App Initialization" : "Uanzishaji wa Programu ya Miduara"

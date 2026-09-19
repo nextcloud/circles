@@ -246,6 +246,7 @@ OC.L10N.register(
     "Federated users" : "联合用户",
     "Email addresses" : "邮件地址",
     "Contacts" : "联系人",
+    "on {server}" : "在 {server} 上",
     "No files in here" : "此处没有文件",
     "No entries found in this folder" : "此文件夹中无项目",
     "Circles App Initialization" : "应用程序Circles初始化"
