@@ -193,6 +193,7 @@ OC.L10N.register(
     "Groups" : "Skupine",
     "Federated users" : "Zvezni uporabniki",
     "Contacts" : "Stiki",
+    "on {server}" : "na strežniku {server}",
     "No files in here" : "V mapi ni datotek",
     "No entries found in this folder" : "V tej mapi ni datotek in podmap.",
     "Circles App Initialization" : "Zaganjanje programa Krogi"

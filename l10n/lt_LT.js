@@ -373,6 +373,7 @@ OC.L10N.register(
     "Email addresses" : "El. pašto adresai",
     "contacts" : "kontaktai",
     "Contacts" : "Kontaktai",
+    "on {server}" : "serveryje {server}",
     "An error has occurred in team(s). Check the log for more details." : "Įvyko klaida komandoje (-ose). Išsamesnės informacijos ieškokite žurnale.",
     "Unable to create team {circleName}" : "Nepavyko sukurti komandos {circleName}",
     "Unable to delete team {circleId}" : "Nepavyko ištrinti komandos {circleId}",

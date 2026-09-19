@@ -162,6 +162,7 @@ OC.L10N.register(
     "Users" : "Users",
     "Groups" : "ჯგუფები",
     "Contacts" : "Contacts",
+    "on {server}" : "on {server}",
     "No files in here" : "No files in here",
     "No entries found in this folder" : "No entries found in this folder",
     "Circles App Initialization" : "Circles App Initialization"

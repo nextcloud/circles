@@ -218,6 +218,7 @@ OC.L10N.register(
     "Groups" : "Grupper",
     "Federated users" : "Forente brukere",
     "Contacts" : "Kontakter",
+    "on {server}" : "på {server}",
     "No files in here" : "Ingen filer her",
     "No entries found in this folder" : "Ingen oppføringer funnet i denne mappen",
     "Circles App Initialization" : "Initialisering av Circles App"

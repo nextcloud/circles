@@ -248,6 +248,7 @@ OC.L10N.register(
     "Groups" : "گروه‌ها",
     "Federated users" : "کاربران فدرال",
     "Contacts" : "مخاطبین",
+    "on {server}" : "در {server}",
     "No files in here" : "هیچ فایلی در اینجا وجود ندارد  ",
     "No entries found in this folder" : "هیچ ورودی در این پوشه یافت نشد  ",
     "Circles App Initialization" : "راه‌اندازی اپ حلقه‌ها"

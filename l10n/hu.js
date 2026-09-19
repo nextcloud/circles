@@ -239,6 +239,7 @@ OC.L10N.register(
     "Groups" : "Csoportok",
     "Federated users" : "Föderált felhasználók",
     "Contacts" : "Névjegyek",
+    "on {server}" : "{server} kiszolgálón",
     "No files in here" : "Itt nincsenek fájlok",
     "No entries found in this folder" : "Nincsenek bejegyzések ebben a mappában",
     "Circles App Initialization" : "Körök alkalmazás előkészítése"

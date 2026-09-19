@@ -437,6 +437,7 @@ OC.L10N.register(
     "Email addresses" : "E-mailové adresy",
     "contacts" : "kontakty",
     "Contacts" : "Kontakty",
+    "on {server}" : "na {server}",
     "An error has occurred in team(s). Check the log for more details." : "V jednom alebo viacerých tímoch sa vyskytla chyba. Ďalšie podrobnosti nájdete v denníku.",
     "Unable to create team {circleName}" : "Tím {circleName} sa nepodarilo vytvoriť",
     "Unable to delete team {circleId}" : "Tím {circleId} sa nepodarilo odstrániť",

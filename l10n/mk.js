@@ -216,6 +216,7 @@ OC.L10N.register(
     "Privacy" : "Приватност",
     "Groups" : "Групи",
     "Contacts" : "Контакти",
+    "on {server}" : "на {server}",
     "No files in here" : "Тука нема датотеки",
     "No entries found in this folder" : "Нема ништо во оваа папка",
     "Circles App Initialization" : "Иницијализација на апликацијата Circles"

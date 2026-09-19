@@ -185,6 +185,7 @@ OC.L10N.register(
     "Privacy" : "Privacidad",
     "Users" : " Usuarios",
     "Groups" : "Grupos",
+    "on {server}" : "en {server}",
     "No files in here" : "No hay archivos aquí",
     "No entries found in this folder" : "No se encontraron elementos en esta carpeta",
     "Circles App Initialization" : "Inicialización de la aplicación Círculos"

@@ -248,6 +248,7 @@ OC.L10N.register(
     "Groups" : "Групи",
     "Federated users" : "Об'єднані користувачі",
     "Contacts" : "Контакти",
+    "on {server}" : "на {server}",
     "No files in here" : "Тут немає файлів",
     "No entries found in this folder" : "У цьому каталозі нічого немає",
     "Circles App Initialization" : "Ініціалізація застосунка \"Кола\""

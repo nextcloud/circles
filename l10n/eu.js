@@ -229,6 +229,7 @@ OC.L10N.register(
     "Groups" : "Taldeak",
     "Federated users" : "Erabiltzaile federatuak",
     "Contacts" : "Kontaktuak",
+    "on {server}" : "{server} zerbitzarian",
     "No files in here" : "Ez dago fitxategirik hemen",
     "No entries found in this folder" : "Ez da sarrerarik aurkitu karpeta honetan ",
     "Circles App Initialization" : "Zirkuluak aplikazioaren hastapena"
