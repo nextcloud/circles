@@ -437,6 +437,7 @@ OC.L10N.register(
     "Email addresses" : "Tölvupóstföng",
     "contacts" : "tengiliðir",
     "Contacts" : "Tengiliðir",
+    "on {server}" : "á {server}",
     "An error has occurred in team(s). Check the log for more details." : "Villa kom upp í teymi/teymum. Skoðaðu atvikaskráninguna til að sjá nánari upplýsingar.",
     "Unable to create team {circleName}" : "Tókst ekki að búa til teymið {circleName}",
     "Unable to delete team {circleId}" : "Tókst ekki að eyða teyminu {circleId}",

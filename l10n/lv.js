@@ -86,6 +86,7 @@ OC.L10N.register(
     "Users" : "Lietotāji",
     "Groups" : "Grupas",
     "Contacts" : "Kontakti",
+    "on {server}" : "uz {server}",
     "No files in here" : "Šeit nav datņu",
     "No entries found in this folder" : "Šajā mapē nekas nav atrasts"
 },

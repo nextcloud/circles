@@ -372,6 +372,7 @@ OC.L10N.register(
     "Email addresses" : "E-mail adressen",
     "contacts" : "contacten",
     "Contacts" : "Contacten",
+    "on {server}" : "op {server}",
     "An error has occurred in team(s). Check the log for more details." : "Er is een fout opgetreden in het/de team(s). Raadpleeg het logboek voor meer informatie.",
     "Unable to create team {circleName}" : "Aanmaken van team {circleName} niet mogelijk",
     "Unable to delete team {circleId}" : "Verwijderen van team {circleId} niet mogelijk",

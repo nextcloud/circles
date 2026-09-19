@@ -232,6 +232,7 @@ OC.L10N.register(
     "Groups" : "گۇرۇپپىلار",
     "Federated users" : "فېدېراتسىيە ئىشلەتكۈچىلەر",
     "Contacts" : "ئالاقىداشلار",
+    "on {server}" : "{server}",
     "No files in here" : "بۇ يەردە ھۆججەت يوق",
     "No entries found in this folder" : "بۇ ھۆججەت قىسقۇچتا ھېچقانداق مەزمۇن تېپىلمىدى",
     "Circles App Initialization" : "چەمبەر ئەپلىرىنى قوزغىتىش"

@@ -240,6 +240,7 @@ OC.L10N.register(
     "Groups" : "Grupe",
     "Federated users" : "Udruženi korisnici",
     "Contacts" : "Kontakti",
+    "on {server}" : "na {server}",
     "No files in here" : "Nema datoteka",
     "No entries found in this folder" : "U ovoj mapi nisu pronađeni nikakvi zapisi",
     "Circles App Initialization" : "Inicijalizacija aplikacije Krugovi"

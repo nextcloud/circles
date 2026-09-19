@@ -238,6 +238,7 @@ OC.L10N.register(
     "Groups" : "Gruppi",
     "Federated users" : "Utenti federati",
     "Contacts" : "Contatti",
+    "on {server}" : "su {server}",
     "No files in here" : "Nessun file qui",
     "No entries found in this folder" : "Nessuna voce trovata in questa cartella",
     "Circles App Initialization" : "Inizializzazione applicazione Cerchie"

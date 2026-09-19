@@ -164,6 +164,7 @@ OC.L10N.register(
     "Users" : "사용자",
     "Groups" : "그룹",
     "Contacts" : "연락처",
+    "on {server}" : "{server}에서",
     "No files in here" : "여기에 파일 없음",
     "No entries found in this folder" : "이 폴더에서 항목을 찾을 수 없음"
 },

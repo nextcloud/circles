@@ -218,6 +218,7 @@ OC.L10N.register(
     "Federated users" : "مستخدِمون من السحابة الموحدة",
     "Email addresses" : "عنوان البريد الالكتروني",
     "Contacts" : "جهات الاتصال",
+    "on {server}" : "على {server}",
     "No files in here" : "لا توجد ملفات هنا",
     "No entries found in this folder" : "لا يوجد مدخلات في هذا المجلد ",
     "Circles App Initialization" : "بدء تشغيل تطبيق الدوائر Circles App"

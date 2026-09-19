@@ -334,6 +334,7 @@ OC.L10N.register(
     "Email addresses" : "Adresy e-mail",
     "contacts" : "kontakty",
     "Contacts" : "Kontakty",
+    "on {server}" : "na {server}",
     "Unable to create team {circleName}" : "Nie udało się utworzyć zespołu {circleName}",
     "Unable to delete team {circleId}" : "Nie udało się usunąć zespołu {circleId}",
     "No files in here" : "Brak plików tutaj",

@@ -67,6 +67,7 @@ OC.L10N.register(
     "Users" : "Foydalanuvchilar",
     "Groups" : "Groups",
     "Contacts" : "Aloqalar",
+    "on {server}" : " {server}da",
     "No files in here" : "No files in hereBu erda fayl mavjud emas",
     "No entries found in this folder" : "Ushbu papkada hech qanday yozuv topilmadi"
 },

@@ -254,6 +254,7 @@
     "teams" : "týmy",
     "contacts" : "kontakty",
     "Contacts" : "Kontakty",
+    "on {server}" : "na {server}",
     "No files in here" : "Nejsou zde žádné soubory",
     "No entries found in this folder" : "V této složce nebyly nalezeny žádné položky",
     "Circles App Initialization" : "Inicializace aplikace okruhy"

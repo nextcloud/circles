@@ -194,6 +194,7 @@ OC.L10N.register(
     "Groups" : "Grupos",
     "Federated users" : "Usuarios federaos",
     "Contacts" : "Contautos",
+    "on {server}" : "en: {server}",
     "No files in here" : "Nun hai ficheros",
     "No entries found in this folder" : "Nun s'atopó nenguna entrada nesta carpeta",
     "Circles App Initialization" : "Aniciu de l'aplicación Círculos"
