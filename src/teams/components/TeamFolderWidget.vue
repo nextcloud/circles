@@ -101,7 +101,7 @@ function encodeDir(dir: string): string {
 
 /**
  * Hidden entries in Nextcloud start with a dot and should not be shown in
- * the Team space widget.
+ * the Team folder widget.
  *
  * @param node - The team folder node
  */

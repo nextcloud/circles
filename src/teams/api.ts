@@ -188,7 +188,7 @@ export async function fetchTeamMembers(teamId: string): Promise<Member[]> {
  * Create a team and return its single id.
  *
  * @param name - The team name
- * @param createTeamFolder - Whether to auto-create a team space. Defaults to
+ * @param createTeamFolder - Whether to auto-create a team folder. Defaults to
  * true so existing API callers keep the previous behaviour.
  */
 export async function createTeam(name: string, createTeamFolder = true): Promise<string> {

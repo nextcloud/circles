@@ -16,6 +16,9 @@
     "ts:check": "vue-tsc --noEmit",
     "watch": "NODE_ENV=development vite --mode development build --watch"
   },
+  "browserslist": [
+    "extends @nextcloud/browserslist-config"
+  ],
   "overrides": {
     "vite-plugin-node-polyfills": "^0.24.0"
   },
