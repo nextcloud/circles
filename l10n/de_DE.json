@@ -179,7 +179,7 @@
     "Unable to update team folder quota" : "Team-Ordnerkontingent kann nicht aktualisiert werden",
     "Unable to update team folder config" : "Konfiguration des Team-Ordners konnte nicht aktualisiert werden",
     "Changed default team folder quotas" : "Standardmäßige Teamordner-Kontingente geändert",
-    "Configure default storage quotas and manage team folders." : "Standard-Speicherkontingente konfigurieren und Teamordner verwalten.",
+    "Configure default storage quotas and manage team folders." : "Standard-Speicherkontingente einrichten und Teamordner verwalten.",
     "Team folder settings" : "Teamordnereinstellungen",
     "Team folders" : "Team-Ordner",
     "Default quotas" : "Standard Speicherkontingente",
