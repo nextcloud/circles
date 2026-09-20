@@ -188,6 +188,7 @@ OC.L10N.register(
     "Please select a valid png or jpg file" : "Velg en gyldig png- eller jpg-fil",
     "name" : "navn",
     "description" : "beskrivelse",
+    "Delete picture" : "Slett bilde",
     "Description" : "Beskrivelse",
     "Apply" : "Bruk",
     "Create link" : "Lag lenke",
