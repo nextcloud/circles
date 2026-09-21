@@ -129,20 +129,6 @@
       <code><![CDATA[NCSignatory]]></code>
     </LessSpecificImplementedReturnType>
   </file>
-  <file src="lib/Model/FederatedLink.php">
-    <InvalidPropertyAssignmentValue>
-      <code><![CDATA[$circleUniqueId]]></code>
-    </InvalidPropertyAssignmentValue>
-    <InvalidReturnStatement>
-      <code><![CDATA[$this->circleUniqueId]]></code>
-    </InvalidReturnStatement>
-    <InvalidReturnType>
-      <code><![CDATA[string]]></code>
-    </InvalidReturnType>
-    <InvalidScalarArgument>
-      <code><![CDATA[$this->circleUniqueId]]></code>
-    </InvalidScalarArgument>
-  </file>
   <file src="lib/Model/FederatedUser.php">
     <InvalidReturnStatement>
       <code><![CDATA[$arr]]></code>
