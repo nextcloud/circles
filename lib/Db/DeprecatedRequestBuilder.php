@@ -23,7 +23,6 @@ class DeprecatedRequestBuilder {
 	public const TABLE_GROUPS = 'circle_groups';
 	public const TABLE_SHARES = 'circle_shares';
 	public const TABLE_LINKS = 'circle_links';
-	public const TABLE_TOKENS = 'circle_tokens';
 	public const TABLE_GSEVENTS = 'circle_gsevents';
 	public const TABLE_GSSHARES = 'circle_gsshares';
 	public const TABLE_GSSHARES_MOUNTPOINT = 'circle_gsshares_mp';
@@ -39,7 +38,6 @@ class DeprecatedRequestBuilder {
 		self::TABLE_MEMBERS,
 		self::TABLE_SHARES,
 		self::TABLE_LINKS,
-		self::TABLE_TOKENS,
 		self::TABLE_GSEVENTS,
 		self::TABLE_GSSHARES,
 		self::TABLE_GSSHARES_MOUNTPOINT
