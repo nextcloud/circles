@@ -5,32 +5,6 @@
       <code><![CDATA[str_starts_with($sK, '_')]]></code>
     </TypeDoesNotContainType>
   </file>
-  <file src="lib/Circles/FileSharingBroadcaster.php">
-    <DeprecatedClass>
-      <code><![CDATA[FileSharesRequest]]></code>
-      <code><![CDATA[FileSharesRequest::class]]></code>
-      <code><![CDATA[Server::get(FileSharesRequest::class)]]></code>
-      <code><![CDATA[Server::get(TokensRequest::class)]]></code>
-      <code><![CDATA[SharesToken]]></code>
-      <code><![CDATA[SharesToken]]></code>
-      <code><![CDATA[SharesToken]]></code>
-      <code><![CDATA[TokensRequest]]></code>
-      <code><![CDATA[TokensRequest::class]]></code>
-    </DeprecatedClass>
-    <DeprecatedMethod>
-      <code><![CDATA[MiscService::getContactData($contactId)]]></code>
-      <code><![CDATA[MiscService::getContactData($contactId)]]></code>
-      <code><![CDATA[MiscService::getContactData($member->getUserId())]]></code>
-    </DeprecatedMethod>
-    <InvalidScalarArgument>
-      <code><![CDATA[$share->getId()]]></code>
-      <code><![CDATA[$share->getId()]]></code>
-    </InvalidScalarArgument>
-    <TypeDoesNotContainType>
-      <code><![CDATA[!$sendPasswordByMail]]></code>
-      <code><![CDATA[$sendPasswordByMail]]></code>
-    </TypeDoesNotContainType>
-  </file>
   <file src="lib/Command/CirclesRemote.php">
     <UndefinedMethod>
       <code><![CDATA[setType]]></code>
@@ -108,16 +82,6 @@
       <code><![CDATA[$this->circleEventService]]></code>
       <code><![CDATA[CircleEventService]]></code>
     </UndefinedDocblockClass>
-  </file>
-  <file src="lib/IBroadcaster.php">
-    <DeprecatedClass>
-      <code><![CDATA[SharingFrame]]></code>
-      <code><![CDATA[SharingFrame]]></code>
-      <code><![CDATA[SharingFrame]]></code>
-      <code><![CDATA[SharingFrame]]></code>
-      <code><![CDATA[SharingFrame]]></code>
-      <code><![CDATA[SharingFrame]]></code>
-    </DeprecatedClass>
   </file>
   <file src="lib/Listeners/CircleMemberRemoved.php">
     <UndefinedClass>
