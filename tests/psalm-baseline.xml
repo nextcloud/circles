@@ -189,19 +189,6 @@
       <code><![CDATA[$this->get('share_id', $data, '')]]></code>
     </InvalidScalarArgument>
   </file>
-  <file src="lib/Model/SharingFrame.php">
-    <FalsableReturnStatement>
-      <code><![CDATA[json_encode($this->headers)]]></code>
-      <code><![CDATA[json_encode($this->payload)]]></code>
-    </FalsableReturnStatement>
-    <NullArgument>
-      <code><![CDATA[null]]></code>
-    </NullArgument>
-    <NullableReturnStatement>
-      <code><![CDATA[null]]></code>
-      <code><![CDATA[null]]></code>
-    </NullableReturnStatement>
-  </file>
   <file src="lib/Service/AvatarService.php">
     <MissingDependency>
       <code><![CDATA[\OCP\Image]]></code>
