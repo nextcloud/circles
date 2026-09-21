@@ -46,25 +46,6 @@
       <code><![CDATA[IQueryBuilder::PARAM_DATE]]></code>
     </DeprecatedConstant>
   </file>
-  <file src="lib/Db/TokensRequest.php">
-    <DeprecatedClass>
-      <code><![CDATA[SharesToken]]></code>
-      <code><![CDATA[SharesToken]]></code>
-      <code><![CDATA[SharesToken]]></code>
-      <code><![CDATA[SharesToken]]></code>
-      <code><![CDATA[TokensRequestBuilder]]></code>
-    </DeprecatedClass>
-    <InvalidScalarArgument>
-      <code><![CDATA[$shareId]]></code>
-      <code><![CDATA[$shareId]]></code>
-    </InvalidScalarArgument>
-  </file>
-  <file src="lib/Db/TokensRequestBuilder.php">
-    <DeprecatedClass>
-      <code><![CDATA[SharesToken]]></code>
-      <code><![CDATA[new SharesToken()]]></code>
-    </DeprecatedClass>
-  </file>
   <file src="lib/FederatedItems/SharedItemsSync.php">
     <UndefinedClass>
       <code><![CDATA[CircleEventService]]></code>
@@ -175,20 +156,10 @@
       <code><![CDATA[$this->shareToken]]></code>
     </NullableReturnStatement>
   </file>
-  <file src="lib/Model/SharesToken.php">
-    <InvalidScalarArgument>
-      <code><![CDATA[$this->get('share_id', $data, '')]]></code>
-    </InvalidScalarArgument>
-  </file>
   <file src="lib/Service/AvatarService.php">
     <MissingDependency>
       <code><![CDATA[\OCP\Image]]></code>
     </MissingDependency>
-  </file>
-  <file src="lib/Service/FederatedShareService.php">
-    <InvalidMethodCall>
-      <code><![CDATA[gObj]]></code>
-    </InvalidMethodCall>
   </file>
   <file src="lib/Service/GlobalScaleService.php">
     <UndefinedClass>
