@@ -148,11 +148,6 @@
       <code><![CDATA[self]]></code>
     </LessSpecificImplementedReturnType>
   </file>
-  <file src="lib/Model/DavCard.php">
-    <InvalidScalarArgument>
-      <code><![CDATA[$this->get('addressBookId', $data)]]></code>
-    </InvalidScalarArgument>
-  </file>
   <file src="lib/Model/DeprecatedCircle.php">
     <DeprecatedClass>
       <code><![CDATA[BaseCircle]]></code>
