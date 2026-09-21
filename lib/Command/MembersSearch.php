@@ -50,7 +50,7 @@ class MembersSearch extends Base {
 	 * @return int
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		$result = $this->searchService->search($input->getArgument('needle'));
+		$result = $this->searchService->search($input->getArgument('term'));
 
 		if (strtolower((string)$input->getOption('output')) === 'json') {
 			$output->writeln(json_encode($result, JSON_PRETTY_PRINT));
