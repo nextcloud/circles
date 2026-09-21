@@ -105,7 +105,6 @@ class ConfigService {
 
 	// deprecated -- removing in NC25
 	public const CIRCLES_CONTACT_BACKEND = 'contact_backend';
-	public const CIRCLES_ACCOUNTS_ONLY = 'accounts_only'; // only UserType=1
 
 	public const FORCE_NC_BASE = 'force_nc_base';
 	public const TEST_NC_BASE = 'test_nc_base';
@@ -176,7 +175,6 @@ class ConfigService {
 		self::FORCE_NC_BASE => '',
 		self::TEST_NC_BASE => '',
 		self::CIRCLES_CONTACT_BACKEND => '0',
-		self::CIRCLES_ACCOUNTS_ONLY => '0',
 	];
 
 	public const DISPLAY_NONE = 0;
