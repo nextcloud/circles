@@ -18,9 +18,6 @@ use OCP\IDBConnection;
 use OCP\IL10N;
 
 class DeprecatedRequestBuilder {
-	public const TABLE_FILE_SHARES = 'share';
-	public const SHARE_TYPE = 7;
-
 	public const TABLE_CIRCLES = 'circle_circles';
 	public const TABLE_MEMBERS = 'circle_members';
 	public const TABLE_GROUPS = 'circle_groups';

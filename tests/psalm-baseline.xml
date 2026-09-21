@@ -35,15 +35,6 @@
       <code><![CDATA[QueryBuilder::SELECT]]></code>
     </DeprecatedConstant>
   </file>
-  <file src="lib/Db/FileSharesRequest.php">
-    <DeprecatedClass>
-      <code><![CDATA[FileSharesRequestBuilder]]></code>
-    </DeprecatedClass>
-    <InvalidScalarArgument>
-      <code><![CDATA[self::SHARE_TYPE]]></code>
-      <code><![CDATA[self::SHARE_TYPE]]></code>
-    </InvalidScalarArgument>
-  </file>
   <file src="lib/Db/GSSharesRequest.php">
     <DeprecatedClass>
       <code><![CDATA[GSSharesRequestBuilder]]></code>
