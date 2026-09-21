@@ -35,11 +35,6 @@
       <code><![CDATA[QueryBuilder::SELECT]]></code>
     </DeprecatedConstant>
   </file>
-  <file src="lib/Db/GSSharesRequest.php">
-    <DeprecatedClass>
-      <code><![CDATA[GSSharesRequestBuilder]]></code>
-    </DeprecatedClass>
-  </file>
   <file src="lib/Db/ShareWrapperRequest.php">
     <DeprecatedConstant>
       <code><![CDATA[IQueryBuilder::PARAM_DATE]]></code>
@@ -111,15 +106,6 @@
     <LessSpecificImplementedReturnType>
       <code><![CDATA[self]]></code>
     </LessSpecificImplementedReturnType>
-  </file>
-  <file src="lib/Model/GlobalScale/GSEvent.php">
-    <DeprecatedMethod>
-      <code><![CDATA[getDeprecatedCircle]]></code>
-      <code><![CDATA[getDeprecatedCircle]]></code>
-      <code><![CDATA[getDeprecatedCircle]]></code>
-      <code><![CDATA[getDeprecatedCircle]]></code>
-      <code><![CDATA[setDeprecatedCircle]]></code>
-    </DeprecatedMethod>
   </file>
   <file src="lib/Model/Member.php">
     <InvalidClass>
