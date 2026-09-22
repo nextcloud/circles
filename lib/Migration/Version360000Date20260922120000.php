@@ -17,6 +17,12 @@ use OCP\Migration\IOutput;
 use OCP\Migration\SimpleMigrationStep;
 
 #[DropTable(table: 'circles_share_lock')]
+#[DropTable(table: 'circle_gsshares')]
+#[DropTable(table: 'circle_gsshares_mp')]
+#[DropTable(table: 'circle_groups')]
+#[DropTable(table: 'circle_shares')]
+#[DropTable(table: 'circle_links')]
+#[DropTable(table: 'circle_remotes')]
 class Version360000Date20260922120000 extends SimpleMigrationStep {
 	/**
 	 * @param IOutput $output
@@ -32,6 +38,30 @@ class Version360000Date20260922120000 extends SimpleMigrationStep {
 
 		if ($schema->hasTable('circles_share_lock')) {
 			$schema->dropTable('circles_share_lock');
+		}
+
+		if ($schema->hasTable('circle_gsshares')) {
+			$schema->dropTable('circle_gsshares');
+		}
+
+		if ($schema->hasTable('circle_gsshares_mp')) {
+			$schema->dropTable('circle_gsshares_mp');
+		}
+
+		if ($schema->hasTable('circle_groups')) {
+			$schema->dropTable('circle_groups');
+		}
+
+		if ($schema->hasTable('circle_shares')) {
+			$schema->dropTable('circle_shares');
+		}
+
+		if ($schema->hasTable('circle_links')) {
+			$schema->dropTable('circle_links');
+		}
+
+		if ($schema->hasTable('circle_remotes')) {
+			$schema->dropTable('circle_remotes');
 		}
 
 		return $schema;

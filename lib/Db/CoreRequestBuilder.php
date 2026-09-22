@@ -41,9 +41,6 @@ class CoreRequestBuilder {
 	// wip
 	public const TABLE_TOKEN = 'circles_token';
 
-	public const TABLE_GSSHARES = 'circle_gsshares'; // rename ?
-	public const TABLE_GSSHARES_MOUNTPOINT = 'circle_gsshares_mp'; // rename ?
-
 	public const NC_TABLE_ACCOUNTS = 'accounts';
 	public const NC_TABLE_GROUP_USER = 'group_user';
 
@@ -137,8 +134,6 @@ class CoreRequestBuilder {
 			'password',
 			'accepted'
 		],
-		self::TABLE_GSSHARES => [],
-		self::TABLE_GSSHARES_MOUNTPOINT => []
 	];
 
 	public static $outsideTables = [

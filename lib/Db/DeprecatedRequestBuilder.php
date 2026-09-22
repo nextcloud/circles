@@ -20,10 +20,6 @@ use OCP\IL10N;
 class DeprecatedRequestBuilder {
 	public const TABLE_CIRCLES = 'circle_circles';
 	public const TABLE_MEMBERS = 'circle_members';
-	public const TABLE_GROUPS = 'circle_groups';
-	public const TABLE_SHARES = 'circle_shares';
-	public const TABLE_LINKS = 'circle_links';
-	public const TABLE_REMOTE = 'circle_remotes';
 
 	public const NC_TABLE_ACCOUNTS = 'accounts';
 	public const NC_TABLE_GROUP_USER = 'group_user';
