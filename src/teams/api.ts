@@ -48,7 +48,7 @@ interface RawCircle {
 	displayName: string
 	description?: string
 	population?: number
-	initiator?: { level?: number }
+	initiator?: { level?: number } | null
 }
 
 /** Raw team as returned by the dashboard widget endpoint. */
@@ -149,7 +149,7 @@ export async function fetchTeams(): Promise<Team[]> {
 	if (circlesRes.status === 'rejected') {
 		throw circlesRes.reason
 	}
-	const circles = circlesRes.value.data.ocs.data ?? []
+	const circles = (circlesRes.value.data.ocs.data ?? []).filter((circle) => circle.initiator)
 
 	// The dashboard only enriches each team with member/resource previews, so
 	// treat a failure there as "no previews" rather than failing the whole page.
