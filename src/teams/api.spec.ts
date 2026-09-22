@@ -32,7 +32,25 @@ vi.mock('./team-page/services/collaborationAutocompletion.js', () => ({
 	getSuggestions: vi.fn(),
 }))
 
-const { createTeam } = await import('./api.ts')
+const { createTeam, fetchTeams } = await import('./api.ts')
+
+describe('fetchTeams', () => {
+	it('drops circles the current user is not a member of', async () => {
+		const circles = [
+			{ id: 'team1', name: 'team1', displayName: 'Team One', population: 3, initiator: { level: 9 } },
+			{ id: 'visible1', name: 'visible1', displayName: 'Visible circle', population: 10, initiator: null },
+		]
+		vi.mocked(axios.get)
+			.mockResolvedValueOnce({ data: { ocs: { data: circles } } })
+			.mockResolvedValueOnce({ data: { ocs: { data: [] } } })
+
+		const teams = await fetchTeams()
+
+		expect(teams).toHaveLength(1)
+		expect(teams[0].id).toBe('team1')
+		expect(teams[0].myRole).toBe('owner')
+	})
+})
 
 describe('createTeam', () => {
 	beforeEach(() => {
