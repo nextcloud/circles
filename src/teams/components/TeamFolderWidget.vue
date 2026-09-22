@@ -24,7 +24,6 @@ import { logger } from '../../logger.ts'
 
 const props = defineProps<{
 	mountPoint: string
-	rootFolderId?: number
 	folderPath?: string
 }>()
 
@@ -37,7 +36,10 @@ const rootPath = defaultRootPath
 
 const currentPath = ref(props.folderPath ?? '')
 const nodes = ref<INode[]>([])
-const currentFolderFileId = ref<number | undefined>(props.rootFolderId)
+// Resolved from the DAV response in loadContents(); starts unknown because the
+// GroupFolders folder id (passed by the parent) is not the same as the DAV
+// node id that the Files app URL expects.
+const currentFolderFileId = ref<number | undefined>(undefined)
 const loading = ref(false)
 const error = ref<string | null>(null)
 const viewMode = ref<'grid' | 'list'>('grid')
@@ -78,13 +80,16 @@ const currentDir = computed(() => currentPath.value
 /**
  * URL that opens the current folder in the Files app.
  *
- * The Files app accepts file id 0 when the target is a folder; the actual
- * folder path is taken from the `dir` query parameter.
+ * Uses the DAV file id once it is known (resolved by loadContents). Before
+ * that, falls back to a path-based URL so the link always opens the right
+ * team folder regardless of which internal IDs the GroupFolders app uses.
  */
 const currentFolderUrl = computed(() => {
-	const fileid = currentFolderFileId.value ?? 0
-	const url = generateUrl('/apps/files/files/{fileid}', { fileid })
-	return `${url}?dir=${encodeDir(currentDir.value)}`
+	if (currentFolderFileId.value !== undefined) {
+		const url = generateUrl('/apps/files/files/{fileid}', { fileid: currentFolderFileId.value })
+		return `${url}?dir=${encodeDir(currentDir.value)}`
+	}
+	return `${generateUrl('/apps/files')}?dir=${encodeDir(currentDir.value)}`
 })
 
 /**
@@ -308,7 +313,7 @@ async function loadContents(): Promise<void> {
 		const currentEntry = data[0]
 		if (currentEntry) {
 			const currentNode = resultToNode(currentEntry, rootPath)
-			currentFolderFileId.value = currentNode.fileid ?? props.rootFolderId
+			currentFolderFileId.value = currentNode.fileid
 		}
 
 		nodes.value = data
