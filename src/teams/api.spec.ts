@@ -50,6 +50,14 @@ describe('fetchTeams', () => {
 		expect(teams[0].id).toBe('team1')
 		expect(teams[0].myRole).toBe('owner')
 	})
+
+	it('returns an empty list when the circles response carries no data', async () => {
+		vi.mocked(axios.get)
+			.mockResolvedValueOnce({ data: { ocs: {} } })
+			.mockResolvedValueOnce({ data: { ocs: { data: [] } } })
+
+		await expect(fetchTeams()).resolves.toEqual([])
+	})
 })
 
 describe('createTeam', () => {
