@@ -125,14 +125,13 @@ class MemberLevel implements
 	public function manage(FederatedEvent $event): void {
 		$member = clone $event->getMember();
 		$member->setLevel($event->getData()->gInt('level'));
+		$this->memberRequest->updateLevel($member);
 
 		if ($member->getLevel() === Member::LEVEL_OWNER) {
-			$oldOwner = $this->memberRequest->promoteToOwner($member);
-			if ($oldOwner !== null) {
-				$this->membershipService->onUpdate($oldOwner->getSingleId());
-			}
-		} else {
-			$this->memberRequest->updateLevel($member);
+			$oldOwner = clone $event->getCircle()->getOwner();
+			$oldOwner->setLevel(Member::LEVEL_ADMIN);
+			$this->memberRequest->updateLevel($oldOwner);
+			$this->membershipService->onUpdate($oldOwner->getSingleId());
 		}
 
 		$this->membershipService->onUpdate($member->getSingleId());
