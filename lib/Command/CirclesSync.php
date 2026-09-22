@@ -15,11 +15,8 @@ use OCA\Circles\Exceptions\ContactFormatException;
 use OCA\Circles\Exceptions\ContactNotFoundException;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\InvalidIdException;
-use OCA\Circles\Exceptions\MigrationException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
-use OCA\Circles\Service\ConfigService;
-use OCA\Circles\Service\MigrationService;
 use OCA\Circles\Service\OutputService;
 use OCA\Circles\Service\SyncService;
 use Symfony\Component\Console\Input\InputInterface;
@@ -34,9 +31,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CirclesSync extends Base {
 	public function __construct(
 		private readonly SyncService $syncService,
-		private readonly MigrationService $migrationService,
 		private readonly OutputService $outputService,
-		private readonly ConfigService $configService,
 	) {
 		parent::__construct();
 	}
@@ -45,9 +40,6 @@ class CirclesSync extends Base {
 		parent::configure();
 		$this->setName('circles:sync')
 			->setDescription('Sync Circles and Members')
-			->addOption('migration', '', InputOption::VALUE_NONE, 'Migrate from Circles 0.21.0')
-			->addOption('force', '', InputOption::VALUE_NONE, 'Force migration')
-			->addOption('force-run', '', InputOption::VALUE_NONE, 'Force migration run')
 			->addOption('apps', '', InputOption::VALUE_NONE, 'Sync Apps')
 			->addOption('users', '', InputOption::VALUE_NONE, 'Sync Nextcloud Account')
 			->addOption('groups', '', InputOption::VALUE_NONE, 'Sync Nextcloud Groups')
@@ -66,25 +58,11 @@ class CirclesSync extends Base {
 	 * @throws ContactNotFoundException
 	 * @throws FederatedUserException
 	 * @throws InvalidIdException
-	 * @throws MigrationException
 	 * @throws RequestBuilderException
 	 * @throws SingleCircleNotFoundException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$this->outputService->setOccOutput($output);
-
-		if ($input->getOption('migration')) {
-			if ($input->getOption('force-run')) {
-				$this->configService->setAppValue(ConfigService::MIGRATION_RUN, '0');
-			}
-
-			$this->migrationService->migration($input->getOption('force'));
-
-			$output->writeln('');
-			$output->writeln('Migration done');
-
-			return 0;
-		}
 
 		$output->writeln('<comment>This process requires a lot of memory.</comment>');
 		$output->writeln('<comment>If it crash, please restart it and it will continue where it stopped.</comment>');

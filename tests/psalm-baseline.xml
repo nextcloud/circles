@@ -24,14 +24,7 @@
     <DeprecatedClass>
       <code><![CDATA[new MemberDoesNotExistException()]]></code>
     </DeprecatedClass>
-  </file>
-  <file src="lib/Db/DeprecatedRequestBuilder.php">
     <DeprecatedConstant>
-      <code><![CDATA[QueryBuilder::SELECT]]></code>
-      <code><![CDATA[QueryBuilder::SELECT]]></code>
-      <code><![CDATA[QueryBuilder::SELECT]]></code>
-      <code><![CDATA[QueryBuilder::SELECT]]></code>
-      <code><![CDATA[QueryBuilder::SELECT]]></code>
       <code><![CDATA[QueryBuilder::SELECT]]></code>
     </DeprecatedConstant>
   </file>
