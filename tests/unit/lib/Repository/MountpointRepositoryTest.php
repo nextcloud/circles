@@ -14,8 +14,10 @@ use OCA\Circles\Exceptions\MountNotFoundException;
 use OCA\Circles\Repository\MountpointRepository;
 use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\Server;
+use PHPUnit\Framework\Attributes\Group;
 use Test\TestCase;
 
+#[Group('DB')]
 class MountpointRepositoryTest extends TestCase {
 	private MountpointRepository $mountpointRepository;
 
@@ -47,7 +49,6 @@ class MountpointRepositoryTest extends TestCase {
 
 		$inserted = $this->mountpointRepository->insertMountpoint($mountpoint);
 
-		$this->assertNotNull($inserted->id);
 		$this->assertSame(md5('Some Folder'), $inserted->mountpointHash);
 
 		$stored = $this->mountpointRepository->findOneBy(['mountId' => 'mount1234567890123456']);

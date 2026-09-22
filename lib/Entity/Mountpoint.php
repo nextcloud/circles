@@ -26,12 +26,10 @@ use OCP\DB\Schema\ColumnType;
 #[Entity(name: 'circles_mountpoint')]
 final class Mountpoint implements JsonSerializable {
 	#[Id]
-	#[Column(name: 'id', type: ColumnType::Integer)]
-	public ?int $id = null;
-
 	#[Column(name: 'mount_id', type: ColumnType::String, length: 31)]
 	public string $mountId = '';
 
+	#[Id]
 	#[Column(name: 'single_id', type: ColumnType::String, length: 31)]
 	public string $singleId = '';
 
