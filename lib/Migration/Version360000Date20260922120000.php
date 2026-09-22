@@ -23,6 +23,8 @@ use OCP\Migration\SimpleMigrationStep;
 #[DropTable(table: 'circle_shares')]
 #[DropTable(table: 'circle_links')]
 #[DropTable(table: 'circle_remotes')]
+#[DropTable(table: 'circle_circles')]
+#[DropTable(table: 'circle_members')]
 class Version360000Date20260922120000 extends SimpleMigrationStep {
 	/**
 	 * @param IOutput $output
@@ -62,6 +64,14 @@ class Version360000Date20260922120000 extends SimpleMigrationStep {
 
 		if ($schema->hasTable('circle_remotes')) {
 			$schema->dropTable('circle_remotes');
+		}
+
+		if ($schema->hasTable('circle_circles')) {
+			$schema->dropTable('circle_circles');
+		}
+
+		if ($schema->hasTable('circle_members')) {
+			$schema->dropTable('circle_members');
 		}
 
 		return $schema;

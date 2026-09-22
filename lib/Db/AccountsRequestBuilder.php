@@ -9,14 +9,24 @@ namespace OCA\Circles\Db;
 
 use OCA\Circles\Tools\Traits\TArrayTools;
 use OCP\DB\QueryBuilder\IQueryBuilder;
+use OCP\IDBConnection;
 
 /**
  * Class AccountsRequestBuilder
  *
  * @package OCA\Circles\Db
  */
-class AccountsRequestBuilder extends DeprecatedRequestBuilder {
+class AccountsRequestBuilder {
 	use TArrayTools;
+
+	public const NC_TABLE_ACCOUNTS = 'accounts';
+
+	protected string $default_select_alias = '';
+
+	public function __construct(
+		protected readonly IDBConnection $dbConnection,
+	) {
+	}
 
 	/**
 	 * Base of the Sql Insert request for Accounts

@@ -7,8 +7,10 @@
 
 namespace OCA\Circles\Db;
 
+use Doctrine\DBAL\Query\QueryBuilder;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Tools\Traits\TStringTools;
+use OCP\DB\QueryBuilder\IQueryBuilder;
 
 class AccountsRequest extends AccountsRequestBuilder {
 	use TStringTools;
@@ -68,5 +70,16 @@ class AccountsRequest extends AccountsRequestBuilder {
 		$cursor->closeCursor();
 
 		return $accounts;
+	}
+
+	/**
+	 * @param IQueryBuilder $qb
+	 * @param string $field
+	 * @param string|integer $value
+	 */
+	private function limitToDBField(IQueryBuilder $qb, $field, $value): void {
+		$expr = $qb->expr();
+		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
+		$qb->andWhere($expr->eq($pf . $field, $qb->createNamedParameter($value)));
 	}
 }
