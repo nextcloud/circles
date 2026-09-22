@@ -12,6 +12,7 @@ namespace OCA\Circles\Db;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Mount;
+use OCA\Circles\Repository\MountpointRepository;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\TimezoneService;
 use OCA\Circles\Tools\Traits\TStringTools;
@@ -28,7 +29,7 @@ class MountRequest extends MountRequestBuilder {
 	public function __construct(
 		TimezoneService $timezoneService,
 		ConfigService $configService,
-		private MountPointRequest $mountPointRequest,
+		private MountpointRepository $mountpointRepository,
 	) {
 		parent::__construct($timezoneService, $configService);
 	}
@@ -61,7 +62,7 @@ class MountRequest extends MountRequestBuilder {
 		$qb->executeStatement();
 
 		foreach ($mounts as $mount) {
-			$this->mountPointRequest->deleteByMountId($mount->getMountId());
+			$this->mountpointRepository->deleteBy(['mountId' => $mount->getMountId()]);
 		}
 	}
 
@@ -83,7 +84,7 @@ class MountRequest extends MountRequestBuilder {
 		$qb->executeStatement();
 
 		foreach ($mounts as $mount) {
-			$this->mountPointRequest->deleteByMountId($mount->getMountId());
+			$this->mountpointRepository->deleteBy(['mountId' => $mount->getMountId()]);
 		}
 	}
 
