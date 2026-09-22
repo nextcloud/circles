@@ -15,6 +15,7 @@ use OC\Files\Cache\Cache;
 use OC\Share20\Share;
 use OC\Share20\ShareAttributes;
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\Entity\ShareToken;
 use OCA\Circles\ShareByCircleProvider;
 use OCA\Circles\Tools\Db\IQueryRow;
 use OCA\Circles\Tools\Exceptions\InvalidItemException;
@@ -152,7 +153,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 	}
 
 	public function getToken(): string {
-		return $this->shareToken?->getToken() ?? '';
+		return $this->shareToken?->token ?? '';
 	}
 
 	public function setStatus(int $status): self {
@@ -410,7 +411,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		$share->setNote($this->getShareNote());
 		$share->setMailSend($this->getMailSend());
 		if ($this->hasShareToken()) {
-			$password = $this->getShareToken()->getPassword();
+			$password = $this->getShareToken()->password;
 			if ($password !== '') {
 				$share->setPassword($password);
 			}
@@ -545,10 +546,17 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		} catch (InvalidItemException) {
 		}
 
-		try {
+		$shareTokenData = $this->getArray('shareToken', $data);
+		if ($this->getInt('shareId', $shareTokenData) !== 0) {
 			$shareToken = new ShareToken();
-			$this->setShareToken($shareToken->import($this->getArray('shareToken', $data)));
-		} catch (InvalidItemException) {
+			$shareToken->shareId = $this->getInt('shareId', $shareTokenData);
+			$shareToken->circleId = $this->get('circleId', $shareTokenData);
+			$shareToken->singleId = $this->get('singleId', $shareTokenData);
+			$shareToken->memberId = $this->get('memberId', $shareTokenData);
+			$shareToken->token = $this->get('token', $shareTokenData);
+			$shareToken->password = $this->get('password', $shareTokenData);
+			$shareToken->accepted = $this->getInt('accepted', $shareTokenData, IShare::STATUS_PENDING);
+			$this->setShareToken($shareToken);
 		}
 
 		return $this;

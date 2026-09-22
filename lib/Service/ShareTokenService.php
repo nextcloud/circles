@@ -9,13 +9,14 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use OCA\Circles\Db\ShareTokenRequest;
+use OCA\Circles\Entity\ShareToken;
 use OCA\Circles\Exceptions\ShareTokenAlreadyExistException;
 use OCA\Circles\Exceptions\ShareTokenNotFoundException;
 use OCA\Circles\Model\Member;
-use OCA\Circles\Model\ShareToken;
 use OCA\Circles\Model\ShareWrapper;
+use OCA\Circles\Repository\ShareTokenRepository;
 use OCA\Circles\Tools\Traits\TStringTools;
+use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\IURLGenerator;
 use OCP\Share\IShare;
 
@@ -31,14 +32,12 @@ class ShareTokenService {
 	 * ShareTokenService constructor.
 	 *
 	 * @param IURLGenerator $urlGenerator
-	 * @param ShareTokenRequest $shareTokenRequest
-	 * @param InterfaceService $interfaceService
+	 * @param ShareTokenRepository $shareTokenRepository
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
 		private IURLGenerator $urlGenerator,
-		private ShareTokenRequest $shareTokenRequest,
-		private InterfaceService $interfaceService,
+		private ShareTokenRepository $shareTokenRepository,
 		private ConfigService $configService,
 	) {
 	}
@@ -62,38 +61,26 @@ class ShareTokenService {
 			throw new ShareTokenNotFoundException();
 		}
 
-		$token = $this->token(19);
-		$shareToken = new ShareToken();
-		$shareToken->setShareId((int)$share->getId())
-			->setCircleId($share->getSharedWith())
-			->setSingleId($member->getSingleId())
-			->setMemberId($member->getId())
-			->setToken($token)
-			->setPassword($hashedPassword)
-			->setAccepted(IShare::STATUS_ACCEPTED);
-
 		try {
-			$this->shareTokenRequest->search($shareToken);
+			$this->shareTokenRepository->findOneBy([
+				'shareId' => (int)$share->getId(),
+				'circleId' => $share->getSharedWith(),
+				'singleId' => $member->getSingleId(),
+			]);
 			throw new ShareTokenAlreadyExistException();
-		} catch (ShareTokenNotFoundException) {
+		} catch (DoesNotExistException) {
 		}
 
-		$this->shareTokenRequest->save($shareToken);
-		$this->setShareTokenLink($shareToken);
+		$entity = new ShareToken();
+		$entity->shareId = (int)$share->getId();
+		$entity->circleId = $share->getSharedWith();
+		$entity->singleId = $member->getSingleId();
+		$entity->memberId = $member->getId();
+		$entity->token = $this->token(19);
+		$entity->password = $hashedPassword;
+		$entity->accepted = IShare::STATUS_ACCEPTED;
 
-		return $shareToken;
-	}
-
-	/**
-	 * @param ShareToken $shareToken
-	 */
-	public function setShareTokenLink(ShareToken $shareToken): void {
-		$link = $this->interfaceService->getFrontalPath(
-			'files_sharing.sharecontroller.showShare',
-			['token' => $shareToken->getToken()]
-		);
-
-		$shareToken->setLink($link);
+		return $this->shareTokenRepository->insert($entity);
 	}
 
 	/**
@@ -107,7 +94,7 @@ class ShareTokenService {
 			return;
 		}
 
-		$this->shareTokenRequest->updateSharePassword($circleId, $hashedPassword);
+		$this->shareTokenRepository->updateSharePassword($circleId, $hashedPassword);
 	}
 
 	/**
@@ -116,7 +103,7 @@ class ShareTokenService {
 	 * @param string $circleId
 	 */
 	public function removeSharePassword(string $circleId): void {
-		$this->shareTokenRequest->updateSharePassword($circleId, '');
+		$this->shareTokenRepository->updateSharePassword($circleId, '');
 	}
 
 	/**
@@ -124,15 +111,22 @@ class ShareTokenService {
 	 * @param string $circleId
 	 */
 	public function removeTokens(string $singleId, string $circleId) {
-		$this->shareTokenRequest->removeTokens($singleId, $circleId);
+		$this->shareTokenRepository->deleteBy([
+			'singleId' => $singleId,
+			'circleId' => $circleId,
+		]);
 	}
 
 	/**
 	 * @param array $shareIds
 	 *
-	 * @return ShareToken[]
+	 * @return \Generator<ShareToken>
 	 */
-	public function getTokensFromShares(array $shareIds): array {
-		return ($shareIds === []) ? [] : $this->shareTokenRequest->getTokensFromShares($shareIds);
+	public function getTokensFromShares(array $shareIds): \Generator {
+		if ($shareIds === []) {
+			return;
+		}
+
+		yield from $this->shareTokenRepository->findBy(['shareId' => $shareIds]);
 	}
 }
