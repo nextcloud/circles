@@ -11,6 +11,7 @@ namespace OCA\Circles\Repository;
 
 use OCA\Circles\Entity\Mountpoint;
 use OCA\Circles\Exceptions\MountNotFoundException;
+use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\AppFramework\ORM\Repository;
 
 /**
@@ -29,25 +30,18 @@ class MountpointRepository extends Repository {
 	}
 
 	/**
-	 * Unlike the base update(), this is not identified by the entity's own id: callers only ever
-	 * have a freshly built Mountpoint (mountId + singleId + mountPoint), never one fetched back
-	 * from storage, so the match has to be on that business key instead.
-	 *
 	 * @throws MountNotFoundException if no row matches this mountId/singleId
 	 */
 	public function updateMountpoint(Mountpoint $mountpoint): void {
 		$mountpoint->mountpointHash = self::computeHash($mountpoint->mountPoint);
 
-		$qb = $this->connection->getQueryBuilder();
-		$qb->update($this->getTableName())
-			->set('mountpoint', $qb->createNamedParameter($mountpoint->mountPoint))
-			->set('mountpoint_hash', $qb->createNamedParameter($mountpoint->mountpointHash))
-			->where($qb->expr()->eq('mount_id', $qb->createNamedParameter($mountpoint->mountId)))
-			->andWhere($qb->expr()->eq('single_id', $qb->createNamedParameter($mountpoint->singleId)));
-
-		if ($qb->executeStatement() === 0) {
+		try {
+			$this->findOneBy(['mountId' => $mountpoint->mountId, 'singleId' => $mountpoint->singleId]);
+		} catch (DoesNotExistException) {
 			throw new MountNotFoundException('Mount not found');
 		}
+
+		$this->update($mountpoint);
 	}
 
 	private static function computeHash(string $mountPoint): string {
