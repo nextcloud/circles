@@ -381,7 +381,7 @@ watch(() => [props.mountPoint, currentPath.value], loadContents, { immediate: tr
 					<template #icon>
 						<NcIconSvgWrapper :path="mdiOpenInNew" :size="18" />
 					</template>
-					{{ t('circles', 'Files') }}
+					{{ t('circles', 'View in Files') }}
 				</NcButton>
 			</div>
 		</div>
