@@ -23,7 +23,6 @@ use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
-use OCA\Circles\Model\ShareWrapper;
 use OCA\Circles\Tools\Model\SimpleDataStore;
 use OCA\Circles\Tools\Traits\TNCLogger;
 use OCP\IGroupManager;
@@ -144,12 +143,6 @@ class MaintenanceService {
 	 */
 	private function runMaintenance2(bool $forceRefresh = false): void {
 		try {
-			$this->output('Remove members with no circles');
-			$this->removeMembersWithNoCircles();
-		} catch (Exception) {
-		}
-
-		try {
 			$this->output('Retry failed FederatedEvents (asap)');
 			$this->eventWrapperService->retry(EventWrapperService::RETRY_ASAP);
 		} catch (Exception) {
@@ -184,15 +177,6 @@ class MaintenanceService {
 		}
 
 		try {
-			// TODO: waiting for confirmation of a good migration before cleaning orphan shares
-			if ($this->configService->getAppValueBool(ConfigService::MIGRATION_22_CONFIRMED)) {
-				$this->output('Remove deprecated shares');
-				$this->removeDeprecatedShares();
-			}
-		} catch (Exception $e) {
-		}
-
-		try {
 			$this->output('Synchronizing local entities');
 			$this->syncService->sync();
 		} catch (Exception $e) {
@@ -221,20 +205,6 @@ class MaintenanceService {
 			$this->refreshDisplayName($forceRefresh);
 		} catch (Exception) {
 		}
-
-		try {
-			// Can be removed in NC27.
-			$this->output('Remove orphan shares');
-			$this->removeOrphanShares();
-		} catch (Exception) {
-		}
-
-		try {
-			// Can be removed in NC27.
-			$this->output('fix sub-circle display name');
-			$this->fixSubCirclesDisplayName();
-		} catch (Exception) {
-		}
 	}
 
 	/**
@@ -250,53 +220,6 @@ class MaintenanceService {
 		foreach ($circles as $circle) {
 			if (!$circle->hasOwner()) {
 				$this->circleRequest->delete($circle);
-			}
-		}
-	}
-
-	/**
-	 *
-	 */
-	private function removeMembersWithNoCircles(): void {
-		//		$members = $this->membersRequest->forceGetAllMembers();
-		//
-		//		foreach ($members as $member) {
-		//			try {
-		//				$this->circlesRequest->forceGetCircle($member->getCircleId());
-		//			} catch (CircleDoesNotExistException $e) {
-		//				$this->membersRequest->removeMember($member);
-		//			}
-		//		}
-	}
-
-	private function removeOrphanShares(): void {
-		$this->shareWrapperRequest->removeOrphanShares();
-	}
-
-	/**
-	 * @throws RequestBuilderException
-	 */
-	private function removeDeprecatedShares(): void {
-		$probe = new CircleProbe();
-		$probe->includePersonalCircles()
-			->includeSingleCircles()
-			->includeSystemCircles();
-
-		$circles = array_map(
-			fn (Circle $circle) => $circle->getSingleId(),
-			$this->circleRequest->getCircles(null, $probe)
-		);
-
-		$shares = array_unique(
-			array_map(
-				fn (ShareWrapper $share) => $share->getSharedWith(),
-				$this->shareWrapperRequest->getShares()
-			)
-		);
-
-		foreach ($shares as $share) {
-			if (!in_array($share, $circles)) {
-				$this->shareWrapperService->deleteAllSharesToCircle($share);
 			}
 		}
 	}
@@ -362,21 +285,6 @@ class MaintenanceService {
 		$this->circleRequest->updateDisplayName($federatedUser->getSingleId(), $displayName);
 
 		return $displayName;
-	}
-
-	/**
-	 * @throws RequestBuilderException
-	 * @throws InitiatorNotFoundException
-	 */
-	private function fixSubCirclesDisplayName(): void {
-		$probe = new CircleProbe();
-		$probe->includeSingleCircles();
-
-		$circles = $this->circleService->getCircles($probe);
-
-		foreach ($circles as $circle) {
-			$this->memberRequest->updateDisplayName($circle->getSingleId(), $circle->getDisplayName());
-		}
 	}
 
 	/**
