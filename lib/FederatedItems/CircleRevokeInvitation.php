@@ -9,10 +9,10 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
-use OCA\Circles\Db\CircleInvitationRequest;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
+use OCA\Circles\Repository\CircleInvitationRepository;
 use OCA\Circles\Service\EventService;
 use OCA\Circles\Tools\Traits\TDeserialize;
 
@@ -20,7 +20,7 @@ class CircleRevokeInvitation implements IFederatedItem {
 	use TDeserialize;
 
 	public function __construct(
-		private CircleInvitationRequest $circleInvitationRequest,
+		private CircleInvitationRepository $circleInvitationRepository,
 		private EventService $eventService,
 	) {
 	}
@@ -40,7 +40,7 @@ class CircleRevokeInvitation implements IFederatedItem {
 	public function manage(FederatedEvent $event): void {
 		$circle = clone $event->getCircle();
 
-		$this->circleInvitationRequest->delete($circle->getSingleId());
+		$this->circleInvitationRepository->deleteBy(['circleId' => $circle->getSingleId()]);
 		// todo: do we need separate event here?
 		$this->eventService->circleEditing($event);
 	}

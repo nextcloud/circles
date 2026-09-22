@@ -234,7 +234,7 @@ class CircleJoin implements
 
 			throw new MemberAlreadyExistsException(StatusCode::$CIRCLE_JOIN[122], 122);
 		} catch (MemberNotFoundException) {
-			$allowedToJoin = $invitationCode && $circle->getCircleInvitation()?->getInvitationCode() === $invitationCode;
+			$allowedToJoin = $invitationCode && $circle->getCircleInvitation()?->invitationCode === $invitationCode;
 			if (!$circle->isConfig(Circle::CFG_OPEN) && !$allowedToJoin) {
 				throw new FederatedItemBadRequestException(StatusCode::$CIRCLE_JOIN[124], 124);
 			}
