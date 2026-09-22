@@ -39,7 +39,6 @@ class CoreRequestBuilder {
 	public const TABLE_MOUNTPOINT = 'circles_mountpoint';
 
 	// wip
-	public const TABLE_SHARE_LOCK = 'circles_share_lock';
 	public const TABLE_TOKEN = 'circles_token';
 
 	public const TABLE_GSSHARES = 'circle_gsshares'; // rename ?
@@ -128,7 +127,6 @@ class CoreRequestBuilder {
 			'remote_id',
 		],
 		self::TABLE_MOUNTPOINT => [],
-		self::TABLE_SHARE_LOCK => [],
 		self::TABLE_TOKEN => [
 			'id',
 			'share_id',
