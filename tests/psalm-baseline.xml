@@ -41,15 +41,6 @@
       <code><![CDATA[IQueryBuilder::PARAM_DATE]]></code>
     </DeprecatedConstant>
   </file>
-  <file src="lib/FederatedItems/SharedItemsSync.php">
-    <UndefinedClass>
-      <code><![CDATA[CircleEventService]]></code>
-    </UndefinedClass>
-    <UndefinedDocblockClass>
-      <code><![CDATA[$this->circleEventService]]></code>
-      <code><![CDATA[CircleEventService]]></code>
-    </UndefinedDocblockClass>
-  </file>
   <file src="lib/Listeners/CircleMemberRemoved.php">
     <UndefinedClass>
       <code><![CDATA[\OCA\GroupFolders\Folder\FolderManager]]></code>
