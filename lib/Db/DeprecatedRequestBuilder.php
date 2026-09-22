@@ -28,15 +28,6 @@ class DeprecatedRequestBuilder {
 	public const NC_TABLE_ACCOUNTS = 'accounts';
 	public const NC_TABLE_GROUP_USER = 'group_user';
 
-	/** @var array */
-	private $tables = [
-		self::TABLE_CIRCLES,
-		self::TABLE_GROUPS,
-		self::TABLE_MEMBERS,
-		self::TABLE_SHARES,
-		self::TABLE_LINKS,
-	];
-
 	/** @var IDBConnection */
 	protected $dbConnection;
 
