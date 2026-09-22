@@ -12,7 +12,6 @@ namespace OCA\Circles\Command;
 use OC\Core\Command\Base;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Member;
-use OCA\Circles\Model\SearchResult;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\SearchService;
 use Symfony\Component\Console\Helper\Table;
@@ -51,7 +50,7 @@ class MembersSearch extends Base {
 	 * @return int
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		$result = $this->searchService->search($input->getArgument('needle'));
+		$result = $this->searchService->search($input->getArgument('term'));
 
 		if (strtolower((string)$input->getOption('output')) === 'json') {
 			$output->writeln(json_encode($result, JSON_PRETTY_PRINT));
@@ -63,7 +62,7 @@ class MembersSearch extends Base {
 	}
 
 	/**
-	 * @param list<IFederatedUser|SearchResult> $result
+	 * @param list<IFederatedUser> $result
 	 */
 	private function displaySearchResult(array $result) {
 		$output = new ConsoleOutput();
@@ -73,9 +72,6 @@ class MembersSearch extends Base {
 
 		$rows = [];
 		foreach ($result as $entry) {
-			if (!$result instanceof IFederatedUser) {
-				continue;
-			}
 			$rows[] = [
 				$entry->getSingleId(),
 				$entry->getUserId(),

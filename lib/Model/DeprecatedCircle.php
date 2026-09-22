@@ -21,6 +21,18 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 	/** @var bool */
 	private $lightJson = false;
 
+	private array $links = [];
+
+	public function setLinks(array $links): self {
+		$this->links = $links;
+
+		return $this;
+	}
+
+	public function getLinks(): array {
+		return $this->links;
+	}
+
 	public function getTypeString() {
 		return match ($this->getType()) {
 			self::CIRCLES_PERSONAL => 'Personal',

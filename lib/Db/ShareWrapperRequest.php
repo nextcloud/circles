@@ -529,27 +529,6 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		$this->deleteSharesAndChild($ids);
 	}
 
-	public function removeOrphanShares(): void {
-		$qb = $this->getShareSelectSql();
-		$expr = $qb->expr();
-		$qb->leftJoin(
-			CoreQueryBuilder::SHARE, CoreRequestBuilder::TABLE_SHARE, 'p',
-			$expr->andX($expr->eq('p.id', CoreQueryBuilder::SHARE . '.parent'))
-		);
-
-		$qb->filterNull('parent');
-		$qb->limitNull('id', false, 'p');
-
-		$ids = [];
-		$cursor = $qb->executeQuery();
-		while ($data = $cursor->fetchAssociative()) {
-			$ids[] = $data['id'];
-		}
-		$cursor->closeCursor();
-
-		$this->deleteSharesAndChild($ids);
-	}
-
 	/**
 	 * @param array $ids
 	 */

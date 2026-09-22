@@ -5,32 +5,6 @@
       <code><![CDATA[str_starts_with($sK, '_')]]></code>
     </TypeDoesNotContainType>
   </file>
-  <file src="lib/Circles/FileSharingBroadcaster.php">
-    <DeprecatedClass>
-      <code><![CDATA[FileSharesRequest]]></code>
-      <code><![CDATA[FileSharesRequest::class]]></code>
-      <code><![CDATA[Server::get(FileSharesRequest::class)]]></code>
-      <code><![CDATA[Server::get(TokensRequest::class)]]></code>
-      <code><![CDATA[SharesToken]]></code>
-      <code><![CDATA[SharesToken]]></code>
-      <code><![CDATA[SharesToken]]></code>
-      <code><![CDATA[TokensRequest]]></code>
-      <code><![CDATA[TokensRequest::class]]></code>
-    </DeprecatedClass>
-    <DeprecatedMethod>
-      <code><![CDATA[MiscService::getContactData($contactId)]]></code>
-      <code><![CDATA[MiscService::getContactData($contactId)]]></code>
-      <code><![CDATA[MiscService::getContactData($member->getUserId())]]></code>
-    </DeprecatedMethod>
-    <InvalidScalarArgument>
-      <code><![CDATA[$share->getId()]]></code>
-      <code><![CDATA[$share->getId()]]></code>
-    </InvalidScalarArgument>
-    <TypeDoesNotContainType>
-      <code><![CDATA[!$sendPasswordByMail]]></code>
-      <code><![CDATA[$sendPasswordByMail]]></code>
-    </TypeDoesNotContainType>
-  </file>
   <file src="lib/Command/CirclesRemote.php">
     <UndefinedMethod>
       <code><![CDATA[setType]]></code>
@@ -61,63 +35,11 @@
       <code><![CDATA[QueryBuilder::SELECT]]></code>
     </DeprecatedConstant>
   </file>
-  <file src="lib/Db/FileSharesRequest.php">
-    <DeprecatedClass>
-      <code><![CDATA[FileSharesRequestBuilder]]></code>
-    </DeprecatedClass>
-    <InvalidScalarArgument>
-      <code><![CDATA[self::SHARE_TYPE]]></code>
-      <code><![CDATA[self::SHARE_TYPE]]></code>
-    </InvalidScalarArgument>
-  </file>
-  <file src="lib/Db/GSSharesRequest.php">
-    <DeprecatedClass>
-      <code><![CDATA[GSSharesRequestBuilder]]></code>
-    </DeprecatedClass>
-  </file>
   <file src="lib/Db/ShareWrapperRequest.php">
     <DeprecatedConstant>
       <code><![CDATA[IQueryBuilder::PARAM_DATE]]></code>
       <code><![CDATA[IQueryBuilder::PARAM_DATE]]></code>
     </DeprecatedConstant>
-  </file>
-  <file src="lib/Db/TokensRequest.php">
-    <DeprecatedClass>
-      <code><![CDATA[SharesToken]]></code>
-      <code><![CDATA[SharesToken]]></code>
-      <code><![CDATA[SharesToken]]></code>
-      <code><![CDATA[SharesToken]]></code>
-      <code><![CDATA[TokensRequestBuilder]]></code>
-    </DeprecatedClass>
-    <InvalidScalarArgument>
-      <code><![CDATA[$shareId]]></code>
-      <code><![CDATA[$shareId]]></code>
-    </InvalidScalarArgument>
-  </file>
-  <file src="lib/Db/TokensRequestBuilder.php">
-    <DeprecatedClass>
-      <code><![CDATA[SharesToken]]></code>
-      <code><![CDATA[new SharesToken()]]></code>
-    </DeprecatedClass>
-  </file>
-  <file src="lib/FederatedItems/SharedItemsSync.php">
-    <UndefinedClass>
-      <code><![CDATA[CircleEventService]]></code>
-    </UndefinedClass>
-    <UndefinedDocblockClass>
-      <code><![CDATA[$this->circleEventService]]></code>
-      <code><![CDATA[CircleEventService]]></code>
-    </UndefinedDocblockClass>
-  </file>
-  <file src="lib/IBroadcaster.php">
-    <DeprecatedClass>
-      <code><![CDATA[SharingFrame]]></code>
-      <code><![CDATA[SharingFrame]]></code>
-      <code><![CDATA[SharingFrame]]></code>
-      <code><![CDATA[SharingFrame]]></code>
-      <code><![CDATA[SharingFrame]]></code>
-      <code><![CDATA[SharingFrame]]></code>
-    </DeprecatedClass>
   </file>
   <file src="lib/Listeners/CircleMemberRemoved.php">
     <UndefinedClass>
@@ -148,11 +70,6 @@
       <code><![CDATA[self]]></code>
     </LessSpecificImplementedReturnType>
   </file>
-  <file src="lib/Model/DavCard.php">
-    <InvalidScalarArgument>
-      <code><![CDATA[$this->get('addressBookId', $data)]]></code>
-    </InvalidScalarArgument>
-  </file>
   <file src="lib/Model/DeprecatedCircle.php">
     <DeprecatedClass>
       <code><![CDATA[BaseCircle]]></code>
@@ -170,20 +87,6 @@
       <code><![CDATA[NCSignatory]]></code>
     </LessSpecificImplementedReturnType>
   </file>
-  <file src="lib/Model/FederatedLink.php">
-    <InvalidPropertyAssignmentValue>
-      <code><![CDATA[$circleUniqueId]]></code>
-    </InvalidPropertyAssignmentValue>
-    <InvalidReturnStatement>
-      <code><![CDATA[$this->circleUniqueId]]></code>
-    </InvalidReturnStatement>
-    <InvalidReturnType>
-      <code><![CDATA[string]]></code>
-    </InvalidReturnType>
-    <InvalidScalarArgument>
-      <code><![CDATA[$this->circleUniqueId]]></code>
-    </InvalidScalarArgument>
-  </file>
   <file src="lib/Model/FederatedUser.php">
     <InvalidReturnStatement>
       <code><![CDATA[$arr]]></code>
@@ -194,15 +97,6 @@
     <LessSpecificImplementedReturnType>
       <code><![CDATA[self]]></code>
     </LessSpecificImplementedReturnType>
-  </file>
-  <file src="lib/Model/GlobalScale/GSEvent.php">
-    <DeprecatedMethod>
-      <code><![CDATA[getDeprecatedCircle]]></code>
-      <code><![CDATA[getDeprecatedCircle]]></code>
-      <code><![CDATA[getDeprecatedCircle]]></code>
-      <code><![CDATA[getDeprecatedCircle]]></code>
-      <code><![CDATA[setDeprecatedCircle]]></code>
-    </DeprecatedMethod>
   </file>
   <file src="lib/Model/Member.php">
     <InvalidClass>
@@ -239,33 +133,10 @@
       <code><![CDATA[$this->shareToken]]></code>
     </NullableReturnStatement>
   </file>
-  <file src="lib/Model/SharesToken.php">
-    <InvalidScalarArgument>
-      <code><![CDATA[$this->get('share_id', $data, '')]]></code>
-    </InvalidScalarArgument>
-  </file>
-  <file src="lib/Model/SharingFrame.php">
-    <FalsableReturnStatement>
-      <code><![CDATA[json_encode($this->headers)]]></code>
-      <code><![CDATA[json_encode($this->payload)]]></code>
-    </FalsableReturnStatement>
-    <NullArgument>
-      <code><![CDATA[null]]></code>
-    </NullArgument>
-    <NullableReturnStatement>
-      <code><![CDATA[null]]></code>
-      <code><![CDATA[null]]></code>
-    </NullableReturnStatement>
-  </file>
   <file src="lib/Service/AvatarService.php">
     <MissingDependency>
       <code><![CDATA[\OCP\Image]]></code>
     </MissingDependency>
-  </file>
-  <file src="lib/Service/FederatedShareService.php">
-    <InvalidMethodCall>
-      <code><![CDATA[gObj]]></code>
-    </InvalidMethodCall>
   </file>
   <file src="lib/Service/GlobalScaleService.php">
     <UndefinedClass>

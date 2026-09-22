@@ -92,7 +92,6 @@ class ConfigService {
 	public const MIGRATION_BYPASS = 'migration_bypass';
 	public const MIGRATION_22 = 'migration_22';
 	public const MIGRATION_22_1 = 'migration_22_1';
-	public const MIGRATION_22_CONFIRMED = 'migration_22_confirmed';
 	public const MIGRATION_RUN = 'migration_run';
 	public const MAINTENANCE_UPDATE = 'maintenance_update';
 	public const MAINTENANCE_RUN = 'maintenance_run';
@@ -105,8 +104,6 @@ class ConfigService {
 
 	// deprecated -- removing in NC25
 	public const CIRCLES_CONTACT_BACKEND = 'contact_backend';
-	public const CIRCLES_ACCOUNTS_ONLY = 'accounts_only'; // only UserType=1
-	public const CIRCLES_SEARCH_FROM_COLLABORATOR = 'search_from_collaborator';
 
 	public const FORCE_NC_BASE = 'force_nc_base';
 	public const TEST_NC_BASE = 'test_nc_base';
@@ -169,7 +166,6 @@ class ConfigService {
 		self::MIGRATION_BYPASS => '0',
 		self::MIGRATION_22 => '0',
 		self::MIGRATION_22_1 => '0',
-		self::MIGRATION_22_CONFIRMED => '0',
 		self::MIGRATION_RUN => '0',
 		self::MAINTENANCE_UPDATE => '[]',
 		self::MAINTENANCE_RUN => '0',
@@ -177,8 +173,6 @@ class ConfigService {
 		self::FORCE_NC_BASE => '',
 		self::TEST_NC_BASE => '',
 		self::CIRCLES_CONTACT_BACKEND => '0',
-		self::CIRCLES_ACCOUNTS_ONLY => '0',
-		self::CIRCLES_SEARCH_FROM_COLLABORATOR => '0',
 	];
 
 	public const DISPLAY_NONE = 0;

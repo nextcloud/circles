@@ -14,11 +14,8 @@ use OCA\Circles\ConfigLexicon;
 use OCA\Circles\Db\EventWrapperRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\RemoteRequest;
-use OCA\Circles\Db\ShareLockRequest;
 use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\FederatedItemException;
-use OCA\Circles\Exceptions\FederatedShareBelongingException;
-use OCA\Circles\Exceptions\FederatedShareNotFoundException;
 use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
@@ -35,14 +32,12 @@ use OCA\Circles\IFederatedItemDataRequestOnly;
 use OCA\Circles\IFederatedItemHighSeverity;
 use OCA\Circles\IFederatedItemInitiatorCheckNotRequired;
 use OCA\Circles\IFederatedItemInitiatorMembershipNotRequired;
-use OCA\Circles\IFederatedItemLimitedToInstanceWithMembership;
 use OCA\Circles\IFederatedItemLoopbackTest;
 use OCA\Circles\IFederatedItemMemberCheckNotRequired;
 use OCA\Circles\IFederatedItemMemberEmpty;
 use OCA\Circles\IFederatedItemMemberOptional;
 use OCA\Circles\IFederatedItemMemberRequired;
 use OCA\Circles\IFederatedItemMustBeInitializedLocally;
-use OCA\Circles\IFederatedItemSharedItem;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\EventWrapper;
 use OCA\Circles\Model\Federated\FederatedEvent;
@@ -74,7 +69,6 @@ class FederatedEventService extends NCSignature {
 		private readonly EventWrapperRequest $eventWrapperRequest,
 		private readonly RemoteRequest $remoteRequest,
 		private readonly MemberRequest $memberRequest,
-		private readonly ShareLockRequest $shareLockRequest,
 		private readonly RemoteUpstreamService $remoteUpstreamService,
 		private readonly EventService $eventService,
 		private readonly InterfaceService $interfaceService,
@@ -229,8 +223,6 @@ class FederatedEventService extends NCSignature {
 		$this->confirmRequiredCondition($event, $item, $checkLocalOnly);
 		$this->configureEvent($event, $item);
 
-		//		$this->confirmSharedItem($event, $item);
-
 		return $item;
 	}
 
@@ -301,39 +293,10 @@ class FederatedEventService extends NCSignature {
 	/**
 	 * @param FederatedEvent $event
 	 * @param IFederatedItem $item
-	 *
-	 * @throws FederatedEventException
-	 * @throws FederatedShareBelongingException
-	 * @throws FederatedShareNotFoundException
-	 * @throws OwnerNotFoundException
-	 */
-	private function confirmSharedItem(FederatedEvent $event, IFederatedItem $item): void {
-		if (!$item instanceof IFederatedItemSharedItem) {
-			return;
-		}
-
-		if ($event->getItemId() === '') {
-			throw new FederatedEventException('FederatedItem must contains ItemId');
-		}
-
-		if ($this->configService->isLocalInstance($event->getCircle()->getInstance())) {
-			$shareLock = $this->shareLockRequest->getShare($event->getItemId());
-			if ($shareLock->getInstance() !== $event->getSender()) {
-				throw new FederatedShareBelongingException('ShareLock belongs to another instance');
-			}
-		}
-	}
-
-	/**
-	 * @param FederatedEvent $event
-	 * @param IFederatedItem $item
 	 */
 	private function configureEvent(FederatedEvent $event, IFederatedItem $item) {
 		if ($item instanceof IFederatedItemAsyncProcess && !$event->isForceSync()) {
 			$event->setAsync(true);
-		}
-		if ($item instanceof IFederatedItemLimitedToInstanceWithMembership) {
-			$event->setLimitedToInstanceWithMember(true);
 		}
 		if ($item instanceof IFederatedItemDataRequestOnly) {
 			$event->setDataRequestOnly(true);

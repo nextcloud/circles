@@ -10,53 +10,34 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedUser;
-use OCA\Circles\ISearch;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
-use OCA\Circles\Model\SearchResult;
-use OCA\Circles\Search\FederatedUsers;
 use OCA\Circles\Search\UnifiedSearchResult;
 use OCA\Circles\Tools\Traits\TArrayTools;
 use OCP\IURLGenerator;
-use OCP\Server;
 
 class SearchService {
 	use TArrayTools;
 
-	public static $SERVICES = [
-		FederatedUsers::class
-	];
-
-	/**
-	 * @param IURLGenerator $urlGenerator
-	 * @param CircleService $circleService
-	 */
 	public function __construct(
-		private IURLGenerator $urlGenerator,
-		private CircleService $circleService,
+		private readonly IURLGenerator $urlGenerator,
+		private readonly CircleService $circleService,
+		private readonly MemberRequest $memberRequest,
 	) {
 	}
 
 	/**
 	 * @param string $needle
 	 *
-	 * @return list<SearchResult|IFederatedUser>
+	 * @return list<IFederatedUser>
 	 */
 	public function search(string $needle): array {
-		$result = [];
-
-		foreach (self::$SERVICES as $entry) {
-			/** @var ISearch $service */
-			$service = Server::get($entry);
-
-			$result = array_merge($result, $service->search($needle));
-		}
-
-		return $result;
+		return $this->memberRequest->searchFederatedUsers($needle);
 	}
 
 	/**
