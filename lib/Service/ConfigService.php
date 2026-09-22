@@ -89,10 +89,6 @@ class ConfigService {
 	public const BYPASS_CIRCLE_TYPES = 'bypass_circle_types';
 	public const LIMIT_CIRCLE_CREATION = 'limit_circle_creation';
 
-	public const MIGRATION_BYPASS = 'migration_bypass';
-	public const MIGRATION_22 = 'migration_22';
-	public const MIGRATION_22_1 = 'migration_22_1';
-	public const MIGRATION_RUN = 'migration_run';
 	public const MAINTENANCE_UPDATE = 'maintenance_update';
 	public const MAINTENANCE_RUN = 'maintenance_run';
 
@@ -163,10 +159,6 @@ class ConfigService {
 		self::BYPASS_CIRCLE_TYPES => '',
 		self::LIMIT_CIRCLE_CREATION => '',
 
-		self::MIGRATION_BYPASS => '0',
-		self::MIGRATION_22 => '0',
-		self::MIGRATION_22_1 => '0',
-		self::MIGRATION_RUN => '0',
 		self::MAINTENANCE_UPDATE => '[]',
 		self::MAINTENANCE_RUN => '0',
 
