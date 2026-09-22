@@ -72,6 +72,7 @@ Those groups of people can then be used by any other app for sharing purpose.
 		<command>OCA\Circles\Command\CirclesSetting</command>
 		<command>OCA\Circles\Command\CirclesSync</command>
 		<command>OCA\Circles\Command\CirclesCheck</command>
+		<command>OCA\Circles\Command\CirclesReport</command>
 		<command>OCA\Circles\Command\CirclesTest</command>
 		<command>OCA\Circles\Command\CirclesMaintenance</command>
 		<command>OCA\Circles\Command\SharesFiles</command>
