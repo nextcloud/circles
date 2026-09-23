@@ -46,13 +46,6 @@
     "Moderator" : "פיקוח",
     "Admin" : "מנהל",
     "Owner" : "בעלות",
-    "Password to access »%1$s« shared to you by %2$s" : "סיסמא לגישה ל-»%1$s« משותף לך על ידי %2$s",
-    "Password to access »%s«" : "ססמת הגישה אל „%s”",
-    "It is protected with the following password:" : "הוא מוגן בססמה הבאה:",
-    "%1$s via %2$s" : "%1$s דרך %2$s",
-    "Click the button below to open it." : "יש ללחוץ על הכפתור להלן כדי לפתוח אותו.",
-    "Open »%s«" : "פתיחת „%s”",
-    "Password to access files" : "ססמה לגשת לקבצים",
     "Fresh installation status" : "מצב ההתקנה החדשה",
     "Building Local Database" : "מסד הנתונים המקומי נבנה",
     "Adding local users and moderators" : "הוספת משתמשים ומפקחים מקומיים",
@@ -66,7 +59,10 @@
     "Invalid image" : "תמונה לא חוקית",
     "Unknown filetype" : "סוג קובץ לא מוכר",
     "%s" : "%s",
+    "Open »%s«" : "פתיחת „%s”",
     "Open %s" : "פתיחה (שם קובץ)",
+    "%1$s via %2$s" : "%1$s דרך %2$s",
+    "It is protected with the following password:" : "הוא מוגן בססמה הבאה:",
     "https://…" : "https://…‎",
     "Unlimited" : "ללא הגבלה",
     "Group" : "קבוצה",
@@ -123,6 +119,10 @@
     "Groups" : "קבוצות",
     "on {server}" : "על גבי {server}",
     "No files in here" : "אין כאן קבצים",
-    "No entries found in this folder" : "לא נמצאו רשומות בתיקייה הזאת"
+    "No entries found in this folder" : "לא נמצאו רשומות בתיקייה הזאת",
+    "Password to access »%1$s« shared to you by %2$s" : "סיסמא לגישה ל-»%1$s« משותף לך על ידי %2$s",
+    "Password to access »%s«" : "ססמת הגישה אל „%s”",
+    "Click the button below to open it." : "יש ללחוץ על הכפתור להלן כדי לפתוח אותו.",
+    "Password to access files" : "ססמה לגשת לקבצים"
 },"pluralForm" :"nplurals=3; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % 1 == 0) ? 1: 2;"
 }

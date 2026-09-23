@@ -56,11 +56,6 @@ OC.L10N.register(
     "Moderator" : "Moderador",
     "Admin" : "Administrador",
     "Owner" : "Dueño",
-    "%s shared »%s« with you." : "%s compartió »%s« contigo.",
-    "%s on %s" : "%s en %s",
-    "Password to access »%s«" : "Contraseña para acceder  »%s«",
-    "Click the button below to open it." : "Haz click en el botón para abrirlo.",
-    "Open »%s«" : "Abrir »%s«",
     "Files" : "Archivo",
     "This member is not a moderator" : "Este miembro no es un moderador",
     "Insufficient privileges" : "Privilegios insuficientes",
@@ -72,6 +67,8 @@ OC.L10N.register(
     "Invalid image" : "Imagen inválida",
     "Unknown filetype" : "Tipo de archivo desconocido",
     "%s" : "%s",
+    "Open »%s«" : "Abrir »%s«",
+    "%s on %s" : "%s en %s",
     "Unlimited" : "Ilimitado",
     "Group" : "Grupo",
     "Cancel" : "Cancel",
@@ -107,6 +104,9 @@ OC.L10N.register(
     "Groups" : "Grupos",
     "Contacts" : "Contactos",
     "No files in here" : "No hay archivos aquí",
-    "No entries found in this folder" : "No se encontraron elementos en esta carpeta"
+    "No entries found in this folder" : "No se encontraron elementos en esta carpeta",
+    "%s shared »%s« with you." : "%s compartió »%s« contigo.",
+    "Password to access »%s«" : "Contraseña para acceder  »%s«",
+    "Click the button below to open it." : "Haz click en el botón para abrirlo."
 },
 "nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");
