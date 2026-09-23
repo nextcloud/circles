@@ -39,11 +39,6 @@ OC.L10N.register(
     "Moderator" : "Moderator",
     "Admin" : "Administratori",
     "Owner" : "Zotëruesi",
-    "%s shared »%s« with you." : "1 %s ndarë »1 %s« me ju.",
-    "%s on %s" : "%s në %s",
-    "Password to access »%s«" : "Fjalëkalimi për akses »%s«",
-    "Click the button below to open it." : "Kliko butonin më poshtë për të hapur atë.",
-    "Open »%s«" : "Hap »%s«",
     "Files" : "Skedarë",
     "This member is not a moderator" : "Ky anëtar nuk është moderator",
     "This member does not exist" : "Ky anëtar nuk ekziston",
@@ -53,6 +48,8 @@ OC.L10N.register(
     "Invalid image" : "Figurë e pavlefshme",
     "Unknown filetype" : "Lloj i panjohur skedari",
     "%s" : "%s",
+    "Open »%s«" : "Hap »%s«",
+    "%s on %s" : "%s në %s",
     "Open %s" : "Hap %s",
     "Unlimited" : "E palimituar",
     "Group" : "Grup",
@@ -93,6 +90,9 @@ OC.L10N.register(
     "Groups" : "Grupet",
     "Contacts" : "Kontaktet",
     "No files in here" : "Jo dosje këtu",
-    "No entries found in this folder" : "Në këtë dosje nuk gjëndet asnjë hyrje"
+    "No entries found in this folder" : "Në këtë dosje nuk gjëndet asnjë hyrje",
+    "%s shared »%s« with you." : "1 %s ndarë »1 %s« me ju.",
+    "Password to access »%s«" : "Fjalëkalimi për akses »%s«",
+    "Click the button below to open it." : "Kliko butonin më poshtë për të hapur atë."
 },
 "nplurals=2; plural=(n != 1);");
