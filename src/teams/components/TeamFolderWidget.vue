@@ -36,10 +36,6 @@ const rootPath = defaultRootPath
 
 const currentPath = ref(props.folderPath ?? '')
 const nodes = ref<INode[]>([])
-// Resolved from the DAV response in loadContents(); starts unknown because the
-// GroupFolders folder id (passed by the parent) is not the same as the DAV
-// node id that the Files app URL expects.
-const currentFolderFileId = ref<number | undefined>(undefined)
 const loading = ref(false)
 const error = ref<string | null>(null)
 const viewMode = ref<'grid' | 'list'>('grid')
@@ -80,17 +76,10 @@ const currentDir = computed(() => currentPath.value
 /**
  * URL that opens the current folder in the Files app.
  *
- * Uses the DAV file id once it is known (resolved by loadContents). Before
- * that, falls back to a path-based URL so the link always opens the right
- * team folder regardless of which internal IDs the GroupFolders app uses.
+ * The Files app takes the directory from the `dir` query parameter alone; a
+ * file id would only select a node inside it, and a stale one overrides `dir`.
  */
-const currentFolderUrl = computed(() => {
-	if (currentFolderFileId.value !== undefined) {
-		const url = generateUrl('/apps/files/files/{fileid}', { fileid: currentFolderFileId.value })
-		return `${url}?dir=${encodeDir(currentDir.value)}`
-	}
-	return `${generateUrl('/apps/files')}?dir=${encodeDir(currentDir.value)}`
-})
+const currentFolderUrl = computed(() => `${generateUrl('/apps/files/files')}?dir=${encodeDir(currentDir.value)}`)
 
 /**
  * Encode a directory path for a query parameter while keeping slashes readable.
@@ -299,7 +288,6 @@ async function loadContents(): Promise<void> {
 		const response = await client.getDirectoryContents(davPath, {
 			details: true,
 			data: getDefaultPropfind(),
-			includeSelf: true,
 		})
 		const data = Array.isArray(response) ? response : response.data
 
@@ -307,17 +295,7 @@ async function loadContents(): Promise<void> {
 			throw new Error('Invalid response from server')
 		}
 
-		// The first entry is the current directory itself. Use its file id
-		// for the "Open in Files" header button, because the GroupFolders
-		// folder id is not the same as the DAV file id.
-		const currentEntry = data[0]
-		if (currentEntry) {
-			const currentNode = resultToNode(currentEntry, rootPath)
-			currentFolderFileId.value = currentNode.fileid
-		}
-
 		nodes.value = data
-			.slice(1)
 			.map((entry) => resultToNode(entry, rootPath))
 			.filter((node) => !isHiddenEntry(node))
 			.sort((a, b) => {
@@ -376,8 +354,7 @@ watch(() => [props.mountPoint, currentPath.value], loadContents, { immediate: tr
 				<NcButton
 					:href="currentFolderUrl"
 					variant="tertiary"
-					size="small"
-					:aria-label="t('circles', 'Open folder in Files')">
+					size="small">
 					<template #icon>
 						<NcIconSvgWrapper :path="mdiOpenInNew" :size="18" />
 					</template>
