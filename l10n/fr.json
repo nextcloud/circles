@@ -139,7 +139,7 @@
     "Password to access content" : "Mot de passe pour accéder au contenu",
     "It is protected with the following password:" : "Protégé par le mot de passe suivant :",
     "Federated Teams" : "Équipes fédérées",
-    "Team spaces" : "Espaces d'équipe",
+    "Team folders" : "Dossiers d'équipe",
     "This item is already shared with this team" : "Cet élément est déjà partagé avec cette équipe",
     "Bring cloud-users closer together." : "Rapprochez les utilisateurs du cloud.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Nextcloud Teams permet de créer ses propres groupes de personnes, de collègues ou d’amis.\nCes groupes peuvent ensuite être utilisés par n’importe quelle autre application à des fins de partage.",
@@ -170,7 +170,6 @@
     "Changed default team folder quotas" : "Quotas par défaut des dossiers d’équipe modifiés",
     "Configure default storage quotas and manage team folders." : "Configurez les quotas de stockage par défaut et gérez les dossiers d’équipe.",
     "Team folder settings" : "Paramètres des dossiers d’équipe",
-    "Team folders" : "Dossiers d'équipe",
     "Default quotas" : "Quotas par défaut",
     "Configure the default storage quota for team folders. Requires the Team Folders app to be installed and enabled." : "Configurez le quota de stockage par défaut pour les dossiers d’équipe. L’application Team Folders doit être installée et activée.",
     "Automatic team folder creation is disabled. These quota mappings will not apply until it is enabled again through the occ command." : "La création automatique des dossiers d’équipe est désactivée. Ces attributions de quota ne s’appliqueront qu’après sa réactivation à l’aide de la commande occ.",
@@ -226,7 +225,6 @@
     "Team name" : "Nom d'équipe",
     "e.g. Design" : "ex. Design",
     "Advanced" : "Avancé",
-    "Create a team space" : "Créer un espace d'équipe",
     "A shared folder for this team. You can also add one later from the team page." : "Un dossier partagé pour cette équipe. Vous pouvez également en ajouter un plus tard depuis la page de l'équipe.",
     "Add initial members" : "Ajouter les membres initiaux",
     "Search people, groups, teams…" : "Rechercher des personnes, des groupes, des équipes…",
@@ -238,7 +236,6 @@
     "Team folder breadcrumbs" : "Fil d’Ariane du dossier d’équipe",
     "Switch to list view" : "Passer à la vue en liste",
     "Switch to grid view" : "Passer à la vue en grille",
-    "Open folder in Files" : "Ouvrir le dossier dans Fichiers",
     "Folder contents unavailable" : "Contenu du dossier indisponible",
     "Empty folder" : "Dossier vide",
     "This team folder is empty." : "Ce dossier d’équipe est vide.",
@@ -454,7 +451,10 @@
     "Password to access files shared to you by %1$s" : "Mot de passe pour accéder aux fichiers partagés avec vous par %1$s",
     "Password to access files" : "Mot de passe pour accéder aux fichiers",
     "Circles App Initialization" : "Initialisation de l'application Circles",
+    "Team spaces" : "Espaces d'équipe",
     "Unable to update team folder quota for {team}" : "Impossible de mettre à jour le quota du dossier d'équipe de {team}",
-    "Changed default team folder quota" : "Quota par défaut des dossiers d’équipe modifié"
+    "Changed default team folder quota" : "Quota par défaut des dossiers d’équipe modifié",
+    "Create a team space" : "Créer un espace d'équipe",
+    "Open folder in Files" : "Ouvrir le dossier dans Fichiers"
 },"pluralForm" :"nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }

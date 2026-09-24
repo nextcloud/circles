@@ -13,6 +13,7 @@ OC.L10N.register(
     "File is too big" : "ফাইল খুব বড়",
     "Invalid image" : "অবৈধ চিত্র",
     "Unknown filetype" : "অজানা প্রকৃতির ফাইল",
+    "Open %s" : "Open %s",
     "Unlimited" : "অসীম",
     "Group" : "গোষ্ঠীসমূহ",
     "Cancel" : "Cancel",

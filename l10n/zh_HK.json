@@ -139,7 +139,7 @@
     "Password to access content" : "用以訪問内容的密碼",
     "It is protected with the following password:" : "其已被以下密碼保護：",
     "Federated Teams" : "聯邦團隊",
-    "Team spaces" : "團隊空間",
+    "Team folders" : "團隊資料夾",
     "This item is already shared with this team" : "已和這團隊分享了此項目",
     "Bring cloud-users closer together." : "把雲端用戶連接到一起。",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "團隊允許人們創建自己的人/同事/朋友群。\n然後，其他應用程式可以使用這些群組來進行共享。",
@@ -170,7 +170,6 @@
     "Changed default team folder quotas" : "已更新默認團隊資料夾配額",
     "Configure default storage quotas and manage team folders." : "配置默認儲存空間配額與管理團隊資料夾。",
     "Team folder settings" : "團隊資料夾設定",
-    "Team folders" : "團隊資料夾",
     "Default quotas" : "默認配額",
     "Configure the default storage quota for team folders. Requires the Team Folders app to be installed and enabled." : "設定團隊資料夾的預設儲存空間配額。必須已安裝並啟用「團隊資料夾」應用程式。",
     "Automatic team folder creation is disabled. These quota mappings will not apply until it is enabled again through the occ command." : "已停用自動建立團隊資料夾。在透過 occ 指令重新啟用前，這些配額對應將不會套用。",
@@ -226,7 +225,6 @@
     "Team name" : "團隊名稱",
     "e.g. Design" : "例如：設計",
     "Advanced" : "進階",
-    "Create a team space" : "建立團隊空間",
     "A shared folder for this team. You can also add one later from the team page." : "此團隊的共享資料夾。你亦可稍後從團隊頁面新增。",
     "Add initial members" : "新增初始成員",
     "Search people, groups, teams…" : "搜尋人員、群組、團隊…",
@@ -238,7 +236,6 @@
     "Team folder breadcrumbs" : "團隊資料夾路徑導覽",
     "Switch to list view" : "切換到列表檢視",
     "Switch to grid view" : "切換到網格檢視",
-    "Open folder in Files" : "在「檔案」中開啟資料夾",
     "Folder contents unavailable" : "無法取得資料夾內容",
     "Empty folder" : "空白資料夾",
     "This team folder is empty." : "此團隊資料夾是空的。",
@@ -454,7 +451,10 @@
     "Password to access files shared to you by %1$s" : "使用密碼訪問由 %1$s 共享給您的檔案",
     "Password to access files" : "用以訪問文件的密碼",
     "Circles App Initialization" : "初始 Circles 應用程式",
+    "Team spaces" : "團隊空間",
     "Unable to update team folder quota for {team}" : "無法更新 {team} 的團隊資料夾配額",
-    "Changed default team folder quota" : "已更改預設團隊資料夾配額"
+    "Changed default team folder quota" : "已更改預設團隊資料夾配額",
+    "Create a team space" : "建立團隊空間",
+    "Open folder in Files" : "在「檔案」中開啟資料夾"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

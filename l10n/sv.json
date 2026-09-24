@@ -139,7 +139,7 @@
     "Password to access content" : "Lösenord för att komma åt innehåll",
     "It is protected with the following password:" : "Den är skyddad med följande lösenord:",
     "Federated Teams" : "Federerade team",
-    "Team spaces" : "Teamutrymmen",
+    "Team folders" : "Teammappar",
     "This item is already shared with this team" : "Detta objekt delas redan med detta team",
     "Bring cloud-users closer together." : "För molnanvändare närmare varandra.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Teams gör det möjligt att skapa egna grupper med personer, kollegor och vänner.\nGrupperna kan sedan användas av andra appar vid delning.",
@@ -166,7 +166,6 @@
     "Changed team folder quota" : "Teammappens kvot ändrades",
     "Unable to update team folder quota" : "Det gick inte att uppdatera teammappens kvot",
     "Unable to update team folder config" : "Det gick inte att uppdatera teammappens konfiguration",
-    "Team folders" : "Teammappar",
     "Configure the default storage quota for team folders. Requires the Team Folders app to be installed and enabled." : "Konfigurera standardlagringskvoten för teammappar. Kräver att appen Teammappar är installerad och aktiverad.",
     "Default quota" : "Standardkvot",
     "Select default quota" : "Välj standardkvot",
@@ -214,7 +213,6 @@
     "Team name" : "Namn på team",
     "e.g. Design" : "t.ex. Design",
     "Advanced" : "Avancerat",
-    "Create a team space" : "Skapa en teamyta",
     "A shared folder for this team. You can also add one later from the team page." : "En delad mapp för teamet. Du kan även lägga till en senare från teamsidan.",
     "Add initial members" : "Lägg till ursprungliga medlemmar",
     "Search people, groups, teams…" : "Sök efter personer, grupper, team…",
@@ -226,7 +224,6 @@
     "Team folder breadcrumbs" : "Sökväg för teammapp",
     "Switch to list view" : "Växla till listvy",
     "Switch to grid view" : "Växla till rutnätsvy",
-    "Open folder in Files" : "Öppna mappen i Filer",
     "Folder contents unavailable" : "Mappinnehållet är inte tillgängligt",
     "Empty folder" : "Tom mapp",
     "This team folder is empty." : "Denna teammapp är tom.",
@@ -442,7 +439,10 @@
     "Password to access files shared to you by %1$s" : "Lösenord för åtkomst till filer delade med dig av %1$s",
     "Password to access files" : "Lösenord för åtkomst till filer",
     "Circles App Initialization" : "Initiering av Circles-appen",
+    "Team spaces" : "Teamutrymmen",
     "Unable to update team folder quota for {team}" : "Det gick inte att uppdatera teammappens kvot för {team}",
-    "Changed default team folder quota" : "Standardkvoten för teammappar ändrades"
+    "Changed default team folder quota" : "Standardkvoten för teammappar ändrades",
+    "Create a team space" : "Skapa en teamyta",
+    "Open folder in Files" : "Öppna mappen i Filer"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

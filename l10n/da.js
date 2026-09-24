@@ -141,7 +141,7 @@ OC.L10N.register(
     "Password to access content" : "Adgangskode for at få adgang til indhold",
     "It is protected with the following password:" : "Beskyttet med følgende adgangskode:",
     "Federated Teams" : "Federated Team",
-    "Team spaces" : "Teamrum",
+    "Team folders" : "Teammapper",
     "This item is already shared with this team" : "Dette element er allerede delt med dette team",
     "Bring cloud-users closer together." : "Bring cloud-brugere tættere på hinanden.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Teams tillader dine brugere at oprette deres egen grupper af brugere/kolleger/venner.\nDisse grupper af brugere kan derefter bruges af enhver anden app til delingsformål.",
@@ -161,7 +161,6 @@ OC.L10N.register(
     "Team deleted" : "Hold slettet",
     "Unable to delete the team" : "Kan ikke slette holdet",
     "Quota must be a non-negative number." : "Kvoten skal være et ikke-negativt tal.",
-    "Team folders" : "Teammapper",
     "Default quota" : "Standard kvote",
     "Select default quota" : "Vælg standardkvote",
     "Saving…" : "Gemmer...",
@@ -207,7 +206,6 @@ OC.L10N.register(
     "Could not load folder contents" : "Kunne ikke indlæse mappeindhold",
     "Switch to list view" : "Skift til listevisning",
     "Switch to grid view" : "Skift til gittervisning",
-    "Open folder in Files" : "Open folder in Files",
     "Folder contents unavailable" : "Mappeindhold ikke tilgængeligt",
     "Empty folder" : "Tøm mappe",
     "Folder contents" : "Mappeindhold",
@@ -378,6 +376,8 @@ OC.L10N.register(
     "%1$s shared multiple files with you. You should have already received a separate email with a link to access them." : "%1$s delte flere filer med dig. Du burde allerede have modtaget en e-mail med et link for at få adgang...",
     "Password to access files shared to you by %1$s" : "Adgangskode for at få adgang til filer, der deles med dig af %1$s",
     "Password to access files" : "Adgangskode for at få adgang til filer",
-    "Circles App Initialization" : "Cirkler App Initialisering"
+    "Circles App Initialization" : "Cirkler App Initialisering",
+    "Team spaces" : "Teamrum",
+    "Open folder in Files" : "Open folder in Files"
 },
 "nplurals=2; plural=(n != 1);");
