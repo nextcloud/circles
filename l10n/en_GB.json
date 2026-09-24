@@ -139,7 +139,7 @@
     "Password to access content" : "Password to access content",
     "It is protected with the following password:" : "It is protected with the following password:",
     "Federated Teams" : "Federated Teams",
-    "Team spaces" : "Team spaces",
+    "Team folders" : "Team folders",
     "This item is already shared with this team" : "This item is already shared with this team",
     "Bring cloud-users closer together." : "Bring cloud-users closer together.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose.",
@@ -170,7 +170,6 @@
     "Changed default team folder quotas" : "Changed default team folder quotas",
     "Configure default storage quotas and manage team folders." : "Configure default storage quotas and manage team folders.",
     "Team folder settings" : "Team folder settings",
-    "Team folders" : "Team folders",
     "Default quotas" : "Default quotas",
     "Configure the default storage quota for team folders. Requires the Team Folders app to be installed and enabled." : "Configure the default storage quota for team folders. Requires the Team Folders app to be installed and enabled.",
     "Automatic team folder creation is disabled. These quota mappings will not apply until it is enabled again through the occ command." : "Automatic team folder creation is disabled. These quota mappings will not apply until it is enabled again through the occ command.",
@@ -226,7 +225,6 @@
     "Team name" : "Team name",
     "e.g. Design" : "e.g. Design",
     "Advanced" : "Advanced",
-    "Create a team space" : "Create a team space",
     "A shared folder for this team. You can also add one later from the team page." : "A shared folder for this team. You can also add one later from the team page.",
     "Add initial members" : "Add initial members",
     "Search people, groups, teams…" : "Search people, groups, teams…",
@@ -238,7 +236,6 @@
     "Team folder breadcrumbs" : "Team folder breadcrumbs",
     "Switch to list view" : "Switch to list view",
     "Switch to grid view" : "Switch to grid view",
-    "Open folder in Files" : "Open folder in Files",
     "Folder contents unavailable" : "Folder contents unavailable",
     "Empty folder" : "Empty folder",
     "This team folder is empty." : "This team folder is empty.",
@@ -454,7 +451,10 @@
     "Password to access files shared to you by %1$s" : "Password to access files shared to you by %1$s",
     "Password to access files" : "Password to access files",
     "Circles App Initialization" : "Circles App Initialisation",
+    "Team spaces" : "Team spaces",
     "Unable to update team folder quota for {team}" : "Unable to update team folder quota for {team}",
-    "Changed default team folder quota" : "Changed default team folder quota"
+    "Changed default team folder quota" : "Changed default team folder quota",
+    "Create a team space" : "Create a team space",
+    "Open folder in Files" : "Open folder in Files"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
