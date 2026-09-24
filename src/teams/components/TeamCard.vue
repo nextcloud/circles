@@ -8,6 +8,7 @@ import type { Team } from '../types.ts'
 
 import { t } from '@nextcloud/l10n'
 import NcAvatar from '@nextcloud/vue/components/NcAvatar'
+import NcRichText from '@nextcloud/vue/components/NcRichText'
 import TeamAvatar from './TeamAvatar.vue'
 
 const props = defineProps<{
@@ -29,9 +30,12 @@ const MAX_AVATARS = 5
 			<span :class="$style.teamCardName">{{ team.displayName }}</span>
 		</div>
 
-		<p v-if="team.description" :class="$style.teamCardDescription">
-			{{ team.description }}
-		</p>
+		<NcRichText
+			v-if="team.description"
+			:class="$style.teamCardDescription"
+			:text="team.description"
+			useExtendedMarkdown
+			autolink />
 
 		<div :class="$style.teamCardFooter">
 			<ul :class="$style.teamCardMembers" :aria-label="t('circles', 'Members')">
@@ -109,6 +113,33 @@ const MAX_AVATARS = 5
 		-webkit-line-clamp: 2;
 		-webkit-box-orient: vertical;
 		overflow: hidden;
+
+		// Preview only: the card itself is the link, so embedded links must
+		// not capture clicks, and rendered blocks get preview-sized spacing.
+		:deep(a) {
+			pointer-events: none;
+			color: inherit;
+		}
+
+		:deep(p),
+		:deep(h1),
+		:deep(h2),
+		:deep(h3),
+		:deep(h4),
+		:deep(h5),
+		:deep(h6),
+		:deep(ul),
+		:deep(ol),
+		:deep(blockquote),
+		:deep(pre) {
+			margin: 0;
+			font-size: inherit;
+			font-weight: inherit;
+		}
+
+		:deep(img) {
+			display: none;
+		}
 	}
 
 	&__footer {
