@@ -141,7 +141,7 @@ OC.L10N.register(
     "Password to access content" : "Wachtwoord voor toegang tot info",
     "It is protected with the following password:" : "Het is beveiligd met het volgende wachtwoord:",
     "Federated Teams" : "Federatieve Teams",
-    "Team spaces" : "Teamruimtes",
+    "Team folders" : "Teammappen",
     "This item is already shared with this team" : "Dit object is al gedeeld met dit team",
     "Bring cloud-users closer together." : "Breng cloudgebruikers dichter bij elkaar.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Teams stelt mensen in staat om hun eigen groepen van mensen/collega's/vrienden aan te maken. Deze groepen kunnen vervolgens door andere apps worden gebruikt om gegevens te delen.",
@@ -161,7 +161,6 @@ OC.L10N.register(
     "Team deleted" : "Team verwijderd",
     "Unable to delete the team" : "Verwijderen van team niet mogelijk",
     "Quota must be a non-negative number." : "Het quotum moet een niet-negatief getal zijn.",
-    "Team folders" : "Teammappen",
     "Default quota" : "Standaard quota",
     "Select default quota" : "Selecteer standaardquotum",
     "Saving…" : "Opslaan...",
@@ -207,7 +206,6 @@ OC.L10N.register(
     "Could not load folder contents" : "De inhoud van de map kon niet worden geladen",
     "Switch to list view" : "Overschakelen naar lijstweergave",
     "Switch to grid view" : "Overschakelen naar rasterweergave",
-    "Open folder in Files" : "Map openen in Bestanden",
     "Folder contents unavailable" : "Inhoud van de map niet beschikbaar",
     "Empty folder" : "Lege map",
     "Folder contents" : "Inhoud van de map",
@@ -378,6 +376,8 @@ OC.L10N.register(
     "%1$s shared multiple files with you. You should have already received a separate email with a link to access them." : "%1$s heeft verschillende bestanden met je gedeeld. Je moet al een aparte e-mail hebben ontvangen met een link om er te komen.",
     "Password to access files shared to you by %1$s" : "Wachtwoord voor toegang tot bestanden met jou gedeeld door %1$s",
     "Password to access files" : "Wachtwoord voor toegang tot bestanden",
-    "Circles App Initialization" : "Circles App Initialisatie"
+    "Circles App Initialization" : "Circles App Initialisatie",
+    "Team spaces" : "Teamruimtes",
+    "Open folder in Files" : "Map openen in Bestanden"
 },
 "nplurals=2; plural=(n != 1);");

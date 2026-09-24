@@ -139,7 +139,7 @@
     "Password to access content" : "Pasfhocal chun rochtain a fháil ar ábhar",
     "It is protected with the following password:" : "Tá sé cosanta leis an bhfocal faire seo a leanas:",
     "Federated Teams" : "Foirne Cónaidhme",
-    "Team spaces" : "Spásanna foirne",
+    "Team folders" : "Fillteáin foirne",
     "This item is already shared with this team" : "Tá an mhír seo roinnte leis an bhfoireann seo cheana féin",
     "Bring cloud-users closer together." : "Tabhair na scamall-úsáideoirí níos gaire dá chéile.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Ligeann foirne do dhaoine a ngrúpaí daoine/comhghleacaithe/cairde féin a chruthú.\nIs féidir leis na grúpaí daoine sin a úsáid ansin ag aon aip eile chun críche comhroinnte.",
@@ -170,7 +170,6 @@
     "Changed default team folder quotas" : "Athraíodh cuótaí réamhshocraithe d’fhillteáin foirne",
     "Configure default storage quotas and manage team folders." : "Cumraigh cuótaí stórála réamhshocraithe agus bainistigh fillteáin foirne.",
     "Team folder settings" : "Socruithe fhillteán na foirne",
-    "Team folders" : "Fillteáin foirne",
     "Default quotas" : "Cuótaí réamhshocraithe",
     "Configure the default storage quota for team folders. Requires the Team Folders app to be installed and enabled." : "Cumraigh an cuóta stórála réamhshocraithe do fhillteáin foirne. Éilíonn sé seo go mbeidh an aip Fillteáin Foirne suiteáilte agus cumasaithe.",
     "Automatic team folder creation is disabled. These quota mappings will not apply until it is enabled again through the occ command." : "Tá an ghné a chruthaíonn fillteáin foirne go huathoibríoch díchumasaithe. Ní bheidh feidhm ag na mapálacha cuóta seo go dtí go gcuirfear an ghné ar siúl arís tríd an ordú 'occ'.",
@@ -226,7 +225,6 @@
     "Team name" : "Ainm foirne",
     "e.g. Design" : "m.sh. Dearadh",
     "Advanced" : "Casta",
-    "Create a team space" : "Cruthaigh spás foirne",
     "A shared folder for this team. You can also add one later from the team page." : "Fillteán comhroinnte don fhoireann seo. Is féidir leat ceann a chur leis níos déanaí ó leathanach na foirne freisin.",
     "Add initial members" : "Cuir baill tosaigh leis",
     "Search people, groups, teams…" : "Cuardaigh daoine, grúpaí, foirne…",
@@ -238,7 +236,6 @@
     "Team folder breadcrumbs" : "Brioscaí aráin fillteáin foirne",
     "Switch to list view" : "Athraigh go dtí an amharc liosta",
     "Switch to grid view" : "Téigh go dtí an radharc greille",
-    "Open folder in Files" : "Oscail fillteán i gComhaid",
     "Folder contents unavailable" : "Ábhar an fhillteáin ar fáil",
     "Empty folder" : "Fillteán folamh",
     "This team folder is empty." : "Tá an fillteán foirne seo folamh.",
@@ -454,7 +451,10 @@
     "Password to access files shared to you by %1$s" : "Pasfhocal chun rochtain a fháil ar chomhaid arna roinnt leat le %1$s",
     "Password to access files" : "Pasfhocal chun comhaid a rochtain",
     "Circles App Initialization" : "Ciorcail Aip Tosaigh",
+    "Team spaces" : "Spásanna foirne",
     "Unable to update team folder quota for {team}" : "Ní féidir cuóta fillteán foirne a nuashonrú do {team}",
-    "Changed default team folder quota" : "Athraíodh cuóta fillteán foirne réamhshocraithe"
+    "Changed default team folder quota" : "Athraíodh cuóta fillteán foirne réamhshocraithe",
+    "Create a team space" : "Cruthaigh spás foirne",
+    "Open folder in Files" : "Oscail fillteán i gComhaid"
 },"pluralForm" :"nplurals=5; plural=(n==1 ? 0 : n==2 ? 1 : n<7 ? 2 : n<11 ? 3 : 4);"
 }
