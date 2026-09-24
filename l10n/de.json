@@ -139,7 +139,7 @@
     "Password to access content" : "Passwort für den Zugriff auf den Inhalt",
     "It is protected with the following password:" : "Dies ist mit folgendem Passwort geschützt:",
     "Federated Teams" : "Federated-Teams",
-    "Team spaces" : "Team-Bereiche",
+    "Team folders" : "Team-Ordner",
     "This item is already shared with this team" : "Dieses Element wurde bereits mit diesem Team geteilt",
     "Bring cloud-users closer together." : "Bringe Cloudnutzer näher zueinander.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Mittels Teams können Personen ihre eigenen Gruppen mit Personen/Kollegen/Freunden erstellen.\nDiese Personengruppen können dann von jeder anderen App zum Teilen verwendet werden.",
@@ -170,7 +170,6 @@
     "Changed default team folder quotas" : "Standardmäßige Teamordner-Kontingente geändert",
     "Configure default storage quotas and manage team folders." : "Standard-Speicherkontingente einrichten und Team-Ordner verwalten.",
     "Team folder settings" : "Teamordnereinstellungen",
-    "Team folders" : "Team-Ordner",
     "Default quotas" : "Standard Speicherkontingente",
     "Configure the default storage quota for team folders. Requires the Team Folders app to be installed and enabled." : "Das Standardspeicherkontingent für Teamordner einrichten. Erfordert die Installation und Aktivierung der Team Folders-App.",
     "Automatic team folder creation is disabled. These quota mappings will not apply until it is enabled again through the occ command." : "Die automatische Erstellung von Teamordnern ist deaktiviert. Diese Kontingentzuordnungen werden erst wirksam, wenn sie über den Befehl occ wieder aktiviert werden.",
@@ -226,7 +225,6 @@
     "Team name" : "Team-Name",
     "e.g. Design" : "z. B. Design",
     "Advanced" : "Erweitert",
-    "Create a team space" : "Einen Teambereich erstellen",
     "A shared folder for this team. You can also add one later from the team page." : "Ein freigegebener Ordner für dieses Team. Es kann später auch ein Ordner von der Teamseite heraus hinzugefügt werden.",
     "Add initial members" : "Erste Mitglieder hinzufügen",
     "Search people, groups, teams…" : "Personen, Gruppen, Teams suchen …",
@@ -238,7 +236,6 @@
     "Team folder breadcrumbs" : "Team-Ordner-Brotkrumen",
     "Switch to list view" : "Zur Listenansicht wechseln",
     "Switch to grid view" : "Zur Kachelansicht wechseln",
-    "Open folder in Files" : "Ordner in Dateien öffnen",
     "Folder contents unavailable" : "Ordnerinhalt nicht verfügbar",
     "Empty folder" : "Leerer Ordner",
     "This team folder is empty." : "Dieser Team-Ordner ist leer.",
@@ -454,7 +451,10 @@
     "Password to access files shared to you by %1$s" : "Passwort für den Zugriff auf die von %1$s für dich freigegebenen Dateien",
     "Password to access files" : "Passwort für den Dateizugriff",
     "Circles App Initialization" : "Kreise-App-Initialisierung",
+    "Team spaces" : "Team-Bereiche",
     "Unable to update team folder quota for {team}" : "Team-Ordnerkontingent für {team} kann nicht aktualisiert werden",
-    "Changed default team folder quota" : "Standard-Team-Ordnerkontingent geändert"
+    "Changed default team folder quota" : "Standard-Team-Ordnerkontingent geändert",
+    "Create a team space" : "Einen Teambereich erstellen",
+    "Open folder in Files" : "Ordner in Dateien öffnen"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

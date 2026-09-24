@@ -140,7 +140,7 @@ OC.L10N.register(
     "Password to access content" : "Пароль для доступу до вмісту",
     "It is protected with the following password:" : "Він захищений таким паролем:",
     "Federated Teams" : "Команди об'єднаних хмар",
-    "Team spaces" : "Робочі області для команд",
+    "Team folders" : "Каталоги команд",
     "This item is already shared with this team" : "Цей ресурс вже у спільному доступі з цією командою",
     "Bring cloud-users closer together." : "Зближіть користувачів хмари.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Команди дозволяють користувачам створювати власні групи з друзів, колег, знайомих.\nЗ цими групами людей подалі можна буде обмінюватися даними в різних застосунках.",
@@ -155,7 +155,6 @@ OC.L10N.register(
     "Unlimited" : "Необмежено",
     "Group" : "Група",
     "Cancel" : "Cancel",
-    "Team folders" : "Каталоги команд",
     "Default quota" : "Типова квота",
     "Select default quota" : "Встановити типову квоту",
     "Saving…" : "Збереження...",
@@ -251,6 +250,7 @@ OC.L10N.register(
     "%1$s shared multiple files with you. You should have already received a separate email with a link to access them." : "%1$s поділив(-ла-)ся з вами кількома файлами. На вашу ел.скриньку було надіслано лист із посиланням для доступу до файлів.",
     "Password to access files shared to you by %1$s" : "Пароль для доступу до файлів, наданих вам %1$s",
     "Password to access files" : "Пароль для доступу до файлів",
-    "Circles App Initialization" : "Ініціалізація застосунка \"Кола\""
+    "Circles App Initialization" : "Ініціалізація застосунка \"Кола\"",
+    "Team spaces" : "Робочі області для команд"
 },
 "nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);");

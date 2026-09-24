@@ -139,7 +139,7 @@
     "Password to access content" : "Slaptažodis, norint pasiekti turinį",
     "It is protected with the following password:" : "Apsaugota šiuo slaptažodžiu:",
     "Federated Teams" : "Federacinės komandos",
-    "Team spaces" : "Komandos erdvės",
+    "Team folders" : "Komandos aplankai",
     "This item is already shared with this team" : "Šis elementas jau bendrinamas su šia komanda",
     "Bring cloud-users closer together." : "Suartinkti debesijos naudotojus.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "„Komandos“ leidžia žmonėms kurti savo žmonių / kolegų / draugų grupes.\nTas žmonių grupes vėliau gali naudoti bet kuri kita programa bendrinimo tikslais.",
@@ -159,7 +159,6 @@
     "Team deleted" : "Komanda ištrinta",
     "Unable to delete the team" : "Nepavyko ištrinti bendrinimo",
     "Quota must be a non-negative number." : "Kvota turi būti neneigiamas skaičius.",
-    "Team folders" : "Komandos aplankai",
     "Default quota" : "Numatytasis leidžiamas duomenų kiekis",
     "Select default quota" : "Pasirinkite numatytą leidžiamą duomenų kiekį ",
     "Saving…" : "Išsaugoma...",
@@ -206,7 +205,6 @@
     "Could not load folder contents" : "Nepavyko įkelti aplanko turinio",
     "Switch to list view" : "Perjungti į sąrašo rodinį",
     "Switch to grid view" : "Perjungti į tinklelio rodinį",
-    "Open folder in Files" : "Atidaryti aplanką programėlėje „Failai“",
     "Folder contents unavailable" : "Aplanko turinys nepasiekiamas",
     "Empty folder" : "Tuščias aplankas",
     "Folder contents" : "Aplanko turinys",
@@ -377,6 +375,8 @@
     "%1$s shared multiple files with you. You should have already received a separate email with a link to access them." : "%1$s bendrino su jumis kelis failus. Jau turėjote gauti atskirą el. laišką su nuoroda, kaip juos pasiekti.",
     "Password to access files shared to you by %1$s" : "Slaptažodis, skirtas pasiekti failus, kuriuos su jumis bendrino %1$s",
     "Password to access files" : "Prieigos prie failų slaptažodis",
-    "Circles App Initialization" : "Programėlės „Ratai“ inicijavimas"
+    "Circles App Initialization" : "Programėlės „Ratai“ inicijavimas",
+    "Team spaces" : "Komandos erdvės",
+    "Open folder in Files" : "Atidaryti aplanką programėlėje „Failai“"
 },"pluralForm" :"nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);"
 }

@@ -139,7 +139,7 @@
     "Password to access content" : "Salasõna ligipääsuks sisule",
     "It is protected with the following password:" : "See on kaitstud järgneva salasõnaga:",
     "Federated Teams" : "Tiimid liitpilves",
-    "Team spaces" : "Tiimikaustad",
+    "Team folders" : "Tiimikaustad",
     "This item is already shared with this team" : "See objekt on  juba selle tiimiga jagatud",
     "Bring cloud-users closer together." : "Liida pilvekasutajaid tihedamalt kokku.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Tiimide rakendus võimaldab kasutajatel luua kasutajatest, kolleegidest ja sõpradest omi gruppe\nNing neid gruppe saavad kõik muud rakendused kasutada sisu jagamisel.",
@@ -170,7 +170,6 @@
     "Changed default team folder quotas" : "Tiimikaustade vaikimisi kvoodid on muutunud",
     "Configure default storage quotas and manage team folders." : "Seadista tiimikaustade vaikimisi andmeruumikvoote ja halda tiimikaustu.",
     "Team folder settings" : "Tiimikaustade seadistused",
-    "Team folders" : "Tiimikaustad",
     "Default quotas" : "Vaikimisi kvoodid",
     "Configure the default storage quota for team folders. Requires the Team Folders app to be installed and enabled." : "Seadista tiimikaustade vaikimisi andmeruumikvooti. See eeldab et tiimikaustade rakendus on paigaldatud ja kasutusele võetud.",
     "Automatic team folder creation is disabled. These quota mappings will not apply until it is enabled again through the occ command." : "Tiimikaustade automaatne loomine on lülitatud välja. Need kvoodivastendused ei kehti seni, kuni see uuesti on occ-käsuga lülitatud sisse.",
@@ -226,7 +225,6 @@
     "Team name" : "Tiimi nimi",
     "e.g. Design" : "nt. Kujundustiim",
     "Advanced" : "Täiendavad seadistused",
-    "Create a team space" : "Loo tiimikaust",
     "A shared folder for this team. You can also add one later from the team page." : "Jagatud kaust selle tiimi jaoks. Võid selle ka hiljem tiimi lehelt lisada.",
     "Add initial members" : "Lisa algsed liikmed",
     "Search people, groups, teams…" : "Otsi inimesi, gruppe või tiime",
@@ -238,7 +236,6 @@
     "Team folder breadcrumbs" : "Tiimikausta lingijada",
     "Switch to list view" : "Kasuta loendivaadet",
     "Switch to grid view" : "Kasuta ruudustikuvaadet",
-    "Open folder in Files" : "Ava failirakenduseskaust ",
     "Folder contents unavailable" : "Kausta sisu pole saadaval",
     "Empty folder" : "Tühi kaust",
     "This team folder is empty." : "See tiimikaust on tühi.",
@@ -454,7 +451,10 @@
     "Password to access files shared to you by %1$s" : "Salasõna ligipääsuks failidele, mida jagas sinuga %1$s",
     "Password to access files" : "Salasõna ligipääsuks failidele",
     "Circles App Initialization" : "Tiimide rakenduse valmendamine",
+    "Team spaces" : "Tiimikaustad",
     "Unable to update team folder quota for {team}" : "Tiimikausta kvoodi uuendamine ei õnnestu „{team}“ tiimi jaoks",
-    "Changed default team folder quota" : "Tiimikausta vaikimisi kvoot on muudetud"
+    "Changed default team folder quota" : "Tiimikausta vaikimisi kvoot on muudetud",
+    "Create a team space" : "Loo tiimikaust",
+    "Open folder in Files" : "Ava failirakenduseskaust "
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

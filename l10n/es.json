@@ -139,7 +139,7 @@
     "Password to access content" : "Contraseña para acceder al contenido",
     "It is protected with the following password:" : "Está protegido con la siguiente contraseña:",
     "Federated Teams" : "Equipos federados",
-    "Team spaces" : "Espacios de equipo",
+    "Team folders" : "Carpetas de equipo",
     "This item is already shared with this team" : "Este ítem ya se encuentra compartido con este equipo",
     "Bring cloud-users closer together." : "Acerca a los usuarios de nubes.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Equipos le permite a los usuarios crear sus propios grupos de personas/colegas/amigos.\nEstos grupos de personas pueden ser usados por cualquier otra app para propósitos de compartición.",
@@ -166,7 +166,6 @@
     "Changed team folder quota" : "Cuota de la carpeta de equipo cambiada",
     "Unable to update team folder quota" : "No se ha podido actualizar la cuota de la carpeta de equipo",
     "Unable to update team folder config" : "No se ha podido actualizar la configuración de la carpeta de equipo",
-    "Team folders" : "Carpetas de equipo",
     "Configure the default storage quota for team folders. Requires the Team Folders app to be installed and enabled." : "Configura la cuota por defecto para las carpetas de equipo. Requiere tener instalada y activada la app Team Folders.",
     "Default quota" : "Cuota predeterminada",
     "Select default quota" : "Seleccionar cuota predeterminada",
@@ -214,7 +213,6 @@
     "Team name" : "Nombre del equipo",
     "e.g. Design" : "p. ej. Diseño",
     "Advanced" : "Avanzado",
-    "Create a team space" : "Crear un espacio de equipo",
     "A shared folder for this team. You can also add one later from the team page." : "Una carpeta compartida para este equipo. También puedes añadir una más tarde desde la página del equipo.",
     "Add initial members" : "Agregar miembros iniciales",
     "Search people, groups, teams…" : "Buscar personas, grupos, equipos...",
@@ -226,7 +224,6 @@
     "Team folder breadcrumbs" : "Ruta de navegación de la carpeta de equipo",
     "Switch to list view" : "Cambiar a vista de lista",
     "Switch to grid view" : "Cambiar a vista de cuadrícula",
-    "Open folder in Files" : "Abrir carpeta en Archivos",
     "Folder contents unavailable" : "Contenido de la carpeta no disponible",
     "Empty folder" : "Carpeta vacía",
     "This team folder is empty." : "La carpeta de equipo está vacía.",
@@ -299,7 +296,10 @@
     "Password to access files shared to you by %1$s" : "Contraseña para acceder a los archivos compartidos contigo por %1$s",
     "Password to access files" : "Contraseña para acceder a los archivos",
     "Circles App Initialization" : "Inicialización de la app Circles",
+    "Team spaces" : "Espacios de equipo",
     "Unable to update team folder quota for {team}" : "No se ha podido actualizar la cuota de la carpeta de equipo para {team}",
-    "Changed default team folder quota" : "Cuota por defecto para carpetas de equipo cambiada"
+    "Changed default team folder quota" : "Cuota por defecto para carpetas de equipo cambiada",
+    "Create a team space" : "Crear un espacio de equipo",
+    "Open folder in Files" : "Abrir carpeta en Archivos"
 },"pluralForm" :"nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }
