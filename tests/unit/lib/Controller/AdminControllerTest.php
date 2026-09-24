@@ -19,6 +19,7 @@ use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\Service\SearchService;
+use OCA\Circles\Service\TeamFolderPolicy;
 use OCP\IRequest;
 use OCP\IUserManager;
 use OCP\IUserSession;
@@ -91,6 +92,7 @@ class AdminControllerTest extends TestCase {
 			$this->container->get(MembershipService::class),
 			$this->container->get(SearchService::class),
 			$this->container->get(ITeamManager::class),
+			$this->container->get(TeamFolderPolicy::class),
 			$this->container->get(ConfigService::class),
 		);
 	}
@@ -131,6 +133,23 @@ class AdminControllerTest extends TestCase {
 		$this->assertSame($result['initiator']['userId'], self::TEST_USER_1);
 		$this->assertSame($result['initiator']['level'], Member::LEVEL_OWNER);
 		$this->assertSame($result['owner']['userId'], self::TEST_USER_1);
+	}
+
+	public function testUpdateTeamFolderDefaultQuota(): void {
+		$circle = $this->adminController->create(self::TEST_USER_1, 'quota-circle')->getData();
+		$this->circlesToCleanup[] = $circle['id'];
+
+		$updated = $this->adminController->updateTeamFolderDefaultQuota($circle['id'], 2147483648)->getData();
+		$this->assertSame([
+			'teamId' => $circle['id'],
+			'defaultQuota' => 2147483648,
+		], $updated);
+
+		$removed = $this->adminController->updateTeamFolderDefaultQuota($circle['id'], null)->getData();
+		$this->assertSame([
+			'teamId' => $circle['id'],
+			'defaultQuota' => null,
+		], $removed);
 	}
 
 	public function testDestroy(): void {
