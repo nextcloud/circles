@@ -139,7 +139,6 @@
     "Password to access content" : "Kata sandi untuk mengakses konten",
     "It is protected with the following password:" : "Item tersebut dilindungi dengan kata sandi berikut:",
     "Federated Teams" : "Teams Terfederasi",
-    "Team spaces" : "Ruang tim",
     "This item is already shared with this team" : "Item ini sudah dibagikan dengan tim ini",
     "Bring cloud-users closer together." : "Mendekatkan para pengguna cloud.",
     "Teams allows people to create their own groups of people/colleagues/friends.\nThose groups of people can then be used by any other app for sharing purpose." : "Teams memungkinkan orang membuat grup orang/kolega/teman mereka sendiri.\nGrup orang tersebut kemudian dapat digunakan oleh aplikasi lain mana pun untuk tujuan berbagi.",
@@ -213,7 +212,6 @@
     "Team name" : "Nama tim",
     "e.g. Design" : "misalnya Desain",
     "Advanced" : "Lanjutan",
-    "Create a team space" : "Buat ruang tim",
     "A shared folder for this team. You can also add one later from the team page." : "Folder bersama untuk tim ini. Kamu juga dapat menambahkannya nanti dari halaman tim.",
     "Add initial members" : "Tambahkan anggota awal",
     "Search people, groups, teams…" : "Cari orang, grup, tim…",
@@ -225,7 +223,6 @@
     "Team folder breadcrumbs" : "Jejak navigasi folder tim",
     "Switch to list view" : "Beralih ke tampilan daftar",
     "Switch to grid view" : "Beralih ke tampilan kisi",
-    "Open folder in Files" : "Buka folder di Berkas",
     "Folder contents unavailable" : "Isi folder tidak tersedia",
     "Empty folder" : "Folder kosong",
     "This team folder is empty." : "Folder tim ini kosong.",
@@ -441,7 +438,10 @@
     "Password to access files shared to you by %1$s" : "Kata sandi untuk mengakses file yang dibagikan kepada Anda oleh %1$s",
     "Password to access files" : "Kata sandi untuk mengakses file",
     "Circles App Initialization" : "Inisialisasi Aplikasi Circles",
+    "Team spaces" : "Ruang tim",
     "Unable to update team folder quota for {team}" : "Tidak dapat memperbarui kuota folder tim untuk {team}",
-    "Changed default team folder quota" : "Kuota folder tim default telah diubah"
+    "Changed default team folder quota" : "Kuota folder tim default telah diubah",
+    "Create a team space" : "Buat ruang tim",
+    "Open folder in Files" : "Buka folder di Berkas"
 },"pluralForm" :"nplurals=1; plural=0;"
 }
