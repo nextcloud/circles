@@ -22,7 +22,6 @@ import NcAppSettingsDialog from '@nextcloud/vue/components/NcAppSettingsDialog'
 import NcAppSettingsSection from '@nextcloud/vue/components/NcAppSettingsSection'
 import NcButton from '@nextcloud/vue/components/NcButton'
 import NcDialog from '@nextcloud/vue/components/NcDialog'
-import NcTextArea from '@nextcloud/vue/components/NcTextArea'
 import NcTextField from '@nextcloud/vue/components/NcTextField'
 import IconFolder from 'vue-material-design-icons/Folder.vue'
 import IconLogout from 'vue-material-design-icons/Logout.vue'
@@ -30,6 +29,7 @@ import IconDelete from 'vue-material-design-icons/TrashCanOutline.vue'
 import IconUpload from 'vue-material-design-icons/TrayArrowUp.vue'
 import CirclePasswordSettings from '../team-page/components/CircleDetails/CirclePasswordSettings.vue'
 import ContentHeading from '../team-page/components/CircleDetails/ContentHeading.vue'
+import MarkdownEditor from './MarkdownEditor.vue'
 import TeamAvatar, { getAvatarUrl } from './TeamAvatar.vue'
 import { logger } from '../../logger.ts'
 import { useTeamActions } from '../composables/useTeamActions.ts'
@@ -408,12 +408,11 @@ function onDeleteTeam(): void {
 					:label="t('circles', 'Team name')"
 					:disabled="saving" />
 
-				<NcTextArea
+				<MarkdownEditor
 					v-model="description"
 					:label="t('circles', 'Description')"
-					:placeholder="t('circles', 'Enter a description for the team')"
-					:maxlength="1024"
-					:disabled="saving" />
+					:placeholder="t('circles', 'Enter a description for the team (Markdown is supported)')"
+					:readOnly="saving" />
 
 				<div class="team-settings-details__save">
 					<NcButton
