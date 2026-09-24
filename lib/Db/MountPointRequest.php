@@ -49,4 +49,11 @@ class MountPointRequest extends MountPointRequestBuilder {
 			throw new MountNotFoundException('Mount not found');
 		}
 	}
+
+	public function deleteByMountId(string $mountId): void {
+		$qb = $this->getMountPointDeleteSql();
+
+		$qb->limit('mount_id', $mountId);
+		$qb->executeStatement();
+	}
 }
