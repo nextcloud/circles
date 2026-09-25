@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Model;
 
 use JsonSerializable;
+use OCA\Circles\Entity\Mountpoint;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Tools\Db\IQueryRow;
 use OCA\Circles\Tools\IDeserializable;
@@ -107,7 +108,7 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 	 * @return string
 	 */
 	public function getMountPoint(bool $raw = true): string {
-		$mountPoint = $this->getAlternateMountPoint()?->getMountPoint() ?? $this->getOriginalMountPoint();
+		$mountPoint = $this->getAlternateMountPoint()?->mountPoint ?? $this->getOriginalMountPoint();
 		if ($raw) {
 			return $mountPoint;
 		}

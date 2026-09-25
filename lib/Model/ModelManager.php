@@ -14,6 +14,7 @@ use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\CoreQueryBuilder;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\MembershipRequest;
+use OCA\Circles\Entity\Mountpoint;
 use OCA\Circles\Exceptions\CircleInvitationNotFoundException;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedItemException;
@@ -21,7 +22,6 @@ use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\FileCacheNotFoundException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\MembershipNotFoundException;
-use OCA\Circles\Exceptions\MountPointNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
@@ -449,12 +449,15 @@ class ModelManager {
 				break;
 
 			case CoreQueryBuilder::MOUNTPOINT:
-				try {
-					$mountPoint = new Mountpoint();
-					$mountPoint->importFromDatabase($data, $prefix);
-					$mount->setAlternateMountPoint($mountPoint);
-				} catch (MountPointNotFoundException) {
+				if (($data[$prefix . 'mountpoint'] ?? '') === '') {
+					break;
 				}
+
+				$mountPoint = new Mountpoint();
+				$mountPoint->mountId = $data[$prefix . 'mount_id'] ?? '';
+				$mountPoint->singleId = $data[$prefix . 'single_id'] ?? '';
+				$mountPoint->mountPoint = $data[$prefix . 'mountpoint'] ?? '';
+				$mount->setAlternateMountPoint($mountPoint);
 				break;
 		}
 	}
