@@ -12,6 +12,7 @@ namespace OCA\Circles\Model;
 use DateTime;
 use JsonSerializable;
 use OCA\Circles\Db\CircleRequest;
+use OCA\Circles\Entity\CircleInvitation;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\MemberHelperException;
@@ -803,11 +804,14 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		} catch (InvalidItemException) {
 		}
 
-		try {
-			/** @var CircleInvitation $circleInvitation */
-			$circleInvitation = $this->deserialize($this->getArray('invitation', $data), CircleInvitation::class);
+		$invitationData = $this->getArray('invitation', $data);
+		if ($this->get('circleId', $invitationData) !== '') {
+			$circleInvitation = new CircleInvitation();
+			$circleInvitation->circleId = $this->get('circleId', $invitationData);
+			$circleInvitation->invitationCode = $this->get('invitationCode', $invitationData);
+			$circleInvitation->createdBy = $this->get('createdBy', $invitationData);
+			$circleInvitation->created->setTimestamp($this->getInt('created', $invitationData));
 			$this->setCircleInvitation($circleInvitation);
-		} catch (InvalidItemException $e) {
 		}
 
 		return $this;
@@ -860,7 +864,7 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 			try {
 				$initiatorHelper->mustBeAdmin();
 				$arr['settings'] = $this->getSettings();
-				$arr['invitationCode'] = $this->getCircleInvitation()?->getInvitationCode();
+				$arr['invitationCode'] = $this->getCircleInvitation()?->invitationCode;
 			} catch (MemberHelperException|MemberLevelException) {
 			}
 		}

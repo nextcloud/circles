@@ -14,7 +14,7 @@ use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\CoreQueryBuilder;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\MembershipRequest;
-use OCA\Circles\Exceptions\CircleInvitationNotFoundException;
+use OCA\Circles\Entity\CircleInvitation;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
@@ -171,12 +171,6 @@ class ModelManager {
 			}
 		}
 
-		if ($model instanceof CircleInvitation) {
-			if ($base === '') {
-				$base = CoreQueryBuilder::INVITATION;
-			}
-		}
-
 		if ($model instanceof Member) {
 			if ($base === '') {
 				$base = CoreQueryBuilder::MEMBER;
@@ -257,12 +251,18 @@ class ModelManager {
 				}
 				break;
 			case CoreQueryBuilder::INVITATION:
-				try {
-					$circleInvitation = new CircleInvitation();
-					$circleInvitation->importFromDatabase($data, $prefix);
-					$circle->setCircleInvitation($circleInvitation);
-				} catch (CircleInvitationNotFoundException $e) {
+				if (($data[$prefix . 'circle_id'] ?? '') === '') {
+					break;
 				}
+
+				$circleInvitation = new CircleInvitation();
+				$circleInvitation->circleId = $data[$prefix . 'circle_id'] ?? '';
+				$circleInvitation->invitationCode = $data[$prefix . 'invitation_code'] ?? '';
+				$circleInvitation->createdBy = $data[$prefix . 'created_by'] ?? '';
+				$circleInvitation->created = \DateTime::createFromFormat('Y-m-d H:i:s', $data[$prefix . 'created'] ?? '')
+					?: new \DateTime((string)($data[$prefix . 'created'] ?? ''));
+
+				$circle->setCircleInvitation($circleInvitation);
 				break;
 		}
 	}
