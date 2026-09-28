@@ -6,57 +6,143 @@
 <script setup lang="ts">
 import type { Team } from '../types.ts'
 
+import { mdiArrowDown, mdiArrowUp, mdiStar, mdiStarOutline } from '@mdi/js'
 import { t } from '@nextcloud/l10n'
+import NcActionButton from '@nextcloud/vue/components/NcActionButton'
+import NcActions from '@nextcloud/vue/components/NcActions'
 import NcAvatar from '@nextcloud/vue/components/NcAvatar'
+import NcIconSvgWrapper from '@nextcloud/vue/components/NcIconSvgWrapper'
 import TeamAvatar from './TeamAvatar.vue'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
 	team: Team
+	draggable?: boolean
+	favoriteBusy?: boolean
+	/** Whether this card is part of a manually sortable list (the favorites). */
+	sortable?: boolean
+	canMoveUp?: boolean
+	canMoveDown?: boolean
+}>(), {
+	sortable: false,
+	canMoveUp: false,
+	canMoveDown: false,
+})
+
+const emit = defineEmits<{
+	toggleFavorite: [team: Team]
+	moveUp: [team: Team]
+	moveDown: [team: Team]
+	dragStart: [team: Team, event: DragEvent]
+	dragOver: [team: Team, event: DragEvent]
+	dragEnd: [event: DragEvent]
 }>()
 
 const MAX_AVATARS = 5
+
+/** Toggle the favorite without starting a drag. */
+function toggleFavorite() {
+	emit('toggleFavorite', props.team)
+}
+
+/**
+ * Keep action buttons out of native card dragging.
+ *
+ * @param event - Native drag event
+ */
+function preventActionsDrag(event: DragEvent) {
+	event.preventDefault()
+}
 </script>
 
 <template>
-	<RouterLink
+	<article
 		:class="$style.teamCard"
-		:to="{ name: 'team', params: { teamId: props.team.id } }">
+		:draggable="draggable"
+		@dragstart="emit('dragStart', team, $event)"
+		@dragover="emit('dragOver', team, $event)"
+		@dragend="emit('dragEnd', $event)">
 		<div :class="$style.teamCardHead">
 			<TeamAvatar
-				:displayName="team.displayName"
 				:circleId="team.id"
-				:size="44" />
-			<span :class="$style.teamCardName">{{ team.displayName }}</span>
+				:displayName="team.displayName"
+				:isFavorite="team.isFavorite"
+				:size="40" />
+			<RouterLink
+				:class="$style.teamCardName"
+				:to="{ name: 'team', params: { teamId: props.team.id } }">
+				{{ team.displayName }}
+			</RouterLink>
 		</div>
+		<RouterLink
+			:class="$style.teamCardLink"
+			:to="{ name: 'team', params: { teamId: props.team.id } }">
+			<p v-if="team.description" :class="$style.teamCardDescription">
+				{{ team.description }}
+			</p>
 
-		<p v-if="team.description" :class="$style.teamCardDescription">
-			{{ team.description }}
-		</p>
-
-		<div :class="$style.teamCardFooter">
-			<ul :class="$style.teamCardMembers" :aria-label="t('circles', 'Members')">
-				<li
-					v-for="member in team.members.slice(0, MAX_AVATARS)"
-					:key="member.id"
-					:class="$style.teamCardMember">
-					<NcAvatar
-						:user="member.isUser ? member.userId ?? undefined : undefined"
-						:displayName="member.displayName"
-						:isNoUser="!member.isUser"
-						:size="28"
-						hideStatus
-						disableMenu />
-				</li>
-				<li v-if="team.memberCount > team.members.length" :class="$style.teamCardMemberMore">
-					+{{ team.memberCount - team.members.length }}
-				</li>
-			</ul>
+			<div :class="$style.teamCardFooter">
+				<ul :class="$style.teamCardMembers" :aria-label="t('circles', 'Members')">
+					<li
+						v-for="member in team.members.slice(0, MAX_AVATARS)"
+						:key="member.id"
+						:class="$style.teamCardMember">
+						<NcAvatar
+							:user="member.isUser ? member.userId ?? undefined : undefined"
+							:displayName="member.displayName"
+							:isNoUser="!member.isUser"
+							:size="28"
+							hideStatus
+							disableMenu />
+					</li>
+					<li v-if="team.memberCount > team.members.length" :class="$style.teamCardMemberMore">
+						+{{ team.memberCount - team.members.length }}
+					</li>
+				</ul>
+			</div>
+		</RouterLink>
+		<div :class="$style.teamCardActions" @mousedown.stop @dragstart.prevent.stop>
+			<NcActions
+				:class="$style.teamCardActionsMenu"
+				draggable="false"
+				:aria-label="t('circles', 'Team actions')"
+				@dragstart="preventActionsDrag">
+				<NcActionButton
+					v-if="sortable"
+					:disabled="favoriteBusy || !canMoveUp"
+					closeAfterClick
+					@click="emit('moveUp', team)">
+					<template #icon>
+						<NcIconSvgWrapper :path="mdiArrowUp" :size="20" />
+					</template>
+					{{ t('circles', 'Move up') }}
+				</NcActionButton>
+				<NcActionButton
+					v-if="sortable"
+					:disabled="favoriteBusy || !canMoveDown"
+					closeAfterClick
+					@click="emit('moveDown', team)">
+					<template #icon>
+						<NcIconSvgWrapper :path="mdiArrowDown" :size="20" />
+					</template>
+					{{ t('circles', 'Move down') }}
+				</NcActionButton>
+				<NcActionButton
+					:disabled="favoriteBusy"
+					closeAfterClick
+					@click="toggleFavorite">
+					<template #icon>
+						<NcIconSvgWrapper :path="team.isFavorite ? mdiStar : mdiStarOutline" :size="20" />
+					</template>
+					{{ team.isFavorite ? t('circles', 'Remove from favorites') : t('circles', 'Add to favorites') }}
+				</NcActionButton>
+			</NcActions>
 		</div>
-	</RouterLink>
+	</article>
 </template>
 
 <style module lang="scss">
 .team-card {
+	position: relative;
 	display: flex;
 	flex-direction: column;
 	gap: calc(2 * var(--default-grid-baseline));
@@ -84,10 +170,48 @@ const MAX_AVATARS = 5
 		outline-offset: 2px;
 	}
 
+	&[draggable='true'] {
+		cursor: grab;
+	}
+
 	&__head {
 		display: flex;
 		align-items: center;
+		gap: var(--default-grid-baseline);
+	}
+
+	&__link {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
 		gap: calc(2 * var(--default-grid-baseline));
+		min-width: 0;
+		color: inherit;
+		text-decoration: none;
+		cursor: pointer;
+
+		* {
+			cursor: pointer !important;
+		}
+	}
+
+	&__actions {
+		position: absolute;
+		right: calc(2 * var(--default-grid-baseline));
+		bottom: calc(3 * var(--default-grid-baseline) + 14px - var(--default-clickable-area) / 2);
+		display: flex;
+		align-items: center;
+	}
+
+	&__actions-menu {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+
+		&:disabled,
+		&:disabled * {
+			cursor: default !important;
+		}
 	}
 
 	&__name {
@@ -95,6 +219,9 @@ const MAX_AVATARS = 5
 		min-width: 0;
 		font-size: 1.1em;
 		font-weight: 600;
+		color: inherit;
+		text-decoration: none;
+		cursor: pointer;
 		// truncate long team names rather than wrap the header
 		overflow: hidden;
 		white-space: nowrap;
@@ -118,6 +245,7 @@ const MAX_AVATARS = 5
 		gap: calc(2 * var(--default-grid-baseline));
 		// push the footer down so equal-height cards align their footers
 		margin-top: auto;
+		padding-inline-end: calc(2 * var(--default-clickable-area));
 	}
 
 	&__members {
@@ -126,6 +254,8 @@ const MAX_AVATARS = 5
 		list-style: none;
 		padding: 0;
 		margin: 0;
+		min-width: 0;
+		flex-wrap: wrap;
 	}
 
 	// Each item overlaps the previous one to form a compact stack.
@@ -162,7 +292,7 @@ const MAX_AVATARS = 5
 		height: 28px;
 		padding-inline: 4px;
 		border-radius: 14px;
-		box-shadow: 0 0 0 2px var(--color-main-background);
+		cursor: pointer;
 		background-color: var(--color-background-dark);
 		color: var(--color-text-maxcontrast);
 		font-size: 0.8em;

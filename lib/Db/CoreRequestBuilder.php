@@ -31,6 +31,7 @@ class CoreRequestBuilder {
 
 	public const TABLE_CIRCLE = 'circles_circle';
 	public const TABLE_INVITATIONS = 'circles_invitations';
+	public const TABLE_TEAM_FAVORITES = 'circles_team_favorites';
 	public const TABLE_MEMBER = 'circles_member';
 	public const TABLE_MEMBERSHIP = 'circles_membership';
 	public const TABLE_REMOTE = 'circles_remote';
@@ -60,6 +61,12 @@ class CoreRequestBuilder {
 			'circle_id',
 			'invitation_code',
 			'created_by',
+			'created',
+		],
+		self::TABLE_TEAM_FAVORITES => [
+			'user_id',
+			'circle_id',
+			'position',
 			'created',
 		],
 		self::TABLE_MEMBER => [

@@ -12,6 +12,35 @@ The app has two layers of front-end tests:
 
 PHP tests (PHPUnit, Psalm) live under `tests/` and are documented separately.
 
+## Favorite teams regression tests
+
+Run the focused frontend checks with:
+
+```bash
+npm test -- --run src/teams/store.spec.ts src/teams/views/HomeView.spec.ts src/teams/api.spec.ts
+```
+
+These cover canonical ordering after removal/addition, overlapping mutations,
+conflict recovery, and cancelled and accepted drops.
+Dragging only changes a local preview; the server is updated on an accepted drop.
+Reorder requests include both `circleIds` and `expectedCircleIds`; stale orders
+return HTTP 409 and the client reloads the current state.
+
+The PHP service tests cover membership pruning, stale-order conflicts, idempotent
+updates and lock release on failures:
+
+```bash
+composer run test:unit -- --filter TeamFavorite
+```
+
+The standard PHP test bootstrap requires an installed Nextcloud test instance.
+The database tests use transaction rollback and cover direct/inherited membership,
+position gaps, user isolation, and preserving rows during reordering. Run these only
+against a development/test instance. Fresh migrations and other database engines
+still require verification in CI. Before a PR,
+also check direct and inherited memberships, team/user deletion, two concurrent
+browser tabs, and star appearance in light/dark themes.
+
 ## Vitest (unit & component)
 
 ### Run
