@@ -61,6 +61,8 @@ export interface Team {
 	id: string
 	displayName: string
 	description: string
+	isFavorite: boolean
+	favoritePosition: number | null
 	/** Total number of members (may exceed the previewed {@link members}). */
 	memberCount: number
 	/** The current user's role in this team. */

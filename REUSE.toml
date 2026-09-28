@@ -6,6 +6,12 @@ SPDX-PackageSupplier = "Nextcloud <info@nextcloud.com>"
 SPDX-PackageDownloadLocation = "https://github.com/nextcloud/circles"
 
 [[annotations]]
+path = ["src/teams/store.spec.ts", "src/teams/views/HomeView.spec.ts", "tests/unit/lib/Service/TeamFavoriteServiceTest.php", "tests/unit/lib/Db/TeamFavoriteRequestTest.php"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Nextcloud GmbH and Nextcloud contributors"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
 path = ["l10n/**.js", "l10n/**.json", "composer.json", "composer.lock", "package.json", "package-lock.json", "tsconfig.json"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2017 Nextcloud GmbH and Nextcloud contributors"

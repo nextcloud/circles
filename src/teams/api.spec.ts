@@ -32,7 +32,7 @@ vi.mock('./team-page/services/collaborationAutocompletion.js', () => ({
 	getSuggestions: vi.fn(),
 }))
 
-const { createTeam } = await import('./api.ts')
+const { createTeam, fetchTeams, setTeamFavorite, reorderFavoriteTeams } = await import('./api.ts')
 
 describe('createTeam', () => {
 	beforeEach(() => {
@@ -57,5 +57,31 @@ describe('createTeam', () => {
 			'/ocs/apps/circles/circles',
 			{ name: 'Design', createTeamFolder: false },
 		)
+	})
+})
+
+describe('favorite teams API', () => {
+	beforeEach(() => vi.resetAllMocks())
+
+	it('returns the canonical favorite list after a toggle', async () => {
+		vi.mocked(axios.put).mockResolvedValue({ data: { ocs: { data: { circleIds: ['A', 'B'] } } } })
+		expect(await setTeamFavorite('B', true)).toEqual(['A', 'B'])
+		expect(axios.put).toHaveBeenCalledWith(expect.stringContaining('/favorite'), { isFavorite: true })
+	})
+
+	it('includes the expected order and reads the canonical response', async () => {
+		vi.mocked(axios.put).mockResolvedValue({ data: { ocs: { data: { circleIds: ['B', 'A'] } } } })
+		expect(await reorderFavoriteTeams(['B', 'A'], ['A', 'B'])).toEqual(['B', 'A'])
+		expect(axios.put).toHaveBeenCalledWith('/ocs/apps/circles/teams/favorites/order', {
+			circleIds: ['B', 'A'],
+			expectedCircleIds: ['A', 'B'],
+		})
+	})
+
+	it('does not silently replace favorites with an empty list on a failed read', async () => {
+		vi.mocked(axios.get).mockResolvedValueOnce({ data: { ocs: { data: [] } } })
+			.mockResolvedValueOnce({ data: { ocs: { data: [] } } })
+			.mockRejectedValueOnce(new Error('favorites unavailable'))
+		await expect(fetchTeams()).rejects.toThrow('favorites unavailable')
 	})
 })

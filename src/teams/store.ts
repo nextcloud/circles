@@ -18,6 +18,7 @@ interface TeamsState {
 	loadError: boolean
 	/** Whether the "create a new team" wizard is open (shared across the app). */
 	createWizardOpen: boolean
+	favoritesUpdating: boolean
 }
 
 /**
@@ -31,6 +32,7 @@ export const useTeamsStore = defineStore('teams', {
 		loading: false,
 		loadError: false,
 		createWizardOpen: false,
+		favoritesUpdating: false,
 	}),
 
 	getters: {
@@ -45,6 +47,10 @@ export const useTeamsStore = defineStore('teams', {
 			}
 			return state.teams.filter((team) => team.displayName.toLowerCase().includes(needle))
 		},
+
+		favoriteTeams: (state): Team[] => state.teams
+			.filter((team) => team.isFavorite)
+			.sort((left, right) => (left.favoritePosition ?? 0) - (right.favoritePosition ?? 0)),
 	},
 
 	actions: {
@@ -64,6 +70,61 @@ export const useTeamsStore = defineStore('teams', {
 				logger.error('Failed to load teams', { error })
 			} finally {
 				this.loading = false
+			}
+		},
+
+		/**
+		 * Apply the canonical favorite list to all loaded teams.
+		 *
+		 * @param ids - Ordered favorite identifiers
+		 */
+		applyFavoriteOrder(ids: string[]): void {
+			const positions = new Map(ids.map((id, position) => [id, position]))
+			for (const team of this.teams) {
+				team.isFavorite = positions.has(team.id)
+				team.favoritePosition = positions.get(team.id) ?? null
+			}
+		},
+
+		/**
+		 * Toggle a favorite while preventing overlapping mutations.
+		 *
+		 * @param id - Team identifier
+		 */
+		async toggleFavorite(id: string): Promise<void> {
+			const team = this.getTeam(id)
+			if (!team || this.favoritesUpdating) {
+				return
+			}
+			this.favoritesUpdating = true
+			try {
+				this.applyFavoriteOrder(await api.setTeamFavorite(id, !team.isFavorite))
+			} catch (error) {
+				await this.loadTeams()
+				throw error
+			} finally {
+				this.favoritesUpdating = false
+			}
+		},
+
+		/**
+		 * Persist a favorite order and reconcile server conflicts.
+		 *
+		 * @param ids - Desired favorite order
+		 */
+		async reorderFavoriteTeams(ids: string[]): Promise<void> {
+			if (this.favoritesUpdating) {
+				return
+			}
+			const expected = this.favoriteTeams.map((team) => team.id)
+			this.favoritesUpdating = true
+			try {
+				this.applyFavoriteOrder(await api.reorderFavoriteTeams(ids, expected))
+			} catch (error) {
+				await this.loadTeams()
+				throw error
+			} finally {
+				this.favoritesUpdating = false
 			}
 		},
 

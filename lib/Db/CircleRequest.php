@@ -21,6 +21,8 @@ use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\Probes\DataProbe;
+use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\TimezoneService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 
 /**
@@ -29,6 +31,14 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
  * @package OCA\Circles\Db
  */
 class CircleRequest extends CircleRequestBuilder {
+	public function __construct(
+		private readonly TeamFavoriteRequest $teamFavoriteRequest,
+		TimezoneService $timezoneService,
+		ConfigService $configService,
+	) {
+		parent::__construct($timezoneService, $configService);
+	}
+
 	/**
 	 * @param Circle $circle
 	 *
@@ -523,6 +533,7 @@ class CircleRequest extends CircleRequestBuilder {
 		$qb->limitToUniqueId($circle->getSingleId());
 
 		$qb->executeStatement();
+		$this->teamFavoriteRequest->removeCircle($circle->getSingleId());
 	}
 
 	/**

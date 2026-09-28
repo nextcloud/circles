@@ -110,7 +110,17 @@ useEventListener(window, 'resize', () => {
 })
 
 // The current team is represented by the panel's header, not the list.
-const otherTeams = computed(() => teamsStore.teams.filter((item) => item.id !== props.circle.id))
+const otherTeams = computed(() => teamsStore.teams
+	.filter((item) => item.id !== props.circle.id)
+	.toSorted((left, right) => {
+		if (left.isFavorite !== right.isFavorite) {
+			return left.isFavorite ? -1 : 1
+		}
+		if (left.isFavorite) {
+			return (left.favoritePosition ?? 0) - (right.favoritePosition ?? 0)
+		}
+		return 0
+	}))
 
 // Teams list search: the "Go to team" caption row swaps for a text field
 // that filters the list; aborting the search restores the caption row.
@@ -311,6 +321,7 @@ async function openMembersPage(): Promise<void> {
 							<TeamAvatar
 								:displayName="item.displayName"
 								:circleId="item.id"
+								:isFavorite="item.isFavorite"
 								:size="32" />
 						</template>
 					</NcListItem>

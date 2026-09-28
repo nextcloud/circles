@@ -35,6 +35,7 @@ export function getAvatarUrl(circleId: string): string {
 </script>
 
 <script setup lang="ts">
+import { mdiStar } from '@mdi/js'
 import { computed } from 'vue'
 import NcAvatar from '@nextcloud/vue/components/NcAvatar'
 
@@ -42,20 +43,52 @@ const props = withDefaults(defineProps<{
 	displayName: string
 	circleId: string
 	size?: number
+	isFavorite?: boolean
 }>(), {
 	size: 32,
+	isFavorite: false,
 })
 
 const avatarUrl = computed(() => getAvatarUrl(props.circleId))
 </script>
 
 <template>
-	<NcAvatar
-		:displayName="displayName"
-		:url="avatarUrl"
-		:isNoUser="true"
-		:size="size"
-		hideStatus
-		disableMenu
-		disableTooltip />
+	<span class="team-avatar">
+		<NcAvatar
+			:displayName="displayName"
+			:url="avatarUrl"
+			:isNoUser="true"
+			:size="size"
+			hideStatus
+			disableMenu
+			disableTooltip />
+		<svg
+			v-if="isFavorite"
+			class="team-avatar__favorite"
+			viewBox="0 0 24 24"
+			aria-hidden="true">
+			<path :d="mdiStar" />
+		</svg>
+	</span>
 </template>
+
+<style lang="scss" scoped>
+.team-avatar {
+	position: relative;
+	display: inline-flex;
+	flex: 0 0 auto;
+
+	&__favorite {
+		position: absolute;
+		right: -2px;
+		bottom: -2px;
+		width: 12px;
+		height: 12px;
+		padding: 1px;
+		border-radius: 50%;
+		background-color: var(--color-main-background);
+		fill: var(--color-element-warning, #c88800);
+		pointer-events: none;
+	}
+}
+</style>

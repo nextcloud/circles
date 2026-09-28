@@ -6,57 +6,109 @@
 <script setup lang="ts">
 import type { Team } from '../types.ts'
 
+import { mdiStar, mdiStarOutline } from '@mdi/js'
 import { t } from '@nextcloud/l10n'
 import NcAvatar from '@nextcloud/vue/components/NcAvatar'
 import TeamAvatar from './TeamAvatar.vue'
 
 const props = defineProps<{
 	team: Team
+	draggable?: boolean
+	favoriteBusy?: boolean
+}>()
+
+const emit = defineEmits<{
+	toggleFavorite: [team: Team]
+	dragStart: [team: Team, event: DragEvent]
+	dragOver: [team: Team, event: DragEvent]
+	dragEnd: [event: DragEvent]
 }>()
 
 const MAX_AVATARS = 5
+
+/** Toggle the favorite without starting a drag. */
+function toggleFavorite() {
+	emit('toggleFavorite', props.team)
+}
+
+/**
+ * Keep action buttons out of native card dragging.
+ *
+ * @param event - Native drag event
+ */
+function preventFavoriteDrag(event: DragEvent) {
+	event.preventDefault()
+}
 </script>
 
 <template>
-	<RouterLink
+	<article
 		:class="$style.teamCard"
-		:to="{ name: 'team', params: { teamId: props.team.id } }">
+		:draggable="draggable"
+		@dragstart="emit('dragStart', team, $event)"
+		@dragover="emit('dragOver', team, $event)"
+		@dragend="emit('dragEnd', $event)">
 		<div :class="$style.teamCardHead">
 			<TeamAvatar
-				:displayName="team.displayName"
 				:circleId="team.id"
-				:size="44" />
-			<span :class="$style.teamCardName">{{ team.displayName }}</span>
+				:displayName="team.displayName"
+				:size="40" />
+			<RouterLink
+				:class="$style.teamCardName"
+				:to="{ name: 'team', params: { teamId: props.team.id } }">
+				{{ team.displayName }}
+			</RouterLink>
 		</div>
+		<RouterLink
+			:class="$style.teamCardLink"
+			:to="{ name: 'team', params: { teamId: props.team.id } }">
+			<p v-if="team.description" :class="$style.teamCardDescription">
+				{{ team.description }}
+			</p>
 
-		<p v-if="team.description" :class="$style.teamCardDescription">
-			{{ team.description }}
-		</p>
-
-		<div :class="$style.teamCardFooter">
-			<ul :class="$style.teamCardMembers" :aria-label="t('circles', 'Members')">
-				<li
-					v-for="member in team.members.slice(0, MAX_AVATARS)"
-					:key="member.id"
-					:class="$style.teamCardMember">
-					<NcAvatar
-						:user="member.isUser ? member.userId ?? undefined : undefined"
-						:displayName="member.displayName"
-						:isNoUser="!member.isUser"
-						:size="28"
-						hideStatus
-						disableMenu />
-				</li>
-				<li v-if="team.memberCount > team.members.length" :class="$style.teamCardMemberMore">
-					+{{ team.memberCount - team.members.length }}
-				</li>
-			</ul>
+			<div :class="$style.teamCardFooter">
+				<ul :class="$style.teamCardMembers" :aria-label="t('circles', 'Members')">
+					<li
+						v-for="member in team.members.slice(0, MAX_AVATARS)"
+						:key="member.id"
+						:class="$style.teamCardMember">
+						<NcAvatar
+							:user="member.isUser ? member.userId ?? undefined : undefined"
+							:displayName="member.displayName"
+							:isNoUser="!member.isUser"
+							:size="28"
+							hideStatus
+							disableMenu />
+					</li>
+					<li v-if="team.memberCount > team.members.length" :class="$style.teamCardMemberMore">
+						+{{ team.memberCount - team.members.length }}
+					</li>
+				</ul>
+			</div>
+		</RouterLink>
+		<div :class="$style.teamCardActions" @mousedown.stop @dragstart.prevent.stop>
+			<button
+				type="button"
+				draggable="false"
+				:disabled="favoriteBusy"
+				:aria-pressed="team.isFavorite"
+				:class="$style.teamCardFavorite"
+				:title="team.isFavorite ? t('circles', 'Remove from favorites') : t('circles', 'Add to favorites')"
+				:aria-label="team.isFavorite ? t('circles', 'Remove from favorites') : t('circles', 'Add to favorites')"
+				@click="toggleFavorite"
+				@mousedown.stop
+				@dragstart="preventFavoriteDrag">
+				<svg viewBox="0 0 24 24" aria-hidden="true">
+					<path :d="team.isFavorite ? mdiStar : mdiStarOutline" />
+				</svg>
+			</button>
 		</div>
-	</RouterLink>
+	</article>
 </template>
 
 <style module lang="scss">
 .team-card {
+	position: relative;
 	display: flex;
 	flex-direction: column;
 	gap: calc(2 * var(--default-grid-baseline));
@@ -84,10 +136,76 @@ const MAX_AVATARS = 5
 		outline-offset: 2px;
 	}
 
+	&[draggable='true'] {
+		cursor: grab;
+	}
+
 	&__head {
 		display: flex;
 		align-items: center;
+		gap: var(--default-grid-baseline);
+	}
+
+	&__link {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
 		gap: calc(2 * var(--default-grid-baseline));
+		min-width: 0;
+		color: inherit;
+		text-decoration: none;
+		cursor: pointer;
+
+		* {
+			cursor: pointer !important;
+		}
+	}
+
+	&__actions {
+		position: absolute;
+		right: calc(2 * var(--default-grid-baseline));
+		bottom: calc(3 * var(--default-grid-baseline) + 14px - var(--default-clickable-area) / 2);
+		display: flex;
+		align-items: center;
+	}
+
+	&__favorite {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 0 !important;
+		min-height: 0 !important;
+		width: var(--default-clickable-area) !important;
+		height: var(--default-clickable-area) !important;
+		padding: 1px !important;
+		margin: 0 !important;
+		border: 0 !important;
+		border-radius: 50%;
+		appearance: none;
+		box-shadow: none !important;
+		background: transparent !important;
+		color: var(--color-element-warning, #c88800) !important;
+
+		&,
+		* {
+			cursor: pointer !important;
+		}
+
+		svg {
+			width: 16px;
+			height: 16px;
+			fill: var(--color-element-warning, #c88800) !important;
+		}
+
+		&:focus-visible {
+			outline: 2px solid var(--color-element-warning, #c88800);
+			outline-offset: 2px;
+		}
+
+		&:disabled,
+		&:disabled * {
+			cursor: default !important;
+		}
 	}
 
 	&__name {
@@ -95,6 +213,9 @@ const MAX_AVATARS = 5
 		min-width: 0;
 		font-size: 1.1em;
 		font-weight: 600;
+		color: inherit;
+		text-decoration: none;
+		cursor: pointer;
 		// truncate long team names rather than wrap the header
 		overflow: hidden;
 		white-space: nowrap;
@@ -118,6 +239,7 @@ const MAX_AVATARS = 5
 		gap: calc(2 * var(--default-grid-baseline));
 		// push the footer down so equal-height cards align their footers
 		margin-top: auto;
+		padding-inline-end: calc(2 * var(--default-clickable-area));
 	}
 
 	&__members {
@@ -126,6 +248,8 @@ const MAX_AVATARS = 5
 		list-style: none;
 		padding: 0;
 		margin: 0;
+		min-width: 0;
+		flex-wrap: wrap;
 	}
 
 	// Each item overlaps the previous one to form a compact stack.
@@ -162,7 +286,7 @@ const MAX_AVATARS = 5
 		height: 28px;
 		padding-inline: 4px;
 		border-radius: 14px;
-		box-shadow: 0 0 0 2px var(--color-main-background);
+		cursor: pointer;
 		background-color: var(--color-background-dark);
 		color: var(--color-text-maxcontrast);
 		font-size: 0.8em;

@@ -140,9 +140,10 @@ function mapFullMember(raw: RawMember): Member {
  * description, member count, our role) with the members preview and resources.
  */
 export async function fetchTeams(): Promise<Team[]> {
-	const [circlesRes, dashRes] = await Promise.allSettled([
+	const [circlesRes, dashRes, favoritesRes] = await Promise.allSettled([
 		axios.get<OcsResponse<RawCircle[]>>(generateOcsUrl('apps/circles/circles') + '?limit=-1'),
 		axios.get<OcsResponse<RawDashboardTeam[]>>(generateOcsUrl('apps/circles/teams/dashboard/widget') + '?limit=200&offset=0'),
+		axios.get<OcsResponse<{ circleIds: string[] }>>(generateOcsUrl('apps/circles/teams/favorites')),
 	])
 
 	// The team list is required; without it we have nothing to show.
@@ -160,6 +161,11 @@ export async function fetchTeams(): Promise<Team[]> {
 		logger.warn('Failed to load team dashboard previews', { error: dashRes.reason })
 	}
 	const dashboardById = new Map(dashboard.map((team) => [team.singleId, team]))
+	if (favoritesRes.status === 'rejected') {
+		throw favoritesRes.reason
+	}
+	const favoriteCircleIds = favoritesRes.value.data.ocs.data.circleIds
+	const favoritePositions = new Map(favoriteCircleIds.map((circleId, position) => [circleId, position]))
 
 	return circles.map((circle) => {
 		const extra = dashboardById.get(circle.id)
@@ -167,12 +173,36 @@ export async function fetchTeams(): Promise<Team[]> {
 			id: circle.id,
 			displayName: circle.displayName || circle.name,
 			description: circle.description ?? '',
+			isFavorite: favoritePositions.has(circle.id),
+			favoritePosition: favoritePositions.get(circle.id) ?? null,
 			memberCount: circle.population ?? extra?.members.length ?? 0,
 			myRole: levelToRole(circle.initiator?.level),
 			members: (extra?.members ?? []).map(mapPreviewMember),
 			resources: (extra?.resources ?? []).map(mapResource),
 		}
 	})
+}
+
+/**
+ * Update a favorite and return the canonical order.
+ *
+ * @param teamId - Team identifier
+ * @param isFavorite - Desired favorite state
+ */
+export async function setTeamFavorite(teamId: string, isFavorite: boolean): Promise<string[]> {
+	const response = await axios.put<OcsResponse<{ circleIds: string[] }>>(generateOcsUrl('apps/circles/teams/{circleId}/favorite', { circleId: teamId }), { isFavorite })
+	return response.data.ocs.data.circleIds
+}
+
+/**
+ * Save a new order only if the server still has the expected order.
+ *
+ * @param teamIds - Desired order
+ * @param expectedCircleIds - Previously loaded order
+ */
+export async function reorderFavoriteTeams(teamIds: string[], expectedCircleIds: string[]): Promise<string[]> {
+	const response = await axios.put<OcsResponse<{ circleIds: string[] }>>(generateOcsUrl('apps/circles/teams/favorites/order'), { circleIds: teamIds, expectedCircleIds })
+	return response.data.ocs.data.circleIds
 }
 
 /**
