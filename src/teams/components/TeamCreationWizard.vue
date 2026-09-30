@@ -317,7 +317,7 @@ function onFormSubmit(): void {
 					</NcButton>
 					<div v-if="showAdvanced" class="team-wizard__advanced-body">
 						<NcCheckboxRadioSwitch v-model="createTeamFolder">
-							{{ t('circles', 'Create a team space') }}
+							{{ t('circles', 'Create a team folder') }}
 						</NcCheckboxRadioSwitch>
 						<p class="team-wizard__hint">
 							{{ t('circles', 'A shared folder for this team. You can also add one later from the team page.') }}
