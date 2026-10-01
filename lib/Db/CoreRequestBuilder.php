@@ -41,9 +41,6 @@ class CoreRequestBuilder {
 	// wip
 	public const TABLE_TOKEN = 'circles_token';
 
-	public const NC_TABLE_ACCOUNTS = 'accounts';
-	public const NC_TABLE_GROUP_USER = 'group_user';
-
 	/** @var array */
 	public static $tables = [
 		self::TABLE_CIRCLE => [

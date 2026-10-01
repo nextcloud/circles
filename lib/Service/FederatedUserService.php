@@ -13,7 +13,6 @@ use Exception;
 use OC;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\ConfigLexicon;
-use OCA\Circles\Db\AccountsRequest;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
@@ -126,7 +125,6 @@ class FederatedUserService {
 		ICacheFactory $cacheFactory,
 		private FederatedEventService $federatedEventService,
 		private MembershipService $membershipService,
-		private AccountsRequest $accountRequest,
 		private CircleRequest $circleRequest,
 		private MemberRequest $memberRequest,
 		private RemoteService $remoteService,
@@ -447,10 +445,7 @@ class FederatedUserService {
 			}
 			$displayName = $this->userManager->getDisplayName($userId);
 		} else {
-			$accountData = $this->accountRequest->getAccountData($userId);
-			if (array_key_exists('displayName', $accountData)) {
-				$displayName = $accountData['displayName'];
-			}
+			$displayName = $this->userManager->getDisplayName($userId) ?? $userId;
 		}
 
 		$federatedUser = new FederatedUser();

@@ -15,14 +15,6 @@
       <code><![CDATA[retrieveJson]]></code>
     </UndefinedMethod>
   </file>
-  <file src="lib/Db/AccountsRequest.php">
-    <DeprecatedClass>
-      <code><![CDATA[new MemberDoesNotExistException()]]></code>
-    </DeprecatedClass>
-    <DeprecatedConstant>
-      <code><![CDATA[QueryBuilder::SELECT]]></code>
-    </DeprecatedConstant>
-  </file>
   <file src="lib/Db/ShareWrapperRequest.php">
     <DeprecatedConstant>
       <code><![CDATA[IQueryBuilder::PARAM_DATE]]></code>

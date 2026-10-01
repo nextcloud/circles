@@ -11,7 +11,6 @@ namespace OCA\Circles\Service;
 
 use Exception;
 use OC\User\NoUserException;
-use OCA\Circles\Db\AccountsRequest;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\EventWrapperRequest;
 use OCA\Circles\Db\MemberRequest;
@@ -54,7 +53,6 @@ class MaintenanceService {
 		private IUserManager $userManager,
 		private IGroupManager $groupManager,
 		private CircleRequest $circleRequest,
-		private AccountsRequest $accountRequest,
 		private MemberRequest $memberRequest,
 		private ShareWrapperRequest $shareWrapperRequest,
 		private EventWrapperRequest $eventWrapperRequest,
