@@ -439,10 +439,8 @@
     "Password to access files shared to you by %1$s" : "Lykilorði fyrir aðgang að skránum var deilt með þér af %$s",
     "Password to access files" : "Lykilorð fyrir aðgang að skrám",
     "Circles App Initialization" : "Frumstilling Circles forrits",
-    "Team spaces" : "Svæði teymis",
     "Unable to update team folder quota for {team}" : "Tókst ekki að uppfæra kvóta fyrir teymismöppu hjá {team}",
     "Changed default team folder quota" : "Breytti sjálfgefnum kvóta fyrir teymismöppu",
-    "Create a team space" : "Búa til svæði fyrir teymið",
     "Open folder in Files" : "Opna möppu í skráaforritinu"
 },"pluralForm" :"nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);"
 }

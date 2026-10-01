@@ -453,10 +453,8 @@
     "Password to access files shared to you by %1$s" : "Mot de passe pour accéder aux fichiers partagés avec vous par %1$s",
     "Password to access files" : "Mot de passe pour accéder aux fichiers",
     "Circles App Initialization" : "Initialisation de l'application Circles",
-    "Team spaces" : "Espaces d'équipe",
     "Unable to update team folder quota for {team}" : "Impossible de mettre à jour le quota du dossier d'équipe de {team}",
     "Changed default team folder quota" : "Quota par défaut des dossiers d’équipe modifié",
-    "Create a team space" : "Créer un espace d'équipe",
     "Open folder in Files" : "Ouvrir le dossier dans Fichiers"
 },"pluralForm" :"nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }

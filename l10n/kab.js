@@ -25,6 +25,7 @@ OC.L10N.register(
     "%s" : "%s",
     "Open »%s«" : "Ldi »%s«",
     "Open %s" : "Ldi %s",
+    "Team folders" : "Ikaramen n terbaɛt",
     "Unlimited" : "War talast",
     "Group" : "Agraw",
     "Cancel" : "Semmet",

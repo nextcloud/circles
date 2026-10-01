@@ -334,7 +334,6 @@ OC.L10N.register(
     "Password to access files shared to you by %1$s" : "使用密码访问 %1$s 共享给你的文件",
     "Password to access files" : "用以访问文件的密码",
     "Circles App Initialization" : "应用程序Circles初始化",
-    "Team spaces" : "团队空间",
     "Unable to update team folder quota for {team}" : "无法更新 {team} 的团队文件夹配额",
     "Changed default team folder quota" : "已更改默认团队文件夹配额"
 },
