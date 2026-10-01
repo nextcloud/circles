@@ -453,10 +453,8 @@
     "Password to access files shared to you by %1$s" : "Pasfhocal chun rochtain a fháil ar chomhaid arna roinnt leat le %1$s",
     "Password to access files" : "Pasfhocal chun comhaid a rochtain",
     "Circles App Initialization" : "Ciorcail Aip Tosaigh",
-    "Team spaces" : "Spásanna foirne",
     "Unable to update team folder quota for {team}" : "Ní féidir cuóta fillteán foirne a nuashonrú do {team}",
     "Changed default team folder quota" : "Athraíodh cuóta fillteán foirne réamhshocraithe",
-    "Create a team space" : "Cruthaigh spás foirne",
     "Open folder in Files" : "Oscail fillteán i gComhaid"
 },"pluralForm" :"nplurals=5; plural=(n==1 ? 0 : n==2 ? 1 : n<7 ? 2 : n<11 ? 3 : 4);"
 }

@@ -453,10 +453,8 @@
     "Password to access files shared to you by %1$s" : "Senha para acessar os arquivos compartilhados com você por %1$s",
     "Password to access files" : "Senha para acessar arquivos",
     "Circles App Initialization" : "Inicialização do Aplicativo Círculos",
-    "Team spaces" : "Espaços de equipe",
     "Unable to update team folder quota for {team}" : "Não foi possível atualizar a cota da pasta de equipe para {team}",
     "Changed default team folder quota" : "Cota padrão das pastas de equipe alterada",
-    "Create a team space" : "Criar um espaço de equipe",
     "Open folder in Files" : "Abrir pasta em Arquivos"
 },"pluralForm" :"nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }

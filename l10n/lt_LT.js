@@ -378,7 +378,6 @@ OC.L10N.register(
     "Password to access files shared to you by %1$s" : "Slaptažodis, skirtas pasiekti failus, kuriuos su jumis bendrino %1$s",
     "Password to access files" : "Prieigos prie failų slaptažodis",
     "Circles App Initialization" : "Programėlės „Ratai“ inicijavimas",
-    "Team spaces" : "Komandos erdvės",
     "Open folder in Files" : "Atidaryti aplanką programėlėje „Failai“"
 },
 "nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);");

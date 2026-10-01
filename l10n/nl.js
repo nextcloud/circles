@@ -377,7 +377,6 @@ OC.L10N.register(
     "Password to access files shared to you by %1$s" : "Wachtwoord voor toegang tot bestanden met jou gedeeld door %1$s",
     "Password to access files" : "Wachtwoord voor toegang tot bestanden",
     "Circles App Initialization" : "Circles App Initialisatie",
-    "Team spaces" : "Teamruimtes",
     "Open folder in Files" : "Map openen in Bestanden"
 },
 "nplurals=2; plural=(n != 1);");
