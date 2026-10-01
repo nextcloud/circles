@@ -199,6 +199,8 @@ OC.L10N.register(
     "Please select a valid png or jpg file" : "Виберіть дійсний файл png або jpg",
     "name" : "ім'я",
     "description" : "опис",
+    "Choose from Nextcloud Files" : "Вибрати з файлів у Nextcloud",
+    "Delete picture" : "Вилучити зображення",
     "Description" : "Опис",
     "Password protection" : "Захист паролем",
     "Apply" : "Застосувати",
@@ -250,7 +252,6 @@ OC.L10N.register(
     "%1$s shared multiple files with you. You should have already received a separate email with a link to access them." : "%1$s поділив(-ла-)ся з вами кількома файлами. На вашу ел.скриньку було надіслано лист із посиланням для доступу до файлів.",
     "Password to access files shared to you by %1$s" : "Пароль для доступу до файлів, наданих вам %1$s",
     "Password to access files" : "Пароль для доступу до файлів",
-    "Circles App Initialization" : "Ініціалізація застосунка \"Кола\"",
-    "Team spaces" : "Робочі області для команд"
+    "Circles App Initialization" : "Ініціалізація застосунка \"Кола\""
 },
 "nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);");

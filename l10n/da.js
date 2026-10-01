@@ -377,7 +377,6 @@ OC.L10N.register(
     "Password to access files shared to you by %1$s" : "Adgangskode for at få adgang til filer, der deles med dig af %1$s",
     "Password to access files" : "Adgangskode for at få adgang til filer",
     "Circles App Initialization" : "Cirkler App Initialisering",
-    "Team spaces" : "Teamrum",
     "Open folder in Files" : "Open folder in Files"
 },
 "nplurals=2; plural=(n != 1);");

@@ -439,10 +439,8 @@
     "Password to access files shared to you by %1$s" : "%1$sによって共有されたファイルにアクセスするためのパスワード",
     "Password to access files" : "ファイルアクセスのパスワード",
     "Circles App Initialization" : "Circleアプリの初期化",
-    "Team spaces" : "チームスペース",
     "Unable to update team folder quota for {team}" : "{team}のチームフォルダーのクォータを更新できませんでした",
     "Changed default team folder quota" : "チームフォルダーのデフォルトの容量制限を変更しました",
-    "Create a team space" : "チームスペースを作成する",
     "Open folder in Files" : "ファイルアプリでフォルダーを開く"
 },"pluralForm" :"nplurals=1; plural=0;"
 }
