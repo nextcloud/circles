@@ -14,6 +14,7 @@ use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\CoreQueryBuilder;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\MembershipRequest;
+use OCA\Circles\Entity\ShareToken;
 use OCA\Circles\Exceptions\CircleInvitationNotFoundException;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedItemException;
@@ -27,7 +28,6 @@ use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
-use OCA\Circles\Exceptions\ShareTokenNotFoundException;
 use OCA\Circles\Exceptions\UnknownInterfaceException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\IEntity;
@@ -38,6 +38,7 @@ use OCA\Circles\Service\MembershipService;
 use OCA\Circles\Service\RemoteService;
 use OCA\Circles\Tools\Traits\TNCLogger;
 use OCP\IURLGenerator;
+use OCP\Share\IShare;
 
 /**
  * Class ModelManager
@@ -407,12 +408,19 @@ class ModelManager {
 				break;
 
 			case CoreQueryBuilder::TOKEN:
-				try {
-					$token = new ShareToken();
-					$token->importFromDatabase($data, $prefix);
-					$shareWrapper->setShareToken($token);
-				} catch (ShareTokenNotFoundException) {
+				if (($data[$prefix . 'token'] ?? '') === '') {
+					break;
 				}
+
+				$token = new ShareToken();
+				$token->shareId = (int)($data[$prefix . 'share_id'] ?? 0);
+				$token->circleId = $data[$prefix . 'circle_id'] ?? '';
+				$token->singleId = $data[$prefix . 'single_id'] ?? '';
+				$token->memberId = $data[$prefix . 'member_id'] ?? '';
+				$token->token = $data[$prefix . 'token'] ?? '';
+				$token->password = $data[$prefix . 'password'] ?? '';
+				$token->accepted = (int)($data[$prefix . 'accepted'] ?? IShare::STATUS_PENDING);
+				$shareWrapper->setShareToken($token);
 				break;
 		}
 	}

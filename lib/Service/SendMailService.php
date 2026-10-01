@@ -42,6 +42,7 @@ class SendMailService {
 		private IMailer $mailer,
 		private Defaults $defaults,
 		private ConfigService $configService,
+		private InterfaceService $interfaceService,
 		private IManager $shareManager,
 	) {
 	}
@@ -82,7 +83,7 @@ class SendMailService {
 		foreach ($shares as $share) {
 			$links[] = [
 				'filename' => $share->getFileTarget(),
-				'link' => $share->getShareToken()->getLink()
+				'link' => $share->getShareToken()->getLink($this->interfaceService)
 			];
 		}
 

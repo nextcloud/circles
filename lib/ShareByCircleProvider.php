@@ -746,7 +746,7 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 		// list share tokens in an indexed array and update details for remote/mail entries with the correct token
 		$shareTokens = [];
 		foreach ($this->shareTokenService->getTokensFromShares(array_values(array_unique($shareIds))) as $shareToken) {
-			$shareTokens[$shareToken->getShareId()][$shareToken->getMemberId()] = $shareToken->getToken();
+			$shareTokens[$shareToken->shareId][$shareToken->memberId] = $shareToken->token;
 		}
 
 		return [
