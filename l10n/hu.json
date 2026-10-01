@@ -451,10 +451,8 @@
     "Password to access files shared to you by %1$s" : "Jelszó a(z) %1$s által megosztott fájlok eléréséhez",
     "Password to access files" : "Jelszó a fájlok eléréséhez",
     "Circles App Initialization" : "Körök alkalmazás előkészítése",
-    "Team spaces" : "Csapatterületek",
     "Unable to update team folder quota for {team}" : "A csapatmappa kvótája nem frissíthető itt: {team}",
     "Changed default team folder quota" : "Az alapértelmezett csapatmappa kvótája megváltoztatva",
-    "Create a team space" : "Csapattér hozzáadása",
     "Open folder in Files" : "Mappa megnyitása a Fájlokban"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

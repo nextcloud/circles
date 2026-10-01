@@ -455,10 +455,8 @@ OC.L10N.register(
     "Password to access files shared to you by %1$s" : "Password to access files shared to you by %1$s",
     "Password to access files" : "Password to access files",
     "Circles App Initialization" : "Circles App Initialisation",
-    "Team spaces" : "Team spaces",
     "Unable to update team folder quota for {team}" : "Unable to update team folder quota for {team}",
     "Changed default team folder quota" : "Changed default team folder quota",
-    "Create a team space" : "Create a team space",
     "Open folder in Files" : "Open folder in Files"
 },
 "nplurals=2; plural=(n != 1);");

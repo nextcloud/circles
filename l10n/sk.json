@@ -453,10 +453,8 @@
     "Password to access files shared to you by %1$s" : "Heslo pre prístup k súborom, ktoré s vami zdieľa %1$s",
     "Password to access files" : "Heslo pre prístup k súborom",
     "Circles App Initialization" : "Inicializácia Aplikácie Kruhy",
-    "Team spaces" : "Tímové priestory",
     "Unable to update team folder quota for {team}" : "Nie je možné aktualizovať kvótu tímového priečinka pre {team}",
     "Changed default team folder quota" : "Predvolená kvóta tímového priečinka bola zmenená",
-    "Create a team space" : "Vytvoriť tímový priestor",
     "Open folder in Files" : "Otvoriť priečinok v Súboroch"
 },"pluralForm" :"nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);"
 }

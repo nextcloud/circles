@@ -225,6 +225,7 @@
     "Team name" : "團隊名稱",
     "e.g. Design" : "例如：設計",
     "Advanced" : "進階",
+    "Create a team folder" : "建立團隊資料夾",
     "A shared folder for this team. You can also add one later from the team page." : "此團隊的共用資料夾。您稍後也可從團隊頁面新增一個。",
     "Add initial members" : "新增初始成員",
     "Search people, groups, teams…" : "搜尋夥伴、群組、團隊⋯⋯",
@@ -236,6 +237,7 @@
     "Team folder breadcrumbs" : "團隊資料夾頁面路徑",
     "Switch to list view" : "切換至列表檢視",
     "Switch to grid view" : "切換到格狀檢視",
+    "View in Files" : "在 Files 中檢視",
     "Folder contents unavailable" : "無法存取資料夾內容",
     "Empty folder" : "空資料夾",
     "This team folder is empty." : "此團隊資料夾為空。",
@@ -451,10 +453,8 @@
     "Password to access files shared to you by %1$s" : "%1$s 與您分享的檔案密碼",
     "Password to access files" : "存取檔案的密碼",
     "Circles App Initialization" : "初始化小圈圈應用程式",
-    "Team spaces" : "團隊空間",
     "Unable to update team folder quota for {team}" : "無法更新 {team} 的團隊資料夾配額",
     "Changed default team folder quota" : "已變更預設的團隊資料夾配額",
-    "Create a team space" : "建立團隊空間",
     "Open folder in Files" : "在 Files 中開啟資料夾"
 },"pluralForm" :"nplurals=1; plural=0;"
 }
