@@ -455,10 +455,8 @@ OC.L10N.register(
     "Password to access files shared to you by %1$s" : "使用密碼訪問由 %1$s 共享給您的檔案",
     "Password to access files" : "用以訪問文件的密碼",
     "Circles App Initialization" : "初始 Circles 應用程式",
-    "Team spaces" : "團隊空間",
     "Unable to update team folder quota for {team}" : "無法更新 {team} 的團隊資料夾配額",
     "Changed default team folder quota" : "已更改預設團隊資料夾配額",
-    "Create a team space" : "建立團隊空間",
     "Open folder in Files" : "在「檔案」中開啟資料夾"
 },
 "nplurals=1; plural=0;");

@@ -455,10 +455,8 @@ OC.L10N.register(
     "Password to access files shared to you by %1$s" : "Salasõna ligipääsuks failidele, mida jagas sinuga %1$s",
     "Password to access files" : "Salasõna ligipääsuks failidele",
     "Circles App Initialization" : "Tiimide rakenduse valmendamine",
-    "Team spaces" : "Tiimikaustad",
     "Unable to update team folder quota for {team}" : "Tiimikausta kvoodi uuendamine ei õnnestu „{team}“ tiimi jaoks",
     "Changed default team folder quota" : "Tiimikausta vaikimisi kvoot on muudetud",
-    "Create a team space" : "Loo tiimikaust",
     "Open folder in Files" : "Ava failirakenduseskaust "
 },
 "nplurals=2; plural=(n != 1);");
