@@ -9,11 +9,11 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
-use OCA\Circles\Db\CircleInvitationRequest;
+use OCA\Circles\Entity\CircleInvitation;
 use OCA\Circles\IFederatedItem;
-use OCA\Circles\Model\CircleInvitation;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
+use OCA\Circles\Repository\CircleInvitationRepository;
 use OCA\Circles\Service\EventService;
 use OCA\Circles\Tools\Traits\TDeserialize;
 use OCP\Security\ISecureRandom;
@@ -23,7 +23,7 @@ class CircleCreateInvitation implements IFederatedItem {
 	use TDeserialize;
 
 	public function __construct(
-		private CircleInvitationRequest $circleInvitationRequest,
+		private CircleInvitationRepository $circleInvitationRepository,
 		private EventService $eventService,
 	) {
 	}
@@ -39,9 +39,9 @@ class CircleCreateInvitation implements IFederatedItem {
 		$invitationCode = (new Randomizer())->getBytesFromString(ISecureRandom::CHAR_HUMAN_READABLE, 16);
 
 		$circleInvitation = new CircleInvitation();
-		$circleInvitation->setCircleId($circle->getSingleId());
-		$circleInvitation->setInvitationCode($invitationCode);
-		$circleInvitation->setCreatedBy($circle->getInitiator()->getUserId());
+		$circleInvitation->circleId = $circle->getSingleId();
+		$circleInvitation->invitationCode = $invitationCode;
+		$circleInvitation->createdBy = $circle->getInitiator()->getUserId();
 
 		$new->setCircleInvitation($circleInvitation);
 		$event->getData()->sObj('circle_invitation', $circleInvitation);
@@ -52,7 +52,7 @@ class CircleCreateInvitation implements IFederatedItem {
 	public function manage(FederatedEvent $event): void {
 		/** @var CircleInvitation $circleInvitation */
 		$circleInvitation = $event->getData()->gObj('circle_invitation');
-		$this->circleInvitationRequest->replace($circleInvitation);
+		$this->circleInvitationRepository->replace($circleInvitation);
 
 		// todo: do we need separate event here?
 		$this->eventService->circleEditing($event);
