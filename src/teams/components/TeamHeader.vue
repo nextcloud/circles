@@ -170,7 +170,7 @@ async function openHome(): Promise<void> {
 /** Open the team creation wizard from the panel. */
 function onNewTeam(): void {
 	switcherOpen.value = false
-	teamsStore.createWizardOpen = true
+	teamsStore.openCreateTeamWizard()
 }
 
 /** Open the team's members page from the panel. */
@@ -365,6 +365,7 @@ async function onToggleFavorite(): Promise<void> {
 					</NcButton>
 
 					<NcButton
+						v-if="teamsStore.canCreateTeam"
 						class="team-header__switcher-new"
 						variant="secondary"
 						@click="onNewTeam">
