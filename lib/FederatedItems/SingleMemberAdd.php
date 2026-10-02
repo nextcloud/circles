@@ -237,6 +237,8 @@ class SingleMemberAdd implements
 		// The idea is that adding the member during the self::verify() will help during the broadcasting
 		// of the event to Federated RemoteInstance for their first member.
 		$this->memberRequest->insertOrUpdate($member);
+		// sync memberships now, as self::manage() is run async and might not be executed if the loopback is not working
+		$this->membershipService->onUpdate($member->getSingleId());
 
 		try {
 			$displayName = $this->maintenanceService->updateDisplayName($member);
