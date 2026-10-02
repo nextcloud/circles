@@ -11,12 +11,15 @@ namespace OCA\Circles\Tests\Controller;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Controller\PageController;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\PermissionService;
 use OCA\Circles\Service\TeamFolderPolicy;
 use OCP\AppFramework\Http\NotFoundResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
 use OCP\EventDispatcher\IEventDispatcher;
 use OCP\IRequest;
+use OCP\IUser;
+use OCP\IUserSession;
 use OCP\Teams\ITeamFolderProvider;
 use OCP\Teams\ITeamManager;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -29,6 +32,8 @@ final class PageControllerTest extends TestCase {
 	private ITeamManager&MockObject $teamManager;
 	private TeamFolderPolicy&MockObject $teamFolderPolicy;
 	private IEventDispatcher&MockObject $eventDispatcher;
+	private IUserSession&MockObject $userSession;
+	private PermissionService&MockObject $permissionService;
 	private PageController $pageController;
 
 	#[\Override]
@@ -41,6 +46,12 @@ final class PageControllerTest extends TestCase {
 		$this->teamManager = $this->createMock(ITeamManager::class);
 		$this->teamFolderPolicy = $this->createMock(TeamFolderPolicy::class);
 		$this->eventDispatcher = $this->createMock(IEventDispatcher::class);
+		$this->permissionService = $this->createMock(PermissionService::class);
+
+		$user = $this->createMock(IUser::class);
+		$user->method('getUID')->willReturn('alice');
+		$this->userSession = $this->createMock(IUserSession::class);
+		$this->userSession->method('getUser')->willReturn($user);
 
 		$this->pageController = new PageController(
 			$this->request,
@@ -49,6 +60,8 @@ final class PageControllerTest extends TestCase {
 			$this->teamManager,
 			$this->teamFolderPolicy,
 			$this->eventDispatcher,
+			$this->userSession,
+			$this->permissionService,
 		);
 	}
 
@@ -70,9 +83,13 @@ final class PageControllerTest extends TestCase {
 		$this->teamFolderPolicy->expects($this->once())
 			->method('isTeamFolderProvisioningEnabled')
 			->willReturn(true);
+		$this->permissionService->expects($this->once())
+			->method('canUserCreateCircle')
+			->with('alice')
+			->willReturn(true);
 
 		$provided = [];
-		$this->initialState->expects($this->exactly(2))
+		$this->initialState->expects($this->exactly(3))
 			->method('provideInitialState')
 			->willReturnCallback(function (string $key, mixed $value) use (&$provided): void {
 				$provided[$key] = $value;
@@ -85,12 +102,14 @@ final class PageControllerTest extends TestCase {
 		$this->assertSame('main', $result->getTemplateName());
 		$this->assertTrue($provided['teamFolderProviderAvailable']);
 		$this->assertTrue($provided['teamFolderProvisioningEnabled']);
+		$this->assertTrue($provided['canCreateTeam']);
 	}
 
 	/**
 	 * No folder provider registered (groupfolders disabled or uninstalled):
 	 * `teamFolderProviderAvailable` must be false, but the page still renders
-	 * so the SPA can fall back to the regular "Folder" button.
+	 * so the SPA can fall back to the regular "Folder" button. The user is
+	 * also not allowed to create teams, so `canCreateTeam` is false.
 	 */
 	public function testIndexProvidesProviderUnavailable(): void {
 		$this->configService->expects($this->once())
@@ -104,9 +123,13 @@ final class PageControllerTest extends TestCase {
 		$this->teamFolderPolicy->expects($this->once())
 			->method('isTeamFolderProvisioningEnabled')
 			->willReturn(false);
+		$this->permissionService->expects($this->once())
+			->method('canUserCreateCircle')
+			->with('alice')
+			->willReturn(false);
 
 		$provided = [];
-		$this->initialState->expects($this->exactly(2))
+		$this->initialState->expects($this->exactly(3))
 			->method('provideInitialState')
 			->willReturnCallback(function (string $key, mixed $value) use (&$provided): void {
 				$provided[$key] = $value;
@@ -117,6 +140,7 @@ final class PageControllerTest extends TestCase {
 		$this->assertInstanceOf(TemplateResponse::class, $result);
 		$this->assertFalse($provided['teamFolderProviderAvailable']);
 		$this->assertFalse($provided['teamFolderProvisioningEnabled']);
+		$this->assertFalse($provided['canCreateTeam']);
 	}
 
 	/**
@@ -135,6 +159,8 @@ final class PageControllerTest extends TestCase {
 			->method('getTeamFolderProvider');
 		$this->teamFolderPolicy->expects($this->never())
 			->method('isTeamFolderProvisioningEnabled');
+		$this->permissionService->expects($this->never())
+			->method('canUserCreateCircle');
 
 		$result = $this->pageController->index();
 

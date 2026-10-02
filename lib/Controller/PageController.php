@@ -11,6 +11,7 @@ namespace OCA\Circles\Controller;
 
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\PermissionService;
 use OCA\Circles\Service\TeamFolderPolicy;
 use OCA\Text\Event\LoadEditor;
 use OCP\AppFramework\Controller;
@@ -22,6 +23,7 @@ use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
 use OCP\EventDispatcher\IEventDispatcher;
 use OCP\IRequest;
+use OCP\IUserSession;
 use OCP\Teams\ITeamManager;
 use OCP\Util;
 
@@ -36,6 +38,8 @@ class PageController extends Controller {
 		private ITeamManager $teamManager,
 		private TeamFolderPolicy $teamFolderPolicy,
 		private IEventDispatcher $eventDispatcher,
+		private IUserSession $userSession,
+		private PermissionService $permissionService,
 	) {
 		parent::__construct(Application::APP_ID, $request);
 	}
@@ -55,6 +59,12 @@ class PageController extends Controller {
 		$this->initialState->provideInitialState(
 			'teamFolderProvisioningEnabled',
 			$this->teamFolderPolicy->isTeamFolderProvisioningEnabled(),
+		);
+		$this->initialState->provideInitialState(
+			'canCreateTeam',
+			$this->permissionService->canUserCreateCircle(
+				$this->userSession->getUser()?->getUID() ?? ''
+			),
 		);
 
 		Util::addScript(Application::APP_ID, 'teams-main');

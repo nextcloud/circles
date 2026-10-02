@@ -5,6 +5,7 @@
 
 import type { Member, MemberCandidate, Team } from './types.ts'
 
+import { loadState } from '@nextcloud/initial-state'
 import { defineStore } from 'pinia'
 import { logger } from '../logger.ts'
 import * as api from './api.ts'
@@ -18,6 +19,8 @@ interface TeamsState {
 	loadError: boolean
 	/** Whether the "create a new team" wizard is open (shared across the app). */
 	createWizardOpen: boolean
+	/** Whether the current user may create teams (`limit_circle_creation`). */
+	canCreateTeam: boolean
 }
 
 /**
@@ -31,6 +34,7 @@ export const useTeamsStore = defineStore('teams', {
 		loading: false,
 		loadError: false,
 		createWizardOpen: false,
+		canCreateTeam: Boolean(loadState('circles', 'canCreateTeam', false)),
 	}),
 
 	getters: {
@@ -48,8 +52,13 @@ export const useTeamsStore = defineStore('teams', {
 	},
 
 	actions: {
-		/** Open the "create a new team" wizard. */
+		/**
+		 * Open the "create a new team" wizard, if the user may create teams.
+		 */
 		openCreateTeamWizard(): void {
+			if (!this.canCreateTeam) {
+				return
+			}
 			this.createWizardOpen = true
 		},
 
@@ -85,6 +94,9 @@ export const useTeamsStore = defineStore('teams', {
 		 * @param description - An optional description
 		 */
 		async createTeam(displayName: string, createTeamFolder = true, description = ''): Promise<Team | undefined> {
+			if (!this.canCreateTeam) {
+				throw new Error('Not allowed to create teams')
+			}
 			const id = await api.createTeam(displayName.trim(), createTeamFolder)
 			const trimmedDescription = description.trim()
 			if (trimmedDescription) {

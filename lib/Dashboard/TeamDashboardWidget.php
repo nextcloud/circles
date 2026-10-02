@@ -9,12 +9,15 @@ namespace OCA\Circles\Dashboard;
 
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\PermissionService;
+use OCP\AppFramework\Services\IInitialState;
 use OCP\Dashboard\IButtonWidget;
 use OCP\Dashboard\IConditionalWidget;
 use OCP\Dashboard\IIconWidget;
 use OCP\Dashboard\Model\WidgetButton;
 use OCP\IL10N;
 use OCP\IURLGenerator;
+use OCP\IUserSession;
 use OCP\Util;
 
 class TeamDashboardWidget implements IIconWidget, IButtonWidget, IConditionalWidget {
@@ -22,6 +25,9 @@ class TeamDashboardWidget implements IIconWidget, IButtonWidget, IConditionalWid
 		private readonly IURLGenerator $urlGenerator,
 		private readonly IL10N $l10n,
 		private readonly ConfigService $configService,
+		private readonly IInitialState $initialState,
+		private readonly IUserSession $userSession,
+		private readonly PermissionService $permissionService,
 	) {
 	}
 
@@ -66,21 +72,32 @@ class TeamDashboardWidget implements IIconWidget, IButtonWidget, IConditionalWid
 	public function load(): void {
 		Util::addScript(Application::APP_ID, 'teams-dashboard');
 		Util::addStyle(Application::APP_ID, 'teams-dashboard');
+		$this->initialState->provideInitialState(
+			'canCreateTeam',
+			$this->permissionService->canUserCreateCircle(
+				$this->userSession->getUser()?->getUID() ?? ''
+			),
+		);
 	}
 
 	public function getWidgetButtons(string $userId): array {
-		return [
+		$buttons = [
 			new WidgetButton(
 				WidgetButton::TYPE_MORE,
 				$this->getTeamPage(),
 				$this->l10n->t('Show all teams')
 			),
-			new WidgetButton(
+		];
+
+		if ($this->permissionService->canUserCreateCircle($userId)) {
+			$buttons[] = new WidgetButton(
 				WidgetButton::TYPE_SETUP,
 				$this->getTeamPage(),
 				$this->l10n->t('Create a new team')
-			),
-		];
+			);
+		}
+
+		return $buttons;
 	}
 
 	public function getIconUrl(): string {

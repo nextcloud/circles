@@ -13,7 +13,7 @@ import TeamNavigation from './components/TeamNavigation.vue'
 import { useTeamsStore } from './store.ts'
 
 const store = useTeamsStore()
-const { createWizardOpen } = storeToRefs(store)
+const { createWizardOpen, canCreateTeam } = storeToRefs(store)
 
 onMounted(() => store.loadTeams())
 </script>
@@ -28,7 +28,9 @@ onMounted(() => store.loadTeams())
 			</div>
 		</NcAppContent>
 
-		<TeamCreationWizard v-if="createWizardOpen" @close="createWizardOpen = false" />
+		<TeamCreationWizard
+			v-if="canCreateTeam && createWizardOpen"
+			@close="createWizardOpen = false" />
 	</NcContent>
 </template>
 
