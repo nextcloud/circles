@@ -8,8 +8,8 @@ declare(strict_types=1);
 
 namespace OCA\Circles\MountManager;
 
-use OCA\Circles\Db\MountPointRequest;
 use OCA\Circles\Db\MountRequest;
+use OCA\Circles\Entity\Mountpoint;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
@@ -21,7 +21,7 @@ use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Mount;
-use OCA\Circles\Model\Mountpoint;
+use OCA\Circles\Repository\MountpointRepository;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Tools\Traits\TArrayTools;
@@ -53,7 +53,7 @@ class CircleMountProvider implements IMountProvider, IPartialMountProvider {
 		private IRootFolder $rootFolder,
 		private ICloudIdManager $cloudIdManager,
 		private MountRequest $mountRequest,
-		private MountPointRequest $mountPointRequest,
+		private MountpointRepository $mountpointRepository,
 		private FederatedUserService $federatedUserService,
 		private ConfigService $configService,
 		private LoggerInterface $logger,
@@ -126,9 +126,12 @@ class CircleMountProvider implements IMountProvider, IPartialMountProvider {
 			}
 
 			$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId);
-			$mountPoint = new Mountpoint($mount->getMountId(), $federatedUser->getSingleId(), $mount->getOriginalMountPoint());
+			$mountPoint = new Mountpoint();
+			$mountPoint->mountId = $mount->getMountId();
+			$mountPoint->singleId = $federatedUser->getSingleId();
+			$mountPoint->mountPoint = $mount->getOriginalMountPoint();
 			try {
-				$this->mountPointRequest->insert($mountPoint);
+				$this->mountpointRepository->insertMountpoint($mountPoint);
 				return;
 			} catch (Exception $e) {
 				// meaning a duplicate mountpoint already exists, we need to set a new filename
@@ -154,13 +157,16 @@ class CircleMountProvider implements IMountProvider, IPartialMountProvider {
 			try {
 				$fs->get($path);
 			} catch (NotFoundException) {
-				$mountPoint = new Mountpoint($mount->getMountId(), $federatedUser->getSingleId(), $path);
+				$mountPoint = new Mountpoint();
+				$mountPoint->mountId = $mount->getMountId();
+				$mountPoint->singleId = $federatedUser->getSingleId();
+				$mountPoint->mountPoint = $path;
 				$mount->setAlternateMountPoint($mountPoint);
 				try {
 					try {
-						$this->mountPointRequest->update($mountPoint);
+						$this->mountpointRepository->updateMountpoint($mountPoint);
 					} catch (MountNotFoundException) {
-						$this->mountPointRequest->insert($mountPoint);
+						$this->mountpointRepository->insertMountpoint($mountPoint);
 					}
 					return;
 				} catch (Exception $e) {
