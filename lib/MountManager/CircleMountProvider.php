@@ -47,6 +47,7 @@ class CircleMountProvider implements IMountProvider, IPartialMountProvider {
 
 	/** @var class-string<ExternalStorage> */
 	public const EXTERNAL_STORAGE = ExternalStorage::class;
+    public array $mountedPoint = [];
 
 	public function __construct(
 		private IClientService $clientService,
@@ -115,64 +116,45 @@ class CircleMountProvider implements IMountProvider, IPartialMountProvider {
 			return;
 		}
 
-		$fs = $this->rootFolder->getUserFolder($userId);
+        // we will be using cache version of the filesystem, to not cycle while operating it
+        $mountId = $mount->getId();
+        $baseFile = $mountPoint = '/files' . $mount->getMountPoint();
+        $parentMount = $this->rootFolder->getUserFolder($userId)->getMountPoint();
+        $parentCache = $parentMount->getStorage()->getCache();
 
-		try {
-			$fs->get($mount->getMountPoint());
-		} catch (NotFoundException) {
-			// in case no alternate mountpoint, we generate one in database (easier to catch duplicate mountpoint)
-			if ($mount->getAlternateMountPoint() !== null) {
-				return;
-			}
+        // splitting extension to have a nice /file (1).ext
+        $ext = pathinfo($mountPoint, PATHINFO_EXTENSION);
+        if ($ext !== '') {
+            $baseFile = substr($mountPoint, 0, -(strlen($ext) + 1));
+            $ext = '.' . $ext;
+        }
 
-			$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId);
-			$mountPoint = new Mountpoint($mount->getMountId(), $federatedUser->getSingleId(), $mount->getOriginalMountPoint());
-			try {
-				$this->mountPointRequest->insert($mountPoint);
-				return;
-			} catch (Exception $e) {
-				// meaning a duplicate mountpoint already exists, we need to set a new filename
-				if ($e->getReason() !== Exception::REASON_UNIQUE_CONSTRAINT_VIOLATION) {
-					throw $e;
-				}
-			}
-		}
+        // based on cached content, improving naming
+        $n = 1;
+        while ($parentCache->inCache($mountPoint)
+            || ($this->mountedPoint[$mountPoint] ?? $mountId) !== $mountId) {
+            $mountPoint = $baseFile . ' (' . $n++ . ')' . $ext;
+        }
 
-		$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId);
-		$this->generateIncrementedMountpoint($fs, $mount, $federatedUser);
-	}
+        // we keep trace as this won't be available in cache
+        $this->mountedPoint[$mountPoint] = $mount->getId();
 
-	private function generateIncrementedMountpoint(Folder $fs, Mount $mount, IFederatedUser $federatedUser): void {
-		$info = pathinfo($mount->getMountPoint());
-		$filename = rtrim($this->get('dirname', $info), '/') . '/' . $this->get('filename', $info);
-		$extension = $this->get('extension', $info);
-		$extension = ($extension === '') ? '' : '.' . $extension;
-
-		$n = 2;
-		while (true) {
-			$path = $filename . " ($n)" . $extension;
-			try {
-				$fs->get($path);
-			} catch (NotFoundException) {
-				$mountPoint = new Mountpoint($mount->getMountId(), $federatedUser->getSingleId(), $path);
-				$mount->setAlternateMountPoint($mountPoint);
-				try {
-					try {
-						$this->mountPointRequest->update($mountPoint);
-					} catch (MountNotFoundException) {
-						$this->mountPointRequest->insert($mountPoint);
-					}
-					return;
-				} catch (Exception $e) {
-					// meaning path is already used by another share for this user, we keep incrementing
-					if ($e->getReason() !== Exception::REASON_UNIQUE_CONSTRAINT_VIOLATION) {
-						throw $e;
-					}
-				}
-			}
-
-			$n++;
-		}
+        $federatedUser = $this->federatedUserService->getLocalFederatedUser($userId);
+        $mountPoint = new Mountpoint($mount->getMountId(), $federatedUser->getSingleId(), substr($mountPoint, 6));
+        try {
+            try {
+                $this->mountPointRequest->update($mountPoint);
+            } catch (MountNotFoundException) {
+                $this->mountPointRequest->insert($mountPoint);
+            }
+            return;
+        } catch (Exception $e) {
+            $this->logger->error('issue while creating alternate mount point', ['exception' => $e]);
+            // while there should be no reason for a unique constraint violation, we just log and ignore it
+            if ($e->getReason() !== Exception::REASON_UNIQUE_CONSTRAINT_VIOLATION) {
+                throw $e;
+            }
+        }
 	}
 
 	#[Override]
