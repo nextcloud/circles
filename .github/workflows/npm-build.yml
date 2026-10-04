@@ -28,7 +28,7 @@ jobs:
       src: ${{ steps.changes.outputs.src}}
 
     steps:
-      - uses: dorny/paths-filter@7b450fff21473bca461d4b92ce414b9d0420d706 # v4.0.2
+      - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
         id: changes
         continue-on-error: true
         with:
@@ -58,7 +58,7 @@ jobs:
           persist-credentials: false
 
       - name: Read package.json node and npm engines version
-        uses: skjnldsv/read-package-engines-version-actions@06d6baf7d8f41934ab630e97d9e6c0bc9c9ac5e4 # v3
+        uses: skjnldsv/read-package-engines-version-actions@06d6db44aa62f4609ba070f556ec24bc99fb85cb # v4
         id: versions
         with:
           fallbackNode: '^24'
@@ -86,17 +86,16 @@ jobs:
           npm ci
           npm run build --if-present
 
-# Not used as we compile on CI, see update-node-dist.yml and node-dist-unchanged.yml
-#       - name: Check build changes
-#         run: |
-#           bash -c "[[ ! \"`git status --porcelain `\" ]] || (echo 'Please recompile and commit the assets, see the section \"Show changes on failure\" for details' && exit 1)"
-# 
-#       - name: Show changes on failure
-#         if: failure()
-#         run: |
-#           git status
-#           git --no-pager diff
-#           exit 1 # make it red to grab attention
+      - name: Check build changes
+        run: |
+          bash -c "[[ ! \"`git status --porcelain `\" ]] || (echo 'Please recompile and commit the assets, see the section \"Show changes on failure\" for details' && exit 1)"
+
+      - name: Show changes on failure
+        if: failure()
+        run: |
+          git status
+          git --no-pager diff
+          exit 1 # make it red to grab attention
 
   summary:
     permissions:
