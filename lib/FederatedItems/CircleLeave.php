@@ -133,6 +133,8 @@ class CircleLeave implements
 
 		$event->setMember($member);
 		$this->memberRequest->delete($member);
+		// manage() is async and may not run if the loopback is broken
+		$this->membershipService->onUpdate($member->getSingleId());
 
 		$initiator = new FederatedUser();
 		$initiator->importFromIFederatedUser($member);
