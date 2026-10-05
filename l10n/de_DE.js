@@ -225,7 +225,7 @@ OC.L10N.register(
     "Create team" : "Team erstellen",
     "Name your team" : "Benennen Sie Ihr Team",
     "Team name" : "Team-Name",
-    "e.g. Design" : "z. B. Design",
+    "e.g. Design" : "z. B. Design",
     "Advanced" : "Erweitert",
     "Create a team folder" : "Team-Ordner erstellen",
     "A shared folder for this team. You can also add one later from the team page." : "Ein freigegebener Ordner für dieses Team. Es kann später auch ein Ordner von der Teamseite heraus hinzugefügt werden.",
