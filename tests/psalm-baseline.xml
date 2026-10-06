@@ -429,7 +429,7 @@
   </file>
   <file src="lib/Tools/Traits/TNCLogger.php">
     <RedundantCondition>
-      <code><![CDATA[isset($this->logger) && $this->logger instanceof LoggerInterface]]></code>
+      <code><![CDATA[isset($this->logger)]]></code>
     </RedundantCondition>
     <RedundantPropertyInitializationCheck>
       <code><![CDATA[isset($this->logger)]]></code>
