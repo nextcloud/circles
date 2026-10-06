@@ -14,6 +14,7 @@ use OCA\Circles\Db\ShareWrapperRequest;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\ShareWrapperNotFoundException;
 use OCA\Circles\Model\FederatedUser;
+use OCA\Circles\Model\FileCacheWrapper;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\ShareWrapper;
 use OCA\Circles\Tools\Exceptions\InvalidItemException;
@@ -169,7 +170,7 @@ class ShareWrapperService {
 				throw new InvalidItemException();
 			}
 
-			return $this->deserializeList($cachedData, ShareWrapper::class);
+			return $this->refreshFileCaches($this->deserializeList($cachedData, ShareWrapper::class));
 		} catch (InvalidItemException) {
 			// Cache miss, continue to fetch from database
 		}
@@ -180,6 +181,34 @@ class ShareWrapperService {
 		return $shares;
 	}
 
+
+	/**
+	 * Cached file cache entries are outdated when a shared file is moved to the trashbin or restored
+	 *
+	 * @param ShareWrapper[] $shares
+	 *
+	 * @return ShareWrapper[]
+	 */
+	private function refreshFileCaches(array $shares): array {
+		$fileCaches = $this->shareWrapperRequest->getFileCaches(
+			array_map(fn (ShareWrapper $share): int => $share->getFileSource(), $shares)
+		);
+
+		$refreshed = [];
+		foreach ($shares as $share) {
+			if (!array_key_exists($share->getFileSource(), $fileCaches)) {
+				continue;
+			}
+
+			$fileCache = $share->hasFileCache() ? $share->getFileCache() : new FileCacheWrapper();
+			$fileCache->setPath($fileCaches[$share->getFileSource()]->getPath())
+				->setStorage($fileCaches[$share->getFileSource()]->getStorage());
+			$share->setFileCache($fileCache);
+			$refreshed[] = $share;
+		}
+
+		return $refreshed;
+	}
 
 	/**
 	 * @return ShareWrapper[]
