@@ -24,7 +24,6 @@ use OCP\Server;
 trait TNCRequest {
 	use TNCLogger;
 
-
 	/**
 	 * @param int $size
 	 */
@@ -86,6 +85,7 @@ trait TNCRequest {
 	 * @return IClientService
 	 */
 	public function clientService(): IClientService {
+		/** @psalm-suppress UndefinedThisPropertyFetch Ugly but works */
 		if (isset($this->clientService) && $this->clientService instanceof IClientService) {
 			return $this->clientService;
 		} else {
@@ -140,19 +140,14 @@ trait TNCRequest {
 	 */
 	private function useClient(NCRequest $request): IResponse {
 		$client = $request->getClient();
-		switch ($request->getType()) {
-			case Request::TYPE_POST:
-				return $client->post($request->getCompleteUrl(), $request->getClientOptions());
-			case Request::TYPE_PUT:
-				return $client->put($request->getCompleteUrl(), $request->getClientOptions());
-			case Request::TYPE_DELETE:
-				return $client->delete($request->getCompleteUrl(), $request->getClientOptions());
-			case Request::TYPE_GET:
-				return $client->get(
-					$request->getCompleteUrl() . $request->getQueryString(), $request->getClientOptions()
-				);
-			default:
-				throw new Exception('unknown request type ' . json_encode($request));
-		}
+		return match ($request->getType()) {
+			Request::TYPE_POST => $client->post($request->getCompleteUrl(), $request->getClientOptions()),
+			Request::TYPE_PUT => $client->put($request->getCompleteUrl(), $request->getClientOptions()),
+			Request::TYPE_DELETE => $client->delete($request->getCompleteUrl(), $request->getClientOptions()),
+			Request::TYPE_GET => $client->get(
+				$request->getCompleteUrl() . $request->getQueryString(), $request->getClientOptions()
+			),
+			default => throw new Exception('unknown request type ' . json_encode($request)),
+		};
 	}
 }

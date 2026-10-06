@@ -41,7 +41,9 @@ trait TAsync {
 		echo($result);
 
 		$size = ob_get_length();
-		header('Content-Length: ' . $size);
+		if ($size !== false) {
+			header('Content-Length: ' . $size);
+		}
 		ob_end_flush();
 		flush();
 	}
