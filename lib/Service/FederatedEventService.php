@@ -58,6 +58,7 @@ use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Services\IAppConfig;
 use OCP\Server;
+use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use ReflectionException;
 
