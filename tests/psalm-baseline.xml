@@ -36,11 +36,6 @@
       <code><![CDATA[setType]]></code>
     </UndefinedMethod>
   </file>
-  <file src="lib/Command/CirclesReport.php">
-    <UndefinedClass>
-      <code><![CDATA[IInteractiveShellClient]]></code>
-    </UndefinedClass>
-  </file>
   <file src="lib/Command/MembersAdd.php">
     <UndefinedMethod>
       <code><![CDATA[retrieveJson]]></code>
