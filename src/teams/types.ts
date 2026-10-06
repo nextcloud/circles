@@ -83,6 +83,8 @@ export interface MemberCandidate {
 	/** The sharee share type, see `@nextcloud/sharing`'s `ShareType`. */
 	shareType: number
 	displayName: string
+	/** Secondary line telling apart candidates with the same name (e.g. their email). */
+	subname: string
 	/** Whether this candidate is a real Nextcloud user (controls avatar rendering). */
 	isUser: boolean
 }
