@@ -354,7 +354,7 @@ class BaseCircle {
 	 */
 	public function getSettings($json = false) {
 		if ($json) {
-			return json_encode($this->settings);
+			return json_encode($this->settings, flags: JSON_THROW_ON_ERROR);
 		}
 
 		$settings = $this->settings;
