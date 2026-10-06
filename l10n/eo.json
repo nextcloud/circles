@@ -55,11 +55,6 @@
     "Moderator" : "Kontrolanto",
     "Admin" : "Administranto",
     "Owner" : "Posedanto",
-    "%s shared »%s« with you." : "%s kunhavigis „%s“ kun vi.",
-    "%s on %s" : "%s el %s",
-    "%1$s via %2$s" : "%1$s pere de %2$s",
-    "Click the button below to open it." : "Alklaku la butonon ĉi-sube por malfermi ĝin.",
-    "Open »%s«" : "Malfermi „%s“",
     "This member is not a moderator" : "Tiu ĉi membro ne estas kontrolanto",
     "Insufficient privileges" : "Nesufiĉaj rajtoj",
     "This member does not exist" : "Tiu ĉi membro ne ekzistas",
@@ -70,7 +65,10 @@
     "Invalid image" : "Nevalida bildo",
     "Unknown filetype" : "Nekonata dosiertipo",
     "%s" : "%s",
+    "Open »%s«" : "Malfermi „%s“",
+    "%s on %s" : "%s el %s",
     "Open %s" : "Malfermi %s",
+    "%1$s via %2$s" : "%1$s pere de %2$s",
     "Bring cloud-users closer together." : "Pliproksimigi uzantojn kune.",
     "https://…" : "https://…",
     "Unlimited" : "Senlima",
@@ -112,6 +110,8 @@
     "Groups" : "Grupoj",
     "on {server}" : "ĉe {server}",
     "No files in here" : "Neniu dosiero ĉi tie",
-    "No entries found in this folder" : "Neniu elemento en tiu ĉi dosierujo"
+    "No entries found in this folder" : "Neniu elemento en tiu ĉi dosierujo",
+    "%s shared »%s« with you." : "%s kunhavigis „%s“ kun vi.",
+    "Click the button below to open it." : "Alklaku la butonon ĉi-sube por malfermi ĝin."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

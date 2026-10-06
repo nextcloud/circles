@@ -55,11 +55,6 @@ OC.L10N.register(
     "Moderator" : "მოდერატორი",
     "Admin" : "ადმინისტრატორი",
     "Owner" : "მფლობელი",
-    "%s shared »%s« with you." : "%s მომხმარებელმა თქვენთან გააზიარა »%s«.",
-    "%s on %s" : "%s %s-ზე",
-    "Password to access »%s«" : "პაროლი წვდომისთვის »%s«",
-    "Click the button below to open it." : "გასახსნელად დააჭირეთ ქვემოთ მყოფ ღილაკს.",
-    "Open »%s«" : "გახსენით »%s«",
     "This member is not a moderator" : "ეს წევრი არაა მოდერატორი",
     "Insufficient privileges" : "პრივილეგიების უკმარისობა",
     "This member does not exist" : "ეს წევრი არ არსებობს",
@@ -70,6 +65,8 @@ OC.L10N.register(
     "Invalid image" : "არასწორი სურათი",
     "Unknown filetype" : "ამოუცნობი ფაილის ტიპი",
     "%s" : "%s",
+    "Open »%s«" : "გახსენით »%s«",
+    "%s on %s" : "%s %s-ზე",
     "Unlimited" : "ულიმიტო",
     "Cancel" : "Cancel",
     "Default quota" : "საწყისი კვოტა",
@@ -98,6 +95,9 @@ OC.L10N.register(
     "Users" : "მომხმარებლები",
     "Groups" : "ჯგუფები",
     "No files in here" : "აქ ფაილები არაა",
-    "No entries found in this folder" : "ამ დირექტორიაში შენატანები ვერ იქნა ნაპოვნი"
+    "No entries found in this folder" : "ამ დირექტორიაში შენატანები ვერ იქნა ნაპოვნი",
+    "%s shared »%s« with you." : "%s მომხმარებელმა თქვენთან გააზიარა »%s«.",
+    "Password to access »%s«" : "პაროლი წვდომისთვის »%s«",
+    "Click the button below to open it." : "გასახსნელად დააჭირეთ ქვემოთ მყოფ ღილაკს."
 },
 "nplurals=2; plural=(n!=1);");
