@@ -232,7 +232,18 @@ class FileCacheWrapper extends ManagedModel implements IQueryRow, IDeserializabl
 			return (in_array($storageType, ['local', 'webdav', 'ftp', 'sftp', 'swift', 'smb', 'amazon']));
 		}
 
-		return !(explode('/', $path, 2)[0] !== 'files' && $storageType === 'home');
+		// on home storages and on group folders with a separate storage, only files/ is accessible
+		$storage = $this->getStorage();
+		if (explode('/', $path, 2)[0] !== 'files'
+			&& (str_starts_with($storage, 'home::')
+				|| str_starts_with($storage, 'object::user')
+				|| str_starts_with($storage, 'object::groupfolder:')
+				|| preg_match('#^local::.*/__groupfolders/\d+/$#', $storage) === 1)) {
+			return false;
+		}
+
+		// group folders stored in the root storage have their trashbin in __groupfolders/trash/
+		return !str_starts_with($path, '__groupfolders/trash/');
 	}
 
 	/**
