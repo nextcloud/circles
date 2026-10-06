@@ -543,6 +543,12 @@ class ShareByCircleProvider implements IShareProvider {
 			$probe
 		);
 
+		// exclude shares leading to deleted files or to the trashbin
+		$wrappedShares = array_filter(
+			$wrappedShares,
+			fn (ShareWrapper $wrapper): bool => $wrapper->hasFileCache() && $wrapper->getFileCache()->isAccessible()
+		);
+
 		return array_filter(
 			array_map(
 				function (ShareWrapper $wrapper) {
