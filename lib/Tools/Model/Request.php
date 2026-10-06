@@ -619,7 +619,7 @@ class Request implements JsonSerializable {
 	 * @return string
 	 */
 	public function getDataBody(): string {
-		return json_encode($this->getData());
+		return json_encode($this->getData(), flags: JSON_THROW_ON_ERROR);
 	}
 
 	/**

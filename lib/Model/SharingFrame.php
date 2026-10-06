@@ -152,7 +152,7 @@ class SharingFrame implements \JsonSerializable {
 	 */
 	public function getPayload($asJson = false) {
 		if ($asJson) {
-			return json_encode($this->payload);
+			return json_encode($this->payload, flags: JSON_THROW_ON_ERROR);
 		}
 
 		return $this->payload;
@@ -173,7 +173,7 @@ class SharingFrame implements \JsonSerializable {
 	 */
 	public function getHeaders($asJson = false) {
 		if ($asJson) {
-			return json_encode($this->headers);
+			return json_encode($this->headers, flags: JSON_THROW_ON_ERROR);
 		}
 
 		return $this->headers;

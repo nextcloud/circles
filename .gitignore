@@ -11,3 +11,5 @@
 build/
 phpDocumentor.phar
 vendor/
+vendor-bin/*/vendor
+tests/.phpunit.cache/test-results

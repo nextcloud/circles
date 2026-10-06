@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.26.1@d747f6500b38ac4f7dfc5edbcae6e4b637d7add0">
+<files psalm-version="6.5.0@38fc8444edf0cebc9205296ee6e30e906ade783b">
   <file src="lib/Activity/ProviderParser.php">
     <TypeDoesNotContainType>
       <code><![CDATA[str_starts_with($sK, '_')]]></code>
@@ -118,6 +118,16 @@
       <code><![CDATA[$this->circleEventService]]></code>
       <code><![CDATA[CircleEventService]]></code>
     </UndefinedDocblockClass>
+  </file>
+  <file src="lib/Listeners/CircleMemberRemoved.php">
+    <UndefinedClass>
+      <code><![CDATA[\OCA\GroupFolders\Folder\FolderManager]]></code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/Listeners/GroupMemberRemoved.php">
+    <UndefinedClass>
+      <code><![CDATA[\OCA\GroupFolders\Folder\FolderManager]]></code>
+    </UndefinedClass>
   </file>
   <file src="lib/Migration/Version0022Date20220526111723.php">
     <UndefinedClass>
@@ -385,10 +395,32 @@
       <code><![CDATA[private $exception = null;]]></code>
     </UndefinedDocblockClass>
   </file>
+  <file src="lib/Tools/Model/Request.php">
+    <InvalidNullableReturnType>
+      <code><![CDATA[string]]></code>
+      <code><![CDATA[string]]></code>
+    </InvalidNullableReturnType>
+    <NullableReturnStatement>
+      <code><![CDATA[preg_replace(
+			'/([(%5B)]{1})[0-9]+([(%5D)]{1})/', '$1$2', http_build_query($this->getData())
+		)]]></code>
+      <code><![CDATA[preg_replace(
+			'/([(%5B)]{1})[0-9]+([(%5D)]{1})/', '$1$2', http_build_query($this->getParams())
+		)]]></code>
+    </NullableReturnStatement>
+  </file>
   <file src="lib/Tools/Model/SimpleDataStore.php">
     <InvalidReturnStatement>
       <code><![CDATA[$item]]></code>
     </InvalidReturnStatement>
+  </file>
+  <file src="lib/Tools/Model/TreeNode.php">
+    <InvalidNullableReturnType>
+      <code><![CDATA[TreeNode]]></code>
+    </InvalidNullableReturnType>
+    <NullableReturnStatement>
+      <code><![CDATA[$this->currentChild]]></code>
+    </NullableReturnStatement>
   </file>
   <file src="lib/Tools/Traits/TArrayTools.php">
     <TooManyArguments>
@@ -397,7 +429,7 @@
   </file>
   <file src="lib/Tools/Traits/TNCLogger.php">
     <RedundantCondition>
-      <code><![CDATA[isset($this->logger)]]></code>
+      <code><![CDATA[isset($this->logger) && $this->logger instanceof LoggerInterface]]></code>
     </RedundantCondition>
     <RedundantPropertyInitializationCheck>
       <code><![CDATA[isset($this->logger)]]></code>
@@ -423,15 +455,5 @@
     <InvalidArrayOffset>
       <code><![CDATA[$s[$e]]]></code>
     </InvalidArrayOffset>
-  </file>
-  <file src="lib/Listeners/GroupMemberRemoved.php">
-    <UndefinedClass>
-      <code><![CDATA[\OCA\GroupFolders\Folder\FolderManager]]></code>
-    </UndefinedClass>
-  </file>
-  <file src="lib/Listeners/CircleMemberRemoved.php">
-    <UndefinedClass>
-      <code><![CDATA[\OCA\GroupFolders\Folder\FolderManager]]></code>
-    </UndefinedClass>
   </file>
 </files>
