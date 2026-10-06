@@ -4,24 +4,30 @@
 -->
 
 <script setup lang="ts">
+import type { DiscoverableTeam } from '../types.ts'
+
 import { mdiAccountGroupOutline, mdiAlertCircleOutline, mdiMagnify, mdiPlus } from '@mdi/js'
-import { showError } from '@nextcloud/dialogs'
+import { showError, showSuccess } from '@nextcloud/dialogs'
 import { t } from '@nextcloud/l10n'
 import { imagePath } from '@nextcloud/router'
 import { useIsDarkTheme } from '@nextcloud/vue/composables/useIsDarkTheme'
 import { storeToRefs } from 'pinia'
 import { computed, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import NcButton from '@nextcloud/vue/components/NcButton'
 import NcEmptyContent from '@nextcloud/vue/components/NcEmptyContent'
 import NcIconSvgWrapper from '@nextcloud/vue/components/NcIconSvgWrapper'
 import NcLoadingIcon from '@nextcloud/vue/components/NcLoadingIcon'
 import NcTextField from '@nextcloud/vue/components/NcTextField'
+import DiscoverableTeamCard from '../components/DiscoverableTeamCard.vue'
 import TeamCard from '../components/TeamCard.vue'
+import { logger } from '../../logger.ts'
 import { useTeamsStore } from '../store.ts'
 
 const store = useTeamsStore()
 const { teams, loading, loadError, favoritesUpdating } = storeToRefs(store)
 const { loadTeams, openCreateTeamWizard } = store
+const router = useRouter()
 
 const query = ref('')
 const draggedFavoriteId = ref<string | null>(null)
@@ -173,8 +179,41 @@ async function moveFavorite(teamId: string, direction: -1 | 1) {
 	await saveFavoriteOrder(order)
 }
 
+const filteredDiscoverableTeams = computed(() => store.searchDiscoverableTeams(query.value))
+const joiningTeamId = ref<string | null>(null)
+
 const illustrationSrc = imagePath('circles', 'teams-illustration.svg')
 const isDarkTheme = useIsDarkTheme()
+
+/**
+ * Join an open team, or request to join it.
+ *
+ * @param team - The team to join
+ */
+async function onJoin(team: DiscoverableTeam): Promise<void> {
+	if (joiningTeamId.value !== null) {
+		return
+	}
+
+	joiningTeamId.value = team.id
+	try {
+		const result = await store.joinTeam(team.id)
+		if (result === 'joined') {
+			showSuccess(t('circles', 'You have joined the team {circleName}.', { circleName: team.displayName }))
+			if (store.getTeam(team.id)) {
+				await router.push({ name: 'team', params: { teamId: team.id } })
+			}
+		} else {
+			showSuccess(t('circles', 'Your request to join this team is pending approval'))
+		}
+	} catch (error) {
+		logger.error('Could not join the team', { error })
+		showError(t('circles', 'Unable to join the team'))
+		await store.loadTeams()
+	} finally {
+		joiningTeamId.value = null
+	}
+}
 </script>
 
 <template>
@@ -297,6 +336,24 @@ const isDarkTheme = useIsDarkTheme()
 					</NcEmptyContent>
 				</section>
 			</template>
+
+			<section
+				v-if="!loadError && filteredDiscoverableTeams.length > 0"
+				aria-labelledby="other-teams-title"
+				:class="$style.homeViewSection">
+				<h3 id="other-teams-title" :class="$style.homeViewSectionTitle">
+					{{ t('circles', 'Other teams') }}
+				</h3>
+				<div :class="$style.homeViewGrid">
+					<DiscoverableTeamCard
+						v-for="team in filteredDiscoverableTeams"
+						:key="team.id"
+						:team="team"
+						:joining="joiningTeamId === team.id"
+						:disabled="joiningTeamId !== null"
+						@join="onJoin(team)" />
+				</div>
+			</section>
 		</div>
 	</div>
 </template>
@@ -391,6 +448,12 @@ const isDarkTheme = useIsDarkTheme()
 	&__title {
 		margin: 0;
 		font-size: 1.5em;
+		font-weight: 700;
+	}
+
+	&__section-title {
+		margin: 0;
+		font-size: 1.25em;
 		font-weight: 700;
 	}
 
