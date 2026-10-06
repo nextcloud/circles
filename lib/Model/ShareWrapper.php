@@ -152,7 +152,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 	}
 
 	public function getToken(): string {
-		return $this->shareToken?->getToken() ?? '';
+		return $this->token;
 	}
 
 	public function setStatus(int $status): self {
