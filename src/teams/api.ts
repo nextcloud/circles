@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import type { Member, MemberCandidate, Resource, SharedResource, Team, TeamRole } from './types.ts'
+import type { DiscoverableTeam, Member, MemberCandidate, Resource, SharedResource, Team, TeamRole } from './types.ts'
 
 import axios from '@nextcloud/axios'
 import { FileType } from '@nextcloud/files'
@@ -12,6 +12,11 @@ import { generateOcsUrl } from '@nextcloud/router'
 import { logger } from '../logger.ts'
 import { SHARES_TYPES_MEMBER_MAP } from './team-page/models/constants.ts'
 import { getRecommendations, getSuggestions } from './team-page/services/collaborationAutocompletion.js'
+
+/** `Circle::CFG_OPEN`: anyone can join or request to join. */
+const CIRCLE_CONFIG_OPEN = 16
+/** `Member::STATUS_REQUEST`: a join request awaiting moderator approval. */
+const MEMBER_STATUS_REQUEST = 'Requesting'
 
 /** `SHARES_TYPES_MEMBER_MAP` is built dynamically, so type its shape explicitly. */
 const shareTypeToMemberType = SHARES_TYPES_MEMBER_MAP as Record<number, number>
@@ -48,7 +53,40 @@ interface RawCircle {
 	displayName: string
 	description?: string
 	population?: number
-	initiator?: { level?: number } | null
+	config?: number
+	initiator?: { level?: number, status?: string } | null
+}
+
+/** Teams the user is part of, and visible teams they could join. */
+export interface TeamsOverview {
+	teams: Team[]
+	discoverableTeams: DiscoverableTeam[]
+}
+
+/**
+ * Whether the user's only link to the circle is a pending join request.
+ *
+ * @param circle - The raw circle
+ */
+function isPendingRequest(circle: RawCircle): boolean {
+	return circle.initiator?.status === MEMBER_STATUS_REQUEST
+}
+
+/**
+ * Map a circle the user is not an active member of.
+ *
+ * @param circle - The raw circle
+ */
+function mapDiscoverableTeam(circle: RawCircle): DiscoverableTeam {
+	const pending = isPendingRequest(circle)
+	return {
+		id: circle.id,
+		displayName: circle.displayName || circle.name,
+		description: circle.description ?? '',
+		memberCount: circle.population ?? 0,
+		canJoin: !pending && ((circle.config ?? 0) & CIRCLE_CONFIG_OPEN) !== 0,
+		pending,
+	}
 }
 
 /** Raw team as returned by the dashboard widget endpoint. */
@@ -136,10 +174,10 @@ function mapFullMember(raw: RawMember): Member {
 }
 
 /**
- * Fetch all of the current user's teams, merging team metadata (name,
- * description, member count, our role) with the members preview and resources.
+ * Fetch the current user's teams and discoverable teams, merging active team
+ * metadata (name, description, member count, our role) with previews.
  */
-export async function fetchTeams(): Promise<Team[]> {
+export async function fetchTeams(): Promise<TeamsOverview> {
 	const [circlesRes, dashRes] = await Promise.allSettled([
 		axios.get<OcsResponse<RawCircle[]>>(generateOcsUrl('apps/circles/circles') + '?limit=-1'),
 		axios.get<OcsResponse<RawDashboardTeam[]>>(generateOcsUrl('apps/circles/teams/dashboard/widget') + '?limit=200&offset=0'),
@@ -149,7 +187,12 @@ export async function fetchTeams(): Promise<Team[]> {
 	if (circlesRes.status === 'rejected') {
 		throw circlesRes.reason
 	}
-	const circles = (circlesRes.value.data.ocs.data ?? []).filter((circle) => circle.initiator)
+	const allCircles = circlesRes.value.data.ocs.data ?? []
+	const memberCircles = allCircles.filter((circle) => circle.initiator && !isPendingRequest(circle))
+	const discoverableTeams = allCircles
+		.filter((circle) => !circle.initiator || isPendingRequest(circle))
+		.map(mapDiscoverableTeam)
+		.sort((a, b) => a.displayName.localeCompare(b.displayName))
 
 	// The dashboard only enriches each team with member/resource previews, so
 	// treat a failure there as "no previews" rather than failing the whole page.
@@ -161,18 +204,21 @@ export async function fetchTeams(): Promise<Team[]> {
 	}
 	const dashboardById = new Map(dashboard.map((team) => [team.singleId, team]))
 
-	return circles.map((circle) => {
-		const extra = dashboardById.get(circle.id)
-		return {
-			id: circle.id,
-			displayName: circle.displayName || circle.name,
-			description: circle.description ?? '',
-			memberCount: circle.population ?? extra?.members.length ?? 0,
-			myRole: levelToRole(circle.initiator?.level),
-			members: (extra?.members ?? []).map(mapPreviewMember),
-			resources: (extra?.resources ?? []).map(mapResource),
-		}
-	})
+	return {
+		teams: memberCircles.map((circle) => {
+			const extra = dashboardById.get(circle.id)
+			return {
+				id: circle.id,
+				displayName: circle.displayName || circle.name,
+				description: circle.description ?? '',
+				memberCount: circle.population ?? extra?.members.length ?? 0,
+				myRole: levelToRole(circle.initiator?.level),
+				members: (extra?.members ?? []).map(mapPreviewMember),
+				resources: (extra?.resources ?? []).map(mapResource),
+			}
+		}),
+		discoverableTeams,
+	}
 }
 
 /**
@@ -223,6 +269,20 @@ export async function leaveTeam(teamId: string): Promise<void> {
 		generateOcsUrl('apps/circles/circles/{circleId}/leave', { circleId: teamId }),
 		{},
 	)
+}
+
+/**
+ * Join a team, or request to join it when it requires approval.
+ *
+ * @param teamId - The team single id
+ * @return 'requested' when the join awaits approval, otherwise 'joined'
+ */
+export async function joinTeam(teamId: string): Promise<'joined' | 'requested'> {
+	const res = await axios.put<OcsResponse<{ status?: string }>>(
+		generateOcsUrl('apps/circles/circles/{circleId}/join', { circleId: teamId }),
+		{},
+	)
+	return res.data.ocs.data?.status === MEMBER_STATUS_REQUEST ? 'requested' : 'joined'
 }
 
 /**
