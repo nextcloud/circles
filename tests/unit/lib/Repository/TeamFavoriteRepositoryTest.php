@@ -2,21 +2,25 @@
 
 declare(strict_types=1);
 
-namespace OCA\Circles\Tests\Unit\Db;
+/**
+ * SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
 
-use OCA\Circles\Db\CoreRequestBuilder;
+namespace OCA\Circles\Tests\Repository;
+
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\MembershipRequest;
-use OCA\Circles\Db\TeamFavoriteRequest;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Membership;
+use OCA\Circles\Repository\TeamFavoriteRepository;
 use OCP\IDBConnection;
 use OCP\Server;
 use PHPUnit\Framework\TestCase;
 
-class TeamFavoriteRequestTest extends TestCase {
+class TeamFavoriteRepositoryTest extends TestCase {
 	private IDBConnection $db;
-	private TeamFavoriteRequest $request;
+	private TeamFavoriteRepository $repository;
 	private string $userId;
 	private string $first;
 	private string $second;
@@ -24,7 +28,7 @@ class TeamFavoriteRequestTest extends TestCase {
 
 	protected function setUp(): void {
 		$this->db = Server::get(IDBConnection::class);
-		$this->request = Server::get(TeamFavoriteRequest::class);
+		$this->repository = Server::get(TeamFavoriteRepository::class);
 		$this->userId = 'favorite-test-' . bin2hex(random_bytes(8));
 		$this->first = bin2hex(random_bytes(7));
 		$this->second = bin2hex(random_bytes(7));
@@ -37,20 +41,20 @@ class TeamFavoriteRequestTest extends TestCase {
 	}
 
 	public function testAppendAfterCircleDeletionKeepsOrder(): void {
-		$this->request->add($this->userId, $this->first);
-		$this->request->add($this->userId, $this->second);
-		$this->request->removeCircle($this->first);
-		$this->request->add($this->userId, $this->third);
-		self::assertSame([$this->second, $this->third], $this->request->getCircleIds($this->userId));
+		$this->repository->add($this->userId, $this->first);
+		$this->repository->add($this->userId, $this->second);
+		$this->repository->removeCircle($this->first);
+		$this->repository->add($this->userId, $this->third);
+		self::assertSame([$this->second, $this->third], $this->repository->getCircleIds($this->userId));
 	}
 
 	public function testReorderPreservesRowsAndDoesNotDeleteNewFavorites(): void {
-		$this->request->add($this->userId, $this->first);
-		$this->request->add($this->userId, $this->second);
+		$this->repository->add($this->userId, $this->first);
+		$this->repository->add($this->userId, $this->second);
 		$before = $this->rows();
-		$this->request->add($this->userId, $this->third);
-		$this->request->replaceOrder($this->userId, [$this->second, $this->first]);
-		self::assertSame([$this->second, $this->first, $this->third], $this->request->getCircleIds($this->userId));
+		$this->repository->add($this->userId, $this->third);
+		$this->repository->replaceOrder($this->userId, [$this->second, $this->first]);
+		self::assertSame([$this->second, $this->first, $this->third], $this->repository->getCircleIds($this->userId));
 		$after = $this->rows();
 		foreach ($before as $index => $row) {
 			self::assertSame($row, $after[$index]);
@@ -58,11 +62,11 @@ class TeamFavoriteRequestTest extends TestCase {
 	}
 
 	public function testReorderCannotResurrectRemovedFavorites(): void {
-		$this->request->add($this->userId, $this->first);
-		$this->request->add($this->userId, $this->second);
-		$this->request->remove($this->userId, $this->first);
-		$this->request->replaceOrder($this->userId, [$this->second, $this->first]);
-		self::assertSame([$this->second], $this->request->getCircleIds($this->userId));
+		$this->repository->add($this->userId, $this->first);
+		$this->repository->add($this->userId, $this->second);
+		$this->repository->remove($this->userId, $this->first);
+		$this->repository->replaceOrder($this->userId, [$this->second, $this->first]);
+		self::assertSame([$this->second], $this->repository->getCircleIds($this->userId));
 	}
 
 	public function testReadIncludesDirectAndInheritedMembershipButNotLostAccess(): void {
@@ -82,19 +86,19 @@ class TeamFavoriteRequestTest extends TestCase {
 		$memberships = Server::get(MembershipRequest::class);
 		$memberships->insert($membership);
 		foreach ([$this->first, $this->second, $this->third] as $circleId) {
-			$this->request->add($this->userId, $circleId);
+			$this->repository->add($this->userId, $circleId);
 		}
-		self::assertSame([$this->first, $this->second], $this->request->getCircleIds($this->userId, true));
+		self::assertSame([$this->first, $this->second], $this->repository->getCircleIds($this->userId, true));
 		$memberships->delete($membership);
-		self::assertSame([$this->first], $this->request->getCircleIds($this->userId, true));
+		self::assertSame([$this->first], $this->repository->getCircleIds($this->userId, true));
 	}
 
 	public function testUserCleanupDoesNotAffectOtherUsers(): void {
-		$this->request->add($this->userId, $this->first);
-		$this->request->add($this->userId . '-other', $this->first);
-		$this->request->removeUser($this->userId);
-		self::assertSame([], $this->request->getCircleIds($this->userId));
-		self::assertSame([$this->first], $this->request->getCircleIds($this->userId . '-other'));
+		$this->repository->add($this->userId, $this->first);
+		$this->repository->add($this->userId . '-other', $this->first);
+		$this->repository->removeUser($this->userId);
+		self::assertSame([], $this->repository->getCircleIds($this->userId));
+		self::assertSame([$this->first], $this->repository->getCircleIds($this->userId . '-other'));
 	}
 
 	private function member(string $circleId, string $singleId, string $userId, int $type): Member {
@@ -109,9 +113,12 @@ class TeamFavoriteRequestTest extends TestCase {
 		return $member;
 	}
 
+	/**
+	 * @return list<array<string, mixed>>
+	 */
 	private function rows(): array {
 		$query = $this->db->getQueryBuilder();
-		$query->select('id', 'circle_id', 'created')->from(CoreRequestBuilder::TABLE_TEAM_FAVORITES)
+		$query->select('id', 'circle_id', 'created')->from('circles_team_favorites')
 			->where($query->expr()->eq('user_id', $query->createNamedParameter($this->userId)))
 			->orderBy('id');
 		$result = $query->executeQuery();

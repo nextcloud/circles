@@ -2,9 +2,14 @@
 
 declare(strict_types=1);
 
+/**
+ * SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
 namespace OCA\Circles\Tests\Unit\Service;
 
-use OCA\Circles\Db\TeamFavoriteRequest;
+use OCA\Circles\Repository\TeamFavoriteRepository;
 use OCA\Circles\Service\PermissionService;
 use OCA\Circles\Service\TeamFavoriteService;
 use OCP\AppFramework\OCS\OCSException;
@@ -15,13 +20,13 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class TeamFavoriteServiceTest extends TestCase {
-	private TeamFavoriteRequest&MockObject $request;
+	private TeamFavoriteRepository&MockObject $request;
 	private PermissionService&MockObject $permissions;
 	private ILockingProvider&MockObject $locks;
 	private TeamFavoriteService $service;
 
 	protected function setUp(): void {
-		$this->request = $this->createMock(TeamFavoriteRequest::class);
+		$this->request = $this->createMock(TeamFavoriteRepository::class);
 		$this->permissions = $this->createMock(PermissionService::class);
 		$this->locks = $this->createMock(ILockingProvider::class);
 		$user = $this->createMock(IUser::class);

@@ -1,3 +1,8 @@
+/*!
+ * SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
 import type * as L10n from '@nextcloud/l10n'
 import type { Team } from '../types.ts'
 
@@ -51,6 +56,17 @@ function startDrag(wrapper: ReturnType<typeof mountHome>['wrapper']) {
 
 describe('favorite ordering in HomeView', () => {
 	beforeEach(() => vi.resetAllMocks())
+
+	it('disables manual sorting while the team list is filtered', async () => {
+		const { wrapper } = mountHome()
+		wrapper.findComponent({ name: 'NcTextField' }).vm.$emit('update:modelValue', 'A')
+		await nextTick()
+
+		const card = wrapper.findComponent(TeamCard)
+		expect(card.props('sortable')).toBe(false)
+		expect(card.props('draggable')).toBe(false)
+		wrapper.unmount()
+	})
 
 	it('discards a cancelled preview without saving or mutating the store', async () => {
 		const { wrapper, store } = mountHome()

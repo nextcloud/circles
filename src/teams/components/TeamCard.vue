@@ -61,21 +61,19 @@ function preventActionsDrag(event: DragEvent) {
 		@dragstart="emit('dragStart', team, $event)"
 		@dragover="emit('dragOver', team, $event)"
 		@dragend="emit('dragEnd', $event)">
-		<div :class="$style.teamCardHead">
-			<TeamAvatar
-				:circleId="team.id"
-				:displayName="team.displayName"
-				:isFavorite="team.isFavorite"
-				:size="40" />
-			<RouterLink
-				:class="$style.teamCardName"
-				:to="{ name: 'team', params: { teamId: props.team.id } }">
-				{{ team.displayName }}
-			</RouterLink>
-		</div>
 		<RouterLink
 			:class="$style.teamCardLink"
 			:to="{ name: 'team', params: { teamId: props.team.id } }">
+			<div :class="$style.teamCardHead">
+				<TeamAvatar
+					:circleId="team.id"
+					:displayName="team.displayName"
+					:isFavorite="team.isFavorite"
+					:size="40" />
+				<span :class="$style.teamCardName">
+					{{ team.displayName }}
+				</span>
+			</div>
 			<p v-if="team.description" :class="$style.teamCardDescription">
 				{{ team.description }}
 			</p>

@@ -244,7 +244,7 @@ const isDarkTheme = useIsDarkTheme()
 								:team="team"
 								:draggable="!query && !favoritesUpdating"
 								:favoriteBusy="favoritesUpdating || !!draggedFavoriteId"
-								sortable
+								:sortable="!query"
 								:canMoveUp="index > 0"
 								:canMoveDown="index < favoriteTeams.length - 1"
 								@toggleFavorite="toggleFavorite(team.id)"

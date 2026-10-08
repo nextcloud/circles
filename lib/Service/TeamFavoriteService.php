@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use OCA\Circles\Db\TeamFavoriteRequest;
 use OCA\Circles\Exceptions\InsufficientPermissionException;
+use OCA\Circles\Repository\TeamFavoriteRepository;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\OCS\OCSException;
 use OCP\IUserSession;
@@ -19,7 +19,7 @@ use OCP\Lock\LockedException;
 
 class TeamFavoriteService {
 	public function __construct(
-		private readonly TeamFavoriteRequest $teamFavoriteRequest,
+		private readonly TeamFavoriteRepository $teamFavoriteRepository,
 		private readonly PermissionService $permissionService,
 		private readonly IUserSession $userSession,
 		private readonly ILockingProvider $lockingProvider,
@@ -30,7 +30,7 @@ class TeamFavoriteService {
 	 * @return list<string>
 	 */
 	public function getFavoriteCircleIds(): array {
-		return $this->teamFavoriteRequest->getCircleIds($this->getCurrentUserId(), true);
+		return $this->teamFavoriteRepository->getCircleIds($this->getCurrentUserId(), true);
 	}
 
 	/**
@@ -42,16 +42,16 @@ class TeamFavoriteService {
 		try {
 			$favoriteCircleIds = $this->pruneFavorites($userId);
 			if (!$isFavorite) {
-				$this->teamFavoriteRequest->remove($userId, $circleId);
+				$this->teamFavoriteRepository->remove($userId, $circleId);
 			} elseif (!in_array($circleId, $favoriteCircleIds, true)) {
 				try {
 					$this->permissionService->userMustBeMember($userId, $circleId);
 				} catch (InsufficientPermissionException $exception) {
 					throw new OCSException($exception->getMessage(), Http::STATUS_FORBIDDEN);
 				}
-				$this->teamFavoriteRequest->add($userId, $circleId);
+				$this->teamFavoriteRepository->add($userId, $circleId);
 			}
-			return $this->teamFavoriteRequest->getCircleIds($userId, true);
+			return $this->teamFavoriteRepository->getCircleIds($userId, true);
 		} finally {
 			$this->lockingProvider->releaseLock($lock, ILockingProvider::LOCK_EXCLUSIVE);
 		}
@@ -80,9 +80,9 @@ class TeamFavoriteService {
 				throw new OCSException('Favorite teams have changed. Reload before reordering.', Http::STATUS_CONFLICT);
 			}
 			if ($circleIds !== $currentCircleIds) {
-				$this->teamFavoriteRequest->replaceOrder($userId, $circleIds);
+				$this->teamFavoriteRepository->replaceOrder($userId, $circleIds);
 			}
-			return $this->teamFavoriteRequest->getCircleIds($userId, true);
+			return $this->teamFavoriteRepository->getCircleIds($userId, true);
 		} finally {
 			$this->lockingProvider->releaseLock($lock, ILockingProvider::LOCK_EXCLUSIVE);
 		}
@@ -92,10 +92,10 @@ class TeamFavoriteService {
 	 * @return list<string>
 	 */
 	private function pruneFavorites(string $userId): array {
-		$stored = $this->teamFavoriteRequest->getCircleIds($userId);
-		$accessible = $this->teamFavoriteRequest->getCircleIds($userId, true);
+		$stored = $this->teamFavoriteRepository->getCircleIds($userId);
+		$accessible = $this->teamFavoriteRepository->getCircleIds($userId, true);
 		foreach (array_diff($stored, $accessible) as $circleId) {
-			$this->teamFavoriteRequest->remove($userId, $circleId);
+			$this->teamFavoriteRepository->remove($userId, $circleId);
 		}
 		return $accessible;
 	}

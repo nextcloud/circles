@@ -118,6 +118,13 @@ describe('TeamCard dragging', () => {
 })
 
 describe('TeamCard content', () => {
+	it('uses one team link for all card content', () => {
+		const links = mountCard().findAll('a')
+
+		expect(links).toHaveLength(1)
+		expect(links[0].text()).toContain('Team One')
+	})
+
 	it('shows the description only when there is one', () => {
 		expect(mountCard().text()).toContain('A team')
 		expect(mountCard({}, makeTeam({ description: '' })).find('p').exists()).toBe(false)
