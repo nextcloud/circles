@@ -29,6 +29,15 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
  * @package OCA\Circles\Db
  */
 class CircleRequest extends CircleRequestBuilder {
+	public function getActivityObjectId(string $singleId): int {
+		$qb = $this->getQueryBuilder();
+		$qb->select('id')
+			->from(self::TABLE_CIRCLE)
+			->where($qb->expr()->eq('unique_id', $qb->createNamedParameter($singleId)));
+
+		return (int)$qb->executeQuery()->fetchOne();
+	}
+
 	/**
 	 * @param Circle $circle
 	 *

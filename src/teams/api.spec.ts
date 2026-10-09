@@ -32,7 +32,7 @@ vi.mock('./team-page/services/collaborationAutocompletion.js', () => ({
 	getSuggestions: vi.fn(),
 }))
 
-const { createTeam, fetchTeams } = await import('./api.ts')
+const { createTeam, fetchTeamActivities, fetchTeams } = await import('./api.ts')
 
 describe('fetchTeams', () => {
 	it('drops circles the current user is not a member of', async () => {
@@ -57,6 +57,36 @@ describe('fetchTeams', () => {
 			.mockResolvedValueOnce({ data: { ocs: { data: [] } } })
 
 		await expect(fetchTeams()).resolves.toEqual([])
+	})
+})
+
+describe('fetchTeamActivities', () => {
+	it('requests the Activity endpoint with the stable team id', async () => {
+		vi.mocked(axios.get).mockResolvedValueOnce({
+			data: {
+				ocs: {
+					data: [{ activity_id: 1, subject: 'Alice joined Design', datetime: '2026-09-30T12:00:00+00:00', user: 'alice' }],
+				},
+			},
+			headers: {
+				link: '<https://cloud.example/ocs/v2.php/apps/activity/api/v2/activity/team/team-1?since=1>; rel="next"',
+			},
+		})
+
+		await expect(fetchTeamActivities('team-1', { actor: 'alice', limit: 25 })).resolves.toEqual({
+			activities: [{ activity_id: 1, subject: 'Alice joined Design', datetime: '2026-09-30T12:00:00+00:00', user: 'alice' }],
+			nextSince: 1,
+		})
+		expect(axios.get).toHaveBeenCalledWith(
+			'/ocs/apps/activity/api/v2/activity/team/{teamId}',
+			{ params: { actor: 'alice', limit: 25 } },
+		)
+	})
+
+	it('treats Activity’s not-modified response as an empty page', async () => {
+		vi.mocked(axios.get).mockRejectedValueOnce({ response: { status: 304 } })
+
+		await expect(fetchTeamActivities('team-1')).resolves.toEqual({ activities: [] })
 	})
 })
 

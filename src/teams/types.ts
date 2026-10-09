@@ -70,6 +70,46 @@ export interface Team {
 	resources: Resource[]
 }
 
+/** A formatted Activity event scoped to a team. */
+export interface TeamActivity {
+	activity_id: number
+	subject: string
+	datetime: string
+	user: string
+	type?: string
+	icon?: string
+	object_type?: string
+	message?: string
+	subject_rich?: [string, Record<string, RichObject> | []]
+	message_rich?: [string, Record<string, RichObject> | []]
+}
+
+/** A rich object embedded in an Activity subject or message. */
+export interface RichObject {
+	id: string | number
+	name: string
+	type: string
+	link?: string
+	server?: string
+}
+
+/** Server-side filters for the Team Activity stream. */
+export interface TeamActivityQuery {
+	since?: number
+	limit?: number
+	sort?: 'asc' | 'desc'
+	search?: string
+	from?: number
+	to?: number
+	actor?: string
+}
+
+/** One cursor-paginated page of Team Activity events. */
+export interface TeamActivityPage {
+	activities: TeamActivity[]
+	nextSince?: number
+}
+
 /**
  * A candidate member surfaced by the sharee autocompletion search (users,
  * groups, emails, contacts, other teams…), before they have been added to a
