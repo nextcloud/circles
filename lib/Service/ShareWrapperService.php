@@ -238,6 +238,34 @@ class ShareWrapperService {
 	}
 
 	/**
+	 * Keeps only shares with accessible files (not trashed, not deleted)
+	 *
+	 * @param ShareWrapper[] $shares
+	 *
+	 * @return ShareWrapper[]
+	 */
+	public function filterAccessibleShares(array $shares): array {
+		if ($shares === []) {
+			return [];
+		}
+
+		$fileCaches = $this->shareWrapperRequest->getFileCaches(
+			array_map(fn (ShareWrapper $share): int => $share->getFileSource(), $shares)
+		);
+
+		$accessible = [];
+		foreach ($shares as $share) {
+			if (!array_key_exists($share->getFileSource(), $fileCaches)
+				|| !$fileCaches[$share->getFileSource()]->isAccessible()) {
+				continue;
+			}
+			$accessible[] = $share;
+		}
+
+		return $accessible;
+	}
+
+	/**
 	 * @return ShareWrapper[]
 	 * @throws RequestBuilderException
 	 */
