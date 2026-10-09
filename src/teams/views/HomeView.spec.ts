@@ -49,8 +49,6 @@ function startDrag(wrapper: ReturnType<typeof mountHome>['wrapper']) {
 	cards[1]!.vm.$emit('dragOver', cards[1]!.props('team'), {
 		preventDefault: vi.fn(),
 		dataTransfer: null,
-		clientY: 90,
-		currentTarget: { getBoundingClientRect: () => ({ top: 0, height: 100 }) },
 	})
 }
 

@@ -195,7 +195,7 @@ function preventActionsDrag(event: DragEvent) {
 
 	&__actions {
 		position: absolute;
-		right: calc(2 * var(--default-grid-baseline));
+		inset-inline-end: calc(2 * var(--default-grid-baseline));
 		bottom: calc(3 * var(--default-grid-baseline) + 14px - var(--default-clickable-area) / 2);
 		display: flex;
 		align-items: center;

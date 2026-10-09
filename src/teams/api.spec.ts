@@ -106,10 +106,11 @@ describe('favorite teams API', () => {
 		})
 	})
 
-	it('does not silently replace favorites with an empty list on a failed read', async () => {
-		vi.mocked(axios.get).mockResolvedValueOnce({ data: { ocs: { data: [] } } })
+	it('still loads teams when favorites cannot be read', async () => {
+		vi.mocked(axios.get).mockResolvedValueOnce({ data: { ocs: { data: [{ id: 'A', name: 'A', displayName: 'A', initiator: { level: 1 } }] } } })
 			.mockResolvedValueOnce({ data: { ocs: { data: [] } } })
 			.mockRejectedValueOnce(new Error('favorites unavailable'))
-		await expect(fetchTeams()).rejects.toThrow('favorites unavailable')
+		const teams = await fetchTeams()
+		expect(teams.map((team) => [team.id, team.isFavorite])).toEqual([['A', false]])
 	})
 })

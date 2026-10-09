@@ -161,10 +161,12 @@ export async function fetchTeams(): Promise<Team[]> {
 		logger.warn('Failed to load team dashboard previews', { error: dashRes.reason })
 	}
 	const dashboardById = new Map(dashboard.map((team) => [team.singleId, team]))
-	if (favoritesRes.status === 'rejected') {
-		throw favoritesRes.reason
+	let favoriteCircleIds: string[] = []
+	if (favoritesRes.status === 'fulfilled') {
+		favoriteCircleIds = favoritesRes.value.data.ocs.data.circleIds
+	} else {
+		logger.warn('Failed to load favorite teams', { error: favoritesRes.reason })
 	}
-	const favoriteCircleIds = favoritesRes.value.data.ocs.data.circleIds
 	const favoritePositions = new Map(favoriteCircleIds.map((circleId, position) => [circleId, position]))
 
 	return circles.map((circle) => {
