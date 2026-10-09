@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import type { Member, MemberCandidate, Resource, SharedResource, Team, TeamRole } from './types.ts'
+import type { Member, MemberCandidate, Resource, SharedResource, Team, TeamActivity, TeamActivityPage, TeamActivityQuery, TeamRole } from './types.ts'
 
 import axios from '@nextcloud/axios'
 import { FileType } from '@nextcloud/files'
@@ -19,6 +19,28 @@ const shareTypeToMemberType = SHARES_TYPES_MEMBER_MAP as Record<number, number>
 /** Minimal shape of an OCS response envelope. */
 interface OcsResponse<T> {
 	ocs: { data: T }
+}
+
+/**
+ * Extract the Activity cursor from its RFC 5988 next-page link.
+ *
+ * @param link - The response's pagination Link header
+ */
+function getNextActivityCursor(link: string | undefined): number | undefined {
+	const match = link?.match(/[?&]since=(\d+)[^>]*>;\s*rel="next"/)
+	return match === null || match === undefined ? undefined : Number(match[1])
+}
+
+/**
+ * Whether Activity had no newer response for the current representation.
+ *
+ * @param error - A failed Activity request
+ */
+function isNotModifiedResponse(error: unknown): boolean {
+	return typeof error === 'object'
+		&& error !== null
+		&& 'response' in error
+		&& (error as { response?: { status?: number } }).response?.status === 304
 }
 
 /** Raw member as returned by the circles API. */
@@ -183,6 +205,30 @@ export async function fetchTeams(): Promise<Team[]> {
 export async function fetchTeamMembers(teamId: string): Promise<Member[]> {
 	const res = await axios.get<OcsResponse<RawMember[]>>(generateOcsUrl('apps/circles/circles/{circleId}/members', { circleId: teamId }))
 	return (res.data.ocs.data ?? []).map(mapFullMember)
+}
+
+/**
+ * Fetch Activity events that are visible for a team member.
+ *
+ * @param teamId - The stable team single id
+ * @param query - Cursor and server-side filters for the stream
+ */
+export async function fetchTeamActivities(teamId: string, query: TeamActivityQuery = {}): Promise<TeamActivityPage> {
+	try {
+		const res = await axios.get<OcsResponse<TeamActivity[]>>(
+			generateOcsUrl('apps/activity/api/v2/activity/team/{teamId}', { teamId }),
+			{ params: query },
+		)
+		return {
+			activities: res.data.ocs.data ?? [],
+			nextSince: getNextActivityCursor(res.headers?.link),
+		}
+	} catch (error) {
+		if (isNotModifiedResponse(error)) {
+			return { activities: [] }
+		}
+		throw error
+	}
 }
 
 /**

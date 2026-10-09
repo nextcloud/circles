@@ -112,6 +112,8 @@ class Provider implements IProvider {
 
 		$this->parserCircle->parseSubjectCircleCreate($event, $params);
 		$this->parserCircle->parseSubjectCircleDelete($event, $params);
+		$this->parserCircle->parseSubjectCircleEdit($event, $params);
+		$this->parserCircle->parseSubjectCircleSettingChanged($event, $params);
 		$this->parseMemberAsMember($event, $params);
 		$this->parseCircleMemberAsMember($event, $params);
 	}
