@@ -5,11 +5,12 @@
 
 <script setup lang="ts">
 import { mdiAccountGroupOutline, mdiAlertCircleOutline, mdiMagnify, mdiPlus } from '@mdi/js'
+import { showError } from '@nextcloud/dialogs'
 import { t } from '@nextcloud/l10n'
 import { imagePath } from '@nextcloud/router'
 import { useIsDarkTheme } from '@nextcloud/vue/composables/useIsDarkTheme'
 import { storeToRefs } from 'pinia'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import NcButton from '@nextcloud/vue/components/NcButton'
 import NcEmptyContent from '@nextcloud/vue/components/NcEmptyContent'
 import NcIconSvgWrapper from '@nextcloud/vue/components/NcIconSvgWrapper'
@@ -19,11 +20,158 @@ import TeamCard from '../components/TeamCard.vue'
 import { useTeamsStore } from '../store.ts'
 
 const store = useTeamsStore()
-const { teams, loading, loadError } = storeToRefs(store)
+const { teams, loading, loadError, favoritesUpdating } = storeToRefs(store)
 const { loadTeams, openCreateTeamWizard } = store
 
 const query = ref('')
+const draggedFavoriteId = ref<string | null>(null)
+// Set one frame later so the browser's drag image is captured without the placeholder style.
+const placeholderFavoriteId = ref<string | null>(null)
+let lastSwapTargetId: string | null = null
+const draggedFavoriteOrder = ref<string[] | null>(null)
+const initialDraggedFavoriteOrder = ref<string[] | null>(null)
+// Keeps the dropped order on screen until the server confirms it, so cards don't bounce back.
+const pendingFavoriteOrder = ref<string[] | null>(null)
 const filteredTeams = computed(() => store.searchTeams(query.value))
+const favoriteTeams = computed(() => {
+	const preview = new Map((draggedFavoriteOrder.value ?? pendingFavoriteOrder.value)?.map((id, position) => [id, position]))
+	return filteredTeams.value.filter((team) => team.isFavorite)
+		.toSorted((left, right) => (preview.get(left.id) ?? left.favoritePosition ?? 0) - (preview.get(right.id) ?? right.favoritePosition ?? 0))
+})
+const otherTeams = computed(() => filteredTeams.value.filter((team) => !team.isFavorite))
+
+watch(query, onFavoriteDragEnd)
+watch(() => store.favoriteTeams.map((team) => team.id).join(','), onFavoriteDragEnd)
+
+/**
+ * Toggle a favorite and report failures.
+ *
+ * @param teamId - Team identifier
+ */
+async function toggleFavorite(teamId: string) {
+	try {
+		await store.toggleFavorite(teamId)
+	} catch {
+		showError(t('circles', 'Could not update favorite team'))
+	}
+}
+
+/**
+ * Start a local drag preview without changing the canonical store order.
+ *
+ * @param teamId - Dragged team identifier
+ * @param event - Native drag event
+ */
+function onFavoriteDragStart(teamId: string, event: DragEvent) {
+	if (query.value || favoritesUpdating.value) {
+		event.preventDefault()
+		return
+	}
+	draggedFavoriteId.value = teamId
+	draggedFavoriteOrder.value = store.favoriteTeams.map((team) => team.id)
+	initialDraggedFavoriteOrder.value = [...draggedFavoriteOrder.value]
+	requestAnimationFrame(() => {
+		placeholderFavoriteId.value = draggedFavoriteId.value
+	})
+	if (event.dataTransfer) {
+		event.dataTransfer.effectAllowed = 'move'
+		event.dataTransfer.setData('text/plain', teamId)
+	}
+}
+
+/**
+ * Move a team within the local drag preview.
+ *
+ * @param teamId - Hovered team identifier
+ * @param event - Native drag event
+ */
+function onFavoriteDragOver(teamId: string, event: DragEvent) {
+	const order = draggedFavoriteOrder.value
+	const draggedId = draggedFavoriteId.value
+	if (!order || !draggedId) {
+		return
+	}
+	if (teamId === draggedId) {
+		lastSwapTargetId = null
+		return
+	}
+
+	event.preventDefault()
+	if (event.dataTransfer) {
+		event.dataTransfer.dropEffect = 'move'
+	}
+	// The swapped card animates back under the cursor; don't swap it straight back.
+	if (teamId === lastSwapTargetId) {
+		return
+	}
+	const from = order.indexOf(draggedId)
+	const over = order.indexOf(teamId)
+	if (from === -1 || over === -1) {
+		return
+	}
+	// Take the hovered card's slot; half-based checks break in a multi-column grid.
+	order.splice(from, 1)
+	order.splice(over, 0, draggedId)
+	lastSwapTargetId = teamId
+}
+
+/** Discard a drag preview on cancellation or after a drop. */
+function onFavoriteDragEnd() {
+	draggedFavoriteId.value = null
+	placeholderFavoriteId.value = null
+	lastSwapTargetId = null
+	draggedFavoriteOrder.value = null
+	initialDraggedFavoriteOrder.value = null
+}
+
+/** Persist only a drop accepted by the favorites grid. */
+async function onFavoriteDrop() {
+	const order = draggedFavoriteOrder.value
+	const initialOrder = initialDraggedFavoriteOrder.value
+	onFavoriteDragEnd()
+	if (!order || !initialOrder || order.join('\n') === initialOrder.join('\n')) {
+		return
+	}
+	pendingFavoriteOrder.value = order
+	try {
+		await saveFavoriteOrder(order)
+	} finally {
+		pendingFavoriteOrder.value = null
+	}
+}
+
+/**
+ * Persist an order and announce errors.
+ *
+ * @param order - Desired identifiers
+ */
+async function saveFavoriteOrder(order: string[]) {
+	try {
+		await store.reorderFavoriteTeams(order)
+	} catch {
+		showError(t('circles', 'Could not reorder favorite teams'))
+	}
+}
+
+/**
+ * Swap a favorite with its neighbor and persist the resulting order.
+ *
+ * @param teamId - Team identifier
+ * @param direction - -1 to move up, 1 to move down
+ */
+async function moveFavorite(teamId: string, direction: -1 | 1) {
+	if (favoritesUpdating.value) {
+		return
+	}
+	const order = store.favoriteTeams.map((team) => team.id)
+	const from = order.indexOf(teamId)
+	const to = from + direction
+	if (from === -1 || to < 0 || to >= order.length) {
+		return
+	}
+	[order[from], order[to]] = [order[to], order[from]]
+	await saveFavoriteOrder(order)
+}
 
 const illustrationSrc = imagePath('circles', 'teams-illustration.svg')
 const isDarkTheme = useIsDarkTheme()
@@ -99,9 +247,46 @@ const isDarkTheme = useIsDarkTheme()
 
 			<template v-else>
 				<section :class="$style.homeViewSection">
-					<div v-if="filteredTeams.length > 0" :class="$style.homeViewGrid">
-						<TeamCard v-for="team in filteredTeams" :key="team.id" :team="team" />
-					</div>
+					<template v-if="filteredTeams.length > 0">
+						<h2 v-if="favoriteTeams.length" :class="$style.homeViewSectionTitle">
+							{{ t('circles', 'Favorites') }}
+						</h2>
+						<TransitionGroup
+							v-if="favoriteTeams.length"
+							tag="div"
+							:class="$style.homeViewGrid"
+							:moveClass="$style.homeViewGridMove"
+							@dragover.prevent
+							@drop.prevent="onFavoriteDrop">
+							<TeamCard
+								v-for="(team, index) in favoriteTeams"
+								:key="team.id"
+								:class="{ [$style.homeViewPlaceholder]: team.id === placeholderFavoriteId }"
+								:team="team"
+								:draggable="!query && !favoritesUpdating"
+								:favoriteBusy="favoritesUpdating || !!draggedFavoriteId"
+								:sortable="!query"
+								:canMoveUp="index > 0"
+								:canMoveDown="index < favoriteTeams.length - 1"
+								@toggleFavorite="toggleFavorite(team.id)"
+								@moveUp="moveFavorite(team.id, -1)"
+								@moveDown="moveFavorite(team.id, 1)"
+								@dragStart="(_, event) => onFavoriteDragStart(team.id, event)"
+								@dragOver="(_, event) => onFavoriteDragOver(team.id, event)"
+								@dragEnd="onFavoriteDragEnd" />
+						</TransitionGroup>
+						<h2 v-if="favoriteTeams.length && otherTeams.length" :class="$style.homeViewSectionTitle">
+							{{ t('circles', 'Teams') }}
+						</h2>
+						<div :class="$style.homeViewGrid">
+							<TeamCard
+								v-for="team in otherTeams"
+								:key="team.id"
+								:team="team"
+								:favoriteBusy="favoritesUpdating || !!draggedFavoriteId"
+								@toggleFavorite="toggleFavorite(team.id)" />
+						</div>
+					</template>
 					<NcEmptyContent
 						v-else
 						:name="t('circles', 'No teams found')"
@@ -226,10 +411,30 @@ const isDarkTheme = useIsDarkTheme()
 		gap: calc(3 * var(--default-grid-baseline));
 	}
 
+	&__section-title {
+		margin: 0;
+		font-size: 1.2em;
+	}
+
 	&__grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 		gap: calc(3 * var(--default-grid-baseline));
+	}
+
+	&__grid-move {
+		transition: transform var(--animation-slow) ease;
+
+		@media (prefers-reduced-motion: reduce) {
+			transition: none;
+		}
+	}
+
+	// Marks the slot where the dragged card will land.
+	&__placeholder {
+		opacity: 0.5;
+		outline: 2px dashed var(--color-primary-element);
+		outline-offset: 2px;
 	}
 }
 </style>

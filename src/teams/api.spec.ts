@@ -32,7 +32,7 @@ vi.mock('./team-page/services/collaborationAutocompletion.js', () => ({
 	getSuggestions: vi.fn(),
 }))
 
-const { createTeam, fetchTeams } = await import('./api.ts')
+const { createTeam, fetchTeams, setTeamFavorite, reorderFavoriteTeams } = await import('./api.ts')
 
 describe('fetchTeams', () => {
 	it('drops circles the current user is not a member of', async () => {
@@ -43,6 +43,7 @@ describe('fetchTeams', () => {
 		vi.mocked(axios.get)
 			.mockResolvedValueOnce({ data: { ocs: { data: circles } } })
 			.mockResolvedValueOnce({ data: { ocs: { data: [] } } })
+			.mockResolvedValueOnce({ data: { ocs: { data: { circleIds: [] } } } })
 
 		const teams = await fetchTeams()
 
@@ -55,6 +56,7 @@ describe('fetchTeams', () => {
 		vi.mocked(axios.get)
 			.mockResolvedValueOnce({ data: { ocs: {} } })
 			.mockResolvedValueOnce({ data: { ocs: { data: [] } } })
+			.mockResolvedValueOnce({ data: { ocs: { data: { circleIds: [] } } } })
 
 		await expect(fetchTeams()).resolves.toEqual([])
 	})
@@ -83,5 +85,32 @@ describe('createTeam', () => {
 			'/ocs/apps/circles/circles',
 			{ name: 'Design', createTeamFolder: false },
 		)
+	})
+})
+
+describe('favorite teams API', () => {
+	beforeEach(() => vi.resetAllMocks())
+
+	it('returns the canonical favorite list after a toggle', async () => {
+		vi.mocked(axios.put).mockResolvedValue({ data: { ocs: { data: { circleIds: ['A', 'B'] } } } })
+		expect(await setTeamFavorite('B', true)).toEqual(['A', 'B'])
+		expect(axios.put).toHaveBeenCalledWith(expect.stringContaining('/favorite'), { isFavorite: true })
+	})
+
+	it('includes the expected order and reads the canonical response', async () => {
+		vi.mocked(axios.put).mockResolvedValue({ data: { ocs: { data: { circleIds: ['B', 'A'] } } } })
+		expect(await reorderFavoriteTeams(['B', 'A'], ['A', 'B'])).toEqual(['B', 'A'])
+		expect(axios.put).toHaveBeenCalledWith('/ocs/apps/circles/teams/favorites/order', {
+			circleIds: ['B', 'A'],
+			expectedCircleIds: ['A', 'B'],
+		})
+	})
+
+	it('still loads teams when favorites cannot be read', async () => {
+		vi.mocked(axios.get).mockResolvedValueOnce({ data: { ocs: { data: [{ id: 'A', name: 'A', displayName: 'A', initiator: { level: 1 } }] } } })
+			.mockResolvedValueOnce({ data: { ocs: { data: [] } } })
+			.mockRejectedValueOnce(new Error('favorites unavailable'))
+		const teams = await fetchTeams()
+		expect(teams.map((team) => [team.id, team.isFavorite])).toEqual([['A', false]])
 	})
 })
