@@ -316,7 +316,7 @@ class MiscService {
 		}
 
 		header('Connection: close');
-		ignore_user_abort();
+		ignore_user_abort(true);
 		ob_start();
 		echo(json_encode($result));
 		$size = ob_get_length();
