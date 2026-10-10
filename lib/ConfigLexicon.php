@@ -23,7 +23,6 @@ class ConfigLexicon implements ILexicon {
 	public const USER_SINGLE_ID = 'userSingleId';
 	public const FEDERATED_TEAMS_ENABLED = 'federated_teams_enabled';
 	public const FEDERATED_TEAMS_FRONTAL = 'federated_teams_frontal';
-	public const REMOVE_SHARE_TOKENS_DONE = 'remove_share_tokens_done';
 	public const TEAM_FOLDER_AUTO_CREATE = 'team_folder_auto_create';
 	public const TEAM_FOLDER_DEFAULT_QUOTA = 'team_folder_default_quota';
 	public const TEAM_FOLDER_GROUP_QUOTAS = 'team_folder_group_quotas';
@@ -58,7 +57,6 @@ class ConfigLexicon implements ILexicon {
 		return [
 			new Entry(key: self::FEDERATED_TEAMS_ENABLED, type: ValueType::BOOL, defaultRaw: false, definition: 'disable/enable Federated Teams', lazy: true),
 			new Entry(key: self::FEDERATED_TEAMS_FRONTAL, type: ValueType::STRING, defaultRaw: '', definition: 'domain name used to auth public request', lazy: true),
-			new Entry(key: self::REMOVE_SHARE_TOKENS_DONE, type: ValueType::BOOL, defaultRaw: false, definition: 'whether the remove share tokens repair step has already been executed', lazy: true),
 			new Entry(key: self::TEAM_FOLDER_AUTO_CREATE, type: ValueType::BOOL, defaultRaw: true, definition: 'whether Circles auto-creates team folders and allows UI/API upgrade (not exposed in admin UI)', lazy: true),
 			new Entry(key: self::TEAM_FOLDER_DEFAULT_QUOTA, type: ValueType::INT, defaultRaw: self::DEFAULT_QUOTA, definition: 'default quota in bytes for auto-created team folders (0 means unlimited)', lazy: true),
 			new Entry(key: self::TEAM_FOLDER_GROUP_QUOTAS, type: ValueType::ARRAY, defaultRaw: [], definition: 'quota overrides in bytes by Nextcloud group ID (0 means unlimited)', lazy: true),
