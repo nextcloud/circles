@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import type { Member, MemberCandidate, Team } from './types.ts'
+import type { DiscoverableTeam, Member, MemberCandidate, Team } from './types.ts'
 
 import { defineStore } from 'pinia'
 import { logger } from '../logger.ts'
@@ -12,6 +12,8 @@ import * as api from './api.ts'
 interface TeamsState {
 	/** All teams the current user is part of. */
 	teams: Team[]
+	/** Visible teams the user is not an active member of. */
+	discoverableTeams: DiscoverableTeam[]
 	/** Whether the teams list is currently loading. */
 	loading: boolean
 	/** Whether the last teams load failed. */
@@ -28,6 +30,7 @@ interface TeamsState {
 export const useTeamsStore = defineStore('teams', {
 	state: (): TeamsState => ({
 		teams: [],
+		discoverableTeams: [],
 		loading: false,
 		loadError: false,
 		createWizardOpen: false,
@@ -45,6 +48,15 @@ export const useTeamsStore = defineStore('teams', {
 			}
 			return state.teams.filter((team) => team.displayName.toLowerCase().includes(needle))
 		},
+
+		// Filter discoverable teams by a free-text query against their display name.
+		searchDiscoverableTeams: (state) => (query: string): DiscoverableTeam[] => {
+			const needle = query.trim().toLowerCase()
+			if (!needle) {
+				return state.discoverableTeams
+			}
+			return state.discoverableTeams.filter((team) => team.displayName.toLowerCase().includes(needle))
+		},
 	},
 
 	actions: {
@@ -58,13 +70,26 @@ export const useTeamsStore = defineStore('teams', {
 			this.loading = true
 			this.loadError = false
 			try {
-				this.teams = await api.fetchTeams()
+				const overview = await api.fetchTeams()
+				this.teams = overview.teams
+				this.discoverableTeams = overview.discoverableTeams
 			} catch (error) {
 				this.loadError = true
 				logger.error('Failed to load teams', { error })
 			} finally {
 				this.loading = false
 			}
+		},
+
+		/**
+		 * Join (or request to join) a team, then reload the lists.
+		 *
+		 * @param id - The team id
+		 */
+		async joinTeam(id: string): Promise<'joined' | 'requested'> {
+			const result = await api.joinTeam(id)
+			await this.loadTeams()
+			return result
 		},
 
 		/**
