@@ -205,6 +205,10 @@ export default class Circle {
 		return this._data.config
 	}
 
+	get isFederated(): boolean {
+		return (this.config & CircleConfigs.FEDERATED) !== 0
+	}
+
 	/**
 	 * Define circle config
 	 */
@@ -296,6 +300,9 @@ export default class Circle {
 	 * Can the initiator add/remove members to this circle?
 	 */
 	get canManageMembers() {
+		if (this.initiator?.level === MemberLevels.VISITOR) {
+			return false
+		}
 		return (this.initiator?.level
 			&& this.initiator?.level >= MemberLevels.MODERATOR)
 		|| (this.config & CircleConfigs.FRIEND) !== 0

@@ -25,6 +25,7 @@ vi.mock('../logger.ts', () => ({
 
 vi.mock('./team-page/models/constants.ts', () => ({
 	SHARES_TYPES_MEMBER_MAP: {},
+	MemberLevels: { VISITOR: 2 },
 }))
 
 vi.mock('./team-page/services/collaborationAutocompletion.js', () => ({
@@ -32,9 +33,18 @@ vi.mock('./team-page/services/collaborationAutocompletion.js', () => ({
 	getSuggestions: vi.fn(),
 }))
 
-const { createTeam, fetchTeams, setTeamFavorite, reorderFavoriteTeams } = await import('./api.ts')
+const { createTeam, fetchTeams, setTeamFavorite, reorderFavoriteTeams, fetchTeamMembers } = await import('./api.ts')
 
 describe('fetchTeams', () => {
+	it('retains visitor for the current user', async () => {
+		vi.mocked(axios.get)
+			.mockResolvedValueOnce({ data: { ocs: { data: [{ id: 'team1', name: 'Team', initiator: { level: 2 } }] } } })
+			.mockResolvedValueOnce({ data: { ocs: { data: [] } } })
+			.mockResolvedValueOnce({ data: { ocs: { data: { circleIds: [] } } } })
+
+		expect((await fetchTeams())[0].myRole).toBe('visitor')
+	})
+
 	it('drops circles the current user is not a member of', async () => {
 		const circles = [
 			{ id: 'team1', name: 'team1', displayName: 'Team One', population: 3, initiator: { level: 9 } },
@@ -59,6 +69,13 @@ describe('fetchTeams', () => {
 			.mockResolvedValueOnce({ data: { ocs: { data: { circleIds: [] } } } })
 
 		await expect(fetchTeams()).resolves.toEqual([])
+	})
+})
+
+describe('fetchTeamMembers', () => {
+	it('retains visitor for a full member', async () => {
+		vi.mocked(axios.get).mockResolvedValueOnce({ data: { ocs: { data: [{ singleId: 'member1', userId: 'user1', displayName: 'User', userType: 1, level: 2 }] } } })
+		expect((await fetchTeamMembers('team1'))[0].role).toBe('visitor')
 	})
 })
 

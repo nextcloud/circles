@@ -42,6 +42,7 @@ class Circles {
 
 	public const LEVEL_NONE = Member::LEVEL_NONE;
 	public const LEVEL_MEMBER = Member::LEVEL_MEMBER;
+	public const LEVEL_VISITOR = Member::LEVEL_VISITOR;
 	public const LEVEL_MODERATOR = Member::LEVEL_MODERATOR;
 	public const LEVEL_ADMIN = Member::LEVEL_ADMIN;
 	public const LEVEL_OWNER = Member::LEVEL_OWNER;

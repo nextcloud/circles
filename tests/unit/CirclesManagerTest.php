@@ -12,6 +12,7 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\DataProbe;
+use OCA\Circles\Service\MemberService;
 use OCP\IGroupManager;
 use OCP\IUserManager;
 use OCP\Server;
@@ -83,6 +84,20 @@ class CirclesManagerTest extends TestCase {
 		$this->startSession();
 		$circles = $this->circlesManager->probeCircles();
 		$this->assertCount(0, array_filter($circles, fn (Circle $c) => $c->getName() === $this->circleName));
+	}
+
+	public function testLevelMemberAcceptsVisitor(): void {
+		$this->startSession('admin');
+		$circle = $this->circlesManager->createCircle($this->circleName);
+		try {
+			$this->startSession('admin');
+			$member = $this->circlesManager->addMember($circle->getSingleId(), $this->circlesManager->getLocalFederatedUser($this->userId));
+			$this->assertSame(Member::LEVEL_VISITOR, $this->circlesManager->levelMember($member->getId(), Member::LEVEL_VISITOR)->getLevel());
+			$this->assertSame(Member::LEVEL_VISITOR, Server::get(MemberService::class)->getMemberById($member->getId(), $circle->getSingleId())->getLevel());
+		} finally {
+			$this->startSession('admin');
+			$this->circlesManager->destroyCircle($circle->getSingleId());
+		}
 	}
 
 	public function testGetCirclesWithInitiator(): void {

@@ -41,6 +41,7 @@ export const ELLIPSIS_COUNT = 5
 // Circles member levels
 const MEMBER_LEVEL_NONE: MemberLevel = 0
 const MEMBER_LEVEL_MEMBER: MemberLevel = 1
+const MEMBER_LEVEL_VISITOR: MemberLevel = 2
 const MEMBER_LEVEL_MODERATOR: MemberLevel = 4
 const MEMBER_LEVEL_ADMIN: MemberLevel = 8
 const MEMBER_LEVEL_OWNER: MemberLevel = 9
@@ -86,6 +87,7 @@ export const CIRCLES_MEMBER_TYPES = {
 // Available circles promote/demote levels
 export const CIRCLES_MEMBER_LEVELS = {
 	// [MEMBER_LEVEL_NONE]: t('circles', 'Pending'),
+	[MEMBER_LEVEL_VISITOR]: t('circles', 'Visitor'),
 	[MEMBER_LEVEL_MEMBER]: t('circles', 'Member'),
 	[MEMBER_LEVEL_MODERATOR]: t('circles', 'Moderator'),
 	[MEMBER_LEVEL_ADMIN]: t('circles', 'Admin'),
@@ -207,9 +209,23 @@ export const SHARES_TYPES_MEMBER_MAP = CIRCLES_MEMBER_GROUPING.reduce((list, ent
 export enum MemberLevels {
 	NONE = MEMBER_LEVEL_NONE,
 	MEMBER = MEMBER_LEVEL_MEMBER,
+	VISITOR = MEMBER_LEVEL_VISITOR,
 	MODERATOR = MEMBER_LEVEL_MODERATOR,
 	ADMIN = MEMBER_LEVEL_ADMIN,
 	OWNER = MEMBER_LEVEL_OWNER,
+}
+
+export const MEMBER_LEVEL_RANKS: Record<number, number> = {
+	[MemberLevels.NONE]: 0,
+	[MemberLevels.VISITOR]: 1,
+	[MemberLevels.MEMBER]: 2,
+	[MemberLevels.MODERATOR]: 3,
+	[MemberLevels.ADMIN]: 4,
+	[MemberLevels.OWNER]: 5,
+}
+
+export function compareLevels(leftLevel: MemberLevel, rightLevel: MemberLevel): number {
+	return (MEMBER_LEVEL_RANKS[leftLevel] ?? 0) - (MEMBER_LEVEL_RANKS[rightLevel] ?? 0)
 }
 
 export enum MemberTypes {

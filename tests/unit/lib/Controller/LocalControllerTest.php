@@ -9,6 +9,7 @@ namespace OCA\Circles\Tests\Controller;
 
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Controller\LocalController;
+use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\AvatarService;
@@ -106,6 +107,12 @@ class LocalControllerTest extends TestCase {
 
 	protected function tearDown(): void {
 		parent::tearDown();
+
+		$user = $this->userManager->get(self::TEST_USER_1);
+		if ($user !== null) {
+			$this->userSession->setUser($user);
+			$this->container->get(FederatedUserService::class)->setLocalCurrentUser($user);
+		}
 
 		$circleService = $this->container->get(CircleService::class);
 
@@ -237,5 +244,135 @@ class LocalControllerTest extends TestCase {
 
 		$response = $this->localController->membersAdd($this->circleId, $members);
 		$this->assertEquals($response->getData()['message'], 'Insufficient permissions to perform this action');
+	}
+
+	/**
+	 * @dataProvider friendConfigCases
+	 */
+	public function testVisitorCannotSingleAddWithFriendEnabledOrDisabled(bool $friend): void {
+		$this->prepareVisitor($friend);
+		$before = $this->memberSnapshot();
+
+		$response = $this->localController->memberAdd($this->circleId, self::TEST_USER_3, Member::TYPE_USER);
+
+		$this->assertSame(403, $response->getStatus());
+		$this->assertSame('Insufficient permissions to perform this action', $response->getData()['message']);
+		$this->assertSame($before, $this->memberSnapshot());
+	}
+
+	/**
+	 * @dataProvider friendConfigCases
+	 */
+	public function testVisitorCannotBulkAddWithFriendEnabledOrDisabled(bool $friend): void {
+		$this->prepareVisitor($friend);
+		$before = $this->memberSnapshot();
+		$members = [
+			['id' => self::TEST_USER_3, 'type' => Member::TYPE_USER],
+			['id' => self::TEST_USER_4, 'type' => Member::TYPE_USER],
+		];
+
+		$response = $this->localController->membersAdd($this->circleId, $members);
+
+		$this->assertSame(403, $response->getStatus());
+		$this->assertSame('Insufficient permissions to perform this action', $response->getData()['message']);
+		$this->assertSame($before, $this->memberSnapshot());
+	}
+
+	/**
+	 * @dataProvider friendConfigCases
+	 */
+	public function testVisitorCannotConfirmPendingMemberWithFriendEnabledOrDisabled(bool $friend): void {
+		$this->prepareVisitor($friend);
+		$pendingMemberId = $this->createPendingMember(self::TEST_USER_3);
+		$this->userSession->setUser($this->userManager->get(self::TEST_USER_2));
+		$before = $this->memberSnapshot();
+
+		$response = $this->localController->memberConfirm($this->circleId, $pendingMemberId);
+
+		$this->assertSame(403, $response->getStatus());
+		$this->assertSame('Insufficient permissions to perform this action', $response->getData()['message']);
+		$this->assertSame($before, $this->memberSnapshot());
+		$pendingMember = $this->findStoredMember($pendingMemberId);
+		$this->assertSame(Member::STATUS_REQUEST, $pendingMember->getStatus());
+		$this->assertSame(Member::LEVEL_NONE, $pendingMember->getLevel());
+	}
+
+	public static function friendConfigCases(): array {
+		return [
+			'friend enabled' => [true],
+			'friend disabled' => [false],
+		];
+	}
+
+	public function testMemberCanBulkAddAndConfirmInFriendCircle(): void {
+		$this->localController->editConfig($this->circleId, Circle::CFG_FRIEND);
+		$this->localController->memberAdd($this->circleId, self::TEST_USER_2, Member::TYPE_USER);
+		$this->userSession->setUser($this->userManager->get(self::TEST_USER_2));
+
+		$added = $this->localController->membersAdd($this->circleId, [
+			['id' => self::TEST_USER_3, 'type' => Member::TYPE_USER],
+		])->getData();
+		$this->assertCount(1, $added);
+		$this->assertSame(self::TEST_USER_3, $added[0]['userId']);
+
+		$pendingMemberId = $this->createPendingMember(self::TEST_USER_4);
+		$this->userSession->setUser($this->userManager->get(self::TEST_USER_2));
+		$confirmed = $this->localController->memberConfirm($this->circleId, $pendingMemberId)->getData();
+
+		$this->assertSame(self::TEST_USER_4, $confirmed['userId']);
+		$member = $this->findStoredMember($pendingMemberId);
+		$this->assertSame(Member::STATUS_MEMBER, $member->getStatus());
+		$this->assertSame(Member::LEVEL_MEMBER, $member->getLevel());
+	}
+
+	public function testModeratorCannotChangeMemberLevelThroughLocalController(): void {
+		$moderator = $this->localController->memberAdd($this->circleId, self::TEST_USER_2, Member::TYPE_USER)->getData();
+		$target = $this->localController->memberAdd($this->circleId, self::TEST_USER_3, Member::TYPE_USER)->getData();
+		$this->localController->memberLevel($this->circleId, $moderator['id'], Member::LEVEL_MODERATOR);
+		$before = $this->memberSnapshot();
+
+		$this->userSession->setUser($this->userManager->get(self::TEST_USER_2));
+		$response = $this->localController->memberLevel($this->circleId, $target['id'], Member::LEVEL_VISITOR);
+
+		$this->assertSame(403, $response->getStatus());
+		$this->assertSame($before, $this->memberSnapshot());
+		$this->assertSame(Member::LEVEL_MEMBER, $this->findStoredMember($target['id'])->getLevel());
+	}
+
+	private function prepareVisitor(bool $friend): void {
+		$this->localController->editConfig($this->circleId, $friend ? Circle::CFG_FRIEND : Circle::CFG_CIRCLE);
+		$visitor = $this->localController->memberAdd($this->circleId, self::TEST_USER_2, Member::TYPE_USER)->getData();
+		$this->localController->memberLevel($this->circleId, $visitor['id'], Member::LEVEL_VISITOR);
+		$this->userSession->setUser($this->userManager->get(self::TEST_USER_2));
+	}
+
+	private function createPendingMember(string $userId): string {
+		$this->userSession->setUser($this->userManager->get(self::TEST_USER_1));
+		$memberData = $this->localController->memberAdd($this->circleId, $userId, Member::TYPE_USER)->getData();
+		$member = $this->container->get(MemberService::class)->getMemberById($memberData['id'], $this->circleId);
+		$member->setLevel(Member::LEVEL_NONE)->setStatus(Member::STATUS_REQUEST);
+		$this->container->get(MemberRequest::class)->update($member);
+
+		return $memberData['id'];
+	}
+
+	private function memberSnapshot(): array {
+		$snapshot = [];
+		foreach ($this->container->get(MemberRequest::class)->getMembers($this->circleId) as $member) {
+			$snapshot[$member->getId()] = [$member->getUserId(), $member->getLevel(), $member->getStatus()];
+		}
+		ksort($snapshot);
+
+		return $snapshot;
+	}
+
+	private function findStoredMember(string $memberId): Member {
+		foreach ($this->container->get(MemberRequest::class)->getMembers($this->circleId) as $member) {
+			if ($member->getId() === $memberId) {
+				return $member;
+			}
+		}
+
+		$this->fail('Member not found in database');
 	}
 }

@@ -81,6 +81,7 @@ class SearchService {
 	private function generateSearchProbe(string $term, array $options): CircleProbe {
 		$probe = new CircleProbe();
 		switch ($this->getInt('level', $options)) {
+			case Member::LEVEL_VISITOR:
 			case Member::LEVEL_MEMBER:
 				$probe->mustBeMember();
 				break;

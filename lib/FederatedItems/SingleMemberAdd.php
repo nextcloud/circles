@@ -104,7 +104,8 @@ class SingleMemberAdd implements
 		$initiator = $circle->getInitiator();
 
 		$initiatorHelper = new MemberHelper($initiator);
-		if (!$circle->isConfig(Circle::CFG_FRIEND)) {
+		if (!$circle->isConfig(Circle::CFG_FRIEND)
+			|| $initiator->getLevel() === Member::LEVEL_VISITOR) {
 			$initiatorHelper->mustBeModerator();
 		}
 

@@ -4,7 +4,7 @@
  */
 
 /** Permission level inside a team, derived from the circles member level. */
-export type TeamRole = 'owner' | 'admin' | 'moderator' | 'member'
+export type TeamRole = 'owner' | 'admin' | 'moderator' | 'member' | 'visitor'
 
 /**
  * A member of a team. Maps to a circles Member: `id` is the member's single id,

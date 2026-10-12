@@ -10,7 +10,7 @@ import { FileType } from '@nextcloud/files'
 import { defaultRootPath, getClient, getDefaultPropfind, resultToNode } from '@nextcloud/files/dav'
 import { generateOcsUrl } from '@nextcloud/router'
 import { logger } from '../logger.ts'
-import { SHARES_TYPES_MEMBER_MAP } from './team-page/models/constants.ts'
+import { MemberLevels, SHARES_TYPES_MEMBER_MAP } from './team-page/models/constants.ts'
 import { getRecommendations, getSuggestions } from './team-page/services/collaborationAutocompletion.js'
 
 /** `SHARES_TYPES_MEMBER_MAP` is built dynamically, so type its shape explicitly. */
@@ -85,6 +85,9 @@ function levelToRole(level: number | undefined): TeamRole {
 	}
 	if (level >= 4) {
 		return 'moderator'
+	}
+	if (level === MemberLevels.VISITOR) {
+		return 'visitor'
 	}
 	return 'member'
 }

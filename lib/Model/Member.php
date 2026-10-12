@@ -43,9 +43,19 @@ class Member extends ManagedModel implements
 
 	public const LEVEL_NONE = 0;
 	public const LEVEL_MEMBER = 1;
+	public const LEVEL_VISITOR = 2;
 	public const LEVEL_MODERATOR = 4;
 	public const LEVEL_ADMIN = 8;
 	public const LEVEL_OWNER = 9;
+
+	public const LEVEL_RANKS = [
+		self::LEVEL_NONE => 0,
+		self::LEVEL_VISITOR => 1,
+		self::LEVEL_MEMBER => 2,
+		self::LEVEL_MODERATOR => 3,
+		self::LEVEL_ADMIN => 4,
+		self::LEVEL_OWNER => 5,
+	];
 
 	public const TYPE_SINGLE = 0;
 	public const TYPE_USER = 1;
@@ -91,6 +101,7 @@ class Member extends ManagedModel implements
 	 * @var array
 	 */
 	public static $DEF_LEVEL = [
+		2 => 'Visitor',
 		1 => 'Member',
 		4 => 'Moderator',
 		8 => 'Admin',
@@ -913,6 +924,14 @@ class Member extends ManagedModel implements
 		}
 
 		return $level;
+	}
+
+	public static function getLevelRank(int $level): int {
+		return self::LEVEL_RANKS[$level] ?? 0;
+	}
+
+	public static function compareLevels(int $leftLevel, int $rightLevel): int {
+		return self::getLevelRank($leftLevel) <=> self::getLevelRank($rightLevel);
 	}
 
 	/**

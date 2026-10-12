@@ -91,7 +91,7 @@ import IconShieldCheckOutline from 'vue-material-design-icons/ShieldCheckOutline
 import IconDeleteOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 import RouterMixin from '../../mixins/RouterMixin.js'
 import Circle from '../../models/circle.ts'
-import { CIRCLES_MEMBER_LEVELS, MemberLevels, MemberStatus } from '../../models/constants.ts'
+import { CIRCLES_MEMBER_LEVELS, compareLevels, MemberLevels, MemberStatus } from '../../models/constants.ts'
 import { changeMemberLevel } from '../../services/circles.ts'
 
 export default {
@@ -166,7 +166,7 @@ export default {
 		availableLevelsChange() {
 			const levels = []
 			// Can't change level of owner
-			if (this.member.level === MemberLevels.OWNER) {
+			if (this.member.level === MemberLevels.OWNER || this.member.level === MemberLevels.NONE) {
 				return levels
 			}
 
@@ -187,6 +187,11 @@ export default {
 				}
 				if (this.member.level !== MemberLevels.MEMBER) {
 					levels.push(MemberLevels.MEMBER)
+				}
+				if (this.member.level !== MemberLevels.VISITOR
+					&& !this.circle.isFederated
+					&& this.member.isLocal) {
+					levels.push(MemberLevels.VISITOR)
 				}
 			}
 
@@ -235,7 +240,7 @@ export default {
 		 */
 		canDelete() {
 			return this.circle.canManageMembers
-				&& this.member.level < this.currentUserLevel
+				&& compareLevels(this.member.level, this.currentUserLevel) < 0
 				&& !this.isCurrentUser
 				&& this.member.level !== MemberLevels.OWNER
 		},
@@ -265,7 +270,7 @@ export default {
 				return t('circles', 'Promote as sole owner')
 			}
 
-			if (this.member.level < level) {
+			if (compareLevels(this.member.level, level) < 0) {
 				return t('circles', 'Promote to {level}', { level: CIRCLES_MEMBER_LEVELS[level] })
 			}
 			return t('circles', 'Demote to {level}', { level: CIRCLES_MEMBER_LEVELS[level] })

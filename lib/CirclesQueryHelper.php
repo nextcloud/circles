@@ -127,10 +127,14 @@ class CirclesQueryHelper {
 		string $alias,
 		string $field,
 		IFederatedUser $federatedUser,
+		string $levelAlias = '',
 	): void {
 		$this->queryBuilder->setDefaultSelectAlias($alias);
 		$expr = $this->queryBuilder->expr();
 		$aliasMembership = $this->queryBuilder->generateAlias(CoreQueryBuilder::HELPER, CoreQueryBuilder::MEMBERSHIPS, $options);
+		if ($levelAlias !== '') {
+			$this->queryBuilder->selectAlias($aliasMembership . '.level', $levelAlias);
+		}
 
 		$this->queryBuilder->innerJoin(
 			$alias,

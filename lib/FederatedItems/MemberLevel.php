@@ -13,6 +13,7 @@ use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\FederatedItemBadRequestException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\MemberLevelException;
+use OCA\Circles\Exceptions\ParseMemberLevelException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemHighSeverity;
@@ -70,9 +71,16 @@ class MemberLevel implements
 			throw new FederatedItemBadRequestException('This level cannot be edited');
 		}
 
-		if ($level === 0) {
-			// TODO check all level
+		try {
+			$level = Member::parseLevelInt($level);
+		} catch (ParseMemberLevelException) {
 			throw new FederatedItemBadRequestException('invalid level');
+		}
+
+		if ($level === Member::LEVEL_VISITOR
+			&& ($circle->isConfig(Circle::CFG_FEDERATED)
+				|| !$this->configService->isLocalInstance($member->getInstance()))) {
+			throw new FederatedItemBadRequestException('Visitor requires a local team and member');
 		}
 
 		if ($member->getLevel() === $level) {
@@ -137,7 +145,7 @@ class MemberLevel implements
 		$initiatorHelper = new MemberHelper($initiator);
 		$memberHelper = new MemberHelper($member);
 
-		$memberHelper->mustBeMember();
+		$memberHelper->mustHaveLevelAboveOrEqual(Member::LEVEL_VISITOR);
 		$memberHelper->cannotBeOwner();
 		$initiatorHelper->mustBeModerator();
 
@@ -167,7 +175,7 @@ class MemberLevel implements
 		$memberHelper = new MemberHelper($member);
 
 		$initiatorHelper->mustBeOwner();
-		$memberHelper->mustBeMember();
+		$memberHelper->mustHaveLevelAboveOrEqual(Member::LEVEL_VISITOR);
 		$memberHelper->cannotBeOwner();
 	}
 }

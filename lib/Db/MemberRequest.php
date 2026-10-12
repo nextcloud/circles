@@ -303,7 +303,7 @@ class MemberRequest extends MemberRequestBuilder {
 			$qb->andWhere($qb->expr()->eq($qb->getDefaultSelectAlias() . '.level', $qb->createNamedParameter($role)));
 		}
 
-		$qb->orderBy($qb->getDefaultSelectAlias() . '.level', 'desc');
+		$qb->orderByMemberLevel($qb->getDefaultSelectAlias() . '.level');
 		$qb->addOrderBy($qb->getDefaultSelectAlias() . '.cached_name', 'asc');
 
 		return $this->getItemsFromRequest($qb);

@@ -223,6 +223,21 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$this->configService = Server::get(ConfigService::class);
 	}
 
+	public function orderByMemberLevel(string $column): void {
+		$ranks = Member::LEVEL_RANKS;
+		arsort($ranks);
+
+		$cases = [];
+		foreach ($ranks as $level => $rank) {
+			$cases[] = 'WHEN ' . $level . ' THEN ' . $rank;
+		}
+
+		$this->orderBy(
+			$this->createFunction('CASE ' . $column . ' ' . implode(' ', $cases) . ' ELSE 0 END'),
+			'desc'
+		);
+	}
+
 	/**
 	 * @param IFederatedModel $federatedModel
 	 *
@@ -693,10 +708,16 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 
 		$this->limitToInstance($this->getInstance($member));
 
-		if ($member->getLevel() > 0) {
+		$minLevel = $member->getLevel();
+		if ($minLevel === Member::LEVEL_VISITOR) {
+			// Member ranks above Visitor despite having a lower numeric value.
+			$minLevel = Member::LEVEL_MEMBER;
+		}
+
+		if ($minLevel > 0) {
 			$andX[] = $expr->gte(
 				$aliasMember . '.level',
-				$this->createNamedParameter($member->getLevel(), IQueryBuilder::PARAM_INT)
+				$this->createNamedParameter($minLevel, IQueryBuilder::PARAM_INT)
 			);
 		}
 
@@ -885,6 +906,10 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 
 		// limit on membership level if requested
 		$minLevel = $probe?->getMinimumLevel() ?? 0;
+		if ($minLevel === Member::LEVEL_VISITOR) {
+			// Member ranks above Visitor despite having a lower numeric value.
+			$minLevel = Member::LEVEL_MEMBER;
+		}
 		if ($minLevel > Member::LEVEL_MEMBER) {
 			$on->add($this->exprGt('level', $minLevel, true, $aliasMembership));
 		}
@@ -1010,6 +1035,10 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$expr = $this->expr();
 		$aliasMembership = $this->generateAlias($alias, self::MEMBERSHIPS);
 		$this->andWhere($expr->eq($aliasMembership . '.circle_id', $this->createNamedParameter($singleId)));
+		if ($level === Member::LEVEL_VISITOR) {
+			// Member ranks above Visitor despite having a lower numeric value.
+			$level = Member::LEVEL_MEMBER;
+		}
 		if ($level > 1) {
 			$this->andWhere(
 				$expr->gte(
