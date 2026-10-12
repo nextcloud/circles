@@ -265,4 +265,14 @@ class ProviderParser {
 			'_parsed' => $group['userId']
 		];
 	}
+
+	/** @return array<string, string> */
+	protected function generateHighlightParameter(string $value): array {
+		return [
+			'type' => 'highlight',
+			'id' => $value,
+			'name' => $value,
+			'_parsed' => $value,
+		];
+	}
 }

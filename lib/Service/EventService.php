@@ -68,6 +68,13 @@ class EventService {
 	public function circleEditing(FederatedEvent $federatedEvent): void {
 		$event = new EditingCircleEvent($federatedEvent);
 		$this->eventDispatcher->dispatchTyped($event);
+		$change = match (true) {
+			$federatedEvent->getData()->hasKey('name') => 'name',
+			$federatedEvent->getData()->hasKey('displayName') => 'displayName',
+			$federatedEvent->getData()->hasKey('description') => 'description',
+			default => 'details',
+		};
+		$this->activityService->onCircleEdited($event->getCircle(), $change);
 	}
 
 	/**

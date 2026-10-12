@@ -46,4 +46,45 @@ class ProviderSubjectCircle extends ProviderParser {
 
 		throw new FakeException();
 	}
+
+	public function parseSubjectCircleEdit(IEvent $event, array $params): void {
+		if ($event->getSubject() !== 'circle_edit') {
+			return;
+		}
+
+		$change = (string)($params['change'] ?? 'details');
+		if ($change === 'name' || $change === 'displayName') {
+			$data = [
+				'author' => $this->generateUserParameter($params['initiator'] ?? []),
+				'title' => $this->generateHighlightParameter((string)($params['title'] ?? '')),
+			];
+			if ($this->isViewerTheAuthor($params['initiator'] ?? [], $this->activityManager->getCurrentUserId())) {
+				$this->setSubject($event, $this->l10n->t('You changed the team title to {title}'), $data);
+			} else {
+				$this->setSubject($event, $this->l10n->t('{author} changed the team title to {title}'), $data);
+			}
+
+			throw new FakeException();
+		}
+
+		if ($change === 'description') {
+			$this->parseCircleEvent(
+				$event,
+				$params,
+				$this->l10n->t('You changed the description of {circle}'),
+				$this->l10n->t('{author} changed the description of {circle}'),
+			);
+
+			throw new FakeException();
+		}
+
+		$this->parseCircleEvent(
+			$event, $params,
+			$this->l10n->t('You edited the team {circle}'),
+			$this->l10n->t('{author} edited the team {circle}')
+		);
+
+		throw new FakeException();
+	}
+
 }

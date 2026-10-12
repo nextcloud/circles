@@ -10,6 +10,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from './views/HomeView.vue'
 import JoinInvitation from './views/JoinInvitation.vue'
 import PageView from './views/PageView.vue'
+import TeamActivityView from './views/TeamActivityView.vue'
 import TeamFolderView from './views/TeamFolderView.vue'
 import TeamHomeView from './views/TeamHomeView.vue'
 import TeamLandingView from './views/TeamLandingView.vue'
@@ -42,6 +43,12 @@ const routes: RouteRecordRaw[] = [
 				name: 'team',
 				path: '',
 				component: TeamLandingView,
+				props: true,
+			},
+			{
+				name: 'team-activity',
+				path: 'activity',
+				component: TeamActivityView,
 				props: true,
 			},
 			{
