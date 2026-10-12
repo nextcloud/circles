@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Listeners;
 
 use Exception;
+use OCA\Circles\Repository\TeamFavoriteRepository;
 use OCA\Circles\Service\SyncService;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
@@ -24,6 +25,7 @@ class UserDeleted implements IEventListener {
 	 */
 	public function __construct(
 		private readonly SyncService $syncService,
+		private readonly TeamFavoriteRepository $teamFavoriteRepository,
 	) {
 	}
 
@@ -36,6 +38,7 @@ class UserDeleted implements IEventListener {
 		}
 
 		$user = $event->getUser();
+		$this->teamFavoriteRepository->removeUser($user->getUID());
 
 		try {
 			$this->syncService->userDeleted($user->getUID());

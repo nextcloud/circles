@@ -7,7 +7,8 @@
 import type Circle from '../team-page/models/circle.ts'
 import type Member from '../team-page/models/member.ts'
 
-import { mdiChevronDown, mdiHomeOutline, mdiLinkVariant, mdiLogout, mdiMagnify, mdiPlus, mdiTrashCanOutline } from '@mdi/js'
+import { mdiChevronDown, mdiHomeOutline, mdiLinkVariant, mdiLogout, mdiMagnify, mdiPlus, mdiStar, mdiStarOutline, mdiTrashCanOutline } from '@mdi/js'
+import { showError } from '@nextcloud/dialogs'
 import { t } from '@nextcloud/l10n'
 import { useElementSize, useEventListener } from '@vueuse/core'
 import { computed, nextTick, ref, watch } from 'vue'
@@ -110,7 +111,17 @@ useEventListener(window, 'resize', () => {
 })
 
 // The current team is represented by the panel's header, not the list.
-const otherTeams = computed(() => teamsStore.teams.filter((item) => item.id !== props.circle.id))
+const otherTeams = computed(() => teamsStore.teams
+	.filter((item) => item.id !== props.circle.id)
+	.toSorted((left, right) => {
+		if (left.isFavorite !== right.isFavorite) {
+			return left.isFavorite ? -1 : 1
+		}
+		if (left.isFavorite) {
+			return (left.favoritePosition ?? 0) - (right.favoritePosition ?? 0)
+		}
+		return 0
+	}))
 
 // Teams list search: the "Go to team" caption row swaps for a text field
 // that filters the list; aborting the search restores the caption row.
@@ -168,6 +179,15 @@ async function openMembersPage(): Promise<void> {
 	await router.push({ name: 'team-members', params: { teamId: props.circle.id } })
 }
 
+/** Toggle the current team's favorite state and report failures. */
+async function onToggleFavorite(): Promise<void> {
+	try {
+		await teamsStore.toggleFavorite(props.circle.id)
+	} catch {
+		showError(t('circles', 'Could not update favorite team'))
+	}
+}
+
 </script>
 
 <template>
@@ -183,11 +203,14 @@ async function openMembersPage(): Promise<void> {
 					type="button"
 					class="team-header__trigger"
 					:title="t('circles', 'Switch team')"
-					:aria-label="t('circles', 'Switch team')"
+					:aria-label="team?.isFavorite
+						? t('circles', 'Switch team: {team} (favorite)', { team: circle.displayName })
+						: t('circles', 'Switch team: {team}', { team: circle.displayName })"
 					@click="switcherOpen = true">
 					<TeamAvatar
 						:displayName="circle.displayName"
 						:circleId="circle.id"
+						:isFavorite="team?.isFavorite"
 						:size="44" />
 
 					<span class="team-header__info">
@@ -218,6 +241,7 @@ async function openMembersPage(): Promise<void> {
 					<TeamAvatar
 						:displayName="circle.displayName"
 						:circleId="circle.id"
+						:isFavorite="team?.isFavorite"
 						:size="44" />
 
 					<div class="team-header__info">
@@ -242,6 +266,15 @@ async function openMembersPage(): Promise<void> {
 						v-if="team"
 						class="team-header__switcher-actions"
 						:aria-label="t('circles', 'Team actions')">
+						<NcActionButton
+							:disabled="teamsStore.favoritesUpdating"
+							closeAfterClick
+							@click="onToggleFavorite">
+							<template #icon>
+								<NcIconSvgWrapper :path="team.isFavorite ? mdiStar : mdiStarOutline" :size="20" />
+							</template>
+							{{ team.isFavorite ? t('circles', 'Remove from favorites') : t('circles', 'Add to favorites') }}
+						</NcActionButton>
 						<NcActionButton closeAfterClick @click="onCopyLink">
 							<template #icon>
 								<NcIconSvgWrapper :path="mdiLinkVariant" :size="20" />
@@ -305,12 +338,14 @@ async function openMembersPage(): Promise<void> {
 						:key="item.id"
 						:name="item.displayName"
 						:to="{ name: 'team', params: { teamId: item.id } }"
+						:linkAriaLabel="item.isFavorite ? t('circles', '{team} (favorite)', { team: item.displayName }) : item.displayName"
 						oneLine
 						@click="switcherOpen = false">
 						<template #icon>
 							<TeamAvatar
 								:displayName="item.displayName"
 								:circleId="item.id"
+								:isFavorite="item.isFavorite"
 								:size="32" />
 						</template>
 					</NcListItem>
