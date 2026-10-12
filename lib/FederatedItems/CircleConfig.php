@@ -18,6 +18,7 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\PermissionService;
 use OCA\Circles\Tools\Traits\TDeserialize;
 
@@ -41,6 +42,7 @@ class CircleConfig implements
 		private CircleRequest $circleRequest,
 		private PermissionService $permissionService,
 		private ConfigService $configService,
+		private EventService $eventService,
 	) {
 	}
 
@@ -146,6 +148,11 @@ class CircleConfig implements
 		// TODO: sync if it is to broadcast to Trusted RemoteInstance
 
 		$this->circleRequest->updateConfig($circle);
+		$this->eventService->circleConfigChanged(
+			$circle,
+			$event->getCircle()->getConfig(),
+			$config,
+		);
 	}
 
 	/**

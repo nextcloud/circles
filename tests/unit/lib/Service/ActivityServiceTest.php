@@ -183,4 +183,51 @@ class ActivityServiceTest extends TestCase {
 		$this->activityService->onMemberLevel($circle, $member, Member::LEVEL_OWNER);
 	}
 
+	public function testTeamActivityPublishesVisibleSettingChanges(): void {
+		$circle = $this->createCircle();
+		$circle->method('isConfig')->willReturn(false);
+		$circle->method('hasInitiator')->willReturn(false);
+		$user = $this->createMock(IUser::class);
+		$user->method('getUID')->willReturn('alice');
+		$this->memberRequest->expects($this->once())->method('getInheritedMembers')->with('team-single-id', false, Member::LEVEL_MEMBER)->willReturn([$user]);
+		$this->circleRequest->expects($this->once())
+			->method('getActivityObjectId')
+			->with('team-single-id')
+			->willReturn(42);
+		$event = $this->createMock(IEvent::class);
+		$event->method('setApp')->willReturnSelf();
+		$event->method('setType')->with('circles_as_member')->willReturnSelf();
+		$event->method('setObject')->with(Application::APP_ID, 42, 'Design')->willReturnSelf();
+		$event->expects($this->once())->method('setSubject')->with('circle_setting_changed', [
+			'ver' => 2,
+			'circle' => ['singleId' => 'team-single-id', 'name' => 'Design', 'config' => 0, 'url' => ''],
+			'initiator' => null,
+			'setting' => Circle::SETTING_TEAM_FOLDER_QUOTA,
+		])->willReturnSelf();
+		$event->method('setAffectedUser')->with('alice')->willReturnSelf();
+		$this->activityManager->expects($this->once())->method('generateEvent')->willReturn($event);
+		$this->activityManager->expects($this->once())->method('publish')->with($event);
+
+		$this->activityService->onCircleSetting($circle, Circle::SETTING_TEAM_FOLDER_QUOTA);
+	}
+
+	public function testTeamActivityPublishesUnlistedSettingChangesWithoutTheSettingName(): void {
+		$circle = $this->createCircle();
+		$circle->method('isConfig')->willReturn(false);
+		$circle->method('hasInitiator')->willReturn(false);
+		$this->memberRequest->method('getInheritedMembers')->willReturn([]);
+		$event = $this->createMock(IEvent::class);
+		$event->method('setApp')->willReturnSelf();
+		$event->method('setType')->willReturnSelf();
+		$event->method('setObject')->willReturnSelf();
+		$event->expects($this->once())->method('setSubject')->with('circle_setting_changed', [
+			'ver' => 2,
+			'circle' => ['singleId' => 'team-single-id', 'name' => 'Design', 'config' => 0, 'url' => ''],
+			'initiator' => null,
+			'setting' => 'generic',
+		])->willReturnSelf();
+		$this->activityManager->expects($this->once())->method('generateEvent')->willReturn($event);
+
+		$this->activityService->onCircleSetting($circle, Circle::SETTING_EXTERNAL_ID);
+	}
 }

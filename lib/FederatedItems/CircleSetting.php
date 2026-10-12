@@ -16,6 +16,7 @@ use OCA\Circles\IFederatedItemHighSeverity;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\ShareTokenService;
 use OCA\Circles\Tools\Traits\TDeserialize;
 
@@ -29,6 +30,7 @@ class CircleSetting implements
 		private CircleRequest $circleRequest,
 		private ShareTokenService $shareTokenService,
 		private ConfigService $configService,
+		private EventService $eventService,
 	) {
 	}
 
@@ -91,6 +93,7 @@ class CircleSetting implements
 		// TODO: sync if it is to broadcast to Trusted RemoteInstance
 
 		$this->circleRequest->updateSettings($circle);
+		$this->eventService->circleSettingChanged($circle, $event->getParams()->g('setting'));
 
 		// refresh share password (in case of static password changes)
 		// only is password are enforced for this Circle

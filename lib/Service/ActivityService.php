@@ -24,6 +24,35 @@ use OCP\IUserManager;
 use UnhandledMatchError;
 
 class ActivityService {
+	private const SETTING_TEAM_TAB_ORDER = 'teamsTabOrder';
+	private const SETTING_PASSWORD_SINGLE = 'password_single';
+	private const SETTING_PASSWORD_SINGLE_ENABLED = 'password_single_enabled';
+	private const ACTIVITY_CONFIGS = [
+		Circle::CFG_OPEN => 'open',
+		Circle::CFG_INVITE => 'invite',
+		Circle::CFG_REQUEST => 'request',
+		Circle::CFG_FRIEND => 'friend',
+		Circle::CFG_ROOT => 'root',
+		Circle::CFG_FEDERATED => 'federated',
+		Circle::CFG_VISIBLE => 'visible',
+	];
+	private const ACTIVITY_CONFIG_SETTINGS = [
+		'config_open_enabled',
+		'config_open_disabled',
+		'config_invite_enabled',
+		'config_invite_disabled',
+		'config_request_enabled',
+		'config_request_disabled',
+		'config_friend_enabled',
+		'config_friend_disabled',
+		'config_root_enabled',
+		'config_root_disabled',
+		'config_federated_enabled',
+		'config_federated_disabled',
+		'config_visible_enabled',
+		'config_visible_disabled',
+	];
+
 	public function __construct(
 		private readonly IActivityManager $activityManager,
 		private readonly IUserManager $userManager,
@@ -108,6 +137,42 @@ class ActivityService {
 			$event,
 			$this->memberRequest->getInheritedMembers($circle->getSingleId(), false, Member::LEVEL_MEMBER)
 		);
+	}
+
+	public function onCircleSetting(Circle $circle, string $setting): void {
+		if ($circle->isConfig(Circle::CFG_PERSONAL)) {
+			return;
+		}
+
+		$event = $this->generateEvent('circles_as_member', $circle);
+		$event->setSubject(
+			'circle_setting_changed',
+			[
+				'ver' => 2,
+				'circle' => $this->shortenCircleData($circle),
+				'initiator' => ($circle->hasInitiator() ? $this->shortenMemberData($circle->getInitiator()) : null),
+				'setting' => $this->getActivitySetting($setting),
+			]
+		);
+
+		$this->publishEvent(
+			$event,
+			$this->memberRequest->getInheritedMembers($circle->getSingleId(), false, Member::LEVEL_MEMBER)
+		);
+	}
+
+	public function onCircleConfigChanged(Circle $circle, int $previousConfig, int $newConfig): void {
+		$changedConfig = $previousConfig ^ $newConfig;
+		foreach (self::ACTIVITY_CONFIGS as $config => $setting) {
+			if (($changedConfig & $config) === 0) {
+				continue;
+			}
+
+			$this->onCircleSetting(
+				$circle,
+				'config_' . $setting . (($newConfig & $config) === 0 ? '_disabled' : '_enabled'),
+			);
+		}
 	}
 
 	/**
@@ -443,6 +508,22 @@ class ActivityService {
 		}
 
 		return $event;
+	}
+
+	private function getActivitySetting(string $setting): string {
+		return in_array(
+			$setting,
+			[
+				Circle::SETTING_TEAM_FOLDER_QUOTA,
+				self::SETTING_TEAM_TAB_ORDER,
+				ConfigService::MEMBERS_LIMIT,
+				ConfigService::ENFORCE_PASSWORD,
+				self::SETTING_PASSWORD_SINGLE,
+				self::SETTING_PASSWORD_SINGLE_ENABLED,
+				...self::ACTIVITY_CONFIG_SETTINGS,
+			],
+			true,
+		) ? $setting : 'generic';
 	}
 
 	/**

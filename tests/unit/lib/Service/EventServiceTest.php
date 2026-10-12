@@ -33,4 +33,27 @@ class EventServiceTest extends TestCase {
 		$service->circleEditing($event);
 	}
 
+	public function testCircleSettingChangedPublishesActivity(): void {
+		$activityService = $this->createMock(ActivityService::class);
+		$service = new EventService($this->createMock(IEventDispatcher::class), $activityService);
+		$circle = $this->createMock(Circle::class);
+
+		$activityService->expects($this->once())
+			->method('onCircleSetting')
+			->with($circle, Circle::SETTING_TEAM_FOLDER_QUOTA);
+
+		$service->circleSettingChanged($circle, Circle::SETTING_TEAM_FOLDER_QUOTA);
+	}
+
+	public function testCircleConfigChangedPublishesActivity(): void {
+		$activityService = $this->createMock(ActivityService::class);
+		$service = new EventService($this->createMock(IEventDispatcher::class), $activityService);
+		$circle = $this->createMock(Circle::class);
+
+		$activityService->expects($this->once())
+			->method('onCircleConfigChanged')
+			->with($circle, Circle::CFG_VISIBLE, Circle::CFG_VISIBLE | Circle::CFG_OPEN);
+
+		$service->circleConfigChanged($circle, Circle::CFG_VISIBLE, Circle::CFG_VISIBLE | Circle::CFG_OPEN);
+	}
 }
