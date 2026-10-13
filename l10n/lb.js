@@ -49,6 +49,7 @@ OC.L10N.register(
     "Pending" : "Ausstoend",
     "Role" : "Roll",
     "Add to {team}" : "derbäi ze {team}",
+    "Favorites" : "Favoritten",
     "Loading" : "Lued",
     "Go back" : "Zeréckgoen",
     "Loading…" : "Et gëtt gelueden",
