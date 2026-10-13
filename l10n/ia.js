@@ -35,6 +35,7 @@ OC.L10N.register(
     "Apply" : "Applicar",
     "Copy link" : "Copiar ligamine",
     "Pending" : "Pendente",
+    "Favorites" : "Favoritos",
     "Go back" : "Retornar",
     "Loading…" : "Cargante...",
     "User" : "User",

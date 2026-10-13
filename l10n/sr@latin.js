@@ -24,6 +24,7 @@ OC.L10N.register(
     "Add {type}" : "Dodaj {type}",
     "Pending" : "Na čekanju",
     "Add to {team}" : "Dodaj u {team}",
+    "Favorites" : "Omiljene",
     "Loading…" : "Učitavam…",
     "User" : "Korisnik",
     "Groups" : "Grupe"
