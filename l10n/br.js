@@ -30,6 +30,7 @@ OC.L10N.register(
     "Delete" : "Delete",
     "Actions" : "Oberoù",
     "Connect" : "Kenstagañ",
+    "Add to favorites" : "Ouzhpennañ d'ar penndibaboù",
     "Add users" : "Ouzhpennañ implijer ",
     "Add groups" : "Ouzhoennañ strolladoù",
     "Add emails" : "Ouzhpennañ postelloù",
