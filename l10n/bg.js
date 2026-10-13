@@ -118,6 +118,8 @@ OC.L10N.register(
     "Reconnect" : "Повторно свързване",
     "Connect" : "Свързване",
     "Members" : "Членове",
+    "Move down" : "Преместване  надолу",
+    "Add to favorites" : "Добави в любими",
     "Add users" : "Добавяне на потребители",
     "Add groups" : "Добавяне на групи",
     "Add emails" : "Добавяне на имейли",

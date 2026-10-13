@@ -20,6 +20,7 @@ OC.L10N.register(
     "Home" : "کور",
     "Copy link" : "لېنک کاپي کول",
     "Pending" : "د انتظار په حال کې",
+    "Favorites" : "په نښه شوي",
     "Users" : "کارنان",
     "Groups" : "ګروپونه",
     "No files in here" : "دلته فایلونه نشته",

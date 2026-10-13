@@ -72,6 +72,8 @@ OC.L10N.register(
     "Actions" : "Дзеянні",
     "Reconnect" : "Перазлучыцца",
     "Members" : "Удзельнікі",
+    "Move down" : "Перамясціць уніз",
+    "Add to favorites" : "У абранае",
     "Add users" : "Дадаць карыстальнікаў",
     "Add groups" : "Дадаць групы",
     "Add emails" : "Дадаць адрасы электроннай пошты",
