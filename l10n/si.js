@@ -32,6 +32,7 @@ OC.L10N.register(
     "No results" : "ප්‍රතිථල නැත",
     "Add {type}" : "{type} එකතු කරන්න",
     "Add to {team}" : "{team} ට එකතු කරන්න ",
+    "Favorites" : "ප්‍රියතම",
     "Loading" : "පූරණය වෙමින්",
     "Go back" : "ආපසු යන්න",
     "Join" : "එක්වන්න",

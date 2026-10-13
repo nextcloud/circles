@@ -27,6 +27,7 @@ OC.L10N.register(
     "Apply" : "អនុវត្ត",
     "Copy link" : "ចម្លងតំណ",
     "Pending" : "កំពុង​រង់ចាំ",
+    "Favorites" : "Favorites",
     "User" : "User",
     "Email" : "អ៊ីមែល",
     "Users" : "អ្នកប្រើ",
