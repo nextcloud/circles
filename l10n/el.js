@@ -274,6 +274,7 @@ OC.L10N.register(
     "No teams yet" : "Δεν υπάρχουν ομάδες ακόμα",
     "Create your first team to start collaborating." : "Δημιουργήστε την πρώτη σας ομάδα για να ξεκινήσετε τη συνεργασία.",
     "Create your first team" : "Δημιουργήστε την πρώτη σας ομάδα",
+    "Favorites" : "Αγαπημένα",
     "No teams found" : "Δεν βρέθηκαν ομάδες",
     "Try a different search." : "Δοκιμάστε μια διαφορετική αναζήτηση.",
     "Loading" : "Φόρτωση",

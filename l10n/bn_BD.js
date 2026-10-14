@@ -32,6 +32,7 @@ OC.L10N.register(
     "Description" : "বিবরণ",
     "Copy link" : "লিঙ্ক কপি করো",
     "Pending" : "মুলতুবি",
+    "Favorites" : "প্রিয়জন",
     "Go back" : "ফিরে যাও",
     "User" : "User",
     "Email" : "ইমেইল",
