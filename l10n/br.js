@@ -46,6 +46,7 @@ OC.L10N.register(
     "No results" : "Disoc'h ebet",
     "Pending" : "O c'hortoz",
     "Add to {team}" : "Ouzhpennañ da {team}",
+    "Favorites" : "Penndibaboù",
     "Loading" : "Kargañ",
     "Join" : "Kejañ",
     "Loading…" : "O kargañ...",
