@@ -48,8 +48,18 @@ describe('firstTabRoute', () => {
 			pages: [page(7, 'Handbook')],
 			tabOrder: ['page-7', 'team-folder', 'home'],
 		})
+
 		expect(firstTabRoute(TEAM, state))
 			.toEqual({ name: 'team-page', params: { teamId: TEAM, fileId: '7' } })
+	})
+
+	it('resolves a board as the first entry without changing its saved id', () => {
+		const state = resources({
+			boards: [{ id: 3, title: 'Tasks', url: '/apps/deck/board/3' }],
+			tabOrder: ['board-3', 'team-folder', 'home'],
+		})
+		expect(firstTabRoute(TEAM, state))
+			.toEqual({ name: 'team-deck', params: { teamId: TEAM, boardId: '3' } })
 	})
 
 	it('skips external entries at the front of the order', () => {
@@ -75,9 +85,10 @@ describe('firstTabRoute', () => {
 })
 
 describe('firstTabSettled', () => {
-	it('waits for the order and the pages', () => {
+	it('waits for the order, pages and boards', () => {
 		expect(firstTabSettled(resources({ orderChecked: false }))).toBe(false)
 		expect(firstTabSettled(resources({ pagesChecked: false }))).toBe(false)
+		expect(firstTabSettled(resources({ boardsChecked: false }))).toBe(false)
 		expect(firstTabSettled(resources())).toBe(true)
 	})
 

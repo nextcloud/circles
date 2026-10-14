@@ -11,4 +11,13 @@ export default [
 		// Ported team-page code, kept verbatim — not linted while it's modernized.
 		ignores: ['src/teams/team-page/**'],
 	},
+	{
+		files: ['src/teams/views/TeamDeckView.vue'],
+		// Native attributes and events must match Deck's custom-element contract.
+		rules: {
+			'vue/no-undef-components': ['warn', { ignorePatterns: ['nextcloud-deck-board'] }],
+			'vue/attribute-hyphenation': 'off',
+			'vue/v-on-event-hyphenation': 'off',
+		},
+	},
 ]

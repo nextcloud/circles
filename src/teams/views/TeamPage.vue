@@ -14,6 +14,7 @@ import NcEmptyContent from '@nextcloud/vue/components/NcEmptyContent'
 import NcIconSvgWrapper from '@nextcloud/vue/components/NcIconSvgWrapper'
 import NcLoadingIcon from '@nextcloud/vue/components/NcLoadingIcon'
 import { logger } from '../../logger.ts'
+import { teamViewKey } from '../deck.ts'
 import { useTeamResourcesStore } from '../resourcesStore.ts'
 import { joinCircle } from '../team-page/services/circles.ts'
 
@@ -118,9 +119,9 @@ async function onRequestJoin(): Promise<void> {
 
 		<template v-else>
 			<div class="team-page__content">
-				<!-- Keyed so a param change (e.g. another page's fileId) mounts a
-					fresh view instead of reusing the instance with new props. -->
-				<router-view :key="$route.path" />
+				<!-- Deck cards share their board instance; other resources still
+					mount a fresh view when their path changes. -->
+				<router-view :key="teamViewKey($route)" />
 			</div>
 		</template>
 	</div>

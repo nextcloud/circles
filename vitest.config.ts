@@ -9,7 +9,13 @@ import { defineConfig } from 'vitest/config'
 // Vitest uses this config in preference to vite.config.ts (the app build config),
 // so the production build and the test runner stay isolated from each other.
 export default defineConfig({
-	plugins: [vue()],
+	plugins: [vue({
+		template: {
+			compilerOptions: {
+				isCustomElement: (tag) => tag === 'nextcloud-deck-board',
+			},
+		},
+	})],
 	test: {
 		// Co-locate specs next to the code they cover: src/**/*.spec.ts (or .test.ts).
 		include: ['src/**/*.{test,spec}.?(c|m)[jt]s?(x)'],

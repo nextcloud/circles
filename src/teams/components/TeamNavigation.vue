@@ -31,6 +31,7 @@ import { createCollective, createDeckBoard, createTeamPage, deleteTeamPage, rena
 import collectivesIcon from '../assets/collectives.svg?raw'
 import deckIcon from '../assets/deck.svg?raw'
 import { canCreateTeamFolder, useTeamActions } from '../composables/useTeamActions.ts'
+import { isTeamDeckRoute, teamDeckRoute } from '../deck.ts'
 import { useTeamResourcesStore } from '../resourcesStore.ts'
 import { useTeamsStore } from '../store.ts'
 
@@ -43,6 +44,7 @@ interface NavigationEntry {
 	iconSvg?: string
 	to?: RouteLocationRaw
 	href?: string
+	active?: boolean
 	/** Set for page entries, which carry per-entry actions. */
 	page?: TeamPage
 }
@@ -124,7 +126,8 @@ const entries = computed<NavigationEntry[]>(() => {
 			id: `board-${board.id}`,
 			label: board.title,
 			iconSvg: deckIcon,
-			href: board.url,
+			to: teamDeckRoute(teamId.value, board.id),
+			active: isTeamDeckRoute(route.name) && route.params.boardId === String(board.id),
 		})
 	}
 	for (const page of pages.value) {
@@ -142,6 +145,7 @@ const entries = computed<NavigationEntry[]>(() => {
 		label: t('circles', 'Shared with the team'),
 		icon: route.name === 'team-home' ? mdiShareVariant : mdiShareVariantOutline,
 		to: { name: 'team-home', params: { teamId: teamId.value } },
+		active: isTeamDeckRoute(route.name) && !boards.value.some((board) => String(board.id) === route.params.boardId),
 	})
 	return items
 })
@@ -538,6 +542,7 @@ async function onEntryDragEnd(): Promise<void> {
 				:name="entry.label"
 				:to="entry.to"
 				:href="entry.href"
+				:active="entry.active"
 				:editable="Boolean(entry.page) && isTeamAdmin"
 				:editLabel="t('circles', 'Rename page')"
 				:editPlaceholder="t('circles', 'Page name')"

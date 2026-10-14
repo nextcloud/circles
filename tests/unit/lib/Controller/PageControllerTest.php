@@ -12,6 +12,8 @@ use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Controller\PageController;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\TeamFolderPolicy;
+use OCA\Deck\Event\LoadBoardWebComponentEvent;
+use OCP\App\IAppManager;
 use OCP\AppFramework\Http\NotFoundResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
@@ -29,6 +31,7 @@ final class PageControllerTest extends TestCase {
 	private ITeamManager&MockObject $teamManager;
 	private TeamFolderPolicy&MockObject $teamFolderPolicy;
 	private IEventDispatcher&MockObject $eventDispatcher;
+	private IAppManager&MockObject $appManager;
 	private PageController $pageController;
 
 	#[\Override]
@@ -41,6 +44,7 @@ final class PageControllerTest extends TestCase {
 		$this->teamManager = $this->createMock(ITeamManager::class);
 		$this->teamFolderPolicy = $this->createMock(TeamFolderPolicy::class);
 		$this->eventDispatcher = $this->createMock(IEventDispatcher::class);
+		$this->appManager = $this->createMock(IAppManager::class);
 
 		$this->pageController = new PageController(
 			$this->request,
@@ -49,6 +53,7 @@ final class PageControllerTest extends TestCase {
 			$this->teamManager,
 			$this->teamFolderPolicy,
 			$this->eventDispatcher,
+			$this->appManager,
 		);
 	}
 
@@ -72,7 +77,7 @@ final class PageControllerTest extends TestCase {
 			->willReturn(true);
 
 		$provided = [];
-		$this->initialState->expects($this->exactly(2))
+		$this->initialState->expects($this->exactly(3))
 			->method('provideInitialState')
 			->willReturnCallback(function (string $key, mixed $value) use (&$provided): void {
 				$provided[$key] = $value;
@@ -85,6 +90,7 @@ final class PageControllerTest extends TestCase {
 		$this->assertSame('main', $result->getTemplateName());
 		$this->assertTrue($provided['teamFolderProviderAvailable']);
 		$this->assertTrue($provided['teamFolderProvisioningEnabled']);
+		$this->assertFalse($provided['deckEmbeddingAvailable']);
 	}
 
 	/**
@@ -106,7 +112,7 @@ final class PageControllerTest extends TestCase {
 			->willReturn(false);
 
 		$provided = [];
-		$this->initialState->expects($this->exactly(2))
+		$this->initialState->expects($this->exactly(3))
 			->method('provideInitialState')
 			->willReturnCallback(function (string $key, mixed $value) use (&$provided): void {
 				$provided[$key] = $value;
@@ -117,6 +123,7 @@ final class PageControllerTest extends TestCase {
 		$this->assertInstanceOf(TemplateResponse::class, $result);
 		$this->assertFalse($provided['teamFolderProviderAvailable']);
 		$this->assertFalse($provided['teamFolderProvisioningEnabled']);
+		$this->assertFalse($provided['deckEmbeddingAvailable']);
 	}
 
 	/**
@@ -135,9 +142,44 @@ final class PageControllerTest extends TestCase {
 			->method('getTeamFolderProvider');
 		$this->teamFolderPolicy->expects($this->never())
 			->method('isTeamFolderProvisioningEnabled');
+		$this->appManager->expects($this->never())->method('isEnabledForUser');
 
 		$result = $this->pageController->index();
 
 		$this->assertInstanceOf(NotFoundResponse::class, $result);
+	}
+
+	public function testLoadsDeckOnlyWhenEnabledAndSupported(): void {
+		$this->configService->method('getAppValueBool')->willReturn(true);
+		$this->appManager->expects($this->once())->method('isEnabledForUser')
+			->with('deck')->willReturn(true);
+		$provided = [];
+		$this->initialState->method('provideInitialState')
+			->willReturnCallback(static function (string $key, mixed $value) use (&$provided): void {
+				$provided[$key] = $value;
+			});
+		$events = [];
+		$this->eventDispatcher->method('dispatchTyped')
+			->willReturnCallback(static function (object $event) use (&$events): void {
+				$events[] = get_class($event);
+			});
+
+		$this->pageController->index();
+
+		$supported = class_exists(LoadBoardWebComponentEvent::class);
+		$this->assertSame($supported, $provided['deckEmbeddingAvailable']);
+		$this->assertSame($supported, in_array(LoadBoardWebComponentEvent::class, $events, true));
+	}
+
+	public function testDisabledDeckDoesNotDispatchItsLoadingEvent(): void {
+		$this->configService->method('getAppValueBool')->willReturn(true);
+		$this->appManager->expects($this->once())->method('isEnabledForUser')
+			->with('deck')->willReturn(false);
+		$this->eventDispatcher->method('dispatchTyped')
+			->willReturnCallback(function (object $event): void {
+				$this->assertNotSame(LoadBoardWebComponentEvent::class, get_class($event));
+			});
+
+		$this->pageController->index();
 	}
 }
