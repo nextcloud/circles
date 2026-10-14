@@ -15,6 +15,7 @@ use OCA\Circles\Service\TeamFolderPolicy;
 use OCP\AppFramework\Http\NotFoundResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
+use OCP\Collaboration\Reference\RenderReferenceEvent;
 use OCP\EventDispatcher\IEventDispatcher;
 use OCP\IRequest;
 use OCP\Teams\ITeamFolderProvider;
@@ -135,9 +136,23 @@ final class PageControllerTest extends TestCase {
 			->method('getTeamFolderProvider');
 		$this->teamFolderPolicy->expects($this->never())
 			->method('isTeamFolderProvisioningEnabled');
+		$this->eventDispatcher->expects($this->never())->method('dispatchTyped');
 
 		$result = $this->pageController->index();
 
 		$this->assertInstanceOf(NotFoundResponse::class, $result);
+	}
+
+	public function testLoadsReferenceWidgetsWithoutAnAppSpecificDependency(): void {
+		$this->configService->method('getAppValueBool')->willReturn(true);
+		$events = [];
+		$this->eventDispatcher->method('dispatchTyped')
+			->willReturnCallback(static function (object $event) use (&$events): void {
+				$events[] = get_class($event);
+			});
+
+		$this->pageController->index();
+
+		$this->assertContains(RenderReferenceEvent::class, $events);
 	}
 }

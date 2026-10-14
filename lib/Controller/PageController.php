@@ -20,6 +20,7 @@ use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\NotFoundResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
+use OCP\Collaboration\Reference\RenderReferenceEvent;
 use OCP\EventDispatcher\IEventDispatcher;
 use OCP\IRequest;
 use OCP\Teams\ITeamManager;
@@ -59,6 +60,8 @@ class PageController extends Controller {
 
 		Util::addScript(Application::APP_ID, 'teams-main');
 		Util::addStyle(Application::APP_ID, 'teams-main');
+
+		$this->eventDispatcher->dispatchTyped(new RenderReferenceEvent());
 
 		// Load the Text editor so team pages can be edited inline on their
 		// tabs. The class only resolves while the Text app is enabled.

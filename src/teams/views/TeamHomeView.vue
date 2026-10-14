@@ -16,6 +16,7 @@ import ListItem from '@nextcloud/vue/components/NcListItem'
 import NcLoadingIcon from '@nextcloud/vue/components/NcLoadingIcon'
 import FileDocumentOutline from 'vue-material-design-icons/FileDocumentOutline.vue'
 import ContentHeading from '../team-page/components/CircleDetails/ContentHeading.vue'
+import { teamResourceRoute } from '../resource.ts'
 import { useTeamResourcesStore } from '../resourcesStore.ts'
 
 const props = defineProps<{
@@ -107,7 +108,7 @@ const groupedResources = computed(() => {
 					<ListItem
 						v-for="resource in group.resources"
 						:key="resource.id"
-						:href="resource.url"
+						:to="teamResourceRoute(teamId, resource.provider.id, resource.id)"
 						:name="resource.label">
 						<template #icon>
 							<NcIconSvgWrapper
