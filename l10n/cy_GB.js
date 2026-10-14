@@ -109,6 +109,7 @@ OC.L10N.register(
     "Description" : "Disgrifiad",
     "Pending" : "I ddod",
     "Add to {team}" : "Ychwanegu at {team}",
+    "Favorites" : "Ffefrynnau",
     "Go back" : "Nôl",
     "Loading…" : "Yn llwytho…",
     "User" : "Defnyddwyr",

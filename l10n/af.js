@@ -38,6 +38,7 @@ OC.L10N.register(
     "Description" : "Beskrywing",
     "Pending" : "Hangend",
     "Add to {team}" : "Voeg by {team}",
+    "Favorites" : "Gunstelinge",
     "Go back" : "Gaan terug",
     "Join" : "Sluit aan",
     "Group folders" : "Groepvouers",

@@ -224,6 +224,7 @@ OC.L10N.register(
     "Add to {team}" : "Přidat do {team}",
     "Try again" : "Zkusit znovu",
     "Create your first team" : "Vytvořte svůj první tým",
+    "Favorites" : "Oblíbené",
     "No teams found" : "Nenalezeny žádné týmy",
     "Loading" : "Načítání",
     "Go back" : "Jít zpět",

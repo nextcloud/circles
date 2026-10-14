@@ -370,6 +370,7 @@ OC.L10N.register(
     "No teams yet" : "No teams yet",
     "Create your first team to start collaborating." : "Create your first team to start collaborating.",
     "Create your first team" : "Create your first team",
+    "Favorites" : "Favourites",
     "No teams found" : "No teams found",
     "Try a different search." : "Try a different search.",
     "You have joined the team {circleName}." : "You have joined the team {circleName}.",

@@ -26,6 +26,7 @@ OC.L10N.register(
     "Home" : "Početna stranica",
     "Description" : "Opis",
     "Pending" : "Na čekanju",
+    "Favorites" : "Favoriti",
     "User" : "User",
     "Email" : "E-pošta",
     "Users" : "Korisnici",
