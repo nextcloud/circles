@@ -190,6 +190,7 @@ OC.L10N.register(
     "Role" : "Rol",
     "Add to {team}" : "Afegeix a {team}",
     "Try again" : "Torneu-ho a provar",
+    "Favorites" : "Preferits",
     "No teams found" : "No s'ha trobat cap equip",
     "Loading" : "S'està carregant",
     "Go back" : "Torna",
