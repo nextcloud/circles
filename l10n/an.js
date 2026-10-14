@@ -20,6 +20,7 @@ OC.L10N.register(
     "Modified" : "Modificau",
     "Home" : "Casa",
     "Pending" : "Pendient",
+    "Favorites" : "Favoritos",
     "Group folders" : "Carpetas de grupo",
     "Loading…" : "Cargando...",
     "Email" : "Correu electronico",
