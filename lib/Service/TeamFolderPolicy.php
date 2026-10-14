@@ -134,10 +134,6 @@ class TeamFolderPolicy {
 	/** @return array<string, int> */
 	public function getGroupQuotas(): array {
 		$quotas = $this->appConfig->getAppValueArray(ConfigLexicon::TEAM_FOLDER_GROUP_QUOTAS, []);
-		if (!is_array($quotas)) {
-			return [];
-		}
-
 		return array_filter($quotas, static fn (mixed $quota): bool => is_int($quota) && $quota >= 0);
 	}
 
