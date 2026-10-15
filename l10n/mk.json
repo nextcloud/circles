@@ -120,7 +120,7 @@
     "%s shared a file with \"%s\"." : "%s сподели датотека со \"%s\".",
     "Open »%s«" : "Отвори »%s«",
     "%s shared multiple files with you." : "%s сподели неколку датотеки со тебе.",
-    "%s shared a file with you." : "%s сподели датотека со тебе.",
+    "%s shared a file with you." : "%s сподели датотека со вас.",
     "%s on %s" : "%s на %s",
     "%1$s shared %2$s with %3$s" : "%1$s сподели %2$s со %3$s",
     "%1$s shared %2$s with \"%3$s\"" : "%1$s сподели %2$s со \"%3$s\"",
