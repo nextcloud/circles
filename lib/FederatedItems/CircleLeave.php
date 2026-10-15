@@ -185,9 +185,10 @@ class CircleLeave implements
 				continue;
 			}
 
-			if ($member->getLevel() > $newOwner->getLevel()) {
+			$levelComparison = Member::compareLevels($member->getLevel(), $newOwner->getLevel());
+			if ($levelComparison > 0) {
 				$newOwner = $member;
-			} elseif ($member->getLevel() === $newOwner->getLevel()
+			} elseif ($levelComparison === 0
 					  && ($member->getJoined() < $newOwner->getJoined()
 						  || ($this->configService->isLocalInstance($member->getInstance())
 							  && !$this->configService->isLocalInstance($newOwner->getInstance()))

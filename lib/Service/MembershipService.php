@@ -158,6 +158,7 @@ class MembershipService {
 				continue;
 			}
 
+			// The effective role comes from this sub-team's parent-team role, not the user's role inside it.
 			$membership = new Membership($singleId, count($path) > 1 ? $path[1] : '', $member);
 			$membership->setInheritancePath(array_reverse($path))
 				->setInheritanceDepth(sizeof($path));
@@ -254,8 +255,9 @@ class MembershipService {
 	private function fillMemberships(Membership $membership, array &$memberships) {
 		foreach ($memberships as $known) {
 			if ($known->getCircleId() === $membership->getCircleId()) {
-				if ($known->getLevel() < $membership->getLevel()
-					|| ($known->getLevel() === $membership->getLevel()
+				$levelComparison = Member::compareLevels($known->getLevel(), $membership->getLevel());
+				if ($levelComparison < 0
+					|| ($levelComparison === 0
 						&& $known->getInheritanceDepth() > $membership->getInheritanceDepth())
 				) {
 					$known->setLevel($membership->getLevel());

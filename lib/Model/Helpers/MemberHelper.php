@@ -65,6 +65,8 @@ class MemberHelper {
 	}
 
 	/**
+	 * Rank-based: unlike CircleProbe::mustBeMember(), mustBeMember() here rejects Visitors.
+	 *
 	 * @param string $levelString
 	 * @param array $arguments
 	 *
@@ -95,7 +97,7 @@ class MemberHelper {
 			throw new MemberHelperException('method ' . $levelString . ' not found');
 		}
 
-		if ($this->member->getLevel() >= $level) {
+		if (Member::compareLevels($this->member->getLevel(), $level) >= 0) {
 			throw new MemberLevelException('Member cannot be ' . $levelString);
 		}
 	}
@@ -106,7 +108,7 @@ class MemberHelper {
 	 * @throws MemberLevelException
 	 */
 	public function mustHaveLevelAbove(int $level) {
-		if ($this->member->getLevel() <= $level) {
+		if (Member::compareLevels($this->member->getLevel(), $level) <= 0) {
 			throw new MemberLevelException('Insufficient rights');
 		}
 	}
@@ -117,7 +119,7 @@ class MemberHelper {
 	 * @throws MemberLevelException
 	 */
 	public function mustHaveLevelAboveOrEqual(int $level) {
-		if ($this->member->getLevel() < $level) {
+		if (Member::compareLevels($this->member->getLevel(), $level) < 0) {
 			throw new MemberLevelException('Insufficient rights');
 		}
 	}
@@ -128,7 +130,7 @@ class MemberHelper {
 	 * @throws MemberLevelException
 	 */
 	public function mustHaveLevelEqualOrAbove(int $level) {
-		if ($this->member->getLevel() < $level) {
+		if (Member::compareLevels($this->member->getLevel(), $level) < 0) {
 			throw new MemberLevelException('Insufficient rights');
 		}
 	}

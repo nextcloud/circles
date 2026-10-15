@@ -42,6 +42,10 @@ export default class Member {
 		return this._circle
 	}
 
+	get isLocal(): boolean {
+		return this._data.local === true
+	}
+
 	/**
 	 * Set the circle of this member
 	 */

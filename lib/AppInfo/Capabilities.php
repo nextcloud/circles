@@ -145,6 +145,7 @@ class Capabilities implements ICapability {
 	private function getCapabilitiesMemberConstants(): array {
 		return [
 			'level' => [
+				Member::LEVEL_VISITOR => $this->l10n->t('Visitor'),
 				Member::LEVEL_MEMBER => $this->l10n->t('Member'),
 				Member::LEVEL_MODERATOR => $this->l10n->t('Moderator'),
 				Member::LEVEL_ADMIN => $this->l10n->t('Admin'),

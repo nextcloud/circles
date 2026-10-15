@@ -20,6 +20,7 @@ use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\Service\SearchService;
 use OCA\Circles\Service\TeamFolderPolicy;
+use OCP\AppFramework\OCS\OCSException;
 use OCP\IRequest;
 use OCP\IUserManager;
 use OCP\IUserSession;
@@ -194,6 +195,26 @@ class AdminControllerTest extends TestCase {
 		$this->assertSame($result['circleId'], $circleData['id']);
 		$this->assertSame($result['userId'], self::TEST_USER_2);
 		$this->assertSame($result['level'], Member::LEVEL_MODERATOR);
+	}
+
+	public function testVisitorLevelRoundTripAndWrongTeamTarget(): void {
+		$first = $this->createCircle('visitor-team');
+		$second = $this->createCircle('other-team');
+		$this->circlesToCleanup[] = $first['id'];
+		$this->circlesToCleanup[] = $second['id'];
+
+		$member = $this->adminController->memberAdd(self::TEST_USER_1, $first['id'], self::TEST_USER_2, Member::TYPE_USER)->getData();
+		$visitor = $this->adminController->memberLevel(self::TEST_USER_1, $first['id'], $member['id'], Member::LEVEL_VISITOR)->getData();
+		$this->assertSame(Member::LEVEL_VISITOR, $visitor['level']);
+		$this->assertSame(Member::LEVEL_VISITOR, $this->container->get(MemberService::class)->getMemberById($member['id'], $first['id'])->getLevel());
+
+		try {
+			$this->adminController->memberLevel(self::TEST_USER_1, $second['id'], $member['id'], Member::LEVEL_ADMIN);
+			$this->fail('A target from a different team must be rejected');
+		} catch (OCSException $e) {
+		} catch (OCSException) {
+		}
+		$this->assertSame(Member::LEVEL_VISITOR, $this->container->get(MemberService::class)->getMemberById($member['id'], $first['id'])->getLevel());
 	}
 
 	public function testCircles(): void {

@@ -138,14 +138,12 @@ export default defineComponent({
 		const searchQueryDebounced = refDebounced(searchQuery, 500)
 
 		const searchRole = ref(null)
-		const roles = Object.entries(CIRCLES_MEMBER_LEVELS).map(([id, label]) => ({
-			id: Number(id),
-			label,
-		}))
-		roles.unshift({
-			id: Number(MemberLevels.NONE),
-			label: t('circles', 'Pending'),
-		})
+		const roles = [
+			{ id: MemberLevels.NONE, label: t('circles', 'Pending') },
+			// Keep this explicit; JavaScript sorts integer object keys numerically.
+			...[MemberLevels.VISITOR, MemberLevels.MEMBER, MemberLevels.MODERATOR, MemberLevels.ADMIN, MemberLevels.OWNER]
+				.map((id) => ({ id, label: CIRCLES_MEMBER_LEVELS[id] })),
+		]
 
 		return {
 			searchQuery,

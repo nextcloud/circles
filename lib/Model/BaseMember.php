@@ -20,6 +20,7 @@ use OCP\Server;
 class BaseMember implements JsonSerializable {
 	public const LEVEL_NONE = 0;
 	public const LEVEL_MEMBER = 1;
+	public const LEVEL_VISITOR = 2;
 	public const LEVEL_MODERATOR = 4;
 	public const LEVEL_ADMIN = 8;
 	public const LEVEL_OWNER = 9;
@@ -386,6 +387,7 @@ class BaseMember implements JsonSerializable {
 		return match ($this->getLevel()) {
 			self::LEVEL_NONE => 'Not a member',
 			self::LEVEL_MEMBER => 'Member',
+			self::LEVEL_VISITOR => 'Visitor',
 			self::LEVEL_MODERATOR => 'Moderator',
 			self::LEVEL_ADMIN => 'Admin',
 			self::LEVEL_OWNER => 'Owner',

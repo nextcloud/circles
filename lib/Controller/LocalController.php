@@ -154,9 +154,7 @@ class LocalController extends OCSController {
 			$this->setCurrentFederatedUser();
 
 			$memberUser = $this->permissionService->userMustBeMember($this->userSession->getUser()->getUID(), $circleId);
-			if (!$this->circleService->getCircle($circleId)->isConfig(Circle::CFG_FRIEND)) {
-				$this->permissionService->memberMustBeAtLeastModerator($memberUser);
-			}
+			$this->mustBeAllowedToAddMembers($memberUser, $circleId);
 
 			if ($type === Member::TYPE_CONTACT) {
 				$currentUser = $this->federatedUserService->getCurrentUser();
@@ -192,9 +190,7 @@ class LocalController extends OCSController {
 			$this->setCurrentFederatedUser();
 
 			$memberUser = $this->permissionService->userMustBeMember($this->userSession->getUser()->getUID(), $circleId);
-			if (!$this->circleService->getCircle($circleId)->isConfig(Circle::CFG_FRIEND)) {
-				$this->permissionService->memberMustBeAtLeastModerator($memberUser);
-			}
+			$this->mustBeAllowedToAddMembers($memberUser, $circleId);
 
 			$federatedUsers = [];
 			foreach ($members as $member) {
@@ -308,9 +304,7 @@ class LocalController extends OCSController {
 			$this->setCurrentFederatedUser();
 
 			$memberUser = $this->permissionService->userMustBeMember($this->userSession->getUser()->getUID(), $circleId);
-			if (!$this->circleService->getCircle($circleId)->isConfig(Circle::CFG_FRIEND)) {
-				$this->permissionService->memberMustBeAtLeastModerator($memberUser);
-			}
+			$this->mustBeAllowedToAddMembers($memberUser, $circleId);
 
 			$member = $this->memberService->getMemberById($memberId, $circleId);
 			$federatedUser = new FederatedUser();
@@ -709,6 +703,13 @@ class LocalController extends OCSController {
 		} catch (\Exception $e) {
 			$this->e($e, ['circleId' => $invitationCode]);
 			throw new OCSException($e->getMessage(), (int)$e->getCode(), $e);
+		}
+	}
+
+	private function mustBeAllowedToAddMembers(Member $memberUser, string $circleId): void {
+		if (!$this->circleService->getCircle($circleId)->isConfig(Circle::CFG_FRIEND)
+			|| $memberUser->getLevel() === Member::LEVEL_VISITOR) {
+			$this->permissionService->memberMustBeAtLeastModerator($memberUser);
 		}
 	}
 

@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OCA\Circles\FederatedItems;
 
 use OCA\Circles\Db\CircleRequest;
+use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\FederatedItemBadRequestException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\RequestBuilderException;
@@ -17,6 +18,7 @@ use OCA\Circles\IFederatedItem;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\PermissionService;
 use OCA\Circles\Tools\Traits\TDeserialize;
@@ -41,6 +43,7 @@ class CircleConfig implements
 		private CircleRequest $circleRequest,
 		private PermissionService $permissionService,
 		private ConfigService $configService,
+		private MemberRequest $memberRequest,
 	) {
 	}
 
@@ -119,6 +122,14 @@ class CircleConfig implements
 
 		if (!$confirmed || $config > Circle::$DEF_CFG_MAX) {
 			throw new FederatedItemBadRequestException('Configuration value is not valid');
+		}
+
+		if (!$circle->isConfig(Circle::CFG_FEDERATED)
+			&& $circle->isConfig(Circle::CFG_FEDERATED, $config)
+			&& $this->memberRequest->getMembers(
+				$circle->getSingleId(), limit: 1, role: Member::LEVEL_VISITOR
+			) !== []) {
+			throw new FederatedItemBadRequestException('Remove Visitor roles before enabling federation');
 		}
 
 		$new = clone $circle;

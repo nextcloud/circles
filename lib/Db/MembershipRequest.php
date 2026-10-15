@@ -119,6 +119,10 @@ class MembershipRequest extends MembershipRequestBuilder {
 		$qb->limitToCircleId($singleId);
 		$qb->leftJoinCircleConfig(self::TABLE_MEMBERSHIP);
 
+		if ($level === Member::LEVEL_VISITOR) {
+			// Member ranks above Visitor despite having a lower numeric value.
+			$level = Member::LEVEL_MEMBER;
+		}
 		if ($level > 1) {
 			$expr = $qb->expr();
 			$qb->andWhere($expr->gte('level', $qb->createNamedParameter($level, IQueryBuilder::PARAM_INT)));
@@ -137,6 +141,10 @@ class MembershipRequest extends MembershipRequestBuilder {
 		$qb = $this->getMembershipSelectSql();
 		$qb->limitToCircleId($singleId);
 
+		if ($level === Member::LEVEL_VISITOR) {
+			// Member ranks above Visitor despite having a lower numeric value.
+			$level = Member::LEVEL_MEMBER;
+		}
 		$expr = $qb->expr();
 		if ($level > 1) {
 			$qb->andWhere($expr->gte('level', $qb->createNamedParameter($level, IQueryBuilder::PARAM_INT)));
