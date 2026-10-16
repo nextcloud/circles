@@ -76,7 +76,7 @@ class CircleMountProvider implements IMountProvider, IPartialMountProvider {
 		foreach ($items as $item) {
 			try {
 				$this->fixDuplicateFile($user->getUID(), $item);
-				$mounts[] = $this->generateCircleMount($item, $loader);
+				$mounts[] = $this->generateCircleMount($item, $loader, $user);
 			} catch (\Exception $e) {
 				$this->logger->warning('issue with teams\' mounts', ['exception' => $e]);
 			}
@@ -89,7 +89,7 @@ class CircleMountProvider implements IMountProvider, IPartialMountProvider {
 	 * @throws InitiatorNotFoundException
 	 * @throws MountPointConstructionException
 	 */
-	public function generateCircleMount(Mount $mount, IStorageFactory $storageFactory): CircleMount {
+	public function generateCircleMount(Mount $mount, IStorageFactory $storageFactory, IUser $user): CircleMount {
 		$initiator = $mount->getInitiator();
 
 		// TODO: right now, limited to Local Nextcloud User
@@ -100,7 +100,8 @@ class CircleMountProvider implements IMountProvider, IPartialMountProvider {
 
 		$mount->setCloudIdManager($this->cloudIdManager)
 			->setHttpClientService($this->clientService)
-			->setExternalShareManager($this->externalShareManager);
+			->setExternalShareManager($this->externalShareManager)
+			->setRecipient($user);
 
 		return new CircleMount(
 			$mount,
@@ -157,7 +158,7 @@ class CircleMountProvider implements IMountProvider, IPartialMountProvider {
 
 	#[Override]
 	public function getMountsForPath(string $setupPathHint, bool $forChildren, array $mountProviderArgs, IStorageFactory $loader): array {
-		/** @var array<string, array{federatedUser: IFederatedUser, paths: string[]}> $userMountRequests */
+		/** @var array<string, array{federatedUser: IFederatedUser, user: IUser, paths: string[]}> $userMountRequests */
 		$userMountRequests = [];
 		/** @var array<string, IMountPoint> $mounts */
 		$mounts = [];
@@ -173,6 +174,7 @@ class CircleMountProvider implements IMountProvider, IPartialMountProvider {
 
 			$userMountRequests[$user->getUID()] ??= [
 				'federatedUser' => $this->federatedUserService->getLocalFederatedUser($user->getUID()),
+				'user' => $user,
 				'paths' => [],
 			];
 
@@ -193,7 +195,7 @@ class CircleMountProvider implements IMountProvider, IPartialMountProvider {
 				}
 				try {
 					$this->fixDuplicateFile($uid, $item);
-					$mounts[$mountPoint] = $this->generateCircleMount($item, $loader);
+					$mounts[$mountPoint] = $this->generateCircleMount($item, $loader, $userMountRequest['user']);
 				} catch (\Exception $e) {
 					$this->logger->error('Failed to create Teams mount', ['exception' => $e]);
 				}
