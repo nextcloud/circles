@@ -9,8 +9,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Entity;
 
-use DateTime;
-use DateTimeZone;
 use OCP\AppFramework\ORM\Attribute\Column;
 use OCP\AppFramework\ORM\Attribute\Entity as EntityAttribute;
 use OCP\AppFramework\ORM\Attribute\Id;
@@ -30,11 +28,4 @@ final class TeamFavorite {
 
 	#[Column(name: 'position', type: ColumnType::Integer)]
 	public int $position = 0;
-
-	#[Column(name: 'created', type: ColumnType::Datetime)]
-	public DateTime $created;
-
-	public function __construct() {
-		$this->created = new DateTime('now', new DateTimeZone('UTC'));
-	}
 }
