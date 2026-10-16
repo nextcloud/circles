@@ -73,7 +73,7 @@ class CircleMountProvider implements IMountProvider {
 		foreach ($items as $item) {
 			try {
 				$this->fixDuplicateFile($user->getUID(), $item);
-				$mounts[] = $this->generateCircleMount($item, $loader);
+				$mounts[] = $this->generateCircleMount($item, $loader, $user);
 			} catch (\Exception $e) {
 				$this->logger->warning('issue with teams\' mounts', ['exception' => $e]);
 			}
@@ -91,7 +91,7 @@ class CircleMountProvider implements IMountProvider {
 	 * @throws InitiatorNotFoundException
 	 * @throws MountPointConstructionException
 	 */
-	public function generateCircleMount(Mount $mount, IStorageFactory $storageFactory): CircleMount {
+	public function generateCircleMount(Mount $mount, IStorageFactory $storageFactory, IUser $user): CircleMount {
 		$initiator = $mount->getInitiator();
 
 		// TODO: right now, limited to Local Nextcloud User

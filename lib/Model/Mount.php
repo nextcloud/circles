@@ -19,6 +19,7 @@ use OCA\Circles\Tools\IDeserializable;
 use OCA\Circles\Tools\Traits\TArrayTools;
 use OCP\Federation\ICloudIdManager;
 use OCP\Http\Client\IClientService;
+use OCP\IUser;
 
 /**
  * Class Mount
@@ -323,6 +324,16 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 	 */
 	public function getMountManager(): CircleMountManager {
 		return $this->mountManager;
+	}
+
+	public function setRecipient(IUser $recipient): self {
+		$this->recipient = $recipient;
+
+		return $this;
+	}
+
+	public function getRecipient(): IUser {
+		return $this->recipient;
 	}
 
 	public function setRemote(string $remote): void {
