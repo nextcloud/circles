@@ -28,11 +28,12 @@ class ProviderParser {
 		array $params,
 		string $ownEvent,
 		string $othersEvent,
+		array $additionalData = [],
 	): void {
 		$data = [
 			'author' => $this->generateUserParameter($params['initiator'] ?? []),
 			'circle' => $this->generateCircleParameter($params['circle'])
-		];
+		] + $additionalData;
 
 		if ($this->isViewerTheAuthor($params['initiator'] ?? [], $this->activityManager->getCurrentUserId())) {
 			$this->setSubject($event, $ownEvent, $data);
@@ -263,6 +264,16 @@ class ProviderParser {
 			'id' => $group['userId'],
 			'name' => $group['userId'],
 			'_parsed' => $group['userId']
+		];
+	}
+
+	/** @return array<string, string> */
+	protected function generateHighlightParameter(string $value): array {
+		return [
+			'type' => 'highlight',
+			'id' => $value,
+			'name' => $value,
+			'_parsed' => $value,
 		];
 	}
 }

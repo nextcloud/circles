@@ -7,7 +7,7 @@
 import type { RouteLocationRaw } from 'vue-router'
 import type { TeamPage } from '../api.ts'
 
-import { mdiAccountMultiple, mdiAccountMultipleOutline, mdiArrowTopRight, mdiBookOpenPageVariantOutline, mdiCogOutline, mdiFileDocument, mdiFileDocumentOutline, mdiFolder, mdiFolderOutline, mdiFolderPlusOutline, mdiPlus, mdiShareVariant, mdiShareVariantOutline, mdiTextBoxPlusOutline, mdiTrashCanOutline, mdiViewDashboardOutline } from '@mdi/js'
+import { mdiAccountMultiple, mdiAccountMultipleOutline, mdiArrowTopRight, mdiBookOpenPageVariantOutline, mdiCogOutline, mdiFileDocument, mdiFileDocumentOutline, mdiFolder, mdiFolderOutline, mdiFolderPlusOutline, mdiHistory, mdiPlus, mdiShareVariant, mdiShareVariantOutline, mdiTextBoxPlusOutline, mdiTrashCanOutline, mdiViewDashboardOutline } from '@mdi/js'
 import { showConfirmation, showError, showSuccess } from '@nextcloud/dialogs'
 import { t } from '@nextcloud/l10n'
 import { computed, nextTick, ref } from 'vue'
@@ -65,6 +65,7 @@ const { canManage, isTeamAdmin } = useTeamActions(() => team.value)
 const settingsOpen = ref(false)
 
 const enabledApps = (window as unknown as { OC?: { appswebroots?: Record<string, unknown> } }).OC?.appswebroots ?? {}
+const activityAppEnabled = computed(() => enabledApps.activity !== undefined)
 
 // Per-team resource state (folder, resources, pages, order) lives in the
 // shared store, loaded by the team page (the owner of the team scope) and
@@ -158,6 +159,18 @@ const orderedEntries = computed<NavigationEntry[]>(() => {
 		.sort((a, b) => position.get(a.id)! - position.get(b.id)!)
 	const unknown = entries.value.filter((entry) => !position.has(entry.id))
 	return [...known, ...unknown]
+})
+
+const activityEntry = computed<NavigationEntry | null>(() => {
+	if (!activityAppEnabled.value) {
+		return null
+	}
+	return {
+		id: 'activity',
+		label: t('circles', 'Activity'),
+		icon: mdiHistory,
+		to: { name: 'team-activity', params: { teamId: teamId.value } },
+	}
 })
 
 // Reordering entries changes the team-level order, so team admins and above
@@ -611,6 +624,15 @@ async function onEntryDragEnd(): Promise<void> {
 		<template #footer>
 			<ul v-if="circle?.isMember" class="team-navigation__footer">
 				<NcActionSeparator />
+
+				<NcAppNavigationItem
+					v-if="activityEntry"
+					:name="activityEntry.label"
+					:to="activityEntry.to">
+					<template #icon>
+						<NcIconSvgWrapper :path="activityEntry.icon" :size="20" />
+					</template>
+				</NcAppNavigationItem>
 
 				<NcAppNavigationItem
 					:name="t('circles', 'Members')"

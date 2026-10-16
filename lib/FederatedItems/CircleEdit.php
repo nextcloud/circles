@@ -112,6 +112,7 @@ class CircleEdit implements IFederatedItem {
 		}
 
 		$this->circleRequest->edit($circle);
+		$event->setCircle($circle);
 		$this->memberRequest->updateDisplayName($circle->getSingleId(), $circle->getDisplayName());
 		$this->eventService->circleEditing($event);
 	}

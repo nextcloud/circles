@@ -40,6 +40,15 @@ class CircleRequest extends CircleRequestBuilder {
 		parent::__construct($timezoneService, $configService);
 	}
 
+	public function getActivityObjectId(string $singleId): int {
+		$qb = $this->getQueryBuilder();
+		$qb->select('id')
+			->from(self::TABLE_CIRCLE)
+			->where($qb->expr()->eq('unique_id', $qb->createNamedParameter($singleId)));
+
+		return (int)$qb->executeQuery()->fetchOne();
+	}
+
 	/**
 	 * @param Circle $circle
 	 *

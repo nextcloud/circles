@@ -30,6 +30,7 @@ use OCA\Circles\Events\MembershipsRemovedEvent;
 use OCA\Circles\Events\PreparingCircleMemberEvent;
 use OCA\Circles\Events\RemovingCircleMemberEvent;
 use OCA\Circles\Events\RequestingCircleMemberEvent;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Membership;
 use OCA\Circles\Model\Mount;
@@ -68,6 +69,13 @@ class EventService {
 	public function circleEditing(FederatedEvent $federatedEvent): void {
 		$event = new EditingCircleEvent($federatedEvent);
 		$this->eventDispatcher->dispatchTyped($event);
+		$change = match (true) {
+			$federatedEvent->getData()->hasKey('name') => 'name',
+			$federatedEvent->getData()->hasKey('displayName') => 'displayName',
+			$federatedEvent->getData()->hasKey('description') => 'description',
+			default => 'details',
+		};
+		$this->activityService->onCircleEdited($event->getCircle(), $change);
 	}
 
 	/**
@@ -95,6 +103,14 @@ class EventService {
 	public function circleDestroyed(FederatedEvent $federatedEvent, array $results): void {
 		$event = new CircleDestroyedEvent($federatedEvent, $results);
 		$this->eventDispatcher->dispatchTyped($event);
+	}
+
+	public function circleSettingChanged(Circle $circle, string $setting): void {
+		$this->activityService->onCircleSetting($circle, $setting);
+	}
+
+	public function circleConfigChanged(Circle $circle, int $previousConfig, int $newConfig): void {
+		$this->activityService->onCircleConfigChanged($circle, $previousConfig, $newConfig);
 	}
 
 	/**
