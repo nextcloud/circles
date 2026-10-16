@@ -24,7 +24,6 @@ import { logger } from '../../logger.ts'
 
 const props = defineProps<{
 	mountPoint: string
-	rootFolderId?: number
 	folderPath?: string
 }>()
 
@@ -37,7 +36,6 @@ const rootPath = defaultRootPath
 
 const currentPath = ref(props.folderPath ?? '')
 const nodes = ref<INode[]>([])
-const currentFolderFileId = ref<number | undefined>(props.rootFolderId)
 const loading = ref(false)
 const error = ref<string | null>(null)
 const viewMode = ref<'grid' | 'list'>('grid')
@@ -78,14 +76,10 @@ const currentDir = computed(() => currentPath.value
 /**
  * URL that opens the current folder in the Files app.
  *
- * The Files app accepts file id 0 when the target is a folder; the actual
- * folder path is taken from the `dir` query parameter.
+ * The Files app takes the directory from the `dir` query parameter alone; a
+ * file id would only select a node inside it, and a stale one overrides `dir`.
  */
-const currentFolderUrl = computed(() => {
-	const fileid = currentFolderFileId.value ?? 0
-	const url = generateUrl('/apps/files/files/{fileid}', { fileid })
-	return `${url}?dir=${encodeDir(currentDir.value)}`
-})
+const currentFolderUrl = computed(() => `${generateUrl('/apps/files/files')}?dir=${encodeDir(currentDir.value)}`)
 
 /**
  * Encode a directory path for a query parameter while keeping slashes readable.
@@ -294,7 +288,6 @@ async function loadContents(): Promise<void> {
 		const response = await client.getDirectoryContents(davPath, {
 			details: true,
 			data: getDefaultPropfind(),
-			includeSelf: true,
 		})
 		const data = Array.isArray(response) ? response : response.data
 
@@ -302,17 +295,7 @@ async function loadContents(): Promise<void> {
 			throw new Error('Invalid response from server')
 		}
 
-		// The first entry is the current directory itself. Use its file id
-		// for the "Open in Files" header button, because the GroupFolders
-		// folder id is not the same as the DAV file id.
-		const currentEntry = data[0]
-		if (currentEntry) {
-			const currentNode = resultToNode(currentEntry, rootPath)
-			currentFolderFileId.value = currentNode.fileid ?? props.rootFolderId
-		}
-
 		nodes.value = data
-			.slice(1)
 			.map((entry) => resultToNode(entry, rootPath))
 			.filter((node) => !isHiddenEntry(node))
 			.sort((a, b) => {
@@ -371,12 +354,11 @@ watch(() => [props.mountPoint, currentPath.value], loadContents, { immediate: tr
 				<NcButton
 					:href="currentFolderUrl"
 					variant="tertiary"
-					size="small"
-					:aria-label="t('circles', 'Open folder in Files')">
+					size="small">
 					<template #icon>
 						<NcIconSvgWrapper :path="mdiOpenInNew" :size="18" />
 					</template>
-					{{ t('circles', 'Files') }}
+					{{ t('circles', 'View in Files') }}
 				</NcButton>
 			</div>
 		</div>
