@@ -464,7 +464,7 @@ OC.L10N.register(
     "%1$s shared multiple files with you. You should have already received a separate email with a link to access them." : "%1$s delte flere filer med dig. Du burde allerede have modtaget en separat e-mail med et link til filerne.",
     "Password to access files shared to you by %1$s" : "Adgangskode for at få adgang til filer, der deles med dig af %1$s",
     "Password to access files" : "Adgangskode for at få adgang til filer",
-    "Circles App Initialization" : "Cirkler App Initialisering",
+    "Circles App Initialization" : "Initialisering af appen Teams",
     "Unable to update team folder quota for {team}" : "Team-mappens kvote for {team} kunne ikke opdateres",
     "Changed default team folder quota" : "Standardkvoten for team-mapper er ændret",
     "Open folder in Files" : "Åbn mappe i Filer"
