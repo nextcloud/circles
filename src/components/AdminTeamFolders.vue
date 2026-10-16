@@ -96,6 +96,7 @@ const updatingQuotaTeamIds = ref<Set<string>>(new Set())
 const loadingTeamFolders = ref(true)
 const sortKey = ref<TeamFolderSortKey>('teamName')
 const sortAscending = ref(true)
+const teamSearch = ref('')
 const selectedTeam = ref<AdminTeamFolder | null>(null)
 const folderName = ref('')
 const assigningFolder = ref(false)
@@ -120,17 +121,20 @@ const quotaRows = computed(() => [...rows.value, ...groupRows.value]
 
 const sortedTeamFolders = computed(() => {
 	const direction = sortAscending.value ? 1 : -1
-	return [...teamFolders.value].sort((a, b) => {
-		const left = getSortValue(a, sortKey.value)
-		const right = getSortValue(b, sortKey.value)
-		if (left < right) {
-			return -1 * direction
-		}
-		if (left > right) {
-			return direction
-		}
-		return 0
-	})
+	const query = teamSearch.value.trim().toLocaleLowerCase()
+	return teamFolders.value
+		.filter((teamFolder) => teamFolder.teamName.toLocaleLowerCase().includes(query))
+		.sort((a, b) => {
+			const left = getSortValue(a, sortKey.value)
+			const right = getSortValue(b, sortKey.value)
+			if (left < right) {
+				return -1 * direction
+			}
+			if (left > right) {
+				return direction
+			}
+			return 0
+		})
 })
 
 /**
@@ -528,33 +532,41 @@ onMounted(() => Promise.all([loadTeamFolders(), loadGroupQuotas()]))
 		<p class="team-folders__description">
 			{{ t('circles', 'Configure default storage quotas and manage team folders.') }}
 		</p>
-		<div class="team-folders__tabs" role="tablist" :aria-label="t('circles', 'Team folder settings')">
-			<button
-				id="team-folder-folders-tab"
-				type="button"
-				role="tab"
-				:aria-selected="activeTab === 'teamFolders'"
-				aria-controls="team-folder-folders-panel"
-				:tabindex="activeTab === 'teamFolders' ? 0 : -1"
-				:class="{ 'team-folders__tab--active': activeTab === 'teamFolders' }"
-				class="team-folders__tab"
-				@click="activeTab = 'teamFolders'"
-				@keydown="onTabKeydown">
-				{{ t('circles', 'Team folders') }}
-			</button>
-			<button
-				id="team-folder-default-quotas-tab"
-				type="button"
-				role="tab"
-				:aria-selected="activeTab === 'defaultQuotas'"
-				aria-controls="team-folder-default-quotas-panel"
-				:tabindex="activeTab === 'defaultQuotas' ? 0 : -1"
-				:class="{ 'team-folders__tab--active': activeTab === 'defaultQuotas' }"
-				class="team-folders__tab"
-				@click="activeTab = 'defaultQuotas'"
-				@keydown="onTabKeydown">
-				{{ t('circles', 'Default quotas') }}
-			</button>
+		<div class="team-folders__tabbar">
+			<div class="team-folders__tabs" role="tablist" :aria-label="t('circles', 'Team folder settings')">
+				<button
+					id="team-folder-folders-tab"
+					type="button"
+					role="tab"
+					:aria-selected="activeTab === 'teamFolders'"
+					aria-controls="team-folder-folders-panel"
+					:tabindex="activeTab === 'teamFolders' ? 0 : -1"
+					:class="{ 'team-folders__tab--active': activeTab === 'teamFolders' }"
+					class="team-folders__tab"
+					@click="activeTab = 'teamFolders'"
+					@keydown="onTabKeydown">
+					{{ t('circles', 'Team folders') }}
+				</button>
+				<button
+					id="team-folder-default-quotas-tab"
+					type="button"
+					role="tab"
+					:aria-selected="activeTab === 'defaultQuotas'"
+					aria-controls="team-folder-default-quotas-panel"
+					:tabindex="activeTab === 'defaultQuotas' ? 0 : -1"
+					:class="{ 'team-folders__tab--active': activeTab === 'defaultQuotas' }"
+					class="team-folders__tab"
+					@click="activeTab = 'defaultQuotas'"
+					@keydown="onTabKeydown">
+					{{ t('circles', 'Default quotas') }}
+				</button>
+			</div>
+			<NcTextField
+				v-if="activeTab === 'teamFolders'"
+				v-model="teamSearch"
+				:label="t('circles', 'Search team by name')"
+				type="search"
+				class="team-folders__search" />
 		</div>
 
 		<NcSettingsSection
@@ -694,7 +706,7 @@ onMounted(() => Promise.all([loadTeamFolders(), loadGroupQuotas()]))
 					<tbody>
 						<tr v-if="sortedTeamFolders.length === 0" class="team-folders__empty">
 							<td colspan="4">
-								{{ t('circles', 'No team folders found.') }}
+								{{ teamSearch.trim() ? t('circles', 'No teams match your search.') : t('circles', 'No teams found.') }}
 							</td>
 						</tr>
 						<tr v-for="teamFolder in sortedTeamFolders" v-else :key="teamFolder.teamId">
@@ -806,11 +818,19 @@ onMounted(() => Promise.all([loadTeamFolders(), loadGroupQuotas()]))
 	color: var(--color-text-maxcontrast);
 }
 
+.team-folders__tabbar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: 8px 16px;
+	margin-bottom: 24px;
+	border-bottom: 1px solid var(--color-border);
+}
+
 .team-folders__tabs {
 	display: flex;
 	gap: 24px;
-	margin-bottom: 24px;
-	border-bottom: 1px solid var(--color-border);
 }
 
 .team-folders__tab {
@@ -977,6 +997,11 @@ onMounted(() => Promise.all([loadTeamFolders(), loadGroupQuotas()]))
 	font-weight: 600;
 }
 
+.team-folders__search {
+	flex: 0 1 320px;
+	margin-bottom: 4px;
+}
+
 .team-folders__scroll {
 	overflow-x: auto;
 }
@@ -1077,6 +1102,12 @@ onMounted(() => Promise.all([loadTeamFolders(), loadGroupQuotas()]))
 @media (max-width: 700px) {
 	.team-folders__table {
 		min-width: 640px;
+	}
+}
+
+@media (max-width: 600px) {
+	.team-folders__search {
+		flex-basis: 100%;
 	}
 }
 </style>
