@@ -25,6 +25,8 @@ class ConfigLexicon implements ILexicon {
 	public const FEDERATED_TEAMS_FRONTAL = 'federated_teams_frontal';
 	public const TEAM_FOLDER_AUTO_CREATE = 'team_folder_auto_create';
 	public const TEAM_FOLDER_DEFAULT_QUOTA = 'team_folder_default_quota';
+	public const TEAM_FOLDER_GROUP_QUOTAS = 'team_folder_group_quotas';
+	public const DEFAULT_QUOTA = 104857600; // 104857600 bytes ~ 100 MB
 
 	// OIDC
 	public const OIDC_ENABLED = 'oidc_enabled';
@@ -56,7 +58,8 @@ class ConfigLexicon implements ILexicon {
 			new Entry(key: self::FEDERATED_TEAMS_ENABLED, type: ValueType::BOOL, defaultRaw: false, definition: 'disable/enable Federated Teams', lazy: true),
 			new Entry(key: self::FEDERATED_TEAMS_FRONTAL, type: ValueType::STRING, defaultRaw: '', definition: 'domain name used to auth public request', lazy: true),
 			new Entry(key: self::TEAM_FOLDER_AUTO_CREATE, type: ValueType::BOOL, defaultRaw: true, definition: 'whether Circles auto-creates team folders and allows UI/API upgrade (not exposed in admin UI)', lazy: true),
-			new Entry(key: self::TEAM_FOLDER_DEFAULT_QUOTA, type: ValueType::INT, defaultRaw: 0, definition: 'default quota in bytes for auto-created team folders (0 means unlimited)', lazy: true),
+			new Entry(key: self::TEAM_FOLDER_DEFAULT_QUOTA, type: ValueType::INT, defaultRaw: self::DEFAULT_QUOTA, definition: 'default quota in bytes for auto-created team folders (0 means unlimited)', lazy: true),
+			new Entry(key: self::TEAM_FOLDER_GROUP_QUOTAS, type: ValueType::ARRAY, defaultRaw: [], definition: 'quota overrides in bytes by Nextcloud group ID (0 means unlimited)', lazy: true),
 			// OIDC
 			new Entry(key: self::OIDC_ENABLED, type: ValueType::BOOL, defaultRaw: false, definition: 'disable/enable OIDC integration', lazy: true),
 			new Entry(key: self::OIDC_ISSUER, type: ValueType::STRING, defaultRaw: '', definition: 'provider issuer URL', lazy: true),
