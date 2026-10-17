@@ -109,6 +109,7 @@ OC.L10N.register(
     "Delete" : "Delete",
     "Actions" : "Acțiuni",
     "Connect" : "Conectare",
+    "_%n member_::_%n members_" : ["%n membru","%n membri","%n membri"],
     "Members" : "Membri",
     "Move up" : "Mută înainte",
     "Move down" : "Mută în jos",
