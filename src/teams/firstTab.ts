@@ -6,24 +6,25 @@
 import type { RouteLocationRaw } from 'vue-router'
 import type { TeamResources } from './resourcesStore.ts'
 
+import { teamDeckRoute } from './deck.ts'
+
 /**
  * Whether enough of a team's resource state is known to resolve the first
- * navigation entry: the tab order and the pages, the only order-dependent
- * entries with in-app routes.
+ * navigation entry: the tab order, pages, and team boards.
  *
  * @param resources - The team's resource state
  */
 export function firstTabSettled(resources: TeamResources): boolean {
 	const orderSettled = resources.orderChecked || resources.orderError
 	const pagesSettled = resources.pagesChecked || resources.pagesError || resources.folderError
-	return orderSettled && pagesSettled
+	return orderSettled && pagesSettled && resources.boardsChecked
 }
 
 /**
  * The route of the first entry in the team navigation, following the saved
  * tab order like the sidebar does; entries the order does not know keep
- * their natural order behind the known ones. External entries (collective,
- * boards) cannot be a landing page and are skipped.
+ * their natural order behind the known ones. The external collective entry
+ * cannot be a landing page and is skipped.
  *
  * @param teamId - The team whose navigation is resolved
  * @param resources - The team's resource state
@@ -31,6 +32,9 @@ export function firstTabSettled(resources: TeamResources): boolean {
 export function firstTabRoute(teamId: string, resources: TeamResources): RouteLocationRaw {
 	const targets = new Map<string, RouteLocationRaw>()
 	targets.set('team-folder', { name: 'team-folder', params: { teamId } })
+	for (const board of resources.boards) {
+		targets.set(`board-${board.id}`, teamDeckRoute(teamId, board.id))
+	}
 	for (const page of resources.pages) {
 		targets.set(`page-${page.fileId}`, { name: 'team-page', params: { teamId, fileId: String(page.fileId) } })
 	}

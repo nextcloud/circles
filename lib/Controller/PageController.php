@@ -12,7 +12,9 @@ namespace OCA\Circles\Controller;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\TeamFolderPolicy;
+use OCA\Deck\Event\LoadBoardWebComponentEvent;
 use OCA\Text\Event\LoadEditor;
+use OCP\App\IAppManager;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Attribute\FrontpageRoute;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
@@ -36,6 +38,7 @@ class PageController extends Controller {
 		private ITeamManager $teamManager,
 		private TeamFolderPolicy $teamFolderPolicy,
 		private IEventDispatcher $eventDispatcher,
+		private IAppManager $appManager,
 	) {
 		parent::__construct(Application::APP_ID, $request);
 	}
@@ -59,6 +62,13 @@ class PageController extends Controller {
 
 		Util::addScript(Application::APP_ID, 'teams-main');
 		Util::addStyle(Application::APP_ID, 'teams-main');
+
+		$deckEmbeddingAvailable = $this->appManager->isEnabledForUser('deck')
+			&& class_exists(LoadBoardWebComponentEvent::class);
+		$this->initialState->provideInitialState('deckEmbeddingAvailable', $deckEmbeddingAvailable);
+		if ($deckEmbeddingAvailable) {
+			$this->eventDispatcher->dispatchTyped(new LoadBoardWebComponentEvent());
+		}
 
 		// Load the Text editor so team pages can be edited inline on their
 		// tabs. The class only resolves while the Text app is enabled.
