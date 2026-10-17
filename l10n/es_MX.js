@@ -140,6 +140,7 @@ OC.L10N.register(
     "Actions" : "Acciones",
     "Reconnect" : "Reconectar",
     "Connect" : "Conectar",
+    "_%n member_::_%n members_" : ["%n miembro","%n miembros","%n miembros"],
     "Members" : "Miembros",
     "Move up" : "Mover arriba",
     "Move down" : "Mover abajo",
