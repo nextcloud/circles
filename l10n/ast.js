@@ -139,6 +139,7 @@ OC.L10N.register(
     "Reconnect" : "Volver conectar",
     "Connect" : "Coneutar",
     "Join" : "Xunise",
+    "_%n member_::_%n members_" : ["%n miembru","%n miembros"],
     "Members" : "Miembros",
     "Move up" : "Xubir",
     "Move down" : "Baxar",
