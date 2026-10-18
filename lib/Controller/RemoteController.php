@@ -11,33 +11,20 @@ namespace OCA\Circles\Controller;
 
 use Exception;
 use OC\AppFramework\Middleware\Security\Exceptions\NotLoggedInException;
-use OCA\Circles\ConfigLexicon;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\FederatedEventException;
-use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserException;
-use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\JsonNotRequestedException;
 use OCA\Circles\Exceptions\UnknownInterfaceException;
-use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\RemoteInstance;
-use OCA\Circles\Model\FederatedUser;
-use OCA\Circles\Model\Member;
-use OCA\Circles\Model\Probes\BasicProbe;
-use OCA\Circles\Model\Probes\CircleProbe;
-use OCA\Circles\Service\CircleService;
-use OCA\Circles\Service\ConfigService;
-use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\InterfaceService;
-use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\MembershipService;
-use OCA\Circles\Service\RemoteDownstreamService;
+use OCA\Circles\Service\RemoteEndpointService;
 use OCA\Circles\Service\RemoteStreamService;
 use OCA\Circles\Tools\Exceptions\InvalidItemException;
 use OCA\Circles\Tools\Exceptions\InvalidOriginException;
 use OCA\Circles\Tools\Exceptions\InvalidRemoteInstanceException;
-use OCA\Circles\Tools\Exceptions\ItemNotFoundException;
 use OCA\Circles\Tools\Exceptions\MalformedArrayException;
 use OCA\Circles\Tools\Exceptions\SignatoryException;
 use OCA\Circles\Tools\Exceptions\SignatureException;
@@ -51,7 +38,6 @@ use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\Attribute\PublicPage;
 use OCP\AppFramework\Http\DataResponse;
-use OCP\AppFramework\Services\IAppConfig;
 use OCP\IRequest;
 use OCP\IUserSession;
 
@@ -68,15 +54,10 @@ class RemoteController extends Controller {
 		string $appName,
 		IRequest $request,
 		private readonly CircleRequest $circleRequest,
-		private readonly IAppConfig $appConfig,
 		private readonly RemoteStreamService $remoteStreamService,
-		private readonly RemoteDownstreamService $remoteDownstreamService,
-		private readonly FederatedUserService $federatedUserService,
-		private readonly CircleService $circleService,
-		private readonly MemberService $memberService,
+		private readonly RemoteEndpointService $remoteEndpointService,
 		private readonly MembershipService $membershipService,
 		private readonly InterfaceService $interfaceService,
-		private readonly ConfigService $configService,
 		private readonly IUserSession $userSession,
 	) {
 		parent::__construct($appName, $request);
@@ -119,17 +100,15 @@ class RemoteController extends Controller {
 		try {
 			$event = $this->extractEventFromRequest();
 		} catch (Exception $e) {
-			return $this->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
+			return $this->remoteEndpointService->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
 		}
 
 		try {
-			$this->remoteDownstreamService->requestedEvent($event);
-
-			return new DataResponse($event->getOutcome());
+			return new DataResponse($this->remoteEndpointService->requestedEvent($event));
 		} catch (Exception $e) {
 			$this->e($e, ['event' => $event->getWrapperToken()]);
 
-			return $this->exceptionResponse($e);
+			return $this->remoteEndpointService->exceptionResponse($e);
 		}
 	}
 
@@ -145,15 +124,13 @@ class RemoteController extends Controller {
 		} catch (Exception $e) {
 			$this->e($e);
 
-			return $this->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
+			return $this->remoteEndpointService->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
 		}
 
 		try {
-			$this->remoteDownstreamService->incomingEvent($event);
-
-			return new DataResponse($this->serialize($event->getResult()));
+			return new DataResponse($this->remoteEndpointService->incomingEvent($event));
 		} catch (Exception $e) {
-			return $this->exceptionResponse($e);
+			return $this->remoteEndpointService->exceptionResponse($e);
 		}
 	}
 
@@ -172,7 +149,7 @@ class RemoteController extends Controller {
 		} catch (Exception $e) {
 			$this->e($e);
 
-			return $this->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
+			return $this->remoteEndpointService->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
 		}
 	}
 
@@ -186,25 +163,13 @@ class RemoteController extends Controller {
 		try {
 			$data = $this->extractDataFromFromRequest();
 		} catch (Exception $e) {
-			return $this->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
+			return $this->remoteEndpointService->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
 		}
 
 		try {
-			/** @var Circle $filterCircle */
-			$filterCircle = $data->gObj('filterCircle');
-			/** @var Member $filterMember */
-			$filterMember = $data->gObj('filterMember');
-
-			$probe = new CircleProbe();
-			$probe->setFilterCircle($filterCircle)
-				->setFilterMember($filterMember)
-				->addDetail(BasicProbe::DETAILS_POPULATION);
-
-			$circles = $this->circleService->getCircles($probe);
-
-			return new DataResponse($circles);
+			return new DataResponse($this->remoteEndpointService->getCircles($data));
 		} catch (Exception $e) {
-			return $this->exceptionResponse($e);
+			return $this->remoteEndpointService->exceptionResponse($e);
 		}
 	}
 
@@ -220,15 +185,13 @@ class RemoteController extends Controller {
 		try {
 			$this->extractDataFromFromRequest();
 		} catch (Exception $e) {
-			return $this->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
+			return $this->remoteEndpointService->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
 		}
 
 		try {
-			$circle = $this->circleService->getCircle($circleId);
-
-			return new DataResponse($this->serialize($circle));
+			return new DataResponse($this->remoteEndpointService->getCircle($circleId));
 		} catch (Exception $e) {
-			return $this->exceptionResponse($e);
+			return $this->remoteEndpointService->exceptionResponse($e);
 		}
 	}
 
@@ -244,15 +207,13 @@ class RemoteController extends Controller {
 		try {
 			$this->extractDataFromFromRequest();
 		} catch (Exception $e) {
-			return $this->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
+			return $this->remoteEndpointService->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
 		}
 
 		try {
-			$members = $this->memberService->getMembers($circleId, true);
-
-			return new DataResponse($members);
+			return new DataResponse($this->remoteEndpointService->getMembers($circleId));
 		} catch (Exception $e) {
-			return $this->exceptionResponse($e);
+			return $this->remoteEndpointService->exceptionResponse($e);
 		}
 	}
 
@@ -273,24 +234,13 @@ class RemoteController extends Controller {
 		} catch (Exception $e) {
 			$this->e($e);
 
-			return $this->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
+			return $this->remoteEndpointService->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
 		}
 
 		try {
-			// FILTER CIRCLE BASED ON THE CONFIG/FEDERATED_8192 !!
-			if ($type === Member::$TYPE[Member::TYPE_SINGLE]) {
-				$federatedUser = $this->federatedUserService->getFederatedUser($userId, Member::TYPE_SINGLE);
-			} elseif ($type === Member::$TYPE[Member::TYPE_CIRCLE]) {
-				$federatedUser = $this->federatedUserService->getFederatedUser($userId, Member::TYPE_CIRCLE);
-			} elseif ($type === Member::$TYPE[Member::TYPE_USER]) {
-				$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId);
-			} else {
-				throw new FederatedUserNotFoundException('Entity not found');
-			}
-
-			return new DataResponse($this->serialize($federatedUser));
+			return new DataResponse($this->remoteEndpointService->getFederatedUser($type, $userId));
 		} catch (Exception $e) {
-			return $this->exceptionResponse($e);
+			return $this->remoteEndpointService->exceptionResponse($e);
 		}
 	}
 
@@ -306,15 +256,13 @@ class RemoteController extends Controller {
 		try {
 			$this->extractDataFromFromRequest();
 		} catch (Exception $e) {
-			return $this->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
+			return $this->remoteEndpointService->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
 		}
 
 		try {
-			$circle = $this->circleService->getCircle($circleId);
-
-			return new DataResponse($circle->getInheritedMembers());
+			return new DataResponse($this->remoteEndpointService->getInheritedMembers($circleId));
 		} catch (Exception $e) {
-			return $this->exceptionResponse($e);
+			return $this->remoteEndpointService->exceptionResponse($e);
 		}
 	}
 
@@ -330,15 +278,13 @@ class RemoteController extends Controller {
 		try {
 			$this->extractDataFromFromRequest();
 		} catch (Exception $e) {
-			return $this->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
+			return $this->remoteEndpointService->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
 		}
 
 		try {
-			$circle = $this->circleService->getCircle($circleId);
-
-			return new DataResponse($circle->getMemberships());
+			return new DataResponse($this->remoteEndpointService->getMemberships($circleId));
 		} catch (Exception $e) {
-			return $this->exceptionResponse($e);
+			return $this->remoteEndpointService->exceptionResponse($e);
 		}
 	}
 
@@ -354,21 +300,12 @@ class RemoteController extends Controller {
 	 */
 	private function extractEventFromRequest(): FederatedEvent {
 		// will throw exception if instance is not configured for this event.
-		$this->interfaceService->setCurrentInterfaceFromRequest($this->request);
-		$iface = $this->interfaceService->getCurrentInterface();
-		if ($iface === InterfaceService::IFACE_FRONTAL
-			&& !$this->appConfig->getAppValueBool(ConfigLexicon::FEDERATED_TEAMS_ENABLED)) {
-			throw new FederatedEventException('frontal interface is not enabled');
-		}
+		$this->remoteEndpointService->confirmEventInterface($this->request);
 
 		$signed = $this->remoteStreamService->incomingSignedRequest();
 		$this->confirmRemoteInstance($signed);
 
-		$event = new FederatedEvent();
-		$event->import(json_decode($signed->getBody(), true));
-		$event->setSender($signed->getOrigin());
-
-		return $event;
+		return $this->remoteEndpointService->importEvent(json_decode($signed->getBody(), true), $signed->getOrigin());
 	}
 
 	/**
@@ -385,39 +322,7 @@ class RemoteController extends Controller {
 		$signed = $this->remoteStreamService->incomingSignedRequest();
 		$remoteInstance = $this->confirmRemoteInstance($signed);
 
-		// There should be no need to confirm the need or the origin of the initiator as $remoteInstance
-		// already helps filtering request to the database.
-		// initiator here is only used to play with the visibility, on top of the visibility provided to
-		// the remote instance based on its type.
-		$this->federatedUserService->setRemoteInstance($remoteInstance);
-
-		$data = new SimpleDataStore();
-		$store = new SimpleDataStore(json_decode($signed->getBody(), true));
-		try {
-			/** @var FederatedUser $initiator */
-			$initiator = $store->gObj('initiator', FederatedUser::class);
-			if ($initiator->getInstance() !== $remoteInstance->getInstance() && !in_array($initiator->getInstance(), $remoteInstance->getAliases(), true)) {
-				throw new InvalidRemoteInstanceException('Initiator instance does not match remote instance');
-			}
-			$this->federatedUserService->setCurrentUser($initiator);
-		} catch (InvalidItemException|ItemNotFoundException) {
-		}
-
-		try {
-			/** @var FederatedUser $initiator */
-			$filterMember = $store->gObj('filterMember', Member::class);
-			$data->aObj('filterMember', $filterMember);
-		} catch (InvalidItemException|ItemNotFoundException) {
-		}
-
-		try {
-			/** @var FederatedUser $initiator */
-			$filterCircle = $store->gObj('filterCircle', Circle::class);
-			$data->aObj('filterCircle', $filterCircle);
-		} catch (InvalidItemException|ItemNotFoundException) {
-		}
-
-		return $data;
+		return $this->remoteEndpointService->prepareDataRequest($remoteInstance, json_decode($signed->getBody(), true));
 	}
 
 	/**
@@ -427,46 +332,11 @@ class RemoteController extends Controller {
 	 * @throws SignatoryException
 	 */
 	private function confirmRemoteInstance(NCSignedRequest $signedRequest): RemoteInstance {
-		/** @var RemoteInstance $signatory */
 		$signatory = $signedRequest->getSignatory();
 
-		if (!$signatory instanceof RemoteInstance) {
-			$this->debug('Signatory is not a known RemoteInstance', ['signedRequest' => $signedRequest]);
-			throw new SignatoryException('Could not confirm identity');
-		}
-
-		if (!$this->configService->isLocalInstance($signedRequest->getOrigin())
-			&& $signatory->getType() === RemoteInstance::TYPE_UNKNOWN) {
-			$this->debug('Could not confirm identity', ['signedRequest' => $signedRequest]);
-			throw new SignatoryException('Could not confirm identity');
-		}
-
-		$this->interfaceService->setCurrentInterface($signatory->getInterface());
-
-		return $signatory;
-	}
-
-	/**
-	 * @param Exception $e
-	 * @param int $httpErrorCode
-	 *
-	 * @return DataResponse
-	 */
-	public function exceptionResponse(
-		Exception $e,
-		int $httpErrorCode = Http::STATUS_BAD_REQUEST,
-	): DataResponse {
-		if ($e instanceof FederatedItemException) {
-			return new DataResponse($this->serialize($e), $e->getStatus());
-		}
-
-		$errorCode = (int)$e->getCode();
-		return new DataResponse(
-			[
-				'message' => $e->getMessage(),
-				'code' => $e->getCode()
-			],
-			($errorCode > 0) ? $errorCode : $httpErrorCode
+		return $this->remoteEndpointService->confirmRemoteInstance(
+			($signatory instanceof RemoteInstance) ? $signatory : null,
+			$signedRequest->getOrigin()
 		);
 	}
 

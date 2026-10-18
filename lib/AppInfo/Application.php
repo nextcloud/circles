@@ -41,6 +41,8 @@ use OCA\Circles\Listeners\GroupMemberAdded;
 use OCA\Circles\Listeners\GroupMemberRemoved;
 use OCA\Circles\Listeners\NodeEventListener;
 use OCA\Circles\Listeners\Notifications\RequestingMember as ListenerNotificationsRequestingMember;
+use OCA\Circles\Listeners\OcmDiscoveryListener;
+use OCA\Circles\Listeners\OcmEndpointRequestListener;
 use OCA\Circles\Listeners\TeamFolderLifecycleListener;
 use OCA\Circles\Listeners\UserCreated;
 use OCA\Circles\Listeners\UserDeleted;
@@ -68,6 +70,8 @@ use OCP\Group\Events\UserRemovedEvent;
 use OCP\INavigationManager;
 use OCP\IURLGenerator;
 use OCP\L10N\IFactory;
+use OCP\OCM\Events\LocalOCMDiscoveryEvent;
+use OCP\OCM\Events\OCMEndpointRequestEvent;
 use OCP\Share\IManager as IShareManager;
 use OCP\User\Events\UserChangedEvent;
 use OCP\User\Events\UserCreatedEvent;
@@ -89,6 +93,7 @@ class Application extends App implements IBootstrap {
 	public const APP_SUBJECT = 'http://nextcloud.com/';
 	public const APP_REL = 'https://apps.nextcloud.com/apps/circles';
 	public const APP_API = '1';
+	public const OCM_CAPABILITY = 'circles-v1';
 
 	public const CLIENT_TIMEOUT = 3;
 
@@ -141,6 +146,8 @@ class Application extends App implements IBootstrap {
 
 		$context->registerSearchProvider(UnifiedSearchProvider::class);
 		$context->registerWellKnownHandler(WebfingerHandler::class);
+		$context->registerEventListener(LocalOCMDiscoveryEvent::class, OcmDiscoveryListener::class);
+		$context->registerEventListener(OCMEndpointRequestEvent::class, OcmEndpointRequestListener::class);
 
 		$context->registerDashboardWidget(TeamDashboardWidget::class);
 		$context->registerTeamResourceProvider(FileSharingTeamResourceProvider::class);
