@@ -147,6 +147,7 @@ OC.L10N.register(
     "Reconnect" : "Torna a connectar",
     "Connect" : "Connecta",
     "Join" : "Uneix-te",
+    "_%n member_::_%n members_" : ["{n} membre","{n} membres"],
     "Members" : "Membres",
     "Move up" : "Mou amunt",
     "Move down" : "Mou avall",
