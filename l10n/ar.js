@@ -150,6 +150,7 @@ OC.L10N.register(
     "Reconnect" : "أعد الاتصال",
     "Connect" : "اتصال",
     "Join" : "إنضم",
+    "_%n member_::_%n members_" : ["%n عضواً","%n عضواً","%n عضواً","%n عضواً","%n عضواً","%n عضواً"],
     "Members" : "الاعضاء",
     "Move up" : "نقلٌ للأعلي",
     "Move down" : "نقلٌ للأسفل",
