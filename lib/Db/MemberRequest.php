@@ -432,6 +432,25 @@ class MemberRequest extends MemberRequestBuilder {
 
 
 	/**
+	 * @param list<string> $singleIds
+	 *
+	 * @return list<Member>
+	 * @throws RequestBuilderException
+	 */
+	public function getMembersBySingleIds(array $singleIds): array {
+		$members = [];
+		foreach (array_chunk(array_values(array_unique($singleIds)), 1000) as $chunk) {
+			$qb = $this->getMemberSelectSql();
+			$qb->leftJoinCircle(CoreQueryBuilder::MEMBER);
+			$qb->limitInArray('single_id', $chunk);
+
+			array_push($members, ...$this->getItemsFromRequest($qb));
+		}
+
+		return $members;
+	}
+
+	/**
 	 * @param string $singleId
 	 *
 	 * @return Member[]
