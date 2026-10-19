@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OCA\Circles\FederatedItems;
 
 use OC\User\NoUserException;
+use OCA\Circles\AuditLog\Operation;
 use OCA\Circles\ConfigLexicon;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
@@ -42,6 +43,7 @@ use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Model\ManagedModel;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Service\AuditLogService;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\EventService;
@@ -85,6 +87,7 @@ class SingleMemberAdd implements
 		protected EventService $eventService,
 		protected ConfigService $configService,
 		protected MaintenanceService $maintenanceService,
+		protected AuditLogService $auditLogService,
 	) {
 	}
 
@@ -137,6 +140,27 @@ class SingleMemberAdd implements
 		}
 
 		$this->membershipService->updatePopulation($event->getCircle());
+
+		$this->logMemberAdded($event->getCircle(), $member);
+	}
+
+	protected function logMemberAdded(Circle $circle, Member $member): void {
+		$parameters = $this->auditLogService->getMemberParameters($member) + [
+			'circleId' => $circle->getSingleId(),
+			'name' => $this->auditLogService->getTeamName($circle),
+		];
+
+		if ($member->getStatus() === Member::STATUS_INVITED) {
+			$this->auditLogService->logTeamChange($circle, Operation::MemberInvited, 'Member "%s" (%s, member %s) was invited to team %s ("%s") by "%s"', $parameters + [
+				'initiator' => $this->auditLogService->getInitiator($circle),
+			]);
+			return;
+		}
+
+		$this->auditLogService->logTeamChange($circle, Operation::MemberAdded, 'Member "%s" (%s, member %s) was added to team %s ("%s") as %s by "%s"', $parameters + [
+			'level' => $this->auditLogService->getLevelName($member->getLevel()),
+			'initiator' => $this->auditLogService->getInitiator($circle),
+		]);
 	}
 
 	/**

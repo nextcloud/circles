@@ -78,6 +78,23 @@ class AuditLogService {
 		return $this->configService->displayFederatedUser($user);
 	}
 
+	/**
+	 * Parameters identifying a member, for messages starting with `Member "%s" (%s, member %s)`
+	 *
+	 * @return array{userId: ?string, memberType: string, memberId: string}
+	 */
+	public function getMemberParameters(Member $member): array {
+		return [
+			'userId' => $this->getUserId($member),
+			'memberType' => Member::$TYPE[$member->getUserType()] ?? (string)$member->getUserType(),
+			'memberId' => $member->getId(),
+		];
+	}
+
+	public function getLevelName(int $level): string {
+		return Member::$DEF_LEVEL[$level] ?? (string)$level;
+	}
+
 	public function getTeamName(Circle $circle): string {
 		return $circle->getDisplayName() !== '' ? $circle->getDisplayName() : $circle->getName();
 	}
