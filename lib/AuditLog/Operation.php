@@ -35,6 +35,7 @@ enum Operation: string {
 	case RemoteInstanceRemoved = 'circles.remote_instance.removed';
 	case ScimInstanceAdded = 'circles.scim_instance.added';
 	case ScimInstanceRemoved = 'circles.scim_instance.removed';
+	case ConfigUpdated = 'circles.config.updated';
 
 	/**
 	 * Short description of when the operation is logged, used for the documentation
@@ -60,6 +61,7 @@ enum Operation: string {
 			self::RemoteInstanceRemoved => 'A remote instance for federated teams was removed',
 			self::ScimInstanceAdded => 'A remote instance was allowed to add members to teams managed by SCIM',
 			self::ScimInstanceRemoved => 'A remote instance was no longer allowed to add members to teams managed by SCIM, removing the members it added',
+			self::ConfigUpdated => 'An admin setting of Teams (federated teams, frontal address, team folder quotas) was changed',
 		};
 	}
 }
