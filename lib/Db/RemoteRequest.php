@@ -242,10 +242,11 @@ class RemoteRequest extends RemoteRequestBuilder {
 	/**
 	 * @param RemoteInstance $remoteInstance
 	 */
-	public function deleteInstance(string $host) {
+	public function deleteInstance(string $host): int {
 		$qb = $this->getRemoteDeleteSql();
 		$qb->limitToInstance($host);
-		$qb->executeStatement();
+
+		return $qb->executeStatement();
 	}
 
 	/**
