@@ -135,6 +135,7 @@ OC.L10N.register(
     "Size" : "Mărime",
     "Modified" : "Modificat",
     "Unknown date" : "Dată necunoscută",
+    "Home" : "Acasă",
     "Board name" : "Nume panou",
     "Please select a valid png or jpg file" : "Selectează un fișier png sau jpg valid",
     "name" : "nume",
