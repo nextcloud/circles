@@ -189,6 +189,7 @@ OC.L10N.register(
     "Loading …" : "S'està carregant ...",
     "No results" : "Sense resultats",
     "Add {type}" : "Afegeix {type}",
+    "Remove member" : "Suprimeix el membre",
     "Role" : "Rol",
     "Add to {team}" : "Afegeix a {team}",
     "Try again" : "Torneu-ho a provar",
