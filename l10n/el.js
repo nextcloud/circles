@@ -174,6 +174,7 @@ OC.L10N.register(
     "Reconnect" : "Επανασύνδεση",
     "Connect" : "Σύνδεση",
     "Join" : "Συμμετοχή",
+    "_%n member_::_%n members_" : ["%n μέλος","%n μέλη"],
     "Members" : "Μέλη",
     "Move up" : "Μετακίνηση επάνω",
     "Move down" : "Μετακίνηση κάτω",

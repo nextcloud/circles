@@ -209,6 +209,7 @@ OC.L10N.register(
     "Reconnect" : "Reconnect",
     "Connect" : "Connect",
     "Join" : "Join",
+    "_%n member_::_%n members_" : ["%n member","%n members"],
     "Members" : "Members",
     "Move up" : "Move up",
     "Move down" : "Move down",
