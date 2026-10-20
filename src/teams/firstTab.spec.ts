@@ -19,12 +19,15 @@ function resources(overrides: Partial<TeamResources> = {}): TeamResources {
 		resourcesChecked: true,
 		boards: [],
 		boardsChecked: true,
+		boardsError: false,
 		pages: [],
 		pagesChecked: true,
 		pagesError: false,
 		tabOrder: [],
 		orderChecked: true,
 		orderError: false,
+		favorites: [],
+		favoritesChecked: true,
 		...overrides,
 	}
 }
