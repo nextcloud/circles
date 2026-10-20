@@ -19,6 +19,7 @@ use OCA\Circles\Tools\Traits\TArrayTools;
 use OCA\Files_Sharing\External\Manager as ExternalShareManager;
 use OCP\Federation\ICloudIdManager;
 use OCP\Http\Client\IClientService;
+use OCP\IUser;
 
 /**
  * Class Mount
@@ -43,6 +44,7 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 	private ICloudIdManager $cloudIdManager;
 	private IClientService $httpClientService;
 	private ExternalShareManager $externalShareManager;
+	private IUser $recipient;
 	private string $remote = '';
 	private int $remoteShareId = 0;
 
@@ -316,6 +318,16 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 		return $this->externalShareManager;
 	}
 
+	public function setRecipient(IUser $recipient): self {
+		$this->recipient = $recipient;
+
+		return $this;
+	}
+
+	public function getRecipient(): IUser {
+		return $this->recipient;
+	}
+
 	public function setRemote(string $remote): void {
 		$this->remote = $remote;
 	}
@@ -346,6 +358,7 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 			'mountpoint' => $this->getMountPoint(false),
 			'HttpClientService' => $this->getHttpClientService(),
 			'manager' => $this->getExternalShareManager(),
+			'recipient' => $this->getRecipient(),
 			'cloudId' => $this->getCloudIdManager()->getCloudId(
 				$member->getUserId(),
 				$member->getRemoteInstance()->getRoot()
