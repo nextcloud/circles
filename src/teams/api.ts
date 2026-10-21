@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import type { DiscoverableTeam, Member, MemberCandidate, Resource, SharedResource, Team, TeamRole } from './types.ts'
+import type { DiscoverableTeam, Member, MemberCandidate, Resource, SharedResource, Team, TeamDashboardLayout, TeamDashboardResult, TeamDashboardWidget, TeamRole } from './types.ts'
 
 import axios from '@nextcloud/axios'
 import { FileType } from '@nextcloud/files'
@@ -588,6 +588,59 @@ export async function saveTabOrder(teamId: string, order: string[]): Promise<voi
 export async function fetchTeamResources(teamId: string): Promise<SharedResource[]> {
 	const res = await axios.get<OcsResponse<{ resources: SharedResource[] }>>(generateOcsUrl('teams/{teamId}/resources', { teamId }))
 	return res.data.ocs.data.resources ?? []
+}
+
+/**
+ *
+ * @param teamId - Team scope for widget discovery
+ * @param signal - Cancels requests when the view changes
+ */
+export async function fetchTeamDashboardWidgets(teamId: string, signal?: AbortSignal): Promise<TeamDashboardWidget[]> {
+	const response = await axios.get<OcsResponse<Record<string, TeamDashboardWidget>>>(
+		generateOcsUrl('apps/dashboard/api/v1/teams/{teamId}/widgets', { teamId }),
+		{ signal },
+	)
+	return Object.values(response.data.ocs.data ?? {})
+}
+
+/**
+ *
+ * @param teamId - Team scope for the content
+ * @param widgetId - Registered team-aware widget
+ * @param signal - Cancels requests when the view changes
+ */
+export async function fetchTeamDashboardItems(teamId: string, widgetId: string, signal?: AbortSignal): Promise<TeamDashboardResult> {
+	const response = await axios.get<OcsResponse<Record<string, TeamDashboardResult>>>(
+		generateOcsUrl('apps/dashboard/api/v1/teams/{teamId}/widget-items', { teamId }),
+		{ signal, params: { widgets: [widgetId], limit: 7 } },
+	)
+	return response.data.ocs.data?.[widgetId] ?? { status: 'error' }
+}
+
+/**
+ * @param teamId - Team whose shared selection is requested
+ * @param signal - Cancels requests on team changes
+ */
+export async function fetchTeamDashboardLayout(teamId: string, signal?: AbortSignal): Promise<TeamDashboardLayout> {
+	const response = await axios.get<OcsResponse<TeamDashboardLayout>>(
+		generateOcsUrl('apps/circles/teams/{teamId}/dashboard/layout', { teamId }),
+		{ signal },
+	)
+	return response.data.ocs.data
+}
+
+/**
+ * @param teamId - Team whose shared selection is updated
+ * @param widgetIds - Explicit selection, or null to restore automatic defaults
+ * @param signal - Cancels requests on team changes
+ */
+export async function saveTeamDashboardLayout(teamId: string, widgetIds: string[] | null, signal?: AbortSignal): Promise<TeamDashboardLayout> {
+	const response = await axios.put<OcsResponse<TeamDashboardLayout>>(
+		generateOcsUrl('apps/circles/teams/{teamId}/dashboard/layout', { teamId }),
+		{ widgetIds },
+		{ signal },
+	)
+	return response.data.ocs.data
 }
 
 /**

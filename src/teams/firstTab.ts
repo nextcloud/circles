@@ -30,6 +30,7 @@ export function firstTabSettled(resources: TeamResources): boolean {
  */
 export function firstTabRoute(teamId: string, resources: TeamResources): RouteLocationRaw {
 	const targets = new Map<string, RouteLocationRaw>()
+	targets.set('overview', { name: 'team-overview', params: { teamId } })
 	targets.set('team-folder', { name: 'team-folder', params: { teamId } })
 	for (const page of resources.pages) {
 		targets.set(`page-${page.fileId}`, { name: 'team-page', params: { teamId, fileId: String(page.fileId) } })

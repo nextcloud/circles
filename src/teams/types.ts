@@ -3,6 +3,40 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
+export interface TeamDashboardWidget {
+	id: string
+	title: string
+	order: number
+	icon_url: string
+	icon_class: string
+	item_icons_round: boolean
+}
+
+export interface TeamDashboardLayout {
+	widgetIds: string[] | null
+	canEdit: boolean
+}
+
+export interface TeamDashboardItem {
+	title: string
+	subtitle: string
+	link: string
+	iconUrl: string
+	overlayIconUrl: string
+	sinceId: string
+}
+
+export interface TeamDashboardItems {
+	items: TeamDashboardItem[]
+	emptyContentMessage: string
+	halfEmptyContentMessage: string
+}
+
+export type TeamDashboardResult
+	= | { status: 'ok', data: TeamDashboardItems }
+		| { status: 'unavailable' }
+		| { status: 'error' }
+
 /** Permission level inside a team, derived from the circles member level. */
 export type TeamRole = 'owner' | 'admin' | 'moderator' | 'member'
 
