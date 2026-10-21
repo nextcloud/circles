@@ -180,6 +180,8 @@ OC.L10N.register(
     "Board name" : "Име на табла",
     "Please select a valid png or jpg file" : "Изберете png или jpg датотека",
     "description" : "опис",
+    "Choose from Nextcloud Files" : "Избери од датотеките",
+    "Delete picture" : "Избриши слика",
     "Description" : "Опис",
     "Password protection" : "Заштитено со лозинка",
     "Apply" : "Примени",
