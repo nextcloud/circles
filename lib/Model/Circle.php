@@ -95,6 +95,7 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 
 	// settings array keys
 	public const SETTING_EXTERNAL_ID = 'external_id';
+	public const SETTING_TEAM_FOLDER_QUOTA = 'team_folder_quota';
 
 	/**
 	 * Note: When editing those values, update lib/Application/Capabilities.php

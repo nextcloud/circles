@@ -15,6 +15,7 @@ use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\OCSController;
 use OCP\AppFramework\Services\IAppConfig;
+use OCP\IGroupManager;
 use OCP\IRequest;
 
 class SettingsController extends OCSController {
@@ -22,6 +23,7 @@ class SettingsController extends OCSController {
 		string $appName,
 		IRequest $request,
 		private readonly IAppConfig $appConfig,
+		private readonly IGroupManager $groupManager,
 	) {
 		parent::__construct($appName, $request);
 	}
@@ -49,6 +51,16 @@ class SettingsController extends OCSController {
 			return $this->getValues();
 		}
 
+		if ($key === ConfigLexicon::TEAM_FOLDER_GROUP_QUOTAS) {
+			$quotas = json_decode($value, true);
+			if (!is_array($quotas) || !$this->areValidGroupQuotas($quotas)) {
+				return new DataResponse(['data' => ['message' => 'group quotas must be a mapping of group IDs to non-negative integers']], Http::STATUS_BAD_REQUEST);
+			}
+
+			$this->appConfig->setAppValueArray(ConfigLexicon::TEAM_FOLDER_GROUP_QUOTAS, $quotas);
+			return $this->getValues();
+		}
+
 		return new DataResponse(['data' => ['message' => 'unsupported key']], Http::STATUS_BAD_REQUEST);
 	}
 
@@ -57,7 +69,29 @@ class SettingsController extends OCSController {
 			ConfigLexicon::FEDERATED_TEAMS_FRONTAL => $this->getFrontalValue() ?? '',
 			ConfigLexicon::FEDERATED_TEAMS_ENABLED => $this->appConfig->getAppValueBool(ConfigLexicon::FEDERATED_TEAMS_ENABLED),
 			ConfigLexicon::TEAM_FOLDER_DEFAULT_QUOTA => $this->appConfig->getAppValueInt(ConfigLexicon::TEAM_FOLDER_DEFAULT_QUOTA, 0),
+			ConfigLexicon::TEAM_FOLDER_GROUP_QUOTAS => $this->appConfig->getAppValueArray(ConfigLexicon::TEAM_FOLDER_GROUP_QUOTAS, []),
 		]);
+	}
+
+	public function getGroups(string $search = ''): DataResponse {
+		return new DataResponse(array_map(
+			static fn (\OCP\IGroup $group): array => [
+				'id' => $group->getGID(),
+				'label' => $group->getDisplayName(),
+			],
+			$this->groupManager->search($search, 100),
+		));
+	}
+
+	/** @param array<mixed> $quotas */
+	private function areValidGroupQuotas(array $quotas): bool {
+		foreach ($quotas as $groupId => $quota) {
+			if (!is_string($groupId) || $groupId === '' || !is_int($quota) || $quota < 0) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	private function setFrontalValue(string $url): bool {

@@ -11,6 +11,7 @@ namespace OCA\Circles\Settings;
 
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\ConfigLexicon;
+use OCA\Circles\Service\TeamFolderPolicy;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
 use OCP\IAppConfig;
@@ -26,6 +27,7 @@ class AdminTeamFolders implements IDelegatedSettings {
 		private IAppConfig $appConfig,
 		private IL10N $l,
 		private IInitialState $initialState,
+		private TeamFolderPolicy $teamFolderPolicy,
 	) {
 	}
 
@@ -36,6 +38,10 @@ class AdminTeamFolders implements IDelegatedSettings {
 		$teamFolderDefaultQuota = $this->appConfig->getValueInt(Application::APP_ID, ConfigLexicon::TEAM_FOLDER_DEFAULT_QUOTA, 0);
 
 		$this->initialState->provideInitialState('teamFolderDefaultQuota', $teamFolderDefaultQuota);
+		$this->initialState->provideInitialState(
+			'teamFolderProvisioningEnabled',
+			$this->teamFolderPolicy->isTeamFolderProvisioningEnabled(),
+		);
 
 		Util::addStyle(Application::APP_ID, 'teams-settings-team-folders');
 		Util::addScript(Application::APP_ID, 'teams-settings-team-folders');
