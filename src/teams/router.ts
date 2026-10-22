@@ -15,6 +15,7 @@ import TeamHomeView from './views/TeamHomeView.vue'
 import TeamLandingView from './views/TeamLandingView.vue'
 import TeamMembersView from './views/TeamMembersView.vue'
 import TeamPage from './views/TeamPage.vue'
+import TeamResourceView from './views/TeamResourceView.vue'
 
 const routes: RouteRecordRaw[] = [
 	{
@@ -42,6 +43,12 @@ const routes: RouteRecordRaw[] = [
 				name: 'team',
 				path: '',
 				component: TeamLandingView,
+				props: true,
+			},
+			{
+				name: 'team-resource',
+				path: 'resource/:providerId/:resourceId',
+				component: TeamResourceView,
 				props: true,
 			},
 			{
