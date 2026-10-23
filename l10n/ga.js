@@ -468,8 +468,6 @@ OC.L10N.register(
     "Password to access files shared to you by %1$s" : "Pasfhocal chun rochtain a fháil ar chomhaid arna roinnt leat le %1$s",
     "Password to access files" : "Pasfhocal chun comhaid a rochtain",
     "Circles App Initialization" : "Ciorcail Aip Tosaigh",
-    "Unable to update team folder quota for {team}" : "Ní féidir cuóta fillteán foirne a nuashonrú do {team}",
-    "Changed default team folder quota" : "Athraíodh cuóta fillteán foirne réamhshocraithe",
     "Open folder in Files" : "Oscail fillteán i gComhaid",
     "Anyone can request membership" : "Is féidir le duine ar bith ballraíocht a iarraidh"
 },

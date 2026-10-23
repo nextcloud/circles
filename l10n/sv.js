@@ -468,8 +468,6 @@ OC.L10N.register(
     "Password to access files shared to you by %1$s" : "Lösenord för åtkomst till filer delade med dig av %1$s",
     "Password to access files" : "Lösenord för åtkomst till filer",
     "Circles App Initialization" : "Initiering av Circles-appen",
-    "Unable to update team folder quota for {team}" : "Det gick inte att uppdatera teammappens kvot för {team}",
-    "Changed default team folder quota" : "Standardkvoten för teammappar ändrades",
     "Open folder in Files" : "Öppna mappen i Filer",
     "Anyone can request membership" : "Vem som helst kan begära medlemskap"
 },

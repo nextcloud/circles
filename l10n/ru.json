@@ -466,8 +466,6 @@
     "Password to access files shared to you by %1$s" : "Пароль к файлам, которыми с вами поделился(ась) %1$s",
     "Password to access files" : "Пароль для доступа к файлам",
     "Circles App Initialization" : "Инициализация приложения «Команды»",
-    "Unable to update team folder quota for {team}" : "Не удалось изменить квоту командной папки {team}",
-    "Changed default team folder quota" : "Квота командных папок по умолчанию изменена",
     "Open folder in Files" : "Открыть папку в «Файлах»",
     "Anyone can request membership" : "Любой может подать заявку на вступление"
 },"pluralForm" :"nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);"
