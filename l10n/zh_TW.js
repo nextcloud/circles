@@ -468,8 +468,6 @@ OC.L10N.register(
     "Password to access files shared to you by %1$s" : "%1$s 與您分享的檔案密碼",
     "Password to access files" : "存取檔案的密碼",
     "Circles App Initialization" : "初始化小圈圈應用程式",
-    "Unable to update team folder quota for {team}" : "無法更新 {team} 的團隊資料夾配額",
-    "Changed default team folder quota" : "已變更預設的團隊資料夾配額",
     "Open folder in Files" : "在 Files 中開啟資料夾",
     "Anyone can request membership" : "任何人都可以請求成員資格"
 },

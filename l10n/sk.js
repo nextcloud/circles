@@ -468,8 +468,6 @@ OC.L10N.register(
     "Password to access files shared to you by %1$s" : "Heslo pre prístup k súborom, ktoré s vami zdieľa %1$s",
     "Password to access files" : "Heslo pre prístup k súborom",
     "Circles App Initialization" : "Inicializácia Aplikácie Kruhy",
-    "Unable to update team folder quota for {team}" : "Nie je možné aktualizovať kvótu tímového priečinka pre {team}",
-    "Changed default team folder quota" : "Predvolená kvóta tímového priečinka bola zmenená",
     "Open folder in Files" : "Otvoriť priečinok v Súboroch",
     "Anyone can request membership" : "O členstvo môže požiadať ktokoľvek"
 },

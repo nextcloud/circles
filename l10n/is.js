@@ -446,8 +446,6 @@ OC.L10N.register(
     "Password to access files shared to you by %1$s" : "Lykilorði fyrir aðgang að skránum var deilt með þér af %1$s",
     "Password to access files" : "Lykilorð fyrir aðgang að skrám",
     "Circles App Initialization" : "Frumstilling Circles forrits",
-    "Unable to update team folder quota for {team}" : "Tókst ekki að uppfæra kvóta fyrir teymismöppu hjá {team}",
-    "Changed default team folder quota" : "Breytti sjálfgefnum kvóta fyrir teymismöppu",
     "Open folder in Files" : "Opna möppu í skráaforritinu",
     "Anyone can request membership" : "Hver sem er getur beðið um að verða meðlimur"
 },

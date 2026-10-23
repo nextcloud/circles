@@ -445,8 +445,6 @@ OC.L10N.register(
     "Password to access files shared to you by %1$s" : "Kata sandi untuk mengakses file yang dibagikan kepada Anda oleh %1$s",
     "Password to access files" : "Kata sandi untuk mengakses file",
     "Circles App Initialization" : "Inisialisasi Aplikasi Circles",
-    "Unable to update team folder quota for {team}" : "Tidak dapat memperbarui kuota folder tim untuk {team}",
-    "Changed default team folder quota" : "Kuota folder tim default telah diubah",
     "Open folder in Files" : "Buka folder di Berkas",
     "Anyone can request membership" : "Siapa pun dapat mengajukan permintaan keanggotaan"
 },

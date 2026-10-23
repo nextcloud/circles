@@ -468,8 +468,6 @@ OC.L10N.register(
     "Password to access files shared to you by %1$s" : "Passwort für den Zugriff auf die von %1$s für dich freigegebenen Dateien",
     "Password to access files" : "Passwort für den Dateizugriff",
     "Circles App Initialization" : "Kreise-App-Initialisierung",
-    "Unable to update team folder quota for {team}" : "Team-Ordnerkontingent für {team} kann nicht aktualisiert werden",
-    "Changed default team folder quota" : "Standard-Team-Ordnerkontingent geändert",
     "Open folder in Files" : "Ordner in Dateien öffnen",
     "Anyone can request membership" : "Jeder kann eine Mitgliedschaft beantragen"
 },

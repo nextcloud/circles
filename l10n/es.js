@@ -304,8 +304,6 @@ OC.L10N.register(
     "Password to access files shared to you by %1$s" : "Contraseña para acceder a los archivos compartidos contigo por %1$s",
     "Password to access files" : "Contraseña para acceder a los archivos",
     "Circles App Initialization" : "Inicialización de la app Circles",
-    "Unable to update team folder quota for {team}" : "No se ha podido actualizar la cuota de la carpeta de equipo para {team}",
-    "Changed default team folder quota" : "Cuota por defecto para carpetas de equipo cambiada",
     "Open folder in Files" : "Abrir carpeta en Archivos"
 },
 "nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");
