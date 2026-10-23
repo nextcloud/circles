@@ -7,10 +7,10 @@
 import type { RouteLocationRaw } from 'vue-router'
 import type { TeamPage } from '../api.ts'
 
-import { mdiAccountMultiple, mdiAccountMultipleOutline, mdiArrowTopRight, mdiBookOpenPageVariantOutline, mdiCogOutline, mdiFileDocument, mdiFileDocumentOutline, mdiFolder, mdiFolderOutline, mdiFolderPlusOutline, mdiPlus, mdiShareVariant, mdiShareVariantOutline, mdiTextBoxPlusOutline, mdiTrashCanOutline, mdiViewDashboardOutline } from '@mdi/js'
+import { mdiAccountMultiple, mdiAccountMultipleOutline, mdiArrowTopRight, mdiBookOpenPageVariantOutline, mdiCogOutline, mdiFileDocument, mdiFileDocumentOutline, mdiFolder, mdiFolderOutline, mdiFolderPlusOutline, mdiPencilOutline, mdiPlus, mdiShareVariant, mdiShareVariantOutline, mdiStar, mdiStarOutline, mdiTextBoxPlusOutline, mdiTrashCanOutline, mdiViewDashboardOutline } from '@mdi/js'
 import { showConfirmation, showError, showSuccess } from '@nextcloud/dialogs'
 import { t } from '@nextcloud/l10n'
-import { computed, nextTick, ref } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import NcActionButton from '@nextcloud/vue/components/NcActionButton'
@@ -46,6 +46,8 @@ interface NavigationEntry {
 	/** Set for page entries, which carry per-entry actions. */
 	page?: TeamPage
 }
+
+type Section = 'favorites' | 'team'
 
 const route = useRoute()
 const router = useRouter()
@@ -98,9 +100,11 @@ const newPageInput = ref<{ focus?: () => void } | null>(null)
 // Team-level entry order, shared by all members and shown in the saved
 // sequence; entries the order does not know yet (e.g. new pages) go last.
 const entryOrder = computed(() => teamResources.value.tabOrder)
-// While a drag is in progress the entries follow this order live.
+// While a drag is in progress the entries of the dragged section follow
+// this order live.
 const dragOrder = ref<string[] | null>(null)
 const draggedId = ref<string | null>(null)
+const dragSection = ref<Section | null>(null)
 
 const entries = computed<NavigationEntry[]>(() => {
 	const items: NavigationEntry[] = [
@@ -148,7 +152,7 @@ const entries = computed<NavigationEntry[]>(() => {
 
 /** The entries in team-level order (live order while a drag is in progress). */
 const orderedEntries = computed<NavigationEntry[]>(() => {
-	const order = dragOrder.value ?? entryOrder.value
+	const order = (dragSection.value === 'team' && dragOrder.value) || entryOrder.value
 	if (order.length === 0) {
 		return entries.value
 	}
@@ -160,9 +164,90 @@ const orderedEntries = computed<NavigationEntry[]>(() => {
 	return [...known, ...unknown]
 })
 
+// The current user's favorites, shown in their own order above the team
+// entries; favorite ids without a matching entry are skipped.
+const favoriteIds = computed(() => new Set(teamResources.value.favorites))
+const favoriteEntries = computed<NavigationEntry[]>(() => {
+	const byId = new Map(entries.value.map((entry) => [entry.id, entry]))
+	const order = (dragSection.value === 'favorites' && dragOrder.value) || teamResources.value.favorites
+	return order
+		.map((id) => byId.get(id))
+		.filter((entry): entry is NavigationEntry => entry !== undefined)
+})
+const teamEntries = computed(() => orderedEntries.value.filter((entry) => !favoriteIds.value.has(entry.id)))
+
+const sections = computed(() => [
+	...(favoriteEntries.value.length > 0 ? [{ id: 'favorites' as const, entries: favoriteEntries.value }] : []),
+	{ id: 'team' as const, entries: teamEntries.value },
+])
+
 // Reordering entries changes the team-level order, so team admins and above
 // only — the server enforces the same level on the save endpoint.
 const canReorder = computed(() => isTeamAdmin.value)
+const canEditFavorites = computed(() => Boolean(circle.value?.isMember) && teamResources.value.favoritesChecked)
+
+// Only a fully, successfully loaded entry list proves a favorite is gone.
+const entriesSettled = computed(() => {
+	const slot = teamResources.value
+	return slot.folderChecked && !slot.folderError
+		&& slot.resourcesChecked
+		&& slot.boardsChecked && !slot.boardsError
+		&& slot.pagesChecked && !slot.pagesError
+})
+
+// Not watching the favorites themselves: a failed save rolls them back and would retry in a loop.
+watch([entriesSettled, entries, canEditFavorites], async () => {
+	if (!entriesSettled.value || !canEditFavorites.value || dragSection.value) {
+		return
+	}
+	const known = new Set(entries.value.map((entry) => entry.id))
+	const favorites = teamResources.value.favorites
+	const kept = favorites.filter((id) => known.has(id))
+	if (kept.length === favorites.length) {
+		return
+	}
+	try {
+		await resourcesStore.saveFavorites(teamId.value, kept)
+	} catch (error) {
+		logger.warn('Could not remove stale favorites', { error, teamId: teamId.value })
+	}
+}, { immediate: true })
+
+/**
+ * Whether entries of a section can be dragged by the current user.
+ *
+ * @param section - The section the entry is shown in
+ */
+function canDrag(section: Section): boolean {
+	return section === 'team' ? canReorder.value : canEditFavorites.value
+}
+
+/**
+ * Whether the entry can be added to or removed from the favorites.
+ *
+ * @param entry - The navigation entry
+ */
+function canFavorite(entry: NavigationEntry): boolean {
+	return canEditFavorites.value && entry.id !== 'home'
+}
+
+/**
+ * Add the entry to the end of the favorites, or remove it from them.
+ *
+ * @param entry - The navigation entry
+ */
+async function toggleFavorite(entry: NavigationEntry): Promise<void> {
+	const favorites = teamResources.value.favorites
+	const updated = favoriteIds.value.has(entry.id)
+		? favorites.filter((id) => id !== entry.id)
+		: [...favorites, entry.id]
+	try {
+		await resourcesStore.saveFavorites(teamId.value, updated)
+	} catch (error) {
+		logger.error('Could not update the favorites', { error, teamId: teamId.value })
+		showError(t('circles', 'Could not update the favorites'))
+	}
+}
 
 const showTeamFolderOption = computed(() => teamFolderChecked.value
 	&& teamFolder.value === null && canCreateTeamFolder(circle.value))
@@ -336,6 +421,33 @@ async function onCreatePage(name: string): Promise<void> {
 	}
 }
 
+// The item's built-in `editable` action always renders first and would take
+// the inline slot from the favorite star, so the menu starts editing instead.
+const navigationItems = new Map<string, { handleEdit?: () => void }>()
+
+/**
+ * Track the rendered navigation item of an entry.
+ *
+ * @param id - The entry id
+ * @param item - The component instance, or null on unmount
+ */
+function setNavigationItem(id: string, item: unknown): void {
+	if (item) {
+		navigationItems.set(id, item as { handleEdit?: () => void })
+	} else {
+		navigationItems.delete(id)
+	}
+}
+
+/**
+ * Open the inline rename form of an entry.
+ *
+ * @param entry - The page entry to rename
+ */
+function startRenaming(entry: NavigationEntry): void {
+	navigationItems.get(entry.id)?.handleEdit?.()
+}
+
 /**
  * Rename a team page from its entry's inline edit form. The file id is
  * stable across the move, so the entry and route survive the rename.
@@ -402,17 +514,22 @@ async function onDeletePage(page: TeamPage): Promise<void> {
 }
 
 /**
- * Start dragging an entry (admins and above only).
+ * Start dragging an entry within its section.
  *
  * @param entry - The dragged entry
+ * @param section - The section the entry is shown in
  * @param event - The dragstart event
  */
-function onEntryDragStart(entry: NavigationEntry, event: DragEvent): void {
-	if (!canReorder.value) {
+function onEntryDragStart(entry: NavigationEntry, section: Section, event: DragEvent): void {
+	if (!canDrag(section)) {
 		return
 	}
+	// The full lists, so entries hidden from the section keep their place.
+	dragOrder.value = section === 'team'
+		? orderedEntries.value.map((item) => item.id)
+		: [...teamResources.value.favorites]
+	dragSection.value = section
 	draggedId.value = entry.id
-	dragOrder.value = orderedEntries.value.map((item) => item.id)
 	if (event.dataTransfer) {
 		event.dataTransfer.effectAllowed = 'move'
 		// Firefox refuses to start a drag without data
@@ -441,11 +558,12 @@ function onListDragOver(event: DragEvent): void {
  * Reorder live while the dragged entry hovers another entry.
  *
  * @param entry - The hovered entry
+ * @param section - The section the hovered entry is shown in
  * @param event - The dragover event
  */
-function onEntryDragOver(entry: NavigationEntry, event: DragEvent): void {
+function onEntryDragOver(entry: NavigationEntry, section: Section, event: DragEvent): void {
 	const order = dragOrder.value
-	if (!order || !draggedId.value) {
+	if (!order || !draggedId.value || section !== dragSection.value) {
 		return
 	}
 	// Also accepts the drop on the dragged entry itself, where the pointer
@@ -477,14 +595,23 @@ function onEntryDragOver(entry: NavigationEntry, event: DragEvent): void {
 /** Persist the new order when the drag ends. */
 async function onEntryDragEnd(): Promise<void> {
 	const order = dragOrder.value
+	const section = dragSection.value
 	draggedId.value = null
 	dragOrder.value = null
-	if (!order || order.join('\n') === orderedEntries.value.map((entry) => entry.id).join('\n')) {
+	dragSection.value = null
+	const previous = section === 'favorites'
+		? teamResources.value.favorites
+		: orderedEntries.value.map((entry) => entry.id)
+	if (!order || order.join('\n') === previous.join('\n')) {
 		return
 	}
 	try {
 		// The store applies the order optimistically and rolls back on failure.
-		await resourcesStore.saveOrder(teamId.value, order)
+		if (section === 'favorites') {
+			await resourcesStore.saveFavorites(teamId.value, order)
+		} else {
+			await resourcesStore.saveOrder(teamId.value, order)
+		}
 	} catch (error) {
 		logger.error('Could not save the navigation order', { error, teamId: teamId.value })
 		showError(t('circles', 'Could not save the navigation order'))
@@ -506,66 +633,85 @@ async function onEntryDragEnd(): Promise<void> {
 		</template>
 
 		<template #list>
-			<NcAppNavigationCaption
-				class="team-navigation__caption"
-				:name="t('circles', 'Team resources')"
-				:aria-label="t('circles', 'Create team resources')">
-				<template v-if="showCreateMenu" #actionsTriggerIcon>
-					<NcIconSvgWrapper :path="mdiPlus" :size="20" />
-				</template>
-				<template v-if="showCreateMenu" #actions>
-					<NcActionButton
-						v-for="entry in createMenuEntries"
-						:key="entry.id"
-						closeAfterClick
-						:disabled="creating"
-						@click="entry.action">
-						<template #icon>
-							<NcIconSvgWrapper :path="entry.icon" :size="20" />
-						</template>
-						{{ entry.label }}
-					</NcActionButton>
+			<template v-for="section in sections" :key="section.id">
+				<NcAppNavigationCaption
+					v-if="section.id === 'favorites'"
+					class="team-navigation__caption"
+					:name="t('circles', 'Favorites')" />
+				<NcAppNavigationCaption
+					v-else
+					class="team-navigation__caption"
+					:name="t('circles', 'Team resources')"
+					:aria-label="t('circles', 'Create team resources')">
+					<template v-if="showCreateMenu" #actionsTriggerIcon>
+						<NcIconSvgWrapper :path="mdiPlus" :size="20" />
+					</template>
+					<template v-if="showCreateMenu" #actions>
+						<NcActionButton
+							v-for="entry in createMenuEntries"
+							:key="entry.id"
+							closeAfterClick
+							:disabled="creating"
+							@click="entry.action">
+							<template #icon>
+								<NcIconSvgWrapper :path="entry.icon" :size="20" />
+							</template>
+							{{ entry.label }}
+						</NcActionButton>
 
-					<NcActionCaption :name="t('circles', 'More coming soon')" />
-				</template>
-			</NcAppNavigationCaption>
+						<NcActionCaption :name="t('circles', 'More coming soon')" />
+					</template>
+				</NcAppNavigationCaption>
 
-			<NcAppNavigationItem
-				v-for="entry in orderedEntries"
-				:key="entry.id"
-				class="team-navigation__entry"
-				:class="{ 'team-navigation__entry--dragging': entry.id === draggedId }"
-				:name="entry.label"
-				:to="entry.to"
-				:href="entry.href"
-				:editable="Boolean(entry.page) && isTeamAdmin"
-				:editLabel="t('circles', 'Rename page')"
-				:editPlaceholder="t('circles', 'Page name')"
-				:draggable="canReorder"
-				@update:name="onRenamePage(entry.page!, $event)"
-				@dragstart="onEntryDragStart(entry, $event)"
-				@dragover="onEntryDragOver(entry, $event)"
-				@drop.prevent
-				@dragend="onEntryDragEnd">
-				<template #icon>
-					<NcIconSvgWrapper v-if="entry.iconSvg" :svg="entry.iconSvg" :size="20" />
-					<NcIconSvgWrapper v-else :path="entry.icon" :size="20" />
-				</template>
+				<NcAppNavigationItem
+					v-for="entry in section.entries"
+					:key="entry.id"
+					:ref="(item) => setNavigationItem(entry.id, item)"
+					class="team-navigation__entry"
+					:class="{ 'team-navigation__entry--dragging': entry.id === draggedId }"
+					:name="entry.label"
+					:to="entry.to"
+					:href="entry.href"
+					:editPlaceholder="t('circles', 'Page name')"
+					:draggable="canDrag(section.id)"
+					:inlineActions="canFavorite(entry) ? 1 : 0"
+					@update:name="onRenamePage(entry.page!, $event)"
+					@dragstart="onEntryDragStart(entry, section.id, $event)"
+					@dragover="onEntryDragOver(entry, section.id, $event)"
+					@drop.prevent
+					@dragend="onEntryDragEnd">
+					<template #icon>
+						<NcIconSvgWrapper v-if="entry.iconSvg" :svg="entry.iconSvg" :size="20" />
+						<NcIconSvgWrapper v-else :path="entry.icon" :size="20" />
+					</template>
 
-				<!-- External entries (the collective) open outside the app -->
-				<template v-if="entry.href" #counter>
-					<NcIconSvgWrapper inline :path="mdiArrowTopRight" :size="16" />
-				</template>
+					<!-- External entries (the collective) open outside the app -->
+					<template v-if="entry.href" #counter>
+						<NcIconSvgWrapper inline :path="mdiArrowTopRight" :size="16" />
+					</template>
 
-				<template v-if="entry.page && isTeamAdmin" #actions>
-					<NcActionButton closeAfterClick @click="onDeletePage(entry.page)">
-						<template #icon>
-							<NcIconSvgWrapper :path="mdiTrashCanOutline" :size="20" />
-						</template>
-						{{ t('circles', 'Delete page') }}
-					</NcActionButton>
-				</template>
-			</NcAppNavigationItem>
+					<template v-if="canFavorite(entry) || (entry.page && isTeamAdmin)" #actions>
+						<NcActionButton v-if="canFavorite(entry)" closeAfterClick @click="toggleFavorite(entry)">
+							<template #icon>
+								<NcIconSvgWrapper :path="section.id === 'favorites' ? mdiStar : mdiStarOutline" :size="20" />
+							</template>
+							{{ section.id === 'favorites' ? t('circles', 'Remove from favorites') : t('circles', 'Add to favorites') }}
+						</NcActionButton>
+						<NcActionButton v-if="entry.page && isTeamAdmin" closeAfterClick @click="startRenaming(entry)">
+							<template #icon>
+								<NcIconSvgWrapper :path="mdiPencilOutline" :size="20" />
+							</template>
+							{{ t('circles', 'Rename page') }}
+						</NcActionButton>
+						<NcActionButton v-if="entry.page && isTeamAdmin" closeAfterClick @click="onDeletePage(entry.page)">
+							<template #icon>
+								<NcIconSvgWrapper :path="mdiTrashCanOutline" :size="20" />
+							</template>
+							{{ t('circles', 'Delete page') }}
+						</NcActionButton>
+					</template>
+				</NcAppNavigationItem>
+			</template>
 
 			<li v-if="addingPage" class="team-navigation__new-page">
 				<NcTextField
@@ -668,6 +814,12 @@ async function onEntryDragEnd(): Promise<void> {
 
 .team-navigation__entry--dragging {
 	opacity: 0.4;
+}
+
+// The library only hides single-wrapper actions (`.action-item`), and never on the active entry;
+// inline actions plus a menu render as `.action-items` and would always show.
+.team-navigation__entry :deep(.app-navigation-entry:not(:hover, :focus-within) .app-navigation-entry__utils:not(.app-navigation-entry__utils--display-actions) .app-navigation-entry__actions) {
+	display: none;
 }
 
 .team-navigation__new-page {

@@ -11,6 +11,7 @@ import { useTeamResourcesStore } from './resourcesStore.ts'
 
 const fetchTeamResources = vi.hoisted(() => vi.fn<(teamId: string) => Promise<SharedResource[]>>(async () => []))
 const fetchTeamDeckBoards = vi.hoisted(() => vi.fn(async () => [] as { id: number, title: string, url: string }[]))
+const saveResourceFavorites = vi.hoisted(() => vi.fn<(teamId: string, favorites: string[]) => Promise<void>>(async () => {}))
 
 vi.mock('./api.ts', () => ({
 	getTeamFolder: vi.fn(async () => null),
@@ -20,6 +21,8 @@ vi.mock('./api.ts', () => ({
 	fetchTeamDeckBoards,
 	fetchTabOrder: vi.fn(async () => []),
 	saveTabOrder: vi.fn(),
+	fetchResourceFavorites: vi.fn(async () => ['page-1']),
+	saveResourceFavorites,
 }))
 
 const TEAM = 'team-1'
@@ -85,5 +88,30 @@ describe('teamResources store: team boards', () => {
 
 		expect(fetchTeamResources).toHaveBeenCalledTimes(1)
 		expect(fetchTeamDeckBoards).toHaveBeenCalledWith(TEAM, [deckResource])
+	})
+})
+
+describe('teamResources store: favorites', () => {
+	beforeEach(() => {
+		vi.clearAllMocks()
+		setActivePinia(createPinia())
+	})
+
+	it('loads the favorites with the team', async () => {
+		const store = useTeamResourcesStore()
+		await store.loadTeam(TEAM)
+
+		expect(store.forTeam(TEAM).favorites).toEqual(['page-1'])
+		expect(store.forTeam(TEAM).favoritesChecked).toBe(true)
+	})
+
+	it('saves optimistically and rolls back on failure', async () => {
+		const store = useTeamResourcesStore()
+		await store.ensureFavorites(TEAM)
+		saveResourceFavorites.mockRejectedValueOnce(new Error('offline'))
+
+		await expect(store.saveFavorites(TEAM, ['board-2', 'page-1'])).rejects.toThrow('offline')
+		expect(saveResourceFavorites).toHaveBeenCalledWith(TEAM, ['board-2', 'page-1'])
+		expect(store.forTeam(TEAM).favorites).toEqual(['page-1'])
 	})
 })
