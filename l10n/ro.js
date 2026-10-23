@@ -468,8 +468,6 @@ OC.L10N.register(
     "Password to access files shared to you by %1$s" : "Parola pentru accesarea fișierelor partajate cu tine de %1$s",
     "Password to access files" : "Parola pentru accesarea fișierelor",
     "Circles App Initialization" : "Inițializarea aplicației Echipe",
-    "Unable to update team folder quota for {team}" : "Nu s-a putut actualiza cota dosarului de echipă pentru {team}",
-    "Changed default team folder quota" : "Cota implicită a dosarelor de echipă a fost schimbată",
     "Open folder in Files" : "Deschide dosarul în Fișiere",
     "Anyone can request membership" : "Oricine poate cere să devină membru"
 },
