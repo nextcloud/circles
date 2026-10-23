@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
+use OCA\Circles\AuditLog\Operation;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\RequestBuilderException;
@@ -18,6 +19,7 @@ use OCA\Circles\IFederatedItemHighSeverity;
 use OCA\Circles\IFederatedItemMemberRequired;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
+use OCA\Circles\Service\AuditLogService;
 use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\MembershipService;
 
@@ -42,6 +44,7 @@ class MemberRemove implements
 		private readonly MemberRequest $memberRequest,
 		private readonly MembershipService $membershipService,
 		private readonly EventService $eventService,
+		private readonly AuditLogService $auditLogService,
 	) {
 	}
 
@@ -79,6 +82,13 @@ class MemberRemove implements
 
 		$this->eventService->memberRemoving($event);
 		$this->membershipService->updatePopulation($event->getCircle());
+
+		$circle = $event->getCircle();
+		$this->auditLogService->logTeamChange($circle, Operation::MemberRemoved, 'Member "%s" (%s, member %s) was removed from team %s ("%s") by "%s"', $this->auditLogService->getMemberParameters($member) + [
+			'circleId' => $circle->getSingleId(),
+			'name' => $this->auditLogService->getTeamName($circle),
+			'initiator' => $this->auditLogService->getInitiator($circle),
+		]);
 	}
 
 	/**

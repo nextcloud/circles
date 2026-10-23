@@ -94,7 +94,7 @@ class CirclesRemote extends Base {
 
 		if ($host) {
 			if ($input->getOption('delete')) {
-				$this->remoteRequest->deleteInstance($host);
+				$this->remoteStreamService->removeRemoteInstance($host);
 				return 0;
 			} else {
 				$this->requestInstance($host);
@@ -299,7 +299,7 @@ class CirclesRemote extends Base {
 			if (!$this->interfaceService->isInterfaceInternal($remoteSignatory->getInterface())) {
 				$remoteSignatory->setAliases([]);
 			}
-			$this->remoteRequest->save($remoteSignatory);
+			$this->remoteStreamService->saveRemoteInstance($remoteSignatory);
 			$this->output->writeln('<info>remote instance saved</info>');
 		}
 	}

@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
+use OCA\Circles\AuditLog\Operation;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNameTooLongException;
@@ -17,6 +18,7 @@ use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
+use OCA\Circles\Service\AuditLogService;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\EventService;
 use OCA\Circles\Tools\Traits\TDeserialize;
@@ -36,12 +38,14 @@ class CircleEdit implements IFederatedItem {
 	 * @param MemberRequest $memberRequest
 	 * @param CircleService $circleService
 	 * @param EventService $eventService
+	 * @param AuditLogService $auditLogService
 	 */
 	public function __construct(
 		private CircleRequest $circleRequest,
 		private MemberRequest $memberRequest,
 		private CircleService $circleService,
 		private EventService $eventService,
+		private AuditLogService $auditLogService,
 	) {
 	}
 
@@ -114,6 +118,17 @@ class CircleEdit implements IFederatedItem {
 		$this->circleRequest->edit($circle);
 		$this->memberRequest->updateDisplayName($circle->getSingleId(), $circle->getDisplayName());
 		$this->eventService->circleEditing($event);
+
+		$oldName = $this->auditLogService->getTeamName($event->getCircle());
+		$name = $this->auditLogService->getTeamName($circle);
+		if ($name !== $oldName) {
+			$this->auditLogService->logTeamChange($circle, Operation::TeamRenamed, 'Team %s was renamed from "%s" to "%s" by "%s"', [
+				'circleId' => $circle->getSingleId(),
+				'oldName' => $oldName,
+				'name' => $name,
+				'initiator' => $this->auditLogService->getInitiator($circle),
+			]);
+		}
 	}
 
 	/**

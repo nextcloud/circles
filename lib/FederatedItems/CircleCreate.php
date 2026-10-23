@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OCA\Circles\FederatedItems;
 
 use OC\User\NoUserException;
+use OCA\Circles\AuditLog\Operation;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
@@ -22,6 +23,7 @@ use OCA\Circles\IFederatedItemCircleCheckNotRequired;
 use OCA\Circles\IFederatedItemHighSeverity;
 use OCA\Circles\IFederatedItemMustBeInitializedLocally;
 use OCA\Circles\Model\Federated\FederatedEvent;
+use OCA\Circles\Service\AuditLogService;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\MaintenanceService;
@@ -47,6 +49,7 @@ class CircleCreate implements
 		private MembershipService $membershipService,
 		private MaintenanceService $maintenanceService,
 		private EventService $eventService,
+		private AuditLogService $auditLogService,
 	) {
 	}
 
@@ -101,6 +104,13 @@ class CircleCreate implements
 		}
 
 		$this->eventService->circleCreating($event);
+
+		$this->auditLogService->logTeamChange($circle, Operation::TeamCreated, 'Team %s ("%s") was created with owner "%s" by "%s"', [
+			'circleId' => $circle->getSingleId(),
+			'name' => $this->auditLogService->getTeamName($circle),
+			'owner' => $this->auditLogService->getUserId($owner),
+			'initiator' => $this->auditLogService->getInitiator($circle),
+		]);
 	}
 
 	/**
