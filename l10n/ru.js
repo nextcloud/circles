@@ -468,8 +468,6 @@ OC.L10N.register(
     "Password to access files shared to you by %1$s" : "Пароль к файлам, которыми с вами поделился(ась) %1$s",
     "Password to access files" : "Пароль для доступа к файлам",
     "Circles App Initialization" : "Инициализация приложения «Команды»",
-    "Unable to update team folder quota for {team}" : "Не удалось изменить квоту командной папки {team}",
-    "Changed default team folder quota" : "Квота командных папок по умолчанию изменена",
     "Open folder in Files" : "Открыть папку в «Файлах»",
     "Anyone can request membership" : "Любой может подать заявку на вступление"
 },

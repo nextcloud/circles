@@ -460,8 +460,6 @@ OC.L10N.register(
     "Password to access files shared to you by %1$s" : "Password to access files shared to you by %1$s",
     "Password to access files" : "Password to access files",
     "Circles App Initialization" : "Circles App Initialisation",
-    "Unable to update team folder quota for {team}" : "Unable to update team folder quota for {team}",
-    "Changed default team folder quota" : "Changed default team folder quota",
     "Open folder in Files" : "Open folder in Files",
     "Anyone can request membership" : "Anyone can request membership"
 },

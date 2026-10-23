@@ -468,8 +468,6 @@ OC.L10N.register(
     "Password to access files shared to you by %1$s" : "Sizin tarafınızdan %1$s üzerinde paylaşılan dosyalara erişim parolası",
     "Password to access files" : "Dosyalara erişim parolası",
     "Circles App Initialization" : "Takımlar uygulaması başlatılıyor",
-    "Unable to update team folder quota for {team}" : "{team} için takım klasörü kotası güncellenemedi",
-    "Changed default team folder quota" : "Varsayılan takım klasörü kotası değiştirildi",
     "Open folder in Files" : "Klasörü Dosyalar uygulamasında aç",
     "Anyone can request membership" : "Herkes üyelik isteğinde bulunabilir"
 },

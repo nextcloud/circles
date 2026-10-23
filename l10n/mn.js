@@ -468,8 +468,6 @@ OC.L10N.register(
     "Password to access files shared to you by %1$s" : "%1$s-н танд хуваалцсан файлуудад хандах нууц үг",
     "Password to access files" : "Файлуудад хандах нууц үг",
     "Circles App Initialization" : "Circles апп эхлүүлэлт",
-    "Unable to update team folder quota for {team}" : "{team}-ийн багийн хавтасны квотыг шинэчилж чадсангүй",
-    "Changed default team folder quota" : "Багийн хавтасны өгөгдмөл квота өөрчлөгдлөө",
     "Open folder in Files" : "Хавтсыг Файлууд дотор нээх",
     "Anyone can request membership" : "Хэн ч гишүүнчлэл хүсэх боломжтой"
 },
