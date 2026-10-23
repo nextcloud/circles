@@ -11,12 +11,17 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import * as api from './api.ts'
 import { useTeamsStore } from './store.ts'
 
+type LoadState = (app: string, key: string, fallback?: unknown) => unknown
+
+const loadState = vi.hoisted(() => vi.fn<LoadState>())
+const createTeam = vi.hoisted(() => vi.fn(async () => 'team-1'))
 const fetchTeams = vi.hoisted(() => vi.fn<() => Promise<TeamsOverview>>())
 const joinTeam = vi.hoisted(() => vi.fn<(id: string) => Promise<'joined' | 'requested'>>())
 const setTeamFavorite = vi.hoisted(() => vi.fn<(id: string, isFavorite: boolean) => Promise<string[]>>())
 const reorderFavoriteTeams = vi.hoisted(() => vi.fn<(ids: string[], expectedIds: string[]) => Promise<string[]>>())
 
-vi.mock('./api.ts', () => ({ fetchTeams, joinTeam, setTeamFavorite, reorderFavoriteTeams }))
+vi.mock('@nextcloud/initial-state', () => ({ loadState }))
+vi.mock('./api.ts', () => ({ createTeam, fetchTeams, joinTeam, setTeamFavorite, reorderFavoriteTeams }))
 vi.mock('../logger.ts', () => ({ logger: { error: vi.fn(), warn: vi.fn() } }))
 
 function team(id: string, position: number | null): Team {
@@ -179,5 +184,71 @@ describe('teams store: discoverable teams', () => {
 
 		await expect(store.joinTeam('open-team')).rejects.toThrow('join failed')
 		expect(fetchTeams).not.toHaveBeenCalled()
+	})
+})
+
+/**
+ * Create a fresh store whose `canCreateTeam` initial state is `allowed`.
+ *
+ * @param allowed - value served for the `canCreateTeam` initial state
+ */
+function setupStore(allowed: boolean) {
+	loadState.mockImplementation((app, key, fallback) => {
+		if (app === 'circles' && key === 'canCreateTeam') {
+			return allowed
+		}
+		return fallback
+	})
+	setActivePinia(createPinia())
+	return useTeamsStore()
+}
+
+describe('teams store team creation permission', () => {
+	beforeEach(() => {
+		vi.clearAllMocks()
+		fetchTeams.mockResolvedValue({ teams: [], discoverableTeams: [] })
+	})
+
+	it('reads canCreateTeam from the initial state', () => {
+		expect(setupStore(true).canCreateTeam).toBe(true)
+		expect(setupStore(false).canCreateTeam).toBe(false)
+	})
+
+	it('defaults to not allowed when the initial state is missing', () => {
+		loadState.mockImplementation((app, key, fallback) => fallback)
+		setActivePinia(createPinia())
+
+		expect(useTeamsStore().canCreateTeam).toBe(false)
+	})
+
+	it('opens the creation wizard when allowed', () => {
+		const store = setupStore(true)
+
+		store.openCreateTeamWizard()
+
+		expect(store.createWizardOpen).toBe(true)
+	})
+
+	it('keeps the creation wizard closed when not allowed', () => {
+		const store = setupStore(false)
+
+		store.openCreateTeamWizard()
+
+		expect(store.createWizardOpen).toBe(false)
+	})
+
+	it('creates a team when allowed', async () => {
+		const store = setupStore(true)
+
+		await store.createTeam('Marketing')
+
+		expect(createTeam).toHaveBeenCalledWith('Marketing', true)
+	})
+
+	it('does not call the API to create a team when not allowed', async () => {
+		const store = setupStore(false)
+
+		await expect(store.createTeam('Marketing')).rejects.toThrow()
+		expect(createTeam).not.toHaveBeenCalled()
 	})
 })

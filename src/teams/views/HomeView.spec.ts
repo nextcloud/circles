@@ -17,6 +17,9 @@ import HomeView from './HomeView.vue'
 import * as api from '../api.ts'
 import { useTeamsStore } from '../store.ts'
 
+type LoadState = (app: string, key: string, fallback?: unknown) => unknown
+
+const loadState = vi.hoisted(() => vi.fn<LoadState>())
 const fetchTeams = vi.hoisted(() => vi.fn<() => Promise<TeamsOverview>>())
 const joinTeam = vi.hoisted(() => vi.fn<(teamId: string) => Promise<'joined' | 'requested'>>())
 const setTeamFavorite = vi.hoisted(() => vi.fn<(teamId: string, isFavorite: boolean) => Promise<string[]>>())
@@ -26,6 +29,7 @@ const showSuccess = vi.hoisted(() => vi.fn())
 const showError = vi.hoisted(() => vi.fn())
 const loggerError = vi.hoisted(() => vi.fn())
 
+vi.mock('@nextcloud/initial-state', () => ({ loadState }))
 vi.mock('../api.ts', () => ({ fetchTeams, joinTeam, setTeamFavorite, reorderFavoriteTeams }))
 vi.mock('../../logger.ts', () => ({ logger: { error: loggerError, warn: vi.fn() } }))
 vi.mock('vue-router', () => ({ useRouter: () => ({ push: routerPush }) }))
@@ -318,5 +322,50 @@ describe('HomeView team joining', () => {
 		await flushPromises()
 		expect(fetchTeams).toHaveBeenCalledTimes(2)
 		expect(joinTeam).toHaveBeenCalledTimes(1)
+	})
+})
+
+const EMPTY_DESCRIPTION = 'Create your first team to start collaborating.'
+
+/**
+ * Mount the home view without teams, so the empty state is shown.
+ *
+ * @param canCreateTeam - value served for the `canCreateTeam` initial state
+ */
+function mountView(canCreateTeam: boolean) {
+	loadState.mockImplementation((app, key, fallback) => {
+		if (app === 'circles' && key === 'canCreateTeam') {
+			return canCreateTeam
+		}
+		return fallback
+	})
+	const pinia = createPinia()
+	setActivePinia(pinia)
+
+	return mount(HomeView, { global: { plugins: [pinia] } })
+}
+
+describe('HomeView team creation', () => {
+	beforeEach(() => {
+		vi.clearAllMocks()
+	})
+
+	it('offers creating teams when allowed', () => {
+		const wrapper = mountView(true)
+		const buttons = wrapper.findAll('button').map((button) => button.text())
+
+		expect(buttons).toContain('New team')
+		expect(buttons).toContain('Create your first team')
+		expect(wrapper.text()).toContain(EMPTY_DESCRIPTION)
+	})
+
+	it('hides every creation entry point when not allowed', () => {
+		const wrapper = mountView(false)
+		const buttons = wrapper.findAll('button').map((button) => button.text())
+
+		expect(buttons).not.toContain('New team')
+		expect(buttons).not.toContain('Create your first team')
+		expect(wrapper.text()).not.toContain(EMPTY_DESCRIPTION)
+		expect(wrapper.text()).toContain('No teams yet')
 	})
 })

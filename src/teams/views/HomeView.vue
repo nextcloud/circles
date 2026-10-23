@@ -25,7 +25,7 @@ import { logger } from '../../logger.ts'
 import { useTeamsStore } from '../store.ts'
 
 const store = useTeamsStore()
-const { teams, loading, loadError, favoritesUpdating } = storeToRefs(store)
+const { teams, loading, loadError, favoritesUpdating, canCreateTeam } = storeToRefs(store)
 const { loadTeams, openCreateTeamWizard } = store
 const router = useRouter()
 
@@ -181,6 +181,9 @@ async function moveFavorite(teamId: string, direction: -1 | 1) {
 
 const filteredDiscoverableTeams = computed(() => store.searchDiscoverableTeams(query.value))
 const joiningTeamId = ref<string | null>(null)
+const emptyDescription = computed(() => canCreateTeam.value
+	? t('circles', 'Create your first team to start collaborating.')
+	: '')
 
 const illustrationSrc = imagePath('circles', 'teams-illustration.svg')
 const isDarkTheme = useIsDarkTheme()
@@ -226,7 +229,7 @@ async function onJoin(team: DiscoverableTeam): Promise<void> {
 				<p :class="$style.homeViewSubtitle">
 					{{ t('circles', 'and everything shared with them across Nextcloud.') }}
 				</p>
-				<div :class="$style.homeViewBannerAction">
+				<div v-if="canCreateTeam" :class="$style.homeViewBannerAction">
 					<NcButton variant="primary" @click="openCreateTeamWizard()">
 						<template #icon>
 							<NcIconSvgWrapper :path="mdiPlus" :size="20" />
@@ -273,11 +276,11 @@ async function onJoin(team: DiscoverableTeam): Promise<void> {
 			<NcEmptyContent
 				v-else-if="teams.length === 0"
 				:name="t('circles', 'No teams yet')"
-				:description="t('circles', 'Create your first team to start collaborating.')">
+				:description="emptyDescription">
 				<template #icon>
 					<NcIconSvgWrapper :path="mdiAccountGroupOutline" />
 				</template>
-				<template #action>
+				<template v-if="canCreateTeam" #action>
 					<NcButton variant="primary" @click="openCreateTeamWizard()">
 						{{ t('circles', 'Create your first team') }}
 					</NcButton>
