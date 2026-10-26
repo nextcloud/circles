@@ -43,7 +43,7 @@ enum Operation: string {
 	public function description(): string {
 		return match ($this) {
 			self::TeamCreated => 'A team was created',
-			self::TeamDeleted => 'A team was deleted, directly or because its last member left it',
+			self::TeamDeleted => 'A team was deleted',
 			self::TeamRenamed => 'A team was renamed',
 			self::TeamConfigUpdated => 'The configuration flags of a team (open, invite only, visible, federated, ...) were changed',
 			self::TeamSettingUpdated => 'A setting of a team, for example the password of its shares, was set or removed',
