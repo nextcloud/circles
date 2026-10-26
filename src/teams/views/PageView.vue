@@ -101,7 +101,7 @@ async function loadPage(): Promise<void> {
 		// does not vanish mid-run.
 		const created = await window.OCA.Text!.createCollaborativeEditor({
 			el: editorContainer.value,
-			fileId: page.fileId,
+			context: { type: 'file', id: page.fileId },
 			filePath: page.filePath,
 		})
 		// The unmount may have hit while the editor was being created.
