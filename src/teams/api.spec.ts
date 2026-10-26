@@ -6,6 +6,21 @@
 import axios from '@nextcloud/axios'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+const dav = vi.hoisted(() => ({
+	getDirectoryContents: vi.fn(),
+	createDirectory: vi.fn(),
+	putFileContents: vi.fn(),
+	moveFile: vi.fn(),
+	deleteFile: vi.fn(),
+}))
+vi.mock('@nextcloud/files', () => ({ FileType: { File: 'file' } }))
+vi.mock('@nextcloud/files/dav', () => ({
+	defaultRootPath: '/dav/files/alice',
+	getClient: () => dav,
+	getDefaultPropfind: () => '<propfind />',
+	resultToNode: (entry: unknown) => entry,
+}))
+
 vi.mock('@nextcloud/axios', () => ({
 	default: {
 		post: vi.fn(),
@@ -32,7 +47,68 @@ vi.mock('./team-page/services/collaborationAutocompletion.js', () => ({
 	getSuggestions: vi.fn(),
 }))
 
-const { createTeam, fetchTeams, joinTeam, setTeamFavorite, reorderFavoriteTeams } = await import('./api.ts')
+const { createTeam, createTeamPage, fetchTeamPages, renameTeamPage, deleteTeamPage, fetchTeams, getTeamAppNavigations, joinTeam, resolveTeamReferences, saveNavigation, setTeamFavorite, reorderFavoriteTeams } = await import('./api.ts')
+
+describe('native team Pages', () => {
+	beforeEach(() => {
+		Object.values(dav).forEach((mock) => mock.mockReset())
+	})
+
+	it('lists only markdown files, sorted by title, with team-local editor paths', async () => {
+		dav.getDirectoryContents.mockResolvedValue({ data: [
+			{ type: 'file', extension: '.md', basename: 'Zebra.md', fileid: 7 },
+			{ type: 'file', extension: '.MD', basename: 'Alpha.MD', fileid: 8 },
+			{ type: 'directory', extension: '.md', basename: 'Folder.md', fileid: 9 },
+			{ type: 'file', extension: '.txt', basename: 'Notes.txt', fileid: 10 },
+		] })
+		await expect(fetchTeamPages('Team')).resolves.toEqual([
+			{ fileId: 8, title: 'Alpha', filePath: '/Team/.system/teams/pages/Alpha.MD' },
+			{ fileId: 7, title: 'Zebra', filePath: '/Team/.system/teams/pages/Zebra.md' },
+		])
+		expect(dav.getDirectoryContents).toHaveBeenCalledWith('/dav/files/alice/Team/.system/teams/pages', expect.objectContaining({ details: true }))
+	})
+
+	it('treats only a missing Pages directory as an empty list', async () => {
+		dav.getDirectoryContents.mockRejectedValueOnce({ status: 404 }).mockRejectedValueOnce({ status: 403 })
+		await expect(fetchTeamPages('Team')).resolves.toEqual([])
+		await expect(fetchTeamPages('Team')).rejects.toEqual({ status: 403 })
+	})
+
+	it('creates the Pages directory and refuses to overwrite existing markdown files', async () => {
+		dav.createDirectory.mockRejectedValue({ status: 405 })
+		dav.putFileContents.mockResolvedValue(false)
+		await expect(createTeamPage('Team', 'Handbook')).rejects.toMatchObject({ status: 412 })
+		expect(dav.createDirectory).toHaveBeenCalledWith('/dav/files/alice/Team/.system/teams/pages', { recursive: true })
+		expect(dav.putFileContents).toHaveBeenCalledWith('/dav/files/alice/Team/.system/teams/pages/Handbook.md', '', { overwrite: false })
+		dav.putFileContents.mockResolvedValue(true)
+		await expect(createTeamPage('Team', 'Handbook')).resolves.toBeUndefined()
+	})
+
+	it.each(['', '  ', '../Outside', 'dir\\Outside', 'Bad\u0000name'])('rejects invalid page title %j before DAV writes', async (name) => {
+		await expect(createTeamPage('Team', name)).rejects.toThrow('Invalid page name')
+		expect(dav.createDirectory).not.toHaveBeenCalled()
+	})
+
+	it('renames without overwrite and deletes the team-local markdown file', async () => {
+		const page = { fileId: 42, title: 'Handbook', filePath: '/Team/.system/teams/pages/Handbook.md' }
+		await renameTeamPage(page, 'Guide')
+		expect(dav.moveFile).toHaveBeenCalledWith('/dav/files/alice/Team/.system/teams/pages/Handbook.md', '/dav/files/alice/Team/.system/teams/pages/Guide.md', { overwrite: false })
+		await deleteTeamPage(page)
+		expect(dav.deleteFile).toHaveBeenCalledWith('/dav/files/alice/Team/.system/teams/pages/Handbook.md')
+	})
+})
+
+describe('resolveTeamReferences', () => {
+	it('batches unique absolute local URLs without prefetching external links', async () => {
+		const url = new URL('/f/42', window.location.href).href
+		const signal = new AbortController().signal
+		vi.mocked(axios.post).mockResolvedValueOnce({ data: { ocs: { data: { references: { [url]: null } } } } })
+
+		await expect(resolveTeamReferences(['/f/42', url, 'https://example.net/f/42', 'javascript:void(0)'], signal))
+			.resolves.toEqual({ [url]: null })
+		expect(axios.post).toHaveBeenCalledWith('/ocs/references/resolve', { references: [url], limit: 1 }, expect.objectContaining({ signal }))
+	})
+})
 
 describe('fetchTeams', () => {
 	it('splits active members from discoverable teams', async () => {
@@ -182,5 +258,27 @@ describe('favorite teams API', () => {
 			.mockRejectedValueOnce(new Error('favorites unavailable'))
 		const overview = await fetchTeams()
 		expect(overview.teams.map((team) => [team.id, team.isFavorite])).toEqual([['A', false]])
+	})
+})
+
+describe('Team app navigation API', () => {
+	beforeEach(() => vi.resetAllMocks())
+
+	it('saves selected entry IDs in display order through the navigation endpoint', async () => {
+		const order = ['home', 'deck-7', 'team-folder']
+		vi.mocked(axios.put).mockResolvedValueOnce({ data: { ocs: { data: [] } } })
+
+		await saveNavigation('team', order)
+
+		expect(axios.put).toHaveBeenCalledExactlyOnceWith('/ocs/apps/circles/teams/{circleId}/apps/navigation', { order })
+	})
+
+	it('fetches all provider navigation in one team-scoped request', async () => {
+		const result = { entries: [{ id: 'team-folder' }, { id: 'home' }], providers: { example: { entries: [], canAddResource: false } }, errors: ['broken'] }
+		const signal = new AbortController().signal
+		vi.mocked(axios.get).mockResolvedValueOnce({ data: { ocs: { data: result } } })
+
+		await expect(getTeamAppNavigations('team', signal)).resolves.toEqual(result)
+		expect(axios.get).toHaveBeenCalledExactlyOnceWith('/ocs/apps/circles/teams/{teamId}/apps/navigation', { signal })
 	})
 })

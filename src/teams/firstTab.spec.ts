@@ -17,19 +17,33 @@ function resources(overrides: Partial<TeamResources> = {}): TeamResources {
 		folderError: false,
 		resources: [],
 		resourcesChecked: true,
-		boards: [],
-		boardsChecked: true,
+		resourcesError: false,
 		pages: [],
 		pagesChecked: true,
 		pagesError: false,
-		tabOrder: [],
+		navigation: [{ id: 'team-folder' }, { id: 'home' }],
 		orderChecked: true,
 		orderError: false,
 		...overrides,
 	}
 }
 
-const page = (fileId: number, title: string) => ({ fileId, title, filePath: `/Team/.pages/${title}.md` })
+function page(fileId: number, title: string) {
+	return {
+		id: `text-${fileId}`,
+		entryId: String(fileId),
+		providerId: 'text',
+		label: title,
+		href: `/f/${fileId}`,
+		referenceUrl: `/f/${fileId}`,
+		reference: {
+			accessible: true,
+			richObjectType: 'file',
+			richObject: {},
+			openGraphObject: { id: String(fileId), name: title, description: null, thumb: null, link: `/f/${fileId}` },
+		},
+	}
+}
 
 describe('firstTabRoute', () => {
 	it('falls back to the team folder without a saved order', () => {
@@ -38,52 +52,59 @@ describe('firstTabRoute', () => {
 	})
 
 	it('follows the saved order', () => {
-		const state = resources({ tabOrder: ['home', 'team-folder'] })
+		const state = resources({ navigation: [{ id: 'home' }, { id: 'team-folder' }] })
 		expect(firstTabRoute(TEAM, state))
 			.toEqual({ name: 'team-home', params: { teamId: TEAM } })
+	})
+
+	it('opens a saved native page and skips deleted pages', () => {
+		const state = resources({
+			navigation: [{ id: 'page-99' }, { id: 'page-42' }, { id: 'home' }],
+			pages: [{ fileId: 42, title: 'Guide', filePath: '/Team/.system/teams/pages/Guide.md' }],
+		})
+		expect(firstTabRoute(TEAM, state)).toEqual({ name: 'team-page', params: { teamId: TEAM, fileId: '42' } })
 	})
 
 	it('resolves a page as the first entry', () => {
 		const state = resources({
-			pages: [page(7, 'Handbook')],
-			tabOrder: ['page-7', 'team-folder', 'home'],
+			navigation: [{ id: 'text-7', providerId: 'text', entryId: '7' }, { id: 'team-folder' }, { id: 'home' }],
 		})
-		expect(firstTabRoute(TEAM, state))
-			.toEqual({ name: 'team-page', params: { teamId: TEAM, fileId: '7' } })
+		expect(firstTabRoute(TEAM, state, [page(7, 'Handbook')]))
+			.toEqual({ name: 'team-app', params: { teamId: TEAM, providerId: 'text', entryId: '7' } })
 	})
 
-	it('skips external entries at the front of the order', () => {
-		const state = resources({ tabOrder: ['collective', 'board-3', 'home', 'team-folder'] })
+	it('skips entries with only a generic Open Graph preview', () => {
+		const state = resources({ navigation: [{ id: 'calendar-1', providerId: 'calendar', entryId: '1' }, { id: 'home' }, { id: 'team-folder' }] })
+		expect(firstTabRoute(TEAM, state, [{ ...page(1, 'Calendar'), id: 'calendar-1', providerId: 'calendar', reference: { ...page(1, 'Calendar').reference, richObjectType: 'open-graph' } }]))
+			.toEqual({ name: 'team-home', params: { teamId: TEAM } })
+	})
+
+	it('skips entries whose provider metadata is unavailable', () => {
+		const state = resources({ navigation: [{ id: 'text-9', providerId: 'text', entryId: '9' }, { id: 'home' }, { id: 'team-folder' }] })
 		expect(firstTabRoute(TEAM, state))
 			.toEqual({ name: 'team-home', params: { teamId: TEAM } })
 	})
 
-	it('skips pages the order knows but no longer exist', () => {
-		const state = resources({ tabOrder: ['page-9', 'home', 'team-folder'] })
-		expect(firstTabRoute(TEAM, state))
-			.toEqual({ name: 'team-home', params: { teamId: TEAM } })
-	})
-
-	it('places entries missing from the order behind the known ones', () => {
+	it('follows navigation without sorting it against provider entries', () => {
 		const state = resources({
-			pages: [page(7, 'Handbook')],
-			tabOrder: ['home'],
+			navigation: [{ id: 'home' }, { id: 'team-folder' }, { id: 'text-7', providerId: 'text', entryId: '7' }],
 		})
-		expect(firstTabRoute(TEAM, state))
+		expect(firstTabRoute(TEAM, state, [page(7, 'Handbook')]))
 			.toEqual({ name: 'team-home', params: { teamId: TEAM } })
 	})
 })
 
 describe('firstTabSettled', () => {
-	it('waits for the order and the pages', () => {
+	it('waits for the order and registered providers', () => {
 		expect(firstTabSettled(resources({ orderChecked: false }))).toBe(false)
+		expect(firstTabSettled(resources(), false)).toBe(false)
 		expect(firstTabSettled(resources({ pagesChecked: false }))).toBe(false)
+		expect(firstTabSettled(resources({ pagesChecked: false, pagesError: true }))).toBe(true)
 		expect(firstTabSettled(resources())).toBe(true)
 	})
 
 	it('settles on errors instead of waiting forever', () => {
 		expect(firstTabSettled(resources({ orderChecked: false, orderError: true }))).toBe(true)
-		expect(firstTabSettled(resources({ pagesChecked: false, pagesError: true }))).toBe(true)
-		expect(firstTabSettled(resources({ pagesChecked: false, folderError: true }))).toBe(true)
+		expect(firstTabSettled(resources({ folderError: true }))).toBe(true)
 	})
 })

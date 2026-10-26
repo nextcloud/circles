@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import type { DiscoverableTeam, Member, MemberCandidate, Resource, SharedResource, Team, TeamRole } from './types.ts'
+import type { TeamAppNavigationsResponse, TeamReference } from './teamAppIntegrations/types.ts'
+import type { DiscoverableTeam, Member, MemberCandidate, Resource, SharedResource, Team, TeamFolder, TeamRole } from './types.ts'
 
 import axios from '@nextcloud/axios'
 import { FileType } from '@nextcloud/files'
@@ -12,6 +13,8 @@ import { generateOcsUrl } from '@nextcloud/router'
 import { logger } from '../logger.ts'
 import { SHARES_TYPES_MEMBER_MAP } from './team-page/models/constants.ts'
 import { getRecommendations, getSuggestions } from './team-page/services/collaborationAutocompletion.js'
+
+export type { TeamFolder } from './types.ts'
 
 /** `Circle::CFG_OPEN`: anyone can join or request to join. */
 const CIRCLE_CONFIG_OPEN = 16
@@ -24,6 +27,25 @@ const shareTypeToMemberType = SHARES_TYPES_MEMBER_MAP as Record<number, number>
 /** Minimal shape of an OCS response envelope. */
 interface OcsResponse<T> {
 	ocs: { data: T }
+}
+
+/**
+ * Resolve deduplicated local resource URLs without prefetching external links.
+ *
+ * @param urls Team resource URLs
+ * @param signal Active team load
+ */
+export async function resolveTeamReferences(urls: string[], signal: AbortSignal): Promise<Record<string, TeamReference | null>> {
+	const references = [...new Set(urls.filter((url) => URL.canParse(url, window.location.href))
+		.map((url) => new URL(url, window.location.href))
+		.filter((url) => ['http:', 'https:'].includes(url.protocol) && url.origin === window.location.origin && !url.username && !url.password)
+		.map((url) => url.href))]
+	if (references.length === 0) {
+		return {}
+	}
+	const url = generateOcsUrl('references/resolve')
+	const response = await axios.post<OcsResponse<{ references: Record<string, TeamReference | null> }>>(url, { references, limit: references.length }, { signal, timeout: 5000 })
+	return response.data.ocs.data.references
 }
 
 /** Raw member as returned by the circles API. */
@@ -326,15 +348,6 @@ export async function deleteTeam(teamId: string): Promise<void> {
 	await axios.delete(generateOcsUrl('apps/circles/circles/{circleId}', { circleId: teamId }))
 }
 
-/**
- * The team folder linked to a team.
- */
-export interface TeamFolder {
-	id: number
-	mountPoint: string
-	quota: number | null
-}
-
 /** Team and its linked folder as exposed to administrators. */
 export interface AdminTeamFolder {
 	teamId: string
@@ -556,25 +569,28 @@ export async function renameTeamPage(page: TeamPage, name: string): Promise<void
 }
 
 /**
- * Fetch the team-level tab order (readable by every member).
+ * Fetch ordered team navigation and provider metadata for selection and creation.
  *
  * @param teamId - The team single id
- * @return Tab ids, first to last. Empty when no order has been saved.
+ * @param signal - Active team scope signal
  */
-export async function fetchTabOrder(teamId: string): Promise<string[]> {
-	const { data } = await axios.get<OcsResponse<{ order: string[] }>>(generateOcsUrl('apps/circles/teams/{circleId}/tab-order', { circleId: teamId }))
-	return data.ocs.data.order ?? []
+export async function getTeamAppNavigations(teamId: string, signal: AbortSignal): Promise<TeamAppNavigationsResponse> {
+	const { data } = await axios.get<OcsResponse<TeamAppNavigationsResponse>>(
+		generateOcsUrl('apps/circles/teams/{teamId}/apps/navigation', { teamId }),
+		{ signal },
+	)
+	return data.ocs.data
 }
 
 /**
- * Save the team-level tab order. Requires team admin or above.
+ * Save the selected team navigation entries in display order. Requires team admin or above.
  *
  * @param teamId - The team single id
- * @param order - Tab ids, first to last
+ * @param order - Navigation entry IDs, first to last
  */
-export async function saveTabOrder(teamId: string, order: string[]): Promise<void> {
+export async function saveNavigation(teamId: string, order: string[]): Promise<void> {
 	await axios.put(
-		generateOcsUrl('apps/circles/teams/{circleId}/tab-order', { circleId: teamId }),
+		generateOcsUrl('apps/circles/teams/{circleId}/apps/navigation', { circleId: teamId }),
 		{ order },
 	)
 }
@@ -588,91 +604,6 @@ export async function saveTabOrder(teamId: string, order: string[]): Promise<voi
 export async function fetchTeamResources(teamId: string): Promise<SharedResource[]> {
 	const res = await axios.get<OcsResponse<{ resources: SharedResource[] }>>(generateOcsUrl('teams/{teamId}/resources', { teamId }))
 	return res.data.ocs.data.resources ?? []
-}
-
-/**
- * Create a collective named after a team. The collectives app links the
- * collective to the team by name, so no separate share step is needed.
- *
- * TODO: calls the collectives API directly; should eventually go through
- * a teams extension point instead of hardcoding another app's route.
- *
- * @param name - The collective name (the team's name)
- */
-export async function createCollective(name: string): Promise<void> {
-	await axios.post(
-		generateOcsUrl('apps/collectives/api/v1.0/collectives'),
-		{ name },
-	)
-}
-
-/**
- * Create a Deck board linked to a team. The deck endpoint links the board
- * to the team itself, so no separate share step is needed.
- *
- * TODO: calls the deck API directly; should eventually go through a teams
- * extension point instead of hardcoding another app's route.
- *
- * @param teamId - The team single id
- * @param title - The board title
- */
-export async function createDeckBoard(teamId: string, title: string): Promise<void> {
-	const res = await axios.post<OcsResponse<{ id?: number }>>(
-		generateOcsUrl('apps/deck/api/v1.0/boards/team'),
-		{ title, teamId },
-	)
-	if (!res.data.ocs.data.id) {
-		throw new Error('The board creation response contains no board id')
-	}
-}
-
-/** A deck board attached to the team itself, shown as a navigation entry. */
-export interface TeamBoard {
-	id: number
-	title: string
-	/** Absolute deep link to the board in the deck app. */
-	url: string
-}
-
-/** The subset of deck's serialized board relevant here. */
-interface RawDeckBoard {
-	id: number
-	title: string
-	teamId?: string | null
-	archived?: boolean
-	deletedAt?: number
-}
-
-/**
- * Pick the deck boards attached to the team itself out of the shared deck
- * resources. The generic resource list cannot tell a team board from a
- * personally-shared one (and deck's board list omits teamId), so each
- * candidate is read individually from deck.
- *
- * TODO: calls the deck API directly; should eventually go through a teams
- * extension point instead of hardcoding another app's route.
- *
- * @param teamId - The team single id
- * @param candidates - The team's shared resources from the deck provider
- */
-export async function fetchTeamDeckBoards(teamId: string, candidates: SharedResource[]): Promise<TeamBoard[]> {
-	const responses = await Promise.allSettled(candidates.map((resource) => axios.get<OcsResponse<RawDeckBoard>>(generateOcsUrl('apps/deck/api/v1.0/board/{boardId}', { boardId: resource.id }))))
-
-	const boards: TeamBoard[] = []
-	responses.forEach((response, index) => {
-		const resource = candidates[index]
-		if (response.status === 'rejected') {
-			// The board stays reachable through the shared resources.
-			logger.warn('Could not read a deck board, not showing it as a tab', { resource, reason: response.reason })
-			return
-		}
-		const board = response.value.data.ocs.data
-		if (board.teamId === teamId && !board.archived && (board.deletedAt ?? 0) === 0) {
-			boards.push({ id: board.id, title: board.title, url: resource.url })
-		}
-	})
-
-	return boards.sort((a, b) => a.title.localeCompare(b.title))
 }
 
 /**

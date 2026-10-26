@@ -13,9 +13,11 @@ use OCA\Circles\Controller\PageController;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\PermissionService;
 use OCA\Circles\Service\TeamFolderPolicy;
+use OCA\Circles\Service\TeamOwnedResourceProviderRegistry;
 use OCP\AppFramework\Http\NotFoundResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
+use OCP\Collaboration\Reference\RenderReferenceEvent;
 use OCP\EventDispatcher\IEventDispatcher;
 use OCP\IRequest;
 use OCP\IUser;
@@ -31,6 +33,7 @@ final class PageControllerTest extends TestCase {
 	private IInitialState&MockObject $initialState;
 	private ITeamManager&MockObject $teamManager;
 	private TeamFolderPolicy&MockObject $teamFolderPolicy;
+	private TeamOwnedResourceProviderRegistry&MockObject $ownedResourceProviders;
 	private IEventDispatcher&MockObject $eventDispatcher;
 	private IUserSession&MockObject $userSession;
 	private PermissionService&MockObject $permissionService;
@@ -45,6 +48,8 @@ final class PageControllerTest extends TestCase {
 		$this->initialState = $this->createMock(IInitialState::class);
 		$this->teamManager = $this->createMock(ITeamManager::class);
 		$this->teamFolderPolicy = $this->createMock(TeamFolderPolicy::class);
+		$this->ownedResourceProviders = $this->createMock(TeamOwnedResourceProviderRegistry::class);
+		$this->ownedResourceProviders->method('load')->willReturn(['providers' => [], 'errors' => []]);
 		$this->eventDispatcher = $this->createMock(IEventDispatcher::class);
 		$this->permissionService = $this->createMock(PermissionService::class);
 
@@ -59,6 +64,7 @@ final class PageControllerTest extends TestCase {
 			$this->initialState,
 			$this->teamManager,
 			$this->teamFolderPolicy,
+			$this->ownedResourceProviders,
 			$this->eventDispatcher,
 			$this->userSession,
 			$this->permissionService,
@@ -71,6 +77,11 @@ final class PageControllerTest extends TestCase {
 	 * registered.
 	 */
 	public function testIndexProvidesTeamFolderStateWithProvider(): void {
+		$events = [];
+		$this->eventDispatcher->expects($this->exactly(class_exists(\OCA\Text\Event\LoadEditor::class) ? 2 : 1))
+			->method('dispatchTyped')->willReturnCallback(static function ($event) use (&$events): void {
+				$events[] = $event;
+			});
 		$this->configService->expects($this->once())
 			->method('getAppValueBool')
 			->with(ConfigService::FRONTEND_ENABLED)
@@ -89,7 +100,7 @@ final class PageControllerTest extends TestCase {
 			->willReturn(true);
 
 		$provided = [];
-		$this->initialState->expects($this->exactly(3))
+		$this->initialState->expects($this->exactly(4))
 			->method('provideInitialState')
 			->willReturnCallback(function (string $key, mixed $value) use (&$provided): void {
 				$provided[$key] = $value;
@@ -97,12 +108,17 @@ final class PageControllerTest extends TestCase {
 
 		$result = $this->pageController->index();
 
+		$this->assertInstanceOf(RenderReferenceEvent::class, $events[0]);
+		if (class_exists(\OCA\Text\Event\LoadEditor::class)) {
+			$this->assertInstanceOf(\OCA\Text\Event\LoadEditor::class, $events[1]);
+		}
 		$this->assertInstanceOf(TemplateResponse::class, $result);
 		$this->assertSame(Application::APP_ID, $result->getApp());
 		$this->assertSame('main', $result->getTemplateName());
 		$this->assertTrue($provided['teamFolderProviderAvailable']);
 		$this->assertTrue($provided['teamFolderProvisioningEnabled']);
 		$this->assertTrue($provided['canCreateTeam']);
+		$this->assertSame(['providers' => [], 'errors' => []], $provided['teamAppProviders']);
 	}
 
 	/**
@@ -129,7 +145,7 @@ final class PageControllerTest extends TestCase {
 			->willReturn(false);
 
 		$provided = [];
-		$this->initialState->expects($this->exactly(3))
+		$this->initialState->expects($this->exactly(4))
 			->method('provideInitialState')
 			->willReturnCallback(function (string $key, mixed $value) use (&$provided): void {
 				$provided[$key] = $value;
@@ -141,12 +157,15 @@ final class PageControllerTest extends TestCase {
 		$this->assertFalse($provided['teamFolderProviderAvailable']);
 		$this->assertFalse($provided['teamFolderProvisioningEnabled']);
 		$this->assertFalse($provided['canCreateTeam']);
+		$this->assertSame(['providers' => [], 'errors' => []], $provided['teamAppProviders']);
 	}
 
 	/**
 	 * Frontend disabled: no initial state is provided and a 404 is returned.
 	 */
 	public function testIndexReturnsNotFoundWhenFrontendDisabled(): void {
+		$this->eventDispatcher->expects($this->never())->method('dispatchTyped');
+		$this->ownedResourceProviders->expects($this->never())->method('load');
 		$this->configService->expects($this->once())
 			->method('getAppValueBool')
 			->with(ConfigService::FRONTEND_ENABLED)
