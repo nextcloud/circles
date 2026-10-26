@@ -34,28 +34,7 @@ export interface Resource {
 	url: string
 }
 
-/** The app/provider a shared resource originates from (Talk, Calendar, …). */
-export interface SharedResourceProvider {
-	id: string
-	name: string
-}
-
-/**
- * A resource shared to a team, as returned by the core
- * `/teams/{teamId}/resources` OCS endpoint. Distinct from {@link Resource},
- * which is the dashboard-widget preview shape.
- */
-export interface SharedResource {
-	id: string | number
-	label: string
-	/** URL the resource opens at. */
-	url: string
-	/** Inline SVG markup for the icon. */
-	iconSvg?: string
-	/** Icon image URL, used when no inline SVG is provided. */
-	iconURL?: string
-	provider: SharedResourceProvider
-}
+export type { SharedResource, SharedResourceProvider } from '#server-types/teams'
 
 export interface Team {
 	id: string
