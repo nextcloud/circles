@@ -195,6 +195,13 @@ class RegistrationContext {
     }
 
 	/**
+	 * @psalm-param class-string<\OCP\Teams\ITeamAppProvider> $class
+	 */
+	public function registerTeamAppProvider(string $appId, string $class): void
+    {
+    }
+
+	/**
 	 * @psalm-param class-string<IUserMigrator> $migratorClass
 	 */
 	public function registerUserMigrator(string $appId, string $migratorClass): void
@@ -462,6 +469,13 @@ class RegistrationContext {
 	 * @return ServiceRegistration<ITeamResourceProvider>[]
 	 */
 	public function getTeamResourceProviders(): array
+    {
+    }
+
+	/**
+	 * @return ServiceRegistration<\OCP\Teams\ITeamAppProvider>[]
+	 */
+	public function getTeamAppProviders(): array
     {
     }
 
