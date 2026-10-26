@@ -49,7 +49,7 @@ enum Operation: string {
 			self::TeamSettingUpdated => 'A setting of a team, for example the password of its shares, was set or removed',
 			self::InvitationCreated => 'An invitation link to join a team was created',
 			self::InvitationRevoked => 'The invitation link to join a team was revoked',
-			self::MemberAdded => 'A user, group, team, email address or contact was added to a team, or a request to join it was accepted',
+			self::MemberAdded => 'A member was added to a team, or a request to join it was accepted',
 			self::MemberInvited => 'A user, group or team was invited to join an invite only team',
 			self::MemberRemoved => 'A member was removed from a team',
 			self::MemberLevelUpdated => 'The level of a member of a team (member, moderator, admin, owner) was changed, including ownership transfers',
