@@ -32,7 +32,7 @@ vi.mock('./team-page/services/collaborationAutocompletion.js', () => ({
 	getSuggestions: vi.fn(),
 }))
 
-const { createTeam, fetchTeams, joinTeam, setTeamFavorite, reorderFavoriteTeams } = await import('./api.ts')
+const { createTeam, fetchTeams, getTeamAppNavigations, joinTeam, setTeamFavorite, reorderFavoriteTeams } = await import('./api.ts')
 
 describe('fetchTeams', () => {
 	it('splits active members from discoverable teams', async () => {
@@ -182,5 +182,18 @@ describe('favorite teams API', () => {
 			.mockRejectedValueOnce(new Error('favorites unavailable'))
 		const overview = await fetchTeams()
 		expect(overview.teams.map((team) => [team.id, team.isFavorite])).toEqual([['A', false]])
+	})
+})
+
+describe('Team app navigation API', () => {
+	beforeEach(() => vi.resetAllMocks())
+
+	it('fetches all provider navigation in one team-scoped request', async () => {
+		const result = { providers: { example: { entries: [] } }, errors: ['broken'] }
+		const signal = new AbortController().signal
+		vi.mocked(axios.get).mockResolvedValueOnce({ data: { ocs: { data: result } } })
+
+		await expect(getTeamAppNavigations('team', signal)).resolves.toEqual(result)
+		expect(axios.get).toHaveBeenCalledExactlyOnceWith('/ocs/apps/circles/teams/{teamId}/apps/navigation', { signal })
 	})
 })

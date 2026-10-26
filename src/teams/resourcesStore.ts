@@ -3,16 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import type { TeamBoard, TeamFolder, TeamPage } from './api.ts'
+import type { TeamFolder } from './api.ts'
 import type { SharedResource } from './types.ts'
 
 import { defineStore } from 'pinia'
 import { logger } from '../logger.ts'
-import { fetchTabOrder, fetchTeamDeckBoards, fetchTeamPages, fetchTeamResources, getTeamFolder, saveTabOrder, upgradeTeamFolder } from './api.ts'
+import { fetchTabOrder, fetchTeamResources, getTeamFolder, saveTabOrder, upgradeTeamFolder } from './api.ts'
 
 /**
  * The shared resource state of one team: its team folder, the resources
- * shared to it, its pages and the navigation tab order.
+ * shared to it and the navigation tab order.
  */
 export interface TeamResources {
 	folder: TeamFolder | null
@@ -22,12 +22,7 @@ export interface TeamResources {
 	folderError: boolean
 	resources: SharedResource[]
 	resourcesChecked: boolean
-	/** Deck boards attached to the team itself, shown as navigation entries. */
-	boards: TeamBoard[]
-	boardsChecked: boolean
-	pages: TeamPage[]
-	pagesChecked: boolean
-	pagesError: boolean
+	resourcesError: boolean
 	tabOrder: string[]
 	orderChecked: boolean
 	/** The order fetch failed; `tabOrder` is unknown, not empty. */
@@ -40,11 +35,7 @@ const EMPTY_SLOT: TeamResources = Object.freeze({
 	folderError: false,
 	resources: [],
 	resourcesChecked: false,
-	boards: [],
-	boardsChecked: false,
-	pages: [],
-	pagesChecked: false,
-	pagesError: false,
+	resourcesError: false,
 	tabOrder: [],
 	orderChecked: false,
 	orderError: false,
@@ -100,10 +91,8 @@ export const useTeamResourcesStore = defineStore('teamResources', {
 		 */
 		async loadTeam(teamId: string, refresh = false): Promise<void> {
 			await Promise.all([
-				// Pages live in the folder, so they load once it is known;
-				// boards are found among the resources, same dependency.
-				this.ensureFolder(teamId, refresh).then(() => this.ensurePages(teamId, refresh)),
-				this.ensureResources(teamId, refresh).then(() => this.ensureBoards(teamId, refresh)),
+				this.ensureFolder(teamId, refresh),
+				this.ensureResources(teamId, refresh),
 				this.ensureOrder(teamId, refresh),
 			])
 		},
@@ -143,63 +132,10 @@ export const useTeamResourcesStore = defineStore('teamResources', {
 			try {
 				slot.resources = await fetchTeamResources(teamId)
 				slot.resourcesChecked = true
+				slot.resourcesError = false
 			} catch (error) {
 				logger.error('Could not load the team resources', { error, teamId })
-			}
-		},
-
-		/**
-		 * Find the deck boards attached to the team itself among the shared
-		 * resources. Marked checked even on failure: consumers only use the
-		 * boards to pin tabs and to filter the shared list, and the boards
-		 * stay reachable there.
-		 *
-		 * @param teamId - The team to load boards for
-		 * @param refresh - Refetch even when cached
-		 */
-		async ensureBoards(teamId: string, refresh = false): Promise<void> {
-			const slot = this.slot(teamId)
-			if (slot.boardsChecked && !refresh) {
-				return
-			}
-			await this.ensureResources(teamId)
-			const candidates = slot.resources.filter((resource) => resource.provider.id === 'deck')
-			try {
-				slot.boards = await fetchTeamDeckBoards(teamId, candidates)
-			} catch (error) {
-				logger.error('Could not load the team boards', { error, teamId })
-				slot.boards = []
-			}
-			slot.boardsChecked = true
-		},
-
-		/**
-		 * Load the team pages unless already known. Probes the folder first
-		 * when needed — pages are the markdown files in the team folder.
-		 *
-		 * @param teamId - The team to load pages for
-		 * @param refresh - Refetch the pages even when cached
-		 */
-		async ensurePages(teamId: string, refresh = false): Promise<void> {
-			const slot = this.slot(teamId)
-			if (slot.pagesChecked && !refresh) {
-				return
-			}
-			await this.ensureFolder(teamId)
-			if (!slot.folder) {
-				slot.pages = []
-				slot.pagesChecked = slot.folderChecked
-				slot.pagesError = slot.folderError
-				return
-			}
-			try {
-				slot.pages = await fetchTeamPages(slot.folder.mountPoint)
-				slot.pagesChecked = true
-				slot.pagesError = false
-			} catch (error) {
-				logger.error('Could not load the team pages', { error, teamId })
-				slot.pages = []
-				slot.pagesError = true
+				slot.resourcesError = true
 			}
 		},
 
@@ -235,10 +171,6 @@ export const useTeamResourcesStore = defineStore('teamResources', {
 			slot.folder = folder
 			slot.folderChecked = true
 			slot.folderError = false
-			// A fresh folder has no pages yet.
-			slot.pages = []
-			slot.pagesChecked = true
-			slot.pagesError = false
 			return folder
 		},
 

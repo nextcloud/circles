@@ -7,12 +7,14 @@ import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 import App from './teams/App.vue'
 import { logger } from './logger.ts'
+import { initializeTeamApps } from './teams/integrations/registry.ts'
 import { router } from './teams/router.ts'
 import LegacyGlobalMixin from './teams/team-page/mixins/LegacyGlobalMixin.js'
 import store from './teams/team-page/store/index.ts'
 
 logger.debug('Mounting Teams app')
 
+initializeTeamApps()
 const app = createApp(App)
 app.use(createPinia())
 // Vuex store from the ported Contacts team page; coexists with Pinia during

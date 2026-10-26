@@ -25,6 +25,7 @@ use OCP\AppFramework\OCSController;
 use OCP\IRequest;
 use OCP\IUser;
 use OCP\IUserSession;
+use OCP\Teams\ITeamManager;
 
 /**
  * Team-level order of the tabs shown on a team's page.
@@ -39,7 +40,7 @@ class TeamTabsController extends OCSController {
 
 	/**
 	 * When a team admin drags the sidebar entries into a new order, the
-	 * client sends the server a list of ids like ["team-folder", "page-42",
+	 * client sends the server a list of ids like ["team-folder", "text-42",
 	 * "home"], and the server saves that list in the team's settings.
 	 *
 	 * These limits exist because the server just trusts whatever list it
@@ -59,6 +60,7 @@ class TeamTabsController extends OCSController {
 		private readonly FederatedUserService $federatedUserService,
 		private readonly PermissionService $permissionService,
 		private readonly IUserSession $userSession,
+		private readonly ITeamManager $teamManager,
 	) {
 		parent::__construct($appName, $request);
 	}
@@ -75,7 +77,8 @@ class TeamTabsController extends OCSController {
 
 		$order = json_decode($circle->getSettings()[self::SETTING_TAB_ORDER] ?? '[]', true);
 
-		return new DataResponse(['order' => $this->sanitizeOrder(is_array($order) ? $order : [])]);
+		$order = $this->sanitizeOrder(is_array($order) ? $order : []);
+		return new DataResponse(['order' => $this->migrateTabOrder($circleId, $order)]);
 	}
 
 	/**
@@ -101,6 +104,32 @@ class TeamTabsController extends OCSController {
 		}
 
 		return new DataResponse(['order' => $order]);
+	}
+
+	/**
+	 * Read-time migration of legacy tab order to provider-prefixed IDs.
+	 * Unknown IDs and unresolved collectives remain available for later loads.
+	 * Reads never write settings; the next admin reorder saves canonical IDs.
+	 *
+	 * @param list<string> $order
+	 * @return list<string>
+	 */
+	private function migrateTabOrder(string $circleId, array $order): array {
+		$order = preg_replace(
+			['/^board-([0-9]+)$/D', '/^page-([0-9]+)$/D'],
+			['deck-$1', 'text-$1'],
+			$order,
+		);
+		$collectivePosition = array_search('collective', $order, true);
+		if ($collectivePosition !== false) {
+			foreach ($this->teamManager->getSharedWith($circleId, $this->getAuthenticatedUser()->getUID()) as $resource) {
+				if ($resource->getProvider()->getId() === 'collectives') {
+					$order[$collectivePosition] = 'collectives-' . $resource->getId();
+					break;
+				}
+			}
+		}
+		return $this->sanitizeOrder($order);
 	}
 
 	/**
