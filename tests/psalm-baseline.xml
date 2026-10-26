@@ -270,11 +270,6 @@
       <code><![CDATA[Signer]]></code>
     </UndefinedDocblockClass>
   </file>
-  <file src="lib/Service/MembershipService.php">
-    <ConflictingReferenceConstraint>
-      <code><![CDATA[if (!in_array($member->getCircleId(), $knownIds)) {]]></code>
-    </ConflictingReferenceConstraint>
-  </file>
   <file src="lib/Service/MiscService.php">
     <DeprecatedMethod>
       <code><![CDATA[MiscService::getContactData($member->getUserId())]]></code>
