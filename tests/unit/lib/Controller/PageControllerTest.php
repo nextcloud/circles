@@ -12,10 +12,12 @@ use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Controller\PageController;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\PermissionService;
+use OCA\Circles\Service\TeamAppProviderRegistry;
 use OCA\Circles\Service\TeamFolderPolicy;
 use OCP\AppFramework\Http\NotFoundResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
+use OCP\Collaboration\Reference\RenderReferenceEvent;
 use OCP\EventDispatcher\IEventDispatcher;
 use OCP\IRequest;
 use OCP\IUser;
@@ -31,6 +33,7 @@ final class PageControllerTest extends TestCase {
 	private IInitialState&MockObject $initialState;
 	private ITeamManager&MockObject $teamManager;
 	private TeamFolderPolicy&MockObject $teamFolderPolicy;
+	private TeamAppProviderRegistry&MockObject $teamApps;
 	private IEventDispatcher&MockObject $eventDispatcher;
 	private IUserSession&MockObject $userSession;
 	private PermissionService&MockObject $permissionService;
@@ -45,6 +48,8 @@ final class PageControllerTest extends TestCase {
 		$this->initialState = $this->createMock(IInitialState::class);
 		$this->teamManager = $this->createMock(ITeamManager::class);
 		$this->teamFolderPolicy = $this->createMock(TeamFolderPolicy::class);
+		$this->teamApps = $this->createMock(TeamAppProviderRegistry::class);
+		$this->teamApps->method('load')->willReturn(['providers' => [], 'errors' => []]);
 		$this->eventDispatcher = $this->createMock(IEventDispatcher::class);
 		$this->permissionService = $this->createMock(PermissionService::class);
 
@@ -59,6 +64,7 @@ final class PageControllerTest extends TestCase {
 			$this->initialState,
 			$this->teamManager,
 			$this->teamFolderPolicy,
+			$this->teamApps,
 			$this->eventDispatcher,
 			$this->userSession,
 			$this->permissionService,
@@ -71,6 +77,8 @@ final class PageControllerTest extends TestCase {
 	 * registered.
 	 */
 	public function testIndexProvidesTeamFolderStateWithProvider(): void {
+		$this->eventDispatcher->expects($this->once())
+			->method('dispatchTyped')->with($this->isInstanceOf(RenderReferenceEvent::class));
 		$this->configService->expects($this->once())
 			->method('getAppValueBool')
 			->with(ConfigService::FRONTEND_ENABLED)
@@ -147,6 +155,7 @@ final class PageControllerTest extends TestCase {
 	 * Frontend disabled: no initial state is provided and a 404 is returned.
 	 */
 	public function testIndexReturnsNotFoundWhenFrontendDisabled(): void {
+		$this->eventDispatcher->expects($this->never())->method('dispatchTyped');
 		$this->configService->expects($this->once())
 			->method('getAppValueBool')
 			->with(ConfigService::FRONTEND_ENABLED)

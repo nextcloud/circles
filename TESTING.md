@@ -12,6 +12,62 @@ The app has two layers of front-end tests:
 
 PHP tests (PHPUnit, Psalm) live under `tests/` and are documented separately.
 
+## Teams provider migration checks
+
+Run the focused host tests with:
+
+```bash
+LANG=C npx vitest run src/teams/integrations src/teams/views/TeamAppView.spec.ts src/teams/firstTab.spec.ts src/teams/resourcesStore.spec.ts
+npm run ts:check
+```
+
+PHP registry and navigation authorization tests are
+`tests/unit/lib/Service/TeamAppProviderRegistryTest.php` and
+`tests/unit/lib/Controller/TeamAppNavigationControllerTest.php`. The normal PHPUnit
+bootstrap requires an installed Nextcloud test instance. Never initialize or
+replace the shared development database just to run tests. Collectives' PHP
+tests must run only in a disposable isolated test instance.
+
+On an authenticated development instance, manually verify:
+
+1. Enable matching Text, Deck, Collectives, and Whiteboard versions. All four
+   register their own entries and creation actions; an unregistered or disabled
+   app contributes none. Teams navigation registration is PHP-only: check that
+   `teamAppProviders` has no module URLs. The page dispatches `RenderReferenceEvent`
+   to load existing Smart Picker scripts. Navigations come from authenticated PHP
+   endpoints; opened entries resolve through the core references API.
+2. Open Text pages through the Teams navigation and reorder entries. Reload: old saved ordering
+   still applies, and the first preview entry is an eligible landing view even
+   when it also declares an Open URL. Link-only entries are not landing views.
+3. Create a Whiteboard, select existing boards from subfolders, and reload.
+   Shared navigation entries persist. Rename keeps the entry identity; a duplicate name
+   cannot overwrite a file.
+4. Remove an open Whiteboard from navigation: its file remains in Files. Cancel deletion, then
+   confirm deletion of a disposable board: only confirmation removes the file.
+5. Switch rapidly between teams and preview entries. Widget apps unmount cleanly,
+   with no previous-team references or late mounts. Interactive widgets must be
+   active immediately on opening and switching entries, without a click
+   to activate them. Repeat after leaving a preview idle.
+6. Repeat as a member, team admin, and nonmember. Members cannot change navigation entries;
+   nonmembers cannot read them. Read-only file permissions still apply.
+7. Disable an integration or simulate a failed navigation request. Provider failures
+   show an error, do not leave an indefinite loading indicator, and do not hide
+   resources from the generic shared list.
+8. Test existing file, Deck board, and Collectives page widgets. Text/Whiteboard
+   use existing file previews rather than Teams-specific editors. No matching
+   widget, a null reference, or OpenGraph-only resolution must leave the Open link
+   available. A failed reference resolution is logged by the shared list and the
+   Open link remains available. Inaccessible references must not expose content.
+   Check translations and widget styles after a fresh load.
+9. Open all apps directly and use Smart Picker outside Teams. Their existing app
+   bundles and previews must still work; no Teams-specific view module should be
+   requested. Bypass browser caching when validating rebuilt assets.
+
+Focused widget lifecycle tests also live in server
+`apps/files/src/reference-files.spec.ts`, Deck `src/reference.spec.js`, and
+Collectives `src/tests/reference.spec.ts`. They cover enclosing-root cleanup,
+interactive rerenders, independent widget instances, and late asynchronous mounts.
+
 ## Vitest (unit & component)
 
 ### Run

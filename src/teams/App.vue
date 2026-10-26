@@ -8,6 +8,8 @@ import { storeToRefs } from 'pinia'
 import { onMounted } from 'vue'
 import NcAppContent from '@nextcloud/vue/components/NcAppContent'
 import NcContent from '@nextcloud/vue/components/NcContent'
+import TeamAppPrompt from './components/TeamAppPrompt.vue'
+import TeamAppResourcePicker from './components/TeamAppResourcePicker.vue'
 import TeamCreationWizard from './components/TeamCreationWizard.vue'
 import TeamNavigation from './components/TeamNavigation.vue'
 import { useTeamsStore } from './store.ts'
@@ -31,6 +33,8 @@ onMounted(() => store.loadTeams())
 		<TeamCreationWizard
 			v-if="canCreateTeam && createWizardOpen"
 			@close="createWizardOpen = false" />
+		<TeamAppPrompt />
+		<TeamAppResourcePicker />
 	</NcContent>
 </template>
 

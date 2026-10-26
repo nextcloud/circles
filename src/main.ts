@@ -7,18 +7,17 @@ import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 import App from './teams/App.vue'
 import { logger } from './logger.ts'
+import { initializeTeamApps } from './teams/integrations/registry.ts'
 import { router } from './teams/router.ts'
 import LegacyGlobalMixin from './teams/team-page/mixins/LegacyGlobalMixin.js'
 import store from './teams/team-page/store/index.ts'
 
 logger.debug('Mounting Teams app')
 
+initializeTeamApps()
 const app = createApp(App)
 app.use(createPinia())
-// Vuex store from the ported Contacts team page; coexists with Pinia during
-// the migration (the new Teams code uses the Pinia `teams` store).
 app.use(store)
 app.use(router)
-// Provides t/n/logger/OC/OCA to the ported (Options API) Contacts components.
 app.mixin(LegacyGlobalMixin)
 app.mount('#circles-teams')
