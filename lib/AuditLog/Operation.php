@@ -60,7 +60,7 @@ enum Operation: string {
 			self::RemoteInstanceUpdated => 'The identity or the type of a known remote instance for federated teams was changed',
 			self::RemoteInstanceRemoved => 'A remote instance for federated teams was removed',
 			self::ScimInstanceAdded => 'A remote instance was allowed to add members to teams managed by SCIM',
-			self::ScimInstanceRemoved => 'A remote instance was no longer allowed to add members to teams managed by SCIM, removing the members it added',
+			self::ScimInstanceRemoved => 'A remote instance was no longer allowed to add members to teams managed by SCIM',
 			self::ConfigUpdated => 'An admin setting of Teams (federated teams, frontal address, team folder quotas) was changed',
 		};
 	}
