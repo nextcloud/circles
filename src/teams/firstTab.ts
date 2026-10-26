@@ -4,39 +4,62 @@
  */
 
 import type { RouteLocationRaw } from 'vue-router'
+import type { AppNavigationEntry } from './integrations/store.ts'
 import type { TeamResources } from './resourcesStore.ts'
 
-/**
- * Whether enough of a team's resource state is known to resolve the first
- * navigation entry: the tab order and the pages, the only order-dependent
- * entries with in-app routes.
- *
- * @param resources - The team's resource state
- */
-export function firstTabSettled(resources: TeamResources): boolean {
-	const orderSettled = resources.orderChecked || resources.orderError
-	const pagesSettled = resources.pagesChecked || resources.pagesError || resources.folderError
-	return orderSettled && pagesSettled
+export interface NavigationEntry {
+	id: string
+	label: string
+	icon?: string
+	iconSvg?: string
+	iconEmoji?: string
+	to?: RouteLocationRaw
+	href?: string
+	legacyIds?: string[]
+	actions?: AppNavigationEntry['actions']
 }
 
 /**
- * The route of the first entry in the team navigation, following the saved
- * tab order like the sidebar does; entries the order does not know keep
- * their natural order behind the known ones. External entries (collective,
- * boards) cannot be a landing page and are skipped.
  *
- * @param teamId - The team whose navigation is resolved
- * @param resources - The team's resource state
+ * @param teamId Team owning the entry
+ * @param entry Provider-owned navigation entry
  */
-export function firstTabRoute(teamId: string, resources: TeamResources): RouteLocationRaw {
-	const targets = new Map<string, RouteLocationRaw>()
-	targets.set('team-folder', { name: 'team-folder', params: { teamId } })
-	for (const page of resources.pages) {
-		targets.set(`page-${page.fileId}`, { name: 'team-page', params: { teamId, fileId: String(page.fileId) } })
-	}
-	targets.set('home', { name: 'team-home', params: { teamId } })
+export function appEntryRoute(teamId: string, entry: AppNavigationEntry): RouteLocationRaw {
+	return { name: 'team-app', params: { teamId, providerId: entry.providerId, entryId: entry.entryId } }
+}
 
-	const known = resources.tabOrder.filter((id) => targets.has(id))
-	const unknown = [...targets.keys()].filter((id) => !resources.tabOrder.includes(id))
-	return targets.get([...known, ...unknown][0]!)!
+/**
+ *
+ * @param entries Entries in their natural order
+ * @param order Saved canonical or legacy IDs
+ */
+export function orderEntries<T extends { id: string, legacyIds?: string[] }>(entries: T[], order: string[]): T[] {
+	const position = new Map(order.map((id, index) => [id, index]))
+	const rank = (entry: T): number => Math.min(...[entry.id, ...entry.legacyIds ?? []]
+		.map((id) => position.get(id) ?? Infinity))
+	return [...entries].sort((a, b) => rank(a) - rank(b))
+}
+
+/**
+ *
+ * @param resources Native team resources
+ * @param appsSettled Whether provider loads have settled
+ */
+export function firstTabSettled(resources: TeamResources, appsSettled = true): boolean {
+	return (resources.orderChecked || resources.orderError) && appsSettled
+}
+
+/**
+ *
+ * @param teamId Team to open
+ * @param resources Native team resources
+ * @param apps Provider-owned entries
+ */
+export function firstTabRoute(teamId: string, resources: TeamResources, apps: AppNavigationEntry[] = []): RouteLocationRaw {
+	const targets = [
+		{ id: 'team-folder', to: { name: 'team-folder', params: { teamId } } as RouteLocationRaw },
+		...apps.filter((entry) => !entry.href).map((entry) => ({ ...entry, to: appEntryRoute(teamId, entry) })),
+		{ id: 'home', to: { name: 'team-home', params: { teamId } } as RouteLocationRaw },
+	]
+	return orderEntries(targets, resources.tabOrder)[0]!.to
 }

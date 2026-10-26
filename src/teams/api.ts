@@ -3,11 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
+import type { TeamFolder } from '#server-types/teams'
 import type { DiscoverableTeam, Member, MemberCandidate, Resource, SharedResource, Team, TeamRole } from './types.ts'
 
 import axios from '@nextcloud/axios'
-import { FileType } from '@nextcloud/files'
-import { defaultRootPath, getClient, getDefaultPropfind, resultToNode } from '@nextcloud/files/dav'
 import { generateOcsUrl } from '@nextcloud/router'
 import { logger } from '../logger.ts'
 import { SHARES_TYPES_MEMBER_MAP } from './team-page/models/constants.ts'
@@ -326,14 +325,7 @@ export async function deleteTeam(teamId: string): Promise<void> {
 	await axios.delete(generateOcsUrl('apps/circles/circles/{circleId}', { circleId: teamId }))
 }
 
-/**
- * The team folder linked to a team.
- */
-export interface TeamFolder {
-	id: number
-	mountPoint: string
-	quota: number | null
-}
+export type { TeamFolder } from '#server-types/teams'
 
 /** Team and its linked folder as exposed to administrators. */
 export interface AdminTeamFolder {
@@ -445,117 +437,6 @@ export async function updateTeamFolderQuota(teamId: string, quota: number): Prom
 }
 
 /**
- * Subfolder of the team folder holding the page files, inside the app's
- * own namespace of the hidden `.system` folder: the pages neither clutter
- * the files the team actually shares nor the `.system` root itself.
- */
-const PAGES_FOLDER = '.system/teams/pages'
-
-/**
- * A team page: a markdown file stored in the team folder's hidden pages
- * subfolder, surfaced as a tab on the team.
- */
-export interface TeamPage {
-	fileId: number
-	/** Page title: the file name without the .md extension. */
-	title: string
-	/** Path relative to the user's files root, as the Text editor expects. */
-	filePath: string
-}
-
-/**
- * List the team pages: the markdown files in the team folder's hidden
- * pages subfolder.
- *
- * @param mountPoint - The team folder mount point of the current user
- */
-export async function fetchTeamPages(mountPoint: string): Promise<TeamPage[]> {
-	let response
-	try {
-		response = await getClient().getDirectoryContents(`${defaultRootPath}/${mountPoint}/${PAGES_FOLDER}`, {
-			details: true,
-			data: getDefaultPropfind(),
-		})
-	} catch (error) {
-		// 404 means the pages subfolder was not created yet (it appears with
-		// the first page), or the team folder itself has not been physically
-		// created — either way "no pages".
-		if ((error as { status?: number })?.status === 404) {
-			return []
-		}
-		throw error
-	}
-	const data = Array.isArray(response) ? response : response.data
-
-	return data
-		.map((entry) => resultToNode(entry, defaultRootPath))
-		.filter((node) => node.type === FileType.File
-			&& node.extension?.toLowerCase() === '.md'
-			&& node.fileid !== undefined)
-		.map((node) => ({
-			fileId: node.fileid!,
-			title: node.basename.slice(0, -node.extension!.length),
-			filePath: `/${mountPoint}/${PAGES_FOLDER}/${node.basename}`,
-		}))
-		.sort((a, b) => a.title.localeCompare(b.title))
-}
-
-/**
- * Create a team page: an empty markdown file in the team folder's hidden
- * pages subfolder, which appears with the first page.
- *
- * @param mountPoint - The team folder mount point of the current user
- * @param name - The page name (without extension)
- */
-export async function createTeamPage(mountPoint: string, name: string): Promise<void> {
-	const pagesFolder = `${defaultRootPath}/${mountPoint}/${PAGES_FOLDER}`
-	try {
-		// Recursive: `.system` and the pages folder inside it appear with
-		// the first page.
-		await getClient().createDirectory(pagesFolder, { recursive: true })
-	} catch (error) {
-		// 405: the folder appeared between the existence probe and the MKCOL.
-		if ((error as { status?: number })?.status !== 405) {
-			throw error
-		}
-	}
-	const written = await getClient().putFileContents(`${pagesFolder}/${name}.md`, '', {
-		// Refuse to overwrite an existing page of the same name
-		overwrite: false,
-	})
-	// The webdav client returns false instead of throwing on the 412 an
-	// existing page produces with overwrite disabled.
-	if (written === false) {
-		throw Object.assign(new Error('A page with this name already exists'), { status: 412 })
-	}
-}
-
-/**
- * Delete a team page: remove its markdown file from the team folder.
- *
- * @param page - The team page to delete
- */
-export async function deleteTeamPage(page: TeamPage): Promise<void> {
-	await getClient().deleteFile(`${defaultRootPath}${page.filePath}`)
-}
-
-/**
- * Rename a team page: move its markdown file to the new name within the
- * team folder. Refuses to overwrite an existing page of the same name.
- *
- * @param page - The team page to rename
- * @param name - The new page name (without extension)
- */
-export async function renameTeamPage(page: TeamPage, name: string): Promise<void> {
-	const directory = page.filePath.slice(0, page.filePath.lastIndexOf('/'))
-	await getClient().moveFile(
-		`${defaultRootPath}${page.filePath}`,
-		`${defaultRootPath}${directory}/${name}.md`,
-		{ overwrite: false },
-	)
-}
-
-/**
  * Fetch the team-level tab order (readable by every member).
  *
  * @param teamId - The team single id
@@ -588,91 +469,6 @@ export async function saveTabOrder(teamId: string, order: string[]): Promise<voi
 export async function fetchTeamResources(teamId: string): Promise<SharedResource[]> {
 	const res = await axios.get<OcsResponse<{ resources: SharedResource[] }>>(generateOcsUrl('teams/{teamId}/resources', { teamId }))
 	return res.data.ocs.data.resources ?? []
-}
-
-/**
- * Create a collective named after a team. The collectives app links the
- * collective to the team by name, so no separate share step is needed.
- *
- * TODO: calls the collectives API directly; should eventually go through
- * a teams extension point instead of hardcoding another app's route.
- *
- * @param name - The collective name (the team's name)
- */
-export async function createCollective(name: string): Promise<void> {
-	await axios.post(
-		generateOcsUrl('apps/collectives/api/v1.0/collectives'),
-		{ name },
-	)
-}
-
-/**
- * Create a Deck board linked to a team. The deck endpoint links the board
- * to the team itself, so no separate share step is needed.
- *
- * TODO: calls the deck API directly; should eventually go through a teams
- * extension point instead of hardcoding another app's route.
- *
- * @param teamId - The team single id
- * @param title - The board title
- */
-export async function createDeckBoard(teamId: string, title: string): Promise<void> {
-	const res = await axios.post<OcsResponse<{ id?: number }>>(
-		generateOcsUrl('apps/deck/api/v1.0/boards/team'),
-		{ title, teamId },
-	)
-	if (!res.data.ocs.data.id) {
-		throw new Error('The board creation response contains no board id')
-	}
-}
-
-/** A deck board attached to the team itself, shown as a navigation entry. */
-export interface TeamBoard {
-	id: number
-	title: string
-	/** Absolute deep link to the board in the deck app. */
-	url: string
-}
-
-/** The subset of deck's serialized board relevant here. */
-interface RawDeckBoard {
-	id: number
-	title: string
-	teamId?: string | null
-	archived?: boolean
-	deletedAt?: number
-}
-
-/**
- * Pick the deck boards attached to the team itself out of the shared deck
- * resources. The generic resource list cannot tell a team board from a
- * personally-shared one (and deck's board list omits teamId), so each
- * candidate is read individually from deck.
- *
- * TODO: calls the deck API directly; should eventually go through a teams
- * extension point instead of hardcoding another app's route.
- *
- * @param teamId - The team single id
- * @param candidates - The team's shared resources from the deck provider
- */
-export async function fetchTeamDeckBoards(teamId: string, candidates: SharedResource[]): Promise<TeamBoard[]> {
-	const responses = await Promise.allSettled(candidates.map((resource) => axios.get<OcsResponse<RawDeckBoard>>(generateOcsUrl('apps/deck/api/v1.0/board/{boardId}', { boardId: resource.id }))))
-
-	const boards: TeamBoard[] = []
-	responses.forEach((response, index) => {
-		const resource = candidates[index]
-		if (response.status === 'rejected') {
-			// The board stays reachable through the shared resources.
-			logger.warn('Could not read a deck board, not showing it as a tab', { resource, reason: response.reason })
-			return
-		}
-		const board = response.value.data.ocs.data
-		if (board.teamId === teamId && !board.archived && (board.deletedAt ?? 0) === 0) {
-			boards.push({ id: board.id, title: board.title, url: resource.url })
-		}
-	})
-
-	return boards.sort((a, b) => a.title.localeCompare(b.title))
 }
 
 /**
