@@ -13,10 +13,12 @@ use OCA\Circles\Controller\PageController;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\TeamFolderPolicy;
 use OCP\AppFramework\Http\NotFoundResponse;
+use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
 use OCP\EventDispatcher\IEventDispatcher;
 use OCP\IRequest;
+use OCP\IURLGenerator;
 use OCP\Teams\ITeamFolderProvider;
 use OCP\Teams\ITeamManager;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -29,6 +31,7 @@ final class PageControllerTest extends TestCase {
 	private ITeamManager&MockObject $teamManager;
 	private TeamFolderPolicy&MockObject $teamFolderPolicy;
 	private IEventDispatcher&MockObject $eventDispatcher;
+	private IURLGenerator&MockObject $urlGenerator;
 	private PageController $pageController;
 
 	#[\Override]
@@ -41,6 +44,7 @@ final class PageControllerTest extends TestCase {
 		$this->teamManager = $this->createMock(ITeamManager::class);
 		$this->teamFolderPolicy = $this->createMock(TeamFolderPolicy::class);
 		$this->eventDispatcher = $this->createMock(IEventDispatcher::class);
+		$this->urlGenerator = $this->createMock(IURLGenerator::class);
 
 		$this->pageController = new PageController(
 			$this->request,
@@ -49,7 +53,36 @@ final class PageControllerTest extends TestCase {
 			$this->teamManager,
 			$this->teamFolderPolicy,
 			$this->eventDispatcher,
+			$this->urlGenerator,
 		);
+	}
+
+	public function testTeamLinkRedirectsToTeamLandingPage(): void {
+		$teamId = 'MhoB14OeDtLNDtgvfPJgNadWVQ4TU4n';
+		$url = '/nextcloud/index.php/apps/circles/teams/team/' . $teamId;
+		$this->configService->expects($this->once())
+			->method('getAppValueBool')
+			->with(ConfigService::FRONTEND_ENABLED)
+			->willReturn(true);
+		$this->urlGenerator->expects($this->once())
+			->method('linkToRoute')
+			->with('circles.page.indexPath', ['path' => 'team/' . $teamId])
+			->willReturn($url);
+
+		$result = $this->pageController->teamLink($teamId);
+
+		$this->assertInstanceOf(RedirectResponse::class, $result);
+		$this->assertSame($url, $result->getRedirectURL());
+	}
+
+	public function testTeamLinkReturnsNotFoundWhenFrontendDisabled(): void {
+		$this->configService->expects($this->once())
+			->method('getAppValueBool')
+			->with(ConfigService::FRONTEND_ENABLED)
+			->willReturn(false);
+		$this->urlGenerator->expects($this->never())->method('linkToRoute');
+
+		$this->assertInstanceOf(NotFoundResponse::class, $this->pageController->teamLink('team-id'));
 	}
 
 	/**

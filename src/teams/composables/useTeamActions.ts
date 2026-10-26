@@ -9,6 +9,7 @@ import type { Team } from '../types.ts'
 import { getCurrentUser } from '@nextcloud/auth'
 import { showConfirmation, showError, showSuccess } from '@nextcloud/dialogs'
 import { t } from '@nextcloud/l10n'
+import { generateUrl } from '@nextcloud/router'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { logger } from '../../logger.ts'
@@ -39,7 +40,6 @@ export function useTeamActions(getTeam: () => Team | undefined) {
 	const router = useRouter()
 	const store = useTeamsStore()
 
-	const to = computed(() => ({ name: 'team', params: { teamId: getTeam()?.id } }))
 	const isOwner = computed(() => getTeam()?.myRole === 'owner')
 	// Management gates with deliberately different thresholds: the settings
 	// entry includes moderators, while creating team resources, managing
@@ -57,7 +57,11 @@ export function useTeamActions(getTeam: () => Team | undefined) {
 
 	/** Copy a direct link to the team. */
 	async function onCopyLink(): Promise<void> {
-		const href = window.location.origin + router.resolve(to.value).href
+		const team = getTeam()
+		if (!team) {
+			return
+		}
+		const href = window.location.origin + generateUrl('/t/{teamId}', { teamId: team.id })
 		try {
 			await navigator.clipboard.writeText(href)
 			showSuccess(t('circles', 'Link copied to the clipboard'))
