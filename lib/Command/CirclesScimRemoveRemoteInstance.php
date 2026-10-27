@@ -10,7 +10,9 @@ declare(strict_types=1);
 namespace OCA\Circles\Command;
 
 use OC\Core\Command\Base;
+use OCA\Circles\AuditLog\Operation;
 use OCA\Circles\ConfigLexicon;
+use OCA\Circles\Service\AuditLogService;
 use OCA\Circles\Service\ScimService;
 use OCP\AppFramework\Services\IAppConfig;
 use Symfony\Component\Console\Input\InputArgument;
@@ -21,6 +23,7 @@ class CirclesScimRemoveRemoteInstance extends Base {
 	public function __construct(
 		private readonly IAppConfig $appConfig,
 		private readonly ScimService $scimService,
+		private readonly AuditLogService $auditLogService,
 	) {
 		parent::__construct();
 	}
@@ -46,6 +49,9 @@ class CirclesScimRemoveRemoteInstance extends Base {
 
 		unset($instances[$key]);
 		$this->appConfig->setAppValueArray(ConfigLexicon::SCIM_REMOTE_INSTANCES, array_values($instances));
+		$this->auditLogService->log(Operation::ScimInstanceRemoved, 'Remote instance "%s" is no longer allowed to add members to SCIM teams', [
+			'instance' => $instance,
+		]);
 
 		$this->scimService->removeRemoteInstanceMembers($instance);
 
