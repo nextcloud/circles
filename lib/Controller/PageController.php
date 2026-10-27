@@ -12,11 +12,13 @@ namespace OCA\Circles\Controller;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\TeamFolderPolicy;
+use OCA\Files\Event\LoadFilesApp;
 use OCA\Text\Event\LoadEditor;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Attribute\FrontpageRoute;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
+use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Http\NotFoundResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
@@ -57,6 +59,13 @@ class PageController extends Controller {
 			$this->teamFolderPolicy->isTeamFolderProvisioningEnabled(),
 		);
 
+		// Load the Files app so the team folder tab can embed its file list,
+		// before the teams scripts so its API is ready once they run.
+		// The class only resolves on servers providing the embedding API.
+		if (class_exists(LoadFilesApp::class)) {
+			$this->eventDispatcher->dispatchTyped(new LoadFilesApp());
+		}
+
 		Util::addScript(Application::APP_ID, 'teams-main');
 		Util::addStyle(Application::APP_ID, 'teams-main');
 
@@ -66,7 +75,13 @@ class PageController extends Controller {
 			$this->eventDispatcher->dispatchTyped(new LoadEditor());
 		}
 
-		return new TemplateResponse(Application::APP_ID, 'main');
+		$response = new TemplateResponse(Application::APP_ID, 'main');
+		// Same as the Files app: the Viewer frames documents, previews use a service worker
+		$policy = new ContentSecurityPolicy();
+		$policy->addAllowedFrameDomain('\'self\'');
+		$policy->addAllowedWorkerSrcDomain('\'self\'');
+		$response->setContentSecurityPolicy($policy);
+		return $response;
 	}
 
 	/**
