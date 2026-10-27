@@ -118,8 +118,6 @@ async function onRequestJoin(): Promise<void> {
 
 		<template v-else>
 			<div class="team-page__content">
-				<!-- Keyed so a param change (e.g. another page's fileId) mounts a
-					fresh view instead of reusing the instance with new props. -->
 				<router-view :key="$route.path" />
 			</div>
 		</template>

@@ -22,3 +22,33 @@ You can use the `\Psr\Container\ContainerInterface`, see [dependency injection](
 # Testing
 Front-end tests (Vitest for unit/component, Playwright for end-to-end) are documented in [TESTING.md](TESTING.md).
 
+# Embedded team resources
+
+Teams uses Nextcloud's existing Reference/Smart Picker widget API to display
+shared resources inside the team layout. Apps register reference providers and
+widgets; Teams resolves the selected resource URL and renders its registered
+widget in interactive mode, without a Deck-specific frontend integration.
+
+The page dispatches `OCP\Collaboration\Reference\RenderReferenceEvent` to load
+enabled apps' widget registrations. Deck's existing `deck-board` widget can
+render an interactive board; the separate Deck web component is not required.
+Other apps can participate through the same API without a new Teams adapter.
+
+Resource routes use
+`/apps/circles/teams/team/{teamId}/resource/{providerId}/{resourceId}`. Teams only
+resolves resources confirmed in the current team's shared resources. Apps still
+enforce their own permissions. The team navigation stays visible, highlighting
+the pinned board or "Shared with the team" for other shared resources.
+
+When no accessible widget is available, Teams shows an explicit unavailable
+state with an optional "Open in app" link in a new tab. It never switches apps
+automatically. Widgets are responsible for their own content and interactions;
+some only provide previews, even when interactive mode is requested.
+
+The existing widget API does not define navigation-state updates, readiness or
+asynchronous error/cancellation callbacks. Consequently, card-level URLs and
+browser-history synchronization from the earlier Deck-specific integration are
+not supported. Teams cancels pending reference requests and calls the widget's
+cleanup callback with its original mount element when leaving a resource.
+Providers remain responsible for cancelling their own asynchronous mounting and
+disposing their app state.

@@ -17,7 +17,7 @@ const props = defineProps<{
 const router = useRouter()
 
 // The team page loads the per-team resources; this view only waits for the
-// tab order and pages to settle, then forwards to the first navigation entry.
+// tab order, pages and boards to settle, then forwards to the first entry.
 const resourcesStore = useTeamResourcesStore()
 const resources = computed(() => resourcesStore.forTeam(props.teamId))
 
