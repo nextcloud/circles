@@ -48,6 +48,7 @@ OC.L10N.register(
     "Move down" : "Mover hacia abajo",
     "Remove from favorites" : "Quitar de favoritos",
     "Add to favorites" : "Añadir a favoritos",
+    "Next" : "Siguiente",
     "Back" : "Volver",
     "Advanced" : "Avanzado",
     "Remove {name}" : "Eliminar {name}",
