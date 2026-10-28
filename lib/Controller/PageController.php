@@ -18,10 +18,12 @@ use OCP\AppFramework\Http\Attribute\FrontpageRoute;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\NotFoundResponse;
+use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
 use OCP\EventDispatcher\IEventDispatcher;
 use OCP\IRequest;
+use OCP\IURLGenerator;
 use OCP\Teams\ITeamManager;
 use OCP\Util;
 
@@ -36,6 +38,7 @@ class PageController extends Controller {
 		private ITeamManager $teamManager,
 		private TeamFolderPolicy $teamFolderPolicy,
 		private IEventDispatcher $eventDispatcher,
+		private IURLGenerator $urlGenerator,
 	) {
 		parent::__construct(Application::APP_ID, $request);
 	}
@@ -67,6 +70,19 @@ class PageController extends Controller {
 		}
 
 		return new TemplateResponse(Application::APP_ID, 'main');
+	}
+
+	#[NoAdminRequired]
+	#[NoCSRFRequired]
+	#[FrontpageRoute(verb: 'GET', url: '/t/{teamId}', root: '')]
+	public function teamLink(string $teamId): RedirectResponse|NotFoundResponse {
+		if (!$this->configService->getAppValueBool(ConfigService::FRONTEND_ENABLED)) {
+			return new NotFoundResponse();
+		}
+
+		return new RedirectResponse($this->urlGenerator->linkToRoute('circles.page.indexPath', [
+			'path' => 'team/' . $teamId,
+		]));
 	}
 
 	/**
