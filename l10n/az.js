@@ -36,6 +36,7 @@ OC.L10N.register(
     "Copy link" : "linki nüsxələ",
     "No results" : "Nəticə yoxdur",
     "Pending" : "Gözləmə",
+    "Favorites" : "Sevimlilər",
     "User" : "User",
     "Email" : "Email",
     "Users" : "İstifadəçilər",

@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
+use OCA\Circles\AuditLog\Operation;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\FederatedItemBadRequestException;
@@ -20,6 +21,7 @@ use OCA\Circles\IFederatedItemMemberEmpty;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
+use OCA\Circles\Service\AuditLogService;
 use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\StatusCode;
@@ -46,12 +48,14 @@ class CircleDestroy implements
 	 * @param MemberRequest $memberRequest
 	 * @param EventService $eventService
 	 * @param MembershipService $membershipService
+	 * @param AuditLogService $auditLogService
 	 */
 	public function __construct(
 		private CircleRequest $circleRequest,
 		private MemberRequest $memberRequest,
 		private EventService $eventService,
 		private MembershipService $membershipService,
+		private AuditLogService $auditLogService,
 	) {
 	}
 
@@ -96,6 +100,12 @@ class CircleDestroy implements
 		foreach ($parentCirlces as $parentCircle) {
 			$this->membershipService->updatePopulation($parentCircle);
 		}
+
+		$this->auditLogService->logTeamChange($circle, Operation::TeamDeleted, 'Team %s ("%s") was deleted by "%s"', [
+			'circleId' => $circle->getSingleId(),
+			'name' => $this->auditLogService->getTeamName($circle),
+			'initiator' => $this->auditLogService->getInitiator($circle),
+		]);
 	}
 
 	/**

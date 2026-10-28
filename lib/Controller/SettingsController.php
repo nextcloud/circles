@@ -9,7 +9,9 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Controller;
 
+use OCA\Circles\AuditLog\Operation;
 use OCA\Circles\ConfigLexicon;
+use OCA\Circles\Service\AuditLogService;
 use OCA\Circles\Service\ConfigService;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
@@ -24,6 +26,7 @@ class SettingsController extends OCSController {
 		IRequest $request,
 		private readonly IAppConfig $appConfig,
 		private readonly IGroupManager $groupManager,
+		private readonly AuditLogService $auditLogService,
 	) {
 		parent::__construct($appName, $request);
 	}
@@ -31,6 +34,7 @@ class SettingsController extends OCSController {
 	public function setValue(string $key, string $value): DataResponse {
 		if ($key === ConfigLexicon::FEDERATED_TEAMS_FRONTAL) {
 			if ($this->setFrontalValue($value)) {
+				$this->logSetting($key, $value);
 				return $this->getValues();
 			}
 
@@ -39,6 +43,7 @@ class SettingsController extends OCSController {
 
 		if ($key === ConfigLexicon::FEDERATED_TEAMS_ENABLED) {
 			$this->appConfig->setAppValueBool(ConfigLexicon::FEDERATED_TEAMS_ENABLED, $value === 'yes');
+			$this->logSetting($key, $value === 'yes' ? 'yes' : 'no');
 			return $this->getValues();
 		}
 
@@ -48,6 +53,7 @@ class SettingsController extends OCSController {
 			}
 
 			$this->appConfig->setAppValueInt(ConfigLexicon::TEAM_FOLDER_DEFAULT_QUOTA, (int)$value);
+			$this->logSetting($key, (string)(int)$value);
 			return $this->getValues();
 		}
 
@@ -58,6 +64,7 @@ class SettingsController extends OCSController {
 			}
 
 			$this->appConfig->setAppValueArray(ConfigLexicon::TEAM_FOLDER_GROUP_QUOTAS, $quotas);
+			$this->logSetting($key, (string)json_encode($quotas));
 			return $this->getValues();
 		}
 
@@ -81,6 +88,13 @@ class SettingsController extends OCSController {
 			],
 			$this->groupManager->search($search, 100),
 		));
+	}
+
+	private function logSetting(string $key, string $value): void {
+		$this->auditLogService->log(Operation::ConfigUpdated, 'Teams setting "%s" was set to "%s"', [
+			'key' => $key,
+			'value' => $value,
+		]);
 	}
 
 	/** @param array<mixed> $quotas */

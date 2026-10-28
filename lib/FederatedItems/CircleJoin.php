@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OCA\Circles\FederatedItems;
 
 use Exception;
+use OCA\Circles\AuditLog\Operation;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\FederatedItemBadRequestException;
 use OCA\Circles\Exceptions\FederatedUserException;
@@ -29,6 +30,7 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\ManagedModel;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Service\AuditLogService;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\EventService;
@@ -61,6 +63,7 @@ class CircleJoin implements
 	 * @param MembershipService $membershipService
 	 * @param EventService $eventService
 	 * @param ConfigService $configService
+	 * @param AuditLogService $auditLogService
 	 */
 	public function __construct(
 		private IUserManager $userManager,
@@ -71,6 +74,7 @@ class CircleJoin implements
 		private MembershipService $membershipService,
 		private EventService $eventService,
 		private ConfigService $configService,
+		private AuditLogService $auditLogService,
 	) {
 	}
 
@@ -191,6 +195,17 @@ class CircleJoin implements
 		}
 
 		$this->membershipService->updatePopulation($event->getCircle());
+
+		$circle = $event->getCircle();
+		$parameters = $this->auditLogService->getMemberParameters($member) + [
+			'circleId' => $circle->getSingleId(),
+			'name' => $this->auditLogService->getTeamName($circle),
+		];
+		if ($member->getStatus() === Member::STATUS_REQUEST) {
+			$this->auditLogService->logTeamChange($circle, Operation::MemberRequested, 'Member "%s" (%s, member %s) requested to join team %s ("%s")', $parameters);
+		} else {
+			$this->auditLogService->logTeamChange($circle, Operation::MemberJoined, 'Member "%s" (%s, member %s) joined team %s ("%s")', $parameters);
+		}
 	}
 
 	/**

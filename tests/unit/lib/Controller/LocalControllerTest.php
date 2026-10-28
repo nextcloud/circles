@@ -20,6 +20,8 @@ use OCA\Circles\Service\MembershipService;
 use OCA\Circles\Service\PermissionService;
 use OCA\Circles\Service\SearchService;
 use OCA\Circles\Tools\Traits\TDeserialize;
+use OCP\AppFramework\Http;
+use OCP\AppFramework\OCS\OCSException;
 use OCP\IRequest;
 use OCP\IUserManager;
 use OCP\IUserSession;
@@ -107,6 +109,10 @@ class LocalControllerTest extends TestCase {
 	protected function tearDown(): void {
 		parent::tearDown();
 
+		$owner = $this->userManager->get(self::TEST_USER_1);
+		$this->userSession->setUser($owner);
+		$this->container->get(FederatedUserService::class)->setLocalCurrentUser($owner);
+
 		$circleService = $this->container->get(CircleService::class);
 
 		foreach ($this->circlesToCleanup as $circleId) {
@@ -116,6 +122,19 @@ class LocalControllerTest extends TestCase {
 				// continue cleanup
 			}
 		}
+	}
+
+	private function actAs(string $userId): void {
+		$this->userSession->setUser($this->userManager->get($userId));
+	}
+
+	private function findListedCircle(string $circleId): ?array {
+		foreach ($this->localController->circles()->getData() as $circle) {
+			if ($circle['id'] === $circleId) {
+				return $circle;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -138,6 +157,146 @@ class LocalControllerTest extends TestCase {
 			[1, 1, 1],
 			[-1, 1, 2],
 		];
+	}
+
+	public function testCirclesListShowsVisibleTeamsToNonMembers(): void {
+		$visibleOpenRequest = $this->localController->create(
+			'test-visible-open-request-' . bin2hex(random_bytes(4)),
+			createTeamFolder: false,
+		)->getData();
+		$visibleOpenRequestId = $visibleOpenRequest['id'];
+		$this->circlesToCleanup[] = $visibleOpenRequestId;
+		$visibleOpenRequestConfig = Circle::CFG_VISIBLE | Circle::CFG_OPEN | Circle::CFG_REQUEST;
+		$this->localController->editConfig($visibleOpenRequestId, $visibleOpenRequestConfig);
+		$visibleOpenRequestDetails = $this->localController->circleDetails($visibleOpenRequestId)->getData();
+		$this->assertSame($visibleOpenRequestConfig, $visibleOpenRequestDetails['config'] & $visibleOpenRequestConfig);
+
+		$visible = $this->localController->create(
+			'test-visible-' . bin2hex(random_bytes(4)),
+			createTeamFolder: false,
+		)->getData();
+		$visibleId = $visible['id'];
+		$this->circlesToCleanup[] = $visibleId;
+		$this->localController->editConfig($visibleId, Circle::CFG_VISIBLE);
+		$visibleDetails = $this->localController->circleDetails($visibleId)->getData();
+		$this->assertSame(Circle::CFG_VISIBLE, $visibleDetails['config'] & Circle::CFG_VISIBLE);
+
+		$default = $this->localController->create(
+			'test-default-' . bin2hex(random_bytes(4)),
+			createTeamFolder: false,
+		)->getData();
+		$defaultId = $default['id'];
+		$this->circlesToCleanup[] = $defaultId;
+
+		$this->actAs(self::TEST_USER_2);
+
+		$listedVisibleOpenRequest = $this->findListedCircle($visibleOpenRequestId);
+		$this->assertNotNull($listedVisibleOpenRequest);
+		$this->assertNull($listedVisibleOpenRequest['initiator']);
+		$this->assertSame(Circle::CFG_VISIBLE | Circle::CFG_OPEN, $listedVisibleOpenRequest['config']);
+		$this->assertArrayHasKey('population', $listedVisibleOpenRequest);
+		$this->assertIsInt($listedVisibleOpenRequest['population']);
+
+		$listedVisible = $this->findListedCircle($visibleId);
+		$this->assertNotNull($listedVisible);
+		$this->assertNull($listedVisible['initiator']);
+		$this->assertSame(Circle::CFG_VISIBLE, $listedVisible['config']);
+		$this->assertArrayHasKey('population', $listedVisible);
+		$this->assertIsInt($listedVisible['population']);
+
+		$this->assertNull($this->findListedCircle($defaultId));
+	}
+
+	public function testCircleJoinOpenTeamGrantsMembership(): void {
+		$circle = $this->localController->create(
+			'test-open-' . bin2hex(random_bytes(4)),
+			createTeamFolder: false,
+		)->getData();
+		$circleId = $circle['id'];
+		$this->circlesToCleanup[] = $circleId;
+		$config = Circle::CFG_VISIBLE | Circle::CFG_OPEN;
+		$this->localController->editConfig($circleId, $config);
+		$circleDetails = $this->localController->circleDetails($circleId)->getData();
+		$this->assertSame($config, $circleDetails['config'] & $config);
+
+		$this->actAs(self::TEST_USER_2);
+
+		$member = $this->localController->circleJoin($circleId)->getData();
+		$this->assertSame(Member::LEVEL_MEMBER, $member['level']);
+		$this->assertSame(Member::STATUS_MEMBER, $member['status']);
+
+		$listedCircle = $this->findListedCircle($circleId);
+		$this->assertNotNull($listedCircle);
+		$this->assertSame(Member::LEVEL_MEMBER, $listedCircle['initiator']['level']);
+	}
+
+	public function testCircleJoinRequestTeamCreatesPendingRequest(): void {
+		$circle = $this->localController->create(
+			'test-open-request-' . bin2hex(random_bytes(4)),
+			createTeamFolder: false,
+		)->getData();
+		$circleId = $circle['id'];
+		$this->circlesToCleanup[] = $circleId;
+		$config = Circle::CFG_VISIBLE | Circle::CFG_OPEN | Circle::CFG_REQUEST;
+		$this->localController->editConfig($circleId, $config);
+		$circleDetails = $this->localController->circleDetails($circleId)->getData();
+		$this->assertSame($config, $circleDetails['config'] & $config);
+
+		$this->actAs(self::TEST_USER_2);
+
+		$member = $this->localController->circleJoin($circleId)->getData();
+		$this->assertSame(Member::LEVEL_NONE, $member['level']);
+		$this->assertSame(Member::STATUS_REQUEST, $member['status']);
+
+		$listedCircle = $this->findListedCircle($circleId);
+		$this->assertNotNull($listedCircle);
+		$this->assertSame(Member::LEVEL_NONE, $listedCircle['initiator']['level']);
+		$this->assertSame(Member::STATUS_REQUEST, $listedCircle['initiator']['status']);
+		$this->assertSame(Http::STATUS_OK, $this->localController->circleDetails($circleId)->getStatus());
+
+		$this->expectException(OCSException::class);
+		$this->localController->circleJoin($circleId);
+	}
+
+	public function testCircleJoinClosedVisibleTeamFails(): void {
+		$circle = $this->localController->create(
+			'test-closed-visible-' . bin2hex(random_bytes(4)),
+			createTeamFolder: false,
+		)->getData();
+		$circleId = $circle['id'];
+		$this->circlesToCleanup[] = $circleId;
+		$this->localController->editConfig($circleId, Circle::CFG_VISIBLE);
+		$circleDetails = $this->localController->circleDetails($circleId)->getData();
+		$this->assertSame(Circle::CFG_VISIBLE, $circleDetails['config'] & Circle::CFG_VISIBLE);
+
+		$this->actAs(self::TEST_USER_2);
+
+		try {
+			$this->localController->circleJoin($circleId);
+			$this->fail('Expected OCSException');
+		} catch (OCSException) {
+		}
+
+		$listedCircle = $this->findListedCircle($circleId);
+		$this->assertNotNull($listedCircle);
+		$this->assertNull($listedCircle['initiator']);
+	}
+
+	public function testNonMemberCannotReadVisibleTeamDetailsOrAvatar(): void {
+		$circle = $this->localController->create(
+			'test-visible-restricted-' . bin2hex(random_bytes(4)),
+			createTeamFolder: false,
+		)->getData();
+		$circleId = $circle['id'];
+		$this->circlesToCleanup[] = $circleId;
+		$this->localController->editConfig($circleId, Circle::CFG_VISIBLE);
+		$circleDetails = $this->localController->circleDetails($circleId)->getData();
+		$this->assertSame(Circle::CFG_VISIBLE, $circleDetails['config'] & Circle::CFG_VISIBLE);
+
+		$this->actAs(self::TEST_USER_2);
+
+		$this->assertSame(Http::STATUS_FORBIDDEN, $this->localController->circleDetails($circleId)->getStatus());
+		$this->assertSame(Http::STATUS_FORBIDDEN, $this->localController->circleAvatar($circleId)->getStatus());
 	}
 
 	public function testMemberAdd(): void {

@@ -9,10 +9,12 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
+use OCA\Circles\AuditLog\Operation;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Repository\CircleInvitationRepository;
+use OCA\Circles\Service\AuditLogService;
 use OCA\Circles\Service\EventService;
 use OCA\Circles\Tools\Traits\TDeserialize;
 
@@ -22,6 +24,7 @@ class CircleRevokeInvitation implements IFederatedItem {
 	public function __construct(
 		private CircleInvitationRepository $circleInvitationRepository,
 		private EventService $eventService,
+		private AuditLogService $auditLogService,
 	) {
 	}
 
@@ -40,9 +43,17 @@ class CircleRevokeInvitation implements IFederatedItem {
 	public function manage(FederatedEvent $event): void {
 		$circle = clone $event->getCircle();
 
-		$this->circleInvitationRepository->deleteBy(['circleId' => $circle->getSingleId()]);
+		$deleted = $this->circleInvitationRepository->deleteBy(['circleId' => $circle->getSingleId()]);
 		// todo: do we need separate event here?
 		$this->eventService->circleEditing($event);
+
+		if ($deleted > 0) {
+			$this->auditLogService->logTeamChange($circle, Operation::InvitationRevoked, 'Invitation link of team %s ("%s") was revoked by "%s"', [
+				'circleId' => $circle->getSingleId(),
+				'name' => $this->auditLogService->getTeamName($circle),
+				'initiator' => $this->auditLogService->getInitiator($circle),
+			]);
+		}
 	}
 
 	public function result(FederatedEvent $event, array $results): void {

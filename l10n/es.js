@@ -196,6 +196,8 @@ OC.L10N.register(
     "Your account is connected." : "Tu cuenta está conectada.",
     "Reconnect" : "Reconectar",
     "Connect" : "Conectar",
+    "Join" : "Unirse",
+    "_%n member_::_%n members_" : ["%n miembro","%n miembros","%n miembros"],
     "Members" : "Miembros",
     "Move up" : "Mover hacia arriba",
     "Move down" : "Mover hacia abajo",
@@ -271,7 +273,6 @@ OC.L10N.register(
     "No teams found" : "No se encontraron equipos",
     "Loading" : "Cargando",
     "Go back" : "Ir atrás",
-    "Join" : "Unirse",
     "Group folders" : "Carpetas de grupo",
     "Failed to load teams" : "Fallo al cargar equipos",
     "Join or create teams to see them here." : "Únase o cree equipos para verlos aquí.",
@@ -303,8 +304,6 @@ OC.L10N.register(
     "Password to access files shared to you by %1$s" : "Contraseña para acceder a los archivos compartidos contigo por %1$s",
     "Password to access files" : "Contraseña para acceder a los archivos",
     "Circles App Initialization" : "Inicialización de la app Circles",
-    "Unable to update team folder quota for {team}" : "No se ha podido actualizar la cuota de la carpeta de equipo para {team}",
-    "Changed default team folder quota" : "Cuota por defecto para carpetas de equipo cambiada",
     "Open folder in Files" : "Abrir carpeta en Archivos"
 },
 "nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");
