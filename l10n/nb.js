@@ -190,6 +190,7 @@ OC.L10N.register(
     "Copy link" : "Kopier lenke",
     "Remove {type}" : "Fjern {type}",
     "Search {types}" : "Søk i {types}",
+    "Loading …" : "Laster inn ...",
     "No results" : "Ingen resultater",
     "Add {type}" : "Legg til{type}",
     "Pending" : "Venter",
