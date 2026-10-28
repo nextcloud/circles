@@ -17,11 +17,7 @@ function resources(overrides: Partial<TeamResources> = {}): TeamResources {
 		folderError: false,
 		resources: [],
 		resourcesChecked: true,
-		boards: [],
-		boardsChecked: true,
-		pages: [],
-		pagesChecked: true,
-		pagesError: false,
+		resourcesError: false,
 		tabOrder: [],
 		orderChecked: true,
 		orderError: false,
@@ -29,7 +25,9 @@ function resources(overrides: Partial<TeamResources> = {}): TeamResources {
 	}
 }
 
-const page = (fileId: number, title: string) => ({ fileId, title, filePath: `/Team/.pages/${title}.md` })
+const page = (fileId: number, title: string) => ({
+	id: `text:${fileId}`, entryId: String(fileId), providerId: 'text', label: title, legacyIds: [`page-${fileId}`],
+})
 
 describe('firstTabRoute', () => {
 	it('falls back to the team folder without a saved order', () => {
@@ -45,11 +43,10 @@ describe('firstTabRoute', () => {
 
 	it('resolves a page as the first entry', () => {
 		const state = resources({
-			pages: [page(7, 'Handbook')],
 			tabOrder: ['page-7', 'team-folder', 'home'],
 		})
-		expect(firstTabRoute(TEAM, state))
-			.toEqual({ name: 'team-page', params: { teamId: TEAM, fileId: '7' } })
+		expect(firstTabRoute(TEAM, state, [page(7, 'Handbook')]))
+			.toEqual({ name: 'team-app', params: { teamId: TEAM, providerId: 'text', entryId: '7' } })
 	})
 
 	it('skips external entries at the front of the order', () => {
@@ -66,7 +63,6 @@ describe('firstTabRoute', () => {
 
 	it('places entries missing from the order behind the known ones', () => {
 		const state = resources({
-			pages: [page(7, 'Handbook')],
 			tabOrder: ['home'],
 		})
 		expect(firstTabRoute(TEAM, state))
@@ -75,15 +71,14 @@ describe('firstTabRoute', () => {
 })
 
 describe('firstTabSettled', () => {
-	it('waits for the order and the pages', () => {
+	it('waits for the order and registered providers', () => {
 		expect(firstTabSettled(resources({ orderChecked: false }))).toBe(false)
-		expect(firstTabSettled(resources({ pagesChecked: false }))).toBe(false)
+		expect(firstTabSettled(resources(), false)).toBe(false)
 		expect(firstTabSettled(resources())).toBe(true)
 	})
 
 	it('settles on errors instead of waiting forever', () => {
 		expect(firstTabSettled(resources({ orderChecked: false, orderError: true }))).toBe(true)
-		expect(firstTabSettled(resources({ pagesChecked: false, pagesError: true }))).toBe(true)
-		expect(firstTabSettled(resources({ pagesChecked: false, folderError: true }))).toBe(true)
+		expect(firstTabSettled(resources({ folderError: true }))).toBe(true)
 	})
 })

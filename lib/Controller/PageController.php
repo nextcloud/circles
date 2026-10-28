@@ -12,7 +12,7 @@ namespace OCA\Circles\Controller;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\TeamFolderPolicy;
-use OCA\Text\Event\LoadEditor;
+use OCA\Circles\Service\TeamAppProviderRegistry;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Attribute\FrontpageRoute;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
@@ -20,7 +20,6 @@ use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\NotFoundResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
-use OCP\EventDispatcher\IEventDispatcher;
 use OCP\IRequest;
 use OCP\Teams\ITeamManager;
 use OCP\Util;
@@ -35,7 +34,7 @@ class PageController extends Controller {
 		private IInitialState $initialState,
 		private ITeamManager $teamManager,
 		private TeamFolderPolicy $teamFolderPolicy,
-		private IEventDispatcher $eventDispatcher,
+		private TeamAppProviderRegistry $teamApps,
 	) {
 		parent::__construct(Application::APP_ID, $request);
 	}
@@ -60,11 +59,7 @@ class PageController extends Controller {
 		Util::addScript(Application::APP_ID, 'teams-main');
 		Util::addStyle(Application::APP_ID, 'teams-main');
 
-		// Load the Text editor so team pages can be edited inline on their
-		// tabs. The class only resolves while the Text app is enabled.
-		if (class_exists(LoadEditor::class)) {
-			$this->eventDispatcher->dispatchTyped(new LoadEditor());
-		}
+		$this->initialState->provideInitialState('teamAppProviders', $this->teamApps->load());
 
 		return new TemplateResponse(Application::APP_ID, 'main');
 	}

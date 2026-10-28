@@ -15,7 +15,7 @@ use OCA\Circles\Service\TeamFolderPolicy;
 use OCP\AppFramework\Http\NotFoundResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
-use OCP\EventDispatcher\IEventDispatcher;
+use OCA\Circles\Service\TeamAppProviderRegistry;
 use OCP\IRequest;
 use OCP\Teams\ITeamFolderProvider;
 use OCP\Teams\ITeamManager;
@@ -28,7 +28,7 @@ final class PageControllerTest extends TestCase {
 	private IInitialState&MockObject $initialState;
 	private ITeamManager&MockObject $teamManager;
 	private TeamFolderPolicy&MockObject $teamFolderPolicy;
-	private IEventDispatcher&MockObject $eventDispatcher;
+	private TeamAppProviderRegistry&MockObject $teamApps;
 	private PageController $pageController;
 
 	#[\Override]
@@ -40,7 +40,8 @@ final class PageControllerTest extends TestCase {
 		$this->initialState = $this->createMock(IInitialState::class);
 		$this->teamManager = $this->createMock(ITeamManager::class);
 		$this->teamFolderPolicy = $this->createMock(TeamFolderPolicy::class);
-		$this->eventDispatcher = $this->createMock(IEventDispatcher::class);
+		$this->teamApps = $this->createMock(TeamAppProviderRegistry::class);
+		$this->teamApps->method('load')->willReturn(['providers' => [], 'errors' => []]);
 
 		$this->pageController = new PageController(
 			$this->request,
@@ -48,7 +49,7 @@ final class PageControllerTest extends TestCase {
 			$this->initialState,
 			$this->teamManager,
 			$this->teamFolderPolicy,
-			$this->eventDispatcher,
+			$this->teamApps,
 		);
 	}
 
@@ -72,7 +73,7 @@ final class PageControllerTest extends TestCase {
 			->willReturn(true);
 
 		$provided = [];
-		$this->initialState->expects($this->exactly(2))
+		$this->initialState->expects($this->exactly(3))
 			->method('provideInitialState')
 			->willReturnCallback(function (string $key, mixed $value) use (&$provided): void {
 				$provided[$key] = $value;
@@ -106,7 +107,7 @@ final class PageControllerTest extends TestCase {
 			->willReturn(false);
 
 		$provided = [];
-		$this->initialState->expects($this->exactly(2))
+		$this->initialState->expects($this->exactly(3))
 			->method('provideInitialState')
 			->willReturnCallback(function (string $key, mixed $value) use (&$provided): void {
 				$provided[$key] = $value;

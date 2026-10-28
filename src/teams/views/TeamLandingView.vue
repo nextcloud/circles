@@ -8,6 +8,7 @@ import { computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import NcLoadingIcon from '@nextcloud/vue/components/NcLoadingIcon'
 import { firstTabRoute, firstTabSettled } from '../firstTab.ts'
+import { useTeamAppsStore } from '../integrations/store.ts'
 import { useTeamResourcesStore } from '../resourcesStore.ts'
 
 const props = defineProps<{
@@ -17,13 +18,14 @@ const props = defineProps<{
 const router = useRouter()
 
 // The team page loads the per-team resources; this view only waits for the
-// tab order and pages to settle, then forwards to the first navigation entry.
+// tab order and providers to settle, then forwards to the first internal entry.
 const resourcesStore = useTeamResourcesStore()
 const resources = computed(() => resourcesStore.forTeam(props.teamId))
+const apps = useTeamAppsStore()
 
-watch(() => firstTabSettled(resources.value), (settled) => {
+watch(() => firstTabSettled(resources.value, apps.settled(props.teamId)), (settled) => {
 	if (settled) {
-		router.replace(firstTabRoute(props.teamId, resources.value))
+		router.replace(firstTabRoute(props.teamId, resources.value, apps.entries(props.teamId)))
 	}
 }, { immediate: true })
 </script>
