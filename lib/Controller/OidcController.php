@@ -10,7 +10,9 @@ declare(strict_types=1);
 namespace OCA\Circles\Controller;
 
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\AuditLog\Operation;
 use OCA\Circles\ConfigLexicon;
+use OCA\Circles\Service\AuditLogService;
 use OCA\Circles\Service\OidcService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
@@ -40,6 +42,7 @@ class OidcController extends Controller {
 		private readonly IClientService $clientService,
 		private readonly ICredentialsManager $credentialsManager,
 		private readonly OidcService $oidcService,
+		private readonly AuditLogService $auditLogService,
 		private readonly LoggerInterface $logger,
 	) {
 		parent::__construct(Application::APP_ID, $request);
@@ -83,18 +86,21 @@ class OidcController extends Controller {
 	#[NoAdminRequired]
 	#[NoCSRFRequired]
 	public function callback(string $state = '', string $code = '', string $error = '', string $error_description = ''): RedirectResponse {
+		$userId = $this->userSession->getUser()?->getUID();
 		if ($error !== '') {
 			$this->logger->error('OIDC provider returned an error: ' . $error . ' - ' . $error_description);
+			$this->logFailedLink($userId, 'provider_error');
 			return $this->redirectToPersonalSettings('error');
 		}
 
 		if ($state === '' || $state !== $this->session->get(self::SESSION_STATE)) {
 			$this->logger->error('OIDC callback state mismatch');
+			$this->logFailedLink($userId, 'state_mismatch');
 			return $this->redirectToPersonalSettings('error');
 		}
-		$userId = $this->userSession->getUser()?->getUID();
 		if ($userId === null || $userId !== $this->session->get(self::SESSION_USER_ID)) {
 			$this->logger->error('OIDC callback user mismatch: started as ' . $this->session->get(self::SESSION_USER_ID) . ', completed as ' . $userId);
+			$this->logFailedLink($userId, 'user_mismatch');
 			return $this->redirectToPersonalSettings('error');
 		}
 		$this->session->remove(self::SESSION_STATE);
@@ -117,6 +123,7 @@ class OidcController extends Controller {
 			]);
 		} catch (\Exception $e) {
 			$this->logger->error('OIDC token exchange failed', ['exception' => $e]);
+			$this->logFailedLink($userId, 'token_exchange_failed');
 			return $this->redirectToPersonalSettings('error');
 		}
 
@@ -124,10 +131,14 @@ class OidcController extends Controller {
 
 		if (empty($data['refresh_token'])) {
 			$this->logger->error('OIDC provider did not return a refresh_token for user ' . $userId);
+			$this->logFailedLink($userId, 'missing_refresh_token');
 			return $this->redirectToPersonalSettings('error');
 		}
 
 		$this->credentialsManager->store($userId, OidcService::CREDENTIAL_REFRESH_TOKEN, $data['refresh_token']);
+		$this->auditLogService->log(Operation::OidcAccountLinked, 'OIDC account of "%s" linked to synchronize team memberships', [
+			'userId' => $userId,
+		]);
 
 		// initial sync
 		if (!empty($data['access_token'])) {
@@ -135,6 +146,13 @@ class OidcController extends Controller {
 		}
 
 		return $this->redirectToPersonalSettings('success');
+	}
+
+	private function logFailedLink(?string $userId, string $reason): void {
+		$this->auditLogService->log(Operation::OidcAccountLinkFailed, 'Linking the OIDC account of "%s" failed: %s', [
+			'userId' => $userId,
+			'reason' => $reason,
+		]);
 	}
 
 	private function redirectToPersonalSettings(string $result): RedirectResponse {
