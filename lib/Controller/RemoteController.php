@@ -11,6 +11,7 @@ namespace OCA\Circles\Controller;
 
 use Exception;
 use OC\AppFramework\Middleware\Security\Exceptions\NotLoggedInException;
+use OCA\Circles\AuditLog\Operation;
 use OCA\Circles\ConfigLexicon;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\FederatedEventException;
@@ -26,6 +27,7 @@ use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\BasicProbe;
 use OCA\Circles\Model\Probes\CircleProbe;
+use OCA\Circles\Service\AuditLogService;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
@@ -78,6 +80,7 @@ class RemoteController extends Controller {
 		private readonly InterfaceService $interfaceService,
 		private readonly ConfigService $configService,
 		private readonly IUserSession $userSession,
+		private readonly AuditLogService $auditLogService,
 	) {
 		parent::__construct($appName, $request);
 
@@ -397,6 +400,7 @@ class RemoteController extends Controller {
 			/** @var FederatedUser $initiator */
 			$initiator = $store->gObj('initiator', FederatedUser::class);
 			if ($initiator->getInstance() !== $remoteInstance->getInstance() && !in_array($initiator->getInstance(), $remoteInstance->getAliases(), true)) {
+				$this->logRejectedRequest($remoteInstance->getInstance(), 'initiator_mismatch');
 				throw new InvalidRemoteInstanceException('Initiator instance does not match remote instance');
 			}
 			$this->federatedUserService->setCurrentUser($initiator);
@@ -432,18 +436,27 @@ class RemoteController extends Controller {
 
 		if (!$signatory instanceof RemoteInstance) {
 			$this->debug('Signatory is not a known RemoteInstance', ['signedRequest' => $signedRequest]);
+			$this->logRejectedRequest($signedRequest->getOrigin(), 'unknown_signatory');
 			throw new SignatoryException('Could not confirm identity');
 		}
 
 		if (!$this->configService->isLocalInstance($signedRequest->getOrigin())
 			&& $signatory->getType() === RemoteInstance::TYPE_UNKNOWN) {
 			$this->debug('Could not confirm identity', ['signedRequest' => $signedRequest]);
+			$this->logRejectedRequest($signedRequest->getOrigin(), 'untrusted_instance');
 			throw new SignatoryException('Could not confirm identity');
 		}
 
 		$this->interfaceService->setCurrentInterface($signatory->getInterface());
 
 		return $signatory;
+	}
+
+	private function logRejectedRequest(?string $instance, string $reason): void {
+		$this->auditLogService->log(Operation::RemoteRequestRejected, 'Federated request from instance "%s" rejected: %s', [
+			'instance' => $instance,
+			'reason' => $reason,
+		]);
 	}
 
 	/**
