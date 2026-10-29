@@ -183,7 +183,6 @@ OC.L10N.register(
     "Team folder" : "Carpeta de equipo",
     "Storage quota" : "Cuota de almacenamiento",
     "Actions" : "Acciones",
-    "No team folders found." : "No se han encontrado carpetas de equipo.",
     "Team actions" : "Acciones de equipo",
     "Add a team folder" : "Añadir una carpeta de equipo",
     "This team folder can only be assigned to this team. It cannot be assigned to another team, and this action cannot be undone." : "Esta carpeta de equipo solo puede asignarse a este equipo. No puede asignarse a otro equipo y esta acción no se puede deshacer.",
@@ -274,8 +273,8 @@ OC.L10N.register(
     "Loading" : "Cargando",
     "Go back" : "Ir atrás",
     "Group folders" : "Carpetas de grupo",
-    "Failed to load teams" : "Fallo al cargar equipos",
     "Join or create teams to see them here." : "Únase o cree equipos para verlos aquí.",
+    "Failed to load teams" : "Fallo al cargar equipos",
     "Loading…" : "Cargando…",
     "More teams" : "Más equipos",
     "All contacts" : "Todos los contactos",
@@ -304,6 +303,7 @@ OC.L10N.register(
     "Password to access files shared to you by %1$s" : "Contraseña para acceder a los archivos compartidos contigo por %1$s",
     "Password to access files" : "Contraseña para acceder a los archivos",
     "Circles App Initialization" : "Inicialización de la app Circles",
+    "No team folders found." : "No se han encontrado carpetas de equipo.",
     "Open folder in Files" : "Abrir carpeta en Archivos"
 },
 "nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");
