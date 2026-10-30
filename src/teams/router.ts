@@ -14,6 +14,7 @@ import TeamFolderView from './views/TeamFolderView.vue'
 import TeamHomeView from './views/TeamHomeView.vue'
 import TeamLandingView from './views/TeamLandingView.vue'
 import TeamMembersView from './views/TeamMembersView.vue'
+import TeamOverviewView from './views/TeamOverviewView.vue'
 import TeamPage from './views/TeamPage.vue'
 
 const routes: RouteRecordRaw[] = [
@@ -34,6 +35,12 @@ const routes: RouteRecordRaw[] = [
 		component: TeamPage,
 		props: true,
 		children: [
+			{
+				name: 'team-overview',
+				path: 'overview',
+				component: TeamOverviewView,
+				props: true,
+			},
 			{
 				// The team's own URL: forwards to the first navigation entry
 				// once the tab order is known. The entries keep their own
