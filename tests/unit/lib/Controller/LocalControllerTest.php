@@ -8,9 +8,11 @@
 namespace OCA\Circles\Tests\Controller;
 
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\AuditLog\Operation;
 use OCA\Circles\Controller\LocalController;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Service\AuditLogService;
 use OCA\Circles\Service\AvatarService;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
@@ -25,6 +27,7 @@ use OCP\AppFramework\OCS\OCSException;
 use OCP\IRequest;
 use OCP\IUserManager;
 use OCP\IUserSession;
+use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Container\ContainerInterface;
 use Test\TestCase;
 
@@ -45,6 +48,7 @@ class LocalControllerTest extends TestCase {
 	private LocalController $localController;
 	private IUserManager $userManager;
 	private IUserSession $userSession;
+	private AuditLogService&MockObject $auditLogService;
 	private string $circleId = '';
 	private array $circlesToCleanup = [];
 	private static array $usersToCleanup = [];
@@ -74,6 +78,7 @@ class LocalControllerTest extends TestCase {
 
 		$user1 = $this->userManager->get(self::TEST_USER_1);
 		$this->userSession->setUser($user1);
+		$this->auditLogService = $this->createMock(AuditLogService::class);
 
 		$this->localController = new LocalController(
 			Application::APP_ID,
@@ -87,6 +92,7 @@ class LocalControllerTest extends TestCase {
 			$this->container->get(SearchService::class),
 			$this->container->get(AvatarService::class),
 			$this->container->get(ConfigService::class),
+			$this->auditLogService,
 		);
 
 		// Create a circle as TEST_USER_1 (owner)
@@ -396,5 +402,16 @@ class LocalControllerTest extends TestCase {
 
 		$response = $this->localController->membersAdd($this->circleId, $members);
 		$this->assertEquals($response->getData()['message'], 'Insufficient permissions to perform this action');
+	}
+
+	public function testInvalidInvitationCodeWritesAuditLog(): void {
+		$this->auditLogService->expects($this->exactly(2))
+			->method('log')
+			->with(Operation::InvitationCodeRejected, 'Invalid team invitation code used by "%s"', [
+				'userId' => self::TEST_USER_1,
+			]);
+
+		$this->assertSame(Http::STATUS_NOT_FOUND, $this->localController->getInvitation('invalid-code')->getStatus());
+		$this->assertSame(Http::STATUS_NOT_FOUND, $this->localController->joinInvitation('invalid-code')->getStatus());
 	}
 }
