@@ -125,6 +125,10 @@ describe('TeamCard content', () => {
 		expect(links[0].text()).toContain('Team One')
 	})
 
+	it('shows the full team name as a tooltip on the team name', () => {
+		expect(mountCard().get('span[class*="teamCardName"]').attributes('title')).toBe('Team One')
+	})
+
 	it('shows the description only when there is one', () => {
 		expect(mountCard().text()).toContain('A team')
 		expect(mountCard({}, makeTeam({ description: '' })).find('p').exists()).toBe(false)
