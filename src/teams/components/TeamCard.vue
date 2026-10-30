@@ -70,7 +70,7 @@ function preventActionsDrag(event: DragEvent) {
 					:displayName="team.displayName"
 					:isFavorite="team.isFavorite"
 					:size="40" />
-				<span :class="$style.teamCardName">
+				<span :class="$style.teamCardName" :title="team.displayName">
 					{{ team.displayName }}
 				</span>
 			</div>
