@@ -54,6 +54,8 @@ vi.mock('../api.ts', () => ({
 	fetchTeamDeckBoards: vi.fn(async () => []),
 	fetchTabOrder: vi.fn(async () => []),
 	saveTabOrder: vi.fn(),
+	fetchResourceFavorites: vi.fn(async () => []),
+	saveResourceFavorites: vi.fn(),
 }))
 // The widget instantiates a WebDAV client on setup — keep it out of the test.
 vi.mock('../components/TeamFolderWidget.vue', () => ({
