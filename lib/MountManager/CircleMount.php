@@ -14,7 +14,6 @@ namespace OCA\Circles\MountManager;
 use Exception;
 use JsonSerializable;
 use OC\Files\Mount\MountPoint;
-use OC\Files\Mount\MoveableMount;
 use OCA\Circles\Exceptions\MountPointConstructionException;
 use OCA\Circles\Model\Mount;
 use OCA\Circles\Tools\Traits\TArrayTools;
@@ -25,7 +24,7 @@ use OCP\Files\Storage\IStorageFactory;
  *
  * @package OCA\Circles\MountManager
  */
-class CircleMount extends MountPoint implements MoveableMount, JsonSerializable {
+class CircleMount extends MountPoint implements JsonSerializable {
 	use TArrayTools;
 
 
@@ -63,31 +62,6 @@ class CircleMount extends MountPoint implements MoveableMount, JsonSerializable 
 
 		$this->mount = $mount;
 		$this->storageClass = $storage;
-	}
-
-
-	/**
-	 * Move the mount point to $target
-	 *
-	 * @param string $target the target mount point
-	 *
-	 * @return bool
-	 */
-	public function moveMount($target) {
-		$result = $this->mount->getMountManager()->renameShare($this->gsShareId, $target);
-		$this->setMountPoint($target);
-
-		return $result;
-	}
-
-	/**
-	 * Remove the mount points
-	 *
-	 * @return mixed
-	 * @return bool
-	 */
-	public function removeMount() {
-		return $this->mount->getMountManager()->unshare($this->gsShareId);
 	}
 
 

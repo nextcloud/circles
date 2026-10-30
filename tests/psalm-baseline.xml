@@ -243,14 +243,6 @@
       <code><![CDATA[isInstalled]]></code>
     </DeprecatedMethod>
   </file>
-  <file src="lib/Model/Mount.php">
-    <DeprecatedClass>
-      <code><![CDATA[CircleMountManager]]></code>
-      <code><![CDATA[CircleMountManager]]></code>
-      <code><![CDATA[CircleMountManager]]></code>
-      <code><![CDATA[CircleMountManager]]></code>
-    </DeprecatedClass>
-  </file>
   <file src="lib/Model/Probes/BasicProbe.php">
     <InvalidReturnType>
       <code><![CDATA[$this]]></code>
@@ -290,11 +282,6 @@
       <code><![CDATA[null]]></code>
     </NullableReturnStatement>
   </file>
-  <file src="lib/MountManager/CircleMount.php">
-    <UndefinedClass>
-      <code><![CDATA[MoveableMount]]></code>
-    </UndefinedClass>
-  </file>
   <file src="lib/MountManager/CircleMountManager.php">
     <DeprecatedClass>
       <code><![CDATA[GSSharesRequest]]></code>
@@ -302,12 +289,6 @@
     </DeprecatedClass>
   </file>
   <file src="lib/MountManager/CircleMountProvider.php">
-    <DeprecatedClass>
-      <code><![CDATA[private]]></code>
-    </DeprecatedClass>
-    <MissingDependency>
-      <code><![CDATA[CircleMount]]></code>
-    </MissingDependency>
     <UndefinedClass>
       <code><![CDATA[ExternalStorage]]></code>
     </UndefinedClass>

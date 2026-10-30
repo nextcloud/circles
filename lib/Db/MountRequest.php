@@ -14,6 +14,8 @@ namespace OCA\Circles\Db;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Mount;
+use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\TimezoneService;
 use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 
@@ -25,6 +27,13 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
 class MountRequest extends MountRequestBuilder {
 	use TStringTools;
 
+	public function __construct(
+		TimezoneService $timezoneService,
+		ConfigService $configService,
+		private MountPointRequest $mountPointRequest,
+	) {
+		parent::__construct($timezoneService, $configService);
+	}
 
 	/**
 	 * @param Mount $mount
@@ -49,10 +58,39 @@ class MountRequest extends MountRequestBuilder {
 	 * @param string $token
 	 */
 	public function delete(string $token): void {
+		$qb = $this->getMountSelectSql();
+		$qb->limitToToken($token);
+		$mounts = $this->getItemsFromRequest($qb);
+
 		$qb = $this->getMountDeleteSql();
 		$qb->limitToToken($token);
-
 		$qb->executeStatement();
+
+		foreach ($mounts as $mount) {
+			$this->mountPointRequest->deleteByMountId($mount->getMountId());
+		}
+	}
+
+	public function hasMountForCircleId(string $circleId): bool {
+		$qb = $this->getMountSelectSql();
+		$qb->limitToCircleId($circleId);
+		$qb->setMaxResults(1);
+
+		return count($this->getItemsFromRequest($qb)) > 0;
+	}
+
+	public function deleteByCircleId(string $circleId): void {
+		$qb = $this->getMountSelectSql();
+		$qb->limitToCircleId($circleId);
+		$mounts = $this->getItemsFromRequest($qb);
+
+		$qb = $this->getMountDeleteSql();
+		$qb->limitToCircleId($circleId);
+		$qb->executeStatement();
+
+		foreach ($mounts as $mount) {
+			$this->mountPointRequest->deleteByMountId($mount->getMountId());
+		}
 	}
 
 
