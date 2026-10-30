@@ -193,6 +193,8 @@
     "Team folder" : "Dossier d'équipe",
     "Storage quota" : "Quota de stockage",
     "Actions" : "Actions",
+    "No teams match your search." : "Aucune équipe ne correspond à votre recherche.",
+    "No teams found." : "Aucune équipe trouvée.",
     "Team actions" : "Actions de l’équipe",
     "Add a team folder" : "Ajouter un dossier d'équipe",
     "This team folder can only be assigned to this team. It cannot be assigned to another team, and this action cannot be undone." : "Ce dossier d’équipe ne peut être attribué qu’à cette équipe. Il ne peut pas être attribué à une autre équipe, et cette action est irréversible.",
