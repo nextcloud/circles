@@ -253,6 +253,7 @@ OC.L10N.register(
     "picture" : "obrázek",
     "Team details" : "Detaily týmu",
     "Team picture" : "Obrázek týmu",
+    "Choose from Nextcloud Files" : "Vybrat z Nextcloud souborů",
     "Delete picture" : "Smazat obrázek",
     "Description" : "Popis",
     "Password protection" : "Ochrana heslem",
