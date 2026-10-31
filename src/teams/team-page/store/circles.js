@@ -215,13 +215,23 @@ const actions = {
 			return
 		}
 
+		context.commit('resetCircleMembers', circle.id)
+		if (!circle.canViewMembers) {
+			return
+		}
+
 		context.commit('setLoadingCircleMembers', true)
 		try {
 			const members = await getCircleMembers(circleId, search, role, limit)
 
 			logger.debug(`${circleId} have ${members.length} member(s)`, { members })
-			context.commit('resetCircleMembers', circle.id)
 			context.commit('appendMembersToCircle', members.map((member) => new Member(member, circle)))
+		} catch (error) {
+			if (error?.response?.status === 403) {
+				circle._data.canViewMembers = false
+				return
+			}
+			throw error
 		} finally {
 			context.commit('setLoadingCircleMembers', false)
 		}

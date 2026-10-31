@@ -25,6 +25,7 @@ use OCP\AppFramework\OCS\OCSException;
 use OCP\IRequest;
 use OCP\IUserManager;
 use OCP\IUserSession;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Container\ContainerInterface;
 use Test\TestCase;
 
@@ -396,5 +397,75 @@ class LocalControllerTest extends TestCase {
 
 		$response = $this->localController->membersAdd($this->circleId, $members);
 		$this->assertEquals($response->getData()['message'], 'Insufficient permissions to perform this action');
+	}
+
+	public function testMembersAreVisibleByDefault(): void {
+		$this->localController->memberAdd($this->circleId, self::TEST_USER_2, Member::TYPE_USER);
+		$this->actAs(self::TEST_USER_2);
+
+		$this->assertSame(Http::STATUS_OK, $this->localController->members($this->circleId)->getStatus());
+		$details = $this->localController->circleDetails($this->circleId)->getData();
+		$this->assertTrue($details['canViewMembers']);
+		$this->assertSame(Member::LEVEL_MEMBER, $details['membersViewPermissionLevel']);
+	}
+
+	public static function membersVisibilityRoles(): array {
+		return [
+			'member restricted' => [Member::LEVEL_MEMBER, Member::LEVEL_MODERATOR, false],
+			'moderator allowed' => [Member::LEVEL_MODERATOR, Member::LEVEL_MODERATOR, true],
+			'moderator restricted' => [Member::LEVEL_MODERATOR, Member::LEVEL_ADMIN, false],
+			'admin allowed' => [Member::LEVEL_ADMIN, Member::LEVEL_ADMIN, true],
+		];
+	}
+
+	#[DataProvider('membersVisibilityRoles')]
+	public function testMembersVisibilityIsPersistedAndEnforced(int $level, int $threshold, bool $allowed): void {
+		$member = $this->localController->memberAdd($this->circleId, self::TEST_USER_2, Member::TYPE_USER)->getData();
+		if ($level !== Member::LEVEL_MEMBER) {
+			$this->localController->memberLevel($this->circleId, $member['id'], $level);
+		}
+		$updated = $this->localController->editSetting($this->circleId, Circle::SETTING_MEMBERS_VIEW_PERMISSION_LEVEL, (string)$threshold);
+		$this->assertSame(Http::STATUS_OK, $updated->getStatus());
+		$this->assertSame((string)$threshold, $updated->getData()['settings'][Circle::SETTING_MEMBERS_VIEW_PERMISSION_LEVEL]);
+		$this->assertSame(Http::STATUS_OK, $this->localController->members($this->circleId)->getStatus());
+
+		$this->actAs(self::TEST_USER_2);
+		$details = $this->localController->circleDetails($this->circleId)->getData();
+		$this->assertSame($allowed, $details['canViewMembers']);
+		$this->assertSame($threshold, $details['membersViewPermissionLevel']);
+		$status = $allowed ? Http::STATUS_OK : Http::STATUS_FORBIDDEN;
+		$this->assertSame($status, $this->localController->members($this->circleId)->getStatus());
+		$this->assertSame($status, $this->localController->members($this->circleId, true, 1, self::TEST_USER_1, Member::LEVEL_OWNER)->getStatus());
+		$this->assertSame($status, $this->localController->link($this->circleId, $member['singleId'])->getStatus());
+		if ($level < Member::LEVEL_ADMIN) {
+			$this->assertSame(Http::STATUS_FORBIDDEN, $this->localController->editSetting($this->circleId, Circle::SETTING_MEMBERS_VIEW_PERMISSION_LEVEL, '1')->getStatus());
+		}
+	}
+
+	public function testInheritedMembershipUsesItsRoleForMemberVisibility(): void {
+		$child = $this->localController->create('test-child-' . bin2hex(random_bytes(4)), createTeamFolder: false)->getData();
+		$this->circlesToCleanup[] = $child['id'];
+		$this->localController->memberAdd($child['id'], self::TEST_USER_2, Member::TYPE_USER);
+		$nestedMember = $this->localController->memberAdd($this->circleId, $child['id'], Member::TYPE_CIRCLE)->getData();
+		$this->localController->memberLevel($this->circleId, $nestedMember['id'], Member::LEVEL_MODERATOR);
+		$this->localController->editSetting($this->circleId, Circle::SETTING_MEMBERS_VIEW_PERMISSION_LEVEL, '4');
+
+		$this->actAs(self::TEST_USER_2);
+		$this->assertSame(Http::STATUS_OK, $this->localController->members($this->circleId)->getStatus());
+		$this->assertTrue($this->localController->circleDetails($this->circleId)->getData()['canViewMembers']);
+
+		$this->actAs(self::TEST_USER_1);
+		$this->localController->editSetting($this->circleId, Circle::SETTING_MEMBERS_VIEW_PERMISSION_LEVEL, '8');
+		$this->actAs(self::TEST_USER_2);
+		$this->assertSame(Http::STATUS_FORBIDDEN, $this->localController->members($this->circleId)->getStatus());
+	}
+
+	public function testUnsettingMemberVisibilityRestoresDefault(): void {
+		$this->localController->memberAdd($this->circleId, self::TEST_USER_2, Member::TYPE_USER);
+		$this->localController->editSetting($this->circleId, Circle::SETTING_MEMBERS_VIEW_PERMISSION_LEVEL, '8');
+		$this->localController->editSetting($this->circleId, Circle::SETTING_MEMBERS_VIEW_PERMISSION_LEVEL);
+		$this->actAs(self::TEST_USER_2);
+
+		$this->assertSame(Http::STATUS_OK, $this->localController->members($this->circleId)->getStatus());
 	}
 }

@@ -20,6 +20,7 @@ use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
+use OCA\Circles\Exceptions\InsufficientPermissionException;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
@@ -132,7 +133,7 @@ class MemberService {
 	 * @throws RequestBuilderException
 	 */
 	public function getMembers(string $circleId, bool $fullDetails = false, int $limit = 0, string $search = '', ?int $role = null): array {
-		$this->federatedUserService->mustHaveCurrentUser();
+		$this->assertCanViewMembers($circleId);
 
 		$probe = new MemberProbe();
 		if ($this->federatedUserService->hasRemoteInstance()) {
@@ -150,6 +151,20 @@ class MemberService {
 			$search,
 			$role,
 		);
+	}
+
+	public function assertCanViewMembers(string $circleId): void {
+		$this->federatedUserService->mustHaveCurrentUser();
+		if ($this->federatedUserService->canBypassCurrentUserCondition()
+			|| $this->federatedUserService->isInitiatedByAdmin()
+			|| ($this->federatedUserService->hasRemoteInstance() && !$this->federatedUserService->hasCurrentEntity())) {
+			return;
+		}
+
+		$circle = $this->circleRequest->getCircle($circleId, $this->federatedUserService->getCurrentEntity());
+		if (!$circle->canViewMembers()) {
+			throw new InsufficientPermissionException('You do not have permission to view the members of this team');
+		}
 	}
 
 	/**

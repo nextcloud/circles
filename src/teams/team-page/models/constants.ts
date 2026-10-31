@@ -7,8 +7,6 @@
 
 import { translate as t } from '@nextcloud/l10n'
 import { ShareType } from '@nextcloud/sharing'
-import CircleConfigCheckboxesList from '../components/CircleDetails/CircleConfigs/CircleConfigCheckboxesList.vue'
-import CircleConfigInvitationLink from '../components/CircleDetails/CircleConfigs/CircleConfigInvitationLink.vue'
 
 export type DefaultGroup = string
 export type DefaultChart = string
@@ -90,55 +88,6 @@ export const CIRCLES_MEMBER_LEVELS = {
 	[MEMBER_LEVEL_MODERATOR]: t('circles', 'Moderator'),
 	[MEMBER_LEVEL_ADMIN]: t('circles', 'Admin'),
 	[MEMBER_LEVEL_OWNER]: t('circles', 'Owner'),
-}
-
-// Available circle configs in the circle details view
-export const PUBLIC_CIRCLE_CONFIG = {
-	[t('circles', 'Invites')]: {
-		component: CircleConfigCheckboxesList,
-		props: {
-			configs: {
-				[CIRCLE_CONFIG_OPEN]: t('circles', 'Anyone can request membership (requires "Visible to everyone")'),
-				[CIRCLE_CONFIG_INVITE]: t('circles', 'Members need to accept invitation'),
-				[CIRCLE_CONFIG_REQUEST]: t('circles', 'Memberships must be confirmed/accepted by a Moderator (requires "Anyone can request membership")'),
-				[CIRCLE_CONFIG_FRIEND]: t('circles', 'Members can also invite'),
-			},
-		},
-	},
-
-	[t('circles', 'Invitation links')]: {
-		component: CircleConfigInvitationLink,
-		props: {},
-	},
-
-	[t('circles', 'Membership')]: {
-		component: CircleConfigCheckboxesList,
-		props: {
-			configs: {
-				// TODO: implement backend
-				// [CIRCLE_CONFIG_CIRCLE_INVITE]: t('circles', 'Team must confirm when invited in another circle'),
-				[CIRCLE_CONFIG_ROOT]: t('circles', 'Prevent teams from being a member of another team'),
-			},
-		},
-	},
-
-	[t('circles', 'Federation')]: {
-		component: CircleConfigCheckboxesList,
-		props: {
-			configs: {
-				[CIRCLE_CONFIG_FEDERATED]: t('circles', 'Allow federated members'),
-			},
-		},
-	},
-
-	[t('circles', 'Privacy')]: {
-		component: CircleConfigCheckboxesList,
-		props: {
-			configs: {
-				[CIRCLE_CONFIG_VISIBLE]: t('circles', 'Visible to everyone'),
-			},
-		},
-	},
 }
 
 // Represents the picker options (label is used lower case in a list of options: Search users, groups, teams, ...)

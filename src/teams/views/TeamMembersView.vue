@@ -37,7 +37,7 @@ function addMembers(): void {
 		<div class="team-members__header">
 			<ContentHeading>{{ t('circles', 'Members') }}</ContentHeading>
 			<NcButton
-				v-if="circle?.canManageMembers"
+				v-if="circle?.canManageMembers && circle?.canViewMembers"
 				variant="secondary"
 				@click="addMembers">
 				<template #icon>

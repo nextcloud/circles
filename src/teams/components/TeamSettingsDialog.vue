@@ -31,10 +31,11 @@ import IconUpload from 'vue-material-design-icons/TrayArrowUp.vue'
 import CirclePasswordSettings from '../team-page/components/CircleDetails/CirclePasswordSettings.vue'
 import ContentHeading from '../team-page/components/CircleDetails/ContentHeading.vue'
 import TeamAvatar, { getAvatarUrl } from './TeamAvatar.vue'
+import TeamMembersVisibilitySettings from './TeamMembersVisibilitySettings.vue'
 import { logger } from '../../logger.ts'
 import { useTeamActions } from '../composables/useTeamActions.ts'
 import { useTeamsStore } from '../store.ts'
-import { PUBLIC_CIRCLE_CONFIG } from '../team-page/models/constants.ts'
+import { PUBLIC_CIRCLE_CONFIG } from '../team-page/models/publicCircleConfig.ts'
 import { CircleEdit, editCircle } from '../team-page/services/circles.ts'
 
 import 'cropperjs/dist/cropper.css'
@@ -436,6 +437,9 @@ function onDeleteTeam(): void {
 					<component
 						:is="config.component"
 						v-bind="config.props"
+						:circle="circle" />
+					<TeamMembersVisibilitySettings
+						v-if="title === t('circles', 'Privacy') && (circle.isAdmin || circle.isOwner)"
 						:circle="circle" />
 				</div>
 
