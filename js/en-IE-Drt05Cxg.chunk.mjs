@@ -1,0 +1,2 @@
+import{m as t,l as o,f as a,a as r}from"./be-tarask-CBPOVS3G.chunk.mjs";import{f as e}from"./formatLong-UKemPSf5.chunk.mjs";import"./logger-3_8YWZnM.chunk.mjs";import"./_plugin-vue_export-helper-Ba3Ke9Hf.chunk.mjs";import"./NcSelect-C7iGk1xa.chunk.mjs";import"./public-BQeiDeBS.chunk.mjs";import"./NcPasswordField-DsRK1zgv.chunk.mjs";const l={code:"en-IE",formatDistance:r,formatLong:e,formatRelative:a,localize:o,match:t,options:{weekStartsOn:1,firstWeekContainsDate:4}};export{l as enIE};
+//# sourceMappingURL=en-IE-Drt05Cxg.chunk.mjs.map
