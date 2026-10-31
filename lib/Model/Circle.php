@@ -97,6 +97,7 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	// settings array keys
 	public const SETTING_EXTERNAL_ID = 'external_id';
 	public const SETTING_TEAM_FOLDER_QUOTA = 'team_folder_quota';
+	public const SETTING_MEMBERS_VIEW_PERMISSION_LEVEL = 'membersViewPermissionLevel';
 
 	/**
 	 * Note: When editing those values, update lib/Application/Capabilities.php
@@ -687,6 +688,19 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		return $this->settings;
 	}
 
+	public function getMembersViewPermissionLevel(): int {
+		return match ($this->settings[self::SETTING_MEMBERS_VIEW_PERMISSION_LEVEL] ?? Member::LEVEL_MEMBER) {
+			Member::LEVEL_MEMBER, '1' => Member::LEVEL_MEMBER,
+			Member::LEVEL_MODERATOR, '4' => Member::LEVEL_MODERATOR,
+			default => Member::LEVEL_ADMIN,
+		};
+	}
+
+	public function canViewMembers(): bool {
+		return $this->hasInitiator()
+			&& $this->getInitiator()->getLevel() >= $this->getMembersViewPermissionLevel();
+	}
+
 	/**
 	 * @param string $description
 	 *
@@ -840,21 +854,23 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 			'url' => $this->getUrl(),
 			'creation' => $this->getCreation(),
 			'initiator' => ($this->hasInitiator()) ? $this->getInitiator() : null,
+			'membersViewPermissionLevel' => $this->getMembersViewPermissionLevel(),
+			'canViewMembers' => $this->canViewMembers(),
 		];
 
 		if ($this->hasOwner()) {
 			$arr['owner'] = $this->getOwner();
 		}
 
-		if ($this->hasMembers()) {
+		if ($this->canViewMembers() && $this->hasMembers()) {
 			$arr['members'] = $this->getMembers();
 		}
 
-		if (!is_null($this->inheritedMembers)) {
+		if ($this->canViewMembers() && !is_null($this->inheritedMembers)) {
 			$arr['inheritedMembers'] = $this->getInheritedMembers();
 		}
 
-		if ($this->hasMemberships()) {
+		if ($this->canViewMembers() && $this->hasMemberships()) {
 			$arr['memberships'] = $this->getMemberships();
 		}
 

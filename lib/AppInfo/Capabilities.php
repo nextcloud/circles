@@ -71,6 +71,7 @@ class Capabilities implements ICapability {
 	private function getCapabilitiesCircle(): array {
 		return [
 			'constants' => $this->getCapabilitiesCircleConstants(),
+			'membersListVisibility' => true,
 			'config' => $this->getCapabilitiesCircleConfig()
 		];
 	}
