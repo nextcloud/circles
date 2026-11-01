@@ -5,11 +5,12 @@
 
 import type { VueWrapper } from '@vue/test-utils'
 
-import { shallowMount } from '@vue/test-utils'
+import { flushPromises, shallowMount } from '@vue/test-utils'
 import { createPinia } from 'pinia'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { createStore } from 'vuex'
 import CircleConfigCheckboxesList from '../team-page/components/CircleDetails/CircleConfigs/CircleConfigCheckboxesList.vue'
+import CircleConfigInvitationLink from '../team-page/components/CircleDetails/CircleConfigs/CircleConfigInvitationLink.vue'
 import TeamMembersVisibilitySettings from './TeamMembersVisibilitySettings.vue'
 import TeamSettingsDialog from './TeamSettingsDialog.vue'
 import Circle from '../team-page/models/circle.ts'
@@ -48,7 +49,7 @@ describe('Team settings privacy group', () => {
 		{ level: 8, canEdit: true },
 		{ level: 4, canEdit: false },
 		{ level: 1, canEdit: false },
-	])('places member visibility in Privacy for role $level', ({ level, canEdit }) => {
+	])('places member visibility in Privacy for role $level', async ({ level, canEdit }) => {
 		wrapper = shallowMount(TeamSettingsDialog, {
 			props: {
 				open: false,
@@ -64,12 +65,16 @@ describe('Team settings privacy group', () => {
 			global: {
 				plugins: [createPinia(), createStore({})],
 				stubs: {
+					AsyncComponentWrapper: false,
 					NcAppSettingsDialog: { template: '<div><slot /></div>' },
 					NcAppSettingsSection: { template: '<section><slot /></section>' },
 					ContentHeading: { template: '<h3><slot /></h3>' },
+					CircleConfigPrivacy: false,
 				},
 			},
 		})
+		await vi.dynamicImportSettled()
+		await flushPromises()
 
 		const privacy = wrapper.findAll('.team-settings-groups__group')
 			.find((group) => group.get('h3').text() === 'Privacy')
@@ -78,6 +83,7 @@ describe('Team settings privacy group', () => {
 		expect(Object.values(privacy!.findComponent(CircleConfigCheckboxesList).props('configs'))).toContain('Visible to everyone')
 		expect(privacy!.findComponent(TeamMembersVisibilitySettings).exists()).toBe(canEdit)
 		expect(wrapper.findAllComponents(TeamMembersVisibilitySettings)).toHaveLength(canEdit ? 1 : 0)
+		expect(wrapper.findComponent(CircleConfigInvitationLink).exists()).toBe(true)
 		expect(wrapper.findAll('h3').map((heading) => heading.text())).not.toContain('Member visibility')
 	})
 })

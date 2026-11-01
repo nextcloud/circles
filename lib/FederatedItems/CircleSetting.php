@@ -18,6 +18,7 @@ use OCA\Circles\IFederatedItemHighSeverity;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Service\AuditLogService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\ShareTokenService;
@@ -52,7 +53,11 @@ class CircleSetting implements
 
 		if ($setting === Circle::SETTING_MEMBERS_VIEW_PERMISSION_LEVEL
 			&& $value !== null
-			&& !in_array($value, ['1', '4', '8'], true)) {
+			&& !in_array($value, [
+				(string)Member::LEVEL_MEMBER,
+				(string)Member::LEVEL_MODERATOR,
+				(string)Member::LEVEL_ADMIN,
+			], true)) {
 			throw new FederatedItemBadRequestException('Invalid members visibility permission level');
 		}
 

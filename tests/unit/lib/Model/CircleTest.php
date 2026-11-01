@@ -41,6 +41,29 @@ class CircleTest extends TestCase {
 		$this->assertTrue($circle->canViewMembers());
 	}
 
+	public static function storedVisibilityLevels(): iterable {
+		foreach ([Member::LEVEL_MEMBER, Member::LEVEL_MODERATOR, Member::LEVEL_ADMIN] as $level) {
+			yield "integer $level" => [$level, $level];
+			yield "string $level" => [(string)$level, $level];
+		}
+
+		foreach (['invalid', '1invalid', '4invalid', '1.0', '4.0', '0', '9', '-1', ''] as $value) {
+			yield "invalid $value" => [$value, Member::LEVEL_ADMIN];
+		}
+
+		yield 'float' => [1.0, Member::LEVEL_ADMIN];
+		yield 'boolean' => [true, Member::LEVEL_ADMIN];
+		yield 'array' => [[], Member::LEVEL_ADMIN];
+	}
+
+	#[DataProvider('storedVisibilityLevels')]
+	public function testNormalizesStoredVisibilityLevel(mixed $value, int $expected): void {
+		$circle = new Circle();
+		$circle->setSettings([Circle::SETTING_MEMBERS_VIEW_PERMISSION_LEVEL => $value]);
+
+		$this->assertSame($expected, $circle->getMembersViewPermissionLevel());
+	}
+
 	public function testNoInitiatorCannotViewMembers(): void {
 		$this->assertFalse((new Circle())->canViewMembers());
 	}

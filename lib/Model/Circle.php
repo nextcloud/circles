@@ -689,9 +689,11 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	}
 
 	public function getMembersViewPermissionLevel(): int {
-		return match ($this->settings[self::SETTING_MEMBERS_VIEW_PERMISSION_LEVEL] ?? Member::LEVEL_MEMBER) {
-			Member::LEVEL_MEMBER, '1' => Member::LEVEL_MEMBER,
-			Member::LEVEL_MODERATOR, '4' => Member::LEVEL_MODERATOR,
+		$level = $this->settings[self::SETTING_MEMBERS_VIEW_PERMISSION_LEVEL] ?? Member::LEVEL_MEMBER;
+
+		return match (is_int($level) ? (string)$level : $level) {
+			(string)Member::LEVEL_MEMBER => Member::LEVEL_MEMBER,
+			(string)Member::LEVEL_MODERATOR => Member::LEVEL_MODERATOR,
 			default => Member::LEVEL_ADMIN,
 		};
 	}

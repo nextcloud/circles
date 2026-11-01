@@ -72,7 +72,7 @@ class CircleSettingTest extends TestCase {
 	}
 
 	public static function invalidLevels(): array {
-		return [['0'], ['9'], ['2'], ['-1'], [''], ['admin'], ['4invalid'], ['4.0']];
+		return [['0'], ['9'], ['2'], ['-1'], [''], ['admin'], ['1invalid'], ['4invalid'], ['1.0'], ['4.0'], ['01'], [' 4']];
 	}
 
 	#[DataProvider('invalidLevels')]

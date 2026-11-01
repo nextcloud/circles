@@ -31,11 +31,10 @@ import IconUpload from 'vue-material-design-icons/TrayArrowUp.vue'
 import CirclePasswordSettings from '../team-page/components/CircleDetails/CirclePasswordSettings.vue'
 import ContentHeading from '../team-page/components/CircleDetails/ContentHeading.vue'
 import TeamAvatar, { getAvatarUrl } from './TeamAvatar.vue'
-import TeamMembersVisibilitySettings from './TeamMembersVisibilitySettings.vue'
 import { logger } from '../../logger.ts'
 import { useTeamActions } from '../composables/useTeamActions.ts'
 import { useTeamsStore } from '../store.ts'
-import { PUBLIC_CIRCLE_CONFIG } from '../team-page/models/publicCircleConfig.ts'
+import { PUBLIC_CIRCLE_CONFIG } from '../team-page/models/constants.ts'
 import { CircleEdit, editCircle } from '../team-page/services/circles.ts'
 
 import 'cropperjs/dist/cropper.css'
@@ -438,9 +437,6 @@ function onDeleteTeam(): void {
 						:is="config.component"
 						v-bind="config.props"
 						:circle="circle" />
-					<TeamMembersVisibilitySettings
-						v-if="title === t('circles', 'Privacy') && (circle.isAdmin || circle.isOwner)"
-						:circle="circle" />
 				</div>
 
 				<div class="team-settings-groups__group">
@@ -548,11 +544,14 @@ function onDeleteTeam(): void {
 
 <style lang="scss">
 // NcAppSettingsDialog hardcodes size="large" (a 900px modal) to fit its
-// section navigation; without the navigation, the single column reads
-// better at the normal dialog width. The doubled wrapper class outweighs
-// the library's equally specific width rule, which loads later.
+// section navigation; without the navigation the full width stretches
+// the single column needlessly. 700px leaves ~676px of content - the
+// same as collectives' dialog with navigation - so the member
+// visibility radio buttons keep their labels on one line. The doubled
+// wrapper class outweighs the library's equally specific width rule,
+// which loads later.
 .app-settings .modal-wrapper.modal-wrapper--large > .modal-container {
-	width: 600px;
+	width: 700px;
 }
 
 // The dialog title already names the settings and the groups carry their
