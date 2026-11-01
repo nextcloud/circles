@@ -394,7 +394,7 @@
     "Do you want to join the team <b>{circleName}</b>?" : "Vil du være medlem af teamet <b>{circleName}</b>?",
     "Invalid invitation link" : "Ugyldigt invitationslink",
     "This invitation link is not valid or has expired." : "Dette invitationslink er ugyldigt eller udløbet.",
-    "The Text app is required to show team pages" : "Appen Tekst er påkrævet for at vise team-sider",
+    "The Text app is required to show team pages" : "Appen Tekst kræves for at vise team-sider",
     "This page no longer exists" : "Siden findes ikke længere",
     "Could not open the page" : "Siden kunne ikke åbnes",
     "This team does not have a team folder yet. Ask your administrator to enable the Team Folders app." : "Dette team har endnu ingen team-mappe. Bed din administrator om at aktivere appen Team-mapper.",
