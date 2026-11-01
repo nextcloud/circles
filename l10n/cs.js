@@ -271,6 +271,7 @@ OC.L10N.register(
     "No results" : "Žádné výsledky",
     "Add {type}" : "Přidat {type}",
     "Reject membership request" : "Odmítnout žádost o členství",
+    "Manage level" : "Spravovat stupeň",
     "Remove member" : "Odebrat člena",
     "Pending" : "Čeká",
     "Role" : "Role",

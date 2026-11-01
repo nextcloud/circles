@@ -171,6 +171,7 @@
     "Configure default storage quotas and manage team folders." : "Configurez les quotas de stockage par défaut et gérez les dossiers d’équipe.",
     "Team folder settings" : "Paramètres des dossiers d’équipe",
     "Default quotas" : "Quotas par défaut",
+    "Search team by name" : "Rechercher une équipe par nom",
     "Configure the default storage quota for team folders. Requires the Team Folders app to be installed and enabled." : "Configurez le quota de stockage par défaut pour les dossiers d’équipe. L’application Team Folders doit être installée et activée.",
     "Automatic team folder creation is disabled. These quota mappings will not apply until it is enabled again through the occ command." : "La création automatique des dossiers d’équipe est désactivée. Ces attributions de quota ne s’appliqueront qu’après sa réactivation à l’aide de la commande occ.",
     "Default quota" : "Quota par défaut",
