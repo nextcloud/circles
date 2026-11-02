@@ -326,6 +326,18 @@ class SingleMemberAdd implements
 
 		$patron = $member->getInvitedBy();
 		if ($patron->getInstance() !== $event->getSender()) {
+			// Temporary diagnostic logging
+			$this->log(self::$ERROR, 'TMP DIAGNOSTIC: patron/sender mismatch', false, [
+				'circleId' => $event->getCircle()->getSingleId(),
+				'circleInstance' => $event->getCircle()->getInstance(),
+				'eventOrigin' => $event->getOrigin(),
+				'eventSender' => $event->getSender(),
+				'memberUserId' => $member->getUserId(),
+				'memberInstance' => $member->getInstance(),
+				'patronSingleId' => $patron->getSingleId(),
+				'patronUserId' => $patron->getUserId(),
+				'patronInstance' => $patron->getInstance(),
+			]);
 			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[130], 130);
 		}
 
