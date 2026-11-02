@@ -53,6 +53,8 @@ function addMembers(): void {
 
 <style lang="scss" scoped>
 .team-members {
+	display: flex;
+	flex-direction: column;
 	height: 100%;
 	max-width: 500px;
 	margin-inline: auto;

@@ -32,9 +32,8 @@
 					v-model="searchRole"
 					class="member-list__role"
 					:options="roles"
-					:placeholder="t('circles', 'Role')"
-					:multiple="false"
-					:aria-label-combobox="t('circles', 'Filter by role')" />
+					:input-label="t('circles', 'Role')"
+					:multiple="false" />
 			</div>
 
 			<NcEmptyContent
@@ -59,7 +58,6 @@
 				v-else
 				v-slot="{ item }"
 				class="member-list__virtual"
-				:style="virtualListStyle"
 				:data="flatList">
 				<MemberGridItem
 					:key="`member-grid-item-${item.id}`"
@@ -167,7 +165,10 @@ export default defineComponent({
 			pickerSelection: {},
 			pickerTypes: CIRCLES_MEMBER_GROUPING,
 
-			circleHeaderHeight: 0,
+			// Members matching the active search/role filters. Kept outside
+			// the store so the circle's full member list stays intact for
+			// the team header while a filtered view is displayed.
+			filteredMembers: null,
 		}
 	},
 
@@ -214,8 +215,14 @@ export default defineComponent({
 		},
 
 		flatList() {
-			const teams = this.list.filter((member) => !member.isUser)
-			const users = this.list.filter((member) => member.isUser)
+			const circleMembers = this.circle?.members ?? {}
+			const source = this.filteredMembers == null
+				? this.list
+				// Filtered members are not part of the circle's member list,
+				// so entries removed since the fetch have to be dropped here.
+				: this.filteredMembers.filter((member) => circleMembers[member.singleId] !== undefined)
+			const teams = source.filter((member) => !member.isUser)
+			const users = source.filter((member) => member.isUser)
 			return [...teams, ...users]
 		},
 
@@ -225,16 +232,6 @@ export default defineComponent({
 
 		hasActiveFilters() {
 			return this.searchQuery !== '' || this.searchRole !== null
-		},
-
-		virtualListStyle() {
-			const gridBaseline = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--default-grid-baseline')) || 4
-			const headerHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 50
-			const padding = gridBaseline * 32
-			const availableHeight = window.innerHeight - headerHeight - this.circleHeaderHeight - padding
-			return {
-				height: `${Math.max(availableHeight, 200)}px`,
-			}
 		},
 	},
 
@@ -251,32 +248,9 @@ export default defineComponent({
 	mounted() {
 		subscribe('contacts:circles:append', this.onShowPicker)
 		subscribe('guests:user:created', this.onGuestCreated)
-		this.measureCircleHeader()
-	},
-
-	beforeUnmount() {
-		this.resizeObserver?.disconnect()
 	},
 
 	methods: {
-		/**
-		 * Measure the circle details header height from the DOM
-		 * and keep it updated via ResizeObserver.
-		 */
-		measureCircleHeader() {
-			const header = document.querySelector('.circle-details__header-wrapper')
-			if (!header) {
-				return
-			}
-			this.circleHeaderHeight = header.getBoundingClientRect().height
-			this.resizeObserver = new ResizeObserver((entries) => {
-				for (const entry of entries) {
-					this.circleHeaderHeight = entry.contentRect.height
-				}
-			})
-			this.resizeObserver.observe(header)
-		},
-
 		/**
 		 * Show picker and fetch for recommendations
 		 * Cache the circleId in case the url change or something
@@ -388,7 +362,8 @@ export default defineComponent({
 			this.logger.debug('Fetching members for', payload)
 
 			try {
-				await this.$store.dispatch('getCircleMembers', payload)
+				const members = await this.$store.dispatch('getCircleMembers', payload)
+				this.filteredMembers = this.hasActiveFilters ? members : null
 				this.logger.debug('debug: getCircleMembers', this.list)
 			} catch (error) {
 				this.logger.error(error)
@@ -401,6 +376,10 @@ export default defineComponent({
 
 <style module lang="scss">
 .member-list {
+	display: flex;
+	flex-direction: column;
+	flex: 1 1 auto;
+	min-height: 0;
 	max-width: 900px;
 }
 </style>
@@ -417,7 +396,8 @@ export default defineComponent({
 }
 
 .member-list__virtual {
-	overflow: auto;
+	flex: 1 1 auto;
+	min-height: 0;
 }
 
 .member-list__filters {
@@ -426,17 +406,25 @@ export default defineComponent({
 	gap: calc(var(--default-grid-baseline) * 2);
 	margin-bottom: calc(var(--default-grid-baseline) * 4);
 
+	> :deep(.nc-select) {
+		flex: 0 0 calc(var(--default-grid-baseline) * 45);
+		min-width: unset !important;
+		margin-block: 6px 0 !important;
+	}
+
 	&--mobile {
 		flex-direction: column;
 		align-items: stretch;
+
+		> :deep(.nc-select) {
+			flex-basis: auto;
+			width: auto;
+		}
 	}
 }
 
 .member-list__search {
-	flex: 1;
-}
-
-.member-list__role {
-	min-width: calc(var(--default-grid-baseline) * 40) !important;
+	flex: 1 1 auto;
+	min-width: 0;
 }
 </style>

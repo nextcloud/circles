@@ -138,6 +138,10 @@ const mutations = {
 	 * @param {number} data.populationInherited the inherited population count
 	 */
 	updateCirclePopulationCount(state, { circleId, populationInherited }) {
+		// Teams are loaded into the store lazily; skip the ones we don't have
+		if (!(circleId in state.circles)) {
+			return
+		}
 		state.circles[circleId]._data.populationInherited = populationInherited
 	},
 }
@@ -207,6 +211,7 @@ const actions = {
 	 * @param {string} data.search the search query
 	 * @param {string} data.role the role
 	 * @param {number} data.limit the limit
+	 * @return {Member[]} the fetched members
 	 */
 	async getCircleMembers(context, { circleId, search, role, limit }) {
 		const circle = context.getters.getCircle(circleId)
@@ -217,11 +222,20 @@ const actions = {
 
 		context.commit('setLoadingCircleMembers', true)
 		try {
-			const members = await getCircleMembers(circleId, search, role, limit)
+			const members = (await getCircleMembers(circleId, search, role, limit))
+				.map((member) => new Member(member, circle))
 
 			logger.debug(`${circleId} have ${members.length} member(s)`, { members })
-			context.commit('resetCircleMembers', circle.id)
-			context.commit('appendMembersToCircle', members.map((member) => new Member(member, circle)))
+
+			// Filtered results are a view-local projection: only the full
+			// roster is committed so other consumers (e.g. the team header)
+			// keep showing the unfiltered member list.
+			if (search == null && role == null && limit == null) {
+				context.commit('resetCircleMembers', circle.id)
+				context.commit('appendMembersToCircle', members)
+			}
+
+			return members
 		} finally {
 			context.commit('setLoadingCircleMembers', false)
 		}
