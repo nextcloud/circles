@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Controller;
 
 use Exception;
+use OCA\Circles\AuditLog\Operation;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\FrontendException;
@@ -23,6 +24,7 @@ use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\BasicProbe;
 use OCA\Circles\Model\Probes\CircleProbe;
+use OCA\Circles\Service\AuditLogService;
 use OCA\Circles\Service\AvatarService;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
@@ -66,6 +68,7 @@ class LocalController extends OCSController {
 		private SearchService $searchService,
 		private AvatarService $avatarService,
 		private ConfigService $configService,
+		private AuditLogService $auditLogService,
 	) {
 		parent::__construct($appName, $request);
 		$this->setup('app', 'circles');
@@ -662,6 +665,7 @@ class LocalController extends OCSController {
 
 			$circles = $this->circleService->getCircles($circleProbe);
 			if (empty($circles)) {
+				$this->logRejectedInvitationCode();
 				return new DataResponse([], Http::STATUS_NOT_FOUND);
 			}
 			$circle = reset($circles);
@@ -699,6 +703,7 @@ class LocalController extends OCSController {
 
 			$circles = $this->circleService->getCircles($circleProbe);
 			if (empty($circles)) {
+				$this->logRejectedInvitationCode();
 				return new DataResponse([], Http::STATUS_NOT_FOUND);
 			}
 			$circle = reset($circles);
@@ -727,5 +732,11 @@ class LocalController extends OCSController {
 
 		$user = $this->userSession->getUser();
 		$this->federatedUserService->setLocalCurrentUser($user);
+	}
+
+	private function logRejectedInvitationCode(): void {
+		$this->auditLogService->log(Operation::InvitationCodeRejected, 'Invalid team invitation code used by "%s"', [
+			'userId' => $this->userSession->getUser()?->getUID(),
+		]);
 	}
 }
