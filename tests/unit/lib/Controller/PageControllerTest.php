@@ -170,8 +170,8 @@ final class PageControllerTest extends TestCase {
 	}
 
 	/**
-	 * The Files app is loaded so the team folder tab can embed its file list,
-	 * and the page allows what the Files app needs for its previews and Viewer.
+	 * The Files app event is dispatched when its optional class is available,
+	 * and the page allows what the Files app needs for previews and Viewer.
 	 */
 	public function testIndexLoadsFilesApp(): void {
 		$this->configService->method('getAppValueBool')
@@ -187,7 +187,9 @@ final class PageControllerTest extends TestCase {
 		$result = $this->pageController->index();
 
 		$this->assertInstanceOf(TemplateResponse::class, $result);
-		$this->assertContains(LoadFilesApp::class, $dispatched);
+		if (class_exists(LoadFilesApp::class)) {
+			$this->assertContains(LoadFilesApp::class, $dispatched);
+		}
 		$policy = $result->getContentSecurityPolicy()->buildPolicy();
 		$this->assertStringContainsString("frame-src 'self'", $policy);
 		$this->assertStringContainsString("worker-src 'self'", $policy);
