@@ -12,6 +12,7 @@ import NcActionButton from '@nextcloud/vue/components/NcActionButton'
 import NcActions from '@nextcloud/vue/components/NcActions'
 import NcAvatar from '@nextcloud/vue/components/NcAvatar'
 import NcIconSvgWrapper from '@nextcloud/vue/components/NcIconSvgWrapper'
+import NcRichText from '@nextcloud/vue/components/NcRichText'
 import TeamAvatar from './TeamAvatar.vue'
 
 const props = withDefaults(defineProps<{
@@ -74,9 +75,12 @@ function preventActionsDrag(event: DragEvent) {
 					{{ team.displayName }}
 				</span>
 			</div>
-			<p v-if="team.description" :class="$style.teamCardDescription">
-				{{ team.description }}
-			</p>
+			<NcRichText
+				v-if="team.description"
+				:class="$style.teamCardDescription"
+				:text="team.description"
+				useExtendedMarkdown
+				autolink />
 
 			<div :class="$style.teamCardFooter">
 				<ul :class="$style.teamCardMembers" :aria-label="t('circles', 'Members')">
@@ -234,6 +238,33 @@ function preventActionsDrag(event: DragEvent) {
 		-webkit-line-clamp: 2;
 		-webkit-box-orient: vertical;
 		overflow: hidden;
+
+		// Preview only: the card itself is the link, so embedded links must
+		// not capture clicks, and rendered blocks get preview-sized spacing.
+		:deep(a) {
+			pointer-events: none;
+			color: inherit;
+		}
+
+		:deep(p),
+		:deep(h1),
+		:deep(h2),
+		:deep(h3),
+		:deep(h4),
+		:deep(h5),
+		:deep(h6),
+		:deep(ul),
+		:deep(ol),
+		:deep(blockquote),
+		:deep(pre) {
+			margin: 0;
+			font-size: inherit;
+			font-weight: inherit;
+		}
+
+		:deep(img) {
+			display: none;
+		}
 	}
 
 	&__footer {

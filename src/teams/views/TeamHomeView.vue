@@ -14,6 +14,7 @@ import NcEmptyContent from '@nextcloud/vue/components/NcEmptyContent'
 import NcIconSvgWrapper from '@nextcloud/vue/components/NcIconSvgWrapper'
 import ListItem from '@nextcloud/vue/components/NcListItem'
 import NcLoadingIcon from '@nextcloud/vue/components/NcLoadingIcon'
+import NcRichText from '@nextcloud/vue/components/NcRichText'
 import FileDocumentOutline from 'vue-material-design-icons/FileDocumentOutline.vue'
 import ContentHeading from '../team-page/components/CircleDetails/ContentHeading.vue'
 import { useTeamResourcesStore } from '../resourcesStore.ts'
@@ -95,6 +96,13 @@ const groupedResources = computed(() => {
 		</div>
 
 		<template v-else>
+			<NcRichText
+				v-if="circle?.description"
+				class="team-home__description"
+				:text="circle.description"
+				useExtendedMarkdown
+				autolink />
+
 			<div
 				v-for="(group, providerId) in groupedResources"
 				:key="providerId"
@@ -139,6 +147,12 @@ const groupedResources = computed(() => {
 		display: flex;
 		align-items: center;
 		justify-content: center;
+	}
+
+	&__description {
+		margin-bottom: 2rem;
+		max-width: 500px;
+		margin-inline: auto;
 	}
 
 	.circle-details-section {

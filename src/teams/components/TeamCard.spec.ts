@@ -39,7 +39,7 @@ function mountCard(props: Record<string, unknown> = {}, team: Team = makeTeam())
 		global: {
 			// Render slots of stubbed components so actions and links stay reachable.
 			renderStubDefaultSlot: true,
-			stubs: { RouterLink: { template: '<a><slot /></a>' } },
+			stubs: { RouterLink: { template: '<a><slot /></a>' }, NcRichText: false },
 		},
 	})
 }
@@ -132,6 +132,13 @@ describe('TeamCard content', () => {
 	it('shows the description only when there is one', () => {
 		expect(mountCard().text()).toContain('A team')
 		expect(mountCard({}, makeTeam({ description: '' })).find('p').exists()).toBe(false)
+	})
+
+	it('renders markdown descriptions inside the team link', () => {
+		const wrapper = mountCard({}, makeTeam({ description: '**Team focus**' }))
+
+		expect(wrapper.get('a strong').text()).toBe('Team focus')
+		expect(wrapper.get('a').text()).not.toContain('**')
 	})
 
 	it('shows how many members are not part of the preview', () => {
