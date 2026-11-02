@@ -1,0 +1,2 @@
+import{m as n,a as p}from"./logger-SYRAW7SC.chunk.mjs";import{r as u,t as l,a as m,c as o,b as e,d as v}from"./_plugin-vue_export-helper-BeI47Zg4.chunk.mjs";u(l);const d=2e3;function C(r){const a=m(!1),c=o(()=>a.value?n:p),i=o(()=>a.value?e("Copied"):e("Copy to clipboard"));async function s(){if(a.value)return;const t=v(r);try{await navigator.clipboard.writeText(t)}catch{prompt("",t)}a.value=!0,setTimeout(()=>{a.value=!1},d)}return{isCopied:a,copy:s,icon:c,altText:i}}export{C as u};
+//# sourceMappingURL=useCopy-dXF8_XRa.chunk.mjs.map

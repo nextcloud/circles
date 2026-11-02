@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
+use OCA\Circles\AuditLog\Operation;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\FederatedItemBadRequestException;
 use OCA\Circles\Exceptions\FederatedItemException;
@@ -21,6 +22,7 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Service\AuditLogService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\MembershipService;
@@ -44,12 +46,14 @@ class MemberLevel implements
 	 * @param MembershipService $membershipService
 	 * @param EventService $eventService
 	 * @param ConfigService $configService
+	 * @param AuditLogService $auditLogService
 	 */
 	public function __construct(
 		private MemberRequest $memberRequest,
 		private MembershipService $membershipService,
 		private EventService $eventService,
 		private ConfigService $configService,
+		private AuditLogService $auditLogService,
 	) {
 	}
 
@@ -104,6 +108,7 @@ class MemberLevel implements
 		$member = clone $event->getMember();
 		$member->setLevel($event->getData()->gInt('level'));
 
+		$oldOwner = null;
 		if ($member->getLevel() === Member::LEVEL_OWNER) {
 			$oldOwner = $this->memberRequest->promoteToOwner($member);
 			if ($oldOwner !== null) {
@@ -116,6 +121,22 @@ class MemberLevel implements
 		$this->membershipService->onUpdate($member->getSingleId());
 
 		$this->eventService->memberLevelEditing($event);
+
+		$circle = $event->getCircle();
+		$this->logLevelChange($circle, $member, $event->getMember()->getLevel());
+		if ($oldOwner !== null && $oldOwner->getId() !== $member->getId()) {
+			$this->logLevelChange($circle, $oldOwner, Member::LEVEL_OWNER);
+		}
+	}
+
+	private function logLevelChange(Circle $circle, Member $member, int $oldLevel): void {
+		$this->auditLogService->logTeamChange($circle, Operation::MemberLevelUpdated, 'Level of member "%s" (%s, member %s) in team %s ("%s") was changed from %s to %s by "%s"', $this->auditLogService->getMemberParameters($member) + [
+			'circleId' => $circle->getSingleId(),
+			'name' => $this->auditLogService->getTeamName($circle),
+			'oldLevel' => $this->auditLogService->getLevelName($oldLevel),
+			'level' => $this->auditLogService->getLevelName($member->getLevel()),
+			'initiator' => $this->auditLogService->getInitiator($circle),
+		]);
 	}
 
 	/**

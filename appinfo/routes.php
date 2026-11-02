@@ -53,6 +53,9 @@ return [
 		['name' => 'TeamFolder#getLinkableTeamFolders', 'url' => '/teams/{circleId}/folder/linkable', 'verb' => 'GET'],
 		['name' => 'TeamFolder#linkTeamFolder', 'url' => '/teams/{circleId}/folder/link', 'verb' => 'POST'],
 		['name' => 'TeamFolder#updateTeamFolderQuota', 'url' => '/teams/{circleId}/folder/quota', 'verb' => 'PUT'],
+		['name' => 'TeamFavorites#getFavorites', 'url' => '/teams/favorites', 'verb' => 'GET'],
+		['name' => 'TeamFavorites#setFavorite', 'url' => '/teams/{circleId}/favorite', 'verb' => 'PUT'],
+		['name' => 'TeamFavorites#reorder', 'url' => '/teams/favorites/order', 'verb' => 'PUT'],
 
 		// Teams Dashboard widget endpoint
 		['name' => 'TeamsDashboard#getCompleteTeamsData', 'url' => '/teams/dashboard/widget', 'verb' => 'GET'],

@@ -9,12 +9,14 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
+use OCA\Circles\AuditLog\Operation;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\IFederatedItemHighSeverity;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
+use OCA\Circles\Service\AuditLogService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\ShareTokenService;
 use OCA\Circles\Tools\Traits\TDeserialize;
@@ -29,6 +31,7 @@ class CircleSetting implements
 		private CircleRequest $circleRequest,
 		private ShareTokenService $shareTokenService,
 		private ConfigService $configService,
+		private AuditLogService $auditLogService,
 	) {
 	}
 
@@ -108,6 +111,17 @@ class CircleSetting implements
 			&& !$this->configService->enforcePasswordOnSharedFile($circle)) {
 			$this->shareTokenService->removeSharePassword($circle->getSingleId());
 		}
+
+		// the value is never logged, it can be the password of the shares
+		$message = $event->getParams()->gBool('unset')
+			? 'Setting "%s" of team %s ("%s") was removed by "%s"'
+			: 'Setting "%s" of team %s ("%s") was set by "%s"';
+		$this->auditLogService->logTeamChange($circle, Operation::TeamSettingUpdated, $message, [
+			'setting' => $event->getParams()->g('setting'),
+			'circleId' => $circle->getSingleId(),
+			'name' => $this->auditLogService->getTeamName($circle),
+			'initiator' => $this->auditLogService->getInitiator($circle),
+		]);
 	}
 
 	/**

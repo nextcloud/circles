@@ -77,6 +77,8 @@ class MassiveMemberAdd extends SingleMemberAdd implements
 				} else {
 					$this->eventService->memberAdding($event);
 				}
+
+				$this->logMemberAdded($event->getCircle(), $member);
 			} catch (Exception) {
 			}
 		}

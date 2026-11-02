@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OCA\Circles\FederatedItems;
 
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\AuditLog\Operation;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
@@ -26,6 +27,7 @@ use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
+use OCA\Circles\Service\AuditLogService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\MembershipService;
@@ -62,6 +64,7 @@ class CircleLeave implements
 		private MembershipService $membershipService,
 		private EventService $eventService,
 		private ConfigService $configService,
+		private AuditLogService $auditLogService,
 	) {
 		$this->setup('app', Application::APP_ID);
 	}
@@ -128,8 +131,11 @@ class CircleLeave implements
 	public function manage(FederatedEvent $event): void {
 		$member = $event->getMember();
 		$newOwnerId = $event->getData()->g('newOwnerId');
+		$newOwner = null;
+		$newOwnerOldLevel = Member::LEVEL_NONE;
 		if ($newOwnerId !== '') {
 			$newOwner = $this->memberRequest->getMemberById($newOwnerId);
+			$newOwnerOldLevel = $newOwner->getLevel();
 			$newOwner->setLevel(Member::LEVEL_OWNER);
 			$this->memberRequest->updateLevel($newOwner);
 			$this->membershipService->onUpdate($newOwner->getSingleId());
@@ -152,6 +158,30 @@ class CircleLeave implements
 		}
 
 		$this->membershipService->updatePopulation($event->getCircle());
+
+		$this->logLeave($event->getCircle(), $member, $newOwner, $newOwnerOldLevel, $destroyingCircle);
+	}
+
+	private function logLeave(Circle $circle, Member $member, ?Member $newOwner, int $newOwnerOldLevel, bool $destroyingCircle): void {
+		$teamParameters = [
+			'circleId' => $circle->getSingleId(),
+			'name' => $this->auditLogService->getTeamName($circle),
+		];
+
+		$this->auditLogService->logTeamChange($circle, Operation::MemberLeft, 'Member "%s" (%s, member %s) left team %s ("%s")', $this->auditLogService->getMemberParameters($member) + $teamParameters);
+
+		if ($newOwner !== null) {
+			$this->auditLogService->logTeamChange($circle, Operation::MemberLevelUpdated, 'Level of member "%s" (%s, member %s) in team %s ("%s") was changed from %s to %s because the owner left', $this->auditLogService->getMemberParameters($newOwner) + $teamParameters + [
+				'oldLevel' => $this->auditLogService->getLevelName($newOwnerOldLevel),
+				'level' => $this->auditLogService->getLevelName(Member::LEVEL_OWNER),
+			]);
+		}
+
+		if ($destroyingCircle) {
+			$this->auditLogService->logTeamChange($circle, Operation::TeamDeleted, 'Team %s ("%s") was deleted because its last member "%s" left', $teamParameters + [
+				'userId' => $this->auditLogService->getUserId($member),
+			]);
+		}
 	}
 
 	/**

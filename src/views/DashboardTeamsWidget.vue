@@ -10,6 +10,7 @@ import type { ITeam } from '../types.ts'
 import { mdiAccountGroupOutline, mdiAlertCircleOutline } from '@mdi/js'
 import axios from '@nextcloud/axios'
 import { showError } from '@nextcloud/dialogs'
+import { loadState } from '@nextcloud/initial-state'
 import { t } from '@nextcloud/l10n'
 import { generateOcsUrl, generateUrl } from '@nextcloud/router'
 import { nextTick, onMounted, ref, useTemplateRef } from 'vue'
@@ -22,6 +23,10 @@ import { logger } from '../logger.ts'
 
 const LOADING_LIMIT = 3
 const createTeamHref = generateUrl('/apps/circles/teams')
+const canCreateTeam = Boolean(loadState('circles', 'canCreateTeam', false))
+const emptyDescription = canCreateTeam
+	? t('circles', 'Join or create teams to see them here.')
+	: ''
 
 const teamsList = useTemplateRef('teamsListKey')
 
@@ -124,11 +129,11 @@ async function loadMoreTeams() {
 		<NcEmptyContent
 			v-else-if="shownTeams.length === 0"
 			:name="t('circles', 'No teams found')"
-			:description="t('circles', 'Join or create teams to see them here.')">
+			:description="emptyDescription">
 			<template #icon>
 				<NcIconSvgWrapper :path="mdiAccountGroupOutline" />
 			</template>
-			<template #action>
+			<template v-if="canCreateTeam" #action>
 				<NcButton :href="createTeamHref">
 					{{ t('circles', 'Create your first team') }}
 				</NcButton>

@@ -42,7 +42,8 @@ class FileSharingTeamResourceProvider implements ITeamResourceProvider {
 			return [];
 		}
 
-		$shares = $this->shareWrapperService->getSharesToCircle($teamId);
+		$shares = $this->shareWrapperService->filterAccessibleShares($this->shareWrapperService->getSharesToCircle($teamId));
+
 		return $this->convertWrappedShareToResource($shares);
 	}
 
@@ -51,7 +52,8 @@ class FileSharingTeamResourceProvider implements ITeamResourceProvider {
 	 */
 	public function getSharedWithList(array $teams, string $resourceId): array {
 		$shares = $data = [];
-		foreach ($this->shareWrapperService->getSharesToCircles($teams, $resourceId) as $share) {
+		$accessibleShares = $this->shareWrapperService->filterAccessibleShares($this->shareWrapperService->getSharesToCircles($teams, $resourceId));
+		foreach ($accessibleShares as $share) {
 			$shares[$share->getSharedWith()][] = $share;
 		}
 		foreach ($teams as $teamId) {

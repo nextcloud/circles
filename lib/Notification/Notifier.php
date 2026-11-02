@@ -18,6 +18,7 @@ use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
@@ -131,6 +132,7 @@ class Notifier implements INotifier {
 	 * @throws InvalidIdException
 	 * @throws SingleCircleNotFoundException
 	 * @throws UnknownNotificationException
+	 * @throws AlreadyProcessedException
 	 */
 	private function prepareMemberNotification(INotification $notification) {
 		$this->federatedUserService->initCurrentUser($notification->getUser());
@@ -144,6 +146,10 @@ class Notifier implements INotifier {
 			'',
 			$probe
 		);
+
+		if ($notification->getSubject() === 'joinRequest' && $member->getStatus() !== Member::STATUS_REQUEST) {
+			throw new AlreadyProcessedException();
+		}
 
 		$subject = match ($notification->getSubject()) {
 			'memberAdd' => $this->l10n->t(

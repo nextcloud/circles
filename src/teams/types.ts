@@ -61,6 +61,8 @@ export interface Team {
 	id: string
 	displayName: string
 	description: string
+	isFavorite: boolean
+	favoritePosition: number | null
 	/** Total number of members (may exceed the previewed {@link members}). */
 	memberCount: number
 	/** The current user's role in this team. */
@@ -68,6 +70,21 @@ export interface Team {
 	/** A small preview of members for avatars (not the full list). */
 	members: Member[]
 	resources: Resource[]
+}
+
+/**
+ * A team the current user can see but is not an active member of
+ * ("Visible to everyone" teams, or teams with a pending join request).
+ */
+export interface DiscoverableTeam {
+	id: string
+	displayName: string
+	description: string
+	memberCount: number
+	/** Whether the user can join or request to join right now. */
+	canJoin: boolean
+	/** Whether the user already requested to join and awaits approval. */
+	pending: boolean
 }
 
 /**

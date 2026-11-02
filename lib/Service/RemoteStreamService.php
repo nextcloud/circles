@@ -11,6 +11,7 @@ namespace OCA\Circles\Service;
 
 use JsonSerializable;
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\AuditLog\Operation;
 use OCA\Circles\Db\RemoteRequest;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\RemoteAlreadyExistsException;
@@ -66,6 +67,7 @@ class RemoteStreamService extends NCSignature {
 	 * @param RemoteRequest $remoteRequest
 	 * @param InterfaceService $interfaceService
 	 * @param ConfigService $configService
+	 * @param AuditLogService $auditLogService
 	 */
 	public function __construct(
 		private readonly IConfig $config,
@@ -73,6 +75,7 @@ class RemoteStreamService extends NCSignature {
 		private RemoteRequest $remoteRequest,
 		private InterfaceService $interfaceService,
 		private ConfigService $configService,
+		private AuditLogService $auditLogService,
 	) {
 		$this->setup('app', 'circles');
 	}
@@ -392,7 +395,32 @@ class RemoteStreamService extends NCSignature {
 		} catch (RemoteNotFoundException) {
 		}
 
+		$this->saveRemoteInstance($remoteInstance);
+	}
+
+	/**
+	 * Stores a new remote instance, trusted according to its type
+	 *
+	 * @throws RemoteUidException
+	 */
+	public function saveRemoteInstance(RemoteInstance $remoteInstance): void {
 		$this->remoteRequest->save($remoteInstance);
+
+		$this->auditLogService->log(Operation::RemoteInstanceAdded, 'Remote instance "%s" was added as %s using the %s interface', [
+			'instance' => $remoteInstance->getInstance(),
+			'type' => $remoteInstance->getType(),
+			'interface' => $this->getInterfaceName($remoteInstance),
+		]);
+	}
+
+	public function removeRemoteInstance(string $instance): void {
+		if ($this->remoteRequest->deleteInstance($instance) === 0) {
+			return;
+		}
+
+		$this->auditLogService->log(Operation::RemoteInstanceRemoved, 'Remote instance "%s" was removed', [
+			'instance' => $instance,
+		]);
 	}
 
 	/**
@@ -554,6 +582,10 @@ class RemoteStreamService extends NCSignature {
 		switch ($update) {
 			case self::UPDATE_DATA:
 				$this->remoteRequest->update($remote);
+				$this->auditLogService->log(Operation::RemoteInstanceUpdated, 'Identity of remote instance "%s" was changed, it is known as %s', [
+					'instance' => $remote->getInstance(),
+					'type' => $remote->getType(),
+				]);
 				break;
 
 			case self::UPDATE_ITEM:
@@ -562,6 +594,10 @@ class RemoteStreamService extends NCSignature {
 
 			case self::UPDATE_TYPE:
 				$this->remoteRequest->updateType($remote);
+				$this->auditLogService->log(Operation::RemoteInstanceUpdated, 'Type of remote instance "%s" was changed to %s', [
+					'instance' => $remote->getInstance(),
+					'type' => $remote->getType(),
+				]);
 				break;
 
 			case self::UPDATE_HREF:
@@ -572,5 +608,9 @@ class RemoteStreamService extends NCSignature {
 				$this->remoteRequest->updateInstance($remote);
 				break;
 		}
+	}
+
+	private function getInterfaceName(RemoteInstance $remoteInstance): string {
+		return InterfaceService::LIST_IFACE[$remoteInstance->getInterface()] ?? (string)$remoteInstance->getInterface();
 	}
 }

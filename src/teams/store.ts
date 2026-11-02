@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import type { Member, MemberCandidate, Team } from './types.ts'
+import type { DiscoverableTeam, Member, MemberCandidate, Team } from './types.ts'
 
+import { loadState } from '@nextcloud/initial-state'
 import { defineStore } from 'pinia'
 import { logger } from '../logger.ts'
 import * as api from './api.ts'
@@ -12,12 +13,17 @@ import * as api from './api.ts'
 interface TeamsState {
 	/** All teams the current user is part of. */
 	teams: Team[]
+	/** Visible teams the user is not an active member of. */
+	discoverableTeams: DiscoverableTeam[]
 	/** Whether the teams list is currently loading. */
 	loading: boolean
 	/** Whether the last teams load failed. */
 	loadError: boolean
 	/** Whether the "create a new team" wizard is open (shared across the app). */
 	createWizardOpen: boolean
+	favoritesUpdating: boolean
+	/** Whether the current user may create teams (`limit_circle_creation`). */
+	canCreateTeam: boolean
 }
 
 /**
@@ -28,9 +34,12 @@ interface TeamsState {
 export const useTeamsStore = defineStore('teams', {
 	state: (): TeamsState => ({
 		teams: [],
+		discoverableTeams: [],
 		loading: false,
 		loadError: false,
 		createWizardOpen: false,
+		favoritesUpdating: false,
+		canCreateTeam: Boolean(loadState('circles', 'canCreateTeam', false)),
 	}),
 
 	getters: {
@@ -45,11 +54,29 @@ export const useTeamsStore = defineStore('teams', {
 			}
 			return state.teams.filter((team) => team.displayName.toLowerCase().includes(needle))
 		},
+
+		favoriteTeams: (state): Team[] => state.teams
+			.filter((team) => team.isFavorite)
+			.sort((left, right) => (left.favoritePosition ?? 0) - (right.favoritePosition ?? 0)),
+
+		// Filter discoverable teams by a free-text query against their display name.
+		searchDiscoverableTeams: (state) => (query: string): DiscoverableTeam[] => {
+			const needle = query.trim().toLowerCase()
+			if (!needle) {
+				return state.discoverableTeams
+			}
+			return state.discoverableTeams.filter((team) => team.displayName.toLowerCase().includes(needle))
+		},
 	},
 
 	actions: {
-		/** Open the "create a new team" wizard. */
+		/**
+		 * Open the "create a new team" wizard, if the user may create teams.
+		 */
 		openCreateTeamWizard(): void {
+			if (!this.canCreateTeam) {
+				return
+			}
 			this.createWizardOpen = true
 		},
 
@@ -58,13 +85,81 @@ export const useTeamsStore = defineStore('teams', {
 			this.loading = true
 			this.loadError = false
 			try {
-				this.teams = await api.fetchTeams()
+				const overview = await api.fetchTeams()
+				this.teams = overview.teams
+				this.discoverableTeams = overview.discoverableTeams
 			} catch (error) {
 				this.loadError = true
 				logger.error('Failed to load teams', { error })
 			} finally {
 				this.loading = false
 			}
+		},
+
+		/**
+		 * Apply the canonical favorite list to all loaded teams.
+		 *
+		 * @param ids - Ordered favorite identifiers
+		 */
+		applyFavoriteOrder(ids: string[]): void {
+			const positions = new Map(ids.map((id, position) => [id, position]))
+			for (const team of this.teams) {
+				team.isFavorite = positions.has(team.id)
+				team.favoritePosition = positions.get(team.id) ?? null
+			}
+		},
+
+		/**
+		 * Toggle a favorite while preventing overlapping mutations.
+		 *
+		 * @param id - Team identifier
+		 */
+		async toggleFavorite(id: string): Promise<void> {
+			const team = this.getTeam(id)
+			if (!team || this.favoritesUpdating) {
+				return
+			}
+			this.favoritesUpdating = true
+			try {
+				this.applyFavoriteOrder(await api.setTeamFavorite(id, !team.isFavorite))
+			} catch (error) {
+				await this.loadTeams()
+				throw error
+			} finally {
+				this.favoritesUpdating = false
+			}
+		},
+
+		/**
+		 * Persist a favorite order and reconcile server conflicts.
+		 *
+		 * @param ids - Desired favorite order
+		 */
+		async reorderFavoriteTeams(ids: string[]): Promise<void> {
+			if (this.favoritesUpdating) {
+				return
+			}
+			const expected = this.favoriteTeams.map((team) => team.id)
+			this.favoritesUpdating = true
+			try {
+				this.applyFavoriteOrder(await api.reorderFavoriteTeams(ids, expected))
+			} catch (error) {
+				await this.loadTeams()
+				throw error
+			} finally {
+				this.favoritesUpdating = false
+			}
+		},
+
+		/**
+		 * Join (or request to join) a team, then reload the lists.
+		 *
+		 * @param id - The team id
+		 */
+		async joinTeam(id: string): Promise<'joined' | 'requested'> {
+			const result = await api.joinTeam(id)
+			await this.loadTeams()
+			return result
 		},
 
 		/**
@@ -85,6 +180,9 @@ export const useTeamsStore = defineStore('teams', {
 		 * @param description - An optional description
 		 */
 		async createTeam(displayName: string, createTeamFolder = true, description = ''): Promise<Team | undefined> {
+			if (!this.canCreateTeam) {
+				throw new Error('Not allowed to create teams')
+			}
 			const id = await api.createTeam(displayName.trim(), createTeamFolder)
 			const trimmedDescription = description.trim()
 			if (trimmedDescription) {

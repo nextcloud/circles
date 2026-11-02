@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
+use OCA\Circles\AuditLog\Operation;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\FederatedItemBadRequestException;
 use OCA\Circles\Exceptions\FederatedItemException;
@@ -17,6 +18,7 @@ use OCA\Circles\IFederatedItem;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
+use OCA\Circles\Service\AuditLogService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\PermissionService;
 use OCA\Circles\Tools\Traits\TDeserialize;
@@ -36,11 +38,13 @@ class CircleConfig implements
 	 * @param CircleRequest $circleRequest
 	 * @param PermissionService $permissionService
 	 * @param ConfigService $configService
+	 * @param AuditLogService $auditLogService
 	 */
 	public function __construct(
 		private CircleRequest $circleRequest,
 		private PermissionService $permissionService,
 		private ConfigService $configService,
+		private AuditLogService $auditLogService,
 	) {
 	}
 
@@ -146,6 +150,17 @@ class CircleConfig implements
 		// TODO: sync if it is to broadcast to Trusted RemoteInstance
 
 		$this->circleRequest->updateConfig($circle);
+
+		$oldConfig = $event->getCircle()->getConfig();
+		if ($config !== $oldConfig) {
+			$this->auditLogService->logTeamChange($circle, Operation::TeamConfigUpdated, 'Configuration of team %s ("%s") was changed from %s to %s by "%s"', [
+				'circleId' => $circle->getSingleId(),
+				'name' => $this->auditLogService->getTeamName($circle),
+				'oldConfig' => $oldConfig,
+				'config' => $config,
+				'initiator' => $this->auditLogService->getInitiator($circle),
+			]);
+		}
 	}
 
 	/**

@@ -16,4 +16,32 @@ test.describe('Admin settings', () => {
 
 		await expect(page.getByRole('heading', { name: 'Federated Teams' })).toBeVisible()
 	})
+
+	test('filters teams by name', async ({ page }) => {
+		const matchingTeam = 'Search match'
+		const otherTeam = 'Search other'
+		await page.route('**/ocs/v2.php/apps/circles/admin/teamfolders', (route) => route.fulfill({
+			contentType: 'application/json',
+			body: JSON.stringify({
+				ocs: {
+					data: [
+						{ teamId: 'matching-team', teamName: matchingTeam, defaultQuota: null, folder: null },
+						{ teamId: 'other-team', teamName: otherTeam, defaultQuota: null, folder: null },
+					],
+				},
+			}),
+		}))
+
+		await page.goto('settings/admin/teams', { waitUntil: 'networkidle' })
+		const search = page.getByRole('searchbox', { name: 'Search team by name' })
+		await expect(page.getByRole('cell', { name: matchingTeam })).toBeVisible()
+		await expect(page.getByRole('cell', { name: otherTeam })).toBeVisible()
+
+		await search.fill('match')
+		await expect(page.getByRole('cell', { name: matchingTeam })).toBeVisible()
+		await expect(page.getByRole('cell', { name: otherTeam })).not.toBeVisible()
+
+		await search.fill('no matching team')
+		await expect(page.getByText('No teams match your search.')).toBeVisible()
+	})
 })

@@ -10,8 +10,10 @@ declare(strict_types=1);
 namespace OCA\Circles\Command;
 
 use OC\Core\Command\Base;
+use OCA\Circles\AuditLog\Operation;
 use OCA\Circles\ConfigLexicon;
 use OCA\Circles\Db\RemoteRequest;
+use OCA\Circles\Service\AuditLogService;
 use OCP\AppFramework\Services\IAppConfig;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,6 +23,7 @@ class CirclesScimAddRemoteInstance extends Base {
 	public function __construct(
 		private readonly IAppConfig $appConfig,
 		private readonly RemoteRequest $remoteRequest,
+		private readonly AuditLogService $auditLogService,
 	) {
 		parent::__construct();
 	}
@@ -55,6 +58,9 @@ class CirclesScimAddRemoteInstance extends Base {
 
 		$instances[] = $instance;
 		$this->appConfig->setAppValueArray(ConfigLexicon::SCIM_REMOTE_INSTANCES, $instances);
+		$this->auditLogService->log(Operation::ScimInstanceAdded, 'Remote instance "%s" was allowed to add members to SCIM teams', [
+			'instance' => $instance,
+		]);
 
 		$output->writeln('<info>done</info>');
 

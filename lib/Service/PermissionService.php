@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
+use Exception;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\MembershipRequest;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
@@ -19,6 +20,7 @@ use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Model\Member;
 use OCP\IGroupManager;
@@ -52,6 +54,27 @@ class PermissionService {
 	}
 
 	/**
+	 * Non-throwing variant of confirmCircleCreation() for a given local user,
+	 * used to decide whether team creation is offered in the frontend.
+	 */
+	public function canUserCreateCircle(string $userId): bool {
+		$singleId = $this->configService->getAppValue(
+			ConfigService::LIMIT_CIRCLE_CREATION
+		);
+		if ($singleId === '') {
+			return true;
+		}
+
+		try {
+			$federatedUser = $this->federatedUserService
+				->getLocalFederatedUser($userId);
+			return $this->isLinkedTo($federatedUser, $singleId);
+		} catch (Exception) {
+			return false;
+		}
+	}
+
+	/**
 	 * @param string $config
 	 *
 	 * @throws InsufficientPermissionException
@@ -66,10 +89,23 @@ class PermissionService {
 
 		$this->federatedUserService->mustHaveCurrentUser();
 		$federatedUser = $this->federatedUserService->getCurrentUser();
+		if (!$this->isLinkedTo($federatedUser, $singleId)) {
+			throw new InsufficientPermissionException();
+		}
+	}
+
+	/**
+	 * @throws RequestBuilderException
+	 */
+	private function isLinkedTo(
+		FederatedUser $federatedUser,
+		string $singleId,
+	): bool {
 		try {
 			$federatedUser->getLink($singleId);
+			return true;
 		} catch (MembershipNotFoundException) {
-			throw new InsufficientPermissionException();
+			return false;
 		}
 	}
 

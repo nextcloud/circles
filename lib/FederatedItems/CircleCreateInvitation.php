@@ -9,11 +9,13 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
+use OCA\Circles\AuditLog\Operation;
 use OCA\Circles\Entity\CircleInvitation;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Repository\CircleInvitationRepository;
+use OCA\Circles\Service\AuditLogService;
 use OCA\Circles\Service\EventService;
 use OCA\Circles\Tools\Traits\TDeserialize;
 use OCP\Security\ISecureRandom;
@@ -25,6 +27,7 @@ class CircleCreateInvitation implements IFederatedItem {
 	public function __construct(
 		private CircleInvitationRepository $circleInvitationRepository,
 		private EventService $eventService,
+		private AuditLogService $auditLogService,
 	) {
 	}
 
@@ -56,6 +59,14 @@ class CircleCreateInvitation implements IFederatedItem {
 
 		// todo: do we need separate event here?
 		$this->eventService->circleEditing($event);
+
+		// never logs the invitation code, it lets anyone join the team
+		$circle = $event->getCircle();
+		$this->auditLogService->logTeamChange($circle, Operation::InvitationCreated, 'Invitation link of team %s ("%s") was created by "%s"', [
+			'circleId' => $circle->getSingleId(),
+			'name' => $this->auditLogService->getTeamName($circle),
+			'initiator' => $this->auditLogService->getInitiator($circle),
+		]);
 	}
 
 	public function result(FederatedEvent $event, array $results): void {

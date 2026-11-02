@@ -14,7 +14,7 @@ import { SIDEBAR_HOST_KEY } from './services/teamFilesView.ts'
 import { useTeamsStore } from './store.ts'
 
 const store = useTeamsStore()
-const { createWizardOpen } = storeToRefs(store)
+const { createWizardOpen, canCreateTeam } = storeToRefs(store)
 
 const sidebarHost = ref<HTMLElement | null>(null)
 provide(SIDEBAR_HOST_KEY, sidebarHost)
@@ -35,7 +35,9 @@ onMounted(() => store.loadTeams())
 		<!-- The Files sidebar of the embedded file list is rendered here, next to the app content -->
 		<div ref="sidebarHost" :class="$style.sidebarHost" />
 
-		<TeamCreationWizard v-if="createWizardOpen" @close="createWizardOpen = false" />
+		<TeamCreationWizard
+			v-if="canCreateTeam && createWizardOpen"
+			@close="createWizardOpen = false" />
 	</NcContent>
 </template>
 
