@@ -290,10 +290,18 @@ class Share implements IShare {
     {
     }
 
+	public function setPasswordHash(string $passwordHash): IShare
+    {
+    }
+
 	/**
 	 * @inheritdoc
 	 */
 	public function getPassword()
+    {
+    }
+
+	public function isPasswordHashed(): bool
     {
     }
 

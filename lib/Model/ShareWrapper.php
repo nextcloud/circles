@@ -413,7 +413,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		if ($this->hasShareToken()) {
 			$password = $this->getShareToken()->password;
 			if ($password !== '') {
-				$share->setPassword($password);
+				$share->setPasswordHash($password);
 			}
 		}
 
