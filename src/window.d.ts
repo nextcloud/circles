@@ -23,7 +23,7 @@ declare global {
 			Text?: {
 				createCollaborativeEditor: (options: {
 					el: HTMLElement
-					fileId: number
+					context: { type: 'file', id: number }
 					filePath: string
 				}) => Promise<{ destroy(): void }>
 			}
