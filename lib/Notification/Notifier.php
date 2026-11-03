@@ -231,6 +231,11 @@ class Notifier implements INotifier {
 					break;
 			}
 
+			// notifications created before the links were made absolute still store relative links
+			if (str_starts_with($action->getLink(), '/')) {
+				$action->setLink($this->urlGenerator->getAbsoluteURL($action->getLink()), $action->getRequestType());
+			}
+
 			$notification->addParsedAction($action);
 		}
 	}
