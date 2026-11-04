@@ -531,7 +531,7 @@ class RemoteController extends Controller {
 		$accepts = array_map([$this, 'trimHeader'], explode(',', $this->request->getHeader('Accept')));
 
 		foreach ($accepts as $accept) {
-			if (in_array($accept, $needles)) {
+			if (in_array($accept, $needles, true)) {
 				return true;
 			}
 		}
