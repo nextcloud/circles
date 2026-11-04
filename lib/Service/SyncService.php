@@ -233,7 +233,7 @@ class SyncService {
 		$group = $this->groupManager->get($groupId);
 		foreach ($group->getUsers() as $user) {
 			$member = $this->generateGroupMember($circle, $user->getUID());
-			if (in_array($member->getSingleId(), $members)) {
+			if (in_array($member->getSingleId(), $members, true)) {
 				continue;
 			}
 

@@ -432,7 +432,7 @@ class RemoteStreamService extends NCSignature {
 	public function getRemoteInstanceFromAddress(string $address): RemoteInstance {
 		$remotes = $this->remoteRequest->getAllInstances();
 		foreach ($remotes as $remote) {
-			if ($remote->getInstance() === $address || in_array($address, $remote->getAliases())) {
+			if ($remote->getInstance() === $address || in_array($address, $remote->getAliases(), true)) {
 				return $remote;
 			}
 		}
@@ -449,7 +449,7 @@ class RemoteStreamService extends NCSignature {
 	 */
 	public function isFromSameInstance(string $instance, string $check): bool {
 		$remote = $this->getRemoteInstanceFromAddress($instance);
-		if ($remote->getInstance() === $check || in_array($check, $remote->getAliases())) {
+		if ($remote->getInstance() === $check || in_array($check, $remote->getAliases(), true)) {
 			return true;
 		}
 

@@ -582,7 +582,7 @@ class ConfigService {
 			return true;
 		}
 
-		return (in_array($instance, $this->getTrustedDomains()));
+		return (in_array($instance, $this->getTrustedDomains(), true));
 	}
 
 	/**
