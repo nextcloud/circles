@@ -228,7 +228,7 @@ class FileCacheWrapper extends ManagedModel implements IQueryRow, IDeserializabl
 
 		if ($path === '') {
 			// we only accept empty path on external storage
-			return (in_array($storageType, ['local', 'webdav', 'ftp', 'sftp', 'swift', 'smb', 'amazon']));
+			return (in_array($storageType, ['local', 'webdav', 'ftp', 'sftp', 'swift', 'smb', 'amazon'], true));
 		}
 
 		// on home storages and on group folders with a separate storage, only files/ is accessible
