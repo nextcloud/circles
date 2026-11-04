@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
+use Exception;
 use JsonSerializable;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\AuditLog\Operation;
@@ -28,7 +29,6 @@ use OCA\Circles\Tools\Exceptions\SignatoryException;
 use OCA\Circles\Tools\Exceptions\SignatureException;
 use OCA\Circles\Tools\Exceptions\WellKnownLinkNotFoundException;
 use OCA\Circles\Tools\Model\NCRequest;
-use OCA\Circles\Tools\Model\NCRequestResult;
 use OCA\Circles\Tools\Model\NCSignatory;
 use OCA\Circles\Tools\Model\NCSignedRequest;
 use OCA\Circles\Tools\Model\Request;
@@ -38,8 +38,12 @@ use OCA\Circles\Tools\Traits\TNCLocalSignatory;
 use OCA\Circles\Tools\Traits\TNCWellKnown;
 use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\AppFramework\Http;
+use OCP\IAppConfig;
 use OCP\IConfig;
 use OCP\IURLGenerator;
+use OCP\OCM\Exceptions\OCMArgumentException;
+use OCP\OCM\Exceptions\OCMProviderException;
+use OCP\OCM\IOCMDiscoveryService;
 use ReflectionClass;
 use ReflectionException;
 
@@ -76,6 +80,8 @@ class RemoteStreamService extends NCSignature {
 		private InterfaceService $interfaceService,
 		private ConfigService $configService,
 		private AuditLogService $auditLogService,
+		private readonly IAppConfig $appConfig,
+		private readonly IOCMDiscoveryService $ocmDiscoveryService,
 	) {
 		$this->setup('app', 'circles');
 	}
@@ -189,6 +195,11 @@ class RemoteStreamService extends NCSignature {
 	): array {
 		$this->interfaceService->setCurrentInterfaceFromInstance($instance);
 
+		// send events as OCM notifications when remote supports them, otherwise fall back to circles custom protocol
+		if (array_key_exists($item, Application::OCM_NOTIFICATION_TYPES) && $this->supportsOcmNotifications($instance)) {
+			return $this->requestRemoteInstanceOcm($instance, Application::OCM_NOTIFICATION_TYPES[$item], $object);
+		}
+
 		$signedRequest = $this->requestRemoteInstance($instance, $item, $type, $object, $params);
 		if (!$signedRequest->getOutgoingRequest()->hasResult()) {
 			throw new RemoteInstanceException();
@@ -200,7 +211,88 @@ class RemoteStreamService extends NCSignature {
 			return $result->getAsArray();
 		}
 
-		throw $this->getFederatedItemExceptionFromResult($result);
+		throw $this->getFederatedItemException($result->getStatusCode(), $result->getAsArray());
+	}
+
+	private function supportsOcmNotifications(string $instance): bool {
+		if ($this->configService->isLocalInstance($instance)
+			|| $this->appConfig->getValueBool('core', 'ocm_signed_request_disabled', lazy: true)
+		) {
+			return false;
+		}
+
+		try {
+			$provider = $this->ocmDiscoveryService->discover($this->getCachedRemoteInstance($instance)->getRoot());
+		} catch (RemoteNotFoundException|UnknownRemoteException|OCMProviderException) {
+			return false;
+		}
+
+		if (!$provider->isEnabled() || !$provider->getCapabilities()->hasNotificationSenderDomain()) {
+			return false;
+		}
+
+		try {
+			$provider->extractProtocolEntry(Application::OCM_RESOURCE_TYPE, Application::OCM_PROTOCOL);
+		} catch (OCMArgumentException) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Send event to remote instance OCM notifications endpoint.
+	 *
+	 * @throws FederatedItemException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws UnknownRemoteException
+	 */
+	private function requestRemoteInstanceOcm(string $instance, string $notificationType, ?JsonSerializable $object): array {
+		$remote = $this->getCachedRemoteInstance($instance);
+		$payload = [
+			'notificationType' => $notificationType,
+			'senderDomain' => $this->interfaceService->getLocalInstance(),
+			'resourceType' => Application::OCM_RESOURCE_TYPE,
+			'notification' => [
+				'event' => is_null($object) ? [] : $this->serialize($object),
+			],
+		];
+		$options = [
+			'http_errors' => false,
+			'verify' => $this->configService->getAppValue(ConfigService::SELF_SIGNED_CERT) !== '1',
+			'nextcloud' => ['allow_local_address' => true],
+		];
+
+		try {
+			$response = $this->ocmDiscoveryService->requestRemoteOcmEndpoint(
+				null,
+				$remote->getRoot(),
+				'/notifications',
+				$payload,
+				'post',
+				null,
+				$options,
+			);
+		} catch (Exception $e) {
+			throw new RemoteInstanceException($e->getMessage());
+		}
+
+		$data = json_decode((string)$response->getBody(), true);
+		if (!is_array($data)) {
+			$data = [];
+		}
+
+		if ($response->getStatusCode() !== Http::STATUS_CREATED) {
+			throw $this->getFederatedItemException($response->getStatusCode(), $data);
+		}
+
+		if (array_key_exists('exception', $data)) {
+			$exception = is_array($data['exception']) ? $data['exception'] : [];
+			throw $this->getFederatedItemException((int)($exception['status'] ?? Http::STATUS_BAD_REQUEST), $exception);
+		}
+
+		return is_array($data['result'] ?? null) ? $data['result'] : [];
 	}
 
 	/**
@@ -484,13 +576,14 @@ class RemoteStreamService extends NCSignature {
 	}
 
 	/**
-	 * @param NCRequestResult $result
+	 * Rebuilds the exception returned by a remote instance from the status and body of its response.
+	 *
+	 * @param int $statusCode
+	 * @param array $data
 	 *
 	 * @return FederatedItemException
 	 */
-	private function getFederatedItemExceptionFromResult(NCRequestResult $result): FederatedItemException {
-		$data = $result->getAsArray();
-
+	private function getFederatedItemException(int $statusCode, array $data): FederatedItemException {
 		$message = $this->get('message', $data);
 		$code = $this->getInt('code', $data);
 		$class = $this->get('class', $data);
@@ -500,7 +593,7 @@ class RemoteStreamService extends NCSignature {
 			$this->confirmFederatedItemExceptionFromClass($test);
 			$e = $class;
 		} catch (ReflectionException|FederatedItemException) {
-			$e = $this->getFederatedItemExceptionFromStatus($result->getStatusCode());
+			$e = $this->getFederatedItemExceptionFromStatus($statusCode);
 		}
 
 		return new $e($message, $code);

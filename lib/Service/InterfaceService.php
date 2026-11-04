@@ -127,6 +127,21 @@ class InterfaceService {
 	 * @param string $testToken
 	 */
 	public function setCurrentInterfaceFromRequest(IRequest $request, string $testToken = ''): void {
+		$interface = $this->getInterfaceFromRequest($request, $testToken);
+		if ($interface !== 0) {
+			$this->setCurrentInterface($interface);
+		}
+	}
+
+	/**
+	 * Returns the interface matching the host of the request, or 0 if none is configured for it.
+	 *
+	 * @param IRequest $request
+	 * @param string $testToken
+	 *
+	 * @return int
+	 */
+	public function getInterfaceFromRequest(IRequest $request, string $testToken = ''): int {
 		$testing = [
 			self::IFACE_INTERNAL => $this->configService->getInternalInstance(),
 			self::IFACE_FRONTAL => $this->configService->getFrontalInstance(),
@@ -144,16 +159,16 @@ class InterfaceService {
 
 		$serverHost = strtolower($request->getServerHost());
 		if ($serverHost === '') {
-			return;
+			return 0;
 		}
 
 		foreach ($testing as $iface => $instance) {
 			if ($serverHost === strtolower($instance)) {
-				$this->setCurrentInterface($iface);
-
-				return;
+				return $iface;
 			}
 		}
+
+		return 0;
 	}
 
 	/**
