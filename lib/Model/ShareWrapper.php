@@ -401,7 +401,12 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		$share->setTarget($this->getFileTarget());
 		$share->setProviderId($this->getProviderId());
 		$share->setStatus($this->getStatus());
-		$share->setToken($this->getToken());
+		// use oc_circles_token.token instead of oc_share.token when available
+		if ($this->hasShareToken() && $this->getShareToken()->getToken() !== '') {
+			$share->setToken($this->getShareToken()->getToken());
+		} else {
+			$share->setToken($this->getToken());
+		}
 		if ($this->getExpirationDate() !== null) {
 			$share->setExpirationDate($this->getExpirationDate());
 		}
