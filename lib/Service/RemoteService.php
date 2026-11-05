@@ -275,7 +275,7 @@ class RemoteService extends NCSignature {
 		$knownInstance = [];
 		while (true) {
 			$loop++;
-			if ($loop > 10 || in_array($instance, $knownInstance)) {
+			if ($loop > 10 || in_array($instance, $knownInstance, true)) {
 				throw new CircleNotFoundException(
 					'circle not found after browsing ' . implode(', ', $knownInstance)
 				);

@@ -247,7 +247,7 @@ class MembersList extends Base {
 		?TreeNode $tree,
 		array $knownIds = [],
 	): array {
-		if (in_array($circleId, $knownIds)) {
+		if (in_array($circleId, $knownIds, true)) {
 			return [];
 		}
 		$knownIds[] = $circleId;
@@ -304,7 +304,7 @@ class MembersList extends Base {
 							[
 								'circle' => $circle,
 								'member' => $member,
-								'cycling' => in_array($member->getSingleId(), $knownIds),
+								'cycling' => in_array($member->getSingleId(), $knownIds, true),
 							]
 						)
 					);
@@ -323,7 +323,7 @@ class MembersList extends Base {
 							$tree, new SimpleDataStore(
 								[
 									'member' => $member,
-									'cycling' => in_array($member->getSingleId(), $knownIds)
+									'cycling' => in_array($member->getSingleId(), $knownIds, true)
 								]
 							)
 						);

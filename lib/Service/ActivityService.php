@@ -427,7 +427,7 @@ class ActivityService {
 			} elseif ($user instanceof IFederatedUser) {
 				$singleId = $user->getSingleId();
 				if ($user->getUserType() !== Member::TYPE_USER
-					|| in_array($singleId, $knownSingleIds)) {
+					|| in_array($singleId, $knownSingleIds, true)) {
 					continue; // we ignore non-local account and already known single ids
 				}
 

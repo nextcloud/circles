@@ -207,7 +207,7 @@ class FederatedEventService extends NCSignature {
 			throw new FederatedEventException('ReflectionException with ' . $class . ': ' . $e->getMessage());
 		}
 
-		if (!in_array(IFederatedItem::class, $test->getInterfaceNames())) {
+		if (!in_array(IFederatedItem::class, $test->getInterfaceNames(), true)) {
 			throw new FederatedEventException($class . ' does not implements IFederatedItem');
 		}
 
@@ -426,7 +426,7 @@ class FederatedEventService extends NCSignature {
 			$instances = array_filter(
 				array_map(
 					function (RemoteInstance $instance) use ($knownInstances) {
-						if (!in_array($instance->getInstance(), $knownInstances)) {
+						if (!in_array($instance->getInstance(), $knownInstances, true)) {
 							return null;
 						}
 
@@ -444,7 +444,7 @@ class FederatedEventService extends NCSignature {
 				$instances
 			);
 
-			if (!in_array($event->getMember()->getInstance(), $currentInstances)) {
+			if (!in_array($event->getMember()->getInstance(), $currentInstances, true)) {
 				try {
 					$instances[] = $this->remoteRequest->getFromInstance($event->getMember()->getInstance());
 				} catch (RemoteNotFoundException) {
