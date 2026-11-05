@@ -81,8 +81,7 @@ async function createTeamFolder(): Promise<void> {
 
 		<TeamFolderWidget
 			v-else-if="mountPoint && folderId"
-			:mountPoint="mountPoint"
-			:rootFolderId="folderId" />
+			:mountPoint="mountPoint" />
 
 		<NcEmptyContent
 			v-else
