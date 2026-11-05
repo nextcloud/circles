@@ -65,6 +65,7 @@ interface RawSuggestion {
 	shareWith: string
 	shareType: number
 	user?: string | null
+	subname: string
 }
 
 /**
@@ -246,6 +247,7 @@ export interface TeamFolder {
 export interface AdminTeamFolder {
 	teamId: string
 	teamName: string
+	defaultQuota: number | null
 	folder: TeamFolder | null
 }
 
@@ -254,6 +256,20 @@ export interface AdminTeamFolder {
  */
 export async function getAdminTeamFolders(): Promise<AdminTeamFolder[]> {
 	const { data } = await axios.get<OcsResponse<AdminTeamFolder[]>>(generateOcsUrl('/apps/circles/admin/teamfolders'))
+	return data.ocs.data
+}
+
+/**
+ * Update the default quota associated with a team.
+ *
+ * @param teamId - The team single id
+ * @param quota - Quota in bytes, zero for unlimited, or null to remove the override
+ */
+export async function updateTeamFolderDefaultQuota(teamId: string, quota: number | null): Promise<{ teamId: string, defaultQuota: number | null }> {
+	const { data } = await axios.put<OcsResponse<{ teamId: string, defaultQuota: number | null }>>(
+		generateOcsUrl('/apps/circles/admin/teamfolders/{circleId}/default-quota', { circleId: teamId }),
+		{ quota },
+	)
 	return data.ocs.data
 }
 
@@ -585,6 +601,7 @@ export async function searchMemberCandidates(term: string): Promise<MemberCandid
 		shareWith: suggestion.shareWith,
 		shareType: suggestion.shareType,
 		displayName: suggestion.label,
+		subname: suggestion.subname,
 		isUser: suggestion.user !== null && suggestion.user !== undefined,
 	}))
 }

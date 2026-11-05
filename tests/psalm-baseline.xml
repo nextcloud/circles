@@ -36,11 +36,6 @@
       <code><![CDATA[setType]]></code>
     </UndefinedMethod>
   </file>
-  <file src="lib/Command/CirclesReport.php">
-    <UndefinedClass>
-      <code><![CDATA[IInteractiveShellClient]]></code>
-    </UndefinedClass>
-  </file>
   <file src="lib/Command/MembersAdd.php">
     <UndefinedMethod>
       <code><![CDATA[retrieveJson]]></code>
@@ -257,12 +252,6 @@
       <code><![CDATA[null]]></code>
     </NullableReturnStatement>
   </file>
-  <file src="lib/Search/LocalUsers.php">
-    <DeprecatedMethod>
-      <code><![CDATA[search]]></code>
-      <code><![CDATA[search]]></code>
-    </DeprecatedMethod>
-  </file>
   <file src="lib/Service/AvatarService.php">
     <MissingDependency>
       <code><![CDATA[\OCP\Image]]></code>
@@ -280,11 +269,6 @@
     <UndefinedDocblockClass>
       <code><![CDATA[Signer]]></code>
     </UndefinedDocblockClass>
-  </file>
-  <file src="lib/Service/MembershipService.php">
-    <ConflictingReferenceConstraint>
-      <code><![CDATA[if (!in_array($member->getCircleId(), $knownIds)) {]]></code>
-    </ConflictingReferenceConstraint>
   </file>
   <file src="lib/Service/MiscService.php">
     <DeprecatedMethod>

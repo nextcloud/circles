@@ -144,6 +144,7 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 			->add(DataProbe::INITIATOR, [DataProbe::BASED_ON]);
 
 		$circle = $this->circleService->probeCircle($share->getSharedWith(), $circleProbe, $dataProbe);
+		$share->setToken($this->token(15));
 		$share->setMailSend(true);
 		$owner = $circle->getInitiator();
 		$this->shareWrapperService->save($share);
@@ -547,6 +548,12 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 			$probe
 		);
 
+		// exclude shares leading to deleted files or to the trashbin
+		$wrappedShares = array_filter(
+			$wrappedShares,
+			fn (ShareWrapper $wrapper): bool => $wrapper->hasFileCache() && $wrapper->getFileCache()->isAccessible()
+		);
+
 		return array_filter(
 			array_map(
 				fn (ShareWrapper $wrapper) => $wrapper->getShare(
@@ -582,6 +589,12 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 			$path,
 			$forChildren,
 			$probe,
+		);
+
+		// exclude shares leading to deleted files or to the trashbin
+		$wrappedShares = array_filter(
+			$wrappedShares,
+			fn (ShareWrapper $wrapper): bool => $wrapper->hasFileCache() && $wrapper->getFileCache()->isAccessible()
 		);
 
 		/** @var array<string, IShare> */
@@ -870,7 +883,7 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 	public function getUsersForShare(IShare $share): iterable {
 		$members = $this->shareWrapperService->getShareById((int)$share->getId())->getCircle()->getInheritedMembers();
 		foreach ($members as $member) {
-			if ($member->getUserType() === Member::TYPE_USER) {
+			if ($member->getUserType() === Member::TYPE_USER && $member->isLocal()) {
 				yield $this->userManager->getExistingUser($member->getUserId());
 			}
 		}

@@ -25,16 +25,15 @@ use OCA\Circles\Model\Mountpoint;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Tools\Traits\TArrayTools;
+use OCA\Files_Sharing\External\Manager as ExternalShareManager;
 use OCA\Files_Sharing\External\Storage as ExternalStorage;
 use OCP\DB\Exception;
 use OCP\Federation\ICloudIdManager;
 use OCP\Files\Config\IMountProvider;
 use OCP\Files\Config\IPartialMountProvider;
 use OCP\Files\Config\MountProviderArgs;
-use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
 use OCP\Files\Mount\IMountPoint;
-use OCP\Files\NotFoundException;
 use OCP\Files\Storage\IStorageFactory;
 use OCP\Http\Client\IClientService;
 use OCP\IUser;
@@ -46,6 +45,7 @@ class CircleMountProvider implements IMountProvider, IPartialMountProvider {
 
 	/** @var class-string<ExternalStorage> */
 	public const EXTERNAL_STORAGE = ExternalStorage::class;
+	public array $mountedPoint = [];
 
 	public function __construct(
 		private IClientService $clientService,
@@ -56,6 +56,7 @@ class CircleMountProvider implements IMountProvider, IPartialMountProvider {
 		private FederatedUserService $federatedUserService,
 		private ConfigService $configService,
 		private LoggerInterface $logger,
+		private ExternalShareManager $externalShareManager,
 	) {
 	}
 
@@ -75,7 +76,7 @@ class CircleMountProvider implements IMountProvider, IPartialMountProvider {
 		foreach ($items as $item) {
 			try {
 				$this->fixDuplicateFile($user->getUID(), $item);
-				$mounts[] = $this->generateCircleMount($item, $loader);
+				$mounts[] = $this->generateCircleMount($item, $loader, $user);
 			} catch (\Exception $e) {
 				$this->logger->warning('issue with teams\' mounts', ['exception' => $e]);
 			}
@@ -88,7 +89,7 @@ class CircleMountProvider implements IMountProvider, IPartialMountProvider {
 	 * @throws InitiatorNotFoundException
 	 * @throws MountPointConstructionException
 	 */
-	public function generateCircleMount(Mount $mount, IStorageFactory $storageFactory): CircleMount {
+	public function generateCircleMount(Mount $mount, IStorageFactory $storageFactory, IUser $user): CircleMount {
 		$initiator = $mount->getInitiator();
 
 		// TODO: right now, limited to Local Nextcloud User
@@ -98,7 +99,9 @@ class CircleMountProvider implements IMountProvider, IPartialMountProvider {
 		}
 
 		$mount->setCloudIdManager($this->cloudIdManager)
-			->setHttpClientService($this->clientService);
+			->setHttpClientService($this->clientService)
+			->setExternalShareManager($this->externalShareManager)
+			->setRecipient($user);
 
 		return new CircleMount(
 			$mount,
@@ -112,69 +115,50 @@ class CircleMountProvider implements IMountProvider, IPartialMountProvider {
 			return;
 		}
 
-		$fs = $this->rootFolder->getUserFolder($userId);
+		// we will be using cache version of the filesystem, to not cycle while operating it
+		$mountId = $mount->getId();
+		$baseFile = $mountPoint = '/files' . $mount->getMountPoint();
+		$parentMount = $this->rootFolder->getUserFolder($userId)->getMountPoint();
+		$parentCache = $parentMount->getStorage()->getCache();
 
-		try {
-			$fs->get($mount->getMountPoint());
-		} catch (NotFoundException) {
-			// in case no alternate mountpoint, we generate one in database (easier to catch duplicate mountpoint)
-			if ($mount->getAlternateMountPoint() !== null) {
-				return;
-			}
-
-			$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId);
-			$mountPoint = new Mountpoint($mount->getMountId(), $federatedUser->getSingleId(), $mount->getOriginalMountPoint());
-			try {
-				$this->mountPointRequest->insert($mountPoint);
-				return;
-			} catch (Exception $e) {
-				// meaning a duplicate mountpoint already exists, we need to set a new filename
-				if ($e->getReason() !== Exception::REASON_UNIQUE_CONSTRAINT_VIOLATION) {
-					throw $e;
-				}
-			}
+		// splitting extension to have a nice /file (1).ext
+		$ext = pathinfo($mountPoint, PATHINFO_EXTENSION);
+		if ($ext !== '') {
+			$baseFile = substr($mountPoint, 0, -(strlen($ext) + 1));
+			$ext = '.' . $ext;
 		}
 
+		// based on cached content, improving naming
+		$n = 1;
+		while ($parentCache->inCache($mountPoint)
+			|| ($this->mountedPoint[$mountPoint] ?? $mountId) !== $mountId) {
+			$mountPoint = $baseFile . ' (' . $n++ . ')' . $ext;
+		}
+
+		// we keep trace as this won't be available in cache
+		$this->mountedPoint[$mountPoint] = $mount->getId();
+
 		$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId);
-		$this->generateIncrementedMountpoint($fs, $mount, $federatedUser);
-	}
-
-	private function generateIncrementedMountpoint(Folder $fs, Mount $mount, IFederatedUser $federatedUser): void {
-		$info = pathinfo($mount->getMountPoint());
-		$filename = rtrim($this->get('dirname', $info), '/') . '/' . $this->get('filename', $info);
-		$extension = $this->get('extension', $info);
-		$extension = ($extension === '') ? '' : '.' . $extension;
-
-		$n = 2;
-		while (true) {
-			$path = $filename . " ($n)" . $extension;
+		$mountPoint = new Mountpoint($mount->getMountId(), $federatedUser->getSingleId(), substr($mountPoint, 6));
+		try {
 			try {
-				$fs->get($path);
-			} catch (NotFoundException) {
-				$mountPoint = new Mountpoint($mount->getMountId(), $federatedUser->getSingleId(), $path);
-				$mount->setAlternateMountPoint($mountPoint);
-				try {
-					try {
-						$this->mountPointRequest->update($mountPoint);
-					} catch (MountNotFoundException) {
-						$this->mountPointRequest->insert($mountPoint);
-					}
-					return;
-				} catch (Exception $e) {
-					// meaning path is already used by another share for this user, we keep incrementing
-					if ($e->getReason() !== Exception::REASON_UNIQUE_CONSTRAINT_VIOLATION) {
-						throw $e;
-					}
-				}
+				$this->mountPointRequest->update($mountPoint);
+			} catch (MountNotFoundException) {
+				$this->mountPointRequest->insert($mountPoint);
 			}
-
-			$n++;
+			return;
+		} catch (Exception $e) {
+			$this->logger->error('issue while creating alternate mount point', ['exception' => $e]);
+			// while there should be no reason for a unique constraint violation, we just log and ignore it
+			if ($e->getReason() !== Exception::REASON_UNIQUE_CONSTRAINT_VIOLATION) {
+				throw $e;
+			}
 		}
 	}
 
 	#[Override]
 	public function getMountsForPath(string $setupPathHint, bool $forChildren, array $mountProviderArgs, IStorageFactory $loader): array {
-		/** @var array<string, array{federatedUser: IFederatedUser, paths: string[]}> $userMountRequests */
+		/** @var array<string, array{federatedUser: IFederatedUser, user: IUser, paths: string[]}> $userMountRequests */
 		$userMountRequests = [];
 		/** @var array<string, IMountPoint> $mounts */
 		$mounts = [];
@@ -190,6 +174,7 @@ class CircleMountProvider implements IMountProvider, IPartialMountProvider {
 
 			$userMountRequests[$user->getUID()] ??= [
 				'federatedUser' => $this->federatedUserService->getLocalFederatedUser($user->getUID()),
+				'user' => $user,
 				'paths' => [],
 			];
 
@@ -210,7 +195,7 @@ class CircleMountProvider implements IMountProvider, IPartialMountProvider {
 				}
 				try {
 					$this->fixDuplicateFile($uid, $item);
-					$mounts[$mountPoint] = $this->generateCircleMount($item, $loader);
+					$mounts[$mountPoint] = $this->generateCircleMount($item, $loader, $userMountRequest['user']);
 				} catch (\Exception $e) {
 					$this->logger->error('Failed to create Teams mount', ['exception' => $e]);
 				}

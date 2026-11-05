@@ -67,6 +67,7 @@ class CirclesRemote extends Base {
 		$this->setName('circles:remote')
 			->setDescription('remote features')
 			->addArgument('host', InputArgument::OPTIONAL, 'host of the remote instance of Nextcloud')
+			->addOption('delete', '', InputOption::VALUE_NONE, 'delete the remote instance from database')
 			->addOption(
 				'type', '', InputOption::VALUE_REQUIRED, 'set type of remote', RemoteInstance::TYPE_UNKNOWN
 			)
@@ -92,7 +93,12 @@ class CirclesRemote extends Base {
 		$this->output = $output;
 
 		if ($host) {
-			$this->requestInstance($host);
+			if ($input->getOption('delete')) {
+				$this->remoteRequest->deleteInstance($host);
+				return 0;
+			} else {
+				$this->requestInstance($host);
+			}
 		} else {
 			$this->checkKnownInstance();
 		}

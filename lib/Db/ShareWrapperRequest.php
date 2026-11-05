@@ -13,6 +13,7 @@ use JsonException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\ShareWrapperNotFoundException;
 use OCA\Circles\Model\FederatedUser;
+use OCA\Circles\Model\FileCacheWrapper;
 use OCA\Circles\Model\Membership;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\ShareWrapper;
@@ -300,6 +301,36 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 			$qb->limitNull('parent', false);
 		}
 		return $this->getItemsFromRequest($qb);
+	}
+
+	/**
+	 * returns current file cache entries, not cached, indexed by file id
+	 *
+	 * @param int[] $fileIds
+	 *
+	 * @return array<int, FileCacheWrapper>
+	 */
+	public function getFileCaches(array $fileIds): array {
+		$fileCaches = [];
+		foreach (array_chunk(array_values(array_unique($fileIds)), 1000) as $chunk) {
+			$qb = $this->getQueryBuilder();
+			$qb->select('f.fileid', 'f.path', 's.id')
+				->from(self::TABLE_FILE_CACHE, 'f')
+				->leftJoin('f', self::TABLE_STORAGES, 's', $qb->expr()->eq('f.storage', 's.numeric_id'))
+				->where($qb->expr()->in('f.fileid', $qb->createNamedParameter($chunk, IQueryBuilder::PARAM_INT_ARRAY)));
+
+			$result = $qb->executeQuery();
+			while ($row = $result->fetch()) {
+				$fileCache = new FileCacheWrapper();
+				$fileCache->setId((int)$row['fileid'])
+					->setPath((string)$row['path'])
+					->setStorage((string)$row['id']);
+				$fileCaches[$fileCache->getId()] = $fileCache;
+			}
+			$result->closeCursor();
+		}
+
+		return $fileCaches;
 	}
 
 	/**

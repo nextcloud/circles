@@ -54,6 +54,7 @@ use OCA\Circles\Tools\Model\NCRequest;
 use OCA\Circles\Tools\Model\Request;
 use OCA\Circles\Tools\Traits\TNCRequest;
 use OCA\Circles\Tools\Traits\TStringTools;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Services\IAppConfig;
 use OCP\Server;
 use Psr\Log\LoggerInterface;
@@ -405,7 +406,41 @@ class FederatedEventService extends NCSignature {
 			$this->e($e);
 		}
 
+		if (!$isLoopbackTest && !$this->isLoopbackSuccessful($request)) {
+			Server::get(LoggerInterface::class)->warning(
+				'Loopback request failed, processing event synchronously. Please check the loopback setup with occ circles:check',
+				['url' => $request->getCompleteUrl(), 'status' => $request->hasResult() ? $request->getResult()->getStatusCode() : 0]
+			);
+			$this->manageWrappersSynchronously($wrapper->getToken());
+		}
+
 		return true;
+	}
+
+	/**
+	 * asyncBroadcast() closes the connection with an empty 200 before processing the event
+	 */
+	private function isLoopbackSuccessful(NCRequest $request): bool {
+		if (!$request->hasResult() || $request->getResult()->hasException()) {
+			return false;
+		}
+
+		$result = $request->getResult();
+
+		return $result->getStatusCode() === Http::STATUS_OK && $result->getContent() === '';
+	}
+
+	/**
+	 * same process as EventWrapperController::asyncBroadcast()
+	 */
+	private function manageWrappersSynchronously(string $token): void {
+		// EventWrapperService depends on this service
+		$eventWrapperService = Server::get(EventWrapperService::class);
+		foreach ($this->eventWrapperRequest->getByToken($token) as $wrapper) {
+			$eventWrapperService->manageWrapper($wrapper);
+		}
+
+		$eventWrapperService->confirmStatus($token);
 	}
 
 	/**

@@ -21,6 +21,7 @@ OC.L10N.register(
     "Home" : "Rumah",
     "Description" : "Keterangan",
     "Pending" : "Dalam proses",
+    "Favorites" : "Favorites",
     "User" : "User",
     "Email" : "Email",
     "Users" : "Pengguna",

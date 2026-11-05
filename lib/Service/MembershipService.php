@@ -128,49 +128,49 @@ class MembershipService {
 
 	/**
 	 * @param string $singleId
-	 * @param string $circleId
-	 * @param array $memberships
-	 * @param array $knownIds
-	 * @param array $path
 	 *
-	 * @return array
+	 * @return Membership[]
 	 * @throws RequestBuilderException
 	 */
-	private function generateMemberships(
-		string $singleId,
-		string $circleId = '',
-		array &$memberships = [],
-		array $knownIds = [],
-		array $path = [],
-	): array {
-		$circleId = ($circleId === '') ? $singleId : $circleId;
-		$path[] = $circleId;
-		$knownIds[] = $circleId;
+	private function generateMemberships(string $singleId): array {
+		$memberships = [];
+		$pathMap = [$singleId => [$singleId]];
+		$knownIds = [$singleId => true];
+		$currentLevelIds = [$singleId];
 
-		$members = $this->memberRequest->getMembersBySingleId($circleId);
-		foreach ($members as $member) {
-			if (!$member->hasCircle() || $member->getLevel() < Member::LEVEL_MEMBER) {
-				continue;
+		while (!empty($currentLevelIds)) {
+			$nextLevelIds = [];
+			$newPaths = [];
+			foreach ($this->memberRequest->getMembersBySingleIds($currentLevelIds) as $member) {
+				if (!$member->hasCircle() || $member->getLevel() < Member::LEVEL_MEMBER) {
+					continue;
+				}
+
+				if ($member->getCircle()->isConfig(Circle::CFG_NO_OWNER)
+					&& $member->getLevel() === Member::LEVEL_OWNER) {
+					continue;
+				}
+
+				$path = $pathMap[$member->getSingleId()];
+				$circleId = $member->getCircleId();
+				$membershipPath = array_merge($path, [$circleId]);
+
+				$membership = new Membership($singleId, count($path) > 1 ? $path[1] : '', $member);
+				$membership->setInheritancePath(array_reverse($path))
+					->setInheritanceDepth(count($path));
+				$this->fillMemberships($membership, $memberships);
+
+				if (!isset($knownIds[$circleId])) {
+					$newPaths[$circleId] ??= $membershipPath;
+					$nextLevelIds[$circleId] = $circleId;
+				}
 			}
 
-			if ($member->getCircle()->isConfig(Circle::CFG_NO_OWNER)
-				&& $member->getLevel() === Member::LEVEL_OWNER) {
-				continue;
+			foreach ($newPaths as $circleId => $path) {
+				$pathMap[$circleId] = $path;
+				$knownIds[$circleId] = true;
 			}
-
-			$membership = new Membership($singleId, count($path) > 1 ? $path[1] : '', $member);
-			$membership->setInheritancePath(array_reverse($path))
-				->setInheritanceDepth(sizeof($path));
-			$this->fillMemberships($membership, $memberships);
-			if (!in_array($member->getCircleId(), $knownIds)) {
-				$this->generateMemberships(
-					$singleId,
-					$member->getCircleId(),
-					$memberships,
-					$knownIds,
-					$path
-				);
-			}
+			$currentLevelIds = array_values($nextLevelIds);
 		}
 
 		return $memberships;

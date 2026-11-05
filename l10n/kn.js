@@ -21,6 +21,7 @@ OC.L10N.register(
     "Modified" : "﻿ಬದಲಾಯಿಸಿದ",
     "Home" : "﻿ಮುಖಪುಟ",
     "Pending" : "﻿ಬಾಕಿ ಇದೆ",
+    "Favorites" : "ಅಚ್ಚುಮೆಚ್ಚಿನ",
     "User" : "User",
     "Email" : "﻿ಇ-ಅಂಚೆ",
     "Users" : "﻿ಬಳಕೆದಾರರು",

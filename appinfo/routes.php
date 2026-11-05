@@ -61,6 +61,7 @@ return [
 		['name' => 'Admin#circles', 'url' => '/admin/{emulated}/circles', 'verb' => 'GET'],
 		['name' => 'Admin#circlesAll', 'url' => '/admin/circlesall', 'verb' => 'GET'],
 		['name' => 'Admin#teamFolders', 'url' => '/admin/teamfolders', 'verb' => 'GET'],
+		['name' => 'Admin#updateTeamFolderDefaultQuota', 'url' => '/admin/teamfolders/{circleId}/default-quota', 'verb' => 'PUT'],
 		['name' => 'Admin#create', 'url' => '/admin/{emulated}/circles', 'verb' => 'POST'],
 		['name' => 'Admin#destroy', 'url' => '/admin/{emulated}/circles/{circleId}', 'verb' => 'DELETE'],
 		[
@@ -96,6 +97,7 @@ return [
 		['name' => 'Admin#editConfig', 'url' => '/admin/{emulated}/circles/{circleId}/config', 'verb' => 'PUT'],
 		['name' => 'Admin#link', 'url' => '/admin/{emulated}/link/{circleId}/{singleId}', 'verb' => 'GET'],
 
+		['name' => 'Settings#getGroups', 'url' => '/settings/groups/', 'verb' => 'GET'],
 		['name' => 'Settings#getValues', 'url' => '/settings/', 'verb' => 'GET'],
 		['name' => 'Settings#setValue', 'url' => '/settings/{key}/', 'verb' => 'POST'],
 	],

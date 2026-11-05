@@ -71,7 +71,7 @@ class TeamFolderLifecycleListener implements IEventListener {
 					displayName: $circle->getDisplayName(),
 					link: null,
 				),
-				$this->policy->getDefaultQuota(),
+				$this->policy->getQuotaForCircle($circle),
 			);
 		} catch (\Throwable $e) {
 			$this->logger->error('Failed to auto-create team folder', [

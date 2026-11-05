@@ -22,6 +22,7 @@ OC.L10N.register(
     "Home" : "Սկիզբ",
     "Description" : "Նկարագրություն",
     "Copy link" : "Պատճենել հղումը",
+    "Favorites" : "Սիրվածներ",
     "User" : "User",
     "Email" : "Էլ․փոստ",
     "Groups" : "Խմբեր",

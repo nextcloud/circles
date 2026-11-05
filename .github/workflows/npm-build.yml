@@ -86,16 +86,17 @@ jobs:
           npm ci
           npm run build --if-present
 
-      - name: Check build changes
-        run: |
-          bash -c "[[ ! \"`git status --porcelain `\" ]] || (echo 'Please recompile and commit the assets, see the section \"Show changes on failure\" for details' && exit 1)"
-
-      - name: Show changes on failure
-        if: failure()
-        run: |
-          git status
-          git --no-pager diff
-          exit 1 # make it red to grab attention
+# Not used as we compile on CI, see update-node-dist.yml and node-dist-unchanged.yml
+#       - name: Check build changes
+#         run: |
+#           bash -c "[[ ! \"`git status --porcelain `\" ]] || (echo 'Please recompile and commit the assets, see the section \"Show changes on failure\" for details' && exit 1)"
+# 
+#       - name: Show changes on failure
+#         if: failure()
+#         run: |
+#           git status
+#           git --no-pager diff
+#           exit 1 # make it red to grab attention
 
   summary:
     permissions:

@@ -26,7 +26,7 @@ const MAX_AVATARS = 5
 				:displayName="team.displayName"
 				:circleId="team.id"
 				:size="44" />
-			<span :class="$style.teamCardName">{{ team.displayName }}</span>
+			<span :class="$style.teamCardName" :title="team.displayName">{{ team.displayName }}</span>
 		</div>
 
 		<p v-if="team.description" :class="$style.teamCardDescription">
