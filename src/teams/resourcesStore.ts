@@ -8,7 +8,7 @@ import type { SharedResource } from './types.ts'
 
 import { defineStore } from 'pinia'
 import { logger } from '../logger.ts'
-import { fetchTabOrder, fetchTeamDeckBoards, fetchTeamPages, fetchTeamResources, getTeamFolder, saveTabOrder, upgradeTeamFolder } from './api.ts'
+import { fetchResourceFavorites, fetchTabOrder, fetchTeamDeckBoards, fetchTeamPages, fetchTeamResources, getTeamFolder, saveResourceFavorites, saveTabOrder, upgradeTeamFolder } from './api.ts'
 
 /**
  * The shared resource state of one team: its team folder, the resources
@@ -25,6 +25,8 @@ export interface TeamResources {
 	/** Deck boards attached to the team itself, shown as navigation entries. */
 	boards: TeamBoard[]
 	boardsChecked: boolean
+	/** The board lookup failed; `boards` is unknown, not empty. */
+	boardsError: boolean
 	pages: TeamPage[]
 	pagesChecked: boolean
 	pagesError: boolean
@@ -32,6 +34,9 @@ export interface TeamResources {
 	orderChecked: boolean
 	/** The order fetch failed; `tabOrder` is unknown, not empty. */
 	orderError: boolean
+	/** The current user's favorite entry ids, first to last. */
+	favorites: string[]
+	favoritesChecked: boolean
 }
 
 const EMPTY_SLOT: TeamResources = Object.freeze({
@@ -42,12 +47,15 @@ const EMPTY_SLOT: TeamResources = Object.freeze({
 	resourcesChecked: false,
 	boards: [],
 	boardsChecked: false,
+	boardsError: false,
 	pages: [],
 	pagesChecked: false,
 	pagesError: false,
 	tabOrder: [],
 	orderChecked: false,
 	orderError: false,
+	favorites: [],
+	favoritesChecked: false,
 })
 
 /**
@@ -105,6 +113,7 @@ export const useTeamResourcesStore = defineStore('teamResources', {
 				this.ensureFolder(teamId, refresh).then(() => this.ensurePages(teamId, refresh)),
 				this.ensureResources(teamId, refresh).then(() => this.ensureBoards(teamId, refresh)),
 				this.ensureOrder(teamId, refresh),
+				this.ensureFavorites(teamId, refresh),
 			])
 		},
 
@@ -166,9 +175,11 @@ export const useTeamResourcesStore = defineStore('teamResources', {
 			const candidates = slot.resources.filter((resource) => resource.provider.id === 'deck')
 			try {
 				slot.boards = await fetchTeamDeckBoards(teamId, candidates)
+				slot.boardsError = false
 			} catch (error) {
 				logger.error('Could not load the team boards', { error, teamId })
 				slot.boards = []
+				slot.boardsError = true
 			}
 			slot.boardsChecked = true
 		},
@@ -225,6 +236,25 @@ export const useTeamResourcesStore = defineStore('teamResources', {
 		},
 
 		/**
+		 * Load the current user's favorite entries unless already known.
+		 *
+		 * @param teamId - The team to load the favorites for
+		 * @param refresh - Refetch even when cached
+		 */
+		async ensureFavorites(teamId: string, refresh = false): Promise<void> {
+			const slot = this.slot(teamId)
+			if (slot.favoritesChecked && !refresh) {
+				return
+			}
+			try {
+				slot.favorites = await fetchResourceFavorites(teamId)
+				slot.favoritesChecked = true
+			} catch (error) {
+				logger.error('Could not load the favorite resources', { error, teamId })
+			}
+		},
+
+		/**
 		 * Create the team folder and record it. Throws on failure.
 		 *
 		 * @param teamId - The team to create the folder for
@@ -257,6 +287,25 @@ export const useTeamResourcesStore = defineStore('teamResources', {
 				await saveTabOrder(teamId, order)
 			} catch (error) {
 				slot.tabOrder = previous
+				throw error
+			}
+		},
+
+		/**
+		 * Persist the current user's favorites, applying them optimistically
+		 * and rolling back on failure. Throws on failure.
+		 *
+		 * @param teamId - The team the favorites belong to
+		 * @param favorites - The favorite entry ids in their new order
+		 */
+		async saveFavorites(teamId: string, favorites: string[]): Promise<void> {
+			const slot = this.slot(teamId)
+			const previous = slot.favorites
+			slot.favorites = favorites
+			try {
+				await saveResourceFavorites(teamId, favorites)
+			} catch (error) {
+				slot.favorites = previous
 				throw error
 			}
 		},

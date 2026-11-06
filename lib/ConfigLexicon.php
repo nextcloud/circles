@@ -27,6 +27,8 @@ class ConfigLexicon implements ILexicon {
 	public const TEAM_FOLDER_DEFAULT_QUOTA = 'team_folder_default_quota';
 	public const TEAM_FOLDER_GROUP_QUOTAS = 'team_folder_group_quotas';
 	public const DEFAULT_QUOTA = 104857600; // 104857600 bytes ~ 100 MB
+	// User config, suffixed with the team's single id
+	public const USER_RESOURCE_FAVORITES_PREFIX = 'teamsFavoriteResources_';
 
 	// OIDC
 	public const OIDC_ENABLED = 'oidc_enabled';
