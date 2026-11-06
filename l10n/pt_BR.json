@@ -469,7 +469,6 @@
     "Password to access files" : "Senha para acessar arquivos",
     "Circles App Initialization" : "Inicialização do Aplicativo Círculos",
     "No team folders found." : "Nenhuma pasta de equipe encontrada.",
-    "Open folder in Files" : "Abrir pasta em Arquivos",
     "Anyone can request membership" : "Qualquer pessoa pode solicitar adesão"
 },"pluralForm" :"nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }

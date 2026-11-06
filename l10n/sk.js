@@ -471,7 +471,6 @@ OC.L10N.register(
     "Password to access files" : "Heslo pre prístup k súborom",
     "Circles App Initialization" : "Inicializácia aplikácie Kruhy",
     "No team folders found." : "Nenašli sa žiadne tímové priečinky.",
-    "Open folder in Files" : "Otvoriť priečinok v Súboroch",
     "Anyone can request membership" : "O členstvo môže požiadať ktokoľvek"
 },
 "nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);");

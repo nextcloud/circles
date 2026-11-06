@@ -471,7 +471,6 @@ OC.L10N.register(
     "Password to access files" : "Lösenord för åtkomst till filer",
     "Circles App Initialization" : "Initiering av Circles-appen",
     "No team folders found." : "Inga teammappar hittades.",
-    "Open folder in Files" : "Öppna mappen i Filer",
     "Anyone can request membership" : "Vem som helst kan begära medlemskap"
 },
 "nplurals=2; plural=(n != 1);");
