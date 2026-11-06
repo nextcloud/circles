@@ -99,7 +99,7 @@ class RemoteDownstreamService {
 
 		if ($event->isLimitedToInstanceWithMember()) {
 			$instances = $this->memberRequest->getMemberInstances($event->getCircle()->getSingleId());
-			if (!in_array($event->getSender(), $instances)) {
+			if (!in_array($event->getSender(), $instances, true)) {
 				throw new FederatedEventException('Instance have no members in this Team');
 			}
 		}

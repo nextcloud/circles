@@ -181,7 +181,7 @@ class CirclesMemberships extends Base {
 	 * @param array $knownIds
 	 */
 	private function generateTree(string $id, TreeNode $tree, array $knownIds = []) {
-		if (in_array($id, $knownIds)) {
+		if (in_array($id, $knownIds, true)) {
 			return;
 		}
 		$knownIds[] = $id;
@@ -197,7 +197,7 @@ class CirclesMemberships extends Base {
 				$tree, new SimpleDataStore(
 					[
 						'member' => $member,
-						'cycling' => in_array($member->getCircleId(), $knownIds)
+						'cycling' => in_array($member->getCircleId(), $knownIds, true)
 					]
 				)
 			);
