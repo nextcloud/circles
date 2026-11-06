@@ -59,6 +59,9 @@ vi.mock('../api.ts', () => ({
 vi.mock('../components/TeamFolderWidget.vue', () => ({
 	default: { name: 'TeamFolderWidget', template: '<div class="team-folder-widget-stub" />' },
 }))
+vi.mock('../components/TeamFilesEmbed.vue', () => ({
+	default: { name: 'TeamFilesEmbed', props: ['mountPoint'], template: '<div class="team-files-embed-stub" />' },
+}))
 
 const OWNER_CIRCLE = { isOwner: true, isAdmin: false, isPersonal: false }
 const MEMBER_CIRCLE = { isOwner: false, isAdmin: false, isPersonal: false }
@@ -160,6 +163,21 @@ describe('TeamFolderView empty state (team folder upgrade)', () => {
 
 		expect(wrapper.findComponent({ name: 'TeamFolderWidget' }).exists()).toBe(true)
 		expect(wrapper.html()).not.toContain('No team folder yet')
+	})
+
+	it('embeds the Files app file list when the server provides it', async () => {
+		(window as unknown as Record<string, unknown>).OCP = { Files: { renderFilesApp: vi.fn() } }
+		try {
+			const wrapper = mountView({ folder: { id: 42, mountPoint: 'Marketing', quota: null } })
+			await flushPromises()
+
+			const embed = wrapper.findComponent({ name: 'TeamFilesEmbed' })
+			expect(embed.exists()).toBe(true)
+			expect(embed.props('mountPoint')).toBe('Marketing')
+			expect(wrapper.findComponent({ name: 'TeamFolderWidget' }).exists()).toBe(false)
+		} finally {
+			Reflect.deleteProperty(window, 'OCP')
+		}
 	})
 
 	it('shows neither widget nor empty state while loading', () => {

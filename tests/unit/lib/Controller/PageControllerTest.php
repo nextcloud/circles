@@ -13,9 +13,11 @@ use OCA\Circles\Controller\PageController;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\PermissionService;
 use OCA\Circles\Service\TeamFolderPolicy;
+use OCA\Files\Event\LoadFilesApp;
 use OCP\AppFramework\Http\NotFoundResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
+use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventDispatcher;
 use OCP\IRequest;
 use OCP\IUser;
@@ -165,5 +167,31 @@ final class PageControllerTest extends TestCase {
 		$result = $this->pageController->index();
 
 		$this->assertInstanceOf(NotFoundResponse::class, $result);
+	}
+
+	/**
+	 * The Files app event is dispatched when its optional class is available,
+	 * and the page allows what the Files app needs for previews and Viewer.
+	 */
+	public function testIndexLoadsFilesApp(): void {
+		$this->configService->method('getAppValueBool')
+			->with(ConfigService::FRONTEND_ENABLED)
+			->willReturn(true);
+
+		$dispatched = [];
+		$this->eventDispatcher->method('dispatchTyped')
+			->willReturnCallback(function (Event $event) use (&$dispatched): void {
+				$dispatched[] = $event::class;
+			});
+
+		$result = $this->pageController->index();
+
+		$this->assertInstanceOf(TemplateResponse::class, $result);
+		if (class_exists(LoadFilesApp::class)) {
+			$this->assertContains(LoadFilesApp::class, $dispatched);
+		}
+		$policy = $result->getContentSecurityPolicy()->buildPolicy();
+		$this->assertStringContainsString("frame-src 'self'", $policy);
+		$this->assertStringContainsString("worker-src 'self'", $policy);
 	}
 }
