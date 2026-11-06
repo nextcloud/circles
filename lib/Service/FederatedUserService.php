@@ -190,6 +190,7 @@ class FederatedUserService {
 	 * @throws SingleCircleNotFoundException
 	 */
 	public function setLocalCurrentUserId(string $userId): void {
+		$this->initiatedByAdmin = null;
 		$this->currentUser = $this->getLocalFederatedUser($userId);
 	}
 
@@ -206,6 +207,7 @@ class FederatedUserService {
 	 * @throws SingleCircleNotFoundException
 	 */
 	public function setLocalCurrentApp(string $appId, int $appNumber): void {
+		$this->initiatedByAdmin = null;
 		$this->currentApp = $this->getAppInitiator($appId, $appNumber);
 	}
 
@@ -226,6 +228,7 @@ class FederatedUserService {
 
 		$this->confirmFederatedUser($federatedUser);
 
+		$this->initiatedByAdmin = null;
 		$this->currentUser = $federatedUser;
 	}
 
@@ -234,6 +237,7 @@ class FederatedUserService {
 	 */
 	public function unsetCurrentUser(): void {
 		$this->currentUser = null;
+		$this->initiatedByAdmin = null;
 	}
 
 	/**

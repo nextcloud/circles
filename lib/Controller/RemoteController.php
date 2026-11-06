@@ -310,6 +310,7 @@ class RemoteController extends Controller {
 		}
 
 		try {
+			$this->memberService->assertCanViewMembers($circleId);
 			$circle = $this->circleService->getCircle($circleId);
 
 			return new DataResponse($circle->getInheritedMembers());
@@ -334,6 +335,7 @@ class RemoteController extends Controller {
 		}
 
 		try {
+			$this->memberService->assertCanViewMembers($circleId);
 			$circle = $this->circleService->getCircle($circleId);
 
 			return new DataResponse($circle->getMemberships());

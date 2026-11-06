@@ -11,11 +11,14 @@ namespace OCA\Circles\FederatedItems;
 
 use OCA\Circles\AuditLog\Operation;
 use OCA\Circles\Db\CircleRequest;
+use OCA\Circles\Exceptions\FederatedItemBadRequestException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\IFederatedItemHighSeverity;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Service\AuditLogService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\ShareTokenService;
@@ -47,6 +50,16 @@ class CircleSetting implements
 		$params = $event->getParams();
 		$setting = $params->g('setting');
 		$value = $params->gBool('unset') ? null : $params->g('value');
+
+		if ($setting === Circle::SETTING_MEMBERS_VIEW_PERMISSION_LEVEL
+			&& $value !== null
+			&& !in_array($value, [
+				(string)Member::LEVEL_MEMBER,
+				(string)Member::LEVEL_MODERATOR,
+				(string)Member::LEVEL_ADMIN,
+			], true)) {
+			throw new FederatedItemBadRequestException('Invalid members visibility permission level');
+		}
 
 		$settings = $circle->getSettings();
 

@@ -4,10 +4,12 @@
  */
 
 import type Circle from '../team-page/models/circle.ts'
+import type { Team } from '../types.ts'
 
 import { shallowMount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { nextTick } from 'vue'
 import TeamHeader from './TeamHeader.vue'
 import { useTeamsStore } from '../store.ts'
 
@@ -21,7 +23,7 @@ vi.mock('vue-router', () => ({
 	useRouter: () => ({ push: vi.fn() }),
 }))
 vi.mock('vuex', () => ({
-	useStore: () => ({ getters: { getCircle: () => undefined } }),
+	useStore: () => ({ getters: { getCircle: () => ({ members: { alice: { singleId: 'alice' } } }) } }),
 }))
 vi.mock('../api.ts', () => ({ fetchTeams: vi.fn(async () => []) }))
 
@@ -30,7 +32,7 @@ vi.mock('../api.ts', () => ({ fetchTeams: vi.fn(async () => []) }))
  *
  * @param canCreateTeam - value served for the `canCreateTeam` initial state
  */
-function mountHeader(canCreateTeam: boolean) {
+function mountHeader(canCreateTeam: boolean, canViewMembers = true) {
 	loadState.mockImplementation((app, key, fallback) => {
 		if (app === 'circles' && key === 'canCreateTeam') {
 			return canCreateTeam
@@ -42,7 +44,7 @@ function mountHeader(canCreateTeam: boolean) {
 
 	const wrapper = shallowMount(TeamHeader, {
 		props: {
-			circle: { id: 'team-1', displayName: 'Marketing' } as Circle,
+			circle: { id: 'team-1', displayName: 'Marketing', canViewMembers } as Circle,
 		},
 		global: {
 			plugins: [pinia],
@@ -90,5 +92,13 @@ describe('TeamHeader team creation', () => {
 		const { wrapper } = mountHeader(false)
 
 		expect(findNewTeamButton(wrapper)).toBeUndefined()
+	})
+
+	it.each([true, false])('respects member visibility %s in both header previews', async (canViewMembers) => {
+		const { wrapper, store } = mountHeader(false, canViewMembers)
+		store.teams = [{ id: 'team-1' } as Team]
+		await nextTick()
+
+		expect(wrapper.findAllComponents({ name: 'TeamMembersRow' })).toHaveLength(canViewMembers ? 2 : 0)
 	})
 })

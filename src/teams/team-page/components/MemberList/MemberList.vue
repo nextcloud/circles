@@ -14,6 +14,15 @@
 			</template>
 		</NcEmptyContent>
 
+		<NcEmptyContent
+			v-else-if="!circle.canViewMembers"
+			class="empty-content"
+			:name="t('circles', 'You do not have permission to view the members of this team')">
+			<template #icon>
+				<IconContact :size="20" />
+			</template>
+		</NcEmptyContent>
+
 		<template v-else>
 			<div class="member-list__filters" :class="{ 'member-list__filters--mobile': isMobile }">
 				<NcTextField
