@@ -471,7 +471,6 @@ OC.L10N.register(
     "Password to access files" : "Adgangskode for at få adgang til filer",
     "Circles App Initialization" : "Initialisering af appen Teams",
     "No team folders found." : "Ingen team-mapper fundet.",
-    "Open folder in Files" : "Åbn mappe i Filer",
     "Anyone can request membership" : "Alle kan anmode om medlemskab"
 },
 "nplurals=2; plural=(n != 1);");

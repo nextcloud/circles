@@ -445,7 +445,6 @@ OC.L10N.register(
     "Password to access files" : "Kata sandi untuk mengakses file",
     "Circles App Initialization" : "Inisialisasi Aplikasi Circles",
     "No team folders found." : "Tidak ditemukan folder tim.",
-    "Open folder in Files" : "Buka folder di Berkas",
     "Anyone can request membership" : "Siapa pun dapat mengajukan permintaan keanggotaan"
 },
 "nplurals=1; plural=0;");

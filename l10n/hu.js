@@ -458,7 +458,6 @@ OC.L10N.register(
     "Password to access files" : "Jelszó a fájlok eléréséhez",
     "Circles App Initialization" : "Körök alkalmazás előkészítése",
     "No team folders found." : "Nem található csapatmappa.",
-    "Open folder in Files" : "Mappa megnyitása a Fájlokban",
     "Anyone can request membership" : "Bárki kérheti a tagságot"
 },
 "nplurals=2; plural=(n != 1);");

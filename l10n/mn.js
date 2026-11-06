@@ -468,7 +468,6 @@ OC.L10N.register(
     "Password to access files" : "Файлуудад хандах нууц үг",
     "Circles App Initialization" : "Circles апп эхлүүлэлт",
     "No team folders found." : "Багийн хавтас олдсонгүй.",
-    "Open folder in Files" : "Хавтсыг Файлууд дотор нээх",
     "Anyone can request membership" : "Хэн ч гишүүнчлэл хүсэх боломжтой"
 },
 "nplurals=2; plural=(n != 1);");
