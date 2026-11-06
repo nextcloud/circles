@@ -471,7 +471,6 @@ OC.L10N.register(
     "Password to access files" : "Salasõna ligipääsuks failidele",
     "Circles App Initialization" : "Tiimide rakenduse valmendamine",
     "No team folders found." : "Ühtegi tiimikausta ei leidu.",
-    "Open folder in Files" : "Ava failirakenduseskaust ",
     "Anyone can request membership" : "Kõik võivad paluda võimalust liituda"
 },
 "nplurals=2; plural=(n != 1);");

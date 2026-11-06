@@ -465,7 +465,6 @@ OC.L10N.register(
     "Password to access files" : "ファイルアクセスのパスワード",
     "Circles App Initialization" : "Circleアプリの初期化",
     "No team folders found." : "チームフォルダーが見つかりません。",
-    "Open folder in Files" : "ファイルアプリでフォルダーを開く",
     "Anyone can request membership" : "誰でもメンバーへの参加をリクエストできます"
 },
 "nplurals=1; plural=0;");

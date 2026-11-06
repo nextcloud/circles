@@ -335,7 +335,6 @@
     "Password to access files" : "Heslo pro přístup k souborům",
     "Circles App Initialization" : "Inicializace aplikace okruhy",
     "No team folders found." : "Nebyly nalezeny žádné týmové složky.",
-    "Open folder in Files" : "Otevřít složku v aplikaci Soubory",
     "Anyone can request membership" : "O členství si může požádat kdokoli"
 },"pluralForm" :"nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;"
 }

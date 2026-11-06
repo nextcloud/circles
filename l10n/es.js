@@ -303,7 +303,6 @@ OC.L10N.register(
     "Password to access files shared to you by %1$s" : "Contraseña para acceder a los archivos compartidos contigo por %1$s",
     "Password to access files" : "Contraseña para acceder a los archivos",
     "Circles App Initialization" : "Inicialización de la app Circles",
-    "No team folders found." : "No se han encontrado carpetas de equipo.",
-    "Open folder in Files" : "Abrir carpeta en Archivos"
+    "No team folders found." : "No se han encontrado carpetas de equipo."
 },
 "nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");

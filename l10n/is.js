@@ -446,7 +446,6 @@ OC.L10N.register(
     "Password to access files" : "Lykilorð fyrir aðgang að skrám",
     "Circles App Initialization" : "Frumstilling Circles forrits",
     "No team folders found." : "Engar möppur fundust fyrir teymi.",
-    "Open folder in Files" : "Opna möppu í skráaforritinu",
     "Anyone can request membership" : "Hver sem er getur beðið um að verða meðlimur"
 },
 "nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);");

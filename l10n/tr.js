@@ -471,7 +471,6 @@ OC.L10N.register(
     "Password to access files" : "Dosyalara erişim parolası",
     "Circles App Initialization" : "Takımlar uygulaması başlatılıyor",
     "No team folders found." : "Herhangi bir takım klasörü bulunamadı.",
-    "Open folder in Files" : "Klasörü Dosyalar uygulamasında aç",
     "Anyone can request membership" : "Herkes üyelik isteğinde bulunabilir"
 },
 "nplurals=2; plural=(n > 1);");
