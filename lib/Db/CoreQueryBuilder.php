@@ -1685,7 +1685,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$search = str_replace('_', '.', $base);
 		$path = $search . '.' . $extension;
 		if (!$this->validKey($path, $this->getSqlPath())
-			&& !in_array($extension, $this->getArray($search, $this->getSqlPath()))) {
+			&& !in_array($extension, $this->getArray($search, $this->getSqlPath()), true)) {
 			throw new RequestBuilderException($extension . ' not found in ' . $search);
 		}
 
