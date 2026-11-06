@@ -471,7 +471,6 @@ OC.L10N.register(
     "Password to access files" : "用以訪問文件的密碼",
     "Circles App Initialization" : "初始 Circles 應用程式",
     "No team folders found." : "找不到團隊資料夾。",
-    "Open folder in Files" : "在「檔案」中開啟資料夾",
     "Anyone can request membership" : "任何人均可申請成為成員"
 },
 "nplurals=1; plural=0;");

@@ -471,7 +471,6 @@ OC.L10N.register(
     "Password to access files" : "Mot de passe pour accéder aux fichiers",
     "Circles App Initialization" : "Initialisation de l'application Circles",
     "No team folders found." : "Aucun dossier d'équipe trouvé.",
-    "Open folder in Files" : "Ouvrir le dossier dans Fichiers",
     "Anyone can request membership" : "Tout le monde peut demander à rejoindre l'équipe"
 },
 "nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");

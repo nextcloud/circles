@@ -471,7 +471,6 @@ OC.L10N.register(
     "Password to access files" : "Pasfhocal chun comhaid a rochtain",
     "Circles App Initialization" : "Ciorcail Aip Tosaigh",
     "No team folders found." : "Níor aimsíodh aon fhillteáin foirne.",
-    "Open folder in Files" : "Oscail fillteán i gComhaid",
     "Anyone can request membership" : "Is féidir le duine ar bith ballraíocht a iarraidh"
 },
 "nplurals=5; plural=(n==1 ? 0 : n==2 ? 1 : n<7 ? 2 : n<11 ? 3 : 4);");

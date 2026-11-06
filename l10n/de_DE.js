@@ -471,7 +471,6 @@ OC.L10N.register(
     "Password to access files" : "Passwort für den Dateizugriff",
     "Circles App Initialization" : "Initialisierung der Kreise-App",
     "No team folders found." : "Keine Team-Ordner gefunden.",
-    "Open folder in Files" : "Ordner in Dateien öffnen",
     "Anyone can request membership" : "Jeder kann eine Mitgliedschaft beantragen"
 },
 "nplurals=2; plural=(n != 1);");
