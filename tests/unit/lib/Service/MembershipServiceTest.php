@@ -24,18 +24,22 @@ use PHPUnit\Framework\TestCase;
 
 class MembershipServiceTest extends TestCase {
 	private MemberRequest&MockObject $memberRequest;
+	private MembershipRequest&MockObject $membershipRequest;
+	private ShareWrapperService&MockObject $shareWrapperService;
 	private MembershipService $service;
 	/** @var string[][] */
 	private array $queriedSingleIds = [];
 
 	protected function setUp(): void {
 		$this->memberRequest = $this->createMock(MemberRequest::class);
+		$this->membershipRequest = $this->createMock(MembershipRequest::class);
+		$this->shareWrapperService = $this->createMock(ShareWrapperService::class);
 		$this->service = new MembershipService(
-			$this->createMock(MembershipRequest::class),
+			$this->membershipRequest,
 			$this->createMock(CircleRequest::class),
 			$this->memberRequest,
 			$this->createMock(EventService::class),
-			$this->createMock(ShareWrapperService::class),
+			$this->shareWrapperService,
 			$this->createMock(OutputService::class),
 		);
 	}
@@ -123,6 +127,22 @@ class MembershipServiceTest extends TestCase {
 		self::assertSame('D', $memberships['E']->getInheritanceFirst());
 		self::assertSame('A', $memberships['E']->getInheritanceLast());
 		self::assertSame(['D', 'A', 'user'], $memberships['E']->getInheritancePath());
+	}
+
+	public function testNewMembershipClearsSharedWithCache(): void {
+		$this->mockGraph([
+			'user' => [['A', Member::LEVEL_MEMBER]],
+		]);
+		$this->membershipRequest->expects(self::once())->method('insert');
+
+		$cleared = [];
+		$this->shareWrapperService->method('clearCacheList')
+			->willReturnCallback(function (array $clear) use (&$cleared): void {
+				$cleared = array_merge($cleared, $clear);
+			});
+
+		self::assertSame(1, $this->service->manageMemberships('user'));
+		self::assertSame(['user'], $cleared);
 	}
 
 	/**
