@@ -111,7 +111,7 @@ class CirclesCheck extends Base {
 		if ($test !== '' && $type === '') {
 			throw new Exception('Please specify a --type for the test');
 		}
-		if ($test !== '' && !in_array($type, self::$checks)) {
+		if ($test !== '' && !in_array($type, self::$checks, true)) {
 			throw new Exception('Unknown type: ' . implode(', ', self::$checks));
 		}
 

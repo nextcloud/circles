@@ -740,7 +740,7 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 			$shareIds[] = $share->getId();
 			$circle = $share->getCircle();
 			foreach ($circle->getInheritedMembers() as $member) {
-				if ($share->getParent() > 0 && in_array($member->getSingleId(), $knownIds[$share->getFileSource()] ?? [])) {
+				if ($share->getParent() > 0 && in_array($member->getSingleId(), $knownIds[$share->getFileSource()] ?? [], true)) {
 					continue;
 				}
 				$knownIds[$share->getFileSource()][] = $member->getSingleId();
@@ -816,7 +816,7 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 				switch ($member->getUserType()) {
 					case Member::TYPE_USER:
 						if ($member->isLocal()) {
-							if (!in_array($member->getUserId(), $users)) {
+							if (!in_array($member->getUserId(), $users, true)) {
 								$users[] = $member->getUserId();
 							}
 						} else {
@@ -824,7 +824,7 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 						}
 						break;
 					case Member::TYPE_MAIL:
-						if (!in_array($member->getUserId(), $mails)) {
+						if (!in_array($member->getUserId(), $mails, true)) {
 							$mails[] = $member->getUserId();
 						}
 						break;
