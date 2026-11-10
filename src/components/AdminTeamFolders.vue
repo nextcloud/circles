@@ -601,9 +601,9 @@ onMounted(() => Promise.all([loadTeamFolders(), loadGroupQuotas()]))
 				{{ t('circles', 'Default storage quota applied to each auto-created team folder. Use 0 for unlimited storage.') }}
 			</p>
 
-			<h3>{{ t('circles', 'Quota overrides') }}</h3>
+			<h3>{{ t('circles', 'Quota groups') }}</h3>
 			<p class="team-folders__hint team-folders__hint--quota-overrides">
-				{{ t('circles', 'Choose the default quota assigned to a Team folder created by users based on group membership. The default quota for a new Team folder is always the highest from the default quotas assigned to any of the groups a user is member of.') }}
+				{{ t('circles', 'Define default quota for new teams based on group membership by the creator. When a user is member of multiple quota groups, the highest available quota is set for a new team, they create.') }}
 			</p>
 			<div class="team-folders__add-row">
 				<NcSelect
