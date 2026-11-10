@@ -32,7 +32,7 @@ jobs:
       # env variable for maintainers: 'true' allows to auto-merge 1.0.2 -> 1.1.0
       ALLOW_MINOR: true
       # env variable for maintainers: RegExp string to ignore some dependencies from auto-approve and auto-merge
-      IGNORE_PATTERN: ""
+      IGNORE_PATTERN: ''
     permissions:
       # for auto-approve step to work
       pull-requests: write
@@ -92,9 +92,9 @@ jobs:
           && steps.auto_approve.conclusion == 'success'
           && (github.event.action == 'opened' || github.event.action == 'reopened')
           && (
-          steps.metadata.outputs.update-type == 'version-update:semver-patch'
-          || (fromJSON(env.ALLOW_MINOR) && steps.metadata.outputs.update-type == 'version-update:semver-minor')
-          || (fromJSON(env.ALLOW_MAJOR) && steps.metadata.outputs.update-type == 'version-update:semver-major')
+            steps.metadata.outputs.update-type == 'version-update:semver-patch'
+            || (fromJSON(env.ALLOW_MINOR) && steps.metadata.outputs.update-type == 'version-update:semver-minor')
+            || (fromJSON(env.ALLOW_MAJOR) && steps.metadata.outputs.update-type == 'version-update:semver-major')
           )
           }}
         with:
