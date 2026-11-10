@@ -613,6 +613,7 @@ async function onEntryDragEnd(): Promise<void> {
 				<NcActionSeparator />
 
 				<NcAppNavigationItem
+					v-if="circle.canViewMembers"
 					:name="t('circles', 'Members')"
 					:to="{ name: 'team-members', params: { teamId } }">
 					<template #icon>

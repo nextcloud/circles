@@ -37,7 +37,9 @@ const team = computed(() => teamsStore.getTeam(props.circle.id))
 
 const { canLeave, canDelete, onCopyLink, onLeave, onDelete } = useTeamActions(() => team.value)
 
-const members = computed<Member[]>(() => Object.values(store.getters.getCircle(props.circle.id)?.members ?? {}))
+const members = computed<Member[]>(() => props.circle.canViewMembers
+	? Object.values(store.getters.getCircle(props.circle.id)?.members ?? {})
+	: [])
 
 // Members row: show as many 24px avatars as fit the measured width of the
 // (always mounted) trigger row, and collapse the rest into a "+n" label.

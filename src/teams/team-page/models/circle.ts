@@ -43,8 +43,9 @@ export default class Circle {
 		this._data = data
 		this._owner = new Member(data.owner, this)
 
-		if (data.initiator) {
-			this._initiator = new Member(data.initiator, this)
+		this._initiator = data.initiator ? new Member(data.initiator, this) : null
+		if (!this.canViewMembers) {
+			this._members = {}
 		}
 	}
 
@@ -276,6 +277,10 @@ export default class Circle {
 	 */
 	get isPendingMember() {
 		return this.initiator?.level === MemberLevels.NONE
+	}
+
+	get canViewMembers(): boolean {
+		return Boolean(this.isMember) && this._data.canViewMembers !== false
 	}
 
 	/**

@@ -583,7 +583,7 @@ class AdminController extends OCSController {
 	 */
 	private function setLocalFederatedUser(string $emulated): void {
 		$user = $this->userSession->getUser();
-		$this->federatedUserService->setCurrentPatron($user->getUID());
 		$this->federatedUserService->setLocalCurrentUserId($emulated);
+		$this->federatedUserService->setCurrentPatron($user->getUID());
 	}
 }

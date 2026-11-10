@@ -593,6 +593,7 @@ class LocalController extends OCSController {
 			$this->setCurrentFederatedUser();
 
 			$this->permissionService->userMustBeMember($this->userSession->getUser()->getUID(), $circleId);
+			$this->memberService->assertCanViewMembers($circleId);
 
 			$membership = $this->membershipService->getMembership($circleId, $singleId, true);
 

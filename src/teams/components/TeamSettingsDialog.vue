@@ -544,11 +544,14 @@ function onDeleteTeam(): void {
 
 <style lang="scss">
 // NcAppSettingsDialog hardcodes size="large" (a 900px modal) to fit its
-// section navigation; without the navigation, the single column reads
-// better at the normal dialog width. The doubled wrapper class outweighs
-// the library's equally specific width rule, which loads later.
+// section navigation; without the navigation the full width stretches
+// the single column needlessly. 700px leaves ~676px of content - the
+// same as collectives' dialog with navigation - so the member
+// visibility radio buttons keep their labels on one line. The doubled
+// wrapper class outweighs the library's equally specific width rule,
+// which loads later.
 .app-settings .modal-wrapper.modal-wrapper--large > .modal-container {
-	width: 600px;
+	width: 700px;
 }
 
 // The dialog title already names the settings and the groups carry their
