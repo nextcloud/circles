@@ -19,6 +19,7 @@ use OCA\Circles\Events\DestroyingCircleEvent;
 use OCA\Circles\Events\Files\CreatingFileShareEvent;
 use OCA\Circles\Events\Files\FileShareCreatedEvent;
 use OCA\Circles\Events\Files\PreparingFileShareEvent;
+use OCA\Circles\Events\MembershipsRemovedEvent;
 use OCA\Circles\Events\PreparingCircleMemberEvent;
 use OCA\Circles\Events\RemovingCircleMemberEvent;
 use OCA\Circles\Events\RequestingCircleMemberEvent;
@@ -42,6 +43,7 @@ use OCA\Circles\Listeners\GroupMemberRemoved;
 use OCA\Circles\Listeners\NodeEventListener;
 use OCA\Circles\Listeners\Notifications\RequestingMember as ListenerNotificationsRequestingMember;
 use OCA\Circles\Listeners\TeamFolderLifecycleListener;
+use OCA\Circles\Listeners\TeamResourceFavoritesCleanup;
 use OCA\Circles\Listeners\UserCreated;
 use OCA\Circles\Listeners\UserDeleted;
 use OCA\Circles\Listeners\UserLoggedIn;
@@ -120,6 +122,8 @@ class Application extends App implements IBootstrap {
 		$context->registerEventListener(UserRemovedEvent::class, GroupMemberRemoved::class);
 		$context->registerEventListener(CreatingCircleEvent::class, TeamFolderLifecycleListener::class);
 		$context->registerEventListener(DestroyingCircleEvent::class, TeamFolderLifecycleListener::class);
+		$context->registerEventListener(DestroyingCircleEvent::class, TeamResourceFavoritesCleanup::class);
+		$context->registerEventListener(MembershipsRemovedEvent::class, TeamResourceFavoritesCleanup::class);
 
 		// Local Events (for Files/Shares/Notifications management)
 		$context->registerEventListener(PreparingCircleMemberEvent::class, ListenerFilesPreparingMemberSendMail::class);
