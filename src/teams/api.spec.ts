@@ -32,7 +32,43 @@ vi.mock('./team-page/services/collaborationAutocompletion.js', () => ({
 	getSuggestions: vi.fn(),
 }))
 
-const { createTeam, fetchTeams, joinTeam, setTeamFavorite, reorderFavoriteTeams } = await import('./api.ts')
+const { createTeam, fetchTeams, joinTeam, setTeamFavorite, reorderFavoriteTeams, fetchTeamDashboardWidgets, fetchTeamDashboardItems, fetchTeamDashboardLayout, saveTeamDashboardLayout } = await import('./api.ts')
+
+describe('team dashboard', () => {
+	it('loads metadata from the team-scoped endpoint with cancellation', async () => {
+		const widget = { id: 'pages', title: 'Recent pages' }
+		vi.mocked(axios.get).mockResolvedValueOnce({ data: { ocs: { data: { pages: widget } } } })
+		const signal = new AbortController().signal
+		await expect(fetchTeamDashboardWidgets('team-a', signal)).resolves.toEqual([widget])
+		expect(axios.get).toHaveBeenLastCalledWith(expect.stringContaining('apps/dashboard/api/v1/teams/{teamId}/widgets'), { signal })
+	})
+
+	it('requests only the selected widget and fails closed on missing data', async () => {
+		vi.mocked(axios.get).mockResolvedValueOnce({ data: { ocs: { data: {} } } })
+		await expect(fetchTeamDashboardItems('team-a', 'pages')).resolves.toEqual({ status: 'error' })
+		expect(axios.get).toHaveBeenLastCalledWith(expect.stringContaining('widget-items'), { signal: undefined, params: { widgets: ['pages'], limit: 7 } })
+	})
+
+	it('loads the shared team layout with cancellation', async () => {
+		const layout = { widgetIds: ['deck-team-today'], canEdit: false }
+		const signal = new AbortController().signal
+		vi.mocked(axios.get).mockResolvedValueOnce({ data: { ocs: { data: layout } } })
+		await expect(fetchTeamDashboardLayout('team-a', signal)).resolves.toEqual(layout)
+		expect(axios.get).toHaveBeenLastCalledWith('/ocs/apps/circles/teams/{teamId}/dashboard/layout', { signal })
+	})
+
+	it('preserves an explicitly empty selection in a save', async () => {
+		vi.mocked(axios.put).mockResolvedValueOnce({ data: { ocs: { data: { widgetIds: [], canEdit: true } } } })
+		await expect(saveTeamDashboardLayout('team-a', [])).resolves.toEqual({ widgetIds: [], canEdit: true })
+		expect(axios.put).toHaveBeenLastCalledWith('/ocs/apps/circles/teams/{teamId}/dashboard/layout', { widgetIds: [] }, { signal: undefined })
+	})
+
+	it('restores automatic defaults by saving null', async () => {
+		vi.mocked(axios.put).mockResolvedValueOnce({ data: { ocs: { data: { widgetIds: null, canEdit: true } } } })
+		await saveTeamDashboardLayout('team-a', null)
+		expect(axios.put).toHaveBeenLastCalledWith('/ocs/apps/circles/teams/{teamId}/dashboard/layout', { widgetIds: null }, { signal: undefined })
+	})
+})
 
 describe('fetchTeams', () => {
 	it('splits active members from discoverable teams', async () => {
