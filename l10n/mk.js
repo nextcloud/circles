@@ -189,6 +189,7 @@ OC.L10N.register(
     "Enable federation" : "Овозможи федерација",
     "Copy link" : "Копирај линк",
     "Remove {type}" : "Избриши {type}",
+    "Search {types}" : "Пребарај {types}",
     "Add guest" : "Додади гостин",
     "Loading …" : "Се вчитува …",
     "No results" : "Нема резултати",
