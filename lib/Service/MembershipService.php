@@ -248,7 +248,7 @@ class MembershipService {
 		);
 
 		foreach ($singleIds as $singleId) {
-			if ($singleId !== $id && !in_array($singleId, $knownIds)) {
+			if ($singleId !== $id && !in_array($singleId, $knownIds, true)) {
 				$knownIds[] = $singleId;
 				$singleIds = array_merge($singleIds, $this->getChildrenMembers($singleId, $knownIds));
 			}
@@ -272,7 +272,7 @@ class MembershipService {
 		);
 
 		foreach ($singleIds as $singleId) {
-			if ($singleId !== $id && !in_array($singleId, $knownIds)) {
+			if ($singleId !== $id && !in_array($singleId, $knownIds, true)) {
 				$knownIds[] = $singleId;
 				$singleIds = array_merge($singleIds, $this->getChildrenMemberships($singleId, $knownIds));
 			}
@@ -328,7 +328,7 @@ class MembershipService {
 		$deprecated = [];
 		$clear = [];
 		foreach ($known as $item) {
-			if (!in_array($item->getCircleId(), $circleIds)) {
+			if (!in_array($item->getCircleId(), $circleIds, true)) {
 				$deprecated[] = $item;
 				$this->membershipRequest->delete($item);
 

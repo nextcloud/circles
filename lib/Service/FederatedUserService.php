@@ -1184,7 +1184,7 @@ class FederatedUserService {
 
 			$knownRemote = $knownMember->getRemoteInstance();
 			if ($this->interfaceService->isInterfaceInternal($knownRemote->getInterface())
-				&& !in_array($federatedUser->getInstance(), $knownRemote->getAliases())) {
+				&& !in_array($federatedUser->getInstance(), $knownRemote->getAliases(), true)) {
 				$this->markConflict($federatedUser, $knownMember, self::CONFLICT_003);
 			}
 
@@ -1193,7 +1193,7 @@ class FederatedUserService {
 			}
 
 			if ($this->interfaceService->isInterfaceInternal($remote->getInterface())
-				&& !in_array($knownMember->getInstance(), $remote->getAliases())) {
+				&& !in_array($knownMember->getInstance(), $remote->getAliases(), true)) {
 				$this->markConflict($federatedUser, $knownMember, self::CONFLICT_005);
 			}
 		}
