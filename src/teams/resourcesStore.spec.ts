@@ -7,6 +7,7 @@ import type { SharedResource } from './types.ts'
 
 import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { fetchTeamDashboardLayout, saveTeamDashboardLayout } from './api.ts'
 import { useTeamResourcesStore } from './resourcesStore.ts'
 
 const fetchTeamResources = vi.hoisted(() => vi.fn<(teamId: string) => Promise<SharedResource[]>>(async () => []))
@@ -20,9 +21,73 @@ vi.mock('./api.ts', () => ({
 	fetchTeamDeckBoards,
 	fetchTabOrder: vi.fn(async () => []),
 	saveTabOrder: vi.fn(),
+	fetchTeamDashboardLayout: vi.fn(async () => ({ widgetIds: null, canEdit: true, available: true })),
+	saveTeamDashboardLayout: vi.fn(),
 }))
 
 const TEAM = 'team-1'
+
+describe('teamResources store: dashboard', () => {
+	beforeEach(() => {
+		vi.clearAllMocks()
+		setActivePinia(createPinia())
+	})
+
+	it('caches and refreshes layout', async () => {
+		const store = useTeamResourcesStore()
+		await store.ensureDashboard(TEAM)
+		await store.ensureDashboard(TEAM)
+		expect(fetchTeamDashboardLayout).toHaveBeenCalledTimes(1)
+		await store.ensureDashboard(TEAM, true)
+		expect(fetchTeamDashboardLayout).toHaveBeenCalledTimes(2)
+		expect(store.forTeam(TEAM)).toMatchObject({ dashboardChecked: true, dashboardLoading: false, dashboardError: false })
+	})
+
+	it('keeps late layout responses in the requested team slot', async () => {
+		let resolve!: (value: Awaited<ReturnType<typeof fetchTeamDashboardLayout>>) => void
+		vi.mocked(fetchTeamDashboardLayout).mockImplementationOnce(() => new Promise((done) => {
+			resolve = done
+		}))
+		const store = useTeamResourcesStore()
+		const first = store.ensureDashboard(TEAM)
+		await store.ensureDashboard('team-2')
+		resolve({ widgetIds: ['pages'], canEdit: false, available: false })
+		await first
+		expect(store.forTeam(TEAM).dashboard).toMatchObject({ widgetIds: ['pages'], available: false })
+		expect(store.forTeam('team-2').dashboard).toMatchObject({ widgetIds: null, available: true })
+	})
+
+	it('records errors without rejecting and can retry', async () => {
+		vi.mocked(fetchTeamDashboardLayout).mockRejectedValueOnce(new Error('offline'))
+		const store = useTeamResourcesStore()
+		await store.ensureDashboard(TEAM)
+		expect(store.forTeam(TEAM)).toMatchObject({ dashboard: null, dashboardError: true, dashboardLoading: false })
+		await store.ensureDashboard(TEAM, true)
+		expect(store.forTeam(TEAM).dashboardError).toBe(false)
+	})
+
+	it('treats a layout 404 as an error without changing Dashboard availability', async () => {
+		const store = useTeamResourcesStore()
+		await store.ensureDashboard(TEAM)
+		vi.mocked(fetchTeamDashboardLayout).mockRejectedValueOnce({ response: { status: 404 } })
+		await store.ensureDashboard(TEAM, true)
+		expect(store.forTeam(TEAM)).toMatchObject({ dashboardError: true, dashboard: { available: true } })
+	})
+
+	it('applies only confirmed saves and preserves selection when unavailable', async () => {
+		const store = useTeamResourcesStore()
+		await store.ensureDashboard(TEAM)
+		vi.mocked(saveTeamDashboardLayout).mockResolvedValueOnce({ widgetIds: ['pages'], canEdit: true })
+		await store.setDashboardLayout(TEAM, ['pages'])
+		expect(store.forTeam(TEAM).dashboard?.widgetIds).toEqual(['pages'])
+		vi.mocked(saveTeamDashboardLayout).mockRejectedValueOnce(new Error('offline'))
+		await expect(store.setDashboardLayout(TEAM, [])).rejects.toThrow()
+		expect(store.forTeam(TEAM).dashboard?.widgetIds).toEqual(['pages'])
+		store.markDashboardUnavailable(TEAM)
+		expect(store.forTeam(TEAM).dashboard).toMatchObject({ widgetIds: ['pages'], available: false })
+		await expect(store.setDashboardLayout(TEAM, [])).rejects.toThrow('read-only')
+	})
+})
 
 const deckResource: SharedResource = {
 	id: '5',
