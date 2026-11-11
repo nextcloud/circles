@@ -38,7 +38,7 @@
     "pinia": "^4.0.3",
     "virtua": "^0.50.5",
     "vue-cropperjs": "^5.0.0",
-    "vue-material-design-icons": "^5.3.1",
+    "vue-material-design-icons": "^5.4.0",
     "vue-router": "^4.6.4",
     "vuex": "^4.1.0"
   },
