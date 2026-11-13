@@ -312,24 +312,25 @@ class MembershipService {
 		$new = [];
 		$clear = [];
 		foreach ($memberships as $membership) {
-			$updated = false;
+			$changed = false;
 			try {
 				$item = $this->getMembershipsFromList($known, $membership->getCircleId());
 				if ($item->getLevel() !== $membership->getLevel()
 					|| $item->getInheritanceDepth() !== $membership->getInheritanceDepth()) {
 					$this->membershipRequest->update($membership);
 					$new[] = $item;
-					$updated = true;
+					$changed = true;
 				} elseif ($item->getInheritancePath() !== $membership->getInheritancePath()) {
 					$this->membershipRequest->update($membership);
-					$updated = true;
+					$changed = true;
 				}
 			} catch (ItemNotFoundException) {
 				$this->membershipRequest->insert($membership);
 				$new[] = $membership;
+				$changed = true;
 			}
 
-			if ($updated && !in_array($membership->getSingleId(), $clear, true)) {
+			if ($changed && !in_array($membership->getSingleId(), $clear, true)) {
 				$clear[] = $membership->getSingleId();
 			}
 		}
