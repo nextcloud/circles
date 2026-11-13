@@ -75,6 +75,8 @@
     "Level cannot be changed for this type of member" : "Ni ellir newid lefel ar gyfer y math hwn o aelod",
     "Accept" : "Derbyn",
     "Refuse" : "Gwrthod",
+    "File is too big" : "Mae y ffeil yn rhy mawr",
+    "Unknown filetype" : "math ffeil yn anadnabyddus",
     "%s" : "%s",
     "%s owned by %s" : "%s sy'n eiddo i %s",
     "%s shared multiple files with \"%s\"." : "Mae %s wedi rhannu sawl ffeil gyda \"%s\".",
