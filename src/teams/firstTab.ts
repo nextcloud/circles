@@ -7,6 +7,15 @@ import type { RouteLocationRaw } from 'vue-router'
 import type { TeamResources } from './resourcesStore.ts'
 
 /**
+ * Show Overview only after confirming that Dashboard is available.
+ *
+ * @param resources - The team's resource state
+ */
+export function isDashboardVisible(resources: TeamResources): boolean {
+	return resources.dashboardChecked && !resources.dashboardError && Boolean(resources.dashboard?.available)
+}
+
+/**
  * Whether enough of a team's resource state is known to resolve the first
  * navigation entry: the tab order and the pages, the only order-dependent
  * entries with in-app routes.
@@ -16,7 +25,7 @@ import type { TeamResources } from './resourcesStore.ts'
 export function firstTabSettled(resources: TeamResources): boolean {
 	const orderSettled = resources.orderChecked || resources.orderError
 	const pagesSettled = resources.pagesChecked || resources.pagesError || resources.folderError
-	return orderSettled && pagesSettled
+	return orderSettled && pagesSettled && (resources.dashboardChecked || resources.dashboardError)
 }
 
 /**
@@ -35,6 +44,9 @@ export function firstTabRoute(teamId: string, resources: TeamResources): RouteLo
 		targets.set(`page-${page.fileId}`, { name: 'team-page', params: { teamId, fileId: String(page.fileId) } })
 	}
 	targets.set('home', { name: 'team-home', params: { teamId } })
+	if (isDashboardVisible(resources)) {
+		targets.set('overview', { name: 'team-overview', params: { teamId } })
+	}
 
 	const known = resources.tabOrder.filter((id) => targets.has(id))
 	const unknown = [...targets.keys()].filter((id) => !resources.tabOrder.includes(id))

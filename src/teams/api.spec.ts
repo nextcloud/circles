@@ -32,7 +32,38 @@ vi.mock('./team-page/services/collaborationAutocompletion.js', () => ({
 	getSuggestions: vi.fn(),
 }))
 
-const { createTeam, fetchTeams, joinTeam, setTeamFavorite, reorderFavoriteTeams } = await import('./api.ts')
+const { createTeam, fetchTeams, joinTeam, setTeamFavorite, reorderFavoriteTeams, fetchTeamDashboardLayout, saveTeamDashboardLayout, fetchTeamDashboardWidgets, fetchTeamDashboardItems } = await import('./api.ts')
+
+describe('team dashboard API', () => {
+	beforeEach(() => vi.clearAllMocks())
+
+	it('loads the shared layout and saves explicit or automatic selections', async () => {
+		const layout = { widgetIds: null, canEdit: true, available: true }
+		vi.mocked(axios.get).mockResolvedValue({ data: { ocs: { data: layout } } })
+		vi.mocked(axios.put).mockResolvedValue({ data: { ocs: { data: { widgetIds: [], canEdit: true } } } })
+		expect(await fetchTeamDashboardLayout('team')).toEqual(layout)
+		expect(axios.get).toHaveBeenCalledWith('/ocs/apps/circles/teams/{circleId}/dashboard/layout', { signal: undefined })
+		await saveTeamDashboardLayout('team', [])
+		expect(axios.put).toHaveBeenLastCalledWith('/ocs/apps/circles/teams/{circleId}/dashboard/layout', { widgetIds: [] })
+		await saveTeamDashboardLayout('team', null)
+		expect(axios.put).toHaveBeenLastCalledWith('/ocs/apps/circles/teams/{circleId}/dashboard/layout', { widgetIds: null })
+	})
+
+	it('requests team metadata and batches all item IDs with an abort signal', async () => {
+		const signal = new AbortController().signal
+		vi.mocked(axios.get).mockResolvedValue({ data: { ocs: { data: { pages: { id: 'pages' } } } } })
+		expect(await fetchTeamDashboardWidgets('team', signal)).toEqual([{ id: 'pages' }])
+		expect(axios.get).toHaveBeenLastCalledWith('/ocs/apps/dashboard/api/v1/widgets', { params: { teamId: 'team' }, signal })
+		await fetchTeamDashboardItems('team', ['pages', 'tasks'], signal)
+		expect(axios.get).toHaveBeenLastCalledWith('/ocs/apps/dashboard/api/v2/widget-items', { params: { teamId: 'team', widgets: ['pages', 'tasks'], limit: 7 }, signal })
+		expect(axios.get).toHaveBeenCalledTimes(2)
+	})
+
+	it('does not request items for an empty selection', async () => {
+		expect(await fetchTeamDashboardItems('team', [])).toEqual({})
+		expect(axios.get).not.toHaveBeenCalled()
+	})
+})
 
 describe('fetchTeams', () => {
 	it('splits active members from discoverable teams', async () => {
