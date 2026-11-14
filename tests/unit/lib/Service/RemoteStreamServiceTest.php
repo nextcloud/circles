@@ -17,8 +17,10 @@ use OCA\Circles\Service\AuditLogService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\InterfaceService;
 use OCA\Circles\Service\RemoteStreamService;
+use OCP\IAppConfig;
 use OCP\IConfig;
 use OCP\IURLGenerator;
+use OCP\OCM\IOCMDiscoveryService;
 use PHPUnit\Framework\MockObject\MockObject;
 use Test\TestCase;
 
@@ -42,6 +44,8 @@ class RemoteStreamServiceTest extends TestCase {
 			$this->createMock(InterfaceService::class),
 			$this->configService,
 			$this->auditLogService,
+			$this->createMock(IAppConfig::class),
+			$this->createMock(IOCMDiscoveryService::class),
 		);
 	}
 
