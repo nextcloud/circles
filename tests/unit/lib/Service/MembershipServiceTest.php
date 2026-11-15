@@ -15,10 +15,13 @@ use OCA\Circles\Db\MembershipRequest;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Membership;
+use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\Service\OutputService;
 use OCA\Circles\Service\ShareWrapperService;
+use OCP\ICache;
+use OCP\ICacheFactory;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -29,11 +32,26 @@ class MembershipServiceTest extends TestCase {
 	private MembershipService $service;
 	/** @var string[][] */
 	private array $queriedSingleIds = [];
+	/** @var string[] prefixes cleared in the getCircles() cache */
+	private array $clearedGetCircles = [];
 
 	protected function setUp(): void {
 		$this->memberRequest = $this->createMock(MemberRequest::class);
 		$this->membershipRequest = $this->createMock(MembershipRequest::class);
 		$this->shareWrapperService = $this->createMock(ShareWrapperService::class);
+
+		$getCirclesCache = $this->createMock(ICache::class);
+		$getCirclesCache->method('clear')
+			->willReturnCallback(function (string $prefix): bool {
+				$this->clearedGetCircles[] = $prefix;
+
+				return true;
+			});
+		$cacheFactory = $this->createMock(ICacheFactory::class);
+		$cacheFactory->expects(self::once())->method('createDistributed')
+			->with(CircleService::CACHE_GET_CIRCLES)
+			->willReturn($getCirclesCache);
+
 		$this->service = new MembershipService(
 			$this->membershipRequest,
 			$this->createMock(CircleRequest::class),
@@ -41,6 +59,7 @@ class MembershipServiceTest extends TestCase {
 			$this->createMock(EventService::class),
 			$this->shareWrapperService,
 			$this->createMock(OutputService::class),
+			$cacheFactory,
 		);
 	}
 
@@ -143,6 +162,94 @@ class MembershipServiceTest extends TestCase {
 
 		self::assertSame(1, $this->service->manageMemberships('user'));
 		self::assertSame(['user'], $cleared);
+	}
+
+	public function testNewMembershipClearsGetCirclesCache(): void {
+		$this->mockGraph([
+			'user' => [['A', Member::LEVEL_MEMBER]],
+		]);
+		$this->membershipRequest->expects(self::once())->method('insert');
+
+		self::assertSame(1, $this->service->manageMemberships('user'));
+		self::assertSame(['user#'], $this->clearedGetCircles);
+	}
+
+	public function testRemovedMembershipClearsGetCirclesCache(): void {
+		$this->mockGraph([]);
+		$this->membershipRequest->method('getMemberships')
+			->willReturn([$this->membership('user', 'A', Member::LEVEL_MEMBER, ['user'])]);
+		$this->membershipRequest->expects(self::once())->method('delete');
+
+		self::assertSame(1, $this->service->manageMemberships('user'));
+		self::assertSame(['user#'], $this->clearedGetCircles);
+	}
+
+	public function testLevelChangeClearsGetCirclesCache(): void {
+		$this->mockGraph([
+			'user' => [['A', Member::LEVEL_ADMIN]],
+		]);
+		$this->membershipRequest->method('getMemberships')
+			->willReturn([$this->membership('user', 'A', Member::LEVEL_MEMBER, ['user'])]);
+		$this->membershipRequest->expects(self::once())->method('update');
+
+		self::assertSame(1, $this->service->manageMemberships('user'));
+		self::assertSame(['user#'], $this->clearedGetCircles);
+	}
+
+	public function testUnchangedMembershipsKeepGetCirclesCache(): void {
+		$this->mockGraph([
+			'user' => [['A', Member::LEVEL_MEMBER]],
+		]);
+		$this->membershipRequest->method('getMemberships')
+			->willReturn([$this->membership('user', 'A', Member::LEVEL_MEMBER, ['user'])]);
+		$this->membershipRequest->expects(self::never())->method('insert');
+		$this->membershipRequest->expects(self::never())->method('update');
+		$this->membershipRequest->expects(self::never())->method('delete');
+
+		self::assertSame(0, $this->service->manageMemberships('user'));
+		self::assertSame([], $this->clearedGetCircles);
+	}
+
+	public function testCircleJoiningCircleClearsGetCirclesCacheOfInheritingMembers(): void {
+		// circle B, whose member is "user", has just been added to circle A
+		$this->mockGraph([
+			'user' => [['B', Member::LEVEL_MEMBER]],
+			'B' => [['A', Member::LEVEL_MEMBER]],
+		]);
+		$this->memberRequest->method('getMembers')
+			->willReturnCallback(function (string $singleId): array {
+				if ($singleId !== 'B') {
+					return [];
+				}
+				$member = new Member();
+				$member->setSingleId('user');
+				$member->setCircleId('B');
+
+				return [$member];
+			});
+		$this->membershipRequest->method('getMemberships')
+			->willReturnCallback(fn (string $singleId): array => match ($singleId) {
+				'user' => [$this->membership('user', 'B', Member::LEVEL_MEMBER, ['user'])],
+				default => [],
+			});
+
+		$this->service->onUpdate('B');
+
+		self::assertEqualsCanonicalizing(['B#', 'user#'], $this->clearedGetCircles);
+	}
+
+	/**
+	 * @param string[] $path
+	 */
+	private function membership(string $singleId, string $circleId, int $level, array $path): Membership {
+		$membership = new Membership();
+		$membership->setSingleId($singleId)
+			->setCircleId($circleId)
+			->setLevel($level)
+			->setInheritancePath($path)
+			->setInheritanceDepth(count($path));
+
+		return $membership;
 	}
 
 	/**

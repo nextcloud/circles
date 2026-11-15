@@ -22,6 +22,8 @@ use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Membership;
 use OCA\Circles\Tools\Exceptions\ItemNotFoundException;
 use OCA\Circles\Tools\Traits\TNCLogger;
+use OCP\ICache;
+use OCP\ICacheFactory;
 
 /**
  * Class MembershipService
@@ -30,6 +32,9 @@ use OCA\Circles\Tools\Traits\TNCLogger;
  */
 class MembershipService {
 	use TNCLogger;
+
+	/** The cache CircleService::getCircles() fills; keys are "<singleId>#<probe checksum>" */
+	private ICache $getCirclesCache;
 
 	/**
 	 * MembershipService constructor.
@@ -40,6 +45,7 @@ class MembershipService {
 	 * @param EventService $eventService
 	 * @param ShareWrapperService $shareWrapperService
 	 * @param OutputService $outputService
+	 * @param ICacheFactory $cacheFactory
 	 */
 	public function __construct(
 		private MembershipRequest $membershipRequest,
@@ -48,7 +54,9 @@ class MembershipService {
 		private EventService $eventService,
 		private ShareWrapperService $shareWrapperService,
 		private OutputService $outputService,
+		ICacheFactory $cacheFactory,
 	) {
+		$this->getCirclesCache = $cacheFactory->createDistributed(CircleService::CACHE_GET_CIRCLES);
 	}
 
 	/**
@@ -297,7 +305,7 @@ class MembershipService {
 			}
 		}
 
-		$this->shareWrapperService->clearCacheList($clear);
+		$this->clearCaches($clear);
 
 		return $deprecated;
 	}
@@ -335,9 +343,23 @@ class MembershipService {
 			}
 		}
 
-		$this->shareWrapperService->clearCacheList($clear);
+		$this->clearCaches($clear);
 
 		return $new;
+	}
+
+	/**
+	 * The memberships of these single ids changed: drop what was cached from the old ones.
+	 * The getSharedWith() and the getCircles() caches are both keyed by the single id first,
+	 * so one prefix clear per single id covers every node, path and probe.
+	 *
+	 * @param list<string> $clear
+	 */
+	private function clearCaches(array $clear): void {
+		$this->shareWrapperService->clearCacheList($clear);
+		foreach ($clear as $singleId) {
+			$this->getCirclesCache->clear($singleId . '#');
+		}
 	}
 
 	/**
