@@ -41,12 +41,15 @@ use OCA\Circles\Listeners\GroupMemberAdded;
 use OCA\Circles\Listeners\GroupMemberRemoved;
 use OCA\Circles\Listeners\NodeEventListener;
 use OCA\Circles\Listeners\Notifications\RequestingMember as ListenerNotificationsRequestingMember;
+use OCA\Circles\Listeners\OcmDiscoveryListener;
 use OCA\Circles\Listeners\TeamFolderLifecycleListener;
 use OCA\Circles\Listeners\UserCreated;
 use OCA\Circles\Listeners\UserDeleted;
 use OCA\Circles\Listeners\UserLoggedIn;
+use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\MountManager\CircleMountProvider;
 use OCA\Circles\Notification\Notifier;
+use OCA\Circles\OCM\CirclesFederationProvider;
 use OCA\Circles\Search\UnifiedSearchProvider;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\ShareByCircleProvider;
@@ -55,6 +58,8 @@ use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
+use OCP\Federation\ICloudFederationProvider;
+use OCP\Federation\ICloudFederationProviderManager;
 use OCP\Files\Config\IMountProviderCollection;
 use OCP\Files\Events\Node\NodeCreatedEvent;
 use OCP\Files\Events\Node\NodeDeletedEvent;
@@ -68,6 +73,8 @@ use OCP\Group\Events\UserRemovedEvent;
 use OCP\INavigationManager;
 use OCP\IURLGenerator;
 use OCP\L10N\IFactory;
+use OCP\OCM\Events\LocalOCMDiscoveryEvent;
+use OCP\Server;
 use OCP\Share\IManager as IShareManager;
 use OCP\User\Events\UserChangedEvent;
 use OCP\User\Events\UserCreatedEvent;
@@ -89,6 +96,15 @@ class Application extends App implements IBootstrap {
 	public const APP_SUBJECT = 'http://nextcloud.com/';
 	public const APP_REL = 'https://apps.nextcloud.com/apps/circles';
 	public const APP_API = '1';
+
+	public const OCM_RESOURCE_TYPE = 'circle';
+	public const OCM_PROTOCOL = 'circles';
+	public const OCM_NOTIFICATION_BROADCAST_EVENT = 'CIRCLES_BROADCAST_EVENT';
+	public const OCM_NOTIFICATION_REQUEST_EVENT = 'CIRCLES_REQUEST_EVENT';
+	public const OCM_NOTIFICATION_TYPES = [
+		RemoteInstance::INCOMING => self::OCM_NOTIFICATION_BROADCAST_EVENT,
+		RemoteInstance::EVENT => self::OCM_NOTIFICATION_REQUEST_EVENT,
+	];
 
 	public const CLIENT_TIMEOUT = 3;
 
@@ -142,6 +158,9 @@ class Application extends App implements IBootstrap {
 		$context->registerSearchProvider(UnifiedSearchProvider::class);
 		$context->registerWellKnownHandler(WebfingerHandler::class);
 
+		// OCM
+		$context->registerEventListener(LocalOCMDiscoveryEvent::class, OcmDiscoveryListener::class);
+
 		$context->registerDashboardWidget(TeamDashboardWidget::class);
 		$context->registerTeamResourceProvider(FileSharingTeamResourceProvider::class);
 
@@ -158,6 +177,7 @@ class Application extends App implements IBootstrap {
 
 		$context->injectFn($this->registerMountProvider(...));
 		$context->injectFn($this->registerNavigation(...));
+		$context->injectFn($this->registerCloudFederationProvider(...));
 	}
 
 	/**
@@ -184,6 +204,14 @@ class Application extends App implements IBootstrap {
 				'name' => $l10nFactory->get(Application::APP_ID)->t('Teams'),
 			];
 		});
+	}
+
+	public function registerCloudFederationProvider(ICloudFederationProviderManager $manager): void {
+		$manager->addCloudFederationProvider(
+			self::OCM_RESOURCE_TYPE,
+			'Circles Federation',
+			static fn (): ICloudFederationProvider => Server::get(CirclesFederationProvider::class),
+		);
 	}
 
 	public function registerMountProvider(ContainerInterface $container): void {
