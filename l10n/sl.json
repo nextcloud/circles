@@ -161,6 +161,7 @@
     "Create board" : "Ustvari zbirko",
     "Please select a valid png or jpg file" : "Izbrati je treba veljavno datoteko png ali jpg.",
     "name" : "ime",
+    "Choose from Nextcloud Files" : "Izberi iz datotek Nextcloud",
     "Description" : "Opis",
     "Password protection" : "Zaščita z geslom",
     "Apply" : "Uveljavi",
