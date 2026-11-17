@@ -32,31 +32,14 @@ const isMember = computed(() => circle.value?.isMember ?? false)
 const resourcesStore = useTeamResourcesStore()
 const teamResources = computed(() => resourcesStore.forTeam(props.teamId))
 
-// The folder and the team boards are part of the filter below, so wait
-// for their probes as well.
-const loading = computed(() => !teamResources.value.resourcesChecked
-	|| !teamResources.value.boardsChecked
+const loading = computed(() => (!teamResources.value.resourcesChecked && !teamResources.value.resourcesError)
 	|| (!teamResources.value.folderChecked && !teamResources.value.folderError))
 
-// The team folder, the collective and the team's own boards have their own
-// tabs, so they are filtered out of the shared resources; boards shared to
-// the team by a member stay. The groupfolders provider lists every folder
-// the team can access with no flag marking the team's own folder, hence
-// the id comparison.
 const resources = computed<SharedResource[]>(() => {
 	const folder = teamResources.value.folder
-	const teamBoardIds = new Set(teamResources.value.boards.map((board) => String(board.id)))
-	return teamResources.value.resources.filter((resource) => {
-		if (resource.provider.id === 'collectives') {
-			return false
-		}
-		if (resource.provider.id === 'deck' && teamBoardIds.has(String(resource.id))) {
-			return false
-		}
-		return folder === null
-			|| resource.provider.id !== 'groupfolders'
-			|| String(resource.id) !== String(folder.id)
-	})
+	return teamResources.value.resources.filter((resource) => folder === null
+		|| resource.provider.id !== 'groupfolders'
+		|| String(resource.id) !== String(folder.id))
 })
 
 const groupedResources = computed(() => {
@@ -93,6 +76,7 @@ const groupedResources = computed(() => {
 		<div v-else-if="loading" class="team-home__loading">
 			<NcLoadingIcon :size="44" />
 		</div>
+		<NcEmptyContent v-else-if="teamResources.resourcesError" :name="t('circles', 'Could not load the team resources')" />
 
 		<template v-else>
 			<div
@@ -110,8 +94,9 @@ const groupedResources = computed(() => {
 						:href="resource.url"
 						:name="resource.label">
 						<template #icon>
+							<span v-if="resource.iconEmoji" class="resource__icon team-home__resource-emoji">{{ resource.iconEmoji }}</span>
 							<NcIconSvgWrapper
-								v-if="resource.iconSvg"
+								v-else-if="resource.iconSvg"
 								:svg="resource.iconSvg"
 								class="resource__icon" />
 							<img
@@ -139,6 +124,10 @@ const groupedResources = computed(() => {
 		display: flex;
 		align-items: center;
 		justify-content: center;
+	}
+
+	&__resource-emoji {
+		font-size: 20px;
 	}
 
 	.circle-details-section {
