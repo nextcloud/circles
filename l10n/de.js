@@ -462,7 +462,7 @@ OC.L10N.register(
     "%s shared »%s« with \"%s\"." : "%s hat »%s« mit \"%s\" geteilt.",
     "%1$s shared »%2$s« with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s hat »%2$s« mit dir geteilt.\nDu solltest bereits eine weitere E-Mail mit einem Link für den Zugriff erhalten haben.\n",
     "%1$s shared »%2$s« with you. You should have already received a separate email with a link to access it." : "%1$s hat »%2$s« mit dir geteilt. Du solltest bereits eine weitere E-Mail mit einem Link für den Zugriff erhalten haben. ",
-    "Password to access »%1$s« shared to you by %2$s" : "Das Passwort zum Zugriff auf %1$s wurde dir von  %2$s mitgetelt.",
+    "Password to access »%1$s« shared to you by %2$s" : "Das Passwort zum Zugriff auf %1$s wurde dir von %2$s mitgeteilt.",
     "Password to access »%s«" : "Passwort um auf »%s« zu zugreifen",
     "Click the button below to open it." : "Zum Öffnen auf die untenstehende Schaltfläche klicken.",
     "%1$s shared multiple files with you.\nYou should have already received a separate email with a link to access them.\n" : "%1$s hat mehrere Dateien mit dir geteilt.\nDu solltest bereits eine weitere E-Mail mit einem Link für den Zugriff erhalten haben.\n",
