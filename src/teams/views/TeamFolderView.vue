@@ -14,10 +14,12 @@ import NcButton from '@nextcloud/vue/components/NcButton'
 import NcEmptyContent from '@nextcloud/vue/components/NcEmptyContent'
 import NcIconSvgWrapper from '@nextcloud/vue/components/NcIconSvgWrapper'
 import NcLoadingIcon from '@nextcloud/vue/components/NcLoadingIcon'
+import TeamFilesEmbed from '../components/TeamFilesEmbed.vue'
 import TeamFolderWidget from '../components/TeamFolderWidget.vue'
 import { logger } from '../../logger.ts'
 import { canCreateTeamFolder } from '../composables/useTeamActions.ts'
 import { useTeamResourcesStore } from '../resourcesStore.ts'
+import { getRenderFilesApp } from '../services/teamFilesView.ts'
 
 const props = defineProps<{
 	teamId: string
@@ -78,6 +80,11 @@ async function createTeamFolder(): Promise<void> {
 			v-else-if="loadError"
 			:name="t('circles', 'Team folder unavailable')"
 			:description="t('circles', 'Could not load the team folder. Please try again later.')" />
+
+		<!-- Servers without the Files embedding API get the simplified list -->
+		<TeamFilesEmbed
+			v-else-if="mountPoint && folderId && getRenderFilesApp()"
+			:mountPoint="mountPoint" />
 
 		<TeamFolderWidget
 			v-else-if="mountPoint && folderId"
