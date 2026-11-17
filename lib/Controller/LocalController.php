@@ -31,6 +31,7 @@ use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\Service\PermissionService;
 use OCA\Circles\Service\SearchService;
+use OCA\Circles\Service\TeamFolderPolicy;
 use OCA\Circles\Tools\Traits\TDeserialize;
 use OCA\Circles\Tools\Traits\TNCLogger;
 use OCP\AppFramework\Http;
@@ -66,6 +67,7 @@ class LocalController extends OCSController {
 		private SearchService $searchService,
 		private AvatarService $avatarService,
 		private ConfigService $configService,
+		private TeamFolderPolicy $teamFolderPolicy,
 	) {
 		parent::__construct($appName, $request);
 		$this->setup('app', 'circles');
@@ -73,7 +75,7 @@ class LocalController extends OCSController {
 
 	#[NoAdminRequired]
 	#[UserRateLimit(limit: 10, period: 60)]
-	public function create(string $name, bool $personal = false, bool $local = false, bool $createTeamFolder = true): DataResponse {
+	public function create(string $name, bool $personal = false, bool $local = false, bool $createTeamFolder = true, ?string $storagePoolId = null): DataResponse {
 		try {
 			if (!$this->configService->isGSAvailable() && $local === true) {
 				throw new OCSException('circle configuration not supported', 400);
@@ -82,7 +84,10 @@ class LocalController extends OCSController {
 
 			$this->permissionService->confirmCircleCreation();
 
-			$circle = $this->circleService->create($name, null, $personal, $local, $createTeamFolder);
+			if ($storagePoolId !== null) {
+				$this->teamFolderPolicy->validateRequestedStoragePool($this->userSession->getUser()->getUID(), $storagePoolId);
+			}
+			$circle = $this->circleService->create($name, null, $personal, $local, $createTeamFolder, $storagePoolId);
 
 			return new DataResponse($this->serializeArray($circle));
 		} catch (Exception $e) {

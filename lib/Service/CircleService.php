@@ -128,6 +128,7 @@ class CircleService {
 		bool $personal = false,
 		bool $local = false,
 		bool $createTeamFolder = true,
+		?string $storagePoolId = null,
 	): array {
 		$this->federatedUserService->mustHaveCurrentUser();
 		if (is_null($owner)) {
@@ -179,6 +180,9 @@ class CircleService {
 		$event = new FederatedEvent(CircleCreate::class);
 		$event->setCircle($circle);
 		$event->getParams()->sBool(TeamFolderPolicy::PARAM_CREATE_TEAM_FOLDER, $createTeamFolder);
+		if ($storagePoolId !== null) {
+			$event->getParams()->s(TeamFolderPolicy::PARAM_STORAGE_POOL_ID, $storagePoolId);
+		}
 		$this->federatedEventService->newEvent($event);
 
 		return $event->getOutcome();

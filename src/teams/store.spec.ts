@@ -251,4 +251,13 @@ describe('teams store team creation permission', () => {
 		await expect(store.createTeam('Marketing')).rejects.toThrow()
 		expect(createTeam).not.toHaveBeenCalled()
 	})
+
+	it('forwards a storage pool chosen during creation', async () => {
+		const store = setupStore(true)
+		const warning = vi.fn()
+
+		await store.createTeam('Marketing', true, '', warning, 'group:sales')
+
+		expect(createTeam).toHaveBeenCalledWith('Marketing', true, warning, 'group:sales')
+	})
 })

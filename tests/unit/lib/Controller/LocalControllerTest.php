@@ -19,6 +19,7 @@ use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\Service\PermissionService;
 use OCA\Circles\Service\SearchService;
+use OCA\Circles\Service\TeamFolderPolicy;
 use OCA\Circles\Tools\Traits\TDeserialize;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\OCS\OCSException;
@@ -87,6 +88,7 @@ class LocalControllerTest extends TestCase {
 			$this->container->get(SearchService::class),
 			$this->container->get(AvatarService::class),
 			$this->container->get(ConfigService::class),
+			$this->container->get(TeamFolderPolicy::class),
 		);
 
 		// Create a circle as TEST_USER_1 (owner)
@@ -157,6 +159,14 @@ class LocalControllerTest extends TestCase {
 			[1, 1, 1],
 			[-1, 1, 2],
 		];
+	}
+
+	public function testCreationRejectsUnavailableStoragePool(): void {
+		$this->expectException(OCSException::class);
+		$this->expectExceptionCode(Http::STATUS_FORBIDDEN);
+		$this->expectExceptionMessage('The selected storage pool is not available to you');
+
+		$this->localController->create('test-forbidden-pool', storagePoolId: 'group:unavailable-' . bin2hex(random_bytes(8)));
 	}
 
 	public function testCirclesListShowsVisibleTeamsToNonMembers(): void {

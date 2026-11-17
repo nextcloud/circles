@@ -14,8 +14,10 @@ use OCA\Circles\Events\DestroyingCircleEvent;
 use OCA\Circles\Service\TeamFolderPolicy;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
+use OCP\Teams\ITeamFolderPoolProvider;
 use OCP\Teams\ITeamManager;
 use OCP\Teams\Team;
+use OCP\Teams\TeamFolderPoolQuotaException;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -43,6 +45,9 @@ class TeamFolderLifecycleListener implements IEventListener {
 			// that is hard for an admin to discover and clean up.
 			$circle = $event->getCircle();
 			$provider->removeTeamFolder($circle->getSingleId());
+			if ($provider instanceof ITeamFolderPoolProvider) {
+				$this->releaseTeamStoragePool($provider, $circle->getSingleId());
+			}
 			return;
 		}
 
@@ -51,11 +56,12 @@ class TeamFolderLifecycleListener implements IEventListener {
 		}
 
 		$circle = $event->getCircle();
-		if (!$this->wasTeamFolderRequested($event)) {
+		if (!$circle->isLocal()) {
 			return;
 		}
 
-		if (!$this->policy->shouldCreateTeamFolder($circle)) {
+		$requested = $this->wasTeamFolderRequested($event);
+		if ($requested ? !$this->policy->shouldCreateTeamFolder($circle) : !$this->policy->isEligibleCircle($circle)) {
 			return;
 		}
 
@@ -65,6 +71,18 @@ class TeamFolderLifecycleListener implements IEventListener {
 		}
 
 		try {
+			if ($provider instanceof ITeamFolderPoolProvider) {
+				$creator = $circle->hasInitiator() ? $circle->getInitiator() : $circle->getOwner();
+				$params = $event->getFederatedEvent()->getParams();
+				if ($params->hasKey(TeamFolderPolicy::PARAM_STORAGE_POOL_ID)) {
+					$this->policy->assignStoragePoolForUser($provider, $circle->getSingleId(), $creator->getUserId(), $params->g(TeamFolderPolicy::PARAM_STORAGE_POOL_ID));
+				} else {
+					$this->policy->assignStoragePoolForUser($provider, $circle->getSingleId(), $creator->getUserId());
+				}
+			}
+			if (!$requested) {
+				return;
+			}
 			$provider->createTeamFolder(
 				new Team(
 					teamId: $circle->getSingleId(),
@@ -74,11 +92,22 @@ class TeamFolderLifecycleListener implements IEventListener {
 				$this->policy->getQuotaForCircle($circle),
 			);
 		} catch (\Throwable $e) {
+			$event->getFederatedEvent()->getResult()->sArray('teamFolderProvisioning', [
+				'status' => 'failed',
+				'code' => $e instanceof TeamFolderPoolQuotaException ? 'storage_pool_exceeded' : 'team_folder_creation_failed',
+			]);
 			$this->logger->error('Failed to auto-create team folder', [
 				'teamId' => $circle->getSingleId(),
 				'exception' => $e,
 			]);
 		}
+	}
+
+	private function releaseTeamStoragePool(ITeamFolderPoolProvider $provider, string $teamId): void {
+		if (!array_key_exists($teamId, $provider->getTeamStoragePoolLimits())) {
+			return;
+		}
+		$provider->deleteStoragePool(null, $teamId);
 	}
 
 	private function wasTeamFolderRequested(CreatingCircleEvent $event): bool {

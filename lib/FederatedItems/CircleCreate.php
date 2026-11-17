@@ -118,6 +118,11 @@ class CircleCreate implements
 	 * @param array $results
 	 */
 	public function result(FederatedEvent $event, array $results): void {
+		foreach ($results as $result) {
+			if ($result->hasKey('teamFolderProvisioning')) {
+				$event->setOutcome([...$event->getOutcome(), 'teamFolderProvisioning' => $result->gArray('teamFolderProvisioning')]);
+			}
+		}
 		$this->eventService->circleCreated($event, $results);
 	}
 }

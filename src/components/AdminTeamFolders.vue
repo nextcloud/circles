@@ -5,7 +5,7 @@
 
 <script setup lang="ts">
 import type { OCSResponse } from '@nextcloud/typings/ocs'
-import type { TeamFolder } from '../teams/api.ts'
+import type { StoragePool, TeamFolder } from '../teams/api.ts'
 
 import axios from '@nextcloud/axios'
 import { showConfirmation, showError, showSuccess } from '@nextcloud/dialogs'
@@ -14,7 +14,7 @@ import { loadState } from '@nextcloud/initial-state'
 import { t } from '@nextcloud/l10n'
 import { confirmPassword } from '@nextcloud/password-confirmation'
 import { generateOcsUrl } from '@nextcloud/router'
-import { computed, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref } from 'vue'
 import NcActionButton from '@nextcloud/vue/components/NcActionButton'
 import NcActions from '@nextcloud/vue/components/NcActions'
 import NcButton from '@nextcloud/vue/components/NcButton'
@@ -23,9 +23,10 @@ import NcDialog from '@nextcloud/vue/components/NcDialog'
 import NcSelect from '@nextcloud/vue/components/NcSelect'
 import NcSettingsSection from '@nextcloud/vue/components/NcSettingsSection'
 import NcTextField from '@nextcloud/vue/components/NcTextField'
+import IconPencil from 'vue-material-design-icons/Pencil.vue'
 import IconDeleteOutline from 'vue-material-design-icons/TrashCanOutline.vue'
 import { logger } from '../logger.ts'
-import { deleteTeam, getAdminTeamFolders, getLinkableTeamFolders, linkTeamFolder, updateTeamFolderDefaultQuota, updateTeamFolderQuota, upgradeTeamFolder } from '../teams/api.ts'
+import { assignTeamStoragePool, deleteStoragePool, deleteTeam, getAdminTeamFolders, getLinkableTeamFolders, getStoragePools, linkTeamFolder, setStoragePoolLimit, updateTeamFolderDefaultQuota, updateTeamFolderQuota, upgradeTeamFolder } from '../teams/api.ts'
 
 interface QuotaOption {
 	id: string
@@ -48,6 +49,11 @@ interface QuotaTarget extends QuotaRow {
 	selectionLabel: string
 }
 
+interface DisplayQuotaRow extends Omit<QuotaRow, 'quota'> {
+	quota: QuotaOption | null
+	poolOnly: boolean
+}
+
 const unlimitedQuota: QuotaOption = {
 	id: '0',
 	label: t('circles', 'Unlimited'),
@@ -68,10 +74,17 @@ const rows = ref<QuotaRow[]>([])
 const loadedQuotas = ref<Record<string, number>>({})
 const groupRows = ref<QuotaRow[]>([])
 const loadedGroupQuotas = ref<Record<string, number>>({})
+const removedQuotaTargetIds = ref<Set<string>>(new Set())
 const availableGroups = ref<TeamOption[]>([])
 const selectedQuotaTarget = ref<QuotaTarget | null>(null)
 const loadingGroups = ref(true)
 const savingQuotas = ref(false)
+const poolsSupported = ref(false)
+const storagePools = ref<StoragePool[]>([])
+const poolInputs = ref<Record<string, string>>({})
+const loadedPoolInputs = ref<Record<string, string>>({})
+const movingTeamIds = ref<Set<string>>(new Set())
+const poolsById = computed(() => new Map(storagePools.value.map((pool) => [pool.id, pool])))
 const settingsTabs = ['teamFolders', 'defaultQuotas'] as const
 type SettingsTab = typeof settingsTabs[number]
 const activeTab = ref<SettingsTab>('teamFolders')
@@ -90,6 +103,12 @@ type AdminTeamFolder = Awaited<ReturnType<typeof getAdminTeamFolders>>[number]
 type TeamFolderSortKey = 'teamName' | 'mountPoint'
 
 const teamFolders = ref<AdminTeamFolder[]>([])
+const poolOptions = computed(() => storagePools.value.map((pool) => ({
+	id: pool.id,
+	label: pool.teamId
+		? `${teamFolders.value.find((team) => team.teamId === pool.teamId)?.teamName ?? pool.teamId} (${t('circles', 'Team')})`
+		: pool.groupId === null ? t('circles', 'Everyone else') : availableGroups.value.find((group) => group.id === pool.groupId)?.label ?? pool.groupId,
+})))
 const teamFolderQuotas = ref<Record<string, QuotaOption>>({})
 const manuallyChangedQuotaTeamIds = ref<Set<string>>(new Set())
 const updatingQuotaTeamIds = ref<Set<string>>(new Set())
@@ -116,8 +135,151 @@ const availableQuotaTargets = computed<QuotaTarget[]>(() => {
 	return [...teams, ...groups].sort((left, right) => left.label.localeCompare(right.label))
 })
 
-const quotaRows = computed(() => [...rows.value, ...groupRows.value]
-	.sort((left, right) => left.label.localeCompare(right.label)))
+const quotaRows = computed<DisplayQuotaRow[]>(() => {
+	const configuredRows = [...rows.value, ...groupRows.value].map((row) => ({ ...row, poolOnly: false }))
+	const mappedTargets = new Set(configuredRows.map((row) => `${row.type}:${row.id}`))
+	const poolRows = storagePools.value
+		.filter((pool) => (pool.teamId || pool.groupId !== null) && !mappedTargets.has(pool.id) && !removedQuotaTargetIds.value.has(pool.id))
+		.map((pool): DisplayQuotaRow => pool.teamId
+			? {
+					id: pool.teamId,
+					label: teamFolders.value.find((team) => team.teamId === pool.teamId)?.teamName ?? pool.teamId,
+					type: 'team',
+					quota: null,
+					poolOnly: true,
+				}
+			: {
+					id: pool.groupId!,
+					label: availableGroups.value.find((group) => group.id === pool.groupId)?.label ?? pool.groupId!,
+					type: 'group',
+					quota: null,
+					poolOnly: true,
+				})
+	return [...configuredRows, ...poolRows].sort((left, right) => left.label.localeCompare(right.label))
+})
+
+/**
+ * Update a default override without creating overrides for pool-only rows.
+ *
+ * @param row - Displayed team or group
+ * @param quota - Selected default quota
+ */
+function onUpdateDefaultQuota(row: DisplayQuotaRow, quota: QuotaOption | null) {
+	if (quota === null) {
+		return
+	}
+	const targets = row.type === 'team' ? rows.value : groupRows.value
+	const target = targets.find((target) => target.id === row.id)
+	if (target) {
+		target.quota = quota
+	} else {
+		targets.push({ id: row.id, label: row.label, type: row.type, quota })
+	}
+}
+
+/**
+ * Refresh allocations while optionally preserving pending limit edits.
+ *
+ * @param resetInputs - Replace editable limits after a successful save
+ */
+async function loadStoragePools(resetInputs: boolean = true) {
+	try {
+		const state = await getStoragePools()
+		poolsSupported.value = state.supported
+		storagePools.value = state.pools
+		if (resetInputs) {
+			poolInputs.value = Object.fromEntries(state.pools.map((pool) => [pool.id, pool.limit === null ? '' : formatFileSize(pool.limit)]))
+			loadedPoolInputs.value = { ...poolInputs.value }
+		}
+	} catch (error) {
+		showError(t('circles', 'Unable to load storage pools'))
+		logger.error('Unable to load storage pools', { error })
+	}
+}
+
+/**
+ * Format the server-calculated allocation, including unlimited folders.
+ *
+ * @param poolId - Financing pool identifier
+ */
+function allocatedStorage(poolId: string): string {
+	const pool = poolsById.value.get(poolId)
+	return pool?.hasUnlimitedFolders ? t('circles', 'Unlimited') : formatFileSize(pool?.allocated ?? 0)
+}
+
+/**
+ * Format cached file usage without treating an unknown size as zero.
+ *
+ * @param bytes - Cached file size
+ */
+function formatUsedStorage(bytes: number | null | undefined): string {
+	return bytes === null || bytes === undefined ? t('circles', 'Unknown') : formatFileSize(bytes)
+}
+
+/**
+ * Format the total budget of a team's financing pool.
+ *
+ * @param poolId - Assigned financing pool
+ */
+function totalStorage(poolId: string | null | undefined): string {
+	const pool = poolsById.value.get(poolId ?? '')
+	return !pool ? t('circles', 'Not configured') : pool.limit === null ? t('circles', 'Unlimited') : formatFileSize(pool.limit)
+}
+
+/**
+ * Open and focus the assigned pool's limit, independently of folder ownership.
+ *
+ * @param poolId - Assigned financing pool
+ */
+async function editStoragePool(poolId: string) {
+	activeTab.value = 'defaultQuotas'
+	await nextTick()
+	document.getElementById(`team-storage-pool-${poolId}`)?.focus()
+}
+
+/**
+ * Choose a localized error for insufficient pool capacity.
+ *
+ * @param error - Rejected API response
+ * @param fallback - Message for other failures
+ */
+function poolError(error: unknown, fallback: string): string {
+	const code = (error as { response?: { data?: { ocs?: { data?: { code?: string } } } } })?.response?.data?.ocs?.data?.code
+	return code === 'storage_pool_exceeded' ? t('circles', 'The storage pool does not have enough available quota.') : fallback
+}
+
+/**
+ * Move financing without changing the folder or team membership.
+ *
+ * @param team - Team to move
+ * @param option - Destination pool
+ */
+async function moveTeamPool(team: AdminTeamFolder, option: TeamOption | null) {
+	if (option === null || option.id === team.storagePoolId) {
+		return
+	}
+	const pool = poolsById.value.get(option.id)
+	if (!pool) {
+		return
+	}
+	const previouslyUnassigned = !team.storagePoolId
+	movingTeamIds.value.add(team.teamId)
+	try {
+		await confirmPassword()
+		const result = await assignTeamStoragePool(team.teamId, pool.groupId, pool.teamId ?? null)
+		team.storagePoolId = result.storagePoolId
+		showSuccess(t('circles', 'Changed team storage pool'))
+		await loadStoragePools(false)
+	} catch (error) {
+		showError(poolError(error, t('circles', 'Unable to change the team storage pool')))
+		logger.error('Unable to move team storage pool', { error, teamId: team.teamId })
+		if (previouslyUnassigned) {
+			await loadTeamFolders()
+		}
+	} finally {
+		movingTeamIds.value.delete(team.teamId)
+	}
+}
 
 const sortedTeamFolders = computed(() => {
 	const direction = sortAscending.value ? 1 : -1
@@ -275,9 +437,9 @@ async function assignTeamFolder() {
 		}
 		showSuccess(t('circles', 'Team folder added'))
 		selectedTeam.value = null
-		await loadTeamFolders()
+		await Promise.all([loadTeamFolders(), loadStoragePools(false)])
 	} catch (error) {
-		showError(t('circles', 'Unable to add team folder'))
+		showError(poolError(error, t('circles', 'Unable to add team folder')))
 		logger.error('Unable to add team folder', { error, teamId })
 	} finally {
 		assigningFolder.value = false
@@ -304,7 +466,7 @@ async function confirmDeleteTeam(team: AdminTeamFolder) {
 	try {
 		await deleteTeam(team.teamId)
 		showSuccess(t('circles', 'Team deleted'))
-		await loadTeamFolders()
+		await Promise.all([loadTeamFolders(), loadStoragePools(false)])
 	} catch (error) {
 		showError(t('circles', 'Unable to delete the team'))
 		logger.error('Unable to delete team', { error, teamId: team.teamId })
@@ -359,10 +521,12 @@ async function onUpdateTeamFolderQuota(teamFolder: AdminTeamFolder, quota: Quota
 	try {
 		const folder = await updateTeamFolderQuota(teamFolder.teamId, Math.round(bytes))
 		teamFolderQuotas.value[teamFolder.teamId] = quotaOptionFromBytes(folder.quota ?? bytes)
+		teamFolder.folder = folder
 		showSuccess(t('circles', 'Changed team folder quota'))
+		await loadStoragePools(false)
 	} catch (error) {
 		teamFolderQuotas.value[teamFolder.teamId] = previous
-		showError(t('circles', 'Unable to update team folder quota'))
+		showError(poolError(error, t('circles', 'Unable to update team folder quota')))
 		logger.error('Unable to update team folder quota', { error, teamId: teamFolder.teamId })
 	} finally {
 		updatingQuotaTeamIds.value.delete(teamFolder.teamId)
@@ -410,6 +574,28 @@ async function updateAppConfig(key: string, value: string): Promise<boolean> {
  * "0" for unlimited; it is parsed back to bytes before being stored.
  */
 async function onSaveQuota() {
+	const poolChanges: Array<{ groupId: string | null, sourceTeamId: string | null, limit: number | null }> = []
+	const poolIds = poolsSupported.value ? ['default', ...quotaRows.value.map((row) => `${row.type}:${row.id}`)] : []
+	for (const poolId of poolIds) {
+		if (removedQuotaTargetIds.value.has(poolId)) {
+			continue
+		}
+		const input = (poolInputs.value[poolId] ?? '').trim()
+		if (input === loadedPoolInputs.value[poolId]) {
+			continue
+		}
+		const unlimited = input === '' || input === t('circles', 'Unlimited')
+		const limit = unlimited ? null : parseFileSize(input, true)
+		if (!unlimited && (limit === null || limit < 0 || !Number.isSafeInteger(limit))) {
+			showError(t('circles', 'Storage pool limit must be a non-negative size or Unlimited.'))
+			return
+		}
+		poolChanges.push({
+			groupId: poolId.startsWith('group:') ? poolId.slice('group:'.length) : null,
+			sourceTeamId: poolId.startsWith('team:') ? poolId.slice('team:'.length) : null,
+			limit,
+		})
+	}
 	const bytes = selectedQuota.value.id === unlimitedQuota.id ? 0 : parseFileSize(selectedQuota.value.id, true)
 	if (bytes === null || bytes < 0) {
 		showError(t('circles', 'Quota must be a non-negative number.'))
@@ -437,6 +623,16 @@ async function onSaveQuota() {
 
 	savingQuotas.value = true
 	try {
+		const poolsToDelete = storagePools.value.filter((pool) => removedQuotaTargetIds.value.has(pool.id))
+		if (poolChanges.length > 0 || poolsToDelete.length > 0) {
+			await confirmPassword()
+			for (const change of poolChanges) {
+				await setStoragePoolLimit(change.groupId, change.limit, change.sourceTeamId)
+			}
+			for (const pool of poolsToDelete) {
+				await deleteStoragePool(pool.groupId, pool.teamId ?? null)
+			}
+		}
 		if (!await updateAppConfig('team_folder_default_quota', String(Math.round(bytes)))) {
 			return
 		}
@@ -453,9 +649,10 @@ async function onSaveQuota() {
 		}))
 
 		showSuccess(t('circles', 'Changed default team folder quotas'))
-		await Promise.all([loadTeamFolders(), loadGroupQuotas()])
+		await Promise.all([loadTeamFolders(), loadGroupQuotas(), loadStoragePools()])
+		removedQuotaTargetIds.value.clear()
 	} catch (error) {
-		showError(t('circles', 'Unable to update team folder config'))
+		showError(poolError(error, t('circles', 'Unable to update team folder config')))
 		logger.error('Unable to update team quota settings', { error })
 	} finally {
 		savingQuotas.value = false
@@ -468,6 +665,7 @@ function addQuotaTarget() {
 		return
 	}
 	const target = { ...selectedQuotaTarget.value, quota: selectedQuota.value }
+	removedQuotaTargetIds.value.delete(`${target.type}:${target.id}`)
 	if (target.type === 'team') {
 		rows.value.push(target)
 	} else {
@@ -481,7 +679,21 @@ function addQuotaTarget() {
  *
  * @param target - Team or group mapping to remove
  */
-function removeQuotaTarget(target: QuotaRow) {
+async function removeQuotaTarget(target: DisplayQuotaRow) {
+	const poolId = `${target.type}:${target.id}`
+	if (poolsById.value.has(poolId)) {
+		const confirmed = await showConfirmation({
+			name: t('circles', 'Delete quota override and storage pool'),
+			text: t('circles', 'Delete the quota override and storage pool for {name}? When saved, all teams in this pool will move to Everyone else. Files and folder quotas will remain unchanged.', { name: target.label }),
+			labelConfirm: t('circles', 'Delete'),
+			labelReject: t('circles', 'Cancel'),
+			severity: 'warning',
+		})
+		if (!confirmed) {
+			return
+		}
+	}
+	removedQuotaTargetIds.value.add(poolId)
 	if (target.type === 'team') {
 		rows.value = rows.value.filter((row) => row.id !== target.id)
 	} else {
@@ -521,7 +733,7 @@ function onTabKeydown(event: KeyboardEvent) {
 	tabButtons?.[nextIndex]?.focus()
 }
 
-onMounted(() => Promise.all([loadTeamFolders(), loadGroupQuotas()]))
+onMounted(() => Promise.all([loadTeamFolders(), loadGroupQuotas(), loadStoragePools()]))
 </script>
 
 <template>
@@ -589,6 +801,14 @@ onMounted(() => Promise.all([loadTeamFolders(), loadGroupQuotas()]))
 					:placeholder="t('circles', 'Select default quota')"
 					taggable
 					class="team-folders__input" />
+				<NcTextField
+					v-if="poolsSupported"
+					id="team-storage-pool-default"
+					v-model="poolInputs.default"
+					:label="t('circles', 'Total storage for everyone else')"
+					:placeholder="t('circles', 'Unlimited')"
+					:disabled="savingQuotas"
+					class="team-folders__input" />
 				<NcButton
 					variant="primary"
 					:disabled="savingQuotas"
@@ -600,20 +820,27 @@ onMounted(() => Promise.all([loadTeamFolders(), loadGroupQuotas()]))
 			<p class="team-folders__hint">
 				{{ t('circles', 'Default storage quota applied to each auto-created team folder. Use 0 for unlimited storage.') }}
 			</p>
+			<p v-if="poolsSupported" class="team-folders__hint">
+				{{ t('circles', 'Allocated storage for everyone else: {allocated}', { allocated: allocatedStorage('default') }) }}
+			</p>
+			<p v-if="poolsSupported" class="team-folders__hint">
+				{{ t('circles', 'Used storage for everyone else: {used}', { used: formatUsedStorage(poolsById.get('default')?.used) }) }}
+			</p>
 
 			<h3>{{ t('circles', 'Quota overrides') }}</h3>
 			<p class="team-folders__hint team-folders__hint--quota-overrides">
-				{{ t('circles', 'Choose the default quota assigned to a Team folder created by users based on group membership. The default quota for a new Team folder is always the highest from the default quotas assigned to any of the groups a user is member of.') }}
+				{{ t('circles', 'Choose the default quota assigned to a Team folder created by users based on group or team membership. The default quota for a new Team folder is always the highest from the default quotas assigned to any of the groups or teams a user is member of.') }}
 			</p>
 			<div class="team-folders__add-row">
 				<NcSelect
 					v-model="selectedQuotaTarget"
 					:loading="loadingTeamFolders || loadingGroups"
+					:disabled="savingQuotas"
 					:options="availableQuotaTargets"
 					:placeholder="t('circles', 'Select a team or group')"
 					label="selectionLabel"
 					class="team-folders__team-select" />
-				<NcButton :disabled="selectedQuotaTarget === null" @click="addQuotaTarget">
+				<NcButton :disabled="selectedQuotaTarget === null || savingQuotas" @click="addQuotaTarget">
 					{{ t('circles', 'Add') }}
 				</NcButton>
 			</div>
@@ -622,32 +849,51 @@ onMounted(() => Promise.all([loadTeamFolders(), loadGroupQuotas()]))
 				class="team-folders__quota-mapping"
 				role="table"
 				:aria-label="t('circles', 'Default team folder quotas')">
-				<div class="team-folders__header" role="row">
+				<div class="team-folders__header" :class="{ 'team-folders__grid--pools': poolsSupported }" role="row">
 					<span role="columnheader">{{ t('circles', 'Name') }}</span>
 					<span role="columnheader">{{ t('circles', 'Type') }}</span>
 					<span role="columnheader">{{ t('circles', 'Default quota') }}</span>
+					<span v-if="poolsSupported" role="columnheader">{{ t('circles', 'Total storage') }}</span>
+					<span v-if="poolsSupported" role="columnheader">{{ t('circles', 'Allocated storage') }}</span>
+					<span v-if="poolsSupported" role="columnheader">{{ t('circles', 'Used storage') }}</span>
 					<span role="columnheader">{{ t('circles', 'Options') }}</span>
 				</div>
 				<div
 					v-for="row in quotaRows"
 					:key="`${row.type}:${row.id}`"
 					class="team-folders__row"
+					:class="{ 'team-folders__grid--pools': poolsSupported }"
 					role="row">
 					<div class="team-folders__team" role="cell">
 						<strong>{{ row.label }}</strong>
 					</div>
 					<span role="cell">{{ row.type === 'team' ? t('circles', 'Team') : t('circles', 'Group') }}</span>
 					<NcSelect
-						v-model="row.quota"
+						:modelValue="row.quota"
 						:aria-label="t('circles', 'Default quota for {team}', { team: row.label })"
 						:clearable="false"
 						:createOption="validateQuota"
 						:options="quotaOptions"
 						taggable
-						role="cell" />
+						role="cell"
+						@update:modelValue="onUpdateDefaultQuota(row, $event)" />
+					<div v-if="poolsSupported" role="cell">
+						<NcTextField
+							:id="`team-storage-pool-${row.type}:${row.id}`"
+							v-model="poolInputs[`${row.type}:${row.id}`]"
+							:label="t('circles', 'Total storage for {group}', { group: row.label })"
+							:placeholder="t('circles', 'Unlimited')"
+							:disabled="savingQuotas" />
+					</div>
+					<span v-if="poolsSupported" role="cell" :data-label="t('circles', 'Allocated storage')">
+						{{ allocatedStorage(`${row.type}:${row.id}`) }}
+					</span>
+					<span v-if="poolsSupported" role="cell" :data-label="t('circles', 'Used storage')">
+						{{ formatUsedStorage(poolsById.get(`${row.type}:${row.id}`)?.used) }}
+					</span>
 					<div class="team-folders__options" role="cell">
 						<NcActions :aria-label="t('circles', 'Quota mapping actions')">
-							<NcActionButton closeAfterClick @click="removeQuotaTarget(row)">
+							<NcActionButton :disabled="savingQuotas" closeAfterClick @click="removeQuotaTarget(row)">
 								<template #icon>
 									<IconDeleteOutline :size="20" />
 								</template>
@@ -698,6 +944,15 @@ onMounted(() => Promise.all([loadTeamFolders(), loadGroupQuotas()]))
 							<th class="team-folders__quota">
 								{{ t('circles', 'Storage quota') }}
 							</th>
+							<th v-if="poolsSupported">
+								{{ t('circles', 'Storage pool') }}
+							</th>
+							<th v-if="poolsSupported">
+								{{ t('circles', 'Total storage') }}
+							</th>
+							<th v-if="poolsSupported">
+								{{ t('circles', 'Used storage') }}
+							</th>
 							<th>
 								<span class="hidden-visually">{{ t('circles', 'Actions') }}</span>
 							</th>
@@ -705,7 +960,7 @@ onMounted(() => Promise.all([loadTeamFolders(), loadGroupQuotas()]))
 					</thead>
 					<tbody>
 						<tr v-if="sortedTeamFolders.length === 0" class="team-folders__empty">
-							<td colspan="4">
+							<td :colspan="poolsSupported ? 7 : 4">
 								{{ teamSearch.trim() ? t('circles', 'No teams match your search.') : t('circles', 'No teams found.') }}
 							</td>
 						</tr>
@@ -727,6 +982,34 @@ onMounted(() => Promise.all([loadTeamFolders(), loadGroupQuotas()]))
 									taggable
 									class="team-folders__quota-select"
 									@update:modelValue="onUpdateTeamFolderQuota(teamFolder, $event)" />
+							</td>
+							<td v-if="poolsSupported" class="team-folders__pool">
+								<NcSelect
+									:modelValue="poolOptions.find((pool) => pool.id === teamFolder.storagePoolId) ?? null"
+									:options="poolOptions"
+									:disabled="movingTeamIds.has(teamFolder.teamId) || savingQuotas"
+									:placeholder="t('circles', 'Unassigned')"
+									:aria-label="t('circles', 'Storage pool')"
+									:clearable="false"
+									@update:modelValue="moveTeamPool(teamFolder, $event)" />
+							</td>
+							<td v-if="poolsSupported">
+								<div class="team-folders__pool-total">
+									{{ totalStorage(teamFolder.storagePoolId) }}
+									<NcButton
+										v-if="teamFolder.storagePoolId && poolsById.has(teamFolder.storagePoolId)"
+										variant="tertiary"
+										:aria-label="t('circles', 'Edit total storage for {team}', { team: teamFolder.teamName })"
+										:title="t('circles', 'Edit total storage for {team}', { team: teamFolder.teamName })"
+										@click="editStoragePool(teamFolder.storagePoolId)">
+										<template #icon>
+											<IconPencil :size="20" />
+										</template>
+									</NcButton>
+								</div>
+							</td>
+							<td v-if="poolsSupported">
+								{{ teamFolder.folder === null ? formatFileSize(0) : formatUsedStorage(teamFolder.usedStorage) }}
 							</td>
 							<td class="team-folders__remove">
 								<NcActions forceMenu :aria-label="t('circles', 'Team actions')">
@@ -871,13 +1154,16 @@ onMounted(() => Promise.all([loadTeamFolders(), loadGroupQuotas()]))
 
 .team-folders__input-row {
 	display: flex;
+	flex-wrap: wrap;
 	gap: 8px;
 	align-items: flex-end;
 	max-width: 500px;
 }
 
 .team-folders__input {
-	flex: 1;
+	flex: 1 1 180px;
+	min-width: 0;
+	max-width: 100%;
 }
 
 .team-folders__hint {
@@ -900,17 +1186,18 @@ onMounted(() => Promise.all([loadTeamFolders(), loadGroupQuotas()]))
 
 .team-folders__team-select {
 	flex: 1;
+	min-width: 0;
 }
 
 .team-folders__quota-mapping {
-	max-width: 720px;
+	max-width: 1120px;
 	margin-bottom: 16px;
 }
 
 .team-folders__quota-save {
 	display: flex;
 	justify-content: flex-end;
-	max-width: 720px;
+	max-width: 1120px;
 }
 
 .team-folders__header,
@@ -930,6 +1217,25 @@ onMounted(() => Promise.all([loadTeamFolders(), loadGroupQuotas()]))
 	font-weight: bold;
 }
 
+.team-folders__grid--pools {
+	grid-template-columns: minmax(120px, 1fr) 80px minmax(140px, 180px) minmax(160px, 200px) minmax(100px, 140px) minmax(100px, 140px) 44px;
+}
+
+.team-folders__grid--pools > :deep(.v-select.select) {
+	min-width: 0;
+	max-width: 100%;
+}
+
+.team-folders__pool {
+	min-width: 180px;
+}
+
+.team-folders__pool-total {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
 .team-folders__team {
 	display: flex;
 	min-width: 0;
@@ -945,6 +1251,40 @@ onMounted(() => Promise.all([loadTeamFolders(), loadGroupQuotas()]))
 .team-folders__options {
 	display: flex;
 	justify-content: flex-end;
+}
+
+@media (max-width: 1200px) {
+	.team-folders__header.team-folders__grid--pools {
+		display: none;
+	}
+
+	.team-folders__grid--pools {
+		grid-template-columns: minmax(0, 1fr) 44px;
+	}
+
+	.team-folders__grid--pools > :nth-child(2) {
+		grid-column: 1 / -1;
+		grid-row: 2;
+	}
+
+	.team-folders__grid--pools > :nth-child(3),
+	.team-folders__grid--pools > :nth-child(4),
+	.team-folders__grid--pools > :nth-child(5),
+	.team-folders__grid--pools > :nth-child(6) {
+		grid-column: 1 / -1;
+	}
+
+	.team-folders__grid--pools > .team-folders__options {
+		grid-column: 2;
+		grid-row: 1;
+	}
+
+	.team-folders__grid--pools > [data-label]::before {
+		display: block;
+		color: var(--color-text-maxcontrast);
+		font-size: 14px;
+		content: attr(data-label);
+	}
 }
 
 @media (max-width: 600px) {
@@ -965,6 +1305,7 @@ onMounted(() => Promise.all([loadTeamFolders(), loadGroupQuotas()]))
 		grid-column: 2;
 		grid-row: 1;
 	}
+
 }
 
 :deep(.dialog) {
