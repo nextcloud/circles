@@ -38,6 +38,7 @@ use OCP\AppFramework\OCS\OCSNotFoundException;
 use OCP\AppFramework\OCSController;
 use OCP\IRequest;
 use OCP\IUserSession;
+use OCP\Teams\ITeamFolderPoolProvider;
 use OCP\Teams\ITeamManager;
 
 /**
@@ -290,15 +291,24 @@ class AdminController extends OCSController {
 				->filterHiddenCircles()
 				->filterBackendCircles();
 
+			$circles = $this->circleService->getAllCircles($probe);
+			$teamIds = array_map(static fn ($circle): string => $circle->getSingleId(), $circles);
+			$folders = $provider instanceof ITeamFolderPoolProvider ? $provider->getTeamFolderSummaries($teamIds) : [];
+			$assignments = $provider instanceof ITeamFolderPoolProvider ? $provider->getTeamStoragePoolAssignments($teamIds) : [];
+			$usage = $provider instanceof ITeamFolderPoolProvider ? $provider->getTeamFolderUsage($teamIds) : [];
 			$teamFolders = [];
-			foreach ($this->circleService->getAllCircles($probe) as $circle) {
-				$folder = $provider?->getTeamFolder($circle->getSingleId());
+			foreach ($circles as $circle) {
+				$folder = $provider instanceof ITeamFolderPoolProvider
+					? ($folders[$circle->getSingleId()] ?? null)
+					: $provider?->getTeamFolder($circle->getSingleId());
 
 				$teamFolders[] = [
 					'teamId' => $circle->getSingleId(),
 					'teamName' => $circle->getDisplayName(),
 					'defaultQuota' => $this->teamFolderPolicy->getTeamFolderQuota($circle),
 					'folder' => $folder?->jsonSerialize(),
+					'storagePoolId' => $assignments[$circle->getSingleId()] ?? null,
+					'usedStorage' => $usage[$circle->getSingleId()] ?? null,
 				];
 			}
 

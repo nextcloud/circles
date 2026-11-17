@@ -26,6 +26,17 @@ interface OcsResponse<T> {
 	ocs: { data: T }
 }
 
+export interface CreationStoragePools {
+	defaultPoolId: string
+	pools: { id: string, label: string }[]
+}
+
+/** Fetch the current user's eligible pools and automatic creation default. */
+export async function fetchCreationStoragePools(): Promise<CreationStoragePools | null> {
+	const response = await axios.get<OcsResponse<CreationStoragePools | null>>(generateOcsUrl('apps/circles/teams/creation/storage-pools'))
+	return response.data.ocs.data
+}
+
 /** Raw member as returned by the circles API. */
 interface RawMember {
 	singleId: string
@@ -55,6 +66,7 @@ interface RawCircle {
 	population?: number
 	config?: number
 	initiator?: { level?: number, status?: string } | null
+	teamFolderProvisioning?: { status: 'failed', code: string }
 }
 
 /** Teams the user is part of, and visible teams they could join. */
@@ -269,12 +281,17 @@ export async function fetchTeamMembers(teamId: string): Promise<Member[]> {
  * @param name - The team name
  * @param createTeamFolder - Whether to auto-create a team folder. Defaults to
  * true so existing API callers keep the previous behaviour.
+ * @param onFolderFailure - Receive a provisioning failure without rejecting the created team
+ * @param storagePoolId - Optional pool selected during team creation
  */
-export async function createTeam(name: string, createTeamFolder = true): Promise<string> {
+export async function createTeam(name: string, createTeamFolder = true, onFolderFailure?: (code: string) => void, storagePoolId?: string): Promise<string> {
 	const res = await axios.post<OcsResponse<RawCircle>>(
 		generateOcsUrl('apps/circles/circles'),
-		{ name, createTeamFolder },
+		{ name, createTeamFolder, ...(storagePoolId !== undefined ? { storagePoolId } : {}) },
 	)
+	if (res.data.ocs.data.teamFolderProvisioning?.status === 'failed') {
+		onFolderFailure?.(res.data.ocs.data.teamFolderProvisioning.code)
+	}
 	return res.data.ocs.data.id
 }
 
@@ -341,6 +358,60 @@ export interface AdminTeamFolder {
 	teamName: string
 	defaultQuota: number | null
 	folder: TeamFolder | null
+	storagePoolId?: string | null
+	usedStorage?: number | null
+}
+
+export interface StoragePool {
+	id: string
+	groupId: string | null
+	teamId?: string | null
+	limit: number | null
+	allocated: number
+	hasUnlimitedFolders: boolean
+	used?: number | null
+}
+
+/** Read available pools and their allocated folder quotas. */
+export async function getStoragePools(): Promise<{ supported: boolean, pools: StoragePool[] }> {
+	const { data } = await axios.get<OcsResponse<{ supported: boolean, pools: StoragePool[] }>>(generateOcsUrl('/apps/circles/admin/storage-pools'))
+	return data.ocs.data
+}
+
+/**
+ * Configure the shared budget, independently of default folder quotas.
+ *
+ * @param groupId - Group identifier, or null for the default pool
+ * @param limit - Bytes, null for unlimited, zero for no budget
+ * @param sourceTeamId - Financing team, mutually exclusive with groupId
+ */
+export async function setStoragePoolLimit(groupId: string | null, limit: number | null, sourceTeamId: string | null = null): Promise<StoragePool> {
+	const payload = sourceTeamId === null ? { groupId, limit } : { groupId, limit, sourceTeamId }
+	const { data } = await axios.put<OcsResponse<StoragePool>>(generateOcsUrl('/apps/circles/admin/storage-pools'), payload)
+	return data.ocs.data
+}
+
+/**
+ * Change a team's financing pool through the admin-only endpoint.
+ *
+ * @param teamId - Team identifier
+ * @param groupId - Destination group, or null for the default pool
+ * @param sourceTeamId - Destination financing team, mutually exclusive with groupId
+ */
+export async function assignTeamStoragePool(teamId: string, groupId: string | null, sourceTeamId: string | null = null): Promise<{ storagePoolId: string }> {
+	const payload = sourceTeamId === null ? { groupId } : { groupId, sourceTeamId }
+	const { data } = await axios.put<OcsResponse<{ storagePoolId: string }>>(generateOcsUrl('/apps/circles/admin/teamfolders/{circleId}/storage-pool', { circleId: teamId }), payload)
+	return data.ocs.data
+}
+
+/**
+ * Release a financing pool and move its teams to the default pool.
+ *
+ * @param groupId - Financing group, mutually exclusive with sourceTeamId
+ * @param sourceTeamId - Financing team, mutually exclusive with groupId
+ */
+export async function deleteStoragePool(groupId: string | null, sourceTeamId: string | null = null): Promise<void> {
+	await axios.delete(generateOcsUrl('/apps/circles/admin/storage-pools'), { data: { groupId, sourceTeamId } })
 }
 
 /**

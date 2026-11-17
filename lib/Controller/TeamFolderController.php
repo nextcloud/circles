@@ -24,8 +24,10 @@ use OCP\IGroupManager;
 use OCP\IRequest;
 use OCP\IUser;
 use OCP\IUserSession;
+use OCP\Teams\ITeamFolderPoolProvider;
 use OCP\Teams\ITeamManager;
 use OCP\Teams\Team;
+use OCP\Teams\TeamFolderPoolQuotaException;
 
 class TeamFolderController extends OCSController {
 	public function __construct(
@@ -39,6 +41,11 @@ class TeamFolderController extends OCSController {
 		private readonly IUserSession $userSession,
 	) {
 		parent::__construct($appName, $request);
+	}
+
+	#[NoAdminRequired]
+	public function getCreationStoragePools(): DataResponse {
+		return new DataResponse($this->policy->getCreationStoragePoolOptions($this->getAuthenticatedUser()->getUID()));
 	}
 
 	#[NoAdminRequired]
@@ -66,14 +73,24 @@ class TeamFolderController extends OCSController {
 			throw new OCSException('This team cannot have a team folder', Http::STATUS_FORBIDDEN);
 		}
 
-		$folder = $this->getProvider()->createTeamFolder(
-			new Team(
-				teamId: $circle->getSingleId(),
-				displayName: trim($name) ?: $circle->getDisplayName(),
-				link: null,
-			),
-			$this->policy->getQuotaForCircle($circle),
-		);
+		$provider = $this->getProvider();
+		try {
+			if ($provider instanceof ITeamFolderPoolProvider) {
+				$this->policy->assignStoragePoolForUser($provider, $circleId, $user->getUID());
+			}
+			$folder = $provider->createTeamFolder(
+				new Team(
+					teamId: $circle->getSingleId(),
+					displayName: trim($name) ?: $circle->getDisplayName(),
+					link: null,
+				),
+				$this->policy->getQuotaForCircle($circle),
+			);
+		} catch (TeamFolderPoolQuotaException $exception) {
+			return $this->poolConflict($exception);
+		} catch (\InvalidArgumentException $exception) {
+			throw new OCSException($exception->getMessage(), Http::STATUS_BAD_REQUEST);
+		}
 
 		return new DataResponse([
 			'success' => true,
@@ -95,7 +112,17 @@ class TeamFolderController extends OCSController {
 	#[NoAdminRequired]
 	public function linkTeamFolder(string $circleId, int $folderId): DataResponse {
 		$this->assertAuthenticatedUserIsTeamOwnerOrServerAdmin($circleId);
-		$folder = $this->getProvider()->linkTeamFolder($circleId, $folderId);
+		$provider = $this->getProvider();
+		try {
+			if ($provider instanceof ITeamFolderPoolProvider) {
+				$this->policy->assignStoragePoolForUser($provider, $circleId, $this->getAuthenticatedUser()->getUID());
+			}
+			$folder = $provider->linkTeamFolder($circleId, $folderId);
+		} catch (TeamFolderPoolQuotaException $exception) {
+			return $this->poolConflict($exception);
+		} catch (\InvalidArgumentException $exception) {
+			throw new OCSException($exception->getMessage(), Http::STATUS_BAD_REQUEST);
+		}
 
 		return new DataResponse([
 			'success' => true,
@@ -105,13 +132,19 @@ class TeamFolderController extends OCSController {
 	}
 
 	#[NoAdminRequired]
-	public function updateTeamFolderQuota(string $circleId, int $quota): DataResponse {
+	public function updateTeamFolderQuota(string $circleId, mixed $quota): DataResponse {
 		$this->assertAuthenticatedUserIsTeamOwnerOrServerAdmin($circleId);
-		if ($quota < 0) {
+		if (!is_int($quota) || $quota < 0 || $quota > 9007199254740991) {
 			throw new OCSException('Quota must be a non-negative number', Http::STATUS_BAD_REQUEST);
 		}
 
-		$folder = $this->getProvider()->updateTeamFolderQuota($circleId, $quota);
+		try {
+			$folder = $this->getProvider()->updateTeamFolderQuota($circleId, $quota);
+		} catch (TeamFolderPoolQuotaException $exception) {
+			return $this->poolConflict($exception);
+		} catch (\InvalidArgumentException $exception) {
+			throw new OCSException($exception->getMessage(), Http::STATUS_BAD_REQUEST);
+		}
 
 		return new DataResponse([
 			'success' => true,
@@ -124,6 +157,11 @@ class TeamFolderController extends OCSController {
 	public function unlinkTeamFolder(string $circleId, bool $deleteFolder = false): DataResponse {
 		$this->assertAuthenticatedUserIsTeamOwnerOrServerAdmin($circleId);
 		$provider = $this->getProvider();
+		if (!$deleteFolder && $provider instanceof ITeamFolderPoolProvider
+			&& isset($provider->getTeamStoragePoolAssignments([$circleId])[$circleId])
+			&& !$this->groupManager->isAdmin($this->getAuthenticatedUser()->getUID())) {
+			throw new OCSException('Only a server administrator can unlink a pooled folder without deleting it', Http::STATUS_FORBIDDEN);
+		}
 		if ($deleteFolder) {
 			$changed = $provider->removeTeamFolder($circleId);
 		} else {
@@ -134,6 +172,14 @@ class TeamFolderController extends OCSController {
 		}
 
 		return new DataResponse(['success' => true]);
+	}
+
+	private function poolConflict(TeamFolderPoolQuotaException $exception): DataResponse {
+		return new DataResponse([
+			'code' => 'storage_pool_exceeded',
+			'message' => $exception->getMessage(),
+			'pool' => $exception->pool,
+		], Http::STATUS_CONFLICT);
 	}
 
 	private function getProvider(): \OCP\Teams\ITeamFolderProvider {

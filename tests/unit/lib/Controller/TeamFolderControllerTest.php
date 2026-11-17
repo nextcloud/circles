@@ -17,9 +17,12 @@ use OCP\IGroupManager;
 use OCP\IRequest;
 use OCP\IUser;
 use OCP\IUserSession;
+use OCP\Teams\ITeamFolderPoolProvider;
 use OCP\Teams\ITeamFolderProvider;
 use OCP\Teams\ITeamManager;
 use OCP\Teams\TeamFolder;
+use OCP\Teams\TeamFolderPoolQuotaException;
+use OCP\Teams\TeamFolderStoragePool;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -66,6 +69,16 @@ class TeamFolderControllerTest extends TestCase {
 		$this->expectExceptionMessage('Team folder provisioning is disabled');
 
 		$this->controller->upgradeTeamFolder('team1');
+	}
+
+	public function testCreationPoolsAreScopedToAuthenticatedUser(): void {
+		$user = $this->createMock(IUser::class);
+		$user->method('getUID')->willReturn('alice');
+		$this->userSession->method('getUser')->willReturn($user);
+		$options = ['defaultPoolId' => 'default', 'pools' => [['id' => 'default', 'label' => '']]];
+		$this->policy->expects($this->once())->method('getCreationStoragePoolOptions')->with('alice')->willReturn($options);
+
+		$this->assertSame($options, $this->controller->getCreationStoragePools()->getData());
 	}
 
 	public function testUpgradeTeamFolderAllowedForServerAdminWhenProvisioningDisabled(): void {
@@ -146,5 +159,72 @@ class TeamFolderControllerTest extends TestCase {
 		$this->expectExceptionMessage('This team cannot have a team folder');
 
 		$this->controller->upgradeTeamFolder('team1');
+	}
+
+	public function testQuotaUpdateReportsPoolConflict(): void {
+		$user = $this->createMock(IUser::class);
+		$user->method('getUID')->willReturn('owner');
+		$this->userSession->method('getUser')->willReturn($user);
+		$provider = $this->createMock(ITeamFolderProvider::class);
+		$this->teamManager->method('getTeamFolderProvider')->willReturn($provider);
+		$provider->method('updateTeamFolderQuota')->willThrowException(new TeamFolderPoolQuotaException(
+			new TeamFolderStoragePool('default', null, 100, 101, false),
+		));
+		$response = $this->controller->updateTeamFolderQuota('team1', 101);
+		$this->assertSame(409, $response->getStatus());
+		$this->assertSame('storage_pool_exceeded', $response->getData()['code']);
+	}
+
+	public function testOwnerCannotRetainAndUnlinkPooledFolder(): void {
+		$user = $this->createMock(IUser::class);
+		$user->method('getUID')->willReturn('owner');
+		$this->userSession->method('getUser')->willReturn($user);
+		$provider = $this->createMock(ITeamFolderPoolProvider::class);
+		$this->teamManager->method('getTeamFolderProvider')->willReturn($provider);
+		$provider->method('getTeamStoragePoolAssignments')->willReturn(['team1' => 'default']);
+		$provider->expects($this->never())->method('unlinkTeamFolder');
+		$this->expectException(OCSException::class);
+		$this->expectExceptionCode(403);
+		$this->controller->unlinkTeamFolder('team1');
+	}
+
+	public function testInvalidJsonQuotasCannotReachProvider(): void {
+		$user = $this->createMock(IUser::class);
+		$user->method('getUID')->willReturn('owner');
+		$this->userSession->method('getUser')->willReturn($user);
+		$provider = $this->createMock(ITeamFolderProvider::class);
+		$this->teamManager->method('getTeamFolderProvider')->willReturn($provider);
+		$provider->expects($this->never())->method('updateTeamFolderQuota');
+		foreach ([-1, 1.5, '100', true, null, [], 9007199254740992] as $quota) {
+			try {
+				$this->controller->updateTeamFolderQuota('team1', $quota);
+				$this->fail('Invalid folder quota must be rejected');
+			} catch (OCSException $exception) {
+				$this->assertSame(400, $exception->getCode());
+			}
+		}
+	}
+
+	public function testInvalidProviderArgumentsReturnBadRequest(): void {
+		$user = $this->createMock(IUser::class);
+		$user->method('getUID')->willReturn('owner');
+		$this->userSession->method('getUser')->willReturn($user);
+		$this->circleRequest->method('getCircle')->willReturn($this->createMock(Circle::class));
+		$this->policy->method('isEligibleCircle')->willReturn(true);
+		$this->policy->method('isTeamFolderProvisioningEnabled')->willReturn(true);
+		$provider = $this->createMock(ITeamFolderProvider::class);
+		$this->teamManager->method('getTeamFolderProvider')->willReturn($provider);
+		foreach (['createTeamFolder', 'linkTeamFolder', 'updateTeamFolderQuota'] as $method) {
+			$provider->method($method)->willThrowException(new \InvalidArgumentException('The financing group no longer exists'));
+		}
+		foreach ([['upgradeTeamFolder', ['team1']], ['linkTeamFolder', ['team1', 42]], ['updateTeamFolderQuota', ['team1', 100]]] as [$method, $arguments]) {
+			try {
+				$this->controller->$method(...$arguments);
+				$this->fail('Invalid provider arguments must be rejected');
+			} catch (OCSException $exception) {
+				$this->assertSame(400, $exception->getCode());
+				$this->assertSame('The financing group no longer exists', $exception->getMessage());
+			}
+		}
 	}
 }

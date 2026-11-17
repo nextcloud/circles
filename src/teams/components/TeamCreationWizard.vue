@@ -4,9 +4,10 @@
 -->
 
 <script setup lang="ts">
+import type { CreationStoragePools } from '../api.ts'
 import type { MemberCandidate } from '../types.ts'
 
-import { mdiAccountMultiplePlusOutline, mdiChevronDown, mdiChevronRight, mdiClose, mdiMagnify } from '@mdi/js'
+import { mdiAccountMultiplePlusOutline, mdiChevronDown, mdiChevronRight, mdiClose, mdiMagnify, mdiReload } from '@mdi/js'
 import { showError, showSuccess, showWarning } from '@nextcloud/dialogs'
 import { loadState } from '@nextcloud/initial-state'
 import { t } from '@nextcloud/l10n'
@@ -21,8 +22,10 @@ import NcEmptyContent from '@nextcloud/vue/components/NcEmptyContent'
 import NcIconSvgWrapper from '@nextcloud/vue/components/NcIconSvgWrapper'
 import NcListItem from '@nextcloud/vue/components/NcListItem'
 import NcLoadingIcon from '@nextcloud/vue/components/NcLoadingIcon'
+import NcSelect from '@nextcloud/vue/components/NcSelect'
 import NcTextField from '@nextcloud/vue/components/NcTextField'
 import { logger } from '../../logger.ts'
+import { fetchCreationStoragePools } from '../api.ts'
 import { useTeamsStore } from '../store.ts'
 
 /** Minimal shape accepted by `NcDialog`'s `buttons` prop. */
@@ -78,6 +81,43 @@ const teamFolderProvisioningEnabled = Boolean(loadState('circles', 'teamFolderPr
 /** Default on: teams are meant to come with a space. Advanced on step 1 can opt out. */
 const createTeamFolder = ref(true)
 const showAdvanced = ref(false)
+const storagePools = ref<CreationStoragePools | null>(null)
+const storagePoolsLoading = ref(false)
+const storagePoolsLoaded = ref(false)
+const storagePoolsFailed = ref(false)
+const selectedStoragePool = ref<{ id: string, label: string } | null>(null)
+const storagePoolOptions = computed(() => (storagePools.value?.pools ?? []).map((pool) => {
+	const label = pool.id === 'default' ? t('circles', 'Everyone else') : pool.label
+	return {
+		id: pool.id,
+		label: pool.id === storagePools.value?.defaultPoolId ? t('circles', '{name} (default)', { name: label }) : label,
+	}
+}))
+
+/** Load the creation-only pool selection when advanced options are opened. */
+async function loadStoragePools(): Promise<void> {
+	if (storagePoolsLoading.value) {
+		return
+	}
+	storagePoolsLoading.value = true
+	storagePoolsFailed.value = false
+	try {
+		storagePools.value = await fetchCreationStoragePools()
+		selectedStoragePool.value = storagePoolOptions.value.find((pool) => pool.id === storagePools.value?.defaultPoolId) ?? null
+		storagePoolsLoaded.value = true
+	} catch (error) {
+		storagePoolsFailed.value = true
+		logger.error('Failed to load storage pools for team creation', { error })
+	} finally {
+		storagePoolsLoading.value = false
+	}
+}
+
+watch(showAdvanced, (expanded) => {
+	if (expanded && !storagePoolsLoaded.value) {
+		loadStoragePools()
+	}
+})
 
 // --- Step 2: initial member selection (restored legacy feature) ------------
 
@@ -202,13 +242,17 @@ function goToName(): false {
  * closes the dialog itself (the `open` watcher then notifies the parent).
  */
 async function createTeam(): Promise<false | void> {
-	if (!isNameValid.value || submitting.value) {
+	if (!isNameValid.value || submitting.value || storagePoolsLoading.value) {
 		return false
 	}
 
 	submitting.value = true
 	try {
-		const team = await store.createTeam(name.value, createTeamFolder.value)
+		const team = await store.createTeam(name.value, createTeamFolder.value, '', (code) => {
+			showWarning(code === 'storage_pool_exceeded'
+				? t('circles', 'Team created, but its folder could not be created because the storage pool has insufficient quota.')
+				: t('circles', 'Team created, but its folder could not be created.'))
+		}, selectedStoragePool.value?.id)
 		if (!team) {
 			throw new Error('Team creation did not return a team')
 		}
@@ -255,6 +299,7 @@ const buttons = computed<DialogButton[]>(() => {
 				label: t('circles', 'Next'),
 				type: 'submit',
 				variant: 'primary',
+				disabled: storagePoolsLoading.value,
 				callback: goToMembers,
 			},
 		]
@@ -271,6 +316,7 @@ const buttons = computed<DialogButton[]>(() => {
 			label: t('circles', 'Create team'),
 			type: 'submit',
 			variant: 'primary',
+			disabled: submitting.value || storagePoolsLoading.value,
 			callback: createTeam,
 		},
 	]
@@ -322,6 +368,27 @@ function onFormSubmit(): void {
 						<p class="team-wizard__hint">
 							{{ t('circles', 'A shared folder for this team. You can also add one later from the team page.') }}
 						</p>
+						<NcLoadingIcon v-if="storagePoolsLoading" />
+						<NcSelect
+							v-else-if="storagePools"
+							v-model="selectedStoragePool"
+							:inputLabel="t('circles', 'Storage pool')"
+							:options="storagePoolOptions"
+							:clearable="false"
+							:disabled="submitting"
+							label="label" />
+						<template v-else-if="storagePoolsFailed">
+							<p role="alert">
+								{{ t('circles', 'Could not load storage pools') }}
+							</p>
+							<NcButton
+								:aria-label="t('circles', 'Retry loading storage pools')"
+								@click="loadStoragePools">
+								<template #icon>
+									<NcIconSvgWrapper :path="mdiReload" :size="20" />
+								</template>
+							</NcButton>
+						</template>
 					</div>
 				</div>
 			</section>

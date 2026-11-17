@@ -178,12 +178,18 @@ export const useTeamsStore = defineStore('teams', {
 		 * @param displayName - The team name
 		 * @param createTeamFolder - Whether to auto-create a team folder
 		 * @param description - An optional description
+		 * @param onFolderFailure - Report folder provisioning failure separately
+		 * @param storagePoolId - Optional pool selected during team creation
 		 */
-		async createTeam(displayName: string, createTeamFolder = true, description = ''): Promise<Team | undefined> {
+		async createTeam(displayName: string, createTeamFolder = true, description = '', onFolderFailure?: (code: string) => void, storagePoolId?: string): Promise<Team | undefined> {
 			if (!this.canCreateTeam) {
 				throw new Error('Not allowed to create teams')
 			}
-			const id = await api.createTeam(displayName.trim(), createTeamFolder)
+			const id = storagePoolId !== undefined
+				? await api.createTeam(displayName.trim(), createTeamFolder, onFolderFailure, storagePoolId)
+				: onFolderFailure
+					? await api.createTeam(displayName.trim(), createTeamFolder, onFolderFailure)
+					: await api.createTeam(displayName.trim(), createTeamFolder)
 			const trimmedDescription = description.trim()
 			if (trimmedDescription) {
 				try {

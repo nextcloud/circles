@@ -91,6 +91,19 @@ bind-mounted, exposed on port `8089`. The `setup` project then enables the app v
 [`support/setup.ts`](playwright/support/setup.ts) before the test project runs. All of
 this is wired through `@nextcloud/e2e-test-server`, the same harness the Forms app uses.
 
+The storage-pool cases in [`admin-settings.spec.ts`](tests/playwright/e2e/admin-settings.spec.ts)
+mock group and team pool API responses and verify pool names, limits, reserved
+quotas, actual file sizes, rejected input and control bounds at
+1280, 768 and 390 pixels. They do not verify backend enforcement or federation.
+The component tests also cover confirmed override/pool deletions on save,
+cancelled deletions and refreshed default-pool assignments.
+Deleting a pool moves all its teams to Everyone else without changing files or
+folder quotas, even if Everyone else becomes overbooked.
+The real-database pool and concurrent-quota tests live in Groupfolders under
+`tests/TeamSpace/TeamFolderPoolServiceTest.php`. Full HTTP integration also requires
+the compatible Groupfolders provider and the new server public API. Test the
+database invariant on every supported database before release.
+
 ### Directory layout
 
 ```

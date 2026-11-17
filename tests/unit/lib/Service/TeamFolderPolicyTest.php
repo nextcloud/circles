@@ -18,6 +18,9 @@ use OCP\AppFramework\Services\IAppConfig;
 use OCP\IGroupManager;
 use OCP\IUser;
 use OCP\IUserManager;
+use OCP\Teams\ITeamFolderPoolProvider;
+use OCP\Teams\ITeamManager;
+use OCP\Teams\Team;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -28,6 +31,7 @@ class TeamFolderPolicyTest extends TestCase {
 	private CircleRequest&MockObject $circleRequest;
 	private IGroupManager&MockObject $groupManager;
 	private IUserManager&MockObject $userManager;
+	private ITeamManager&MockObject $teamManager;
 
 	protected function setUp(): void {
 		parent::setUp();
@@ -37,6 +41,7 @@ class TeamFolderPolicyTest extends TestCase {
 		$this->circleRequest = $this->createMock(CircleRequest::class);
 		$this->groupManager = $this->createMock(IGroupManager::class);
 		$this->userManager = $this->createMock(IUserManager::class);
+		$this->teamManager = $this->createMock(ITeamManager::class);
 		$this->appConfig->method('getAppValueBool')
 			->with(ConfigLexicon::TEAM_FOLDER_AUTO_CREATE, true)
 			->willReturn(true);
@@ -47,6 +52,7 @@ class TeamFolderPolicyTest extends TestCase {
 			$this->circleRequest,
 			$this->groupManager,
 			$this->userManager,
+			$this->teamManager,
 		);
 	}
 
@@ -85,6 +91,7 @@ class TeamFolderPolicyTest extends TestCase {
 			$this->circleRequest,
 			$this->groupManager,
 			$this->userManager,
+			$this->teamManager,
 		);
 
 		$this->assertFalse($service->isTeamFolderProvisioningEnabled());
@@ -112,6 +119,7 @@ class TeamFolderPolicyTest extends TestCase {
 			$this->circleRequest,
 			$this->groupManager,
 			$this->userManager,
+			$this->teamManager,
 		);
 
 		$this->assertTrue($service->isEligibleCircle($this->createCircle()));
@@ -253,6 +261,179 @@ class TeamFolderPolicyTest extends TestCase {
 
 		$this->circleRequest->method('getCircle')
 			->willReturnCallback(static fn (string $teamId): Circle => $circles[$teamId]);
+	}
+
+	public function testSelectStoragePoolUsesLargestPoolNotHighestFolderQuota(): void {
+		$this->configureUserGroups('alice', ['sales', 'engineering']);
+		$this->configureGroupQuotas(['sales' => 300, 'engineering' => 100]);
+		$this->membershipRequest->expects($this->never())->method('getMemberships');
+
+		$this->assertSame(['groupId' => 'engineering', 'teamId' => null], $this->selectStoragePool('alice', [
+			'sales' => 536870912000,
+			'engineering' => 1099511627776,
+			'management' => 2199023255552,
+		]));
+	}
+
+	public function testSelectStoragePoolUsesUnlimitedPool(): void {
+		$this->configureUserGroups('alice', ['sales', 'engineering']);
+		$this->configureGroupQuotas(['sales' => 0, 'engineering' => 100]);
+
+		$this->assertSame(['groupId' => 'engineering', 'teamId' => null], $this->selectStoragePool('alice', [
+			'sales' => 536870912000,
+			'engineering' => null,
+		]));
+	}
+
+	public function testSelectStoragePoolBreaksTiesBySourceId(): void {
+		$this->configureUserGroups('alice', ['sales', 'engineering']);
+
+		foreach ([0, 1099511627776, null] as $limit) {
+			$this->assertSame(['groupId' => 'engineering', 'teamId' => null], $this->selectStoragePool('alice', [
+				'sales' => $limit,
+				'engineering' => $limit,
+			]));
+		}
+	}
+
+	public function testSelectStoragePoolUsesDefaultWithoutMatchingGroup(): void {
+		$this->configureUserGroups('alice', ['sales']);
+
+		$this->assertSame(['groupId' => null, 'teamId' => null], $this->selectStoragePool('alice', ['engineering' => 1099511627776]));
+	}
+
+	public function testSelectStoragePoolUsesDefaultForMissingUser(): void {
+		$this->groupManager->expects($this->never())->method('getUserGroupIds');
+
+		$this->assertSame(['groupId' => null, 'teamId' => null], $this->selectStoragePool('deleted-user', ['engineering' => null]));
+	}
+
+	public function testSelectStoragePoolRejectsNegativeLimit(): void {
+		$this->configureUserGroups('alice', ['engineering']);
+		$this->expectException(\InvalidArgumentException::class);
+
+		$this->selectStoragePool('alice', ['engineering' => -1]);
+	}
+
+	public function testMemberTeamWithLargestPoolFinancesNewFolder(): void {
+		$this->configureUserGroups('alice', ['engineering']);
+		$this->configureGroupQuotas(['engineering' => 100]);
+		$this->teamManager->method('getTeamsForUser')->with('alice')->willReturn([new Team('support', 'Support', null)]);
+		$circle = (new Circle())->setSingleId('support')->setSettings([Circle::SETTING_TEAM_FOLDER_QUOTA => 300])->setOwner($this->createOwner('alice'));
+		$this->circleRequest->method('getCircle')->with('support')->willReturn($circle);
+		$this->assertSame(['groupId' => null, 'teamId' => 'support'], $this->selectStoragePool('alice', ['engineering' => 1000], ['support' => 2000]));
+	}
+
+	public function testNonMemberTeamCannotFinanceNewFolder(): void {
+		$this->configureUserGroups('alice', []);
+		$this->teamManager->method('getTeamsForUser')->willReturn([]);
+		$this->circleRequest->expects($this->never())->method('getCircle');
+		$this->assertSame(['groupId' => null, 'teamId' => null], $this->selectStoragePool('alice', [], ['support' => 400]));
+	}
+
+	public function testExistingAssignmentRemainsStable(): void {
+		$provider = $this->createMock(ITeamFolderPoolProvider::class);
+		$provider->method('getTeamStoragePoolAssignments')->willReturn(['existing' => 'default']);
+		$provider->expects($this->never())->method('assignTeamStoragePool');
+		$this->teamManager->expects($this->never())->method('getTeamsForUser');
+		$this->service->assignStoragePoolForUser($provider, 'existing', 'alice');
+	}
+
+	public function testCreationOptionsOnlyIncludeEligiblePoolsAndSelectLargest(): void {
+		$this->configureUserGroups('alice', ['sales', 'engineering']);
+		$provider = $this->createMock(ITeamFolderPoolProvider::class);
+		$provider->method('getStoragePoolLimits')->willReturn(['sales' => 500, 'engineering' => 1000, 'management' => 2000]);
+		$this->teamManager->method('getTeamFolderProvider')->willReturn($provider);
+
+		$this->assertSame([
+			'defaultPoolId' => 'group:engineering',
+			'pools' => [
+				['id' => 'group:engineering', 'label' => 'engineering'],
+				['id' => 'group:sales', 'label' => 'sales'],
+			],
+		], $this->service->getCreationStoragePoolOptions('alice'));
+	}
+
+	public function testCreationOptionsAreUnavailableWithoutPoolProvider(): void {
+		$this->assertNull($this->service->getCreationStoragePoolOptions('alice'));
+	}
+
+	public function testEmptyPoolDoesNotTakePrecedenceOverUnlimitedPool(): void {
+		$this->configureUserGroups('alice', ['sales', 'engineering']);
+		$this->assertSame(['groupId' => 'engineering', 'teamId' => null], $this->selectStoragePool('alice', [
+			'sales' => 0,
+			'engineering' => null,
+		]));
+	}
+
+	public function testUserCanChooseSmallerEligiblePool(): void {
+		$this->configureUserGroups('alice', ['sales', 'engineering']);
+		$provider = $this->createMock(ITeamFolderPoolProvider::class);
+		$provider->method('getStoragePoolLimits')->willReturn(['sales' => 500, 'engineering' => 1000]);
+		$provider->expects($this->once())->method('assignTeamStoragePool')->with('new', 'sales', true, null);
+
+		$this->service->assignStoragePoolForUser($provider, 'new', 'alice', 'group:sales');
+	}
+
+	public function testUserWithoutMatchingPoolCanChooseDefaultPool(): void {
+		$this->configureUserGroups('alice', ['sales']);
+		$provider = $this->createMock(ITeamFolderPoolProvider::class);
+		$provider->method('getStoragePoolLimits')->willReturn(['engineering' => 1000]);
+		$provider->expects($this->once())->method('assignTeamStoragePool')->with('new', null, true, null);
+
+		$this->service->assignStoragePoolForUser($provider, 'new', 'alice', 'default');
+	}
+
+	public function testUserCannotBypassGroupPoolThroughDefaultPool(): void {
+		$this->configureUserGroups('alice', ['engineering']);
+		$provider = $this->createMock(ITeamFolderPoolProvider::class);
+		$provider->method('getStoragePoolLimits')->willReturn(['engineering' => 1000]);
+		$provider->expects($this->never())->method('assignTeamStoragePool');
+		$this->expectException(\InvalidArgumentException::class);
+
+		$this->service->assignStoragePoolForUser($provider, 'new', 'alice', 'default');
+	}
+
+	public function testUserCannotAssignPoolOfAnotherGroup(): void {
+		$this->configureUserGroups('alice', ['sales']);
+		$provider = $this->createMock(ITeamFolderPoolProvider::class);
+		$provider->method('getStoragePoolLimits')->willReturn(['sales' => 500, 'engineering' => 1000]);
+		$provider->expects($this->never())->method('assignTeamStoragePool');
+		$this->expectException(\InvalidArgumentException::class);
+
+		$this->service->assignStoragePoolForUser($provider, 'new', 'alice', 'group:engineering');
+	}
+
+	public function testRequestedPoolIsRejectedBeforeCreationWhenNotEligible(): void {
+		$this->configureUserGroups('alice', ['sales']);
+		$provider = $this->createMock(ITeamFolderPoolProvider::class);
+		$provider->method('getStoragePoolLimits')->willReturn(['engineering' => 1000]);
+		$this->teamManager->method('getTeamFolderProvider')->willReturn($provider);
+		$this->expectException(\InvalidArgumentException::class);
+		$this->expectExceptionCode(403);
+
+		$this->service->validateRequestedStoragePool('alice', 'group:engineering');
+	}
+
+	/**
+	 * @param array<string, int|null> $groupLimits
+	 * @param array<string, int|null> $teamLimits
+	 * @return array{groupId: ?string, teamId: ?string}|null
+	 */
+	private function selectStoragePool(string $userId, array $groupLimits, array $teamLimits = []): ?array {
+		$provider = $this->createMock(ITeamFolderPoolProvider::class);
+		$provider->method('getTeamStoragePoolAssignments')->willReturn([]);
+		$provider->method('getStoragePoolLimits')->willReturn($groupLimits);
+		$provider->method('getTeamStoragePoolLimits')->willReturn($teamLimits);
+		$selected = null;
+		$provider->method('assignTeamStoragePool')->willReturnCallback(
+			static function (string $teamId, ?string $groupId, bool $onlyIfUnassigned, ?string $sourceTeamId) use (&$selected): void {
+				$selected = ['groupId' => $groupId, 'teamId' => $sourceTeamId];
+			},
+		);
+
+		$this->service->assignStoragePoolForUser($provider, 'new', $userId);
+		return $selected;
 	}
 
 	private function configureDefaultQuota(int $quota): void {

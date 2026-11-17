@@ -32,7 +32,7 @@ vi.mock('./team-page/services/collaborationAutocompletion.js', () => ({
 	getSuggestions: vi.fn(),
 }))
 
-const { createTeam, fetchTeams, joinTeam, setTeamFavorite, reorderFavoriteTeams } = await import('./api.ts')
+const { createTeam, fetchCreationStoragePools, fetchTeams, joinTeam, setTeamFavorite, reorderFavoriteTeams, getStoragePools, setStoragePoolLimit, assignTeamStoragePool } = await import('./api.ts')
 
 describe('fetchTeams', () => {
 	it('splits active members from discoverable teams', async () => {
@@ -155,6 +155,63 @@ describe('createTeam', () => {
 			'/ocs/apps/circles/circles',
 			{ name: 'Design', createTeamFolder: false },
 		)
+	})
+
+	it('sends an explicit storage pool only when creating the team', async () => {
+		await createTeam('Design', true, undefined, 'group:engineering')
+
+		expect(axios.post).toHaveBeenCalledWith(
+			'/ocs/apps/circles/circles',
+			{ name: 'Design', createTeamFolder: true, storagePoolId: 'group:engineering' },
+		)
+	})
+
+	it('loads eligible creation pools and their automatic default', async () => {
+		const options = { defaultPoolId: 'group:engineering', pools: [{ id: 'group:engineering', label: 'Engineering' }] }
+		vi.mocked(axios.get).mockResolvedValueOnce({ data: { ocs: { data: options } } })
+
+		await expect(fetchCreationStoragePools()).resolves.toEqual(options)
+		expect(axios.get).toHaveBeenCalledWith('/ocs/apps/circles/teams/creation/storage-pools')
+	})
+
+	it('returns the created team and reports a rejected folder separately', async () => {
+		vi.mocked(axios.post).mockResolvedValueOnce({ data: { ocs: { data: {
+			id: 'team1',
+			teamFolderProvisioning: { status: 'failed', code: 'storage_pool_exceeded' },
+		} } } })
+		const warning = vi.fn()
+		await expect(createTeam('Design', true, warning)).resolves.toBe('team1')
+		expect(warning).toHaveBeenCalledWith('storage_pool_exceeded')
+	})
+})
+
+describe('storage pool API', () => {
+	it('reads provider support and server-calculated allocations', async () => {
+		const state = { supported: true, pools: [{ id: 'default', groupId: null, limit: 100, allocated: 60, hasUnlimitedFolders: false }] }
+		vi.mocked(axios.get).mockResolvedValueOnce({ data: { ocs: { data: state } } })
+		await expect(getStoragePools()).resolves.toEqual(state)
+	})
+
+	it('keeps zero budget distinct from unlimited', async () => {
+		vi.mocked(axios.put).mockResolvedValue({ data: { ocs: { data: {} } } })
+		await setStoragePoolLimit(null, 0)
+		expect(axios.put).toHaveBeenLastCalledWith('/ocs//apps/circles/admin/storage-pools', { groupId: null, limit: 0 })
+		await setStoragePoolLimit('engineering', null)
+		expect(axios.put).toHaveBeenLastCalledWith('/ocs//apps/circles/admin/storage-pools', { groupId: 'engineering', limit: null })
+	})
+
+	it('uses the admin endpoint to change financing without membership changes', async () => {
+		vi.mocked(axios.put).mockResolvedValueOnce({ data: { ocs: { data: { storagePoolId: 'default' } } } })
+		await expect(assignTeamStoragePool('team1', null)).resolves.toEqual({ storagePoolId: 'default' })
+		expect(axios.put).toHaveBeenLastCalledWith(expect.stringContaining('/storage-pool'), { groupId: null })
+	})
+
+	it('keeps financing teams distinct from groups when saving and moving', async () => {
+		vi.mocked(axios.put).mockResolvedValue({ data: { ocs: { data: {} } } })
+		await setStoragePoolLimit(null, 100, 'source')
+		expect(axios.put).toHaveBeenLastCalledWith('/ocs//apps/circles/admin/storage-pools', { groupId: null, limit: 100, sourceTeamId: 'source' })
+		await assignTeamStoragePool('target', null, 'source')
+		expect(axios.put).toHaveBeenLastCalledWith(expect.stringContaining('/storage-pool'), { groupId: null, sourceTeamId: 'source' })
 	})
 })
 

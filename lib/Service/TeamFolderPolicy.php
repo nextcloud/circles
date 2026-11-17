@@ -17,6 +17,8 @@ use OCA\Circles\Model\Circle;
 use OCP\AppFramework\Services\IAppConfig;
 use OCP\IGroupManager;
 use OCP\IUserManager;
+use OCP\Teams\ITeamFolderPoolProvider;
+use OCP\Teams\ITeamManager;
 
 /**
  * Policy for team folders owned by teams (circles).
@@ -35,6 +37,7 @@ use OCP\IUserManager;
  */
 class TeamFolderPolicy {
 	public const PARAM_CREATE_TEAM_FOLDER = 'createTeamFolder';
+	public const PARAM_STORAGE_POOL_ID = 'storagePoolId';
 
 	public function __construct(
 		private IAppConfig $appConfig,
@@ -42,6 +45,7 @@ class TeamFolderPolicy {
 		private CircleRequest $circleRequest,
 		private IGroupManager $groupManager,
 		private IUserManager $userManager,
+		private ITeamManager $teamManager,
 	) {
 	}
 
@@ -187,5 +191,97 @@ class TeamFolderPolicy {
 			static fn (string $groupId): ?int => $quotas[$groupId] ?? null,
 			$this->groupManager->getUserGroupIds($user),
 		), static fn (?int $quota): bool => $quota !== null));
+	}
+
+	/**
+	 * @param array<string, int|null> $groupLimits
+	 * @param array<string, int|null> $teamLimits
+	 * @return list<array{id: string, label: string, groupId: ?string, teamId: ?string, quota: ?int}>
+	 */
+	private function getStoragePoolCandidates(string $userId, array $groupLimits, array $teamLimits): array {
+		$user = $this->userManager->get($userId);
+		if ($user === null) {
+			return [];
+		}
+		foreach ([...array_values($groupLimits), ...array_values($teamLimits)] as $limit) {
+			if ($limit !== null && $limit < 0) {
+				throw new \InvalidArgumentException('storage pool limit must be non-negative');
+			}
+		}
+		$candidates = [];
+		foreach ($this->groupManager->getUserGroupIds($user) as $groupId) {
+			if (array_key_exists($groupId, $groupLimits)) {
+				$candidates[] = ['id' => 'group:' . $groupId, 'label' => $this->groupManager->get($groupId)?->getDisplayName() ?? $groupId, 'groupId' => $groupId, 'teamId' => null, 'quota' => $groupLimits[$groupId]];
+			}
+		}
+		if ($teamLimits !== []) {
+			foreach ($this->teamManager->getTeamsForUser($userId) as $team) {
+				$teamId = $team->getId();
+				if (!array_key_exists($teamId, $teamLimits)) {
+					continue;
+				}
+				try {
+					$circle = $this->circleRequest->getCircle($teamId);
+				} catch (CircleNotFoundException) {
+					continue;
+				}
+				if ($this->isEligibleCircle($circle) && $circle->isLocal()) {
+					$candidates[] = ['id' => 'team:' . $teamId, 'label' => $circle->getDisplayName(), 'groupId' => null, 'teamId' => $teamId, 'quota' => $teamLimits[$teamId]];
+				}
+			}
+		}
+		usort($candidates, static function (array $left, array $right): int {
+			if ($left['quota'] === $right['quota']) {
+				return strcmp($left['id'], $right['id']);
+			}
+			return $left['quota'] === null ? -1 : ($right['quota'] === null ? 1 : $right['quota'] <=> $left['quota']);
+		});
+		return $candidates;
+	}
+
+	/** @return array{defaultPoolId: string, pools: list<array{id: string, label: string}>}|null */
+	public function getCreationStoragePoolOptions(string $userId): ?array {
+		$provider = $this->teamManager->getTeamFolderProvider();
+		if (!$provider instanceof ITeamFolderPoolProvider) {
+			return null;
+		}
+		$candidates = $this->getStoragePoolCandidates($userId, $provider->getStoragePoolLimits(), $provider->getTeamStoragePoolLimits());
+		return [
+			'defaultPoolId' => $candidates[0]['id'] ?? 'default',
+			'pools' => $candidates === []
+				? [['id' => 'default', 'label' => '']]
+				: array_map(static fn (array $candidate): array => ['id' => $candidate['id'], 'label' => $candidate['label']], $candidates),
+		];
+	}
+
+	public function validateRequestedStoragePool(string $userId, string $storagePoolId): void {
+		$options = $this->getCreationStoragePoolOptions($userId);
+		if ($options === null || !in_array($storagePoolId, array_column($options['pools'], 'id'), true)) {
+			throw new \InvalidArgumentException('The selected storage pool is not available to you', 403);
+		}
+	}
+
+	public function assignStoragePoolForUser(ITeamFolderPoolProvider $provider, string $teamId, string $userId, ?string $storagePoolId = null): void {
+		if (isset($provider->getTeamStoragePoolAssignments([$teamId])[$teamId])) {
+			return;
+		}
+		$candidates = $this->getStoragePoolCandidates($userId, $provider->getStoragePoolLimits(), $provider->getTeamStoragePoolLimits());
+		if ($storagePoolId === null) {
+			$source = $candidates[0] ?? ['groupId' => null, 'teamId' => null];
+		} elseif ($storagePoolId === 'default' && $candidates === []) {
+			$source = ['groupId' => null, 'teamId' => null];
+		} else {
+			$source = null;
+			foreach ($candidates as $candidate) {
+				if ($candidate['id'] === $storagePoolId) {
+					$source = $candidate;
+					break;
+				}
+			}
+			if ($source === null) {
+				throw new \InvalidArgumentException('The selected storage pool is not available to you', 403);
+			}
+		}
+		$provider->assignTeamStoragePool($teamId, $source['groupId'], true, $source['teamId']);
 	}
 }
