@@ -580,6 +580,30 @@ export async function saveTabOrder(teamId: string, order: string[]): Promise<voi
 }
 
 /**
+ * Fetch the current user's favorite navigation entries of a team.
+ *
+ * @param teamId - The team single id
+ * @return Entry ids, first to last
+ */
+export async function fetchResourceFavorites(teamId: string): Promise<string[]> {
+	const { data } = await axios.get<OcsResponse<{ favorites: string[] }>>(generateOcsUrl('apps/circles/teams/{circleId}/resource-favorites', { circleId: teamId }))
+	return data.ocs.data.favorites ?? []
+}
+
+/**
+ * Save the current user's favorite navigation entries of a team.
+ *
+ * @param teamId - The team single id
+ * @param favorites - Entry ids, first to last
+ */
+export async function saveResourceFavorites(teamId: string, favorites: string[]): Promise<void> {
+	await axios.put(
+		generateOcsUrl('apps/circles/teams/{circleId}/resource-favorites', { circleId: teamId }),
+		{ favorites },
+	)
+}
+
+/**
  * Fetch the resources shared to a team from the core teams resource
  * providers (Talk rooms, calendars, collectives, …).
  *

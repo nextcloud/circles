@@ -56,6 +56,8 @@ return [
 		['name' => 'TeamFavorites#getFavorites', 'url' => '/teams/favorites', 'verb' => 'GET'],
 		['name' => 'TeamFavorites#setFavorite', 'url' => '/teams/{circleId}/favorite', 'verb' => 'PUT'],
 		['name' => 'TeamFavorites#reorder', 'url' => '/teams/favorites/order', 'verb' => 'PUT'],
+		['name' => 'TeamResourceFavorites#getFavorites', 'url' => '/teams/{circleId}/resource-favorites', 'verb' => 'GET'],
+		['name' => 'TeamResourceFavorites#setFavorites', 'url' => '/teams/{circleId}/resource-favorites', 'verb' => 'PUT'],
 
 		// Teams Dashboard widget endpoint
 		['name' => 'TeamsDashboard#getCompleteTeamsData', 'url' => '/teams/dashboard/widget', 'verb' => 'GET'],

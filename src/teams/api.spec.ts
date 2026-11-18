@@ -16,7 +16,7 @@ vi.mock('@nextcloud/axios', () => ({
 }))
 
 vi.mock('@nextcloud/router', () => ({
-	generateOcsUrl: (path: string) => `/ocs/${path}`,
+	generateOcsUrl: (path: string, params: Record<string, string> = {}) => `/ocs/${path.replace(/\{([^}]+)\}/g, (_, key: string) => encodeURIComponent(params[key]))}`,
 }))
 
 vi.mock('../logger.ts', () => ({
@@ -32,7 +32,7 @@ vi.mock('./team-page/services/collaborationAutocompletion.js', () => ({
 	getSuggestions: vi.fn(),
 }))
 
-const { createTeam, fetchTeams, joinTeam, setTeamFavorite, reorderFavoriteTeams } = await import('./api.ts')
+const { createTeam, fetchTeams, joinTeam, setTeamFavorite, reorderFavoriteTeams, fetchResourceFavorites, saveResourceFavorites } = await import('./api.ts')
 
 describe('fetchTeams', () => {
 	it('splits active members from discoverable teams', async () => {
@@ -182,5 +182,42 @@ describe('favorite teams API', () => {
 			.mockRejectedValueOnce(new Error('favorites unavailable'))
 		const overview = await fetchTeams()
 		expect(overview.teams.map((team) => [team.id, team.isFavorite])).toEqual([['A', false]])
+	})
+})
+
+describe('resource favorites API', () => {
+	beforeEach(() => vi.resetAllMocks())
+
+	it('fetches the ordered favorites for the requested team', async () => {
+		vi.mocked(axios.get).mockResolvedValueOnce({ data: { ocs: { data: { favorites: ['board-2', 'page-1'] } } } })
+
+		await expect(fetchResourceFavorites('team/1')).resolves.toEqual(['board-2', 'page-1'])
+		expect(axios.get).toHaveBeenCalledWith('/ocs/apps/circles/teams/team%2F1/resource-favorites')
+	})
+
+	it('returns no favorites when none have been saved', async () => {
+		vi.mocked(axios.get).mockResolvedValueOnce({ data: { ocs: { data: {} } } })
+
+		await expect(fetchResourceFavorites('team-1')).resolves.toEqual([])
+	})
+
+	it('propagates a failed fetch', async () => {
+		vi.mocked(axios.get).mockRejectedValueOnce(new Error('offline'))
+
+		await expect(fetchResourceFavorites('team-1')).rejects.toThrow('offline')
+	})
+
+	it.each([['board-2', 'page-1'], []])('saves the favorites %j for the requested team', async (...favorites) => {
+		vi.mocked(axios.put).mockResolvedValueOnce({})
+
+		await saveResourceFavorites('team/1', favorites)
+
+		expect(axios.put).toHaveBeenCalledWith('/ocs/apps/circles/teams/team%2F1/resource-favorites', { favorites })
+	})
+
+	it('propagates a failed save', async () => {
+		vi.mocked(axios.put).mockRejectedValueOnce(new Error('offline'))
+
+		await expect(saveResourceFavorites('team-1', ['page-1'])).rejects.toThrow('offline')
 	})
 })
