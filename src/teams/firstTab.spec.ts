@@ -32,9 +32,14 @@ function resources(overrides: Partial<TeamResources> = {}): TeamResources {
 const page = (fileId: number, title: string) => ({ fileId, title, filePath: `/Team/.pages/${title}.md` })
 
 describe('firstTabRoute', () => {
-	it('falls back to the team folder without a saved order', () => {
+	it('opens the overview without a saved order', () => {
 		expect(firstTabRoute(TEAM, resources()))
-			.toEqual({ name: 'team-folder', params: { teamId: TEAM } })
+			.toEqual({ name: 'team-overview', params: { teamId: TEAM } })
+	})
+
+	it('can place the overview first in a saved order', () => {
+		expect(firstTabRoute(TEAM, resources({ tabOrder: ['overview', 'home'] })))
+			.toEqual({ name: 'team-overview', params: { teamId: TEAM } })
 	})
 
 	it('follows the saved order', () => {
