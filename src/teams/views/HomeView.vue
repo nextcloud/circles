@@ -227,7 +227,7 @@ async function onJoin(team: DiscoverableTeam): Promise<void> {
 					{{ t('circles', 'My teams') }}
 				</h2>
 				<p :class="$style.homeViewSubtitle">
-					{{ t('circles', 'and everything shared with them across Nextcloud.') }}
+					{{ t('circles', 'Your teams and everything shared with them across Nextcloud.') }}
 				</p>
 				<div v-if="canCreateTeam" :class="$style.homeViewBannerAction">
 					<NcButton variant="primary" @click="openCreateTeamWizard()">
