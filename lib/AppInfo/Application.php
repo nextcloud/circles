@@ -25,6 +25,7 @@ use OCA\Circles\Events\RequestingCircleMemberEvent;
 use OCA\Circles\FileSharingTeamResourceProvider;
 use OCA\Circles\Handlers\WebfingerHandler;
 use OCA\Circles\Listeners\AccountUpdated;
+use OCA\Circles\Listeners\AddMissingIndicesListener;
 use OCA\Circles\Listeners\CircleMemberRemoved;
 use OCA\Circles\Listeners\Files\AddingMemberSendMail as ListenerFilesAddingMemberSendMail;
 use OCA\Circles\Listeners\Files\CreatingShareSendMail as ListenerFilesCreatingShareSendMail;
@@ -55,6 +56,7 @@ use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
+use OCP\DB\Events\AddMissingIndicesEvent;
 use OCP\Files\Config\IMountProviderCollection;
 use OCP\Files\Events\Node\NodeCreatedEvent;
 use OCP\Files\Events\Node\NodeDeletedEvent;
@@ -111,6 +113,9 @@ class Application extends App implements IBootstrap {
 
 		// Circle Events
 		$context->registerEventListener(CircleMemberRemovedEvent::class, CircleMemberRemoved::class);
+
+		// Database
+		$context->registerEventListener(AddMissingIndicesEvent::class, AddMissingIndicesListener::class);
 
 		// Group Events
 		$context->registerEventListener(GroupCreatedEvent::class, GroupCreated::class);
