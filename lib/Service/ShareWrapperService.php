@@ -59,23 +59,23 @@ class ShareWrapperService {
 	 * @throws NotFoundException
 	 */
 	public function save(IShare $share): void {
-		$this->clearCache($share->getSharedWith());
 		$this->shareWrapperRequest->save($share);
+		$this->clearCacheForCircle($share->getSharedWith());
 	}
 
 	public function update(ShareWrapper $shareWrapper): void {
-		$this->clearCache($shareWrapper->getSharedWith());
 		$this->shareWrapperRequest->update($shareWrapper);
+		$this->clearCacheForCircle($shareWrapper->getSharedWith());
 	}
 
 	public function updateChildPermissions(ShareWrapper $shareWrapper): void {
-		$this->clearCache($shareWrapper->getSharedWith());
 		$this->shareWrapperRequest->updateChildPermissions($shareWrapper);
+		$this->clearCacheForCircle($shareWrapper->getSharedWith());
 	}
 
 	public function delete(ShareWrapper $shareWrapper): void {
-		$this->clearCache($shareWrapper->getSharedWith());
 		$this->shareWrapperRequest->delete((int)$shareWrapper->getId());
+		$this->clearCacheForCircle($shareWrapper->getSharedWith());
 	}
 
 	/**
@@ -86,14 +86,14 @@ class ShareWrapperService {
 			throw new Exception('$initiator cannot be empty');
 		}
 
+		$this->shareWrapperRequest->deleteSharesToCircle($circleId, $userId);
 		// Clear cache for the entire circle as we don't know all affected users
 		$this->clearCacheForCircle($circleId);
-		$this->shareWrapperRequest->deleteSharesToCircle($circleId, $userId);
 	}
 
 	public function deleteAllSharesToCircle(string $circleId): void {
-		$this->clearCacheForCircle($circleId);
 		$this->shareWrapperRequest->deleteSharesToCircle($circleId, '');
+		$this->clearCacheForCircle($circleId);
 	}
 
 	/**
@@ -370,9 +370,9 @@ class ShareWrapperService {
 	 * @throws RequestBuilderException
 	 */
 	private function createChild(IShare $share, FederatedUser $federatedUser): ShareWrapper {
-		$this->clearCache($federatedUser->getSingleId());
 		$share->setSharedWith($federatedUser->getSingleId());
 		$childId = $this->shareWrapperRequest->save($share, (int)$share->getId());
+		$this->clearCache($federatedUser->getSingleId());
 
 		return $this->getShareById($childId, $federatedUser);
 	}
