@@ -16,6 +16,7 @@ use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\PermissionService;
+use OCA\Circles\Service\TeamSettingsService;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\DataResponse;
@@ -36,20 +37,6 @@ use OCP\IUserSession;
  */
 class TeamTabsController extends OCSController {
 	private const SETTING_TAB_ORDER = 'teamsTabOrder';
-
-	/**
-	 * When a team admin drags the sidebar entries into a new order, the
-	 * client sends the server a list of ids like ["team-folder", "page-42",
-	 * "home"], and the server saves that list in the team's settings.
-	 *
-	 * These limits exist because the server just trusts whatever list it
-	 * receives: nothing stops someone from skipping the UI and sending the
-	 * request by hand, with a list of ten million entries, or ids that are
-	 * each a megabyte of garbage text. Without the limits the server would
-	 * happily save all of it. Real ids and real teams stay far below them.
-	 */
-	private const MAX_ID_LENGTH = 64;
-	private const MAX_ENTRIES = 100;
 
 	public function __construct(
 		string $appName,
@@ -75,7 +62,7 @@ class TeamTabsController extends OCSController {
 
 		$order = json_decode($circle->getSettings()[self::SETTING_TAB_ORDER] ?? '[]', true);
 
-		return new DataResponse(['order' => $this->sanitizeOrder(is_array($order) ? $order : [])]);
+		return new DataResponse(['order' => TeamSettingsService::sanitizeIdList(is_array($order) ? $order : [])]);
 	}
 
 	/**
@@ -90,7 +77,7 @@ class TeamTabsController extends OCSController {
 			throw new OCSException($e->getMessage(), Http::STATUS_FORBIDDEN);
 		}
 
-		$order = $this->sanitizeOrder($order);
+		$order = TeamSettingsService::sanitizeIdList($order);
 
 		try {
 			// CircleService resolves the circle as the acting (federated) user
@@ -101,20 +88,6 @@ class TeamTabsController extends OCSController {
 		}
 
 		return new DataResponse(['order' => $order]);
-	}
-
-	/**
-	 * Keep only non-empty strings within the structural bounds,
-	 * deduplicated, reindexed.
-	 *
-	 * @return list<string>
-	 */
-	private function sanitizeOrder(array $order): array {
-		$order = array_filter($order, static fn ($id): bool => is_string($id)
-			&& $id !== ''
-			&& strlen($id) <= self::MAX_ID_LENGTH);
-
-		return array_slice(array_values(array_unique($order)), 0, self::MAX_ENTRIES);
 	}
 
 	private function assertAuthenticatedUserIsMember(string $circleId): Member {

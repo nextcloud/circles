@@ -7,7 +7,7 @@
 import type { RouteLocationRaw } from 'vue-router'
 import type { TeamPage } from '../api.ts'
 
-import { mdiAccountMultiple, mdiAccountMultipleOutline, mdiArrowTopRight, mdiBookOpenPageVariantOutline, mdiCogOutline, mdiFileDocument, mdiFileDocumentOutline, mdiFolder, mdiFolderOutline, mdiFolderPlusOutline, mdiPlus, mdiShareVariant, mdiShareVariantOutline, mdiTextBoxPlusOutline, mdiTrashCanOutline, mdiViewDashboardOutline } from '@mdi/js'
+import { mdiAccountMultiple, mdiAccountMultipleOutline, mdiArrowTopRight, mdiBookOpenPageVariantOutline, mdiCogOutline, mdiFileDocument, mdiFileDocumentOutline, mdiFolder, mdiFolderOutline, mdiFolderPlusOutline, mdiPlus, mdiShareVariant, mdiShareVariantOutline, mdiTextBoxPlusOutline, mdiTrashCanOutline, mdiViewDashboardOutline, mdiViewDashboardVariantOutline } from '@mdi/js'
 import { showConfirmation, showError, showSuccess } from '@nextcloud/dialogs'
 import { t } from '@nextcloud/l10n'
 import { computed, nextTick, ref } from 'vue'
@@ -31,6 +31,7 @@ import { createCollective, createDeckBoard, createTeamPage, deleteTeamPage, rena
 import collectivesIcon from '../assets/collectives.svg?raw'
 import deckIcon from '../assets/deck.svg?raw'
 import { canCreateTeamFolder, useTeamActions } from '../composables/useTeamActions.ts'
+import { isDashboardVisible } from '../firstTab.ts'
 import { useTeamResourcesStore } from '../resourcesStore.ts'
 import { useTeamsStore } from '../store.ts'
 
@@ -143,6 +144,14 @@ const entries = computed<NavigationEntry[]>(() => {
 		icon: route.name === 'team-home' ? mdiShareVariant : mdiShareVariantOutline,
 		to: { name: 'team-home', params: { teamId: teamId.value } },
 	})
+	if (isDashboardVisible(teamResources.value)) {
+		items.push({
+			id: 'overview',
+			label: t('circles', 'Overview'),
+			icon: mdiViewDashboardVariantOutline,
+			to: { name: 'team-overview', params: { teamId: teamId.value } },
+		})
+	}
 	return items
 })
 

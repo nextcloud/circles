@@ -6,12 +6,16 @@
 import type { TeamResources } from './resourcesStore.ts'
 
 import { describe, expect, it } from 'vitest'
-import { firstTabRoute, firstTabSettled } from './firstTab.ts'
+import { firstTabRoute, firstTabSettled, isDashboardVisible } from './firstTab.ts'
 
 const TEAM = 'team-1'
 
 function resources(overrides: Partial<TeamResources> = {}): TeamResources {
 	return {
+		dashboard: null,
+		dashboardChecked: true,
+		dashboardLoading: false,
+		dashboardError: false,
 		folder: null,
 		folderChecked: true,
 		folderError: false,
@@ -32,6 +36,25 @@ function resources(overrides: Partial<TeamResources> = {}): TeamResources {
 const page = (fileId: number, title: string) => ({ fileId, title, filePath: `/Team/.pages/${title}.md` })
 
 describe('firstTabRoute', () => {
+	it('uses overview only when available and explicitly ordered first', () => {
+		const state = resources({ dashboard: { widgetIds: null, canEdit: true, available: true } })
+		expect(isDashboardVisible(state)).toBe(true)
+		expect(firstTabRoute(TEAM, state)).toMatchObject({ name: 'team-folder' })
+		state.tabOrder = ['overview', 'home']
+		expect(firstTabRoute(TEAM, state)).toMatchObject({ name: 'team-overview' })
+		state.dashboard!.available = false
+		expect(firstTabRoute(TEAM, state)).toMatchObject({ name: 'team-home' })
+	})
+
+	it('skips unknown or failed dashboard state and waits for the initial probe', () => {
+		const state = resources({ dashboardChecked: false, tabOrder: ['overview', 'home'] })
+		expect(isDashboardVisible(state)).toBe(false)
+		expect(firstTabSettled(state)).toBe(false)
+		state.dashboardError = true
+		expect(firstTabSettled(state)).toBe(true)
+		expect(firstTabRoute(TEAM, state)).toMatchObject({ name: 'team-home' })
+	})
+
 	it('falls back to the team folder without a saved order', () => {
 		expect(firstTabRoute(TEAM, resources()))
 			.toEqual({ name: 'team-folder', params: { teamId: TEAM } })

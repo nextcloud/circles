@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import type { DiscoverableTeam, Member, MemberCandidate, Resource, SharedResource, Team, TeamRole } from './types.ts'
+import type { DiscoverableTeam, Member, MemberCandidate, Resource, SharedResource, Team, TeamDashboardItems, TeamDashboardLayout, TeamDashboardWidget, TeamRole } from './types.ts'
 
 import axios from '@nextcloud/axios'
 import { FileType } from '@nextcloud/files'
@@ -24,6 +24,54 @@ const shareTypeToMemberType = SHARES_TYPES_MEMBER_MAP as Record<number, number>
 /** Minimal shape of an OCS response envelope. */
 interface OcsResponse<T> {
 	ocs: { data: T }
+}
+
+/**
+ * Read the team's shared dashboard layout.
+ *
+ * @param teamId - Team identifier
+ * @param signal - Request cancellation signal
+ */
+export async function fetchTeamDashboardLayout(teamId: string, signal?: AbortSignal): Promise<TeamDashboardLayout> {
+	const response = await axios.get<OcsResponse<TeamDashboardLayout>>(generateOcsUrl('apps/circles/teams/{circleId}/dashboard/layout', { circleId: teamId }), { signal })
+	return response.data.ocs.data
+}
+
+/**
+ * Save a shared selection without consulting the personal dashboard layout.
+ *
+ * @param teamId - Team identifier
+ * @param widgetIds - Explicit selection, or null for automatic defaults
+ */
+export async function saveTeamDashboardLayout(teamId: string, widgetIds: string[] | null): Promise<Pick<TeamDashboardLayout, 'widgetIds' | 'canEdit'>> {
+	const response = await axios.put<OcsResponse<Pick<TeamDashboardLayout, 'widgetIds' | 'canEdit'>>>(generateOcsUrl('apps/circles/teams/{circleId}/dashboard/layout', { circleId: teamId }), { widgetIds })
+	return response.data.ocs.data
+}
+
+/**
+ * Fetch the widgets applicable to this team.
+ *
+ * @param teamId - Team identifier
+ * @param signal - Request cancellation signal
+ */
+export async function fetchTeamDashboardWidgets(teamId: string, signal?: AbortSignal): Promise<TeamDashboardWidget[]> {
+	const response = await axios.get<OcsResponse<Record<string, TeamDashboardWidget>>>(generateOcsUrl('apps/dashboard/api/v1/widgets'), { params: { teamId }, signal })
+	return Object.values(response.data.ocs.data)
+}
+
+/**
+ * Fetch all requested widgets in one batch.
+ *
+ * @param teamId - Team identifier
+ * @param widgetIds - Widget IDs to include
+ * @param signal - Request cancellation signal
+ */
+export async function fetchTeamDashboardItems(teamId: string, widgetIds: string[], signal?: AbortSignal): Promise<Record<string, TeamDashboardItems>> {
+	if (widgetIds.length === 0) {
+		return {}
+	}
+	const response = await axios.get<OcsResponse<Record<string, TeamDashboardItems>>>(generateOcsUrl('apps/dashboard/api/v2/widget-items'), { params: { teamId, widgets: widgetIds, limit: 7 }, signal })
+	return response.data.ocs.data
 }
 
 /** Raw member as returned by the circles API. */
