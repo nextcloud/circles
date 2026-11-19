@@ -80,6 +80,6 @@ jobs:
       - name: Add and commit
         if: steps.changes.outputs.CHANGED != ''
         run: |
-          git add --force dist/ core/css/
+          git add --force js/ css/
           git commit --signoff -m 'chore(assets): recompile assets'
           git push origin ${GITHUB_HEAD_REF}
