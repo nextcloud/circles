@@ -173,7 +173,7 @@ OC.L10N.register(
     "Configure default storage quotas and manage team folders." : "Konfigurer standardlagerkvoter, og administrer team-mapper.",
     "Team folder settings" : "Indstillinger for team-mapper",
     "Default quotas" : "Standardkvoter",
-    "Search team by name" : "Søg efter teamnavn",
+    "Search team by name" : "Søg efter team-navn",
     "Configure the default storage quota for team folders. Requires the Team Folders app to be installed and enabled." : "Konfigurer standardlagerkvoten for team-mapper. Kræver, at appen Team-mapper er installeret og aktiveret.",
     "Automatic team folder creation is disabled. These quota mappings will not apply until it is enabled again through the occ command." : "Automatisk oprettelse af team-mapper er deaktiveret. Disse kvotetildelinger gælder først, når den er aktiveret igen med kommandoen occ.",
     "Default quota" : "Standardkvote",
