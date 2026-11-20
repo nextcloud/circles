@@ -266,8 +266,10 @@ export default {
 			}
 
 			if (this.member.level < level) {
+				// TRANSLATORS {level} is the role the member gets, e.g. "Moderator" or "Admin"
 				return t('circles', 'Promote to {level}', { level: CIRCLES_MEMBER_LEVELS[level] })
 			}
+			// TRANSLATORS {level} is the role the member gets, e.g. "Member" or "Moderator"
 			return t('circles', 'Demote to {level}', { level: CIRCLES_MEMBER_LEVELS[level] })
 		},
 
