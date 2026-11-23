@@ -13,15 +13,18 @@ use OCA\Circles\Controller\PageController;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\PermissionService;
 use OCA\Circles\Service\TeamFolderPolicy;
+use OCP\App\IAppManager;
 use OCP\AppFramework\Http\NotFoundResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
+use OCP\Dashboard\ITeamWidget;
 use OCP\EventDispatcher\IEventDispatcher;
 use OCP\IRequest;
 use OCP\IUser;
 use OCP\IUserSession;
 use OCP\Teams\ITeamFolderProvider;
 use OCP\Teams\ITeamManager;
+use OCP\Util;
 use PHPUnit\Framework\MockObject\MockObject;
 use Test\TestCase;
 
@@ -34,6 +37,7 @@ final class PageControllerTest extends TestCase {
 	private IEventDispatcher&MockObject $eventDispatcher;
 	private IUserSession&MockObject $userSession;
 	private PermissionService&MockObject $permissionService;
+	private IAppManager&MockObject $appManager;
 	private PageController $pageController;
 
 	#[\Override]
@@ -47,6 +51,7 @@ final class PageControllerTest extends TestCase {
 		$this->teamFolderPolicy = $this->createMock(TeamFolderPolicy::class);
 		$this->eventDispatcher = $this->createMock(IEventDispatcher::class);
 		$this->permissionService = $this->createMock(PermissionService::class);
+		$this->appManager = $this->createMock(IAppManager::class);
 
 		$user = $this->createMock(IUser::class);
 		$user->method('getUID')->willReturn('alice');
@@ -62,7 +67,26 @@ final class PageControllerTest extends TestCase {
 			$this->eventDispatcher,
 			$this->userSession,
 			$this->permissionService,
+			$this->appManager,
 		);
+	}
+
+	public function testLoadsDashboardEmbedBeforeTeamsWhenEnabled(): void {
+		if (!interface_exists(ITeamWidget::class)) {
+			$this->markTestSkipped('Server does not support team dashboard widgets');
+		}
+
+		$this->configService->method('getAppValueBool')->with(ConfigService::FRONTEND_ENABLED)->willReturn(true);
+		$this->appManager->method('isEnabledForUser')->with('dashboard')->willReturn(true);
+
+		$this->pageController->index();
+
+		$scripts = Util::getScripts();
+		$dashboard = array_search('dashboard/js/team-dashboard', $scripts, true);
+		$teams = array_search(Application::APP_ID . '/js/teams-main', $scripts, true);
+		$this->assertNotFalse($dashboard);
+		$this->assertNotFalse($teams);
+		$this->assertLessThan($teams, $dashboard);
 	}
 
 	/**
