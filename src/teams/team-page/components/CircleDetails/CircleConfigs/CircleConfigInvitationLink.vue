@@ -30,7 +30,7 @@
 			</NcFormBoxButton>
 
 			<NcFormBoxButton
-				:label="t('circles', 'Reject link')"
+				:label="t('circles', 'Delete link')"
 				@click="confirm(
 					t('circles', 'This action will make it impossible to join the team using the current link. Do we really want to delete the link?'),
 					() => revokeInvitationLink(),

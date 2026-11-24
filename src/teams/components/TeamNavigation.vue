@@ -185,6 +185,9 @@ interface CreateMenuEntry {
 	action: () => void | Promise<void>
 }
 
+// TRANSLATORS Label of the "+" menu in the team navigation. Its entries create something for the team (team folder, collective, page, Deck board); members are not added here
+const addToTeamLabel = t('circles', 'Add to team')
+
 // The create menu is offered twice — next to the caption and as the
 // "Add to team" button at the end of the list — so its entries are data.
 const createMenuEntries = computed<CreateMenuEntry[]>(() => {
@@ -583,7 +586,7 @@ async function onEntryDragEnd(): Promise<void> {
 
 			<li v-if="showCreateMenu" class="team-navigation__add">
 				<NcActions
-					:menuName="t('circles', 'Add to team')"
+					:menuName="addToTeamLabel"
 					variant="tertiary"
 					wide>
 					<template #icon>
