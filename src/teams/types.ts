@@ -71,6 +71,21 @@ export interface Team {
 }
 
 /**
+ * A team the current user can see but is not an active member of
+ * ("Visible to everyone" teams, or teams with a pending join request).
+ */
+export interface DiscoverableTeam {
+	id: string
+	displayName: string
+	description: string
+	memberCount: number
+	/** Whether the user can join or request to join right now. */
+	canJoin: boolean
+	/** Whether the user already requested to join and awaits approval. */
+	pending: boolean
+}
+
+/**
  * A candidate member surfaced by the sharee autocompletion search (users,
  * groups, emails, contacts, other teams…), before they have been added to a
  * team. Used by the team creation wizard's member selection step.

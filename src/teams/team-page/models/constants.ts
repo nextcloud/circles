@@ -98,7 +98,7 @@ export const PUBLIC_CIRCLE_CONFIG = {
 		component: CircleConfigCheckboxesList,
 		props: {
 			configs: {
-				[CIRCLE_CONFIG_OPEN]: t('circles', 'Anyone can request membership'),
+				[CIRCLE_CONFIG_OPEN]: t('circles', 'Anyone can request membership (requires "Visible to everyone")'),
 				[CIRCLE_CONFIG_INVITE]: t('circles', 'Members need to accept invitation'),
 				[CIRCLE_CONFIG_REQUEST]: t('circles', 'Memberships must be confirmed/accepted by a Moderator (requires "Anyone can request membership")'),
 				[CIRCLE_CONFIG_FRIEND]: t('circles', 'Members can also invite'),
