@@ -249,6 +249,9 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 			);
 			$table->addIndex(['circle_id', 'single_id'], 'circles_member_cisi');
 			$table->addIndex(['contact_id']);
+			// Existing instances get these two via AddMissingIndicesListener
+			$table->addIndex(['circle_id', 'level'], 'circles_member_cile');
+			$table->addIndex(['single_id'], 'circles_member_si');
 		}
 
 		/**
