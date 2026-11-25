@@ -7,8 +7,10 @@
 
 namespace OCA\Circles\Tests\Unit;
 
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\FileCacheWrapper;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Model\ShareWrapper;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\EventService;
@@ -17,6 +19,7 @@ use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\ShareTokenService;
 use OCA\Circles\Service\ShareWrapperService;
 use OCA\Circles\ShareByCircleProvider;
+use OCP\Constants;
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
 use OCP\IL10N;
@@ -51,6 +54,57 @@ class ShareByCircleProviderTest extends TestCase {
 			$this->createMock(CircleService::class),
 			$this->createMock(EventService::class),
 		);
+	}
+
+	public function testGetAccessListExcludesFormerMemberWithChildShare(): void {
+		$folder = $this->createMock(Folder::class);
+		$folder->method('getId')->willReturn(42);
+		$remainingMember = $this->createConfiguredMock(Member::class, [
+			'getSingleId' => 'remaining-member-single-id',
+			'getUserId' => 'remaining-member',
+			'getUserType' => Member::TYPE_USER,
+			'isLocal' => true,
+		]);
+		$formerMember = $this->createConfiguredMock(Member::class, [
+			'getSingleId' => 'former-member-single-id',
+			'getUserId' => 'former-member',
+			'getUserType' => Member::TYPE_USER,
+			'isLocal' => true,
+		]);
+		$team = (new Circle())
+			->setSingleId('team-id')
+			->setInheritedMembers([$remainingMember], false);
+		$formerMemberCircle = (new Circle())
+			->setSingleId('former-member-single-id')
+			->setConfig(Circle::CFG_SINGLE)
+			->setInheritedMembers([$formerMember], false);
+		$teamShare = (new ShareWrapper())
+			->setId('100')
+			->setShareType(IShare::TYPE_CIRCLE)
+			->setSharedWith($team->getSingleId())
+			->setPermissions(Constants::PERMISSION_READ)
+			->setFileSource(42)
+			->setFileTarget('/Team folder')
+			->setCircle($team);
+		$childShare = (new ShareWrapper())
+			->setId('101')
+			->setParent(100)
+			->setShareType(IShare::TYPE_CIRCLE)
+			->setSharedWith($formerMemberCircle->getSingleId())
+			->setPermissions(Constants::PERMISSION_READ)
+			->setFileSource(42)
+			->setFileTarget('/Renamed Team folder')
+			->setCircle($formerMemberCircle);
+
+		$this->shareWrapperService->method('getSharesByFileIds')->willReturnCallback(
+			static fn (array $_fileIds, bool $_getData = false, bool $getChild = false): array => $getChild ? [$teamShare, $childShare] : [$teamShare],
+		);
+
+		$accessList = $this->provider->getAccessList([$folder], true);
+
+		$this->assertSame([
+			'remaining-member' => ['node_id' => 42, 'node_path' => '/Team folder'],
+		], $accessList['users']);
 	}
 
 	public function testGetAllSharesInFolderQueriesWithoutFederatedUser(): void {

@@ -714,8 +714,9 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 			return $this->getAccessListShort($ids);
 		}
 
-		$shareIds = $knownIds = $users = $remote = $mails = [];
-		foreach ($this->shareWrapperService->getSharesByFileIds($ids, true, true) as $share) {
+		$shareIds = $users = $remote = $mails = [];
+		// Child shares store individual mount preferences and do not grant access.
+		foreach ($this->shareWrapperService->getSharesByFileIds($ids, true) as $share) {
 			if (!$share->hasCircle()) {
 				continue;
 			}
@@ -723,11 +724,6 @@ class ShareByCircleProvider implements IShareProvider, IPartialShareProvider, IS
 			$shareIds[] = $share->getId();
 			$circle = $share->getCircle();
 			foreach ($circle->getInheritedMembers() as $member) {
-				if ($share->getParent() > 0 && in_array($member->getSingleId(), $knownIds[$share->getFileSource()] ?? [], true)) {
-					continue;
-				}
-				$knownIds[$share->getFileSource()][] = $member->getSingleId();
-
 				switch ($member->getUserType()) {
 					case Member::TYPE_USER:
 						if ($member->isLocal()) {
