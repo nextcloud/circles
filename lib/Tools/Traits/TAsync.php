@@ -29,7 +29,7 @@ trait TAsync {
 
 		header('Connection: close');
 		header('Content-Encoding: none');
-		ignore_user_abort();
+		ignore_user_abort(true);
 		$timeLimit = $this->setupInt(self::$SETUP_TIME_LIMIT);
 		set_time_limit(($timeLimit > 0) ? $timeLimit : 0);
 		ob_start();
