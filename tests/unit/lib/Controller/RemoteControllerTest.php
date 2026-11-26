@@ -35,6 +35,8 @@ use Test\TestCase;
 class RemoteControllerTest extends TestCase {
 	private RemoteStreamService&MockObject $remoteStreamService;
 	private AuditLogService&MockObject $auditLogService;
+	private InterfaceService&MockObject $interfaceService;
+	private IRequest&MockObject $request;
 	private RemoteController $controller;
 
 	protected function setUp(): void {
@@ -43,12 +45,13 @@ class RemoteControllerTest extends TestCase {
 		$this->remoteStreamService = $this->createMock(RemoteStreamService::class);
 		$this->auditLogService = $this->createMock(AuditLogService::class);
 
-		$interfaceService = $this->createMock(InterfaceService::class);
-		$interfaceService->method('getCurrentInterface')->willReturn(InterfaceService::IFACE_INTERNAL);
+		$this->interfaceService = $this->createMock(InterfaceService::class);
+		$this->interfaceService->method('getCurrentInterface')->willReturn(InterfaceService::IFACE_INTERNAL);
+		$this->request = $this->createMock(IRequest::class);
 
 		$this->controller = new RemoteController(
 			'circles',
-			$this->createMock(IRequest::class),
+			$this->request,
 			$this->createMock(CircleRequest::class),
 			$this->createMock(IAppConfig::class),
 			$this->remoteStreamService,
@@ -57,7 +60,7 @@ class RemoteControllerTest extends TestCase {
 			$this->createMock(CircleService::class),
 			$this->createMock(MemberService::class),
 			$this->createMock(MembershipService::class),
-			$interfaceService,
+			$this->interfaceService,
 			$this->createMock(ConfigService::class),
 			$this->createMock(IUserSession::class),
 			$this->auditLogService,
@@ -108,5 +111,30 @@ class RemoteControllerTest extends TestCase {
 		$this->expectRejectedRequest('remote.example', 'initiator_mismatch');
 
 		$this->assertSame(Http::STATUS_UNAUTHORIZED, $this->controller->circles()->getStatus());
+	}
+
+	public function testAppServiceReturnsNotFoundForUnknownInterface(): void {
+		$this->request->method('getHeader')->with('Accept')->willReturn('application/json');
+		$this->interfaceService->expects($this->once())->method('setCurrentInterfaceFromRequest');
+		$this->interfaceService->method('hasCurrentInterface')->willReturn(false);
+		$this->remoteStreamService->expects($this->never())->method('getAppSignatory');
+
+		$this->assertSame(Http::STATUS_NOT_FOUND, $this->controller->appService()->getStatus());
+	}
+
+	public function testAppServiceReturnsSignatoryForKnownInterface(): void {
+		$this->request->method('getHeader')->with('Accept')->willReturn('application/json');
+		$this->request->method('getParam')->with('auth', '')->willReturn('');
+		$this->interfaceService->method('hasCurrentInterface')->willReturn(true);
+		$signatory = new RemoteInstance();
+		$this->remoteStreamService->expects($this->once())
+			->method('getAppSignatory')
+			->with(false, '')
+			->willReturn($signatory);
+
+		$response = $this->controller->appService();
+
+		$this->assertSame(Http::STATUS_OK, $response->getStatus());
+		$this->assertSame($signatory, $response->getData());
 	}
 }

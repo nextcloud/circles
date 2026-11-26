@@ -107,6 +107,11 @@ class RemoteController extends Controller {
 		}
 
 		$this->interfaceService->setCurrentInterfaceFromRequest($this->request, $test);
+		if (!$this->interfaceService->hasCurrentInterface()) {
+			// request was not sent to a host configured as a Circles interface
+			return new DataResponse([], Http::STATUS_NOT_FOUND);
+		}
+
 		$signatory = $this->remoteStreamService->getAppSignatory(false, $this->request->getParam('auth', ''));
 
 		return new DataResponse($signatory);
