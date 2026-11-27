@@ -118,7 +118,7 @@ class TeamFavoriteRepositoryTest extends TestCase {
 	 */
 	private function rows(): array {
 		$query = $this->db->getQueryBuilder();
-		$query->select('id', 'circle_id', 'created')->from('circles_team_favorites')
+		$query->select('id', 'circle_id')->from('circles_team_favorites')
 			->where($query->expr()->eq('user_id', $query->createNamedParameter($this->userId)))
 			->orderBy('id');
 		$result = $query->executeQuery();
