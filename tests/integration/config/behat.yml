@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+default:
+    autoload:
+        '': '%paths.base%/../features/bootstrap'
+    suites:
+        default:
+            paths:
+                - '%paths.base%/../features'
+            contexts:
+                - FeatureContext:
+                    baseUrl: 'http://nextcloud.test/index.php'
+                    ocsUrl: 'http://nextcloud.test/ocs/v2.php'
+ci:
+    suites:
+        default:
+            contexts:
+                - FeatureContext:
+                    baseUrl: 'http://localhost:8080/index.php'
+                    ocsUrl: 'http://localhost:8080/ocs/v2.php'

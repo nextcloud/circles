@@ -1,0 +1,184 @@
+# SPDX-FileCopyrightText: 2026 Nextcloud GmbH and Nextcloud contributors
+# SPDX-License-Identifier: MIT
+
+name: Integration tests
+
+on: pull_request
+
+permissions:
+  contents: read
+
+concurrency:
+  group: integration-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+env:
+  # Location of the behat.yml file
+  BEHAT_CONFIG: ./tests/integration/config/behat.yml
+
+jobs:
+  matrix:
+    runs-on: ubuntu-latest-low
+    outputs:
+      php-version: ${{ steps.versions.outputs.php-available-list }}
+      server-max: ${{ steps.versions.outputs.branches-max-list }}
+    steps:
+      - name: Checkout app
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Get version matrix
+        id: versions
+        uses: icewind1991/nextcloud-version-matrix@8a7bac6300b2f0f3100088b297995a229558ddba # v1.3.2
+
+  changes:
+    runs-on: ubuntu-latest-low
+    permissions:
+      contents: read
+      pull-requests: read
+
+    outputs:
+      src: ${{ steps.changes.outputs.src}}
+
+    steps:
+      - uses: dorny/paths-filter@7b450fff21473bca461d4b92ce414b9d0420d706 # v4.0.2
+        id: changes
+        continue-on-error: true
+        with:
+          filters: |
+            src:
+              - '.github/workflows/**'
+              - 'appinfo/**'
+              - 'lib/**'
+              - 'templates/**'
+              - 'tests/**'
+              - 'vendor/**'
+              - 'vendor-bin/**'
+              - '.php-cs-fixer.dist.php'
+              - 'composer.json'
+              - 'composer.lock'
+
+  integration:
+    runs-on: ubuntu-latest
+
+    needs: [changes, matrix]
+    if: needs.changes.outputs.src != 'false'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-versions: ${{ fromJson(needs.matrix.outputs.php-version) }}
+        server-versions: ${{ fromJson(needs.matrix.outputs.server-max) }}
+        databases: ['sqlite', 'pgsql', 'mysql']
+
+    name: php${{ matrix.php-versions }}-${{ matrix.databases }}-${{ matrix.server-versions }}
+
+    services:
+      postgres:
+        image: ghcr.io/nextcloud/continuous-integration-postgres-14:latest # zizmor: ignore[unpinned-images]
+        ports:
+          - 4445:5432/tcp
+        env:
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: rootpassword
+          POSTGRES_DB: nextcloud
+        options: --health-cmd pg_isready --health-interval 5s --health-timeout 2s --health-retries 5
+      mysql:
+        image: ghcr.io/nextcloud/continuous-integration-mariadb-10.6:latest # zizmor: ignore[unpinned-images]
+        ports:
+          - 4444:3306/tcp
+        env:
+          MYSQL_ROOT_PASSWORD: rootpassword
+        options: --health-cmd="mysqladmin ping" --health-interval 5s --health-timeout 2s --health-retries 5
+
+    steps:
+      - name: Set app env
+        if: ${{ env.APP_NAME == '' }}
+        run: |
+          # Split and keep last
+          echo "APP_NAME=${GITHUB_REPOSITORY##*/}" >> $GITHUB_ENV
+
+      - name: Checkout server
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          submodules: true
+          repository: nextcloud/server
+          ref: ${{ matrix.server-versions }}
+
+      - name: Checkout app
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          path: apps/${{ env.APP_NAME }}
+
+      - name: Set up php ${{ matrix.php-versions }}
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          # https://docs.nextcloud.com/server/stable/admin_manual/installation/source_installation.html#prerequisites-for-manual-installation
+          extensions: bz2, ctype, curl, dom, fileinfo, gd, iconv, intl, json, libxml, mbstring, openssl, pcntl, posix, session, simplexml, xmlreader, xmlwriter, zip, zlib, sqlite, pdo_sqlite, apcu, pgsql, pdo_pgsql, mysql, pdo_mysql
+          coverage: none
+          ini-file: development
+          # Temporary workaround for missing pcntl_* in PHP 8.3
+          ini-values: disable_functions=
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check composer file existence
+        id: check_composer
+        uses: andstor/file-existence-action@558493d6c74bf472d87c84eab196434afc2fa029 # v3.1.0
+        with:
+          files: apps/${{ env.APP_NAME }}/composer.json
+
+      - name: Remove nextcloud/ocp
+        # Only run if composer file exists
+        if: steps.check_composer.outputs.files_exists == 'true'
+        working-directory: apps/${{ env.APP_NAME }}
+        run: |
+          composer remove nextcloud/ocp --dev --no-scripts
+
+      - name: Install composer dependencies
+        uses: ramsey/composer-install@65e4f84970763564f46a70b8a54b90d033b3bdda # 4.0.0
+        with:
+          working-directory: apps/${{ env.APP_NAME }}
+
+      - name: Set up Nextcloud
+        run: |
+          if [ "${{ matrix.databases }}" = "mysql" ]; then
+            export DB_PORT=4444
+          elif [ "${{ matrix.databases }}" = "pgsql" ]; then
+            export DB_PORT=4445
+          fi
+          mkdir data
+          ./occ maintenance:install --verbose --database=${{ matrix.databases }} --database-name=nextcloud --database-host=127.0.0.1 --database-port=$DB_PORT --database-user=root --database-pass=rootpassword --admin-user admin --admin-pass admin
+          ./occ config:system:set --value="http://localhost:8080" -- overwrite.cli.url
+          ./occ config:system:set auth.bruteforce.protection.enabled --value false --type bool
+          ./occ app:enable --force ${{ env.APP_NAME }}
+
+      - name: Run Nextcloud
+        run: php -S localhost:8080 &
+
+      - name: Behat integration
+        working-directory: apps/${{ env.APP_NAME }}
+        run: ./vendor/bin/behat --config=${{ env.BEHAT_CONFIG }} --profile ci
+
+      - name: Print logs
+        if: always()
+        run: |
+          cat data/nextcloud.log
+
+  summary:
+    permissions:
+      contents: none
+    runs-on: ubuntu-latest-low
+    needs: [changes, integration]
+
+    if: always()
+
+    name: integration-summary
+
+    steps:
+      - name: Summary status
+        run: if ${{ needs.changes.outputs.src != 'false' && needs.integration.result != 'success' }}; then exit 1; fi
