@@ -105,6 +105,12 @@ const draggedId = ref<string | null>(null)
 const entries = computed<NavigationEntry[]>(() => {
 	const items: NavigationEntry[] = [
 		{
+			id: 'overview',
+			label: t('circles', 'Overview'),
+			icon: mdiViewDashboardOutline,
+			to: { name: 'team-overview', params: { teamId: teamId.value } },
+		},
+		{
 			id: 'team-folder',
 			label: t('circles', 'Team folder'),
 			icon: route.name === 'team-folder' ? mdiFolder : mdiFolderOutline,

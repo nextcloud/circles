@@ -50,6 +50,8 @@ return [
 		['name' => 'TeamFolder#upgradeTeamFolder', 'url' => '/teams/{circleId}/folder', 'verb' => 'POST'],
 		['name' => 'TeamTabs#getTabOrder', 'url' => '/teams/{circleId}/tab-order', 'verb' => 'GET'],
 		['name' => 'TeamTabs#setTabOrder', 'url' => '/teams/{circleId}/tab-order', 'verb' => 'PUT'],
+		['name' => 'TeamDashboardSettings#getLayout', 'url' => '/teams/{circleId}/dashboard/layout', 'verb' => 'GET'],
+		['name' => 'TeamDashboardSettings#setLayout', 'url' => '/teams/{circleId}/dashboard/layout', 'verb' => 'PUT'],
 		['name' => 'TeamFolder#getLinkableTeamFolders', 'url' => '/teams/{circleId}/folder/linkable', 'verb' => 'GET'],
 		['name' => 'TeamFolder#linkTeamFolder', 'url' => '/teams/{circleId}/folder/link', 'verb' => 'POST'],
 		['name' => 'TeamFolder#updateTeamFolderQuota', 'url' => '/teams/{circleId}/folder/quota', 'verb' => 'PUT'],
