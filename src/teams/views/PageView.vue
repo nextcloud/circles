@@ -4,8 +4,6 @@
 -->
 
 <script setup lang="ts">
-import type { TeamPage } from '../api.ts'
-
 import { mdiAlertCircleOutline } from '@mdi/js'
 import { t } from '@nextcloud/l10n'
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
@@ -15,44 +13,18 @@ import NcLoadingIcon from '@nextcloud/vue/components/NcLoadingIcon'
 import { logger } from '../../logger.ts'
 import { useTeamResourcesStore } from '../resourcesStore.ts'
 
-/** The inline collaborative editor exposed by the Text app. */
-interface TextEditorEmbed {
-	destroy(): void
-}
-
-const props = defineProps<{
-	teamId: string
-	fileId: string
-}>()
-
-const resourcesStore = useTeamResourcesStore()
-
+const props = defineProps<{ teamId: string, fileId: string }>()
+const resources = useTeamResourcesStore()
 const editorContainer = ref<HTMLElement | null>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
-
-let editor: TextEditorEmbed | null = null
-
-// The keyed router-view mounts a fresh instance per page, so loadPage runs
-// once per instance; only the unmount can overtake it mid-await.
+let editor: { destroy(): void } | undefined
 let unmounted = false
 
-/** Tear down the mounted editor, if any. */
-function destroyEditor(): void {
-	editor?.destroy()
-	editor = null
-	if (editorContainer.value) {
-		editorContainer.value.innerHTML = ''
-	}
-}
-
-/**
- * Resolve once the initial pages load (owned by the team page) has settled,
- * with the pages either known or failed.
- */
+/** Wait for the initial Pages load owned by the team route. */
 function waitForPages(): Promise<void> {
-	const settled = (): boolean => {
-		const slot = resourcesStore.forTeam(props.teamId)
+	const settled = () => {
+		const slot = resources.forTeam(props.teamId)
 		return slot.pagesChecked || slot.pagesError
 	}
 	if (settled()) {
@@ -68,43 +40,43 @@ function waitForPages(): Promise<void> {
 	})
 }
 
-/** Find the page behind the tab and mount the Text editor on it. */
+/** Resolve the page within the team folder and mount Text's inline editor. */
 async function loadPage(): Promise<void> {
-	if (window.OCA.Text === undefined) {
-		error.value = t('circles', 'The Text app is required to show team pages')
-		loading.value = false
-		return
-	}
-
 	try {
+		const text = window.OCA.Text
+		if (!text) {
+			error.value = t('circles', 'The Text app is required to show team pages')
+			return
+		}
 		await waitForPages()
-		let slot = resourcesStore.forTeam(props.teamId)
-		if (slot.folderError || slot.pagesError || !slot.folder) {
+		let slot = resources.forTeam(props.teamId)
+		if (slot.pagesError || slot.folderError || !slot.folder) {
 			throw new Error('The team pages are not available')
 		}
-		let page: TeamPage | undefined = slot.pages.find((candidate) => String(candidate.fileId) === props.fileId)
+		let page = slot.pages.find((page) => String(page.fileId) === props.fileId)
 		if (!page) {
-			// The cached list may predate this page (e.g. a deep link to a
-			// page created since) — refresh once before giving up.
-			await resourcesStore.ensurePages(props.teamId, true)
-			slot = resourcesStore.forTeam(props.teamId)
-			page = slot.pages.find((candidate) => String(candidate.fileId) === props.fileId)
+			await resources.ensurePages(props.teamId, true)
+			slot = resources.forTeam(props.teamId)
+			if (slot.pagesError) {
+				throw new Error('Could not refresh the team pages')
+			}
+			page = slot.pages.find((page) => String(page.fileId) === props.fileId)
+		}
+		if (unmounted) {
+			return
 		}
 		if (!page) {
 			error.value = t('circles', 'This page no longer exists')
 			return
 		}
 		if (!editorContainer.value) {
-			return
+			throw new Error('The page editor container is missing')
 		}
-		// The guard above cannot narrow across the awaits, but the Text app
-		// does not vanish mid-run.
-		const created = await window.OCA.Text!.createCollaborativeEditor({
+		const created = await text.createCollaborativeEditor({
 			el: editorContainer.value,
 			context: { type: 'file', id: page.fileId },
 			filePath: page.filePath,
 		})
-		// The unmount may have hit while the editor was being created.
 		if (unmounted) {
 			created.destroy()
 			return
@@ -119,10 +91,9 @@ async function loadPage(): Promise<void> {
 }
 
 onMounted(loadPage)
-
 onBeforeUnmount(() => {
 	unmounted = true
-	destroyEditor()
+	editor?.destroy()
 })
 </script>
 
@@ -131,17 +102,12 @@ onBeforeUnmount(() => {
 		<div v-if="loading" class="page-view__loading">
 			<NcLoadingIcon :size="44" />
 		</div>
-
 		<NcEmptyContent v-else-if="error" :name="error">
 			<template #icon>
 				<NcIconSvgWrapper :path="mdiAlertCircleOutline" />
 			</template>
 		</NcEmptyContent>
-
-		<div
-			v-show="!loading && !error"
-			ref="editorContainer"
-			class="page-view__editor" />
+		<div v-show="!loading && !error" ref="editorContainer" class="page-view__editor" />
 	</div>
 </template>
 
@@ -161,7 +127,6 @@ onBeforeUnmount(() => {
 	&__editor {
 		flex: 1;
 		min-height: 0;
-		// The embed grows with its content; this container is the scroller.
 		overflow-y: auto;
 	}
 }

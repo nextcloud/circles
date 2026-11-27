@@ -3,16 +3,17 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import type { TeamBoard, TeamFolder, TeamPage } from './api.ts'
+import type { TeamFolder, TeamPage } from './api.ts'
+import type { TeamNavigationEntry } from './teamAppIntegrations/types.ts'
 import type { SharedResource } from './types.ts'
 
 import { defineStore } from 'pinia'
 import { logger } from '../logger.ts'
-import { fetchTabOrder, fetchTeamDeckBoards, fetchTeamPages, fetchTeamResources, getTeamFolder, saveTabOrder, upgradeTeamFolder } from './api.ts'
+import { fetchTeamPages, fetchTeamResources, getTeamFolder, saveNavigation, upgradeTeamFolder } from './api.ts'
 
 /**
- * The shared resource state of one team: its team folder, the resources
- * shared to it, its pages and the navigation tab order.
+ * The shared resource state of one team: its folder, shared resources and
+ * navigation order.
  */
 export interface TeamResources {
 	folder: TeamFolder | null
@@ -22,30 +23,27 @@ export interface TeamResources {
 	folderError: boolean
 	resources: SharedResource[]
 	resourcesChecked: boolean
-	/** Deck boards attached to the team itself, shown as navigation entries. */
-	boards: TeamBoard[]
-	boardsChecked: boolean
+	resourcesError: boolean
 	pages: TeamPage[]
 	pagesChecked: boolean
 	pagesError: boolean
-	tabOrder: string[]
+	navigation: TeamNavigationEntry[]
 	orderChecked: boolean
-	/** The order fetch failed; `tabOrder` is unknown, not empty. */
+	/** The navigation fetch failed; `navigation` is not authoritative. */
 	orderError: boolean
 }
 
-const EMPTY_SLOT: TeamResources = Object.freeze({
+const EMPTY_SLOT = Object.freeze<TeamResources>({
 	folder: null,
 	folderChecked: false,
 	folderError: false,
 	resources: [],
 	resourcesChecked: false,
-	boards: [],
-	boardsChecked: false,
+	resourcesError: false,
 	pages: [],
 	pagesChecked: false,
 	pagesError: false,
-	tabOrder: [],
+	navigation: [{ id: 'team-folder' }, { id: 'home' }],
 	orderChecked: false,
 	orderError: false,
 })
@@ -93,19 +91,18 @@ export const useTeamResourcesStore = defineStore('teamResources', {
 		},
 
 		/**
-		 * Load everything the team-scoped pages need.
+		 * Load the team folder and shared resources. Navigation order is loaded
+		 * together with app navigation by the Teams app store.
 		 *
 		 * @param teamId - The team to load
 		 * @param refresh - Refetch data already in the cache
 		 */
 		async loadTeam(teamId: string, refresh = false): Promise<void> {
 			await Promise.all([
-				// Pages live in the folder, so they load once it is known;
-				// boards are found among the resources, same dependency.
-				this.ensureFolder(teamId, refresh).then(() => this.ensurePages(teamId, refresh)),
-				this.ensureResources(teamId, refresh).then(() => this.ensureBoards(teamId, refresh)),
-				this.ensureOrder(teamId, refresh),
+				this.ensureFolder(teamId, refresh),
+				this.ensureResources(teamId, refresh),
 			])
+			await this.ensurePages(teamId, refresh)
 		},
 
 		/**
@@ -143,42 +140,18 @@ export const useTeamResourcesStore = defineStore('teamResources', {
 			try {
 				slot.resources = await fetchTeamResources(teamId)
 				slot.resourcesChecked = true
+				slot.resourcesError = false
 			} catch (error) {
 				logger.error('Could not load the team resources', { error, teamId })
+				slot.resourcesError = true
 			}
 		},
 
 		/**
-		 * Find the deck boards attached to the team itself among the shared
-		 * resources. Marked checked even on failure: consumers only use the
-		 * boards to pin tabs and to filter the shared list, and the boards
-		 * stay reachable there.
+		 * Load native Pages after the folder probe has settled.
 		 *
-		 * @param teamId - The team to load boards for
-		 * @param refresh - Refetch even when cached
-		 */
-		async ensureBoards(teamId: string, refresh = false): Promise<void> {
-			const slot = this.slot(teamId)
-			if (slot.boardsChecked && !refresh) {
-				return
-			}
-			await this.ensureResources(teamId)
-			const candidates = slot.resources.filter((resource) => resource.provider.id === 'deck')
-			try {
-				slot.boards = await fetchTeamDeckBoards(teamId, candidates)
-			} catch (error) {
-				logger.error('Could not load the team boards', { error, teamId })
-				slot.boards = []
-			}
-			slot.boardsChecked = true
-		},
-
-		/**
-		 * Load the team pages unless already known. Probes the folder first
-		 * when needed — pages are the markdown files in the team folder.
-		 *
-		 * @param teamId - The team to load pages for
-		 * @param refresh - Refetch the pages even when cached
+		 * @param teamId - The team to load
+		 * @param refresh - Refetch cached pages
 		 */
 		async ensurePages(teamId: string, refresh = false): Promise<void> {
 			const slot = this.slot(teamId)
@@ -186,42 +159,42 @@ export const useTeamResourcesStore = defineStore('teamResources', {
 				return
 			}
 			await this.ensureFolder(teamId)
-			if (!slot.folder) {
-				slot.pages = []
-				slot.pagesChecked = slot.folderChecked
-				slot.pagesError = slot.folderError
+			if (slot.folderError) {
+				slot.pagesError = true
 				return
 			}
 			try {
-				slot.pages = await fetchTeamPages(slot.folder.mountPoint)
+				slot.pages = slot.folder ? await fetchTeamPages(slot.folder.mountPoint) : []
 				slot.pagesChecked = true
 				slot.pagesError = false
+				this.applyNavigation(teamId, slot.navigation)
 			} catch (error) {
 				logger.error('Could not load the team pages', { error, teamId })
-				slot.pages = []
 				slot.pagesError = true
 			}
 		},
 
 		/**
-		 * Load the team-level navigation order unless already known.
+		 * Merge native pages into provider navigation, preserving saved order.
 		 *
-		 * @param teamId - The team to load the order for
-		 * @param refresh - Refetch even when cached
+		 * @param teamId - The team owning the navigation
+		 * @param entries - The server's ordered navigation
 		 */
-		async ensureOrder(teamId: string, refresh = false): Promise<void> {
+		applyNavigation(teamId: string, entries: TeamNavigationEntry[]): void {
 			const slot = this.slot(teamId)
-			if (slot.orderChecked && !refresh) {
-				return
-			}
-			try {
-				slot.tabOrder = await fetchTabOrder(teamId)
-				slot.orderChecked = true
-				slot.orderError = false
-			} catch (error) {
-				logger.error('Could not load the navigation order', { error, teamId })
-				slot.orderError = true
-			}
+			const pageIds = new Set(slot.pages.map((page) => `page-${page.fileId}`))
+			const navigation = entries.map((entry): TeamNavigationEntry => {
+				if ('providerId' in entry && entry.providerId === 'files' && pageIds.has(`page-${entry.entryId}`)) {
+					return { id: `page-${Number(entry.entryId)}` }
+				}
+				return entry
+			})
+			const known = new Set(navigation.map(({ id }) => id))
+			const missing = slot.pages.filter((page) => !known.has(`page-${page.fileId}`))
+				.map((page): TeamNavigationEntry => ({ id: `page-${page.fileId}` }))
+			const home = navigation.findIndex(({ id }) => id === 'home')
+			navigation.splice(home < 0 ? navigation.length : home, 0, ...missing)
+			slot.navigation = navigation.filter((entry, index) => navigation.findIndex(({ id }) => id === entry.id) === index)
 		},
 
 		/**
@@ -235,10 +208,6 @@ export const useTeamResourcesStore = defineStore('teamResources', {
 			slot.folder = folder
 			slot.folderChecked = true
 			slot.folderError = false
-			// A fresh folder has no pages yet.
-			slot.pages = []
-			slot.pagesChecked = true
-			slot.pagesError = false
 			return folder
 		},
 
@@ -247,16 +216,16 @@ export const useTeamResourcesStore = defineStore('teamResources', {
 		 * rolling back on failure. Throws on failure.
 		 *
 		 * @param teamId - The team the order belongs to
-		 * @param order - The entry ids in their new order
+		 * @param entries - The selected navigation entries in display order
 		 */
-		async saveOrder(teamId: string, order: string[]): Promise<void> {
+		async saveOrder(teamId: string, entries: TeamNavigationEntry[]): Promise<void> {
 			const slot = this.slot(teamId)
-			const previous = slot.tabOrder
-			slot.tabOrder = order
+			const previous = slot.navigation
+			slot.navigation = entries
 			try {
-				await saveTabOrder(teamId, order)
+				await saveNavigation(teamId, entries.map(({ id }) => id))
 			} catch (error) {
-				slot.tabOrder = previous
+				slot.navigation = previous
 				throw error
 			}
 		},

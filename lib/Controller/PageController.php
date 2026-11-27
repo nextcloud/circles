@@ -13,6 +13,7 @@ use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\PermissionService;
 use OCA\Circles\Service\TeamFolderPolicy;
+use OCA\Circles\Service\TeamOwnedResourceProviderRegistry;
 use OCA\Text\Event\LoadEditor;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Attribute\FrontpageRoute;
@@ -21,6 +22,7 @@ use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\NotFoundResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
+use OCP\Collaboration\Reference\RenderReferenceEvent;
 use OCP\EventDispatcher\IEventDispatcher;
 use OCP\IRequest;
 use OCP\IUserSession;
@@ -37,6 +39,7 @@ class PageController extends Controller {
 		private IInitialState $initialState,
 		private ITeamManager $teamManager,
 		private TeamFolderPolicy $teamFolderPolicy,
+		private TeamOwnedResourceProviderRegistry $ownedResourceProviders,
 		private IEventDispatcher $eventDispatcher,
 		private IUserSession $userSession,
 		private PermissionService $permissionService,
@@ -70,8 +73,8 @@ class PageController extends Controller {
 		Util::addScript(Application::APP_ID, 'teams-main');
 		Util::addStyle(Application::APP_ID, 'teams-main');
 
-		// Load the Text editor so team pages can be edited inline on their
-		// tabs. The class only resolves while the Text app is enabled.
+		$this->initialState->provideInitialState('teamAppProviders', $this->ownedResourceProviders->load());
+		$this->eventDispatcher->dispatchTyped(new RenderReferenceEvent());
 		if (class_exists(LoadEditor::class)) {
 			$this->eventDispatcher->dispatchTyped(new LoadEditor());
 		}

@@ -10,6 +10,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from './views/HomeView.vue'
 import JoinInvitation from './views/JoinInvitation.vue'
 import PageView from './views/PageView.vue'
+import TeamAppView from './views/TeamAppView.vue'
 import TeamFolderView from './views/TeamFolderView.vue'
 import TeamHomeView from './views/TeamHomeView.vue'
 import TeamLandingView from './views/TeamLandingView.vue'
@@ -28,8 +29,6 @@ const routes: RouteRecordRaw[] = [
 		component: JoinInvitation,
 	},
 	{
-		// Deliberately unnamed: navigating a named parent with a default-path
-		// child skips rendering the child — always target a child route.
 		path: '/team/:teamId',
 		component: TeamPage,
 		props: true,
@@ -60,6 +59,12 @@ const routes: RouteRecordRaw[] = [
 				name: 'team-page',
 				path: 'page/:fileId',
 				component: PageView,
+				props: true,
+			},
+			{
+				name: 'team-app',
+				path: 'app/:providerId/:entryId',
+				component: TeamAppView,
 				props: true,
 			},
 			{
