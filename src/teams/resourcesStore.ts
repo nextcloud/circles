@@ -4,17 +4,21 @@
  */
 
 import type { TeamBoard, TeamFolder, TeamPage } from './api.ts'
-import type { SharedResource } from './types.ts'
+import type { SharedResource, TeamDashboardLayout } from './types.ts'
 
 import { defineStore } from 'pinia'
 import { logger } from '../logger.ts'
-import { fetchTabOrder, fetchTeamDeckBoards, fetchTeamPages, fetchTeamResources, getTeamFolder, saveTabOrder, upgradeTeamFolder } from './api.ts'
+import { fetchTabOrder, fetchTeamDashboardLayout, fetchTeamDeckBoards, fetchTeamPages, fetchTeamResources, getTeamFolder, saveTabOrder, saveTeamDashboardLayout, upgradeTeamFolder } from './api.ts'
 
 /**
  * The shared resource state of one team: its team folder, the resources
  * shared to it, its pages and the navigation tab order.
  */
 export interface TeamResources {
+	dashboard: TeamDashboardLayout | null
+	dashboardChecked: boolean
+	dashboardLoading: boolean
+	dashboardError: boolean
 	folder: TeamFolder | null
 	/** The folder probe finished; `folder` is authoritative (may be null). */
 	folderChecked: boolean
@@ -35,6 +39,10 @@ export interface TeamResources {
 }
 
 const EMPTY_SLOT: TeamResources = Object.freeze({
+	dashboard: null,
+	dashboardChecked: false,
+	dashboardLoading: false,
+	dashboardError: false,
 	folder: null,
 	folderChecked: false,
 	folderError: false,
@@ -80,6 +88,40 @@ export const useTeamResourcesStore = defineStore('teamResources', {
 	},
 
 	actions: {
+		async ensureDashboard(teamId: string, refresh = false): Promise<void> {
+			const slot = this.slot(teamId)
+			if (slot.dashboardChecked && !refresh) {
+				return
+			}
+			slot.dashboardLoading = true
+			try {
+				slot.dashboard = await fetchTeamDashboardLayout(teamId)
+				slot.dashboardChecked = true
+				slot.dashboardError = false
+			} catch (error) {
+				slot.dashboardError = true
+				logger.error('Could not load the dashboard layout', { error, teamId })
+			} finally {
+				slot.dashboardLoading = false
+			}
+		},
+
+		markDashboardUnavailable(teamId: string): void {
+			const slot = this.slot(teamId)
+			slot.dashboard = { widgetIds: slot.dashboard?.widgetIds ?? null, canEdit: false, available: false }
+			slot.dashboardChecked = true
+			slot.dashboardError = false
+		},
+
+		async setDashboardLayout(teamId: string, widgetIds: string[] | null): Promise<void> {
+			const slot = this.slot(teamId)
+			if (!slot.dashboard?.available || !slot.dashboard.canEdit) {
+				throw new Error('Dashboard layout is read-only')
+			}
+			const layout = await saveTeamDashboardLayout(teamId, widgetIds)
+			slot.dashboard = { ...slot.dashboard, ...layout }
+		},
+
 		/**
 		 * The mutable slot of a team, created on first access.
 		 *
@@ -105,6 +147,7 @@ export const useTeamResourcesStore = defineStore('teamResources', {
 				this.ensureFolder(teamId, refresh).then(() => this.ensurePages(teamId, refresh)),
 				this.ensureResources(teamId, refresh).then(() => this.ensureBoards(teamId, refresh)),
 				this.ensureOrder(teamId, refresh),
+				this.ensureDashboard(teamId, refresh),
 			])
 		},
 

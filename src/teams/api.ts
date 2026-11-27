@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import type { DiscoverableTeam, Member, MemberCandidate, Resource, SharedResource, Team, TeamRole } from './types.ts'
+import type { DiscoverableTeam, Member, MemberCandidate, Resource, SharedResource, Team, TeamDashboardLayout, TeamRole } from './types.ts'
 
 import axios from '@nextcloud/axios'
 import { FileType } from '@nextcloud/files'
@@ -24,6 +24,28 @@ const shareTypeToMemberType = SHARES_TYPES_MEMBER_MAP as Record<number, number>
 /** Minimal shape of an OCS response envelope. */
 interface OcsResponse<T> {
 	ocs: { data: T }
+}
+
+/**
+ * Read the team's shared dashboard layout.
+ *
+ * @param teamId - Team identifier
+ * @param signal - Request cancellation signal
+ */
+export async function fetchTeamDashboardLayout(teamId: string, signal?: AbortSignal): Promise<TeamDashboardLayout> {
+	const response = await axios.get<OcsResponse<TeamDashboardLayout>>(generateOcsUrl('apps/circles/teams/{circleId}/dashboard/layout', { circleId: teamId }), { signal })
+	return response.data.ocs.data
+}
+
+/**
+ * Save a shared selection without consulting the personal dashboard layout.
+ *
+ * @param teamId - Team identifier
+ * @param widgetIds - Explicit selection, or null for automatic defaults
+ */
+export async function saveTeamDashboardLayout(teamId: string, widgetIds: string[] | null): Promise<Pick<TeamDashboardLayout, 'widgetIds' | 'canEdit'>> {
+	const response = await axios.put<OcsResponse<Pick<TeamDashboardLayout, 'widgetIds' | 'canEdit'>>>(generateOcsUrl('apps/circles/teams/{circleId}/dashboard/layout', { circleId: teamId }), { widgetIds })
+	return response.data.ocs.data
 }
 
 /** Raw member as returned by the circles API. */

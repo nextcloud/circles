@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
+export interface TeamDashboardLayout {
+	widgetIds: string[] | null
+	canEdit: boolean
+	available: boolean
+}
+
 /** Permission level inside a team, derived from the circles member level. */
 export type TeamRole = 'owner' | 'admin' | 'moderator' | 'member'
 
